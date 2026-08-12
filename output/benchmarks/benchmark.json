@@ -1,0 +1,311 @@
+{
+  "benchmarkVersion": "1.1",
+  "startedAt": "2026-08-12T00:42:34.773Z",
+  "completedAt": "2026-08-12T00:42:38.954Z",
+  "mode": "in-process-domain-and-H3",
+  "environment": {
+    "node": "v24.14.0",
+    "platform": "linux",
+    "release": "6.18.35",
+    "cpuModel": "AMD EPYC 9V74 80-Core Processor",
+    "cpuCount": 9,
+    "totalMemoryBytes": 17106231296,
+    "finalRssBytes": 336953344,
+    "cpuUserMs": 4632.261,
+    "cpuSystemMs": 90.581,
+    "dockerAvailable": false,
+    "limitation": "Execution container has no Docker daemon or psql; PostGIS/h3-pg/MQTT benchmark must be rerun with npm run acceptance on a Docker host."
+  },
+  "spatial": [
+    {
+      "objectCount": 1000,
+      "nearby": {
+        "samples": 15,
+        "p50Ms": 0.01,
+        "p95Ms": 0.14,
+        "p99Ms": 0.14,
+        "minMs": 0.01,
+        "maxMs": 0.14,
+        "resultCount": 215
+      },
+      "withinPolygon": {
+        "samples": 15,
+        "p50Ms": 0.01,
+        "p95Ms": 0.21,
+        "p99Ms": 0.21,
+        "minMs": 0.01,
+        "maxMs": 0.21,
+        "resultCount": 175
+      },
+      "nearest": {
+        "samples": 15,
+        "p50Ms": 0.04,
+        "p95Ms": 0.78,
+        "p99Ms": 0.78,
+        "minMs": 0.03,
+        "maxMs": 0.78,
+        "nearestDistanceM": 235.56
+      },
+      "h3Aggregation": {
+        "resolution": 9,
+        "elapsedMs": 10.08,
+        "cells": 906,
+        "objectsPerSecond": 99233.02
+      },
+      "rssDeltaBytes": 9994240,
+      "estimatedStorageBytes": 192000
+    },
+    {
+      "objectCount": 10000,
+      "nearby": {
+        "samples": 15,
+        "p50Ms": 0.04,
+        "p95Ms": 0.14,
+        "p99Ms": 0.14,
+        "minMs": 0.01,
+        "maxMs": 0.14,
+        "resultCount": 2081
+      },
+      "withinPolygon": {
+        "samples": 15,
+        "p50Ms": 0.1,
+        "p95Ms": 0.12,
+        "p99Ms": 0.12,
+        "minMs": 0.02,
+        "maxMs": 0.12,
+        "resultCount": 1623
+      },
+      "nearest": {
+        "samples": 15,
+        "p50Ms": 0.25,
+        "p95Ms": 1.66,
+        "p99Ms": 1.66,
+        "minMs": 0.18,
+        "maxMs": 1.66,
+        "nearestDistanceM": 164.82
+      },
+      "h3Aggregation": {
+        "resolution": 9,
+        "elapsedMs": 15.12,
+        "cells": 4413,
+        "objectsPerSecond": 661367.66
+      },
+      "rssDeltaBytes": 4984832,
+      "estimatedStorageBytes": 1920000
+    },
+    {
+      "objectCount": 100000,
+      "nearby": {
+        "samples": 15,
+        "p50Ms": 0.44,
+        "p95Ms": 0.49,
+        "p99Ms": 0.49,
+        "minMs": 0.42,
+        "maxMs": 0.49,
+        "resultCount": 20701
+      },
+      "withinPolygon": {
+        "samples": 15,
+        "p50Ms": 1.03,
+        "p95Ms": 1.55,
+        "p99Ms": 1.55,
+        "minMs": 1.01,
+        "maxMs": 1.55,
+        "resultCount": 16056
+      },
+      "nearest": {
+        "samples": 15,
+        "p50Ms": 1.92,
+        "p95Ms": 2.31,
+        "p99Ms": 2.31,
+        "minMs": 1.87,
+        "maxMs": 2.31,
+        "nearestDistanceM": 18.15
+      },
+      "h3Aggregation": {
+        "resolution": 9,
+        "elapsedMs": 106.77,
+        "cells": 5184,
+        "objectsPerSecond": 936616.27
+      },
+      "rssDeltaBytes": 2560000,
+      "estimatedStorageBytes": 19200000
+    },
+    {
+      "objectCount": 1000000,
+      "nearby": {
+        "samples": 7,
+        "p50Ms": 4.28,
+        "p95Ms": 7.8,
+        "p99Ms": 7.8,
+        "minMs": 4.25,
+        "maxMs": 7.8,
+        "resultCount": 206918
+      },
+      "withinPolygon": {
+        "samples": 7,
+        "p50Ms": 10.87,
+        "p95Ms": 11.07,
+        "p99Ms": 11.07,
+        "minMs": 10.32,
+        "maxMs": 11.07,
+        "resultCount": 160646
+      },
+      "nearest": {
+        "samples": 7,
+        "p50Ms": 19.64,
+        "p95Ms": 26.47,
+        "p99Ms": 26.47,
+        "minMs": 19.04,
+        "maxMs": 26.47,
+        "nearestDistanceM": 5.71
+      },
+      "h3Aggregation": {
+        "resolution": 9,
+        "elapsedMs": 1041.12,
+        "cells": 5218,
+        "objectsPerSecond": 960503.13
+      },
+      "rssDeltaBytes": 15925248,
+      "estimatedStorageBytes": 192000000
+    }
+  ],
+  "observations": [
+    {
+      "observationCount": 100,
+      "elapsedMs": 7.46,
+      "ingestRatePerSecond": 13397.31,
+      "projectionLatency": {
+        "samples": 100,
+        "p50Ms": 0.04,
+        "p95Ms": 0.11,
+        "p99Ms": 0.18,
+        "minMs": 0.04,
+        "maxMs": 1.03
+      },
+      "rssDeltaBytes": 131072,
+      "stats": {
+        "objects": 100,
+        "observations": 100,
+        "events": 400,
+        "trajectoryPoints": 100,
+        "cells": 36,
+        "worldVersion": 200
+      }
+    },
+    {
+      "observationCount": 1000,
+      "elapsedMs": 65,
+      "ingestRatePerSecond": 15383.5,
+      "projectionLatency": {
+        "samples": 1000,
+        "p50Ms": 0.04,
+        "p95Ms": 0.08,
+        "p99Ms": 0.2,
+        "minMs": 0.03,
+        "maxMs": 6.91
+      },
+      "rssDeltaBytes": 13369344,
+      "stats": {
+        "objects": 1000,
+        "observations": 1000,
+        "events": 4000,
+        "trajectoryPoints": 1000,
+        "cells": 88,
+        "worldVersion": 2000
+      }
+    },
+    {
+      "observationCount": 10000,
+      "elapsedMs": 1396.2,
+      "ingestRatePerSecond": 7162.31,
+      "projectionLatency": {
+        "samples": 10000,
+        "p50Ms": 0.12,
+        "p95Ms": 0.19,
+        "p99Ms": 0.28,
+        "minMs": 0.03,
+        "maxMs": 31.58
+      },
+      "rssDeltaBytes": 156446720,
+      "stats": {
+        "objects": 10000,
+        "observations": 10000,
+        "events": 40000,
+        "trajectoryPoints": 10000,
+        "cells": 88,
+        "worldVersion": 20000
+      }
+    }
+  ],
+  "trajectory": [
+    {
+      "movingObjectCount": 10,
+      "positionIngestElapsedMs": 0.68,
+      "positionIngestRatePerSecond": 14648.88,
+      "currentPositionQuery": {
+        "samples": 10,
+        "p50Ms": 0.01,
+        "p95Ms": 0.11,
+        "p99Ms": 0.11,
+        "minMs": 0,
+        "maxMs": 0.11
+      },
+      "rssDeltaBytes": 0,
+      "trajectoryPoints": 10
+    },
+    {
+      "movingObjectCount": 100,
+      "positionIngestElapsedMs": 3.79,
+      "positionIngestRatePerSecond": 26371.51,
+      "currentPositionQuery": {
+        "samples": 100,
+        "p50Ms": 0.01,
+        "p95Ms": 0.01,
+        "p99Ms": 0.01,
+        "minMs": 0,
+        "maxMs": 0.02
+      },
+      "rssDeltaBytes": 0,
+      "trajectoryPoints": 100
+    },
+    {
+      "movingObjectCount": 1000,
+      "positionIngestElapsedMs": 37.6,
+      "positionIngestRatePerSecond": 26598.13,
+      "currentPositionQuery": {
+        "samples": 100,
+        "p50Ms": 0.01,
+        "p95Ms": 0.01,
+        "p99Ms": 0.01,
+        "minMs": 0,
+        "maxMs": 0.03
+      },
+      "rssDeltaBytes": 393216,
+      "trajectoryPoints": 1000
+    },
+    {
+      "movingObjectCount": 10000,
+      "positionIngestElapsedMs": 955.6,
+      "positionIngestRatePerSecond": 10464.6,
+      "currentPositionQuery": {
+        "samples": 100,
+        "p50Ms": 0.01,
+        "p95Ms": 0.01,
+        "p99Ms": 0.01,
+        "minMs": 0,
+        "maxMs": 0.03
+      },
+      "rssDeltaBytes": 66715648,
+      "trajectoryPoints": 10000
+    }
+  ],
+  "interpretation": {
+    "measured": "All values in this file were measured during this run; no theoretical numbers are mixed in.",
+    "scope": "Spatial results are a conservative O(N) in-process baseline, not indexed PostGIS results.",
+    "migrationTriggers": {
+      "clickHouse": "Run the supplied Docker benchmark first; consider ClickHouse only after sustained trajectory ingest exceeds measured PostgreSQL headroom or retention/index size breaches the agreed SLO.",
+      "kafka": "Keep MQTT for live delivery and PostgreSQL for replay until sustained accepted ingress exceeds 50,000 events/s for 30 minutes or a cross-region partitioned event log becomes mandatory; validate the threshold on production-sized hardware."
+    }
+  }
+}

@@ -1,93 +1,154 @@
-# geospatial-world-model
+# Geospatial Operational World Model PoC
 
+`geospatial-world-model-poc` 是面向多 IoT-Agent 集群的共享、实时、可查询运行世界模型工程基线。**工程可行性结论 GO；当前 release 投产结论 CONDITIONAL GO**：PostgreSQL/PostGIS + h3-pg + MQTT 5/Mosquitto + TypeScript + MCP 可以在 4–8 周内形成可供真实 Agent 使用的 MVP；本仓库已实现闭环 PoC，但仍需在具备 Docker 的目标机器关闭数据库/消息总线验收门。
 
+## 已实现能力
 
-## Getting started
+- Typed World Object、当前状态、几何、Typed Relation 与单调 `worldVersion`
+- Observation 校验、幂等去重、乱序/迟到决策、确定性投影、Freshness、Confidence、Provenance
+- PostGIS nearby / nearest / within / intersection / containing area / route proximity / distance
+- h3-pg 原生 `h3index` 存储、R7–R10 投影、聚合、邻居、hotspot/coldspot、数据库内 parent/children drill-down
+- Current Position 与 Historical Track 分离；距离、停止/驻留、路线偏离分析
+- `ObjectEnteredArea` / `ObjectExitedArea`，PostgreSQL 持久事件、MQTT QoS 1 实时发布及 SSE 订阅
+- 8 个可运行 MCP Tools；Agent 不需理解 SQL、PostGIS 或 H3
+- 可重复的 IoT simulator、C1–C10 场景测试、replay 工具、进程内和 PostGIS benchmark
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 最小架构
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
+```mermaid
+flowchart TB
+  I["IoT / Agents / Sensors"] --> O["Observation Ingest"]
+  O --> B["MQTT 5 / Mosquitto<br/>QoS 1 live delivery"]
+  O --> P["Durable Projection Queue"]
+  P --> W["Projection Worker"]
+  W --> D["PostgreSQL + PostGIS"]
+  D --> A["World / Spatial / H3 / Trajectory API"]
+  A --> M["MCP Server"]
+  M --> G["Agent Cluster"]
+  W --> B
+  B --> G
 ```
-cd existing_repo
-git remote add origin http://192.168.1.7/gistools/geospatial-world-model.git
-git branch -M main
-git push -uf origin main
+
+PostgreSQL 是 Observation、当前 World State、空间索引、事件、H3 态势和轨迹的唯一持久事实系统，也是 replay source。MQTT 只承担实时、at-least-once 投递，不被当作历史日志或第二事实源；断线恢复由 QoS 1/session 支持，任意历史重放由 PostgreSQL API/SSE backlog 提供。Observation 永不直接覆盖 State；只有 Projection Worker 能依据融合策略更新当前状态。
+
+## 十分钟启动目标
+
+前置条件：Docker Engine 24+、Compose v2、至少 4 CPU / 8 GiB RAM。
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+docker compose run --rm world-api node dist/scripts/seed.js
+curl http://localhost:3000/health
+curl http://localhost:3002/health
+curl http://localhost:3001/health
 ```
 
-## Integrate with your tools
+服务端口：World API `3000`、MCP Streamable HTTP `3001/mcp`、Observation Ingest `3002`、PostgreSQL `5432`、MQTT `1883`。
 
-- [ ] [Set up project integrations](http://192.168.1.7/gistools/geospatial-world-model/-/settings/integrations)
+持续模拟 100 个移动对象：
 
-## Collaborate with your team
+```bash
+docker compose --profile demo up -d simulator
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+停止但保留数据：
 
-## Test and Deploy
+```bash
+docker compose down
+```
 
-Use the built-in continuous integration in GitLab.
+## 第一次 Agent 查询
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```bash
+curl -s http://localhost:3000/spatial/nearby \
+  -H 'content-type: application/json' \
+  -d '{
+    "location":{"lat":39.902,"lon":116.405},
+    "objectTypes":["UGV"],
+    "radiusM":5000,
+    "filter":{"status":"AVAILABLE"},
+    "limit":5
+  }'
+```
 
-***
+返回不是数据库行，而是：
 
-# Editing this README
+```json
+{
+  "summary": { "count": 5, "nearestDistanceM": 230 },
+  "facts": [],
+  "context": {
+    "worldVersion": 10283,
+    "dataFreshnessMs": 530,
+    "queryTimeMs": 8
+  }
+}
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+MCP 客户端连接 `http://localhost:3001/mcp`。stdio 模式可执行：
 
-## Suggestions for a good README
+```bash
+node dist/services/world-mcp-server/src/index.js
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+原生 MQTT Agent 可订阅实时事件：
 
-## Name
-Choose a self-explaining name for your project.
+```bash
+mosquitto_sub -h localhost -p 1883 -q 1 -t 'gowm/event/#'
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+MQTT 只用于 live delivery；历史补偿使用 `GET /events?sinceWorldVersion=<version>` 或 `/events/stream` 的 PostgreSQL backlog。
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+## 验证
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+本地、无需数据库的完整验证：
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+```bash
+npm ci
+npm run check
+npm test
+npm run benchmark
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+具备 Docker 时的一键验收：
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```bash
+npm run acceptance
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+该命令会构建栈、安装并验证 h3-pg migration、seed、API/MCP/地理围栏端到端测试，并运行最高 1M 对象 PostGIS 基准、100/1k/10k events/s offered-load、storage growth、replay 和容器/Mosquitto 指标。可用 `BENCH_MAX_OBJECTS=100000 LOAD_TARGET_RATES=100,1000` 缩小资源消耗。
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+核心字段 replay：
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```bash
+npm run replay -- --subject ugv-001
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+脚本会删除该对象的派生当前状态、按事件时间重放 Observation，并比较 `type/geometry/state/confidence/observedAt/provenance` 的 SHA-256；不会删除原始 Observation。
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## 当前验证边界
 
-## License
-For open source projects, say how it is licensed.
+本仓库创建时所在执行环境没有 Docker 和 PostgreSQL 客户端。因此已实测并保存的是：TypeScript 构建、21 个单元/场景/MCP 测试，以及 1k/10k/100k/1M 对象、100/1k/10k Observation、10/100/1k/10k 移动对象的真实进程内基准。Docker/PostGIS/h3-pg/MQTT 结果必须在具备 Docker 的机器执行 `npm run acceptance` 后才可标记为通过；报告没有把静态 Compose 校验写成运行成功。
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## 文档索引
+
+1. [可行性与 Q1–Q20](docs/01_FEASIBILITY_REPORT.md)
+2. [World Model](docs/02_WORLD_MODEL_DESIGN.md)
+3. [Spatial Query](docs/03_SPATIAL_QUERY_DESIGN.md)
+4. [H3 Situation](docs/04_H3_SITUATION_DESIGN.md)
+5. [Observation / Event](docs/05_OBSERVATION_EVENT_DESIGN.md)
+6. [Trajectory](docs/06_TRAJECTORY_DESIGN.md)
+7. [Agent Tools](docs/07_AGENT_TOOL_DESIGN.md)
+8. [技术决策](docs/08_TECHNOLOGY_DECISIONS.md)
+9. [Benchmark](docs/09_BENCHMARK_REPORT.md)
+10. [推荐架构](docs/10_RECOMMENDED_ARCHITECTURE.md)
+11. [实施 Roadmap](docs/11_IMPLEMENTATION_ROADMAP.md)
+12. [验收报告](docs/12_ACCEPTANCE_REPORT.md)
+13. [官方证据矩阵](research/evidence-matrix.md)
+
+## 项目边界
+
+明确不在本阶段建设：完整知识图谱/Palantir-style Ontology、LLM 推理、Planning/Workflow/Mission Planner、Routing/Coverage Solver、CV/Raster AI、3D/Cesium、物理仿真、复杂 Bayesian Fusion、ML Prediction、Full OGC Server、Kubernetes。已有 H3 Toolkit 与 Coverage Planner 只通过稳定 API/Event 接入。
+
+License: MIT。依赖许可证与版本证据见 `research/evidence-matrix.md`。

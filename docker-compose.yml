@@ -1,0 +1,140 @@
+name: geospatial-world-model-poc
+
+x-app-environment: &app-environment
+  NODE_ENV: production
+  DATABASE_URL: postgresql://gowm:gowm@postgres:5432/gowm
+  MQTT_URL: mqtt://mqtt:1883
+  MQTT_CONNECT_TIMEOUT_MS: 3000
+  MQTT_MESSAGE_EXPIRY_SEC: 86400
+  WORLD_API_URL: http://world-api:3000
+  OBSERVATION_API_URL: http://observation-ingest:3002
+  STALE_AFTER_MS: 30000
+  SOURCE_PRIORITIES: camera:70,uav:80,ugv:75,sensor:60,operator:100,simulator:50
+
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: database/Dockerfile
+      args:
+        H3_PG_VERSION: 4.5.0
+    image: gowm-postgis-h3:17-3.5-h3-4.5.0
+    environment:
+      POSTGRES_DB: gowm
+      POSTGRES_USER: gowm
+      POSTGRES_PASSWORD: gowm
+    ports:
+      - "5432:5432"
+    volumes:
+      - gowm-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gowm -d gowm"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  mqtt:
+    image: eclipse-mosquitto:2.1.2-alpine
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./infrastructure/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - gowm-mosquitto:/mosquitto/data
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-t", "gowm/health", "-m", "ping", "-q", "1"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  migrate:
+    build: .
+    environment: *app-environment
+    command: ["node", "dist/scripts/migrate.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  world-api:
+    build: .
+    environment:
+      <<: *app-environment
+      WORLD_API_PORT: 3000
+    command: ["node", "dist/services/world-api/src/index.js"]
+    ports:
+      - "3000:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)process.exit(1)})"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  observation-ingest:
+    build: .
+    environment:
+      <<: *app-environment
+      OBSERVATION_API_PORT: 3002
+    command: ["node", "dist/services/observation-ingest/src/index.js"]
+    ports:
+      - "3002:3002"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3002/health').then(r=>{if(!r.ok)process.exit(1)})"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  projection-worker:
+    build: .
+    environment: *app-environment
+    command: ["node", "dist/services/projection-worker/src/index.js"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  world-mcp-server:
+    build: .
+    environment:
+      <<: *app-environment
+      MCP_PORT: 3001
+    command: ["node", "dist/services/world-mcp-server/src/index.js", "--http"]
+    ports:
+      - "3001:3001"
+    depends_on:
+      world-api:
+        condition: service_healthy
+      observation-ingest:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r=>{if(!r.ok)process.exit(1)})"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  simulator:
+    build: .
+    profiles: ["demo"]
+    environment:
+      <<: *app-environment
+      SIM_VEHICLES: 100
+      SIM_RATE_HZ: 1
+    command: ["node", "dist/simulator/src/index.js", "--continuous"]
+    depends_on:
+      observation-ingest:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  gowm-postgres:
+  gowm-mosquitto:
