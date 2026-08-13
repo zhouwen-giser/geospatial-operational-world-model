@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.intake/
+.docker-config/
+coverage/
+output/runtime/
+*.log
+*.pid
+geospatial-world-model-poc-v*.zip
+docs/*.zip
+gowm-stas-platform-v*.zip
+gowm-stas-platform-v*/

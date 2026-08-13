@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "generatedAt": "2026-08-13T14:03:02.096Z",
+  "scopeKey": "api-e2e-d3bef253",
+  "dataScopeId": "df7c7319-4b33-468b-bd3b-484beb379dab",
+  "observationCount": 3,
+  "trackletVersionCount": 3,
+  "exactReplayStatus": "duplicate",
+  "finalTrackletVersionId": "a11bf399-473b-40bf-b1f2-f86f0edcee7b",
+  "sequenceCount": 2,
+  "gapCount": 1,
+  "analysisId": "52dc40f6-ba46-4fb9-a0fa-5e2faa019acc",
+  "mqttDelivery": "PARTIAL_DURABLE_QUEUE_ONLY"
+}

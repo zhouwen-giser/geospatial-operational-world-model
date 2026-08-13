@@ -1,0 +1,34 @@
+# Validation-only fallback for Docker hosts whose user-defined subnet pools are
+# exhausted. It reuses Docker's built-in bridge without deleting any unrelated
+# network and routes database clients through the explicitly bound host port.
+networks:
+  default:
+    external: true
+    name: bridge
+
+services:
+  postgres:
+    network_mode: bridge
+
+  migrate:
+    network_mode: bridge
+    environment:
+      DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD}@${VALIDATION_DATABASE_HOST:-host.docker.internal}:5432/gowm
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  stas:
+    network_mode: bridge
+    environment:
+      DATABASE_URL: postgresql://stas_app:${STAS_DB_PASSWORD}@${VALIDATION_DATABASE_HOST:-host.docker.internal}:5432/gowm
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  observation-ingest:
+    network_mode: bridge
+    environment:
+      DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD}@${VALIDATION_DATABASE_HOST:-host.docker.internal}:5432/gowm
+      MQTT_URL: mqtt://127.0.0.1:59999
+      MQTT_CONNECT_TIMEOUT_MS: 100
+    extra_hosts:
+      - host.docker.internal:host-gateway

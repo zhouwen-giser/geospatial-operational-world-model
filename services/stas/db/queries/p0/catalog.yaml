@@ -1,0 +1,79 @@
+contractVersion: 1.0.0
+mobilitydbApi: v1.3.x-stable
+analysisModel: planar-metric-linear-sequenceset
+tools:
+  - name: get_tracklet
+    file: 01_get_tracklet.sql
+    phase: exact-row
+    gap: returns explicit segments/gap summary; temporal domain is not observation truth
+    uncertainty: returns pinned endpoint/max radii without probabilistic propagation
+  - name: get_tracklet_gaps
+    file: 02_get_tracklet_gaps.sql
+    phase: exact-row
+    gap: explicit tracklet_gap is authoritative for reason
+    uncertainty: returns reason confidence only
+  - name: get_tracklet_quality
+    file: 03_get_tracklet_quality.sql
+    phase: exact-row
+    gap: reports defined/bounding/gap duration separately
+    uncertainty: reports stored radii and clock-window widths
+  - name: slice_tracklet
+    file: 04_slice_tracklet.sql
+    phase: row-locate-then-exact
+    gap: atTime/atGeometry preserve undefined periods
+    uncertainty: nominal geometry; boundary/position uncertainty is returned as caveat
+  - name: get_position_at
+    file: 05_get_position_at.sql
+    phase: exact-row
+    gap: NULL means outside temporal domain; never crosses a SequenceSet gap
+    uncertainty: observed vs interpolated is explicit; no fabricated accuracy
+  - name: get_motion_summary
+    file: 06_get_motion_summary.sql
+    phase: exact-per-sequence
+    gap: speed/direction are computed per Sequence only
+    uncertainty: nominal kinematics; max input radius is exposed
+  - name: find_stop_intervals
+    file: 07_find_stop_intervals.sql
+    phase: exact-per-sequence
+    gap: stops never combine different Sequences
+    uncertainty: diameter threshold is nominal; caller must test radius sensitivity
+  - name: find_region_interactions
+    file: 08_find_region_interactions.sql
+    phase: bbox/existence-coarse-then-exact
+    gap: gap-to-inside is APPEARED_INSIDE, not ENTER
+    uncertainty: nominal boundary plus stored boundary/tracklet radii
+  - name: find_tracklets_in_region
+    files: [09a_find_tracklets_in_region_coarse.sql, 09b_find_tracklets_in_region_exact.sql]
+    phase: bbox-coarse-cap-plus-one-then-frozen-exact
+    gap: candidate existence does not bridge gaps
+    uncertainty: nominal; conservative expanded-bound mode is a separate policy
+  - name: nearest_approach
+    file: 10_nearest_approach.sql
+    phase: exact-known-pair
+    gap: only common defined temporal domain is evaluated
+    uncertainty: nominal NAD plus conservative endpoint radius metadata
+  - name: find_proximity_intervals
+    file: 11_find_proximity_intervals.sql
+    phase: exact-known-pair
+    gap: tDwithin is evaluated only on common defined domain
+    uncertainty: nominal intervals only; hard-bound evaluator is not claimed here
+  - name: find_nearby_tracklets
+    files: [12a_find_nearby_tracklets_coarse.sql, 12b_find_nearby_tracklets_exact.sql]
+    phase: conservative-coarse-cap-plus-one-then-frozen-exact
+    gap: exact-ever respects temporal domain
+    uncertainty: coarse radius must include hard radii or result is nominal-only
+  - name: find_successor_candidates
+    files: [13a_find_successor_candidates_coarse.sql, 13b_find_successor_candidates_exact.sql]
+    phase: endpoint-coarse-cap-plus-one-then-frozen-feature-evaluation
+    gap: emits candidate evidence, never identity continuity
+    uncertainty: time and position bounds produce interval features/AMBIGUOUS
+  - name: compare_pair_features
+    file: 14_compare_pair_features.sql
+    phase: exact-known-pair-per-sequence
+    gap: shared coverage and gaps are first-class outputs
+    uncertainty: nominal features with explicit radius/window metadata
+  - name: find_sensor_coverage
+    files: [15a_find_sensor_coverage_coarse.sql, 15b_find_sensor_coverage_exact.sql]
+    phase: scope-time-bbox-coarse-cap-plus-one-then-frozen-exact
+    gap: missing detection becomes evidence only with status/watermark/detector pins
+    uncertainty: coverage confidence and model versions are returned, not hidden
