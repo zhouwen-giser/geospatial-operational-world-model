@@ -90,6 +90,34 @@ async function main(): Promise<void> {
     return { currentObservationId: current.observationId, summary: track.summary };
   });
 
+  await check(checks, "G6-v1.2", "canonical evidence + MobilityDB UNKNOWN gap", async () => {
+    const source = `acceptance-camera-${suffix}`;
+    const targetId = `acceptance-target-${suffix}`;
+    const trackerSession = `acceptance-session-${suffix}`;
+    const targetLocalId = "17";
+    const start = Date.now() - 1_000;
+    const first = await publishCanonicalPosition({
+      suffix: `${suffix}-a`,source,targetId,targetLocalId,trackerSession,
+      phenomenonTime: new Date(start).toISOString(),x: 448252,y: 4417768,continuityToken: `${trackerSession}:17:a`
+    });
+    await publishCanonicalPosition({
+      suffix: `${suffix}-b`,source,targetId,targetLocalId,trackerSession,
+      phenomenonTime: new Date(start+1_000).toISOString(),x: 448253,y: 4417768,continuityToken: `${trackerSession}:17:a`
+    });
+    await publishCanonicalPosition({
+      suffix: `${suffix}-c`,source,targetId,targetLocalId,trackerSession,
+      phenomenonTime: new Date(start+5_000).toISOString(),x: 448260,y: 4417768,continuityToken: `${trackerSession}:17:b`
+    });
+    const canonical = await json(`${ingestUrl}/observations/${encodeURIComponent(String(first.observationId))}/canonical`) as Record<string,unknown>;
+    const mobility = await json(`${worldUrl}/trajectory/${encodeURIComponent(targetId)}/mobility?source=${encodeURIComponent(source)}`) as Record<string,unknown>;
+    if (canonical.canonicalEvidenceContractVersion !== "1.2") throw new Error("canonical evidence contract missing");
+    if (Number(mobility.sequenceCount) !== 2) throw new Error(`expected two sequences, got ${mobility.sequenceCount}`);
+    const gaps = mobility.gaps as Array<Record<string,unknown>>;
+    if (gaps.length !== 1 || gaps[0]?.bounds !== "()") throw new Error("UNKNOWN gap must be one open interval");
+    return { observationId: first.observationId,trackletVersionId: mobility.trackletVersionId,
+      sequenceCount: mobility.sequenceCount,gaps };
+  });
+
   await check(checks, "G7", "ObjectEnteredArea(AOI-1)", async () => {
     const events = await json(`${worldUrl}/events?eventType=ObjectEnteredArea&subjectId=${ugvId}`) as Array<Record<string, unknown>>;
     const found = events.find((event) => (event.payload as Record<string, unknown>).areaId === "AOI-1");
@@ -154,6 +182,34 @@ async function publishPosition(subjectId: string, observationId: string, lon: nu
     observedAt: new Date(time).toISOString(), receivedAt: new Date(time + 10).toISOString(),
     source: "operator", correlationId: `acceptance-${subjectId}`, metadata: {}, schemaVersion: "1.0"
   } });
+}
+
+async function publishCanonicalPosition(input: {
+  suffix: string; source: string; targetId: string; targetLocalId: string; trackerSession: string;
+  phenomenonTime: string; x: number; y: number; continuityToken: string;
+}): Promise<Record<string,unknown>> {
+  const end = new Date(Date.parse(input.phenomenonTime)+1).toISOString();
+  return json(`${ingestUrl}/observations`, { method: "POST",body: {
+    schemaVersion: "1.2",observationId: `${input.source}:${input.suffix}`,
+    dataScopeKey: "acceptance-v12",sourceRecordKey: input.suffix,sourceRevisionNo: 1,
+    originKind: "PHYSICAL_SENSOR",observer: { type: "Camera",id: input.source },
+    subject: { type: "ObservedTarget",id: input.targetId },sourceLocalTargetId: input.targetLocalId,
+    trackerSessionId: input.trackerSession,observationType: "position",source: input.source,
+    datastreamKey: `${input.source}:detections`,producerPipelineKey: `${input.source}:detector-v1`,
+    rawReference: `inline://acceptance/${input.suffix}`,qualityFlags: [],metadata: { acceptance: true },
+    timeSolution: { phenomenonTimeEstimate: input.phenomenonTime,
+      phenomenonTimeWindow: { start: input.phenomenonTime,end },uncertaintySeconds: 0.02,
+      correctionMethod: "ACCEPTANCE_CLOCK_MODEL",clockModelVersion: "acceptance-clock-v1" },
+    measurements: [{ measurementKey: "position",measurementStage: "NORMALIZED",
+      observedProperty: "position",resultKind: "POSITION",analysisSpaceKey: "default",
+      position: { x: input.x,y: input.y,srid: Number(process.env.ANALYSIS_SRID ?? 32650) },
+      sourceGeometry: { type: "Point",coordinates: [116.4+(input.x-448252)/100000,39.9] },
+      uncertainty: { model: "HARD_RADIUS",unit: "m",horizontalValue: 5,confidenceLevel: 0.95 },
+      measurementModel: "ACCEPTANCE_POSITION",measurementModelVersion: "1.0",
+      algorithmConfidence: 0.87,qualityScore: 0.9,qualityFlags: [],
+      continuityToken: input.continuityToken,manualCutBefore: false,attributes: {} }],
+    assertions: [],entityBindingStatus: "DECLARED"
+  } }) as Promise<Record<string,unknown>>;
 }
 
 async function waitForObject(id: string, observationId: string): Promise<Record<string, unknown>> {

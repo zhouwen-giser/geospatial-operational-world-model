@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import * as z from "zod/v4";
 import { loadConfig } from "../../../packages/world-model-core/src/config.js";
+import { CanonicalObservationInputSchema } from "../../../packages/world-model-core/src/schema.js";
 
 const PointInput = z.object({ lon: z.number().min(-180).max(180), lat: z.number().min(-90).max(90) });
 const AreaInput = z.object({
@@ -10,7 +11,7 @@ const AreaInput = z.object({
 
 export function createWorldMcpServer(): McpServer {
   const config = loadConfig();
-  const server = new McpServer({ name: "world-model-mcp-server", version: "1.0.0" });
+  const server = new McpServer({ name: "gowm-plus-mcp-server", version: "1.2.0" });
 
   server.registerTool("get_world_state", {
     title: "Get authoritative world state",
@@ -140,6 +141,15 @@ export function createWorldMcpServer(): McpServer {
     });
   });
 
+  server.registerTool("get_mobility_trajectory", {
+    title: "Get MobilityDB trajectory",
+    description: "Return the current immutable source-local SequenceSet, explicit UNKNOWN gaps and version provenance.",
+    inputSchema: { objectId: z.string().min(1), source: z.string().min(1).optional() },
+    annotations: { readOnlyHint: true, idempotentHint: true }
+  }, async ({ objectId,source }) => callJson(
+    `${config.worldApiUrl}/trajectory/${encodeURIComponent(objectId)}/mobility${source ? `?source=${encodeURIComponent(source)}` : ""}`
+  ));
+
   server.registerTool("publish_observation", {
     title: "Publish world observation",
     description: "Publish an idempotent Observation envelope; it is validated and projected asynchronously into world state.",
@@ -158,6 +168,13 @@ export function createWorldMcpServer(): McpServer {
       metadata: z.record(z.string(), z.unknown()).default({}),
       schemaVersion: z.literal("1.0").default("1.0")
     },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true }
+  }, async (input) => callJson(`${config.observationApiUrl}/observations`, { method: "POST", body: input }));
+
+  server.registerTool("publish_canonical_observation", {
+    title: "Publish canonical GOWM+ observation",
+    description: "Publish a v1.2 immutable event with explicit time solution, typed measurements, uncertainty and assertions. The server owns receivedTime.",
+    inputSchema: CanonicalObservationInputSchema.shape,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true }
   }, async (input) => callJson(`${config.observationApiUrl}/observations`, { method: "POST", body: input }));
 

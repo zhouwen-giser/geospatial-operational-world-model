@@ -1,5 +1,7 @@
 # 08 — Technology Decisions
 
+> Historical v1.1 baseline. The v1.2 runtime is PostgreSQL 18/PostGIS 3.6/MobilityDB 1.3/h3-pg 4.5.
+
 ## Recommended Stack
 
 | Layer | MVP choice | PoC pin | Why |

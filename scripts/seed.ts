@@ -4,6 +4,7 @@ import { WorldRepository } from "../packages/runtime/src/world-repository.js";
 import { ObservationRepository } from "../packages/runtime/src/observation-repository.js";
 import { ProjectionProcessor } from "../packages/runtime/src/projection.js";
 import type { ObservationEnvelope, PointGeometry, PolygonGeometry } from "../packages/world-model-core/src/types.js";
+import { normalizeObservationInput } from "../packages/observation-model/src/canonical.js";
 
 const AOI_1: PolygonGeometry = {
   type: "Polygon",
@@ -69,7 +70,7 @@ async function main(): Promise<void> {
       metadata: { seed: true },
       schemaVersion: "1.0"
     };
-    const inserted = await observations.insert(observation);
+    const inserted = await observations.insert(normalizeObservationInput(observation, new Date().toISOString()));
     if (inserted.status === "accepted") await processor.process(id);
   }
 

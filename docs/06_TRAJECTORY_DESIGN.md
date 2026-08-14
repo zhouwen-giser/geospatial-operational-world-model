@@ -1,5 +1,7 @@
 # 06 — Trajectory Design
 
+> Historical v1.1 baseline. `trajectory_point` is now a compatibility view; MobilityDB TrackletVersion is normative in v1.2.
+
 ## 决策
 
 Current Position 与 Historical Track 必须分开：

@@ -1,8 +1,7 @@
-import { isDeepStrictEqual } from "node:util";
 import Fastify, { type FastifyInstance } from "fastify";
-import type { ObservationEnvelope } from "../../../packages/world-model-core/src/types.js";
-import { ObservationEnvelopeSchema } from "../../../packages/world-model-core/src/schema.js";
+import { ObservationInputSchema } from "../../../packages/world-model-core/src/schema.js";
 import { loadConfig } from "../../../packages/world-model-core/src/config.js";
+import { normalizeObservationInput } from "../../../packages/observation-model/src/canonical.js";
 import { validateGeometry } from "../../../packages/spatial-engine/src/geometry.js";
 import { validateObservationTime } from "../../../packages/observation-model/src/fusion.js";
 import { databasePool } from "../../../packages/runtime/src/db.js";
@@ -20,16 +19,11 @@ export function buildObservationApp(): FastifyInstance {
   app.get("/health", async () => ({ status: "ok", service: "observation-ingest", timestamp: new Date().toISOString() }));
 
   app.post("/observations", async (request, reply) => {
-    const parsed = ObservationEnvelopeSchema.safeParse(request.body);
+    const parsed = ObservationInputSchema.safeParse(request.body);
     if (!parsed.success) return reply.code(422).send({ error: "invalid_observation", issues: parsed.error.issues });
     const now = new Date();
-    const raw = parsed.data;
-    const receivedAtWasSupplied = raw.receivedAt !== undefined;
-    const observation = {
-      ...raw,
-      receivedAt: raw.receivedAt ?? now.toISOString(),
-      correlationId: raw.correlationId ?? raw.observationId
-    } as ObservationEnvelope;
+    const bundle = normalizeObservationInput(parsed.data, now.toISOString());
+    const observation = bundle.envelope;
     const geometryErrors = observation.geometry ? validateGeometry(observation.geometry) : [];
     if (geometryErrors.length) return reply.code(422).send({ error: "invalid_geometry", issues: geometryErrors });
 
@@ -43,17 +37,9 @@ export function buildObservationApp(): FastifyInstance {
       return reply.code(422).send({ error: "invalid_observation_time", reason: timeValidation.reason });
     }
 
-    const result = await repository.insert(observation, timeValidation.reason === "late"
+    const result = await repository.insert(bundle, timeValidation.reason === "late"
       ? { status: "late", project: false, rejectionReason: "late_arrival" }
-      : { status: "accepted", project: true });
-
-    if (result.status === "duplicate" && !sameObservation(result.observation, observation, receivedAtWasSupplied)) {
-      return reply.code(409).send({
-        error: "idempotency_conflict",
-        observationId: observation.observationId,
-        message: "observationId already exists with a different immutable payload"
-      });
-    }
+      : { status: "accepted", project: bundle.entityBindingStatus !== "CANDIDATE" });
 
     let busPublished = false;
     if (result.status === "accepted") {
@@ -76,10 +62,16 @@ export function buildObservationApp(): FastifyInstance {
     return reply.code(result.status === "duplicate" ? 200 : 202).send({
       observationId: observation.observationId,
       status: result.status,
-      projectionQueued: result.status === "accepted",
+      projectionQueued: result.status === "accepted" && bundle.entityBindingStatus !== "CANDIDATE",
       busPublished,
       receivedAt: observation.receivedAt,
-      correlationId: observation.correlationId
+      correlationId: observation.correlationId,
+      canonicalContractVersion: "1.2",
+      inputSchemaVersion: observation.schemaVersion,
+      compatibilityAdapter: bundle.compatibilityInputVersion ? "v1.1-to-v1.2" : null,
+      timeSolutionId: result.timeSolutionId,
+      measurementIds: result.measurementIds ?? [],
+      trackletVersionId: result.trackletVersionId ?? null
     });
   });
 
@@ -87,6 +79,12 @@ export function buildObservationApp(): FastifyInstance {
     const id = (request.params as { id: string }).id;
     const observation = await repository.get(id);
     return observation ? observation : reply.code(404).send({ error: "observation_not_found", id });
+  });
+
+  app.get("/observations/:id/canonical", async (request, reply) => {
+    const id = (request.params as { id: string }).id;
+    const evidence = await repository.getCanonicalEvidence(id);
+    return evidence ?? reply.code(404).send({ error: "observation_not_found", id });
   });
 
   app.get("/observations", async (request) => {
@@ -102,14 +100,15 @@ export function buildObservationApp(): FastifyInstance {
   });
 
   app.addHook("onClose", async () => bus.drain());
-  return app;
-}
-
-function sameObservation(existing: ObservationEnvelope, incoming: ObservationEnvelope, compareReceivedAt: boolean): boolean {
-  const normalize = (value: ObservationEnvelope) => ({
-    ...value,
-    observedAt: new Date(value.observedAt).toISOString(),
-    receivedAt: compareReceivedAt ? new Date(value.receivedAt).toISOString() : undefined
+  app.setErrorHandler((error, _request, reply) => {
+    const candidate = error as { statusCode?: unknown; code?: unknown; message?: unknown };
+    const statusCode = typeof candidate.statusCode === "number" ? candidate.statusCode : 500;
+    return reply.code(statusCode).send({
+      error: typeof candidate.code === "string" ? candidate.code : "observation_ingest_failed",
+      message: statusCode >= 500
+        ? "observation ingest failed"
+        : typeof candidate.message === "string" ? candidate.message : "observation ingest failed"
+    });
   });
-  return isDeepStrictEqual(normalize(existing), normalize(incoming));
+  return app;
 }

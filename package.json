@@ -1,20 +1,27 @@
 {
-  "name": "geospatial-world-model-poc",
-  "version": "1.1.0",
+  "name": "geospatial-operational-world-model",
+  "version": "0.1.0",
   "private": true,
-  "description": "Geospatial Operational World Model PoC for multi IoT-Agent clusters",
+  "description": "GOWM+ unified geospatial data foundation with independently deployable STAS analysis service",
   "type": "module",
   "license": "MIT",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "check": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.json && npm --prefix services/stas run build",
+    "check": "tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "verify:sql": "node scripts/verify-sql.mjs",
+    "verify": "npm run check && npm run verify:sql && npm test && npm --prefix services/stas test && npm run build",
+    "verify:v1.2": "npm run verify",
+    "validate:stas": "node validation/scripts/stas-all-tools-e2e.mjs",
+    "validate:ingest-stas": "tsx validation/scripts/ingest-to-stas-e2e.ts",
+    "validate:evidence": "node validation/scripts/collect-runtime-evidence.mjs",
     "dev:api": "tsx services/world-api/src/index.ts",
     "dev:ingest": "tsx services/observation-ingest/src/index.ts",
     "dev:worker": "tsx services/projection-worker/src/index.ts",
     "dev:mcp": "tsx services/world-mcp-server/src/index.ts",
+    "dev:stas": "npm --prefix services/stas run dev",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "simulate": "tsx simulator/src/index.ts",
@@ -22,6 +29,7 @@
     "test:unit": "vitest run tests/unit",
     "test:scenario": "vitest run tests/scenario",
     "test:integration": "vitest run tests/integration",
+    "test:stas": "npm --prefix services/stas test",
     "benchmark": "npm run build && node dist/tests/performance/benchmark.js",
     "benchmark:postgis": "npm run build && node dist/tests/performance/postgis-benchmark.js",
     "benchmark:mqtt": "npm run build && node dist/tests/performance/mqtt-benchmark.js",
@@ -40,6 +48,7 @@
   "devDependencies": {
     "@types/node": "24.3.0",
     "@types/pg": "8.15.5",
+    "pgsql-parser": "18.2.6",
     "tsx": "4.23.12",
     "typescript": "5.9.3",
     "vitest": "4.1.10"

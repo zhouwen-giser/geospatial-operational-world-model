@@ -1,5 +1,7 @@
 # 02 — World Model Design
 
+> Historical v1.1 baseline. GOWM+ v1.2 evidence and MobilityDB changes are defined in documents 13–16.
+
 ## 设计目标与不变量
 
 World Model 是运行世界状态的唯一权威读模型。Agent 可有 working memory、task context 和短期 cache，但这些数据必须携带 `worldVersion`/TTL，不能反向宣称权威。

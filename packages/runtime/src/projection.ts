@@ -35,6 +35,12 @@ interface CurrentRow {
   h3_r10: string | null;
 }
 
+interface EvidenceProjectionRef {
+  timeSolutionId?: string;
+  positionMeasurementId?: string;
+  uncertainty: Record<string, unknown>;
+}
+
 const TYPE_COUNTER: Record<string, "agent_count" | "vehicle_count" | "sensor_count" | "incident_count"> = {
   Agent: "agent_count",
   Vehicle: "vehicle_count",
@@ -55,8 +61,23 @@ export class ProjectionProcessor {
   async process(observationId: string): Promise<ProjectionResult> {
     return withTransaction(this.pool, async (client) => {
       const observationResult = await client.query(
-        `SELECT *, CASE WHEN geometry IS NULL THEN NULL ELSE ST_AsGeoJSON(geometry)::jsonb END AS geometry_json
-         FROM world_observation WHERE observation_id = $1 FOR UPDATE`,
+        `SELECT o.*,CASE WHEN o.geometry IS NULL THEN NULL ELSE ST_AsGeoJSON(o.geometry)::jsonb END AS geometry_json,
+                evidence.time_solution_id,evidence.position_measurement_id,evidence.uncertainty_json
+         FROM world_observation o
+         LEFT JOIN LATERAL (
+           SELECT ts.time_solution_id,pm.measurement_id AS position_measurement_id,
+                  jsonb_strip_nulls(jsonb_build_object(
+                    'model',pm.accuracy_model,'accuracyRadiusM',pm.accuracy_radius_m,
+                    'horizontalStddevM',pm.horizontal_stddev_m,'confidenceLevel',pm.accuracy_confidence,
+                    'timeUncertaintySeconds',ts.uncertainty_seconds
+                  )) AS uncertainty_json
+           FROM observation_time_solution ts
+           LEFT JOIN measurement m ON m.time_solution_id=ts.time_solution_id AND m.result_kind='POSITION'
+           LEFT JOIN position_measurement pm ON pm.measurement_id=m.measurement_id
+           WHERE ts.observation_id=o.observation_id
+           ORDER BY ts.created_at DESC,m.created_at DESC LIMIT 1
+         ) evidence ON true
+         WHERE o.observation_id=$1 FOR UPDATE OF o`,
         [observationId]
       );
       const observationRow = observationResult.rows[0] as Record<string, unknown> | undefined;
@@ -71,8 +92,17 @@ export class ProjectionProcessor {
           events: []
         };
       }
+      if (observationRow.entity_binding_status === "CANDIDATE") {
+        await this.completeQueue(client,observationId);
+        return {
+          observationId,
+          decision: { apply: false,reason: "candidate-unresolved" },
+          worldVersion: await this.sequenceValue(client),
+          events: []
+        };
+      }
 
-      const created = await this.ensureObject(client, observation);
+      const created = await this.ensureObject(client, observation, String(observationRow.data_scope_key));
       const currentRow = await this.currentRow(client, observation.subject.id);
       const current = toCurrentProjection(currentRow);
       const decision = decideProjection(current, observation, {
@@ -82,11 +112,14 @@ export class ProjectionProcessor {
       });
       const point = observation.geometry?.type === "Point" ? observation.geometry : undefined;
       const h3 = point ? await this.projectPointToH3(client, point) : undefined;
-
-      if (point && h3) await this.insertTrajectory(client, observation, point, h3);
+      const evidence: EvidenceProjectionRef = {
+        ...(observationRow.time_solution_id ? { timeSolutionId: String(observationRow.time_solution_id) } : {}),
+        ...(observationRow.position_measurement_id ? { positionMeasurementId: String(observationRow.position_measurement_id) } : {}),
+        uncertainty: (observationRow.uncertainty_json as Record<string, unknown> | undefined) ?? {}
+      };
 
       const version = decision.apply
-        ? await this.applyState(client, observation, point, h3)
+        ? await this.applyState(client, observation, point, h3, evidence)
         : Number(currentRow?.version ?? (await this.sequenceValue(client)));
 
       if (point && h3) {
@@ -155,11 +188,38 @@ export class ProjectionProcessor {
     });
   }
 
-  private async ensureObject(client: pg.PoolClient, observation: ObservationEnvelope): Promise<boolean> {
+  private async ensureObject(
+    client: pg.PoolClient, observation: ObservationEnvelope, dataScopeKey: string
+  ): Promise<boolean> {
     const result = await client.query(
-      `INSERT INTO world_object (id, object_type, properties)
-       VALUES ($1, $2, '{}'::jsonb) ON CONFLICT (id) DO NOTHING RETURNING id`,
-      [observation.subject.id, observation.subject.type]
+      `INSERT INTO world_object (id, object_type, properties, data_scope_key)
+       VALUES ($1, $2, '{}'::jsonb, $3) ON CONFLICT (id) DO NOTHING RETURNING id`,
+      [observation.subject.id, observation.subject.type, dataScopeKey]
+    );
+    const owner = await client.query<{ data_scope_key: string }>(
+      "SELECT data_scope_key FROM world_object WHERE id=$1",[observation.subject.id]
+    );
+    if (owner.rows[0]?.data_scope_key !== dataScopeKey) {
+      throw Object.assign(new Error(`world object ${observation.subject.id} belongs to another data scope`), {
+        statusCode: 409, code: "WORLD_OBJECT_SCOPE_CONFLICT"
+      });
+    }
+    await client.query(
+      `UPDATE entity_binding SET world_object_id=$1
+       WHERE evidence_observation_id=$2 AND world_object_id IS NULL
+         AND binding_status IN ('DECLARED','CONFIRMED')`,
+      [observation.subject.id,observation.observationId]
+    );
+    await client.query(
+      `UPDATE mobility_tracklet t SET world_object_id=$1
+       FROM entity_binding eb
+       WHERE eb.evidence_observation_id=$2
+         AND eb.binding_status IN ('DECLARED','CONFIRMED')
+         AND t.data_scope_key=eb.data_scope_key AND t.source_key=eb.source_key
+         AND t.tracker_session_key=eb.tracker_session_key
+         AND t.source_local_target_id=eb.source_local_target_id
+         AND t.world_object_id IS DISTINCT FROM $1`,
+      [observation.subject.id,observation.observationId]
     );
     return Boolean(result.rowCount);
   }
@@ -198,7 +258,8 @@ export class ProjectionProcessor {
     client: pg.PoolClient,
     observation: ObservationEnvelope,
     point: PointGeometry | undefined,
-    h3: H3Projection | undefined
+    h3: H3Projection | undefined,
+    evidence: EvidenceProjectionRef
   ): Promise<number> {
     const positionState = point
       ? {
@@ -213,18 +274,24 @@ export class ProjectionProcessor {
     const result = await client.query<{ version: string }>(
       `INSERT INTO world_object_state (
          object_id, state, confidence, observed_at, received_at, source,
-         source_observation_id, version, updated_at
-       ) VALUES ($1, $2::jsonb, $3, $4, $5, $6, $7, nextval('world_version_seq'), clock_timestamp())
+         source_observation_id,version,updated_at,time_solution_id,position_measurement_id,
+         projection_policy_version,uncertainty_summary,evidence_kind
+       ) VALUES ($1,$2::jsonb,$3,$4,$5,$6,$7,nextval('world_version_seq'),clock_timestamp(),$8,$9,
+                 'gowm-projection-v1.2',$10::jsonb,'CANONICAL_EVIDENCE')
        ON CONFLICT (object_id) DO UPDATE SET
          state = world_object_state.state || EXCLUDED.state,
          confidence = EXCLUDED.confidence, observed_at = EXCLUDED.observed_at,
          received_at = EXCLUDED.received_at, source = EXCLUDED.source,
          source_observation_id = EXCLUDED.source_observation_id,
-         version = EXCLUDED.version, updated_at = clock_timestamp()
+         version = EXCLUDED.version,updated_at=clock_timestamp(),
+         time_solution_id=EXCLUDED.time_solution_id,position_measurement_id=EXCLUDED.position_measurement_id,
+         projection_policy_version=EXCLUDED.projection_policy_version,
+         uncertainty_summary=EXCLUDED.uncertainty_summary,evidence_kind=EXCLUDED.evidence_kind
        RETURNING version::text`,
       [
         observation.subject.id, JSON.stringify(state), observation.confidence,
-        observation.observedAt, observation.receivedAt, observation.source, observation.observationId
+        observation.observedAt,observation.receivedAt,observation.source,observation.observationId,
+        evidence.timeSolutionId ?? null,evidence.positionMeasurementId ?? null,JSON.stringify(evidence.uncertainty)
       ]
     );
     const version = Number(result.rows[0]?.version ?? 0);
@@ -242,31 +309,6 @@ export class ProjectionProcessor {
       );
     }
     return version;
-  }
-
-  private async insertTrajectory(
-    client: pg.PoolClient,
-    observation: ObservationEnvelope,
-    point: PointGeometry,
-    h3: H3Projection
-  ): Promise<void> {
-    const [longitude, latitude, altitude] = point.coordinates;
-    await client.query(
-      `INSERT INTO trajectory_point (
-         entity_id, observed_at, observation_id, geometry, latitude, longitude,
-         altitude, heading, speed, state, source, confidence, h3_r7, h3_r8, h3_r9, h3_r10
-       ) VALUES (
-         $1, $2, $3, ST_SetSRID(ST_MakePoint($4, $5), 4326), $5, $4,
-         $6, $7, $8, $9::jsonb, $10, $11, $12, $13, $14, $15
-       ) ON CONFLICT (observation_id) DO NOTHING`,
-      [
-        observation.subject.id, observation.observedAt, observation.observationId,
-        longitude, latitude, altitude ?? null,
-        numeric(observation.value.heading), numeric(observation.value.speed),
-        JSON.stringify(observation.value), observation.source, observation.confidence,
-        h3.r7, h3.r8, h3.r9, h3.r10
-      ]
-    );
   }
 
   private async incrementObservationSituation(
@@ -431,8 +473,4 @@ function h3Entries(h3: H3Projection): Array<[number, string]> {
     h3.r9 ? [9, h3.r9] : undefined,
     h3.r10 ? [10, h3.r10] : undefined
   ].filter((entry): entry is [number, string] => entry !== undefined);
-}
-
-function numeric(value: unknown): number | null {
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
 }

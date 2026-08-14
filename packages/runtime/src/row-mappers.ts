@@ -1,6 +1,7 @@
 import type {
   Geometry,
   ObservationEnvelope,
+  PositionUncertainty,
   SituationCell,
   TrajectoryPoint,
   WorldEvent,
@@ -25,6 +26,7 @@ export function mapWorldObject(row: Record<string, unknown>, staleAfterMs: numbe
   const observedAt = iso(row.observed_at);
   const freshnessResult = freshness(observedAt, staleAfterMs);
   const state = json<Record<string, unknown>>(row.state, {});
+  const uncertainty = json<Record<string,unknown>>(row.uncertainty_summary, {});
   let geometry = row.geometry_json ? json<Geometry>(row.geometry_json, undefined as never) : undefined;
   const position = state.position as Record<string, unknown> | undefined;
   if (geometry?.type === "Point" && typeof position?.altitude === "number") {
@@ -32,6 +34,7 @@ export function mapWorldObject(row: Record<string, unknown>, staleAfterMs: numbe
   }
   return {
     id: String(row.id),
+    ...(row.data_scope_key ? { dataScopeKey: String(row.data_scope_key) } : {}),
     type: String(row.object_type),
     ...(row.subtype ? { subtype: String(row.subtype) } : {}),
     ...(geometry ? { geometry } : {}),
@@ -54,6 +57,12 @@ export function mapWorldObject(row: Record<string, unknown>, staleAfterMs: numbe
             confidence: Number(row.confidence),
             source: String(row.source),
             sourceObservationId: String(row.source_observation_id),
+            ...(row.time_solution_id ? { timeSolutionId: String(row.time_solution_id) } : {}),
+            ...(row.position_measurement_id ? { positionMeasurementId: String(row.position_measurement_id) } : {}),
+            ...(row.projection_policy_version ? { projectionPolicyVersion: String(row.projection_policy_version) } : {}),
+            ...(typeof uncertainty.model === "string"
+              ? { uncertainty: uncertainty as unknown as PositionUncertainty }
+              : {}),
             observedAt,
             receivedAt: iso(row.received_at) ?? observedAt
           }
@@ -97,7 +106,7 @@ export function mapObservation(row: Record<string, unknown>): ObservationEnvelop
     source: String(row.source),
     correlationId: String(row.correlation_id),
     metadata: json<Record<string, unknown>>(row.metadata, {}),
-    schemaVersion: "1.0"
+    schemaVersion: row.schema_version === "1.2" ? "1.2" : "1.0"
   };
 }
 

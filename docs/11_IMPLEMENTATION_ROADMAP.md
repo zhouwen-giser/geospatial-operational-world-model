@@ -1,5 +1,7 @@
 # 11 — Implementation Roadmap
 
+> Historical v1.1 roadmap. v1.2 promotion gates are in documents 14 and 16.
+
 ## 原则
 
 Roadmap 以 Agent 可消费闭环排序，不以服务数排序。建议核心团队 2 名 backend/data engineer + 0.5 名 IoT integration + 0.5 名 operations/security；单人也可执行但 Week 2–8 顺延。

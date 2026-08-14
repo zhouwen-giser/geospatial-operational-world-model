@@ -21,7 +21,8 @@ async function main(): Promise<void> {
   }
   const observationIds = await pool.query<{ observation_id: string }>(
     `SELECT observation_id FROM world_observation
-     WHERE subject_id = $1 ORDER BY observed_at, received_at, observation_id`,
+     WHERE subject_id = $1 AND entity_binding_status<>'CANDIDATE'
+     ORDER BY observed_at, received_at, observation_id`,
     [subjectId]
   );
   if (!observationIds.rowCount) throw new Error(`no observations found for ${subjectId}`);
@@ -29,7 +30,9 @@ async function main(): Promise<void> {
   const expected = canonical(before);
   await withTransaction(pool, async (client) => {
     await client.query("DELETE FROM object_area_membership WHERE object_id = $1", [subjectId]);
-    await client.query("DELETE FROM trajectory_point WHERE entity_id = $1", [subjectId]);
+    // MobilityDB tracklet versions are immutable evidence projections and are
+    // not part of World State replay. Rebuilding World State must not delete or
+    // mutate them; a changed clock/rule/input publishes a new tracklet version.
     await client.query("DELETE FROM world_object_geometry WHERE object_id = $1", [subjectId]);
     await client.query("DELETE FROM world_object_state WHERE object_id = $1", [subjectId]);
     await client.query(
@@ -45,6 +48,7 @@ async function main(): Promise<void> {
     await client.query(
       `INSERT INTO projection_queue (observation_id)
        SELECT observation_id FROM world_observation WHERE subject_id = $1
+         AND entity_binding_status<>'CANDIDATE'
        ON CONFLICT (observation_id) DO UPDATE SET
          attempts = 0, available_at = clock_timestamp(), locked_at = NULL,
          processed_at = NULL, last_error = NULL`,

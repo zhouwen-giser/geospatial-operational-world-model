@@ -7,9 +7,10 @@ import { mapRelation, mapWorldObject } from "./row-mappers.js";
 import { withTransaction } from "./db.js";
 
 const CURRENT_SELECT = `
-  SELECT o.id, o.object_type, o.subtype, o.properties,
+  SELECT o.id,o.data_scope_key,o.object_type, o.subtype, o.properties,
          s.state, s.confidence, s.observed_at, s.received_at, s.source,
-         s.source_observation_id, s.version, s.updated_at,
+         s.source_observation_id,s.time_solution_id,s.position_measurement_id,
+         s.projection_policy_version,s.uncertainty_summary,s.evidence_kind,s.version,s.updated_at,
          CASE WHEN g.geometry IS NULL THEN NULL ELSE ST_AsGeoJSON(g.geometry)::jsonb END AS geometry_json,
          g.h3_r7, g.h3_r8, g.h3_r9, g.h3_r10
   FROM world_object o
@@ -58,17 +59,34 @@ export class WorldRepository {
 
   constructor(private readonly pool: pg.Pool) {}
 
-  async health(): Promise<{ database: "ok"; postgisVersion: string; h3PgVersion: string; worldVersion: number }> {
-    const result = await this.pool.query<{ version: string; h3_version: string; world_version: string }>(
+  async health(): Promise<{
+    database: "ok";
+    postgisVersion: string;
+    mobilityDbVersion: string;
+    h3PgVersion: string;
+    contractVersion: string;
+    analysisSrid: number;
+    worldVersion: number;
+  }> {
+    const result = await this.pool.query<{
+      version: string; mobility_version: string; h3_version: string; contract_version: string;
+      analysis_srid: number; world_version: string;
+    }>(
       `SELECT PostGIS_Lib_Version() AS version,
+              (SELECT extversion FROM pg_extension WHERE extname='mobilitydb') AS mobility_version,
               (SELECT extversion FROM pg_extension WHERE extname = 'h3') AS h3_version,
+              (SELECT contract_version FROM gowm_deployment_config WHERE singleton) AS contract_version,
+              (SELECT analysis_srid FROM gowm_deployment_config WHERE singleton) AS analysis_srid,
               last_value::text AS world_version
        FROM world_version_seq`
     );
     return {
       database: "ok",
       postgisVersion: result.rows[0]?.version ?? "unknown",
+      mobilityDbVersion: result.rows[0]?.mobility_version ?? "missing",
       h3PgVersion: result.rows[0]?.h3_version ?? "missing",
+      contractVersion: result.rows[0]?.contract_version ?? "unknown",
+      analysisSrid: Number(result.rows[0]?.analysis_srid ?? 0),
       worldVersion: Number(result.rows[0]?.world_version ?? 0)
     };
   }

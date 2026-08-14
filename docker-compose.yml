@@ -1,8 +1,8 @@
-name: geospatial-world-model-poc
+name: ${COMPOSE_PROJECT_NAME:?set an isolated COMPOSE_PROJECT_NAME in .env}
 
 x-app-environment: &app-environment
   NODE_ENV: production
-  DATABASE_URL: postgresql://gowm:gowm@postgres:5432/gowm
+  DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:-gowm}@postgres:5432/gowm
   MQTT_URL: mqtt://mqtt:1883
   MQTT_CONNECT_TIMEOUT_MS: 3000
   MQTT_MESSAGE_EXPIRY_SEC: 86400
@@ -10,6 +10,12 @@ x-app-environment: &app-environment
   OBSERVATION_API_URL: http://observation-ingest:3002
   STALE_AFTER_MS: 30000
   SOURCE_PRIORITIES: camera:70,uav:80,ugv:75,sensor:60,operator:100,simulator:50
+  ANALYSIS_SRID: ${ANALYSIS_SRID:-32650}
+  ANALYSIS_SPACE_KEY: ${ANALYSIS_SPACE_KEY:-default}
+  TRACKLET_MAX_TIME_GAP_MS: ${TRACKLET_MAX_TIME_GAP_MS:-10000}
+  TRACKLET_MAX_DISTANCE_GAP_M: ${TRACKLET_MAX_DISTANCE_GAP_M:-250}
+  TRACKLET_MAX_REQUIRED_SPEED_MPS: ${TRACKLET_MAX_REQUIRED_SPEED_MPS:-80}
+  STAS_DB_PASSWORD: ${STAS_DB_PASSWORD:?set STAS_DB_PASSWORD in .env}
 
 services:
   postgres:
@@ -17,27 +23,33 @@ services:
       context: .
       dockerfile: database/Dockerfile
       args:
+        MOBILITYDB_BASE_IMAGE: ${MOBILITYDB_BASE_IMAGE:-mobilitydb/mobilitydb:18-3.6-1.3@sha256:8409e3897e2b88561bef4374110c3da5f7ff56838a7745315f1c2f111305dd24}
         H3_PG_VERSION: 4.5.0
-    image: gowm-postgis-h3:17-3.5-h3-4.5.0
+    image: gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0
     environment:
       POSTGRES_DB: gowm
       POSTGRES_USER: gowm
-      POSTGRES_PASSWORD: gowm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gowm}
+      TZ: UTC
+      PGTZ: UTC
     ports:
-      - "5432:5432"
+      - "${POSTGRES_BIND_ADDRESS:-127.0.0.1}:${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - gowm-postgres:/var/lib/postgresql/data
+      - gowm-postgres:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gowm -d gowm"]
+      test: ["CMD-SHELL", "test \"$(head -1 \"$${PGDATA}/postmaster.pid\")\" = 1 && pg_isready -U gowm -d gowm && psql -U gowm -d gowm -Atqc \"SELECT count(*) FROM pg_available_extensions WHERE name IN ('postgis','mobilitydb','h3')\" | grep -qx 3"]
       interval: 3s
       timeout: 3s
       retries: 30
     restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    shm_size: ${POSTGRES_SHM_SIZE:-1gb}
+    stop_grace_period: 60s
 
   mqtt:
     image: eclipse-mosquitto:2.1.2-alpine
     ports:
-      - "1883:1883"
+      - "${MQTT_BIND_ADDRESS:-127.0.0.1}:${MQTT_PORT:-1883}:1883"
     volumes:
       - ./infrastructure/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - gowm-mosquitto:/mosquitto/data
@@ -47,6 +59,7 @@ services:
       timeout: 3s
       retries: 30
     restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
 
   migrate:
     build: .
@@ -64,7 +77,7 @@ services:
       WORLD_API_PORT: 3000
     command: ["node", "dist/services/world-api/src/index.js"]
     ports:
-      - "3000:3000"
+      - "${API_BIND_ADDRESS:-127.0.0.1}:${WORLD_API_PORT:-3000}:3000"
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -74,6 +87,8 @@ services:
       timeout: 3s
       retries: 30
     restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    init: true
 
   observation-ingest:
     build: .
@@ -82,7 +97,7 @@ services:
       OBSERVATION_API_PORT: 3002
     command: ["node", "dist/services/observation-ingest/src/index.js"]
     ports:
-      - "3002:3002"
+      - "${API_BIND_ADDRESS:-127.0.0.1}:${OBSERVATION_API_PORT:-3002}:3002"
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -92,6 +107,34 @@ services:
       timeout: 3s
       retries: 30
     restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    init: true
+
+  stas:
+    build: .
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://stas_app:${STAS_DB_PASSWORD:?set STAS_DB_PASSWORD in .env}@postgres:5432/gowm
+      HOST: 0.0.0.0
+      PORT: 8080
+      SERVICE_VERSION: 0.1.0
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DB_POOL_MAX: ${STAS_DB_POOL_MAX:-20}
+      DB_CONNECTION_TIMEOUT_MS: ${STAS_DB_CONNECTION_TIMEOUT_MS:-2000}
+    command: ["node", "services/stas/dist/server.js"]
+    ports:
+      - "${API_BIND_ADDRESS:-127.0.0.1}:${STAS_PORT:-8080}:8080"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8080/readyz').then(r=>{if(!r.ok)process.exit(1)})"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    init: true
 
   projection-worker:
     build: .
@@ -101,6 +144,8 @@ services:
       migrate:
         condition: service_completed_successfully
     restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    init: true
 
   world-mcp-server:
     build: .
@@ -109,7 +154,7 @@ services:
       MCP_PORT: 3001
     command: ["node", "dist/services/world-mcp-server/src/index.js", "--http"]
     ports:
-      - "3001:3001"
+      - "${API_BIND_ADDRESS:-127.0.0.1}:${MCP_PORT:-3001}:3001"
     depends_on:
       world-api:
         condition: service_healthy
@@ -121,6 +166,8 @@ services:
       timeout: 3s
       retries: 30
     restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    init: true
 
   simulator:
     build: .

@@ -1,5 +1,7 @@
 # 09 — Benchmark Report
 
+> Historical v1.1 evidence; it is not a GOWM+ v1.2 MobilityDB performance claim.
+
 ## 判读结论
 
 代码路径可在单进程内处理本任务要求的所有规模档位，1M current objects 的保守 O(N) nearby p95 为 7.80ms、nearest p95 26.47ms；10k Observation projection 实测 7,162.31/s，p95 0.19ms。结果证明领域模型/H3/API 编排没有明显算法阻塞，但**不证明 PostGIS/h3-pg、Docker 网络和 MQTT 已达到相同数字**。

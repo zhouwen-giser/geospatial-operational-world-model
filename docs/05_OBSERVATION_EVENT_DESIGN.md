@@ -1,5 +1,7 @@
 # 05 — Observation and Event Design
 
+> Historical v1.1 baseline. The v1.2 canonical Observation/TimeSolution/Measurement model supersedes conflicting sections.
+
 ## 三种领域事实
 
 | 名称 | 含义 | 是否 immutable | 是否改变 current state |

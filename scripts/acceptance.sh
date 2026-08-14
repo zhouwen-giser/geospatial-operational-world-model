@@ -1,8 +1,31 @@
 #!/usr/bin/env bash
 set -euo pipefail
+umask 077
 
 project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$project_dir"
+
+if [[ -f .env ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source .env
+  set +a
+fi
+
+export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-gowm}"
+export POSTGRES_PORT="${POSTGRES_PORT:-5432}"
+export DATABASE_URL="${DATABASE_URL:-postgresql://gowm:gowm@localhost:${POSTGRES_PORT}/gowm}"
+
+if [[ -z "${COMPOSE_PROJECT_NAME:-}" || "${COMPOSE_PROJECT_NAME}" == *change-to* ]]; then
+  printf '%s\n' 'Set an isolated COMPOSE_PROJECT_NAME in .env before acceptance.' >&2
+  exit 1
+fi
+
+node -e '
+  const url=new URL(process.env.DATABASE_URL ?? "");
+  if (url.password !== (process.env.POSTGRES_PASSWORD ?? "")) throw new Error("DATABASE_URL password must match POSTGRES_PASSWORD");
+  if (url.port !== String(process.env.POSTGRES_PORT ?? "5432")) throw new Error("DATABASE_URL port must match POSTGRES_PORT");
+'
 
 mkdir -p output/acceptance output/benchmarks
 npm run check
@@ -16,6 +39,8 @@ fi
 
 docker compose config --quiet
 docker compose up -d --build
+docker compose exec -T postgres psql -U gowm -d gowm -v ON_ERROR_STOP=1 \
+  < database/tests/001_v12_assertions.sql
 docker compose run --rm world-api node dist/scripts/seed.js
 RUN_DB_INTEGRATION=1 npm run test:integration
 node dist/tests/integration/http-acceptance.js

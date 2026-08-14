@@ -305,6 +305,19 @@ export function buildWorldApi(): FastifyInstance {
     return point ? point : reply.code(404).send({ error: "position_not_found" });
   });
 
+  app.get("/trajectory/:entityId/mobility", async (request, reply) => {
+    const entityId = (request.params as { entityId: string }).entityId;
+    const source = (request.query as { source?: string }).source;
+    const trajectory = await trajectories.mobilityTrajectory(entityId,source);
+    return trajectory
+      ? {
+          representation: "MOBILITYDB_TGEOMPOINT_SEQUENCESET",
+          interpolation: "LINEAR_WITHIN_SEQUENCE_UNKNOWN_BETWEEN_SEQUENCES",
+          ...trajectory
+        }
+      : reply.code(404).send({ error: "mobility_trajectory_not_found" });
+  });
+
   app.get("/trajectory/:entityId/track", async (request, reply) => {
     const parsed = TrackQuerySchema.safeParse(request.query);
     if (!parsed.success) return reply.code(422).send({ error: "invalid_track_query", issues: parsed.error.issues });
@@ -313,7 +326,11 @@ export function buildWorldApi(): FastifyInstance {
       ...(parsed.data.to ? { to: parsed.data.to } : {}),
       limit: parsed.data.limit
     });
-    return { summary: { pointCount: points.length, distanceTraveledM: distanceTraveledM(points) }, points };
+    return {
+      representation: "OBSERVED_MEASUREMENT_COMPATIBILITY_VIEW",
+      summary: { pointCount: points.length, distanceTraveledM: distanceTraveledM(points) },
+      points
+    };
   });
 
   app.get("/trajectory/:entityId/recent", async (request) => {

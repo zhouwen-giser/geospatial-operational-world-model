@@ -1,5 +1,7 @@
 # 01 — Feasibility Report
 
+> Historical v1.1 baseline. For v1.2 architecture and validation, documents 13–16 and migration 009 are normative.
+
 ## 执行结论
 
 **工程可行性 GO；当前 release 投产 CONDITIONAL GO**。值得建设独立的 Geospatial Operational World Model，但它应是一个窄而深的运行状态平台，不是提前建设 Digital Twin/Knowledge Graph 大平台。

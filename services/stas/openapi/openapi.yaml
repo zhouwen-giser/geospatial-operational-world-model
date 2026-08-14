@@ -1,0 +1,431 @@
+﻿openapi: 3.1.0
+info:
+  title: Spatiotemporal Analysis Service
+  version: 0.1.0
+  description: Deterministic, evidence-oriented MobilityDB analysis over versioned GOWM read contracts. GOWM exclusively owns canonical ingestion and TrackletVersion publication.
+servers:
+  - url: http://localhost:8080
+paths:
+  /healthz:
+    get:
+      operationId: health
+      responses:
+        '200': { description: Process is alive, content: { application/json: { schema: { $ref: '#/components/schemas/Health' } } } }
+        '500': { $ref: '#/components/responses/Problem' }
+  /readyz:
+    get:
+      operationId: readiness
+      responses:
+        '200': { description: Database and pinned runtime metadata are reachable, content: { application/json: { schema: { $ref: '#/components/schemas/Readiness' } } } }
+        '500': { $ref: '#/components/responses/Problem' }
+        '503': { $ref: '#/components/responses/Problem' }
+        '504': { $ref: '#/components/responses/Problem' }
+  /v1/tools:
+    get:
+      operationId: listTools
+      responses:
+        '200':
+          description: The 15 registered P0 contracts and budgets
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tools]
+                properties: { tools: { type: array, items: { $ref: '#/components/schemas/ToolDefinition' } } }
+        '500': { $ref: '#/components/responses/Problem' }
+  /v1/tools/{name}:
+    get:
+      operationId: describeTool
+      parameters:
+        - $ref: '#/components/parameters/ToolName'
+      responses:
+        '200': { description: Tool metadata, content: { application/json: { schema: { $ref: '#/components/schemas/ToolDefinition' } } } }
+        '404': { $ref: '#/components/responses/Problem' }
+        '500': { $ref: '#/components/responses/Problem' }
+  /v1/tools/{name}:execute:
+    post:
+      operationId: executeTool
+      parameters:
+        - $ref: '#/components/parameters/ToolName'
+        - $ref: '#/components/parameters/DataScope'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/get_tracklet_input_v1'
+                - $ref: '#/components/schemas/get_tracklet_gaps_input_v1'
+                - $ref: '#/components/schemas/get_tracklet_quality_input_v1'
+                - $ref: '#/components/schemas/slice_tracklet_input_v1'
+                - $ref: '#/components/schemas/get_position_at_input_v1'
+                - $ref: '#/components/schemas/get_motion_summary_input_v1'
+                - $ref: '#/components/schemas/find_stop_intervals_input_v1'
+                - $ref: '#/components/schemas/find_region_interactions_input_v1'
+                - $ref: '#/components/schemas/find_tracklets_in_region_input_v1'
+                - $ref: '#/components/schemas/nearest_approach_input_v1'
+                - $ref: '#/components/schemas/find_proximity_intervals_input_v1'
+                - $ref: '#/components/schemas/find_nearby_tracklets_input_v1'
+                - $ref: '#/components/schemas/find_successor_candidates_input_v1'
+                - $ref: '#/components/schemas/compare_pair_features_input_v1'
+                - $ref: '#/components/schemas/find_sensor_coverage_input_v1'
+      responses:
+        '200': { description: Persisted evidence result, content: { application/json: { schema: { $ref: '#/components/schemas/AnalysisResult' } } } }
+        '400': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '413': { $ref: '#/components/responses/Problem' }
+        '415': { $ref: '#/components/responses/Problem' }
+        '422': { $ref: '#/components/responses/Problem' }
+        '500': { $ref: '#/components/responses/Problem' }
+        '503': { $ref: '#/components/responses/Problem' }
+        '504': { $ref: '#/components/responses/Problem' }
+  /v1/analyses/{analysisId}:
+    get:
+      operationId: getPersistedAnalysis
+      parameters:
+        - { name: analysisId, in: path, required: true, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/DataScope'
+      responses:
+        '200': { description: Persisted immutable AnalysisResult in the authorized data scope, content: { application/json: { schema: { $ref: '#/components/schemas/AnalysisResult' } } } }
+        '400': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '500': { $ref: '#/components/responses/Problem' }
+components:
+  parameters:
+    DataScope:
+      name: x-data-scope-id
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+      description: Authorized scope; must equal body.dataScopeId. Production derives this from authenticated claims.
+    ToolName:
+      name: name
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [get_tracklet, get_tracklet_gaps, get_tracklet_quality, slice_tracklet, get_position_at, get_motion_summary, find_stop_intervals, find_region_interactions, find_tracklets_in_region, nearest_approach, find_proximity_intervals, find_nearby_tracklets, find_successor_candidates, compare_pair_features, find_sensor_coverage]
+  responses:
+    Problem:
+      description: RFC 9457 Problem Details
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+  schemas:
+    Health:
+      type: object
+      additionalProperties: false
+      required: [status, serviceVersion]
+      properties:
+        status: { const: ok }
+        serviceVersion: { type: string }
+    Readiness:
+      type: object
+      additionalProperties: false
+      required: [status, mobilityDbVersion, postgisVersion, schemaContractVersion, analysisSrid]
+      properties:
+        status: { const: ready }
+        mobilityDbVersion: { type: string }
+        postgisVersion: { type: string }
+        schemaContractVersion: { type: string }
+        analysisSrid: { type: integer, minimum: 1 }
+    Problem:
+      type: object
+      required: [type, title, status, detail, instance, code]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+        code: { type: string }
+    TimeRange:
+      type: object
+      additionalProperties: false
+      required: [start, end]
+      properties:
+        start: { type: string, format: date-time }
+        end: { type: string, format: date-time }
+        bounds: { const: '[)', default: '[)' }
+    EvidenceTimeRange:
+      type: object
+      additionalProperties: false
+      required: [start, end, bounds]
+      properties:
+        start: { type: string, format: date-time }
+        end: { type: string, format: date-time }
+        bounds: { enum: ['[)', '()', '[]', '(]'] }
+    TrackletRef:
+      type: object
+      additionalProperties: false
+      required: [trackletId]
+      properties:
+        trackletId: { type: string, format: uuid }
+        trackletVersionId: { type: string, format: uuid }
+        versionNo: { type: integer, minimum: 1 }
+      oneOf:
+        - required: [trackletVersionId]
+          not: { required: [versionNo] }
+        - required: [versionNo]
+          not: { required: [trackletVersionId] }
+    CommonToolInput:
+      type: object
+      required: [dataScopeId]
+      properties:
+        dataScopeId: { type: string, format: uuid }
+        snapshotPolicy: { const: PINNED, default: PINNED }
+        evidenceLevel: { enum: [SUMMARY, STANDARD, FULL], default: SUMMARY }
+        deadlineMs: { type: integer, minimum: 1000, maximum: 60000 }
+    SingleTrackletInput:
+      allOf:
+        - $ref: '#/components/schemas/CommonToolInput'
+        - type: object
+          required: [tracklet]
+          properties: { tracklet: { $ref: '#/components/schemas/TrackletRef' } }
+    PairInput:
+      allOf:
+        - $ref: '#/components/schemas/CommonToolInput'
+        - type: object
+          required: [trackletA, trackletB, timeRange]
+          properties:
+            trackletA: { $ref: '#/components/schemas/TrackletRef' }
+            trackletB: { $ref: '#/components/schemas/TrackletRef' }
+            timeRange: { $ref: '#/components/schemas/TimeRange' }
+    get_tracklet_input_v1:
+      allOf: [ { $ref: '#/components/schemas/SingleTrackletInput' }, { type: object, properties: { detail: { enum: [SUMMARY, SEQUENCES, OBSERVATION_REFS] }, limit: { type: integer, minimum: 1, maximum: 1000 } } } ]
+    get_tracklet_gaps_input_v1:
+      allOf: [ { $ref: '#/components/schemas/SingleTrackletInput' }, { type: object, required: [timeRange], properties: { timeRange: { $ref: '#/components/schemas/TimeRange' }, reasons: { type: array, items: { type: string } }, limit: { type: integer, maximum: 1000 } } } ]
+    get_tracklet_quality_input_v1:
+      allOf: [ { $ref: '#/components/schemas/SingleTrackletInput' }, { type: object, required: [dimensions], properties: { timeRange: { $ref: '#/components/schemas/TimeRange' }, dimensions: { type: array, minItems: 1, maxItems: 20, items: { enum: [TEMPORAL_COVERAGE, POSITION_UNCERTAINTY, SOURCE_HEALTH, PROVENANCE, CONFLICTS, SAMPLING] } } } } ]
+    slice_tracklet_input_v1:
+      allOf:
+        - $ref: '#/components/schemas/SingleTrackletInput'
+        - type: object
+          properties:
+            timeRange: { $ref: '#/components/schemas/TimeRange' }
+            region: { $ref: '#/components/schemas/RegionRef' }
+            spatialMode: { const: INTERSECTS_INCLUSIVE_BOUNDARY }
+            boundaryPolicy: { enum: [REPORT_AMBIGUOUS, NOMINAL] }
+          anyOf:
+            - required: [timeRange]
+            - required: [region]
+    get_position_at_input_v1:
+      allOf: [ { $ref: '#/components/schemas/SingleTrackletInput' }, { type: object, required: [timestamp, interpolationPolicy], properties: { timestamp: { type: string, format: date-time }, interpolationPolicy: { enum: [ALLOW_WITHIN_SEQUENCE, OBSERVED_ONLY] } } } ]
+    get_motion_summary_input_v1:
+      allOf: [ { $ref: '#/components/schemas/SingleTrackletInput' }, { type: object, required: [timeRange], properties: { timeRange: { $ref: '#/components/schemas/TimeRange' }, units: { const: SI }, perSequence: { type: boolean } } } ]
+    find_stop_intervals_input_v1:
+      allOf: [ { $ref: '#/components/schemas/SingleTrackletInput' }, { type: object, required: [timeRange, maximumDiameterMeters, minimumDurationSeconds], properties: { timeRange: { $ref: '#/components/schemas/TimeRange' }, maximumDiameterMeters: { type: number, exclusiveMinimum: 0 }, minimumDurationSeconds: { type: number, exclusiveMinimum: 0 }, limit: { type: integer, minimum: 1, maximum: 1000 } } } ]
+    find_region_interactions_input_v1:
+      allOf: [ { $ref: '#/components/schemas/SingleTrackletInput' }, { type: object, required: [region, timeRange, events], properties: { region: { $ref: '#/components/schemas/RegionRef' }, timeRange: { $ref: '#/components/schemas/TimeRange' }, events: { type: array, minItems: 1, items: { enum: [VISIT, ENTER, EXIT, TOUCH, CROSS] } }, minimumVisitSeconds: { type: number, minimum: 0 }, boundaryPolicy: { enum: [REPORT_AMBIGUOUS, NOMINAL] }, limit: { type: integer, minimum: 1, maximum: 1000 } } } ]
+    find_tracklets_in_region_input_v1:
+      allOf: [ { $ref: '#/components/schemas/CommonToolInput' }, { type: object, required: [region, timeRange], properties: { region: { $ref: '#/components/schemas/RegionRef' }, timeRange: { $ref: '#/components/schemas/TimeRange' }, sourceTypes: { type: array, maxItems: 32, items: { type: string } }, mode: { enum: [CANDIDATE, EXACT_VISIT] }, limit: { type: integer, maximum: 5000 } } } ]
+    nearest_approach_input_v1:
+      allOf: [ { $ref: '#/components/schemas/PairInput' }, { type: object, required: [dimensionPolicy], properties: { dimensionPolicy: { const: 2D }, uncertaintyPolicy: { const: NOMINAL_WITH_SCALAR_SENSITIVITY } } } ]
+    find_proximity_intervals_input_v1:
+      allOf: [ { $ref: '#/components/schemas/PairInput' }, { type: object, required: [maxDistanceMeters, minimumDurationSeconds], properties: { maxDistanceMeters: { type: number, exclusiveMinimum: 0 }, minimumDurationSeconds: { type: number, minimum: 0 }, uncertaintyPolicy: { const: NOMINAL_WITH_SCALAR_SENSITIVITY }, uncertaintyAlgorithm: { const: SCALAR_SENSITIVITY }, limit: { type: integer, minimum: 1, maximum: 1000 } } } ]
+    find_nearby_tracklets_input_v1:
+      allOf: [ { $ref: '#/components/schemas/CommonToolInput' }, { type: object, required: [subject, timeRange, maxDistanceMeters], properties: { subject: { $ref: '#/components/schemas/TrackletRef' }, timeRange: { $ref: '#/components/schemas/TimeRange' }, maxDistanceMeters: { type: number, exclusiveMinimum: 0 }, sourceTypes: { type: array, maxItems: 32, items: { type: string } }, mode: { enum: [CANDIDATE, EXACT_EVER] }, uncertaintyPolicy: { enum: [NOMINAL, CONSERVATIVE_BOUND] }, limit: { type: integer, maximum: 5000 } } } ]
+    find_successor_candidates_input_v1:
+      allOf:
+        - $ref: '#/components/schemas/CommonToolInput'
+        - type: object
+          required: [predecessor, maxGapSeconds, maxSpeedMps, reachabilityLevel]
+          properties:
+            predecessor: { $ref: '#/components/schemas/TrackletRef' }
+            maxGapSeconds: { type: number, exclusiveMinimum: 0, maximum: 86400 }
+            maxSpeedMps: { type: number, exclusiveMinimum: 0, maximum: 10000 }
+            maxAccelerationMps2: { type: number, exclusiveMinimum: 0, maximum: 10000 }
+            maxHeadingDeltaDegrees: { type: number, minimum: 0, maximum: 180 }
+            reachabilityLevel: { enum: [1, 2] }
+            uncertaintyPolicy: { enum: [NOMINAL, CONSERVATIVE_BOUND] }
+            sourceTypes: { type: array, maxItems: 32, items: { type: string } }
+            limit: { type: integer, minimum: 1, maximum: 5000 }
+          allOf:
+            - if:
+                required: [reachabilityLevel]
+                properties: { reachabilityLevel: { const: 2 } }
+              then: { required: [maxAccelerationMps2, maxHeadingDeltaDegrees] }
+    compare_pair_features_input_v1:
+      allOf: [ { $ref: '#/components/schemas/PairInput' }, { type: object, required: [features, thresholds], properties: { features: { type: array, minItems: 1, items: { enum: [TEMPORAL_OVERLAP, MIN_DISTANCE, PROXIMITY_DURATION, GAP_CONTEXT] } }, thresholds: { type: object, required: [proximityMeters], properties: { proximityMeters: { type: array, minItems: 1, maxItems: 1, items: { type: number, exclusiveMinimum: 0 } } } } } } ]
+    find_sensor_coverage_input_v1:
+      allOf:
+        - $ref: '#/components/schemas/CommonToolInput'
+        - type: object
+          required: [timeRange]
+          properties:
+            sensorId: { type: string, format: uuid }
+            objectClass: { type: string, minLength: 1, maxLength: 128 }
+            timeRange: { $ref: '#/components/schemas/TimeRange' }
+            point: { $ref: '#/components/schemas/Point' }
+            spatialObjectVersionId: { type: string, format: uuid }
+            includeInactive: { type: boolean }
+            limit: { type: integer, minimum: 1, maximum: 1000 }
+          anyOf:
+            - required: [sensorId]
+            - required: [point]
+            - required: [spatialObjectVersionId]
+          not: { required: [point, spatialObjectVersionId] }
+    RegionRef:
+      type: object
+      additionalProperties: false
+      required: [spatialObjectId, spatialObjectVersionId]
+      properties: { spatialObjectId: { type: string, format: uuid }, spatialObjectVersionId: { type: string, format: uuid } }
+    Point:
+      type: object
+      additionalProperties: false
+      required: [x, y, srid]
+      properties: { x: { type: number }, y: { type: number }, srid: { type: integer, minimum: 1 } }
+    AnalysisResult:
+      type: object
+      additionalProperties: false
+      required: [schemaVersion, analysisId, status, generatedAt, subjects, query, result, coverage, evidence, gaps, uncertainties, assumptions, sourceReferences, quality, method, snapshot, warnings, execution]
+      properties:
+        schemaVersion: { const: '1.0' }
+        analysisId: { type: string, format: uuid }
+        status: { enum: [COMPLETE, PARTIAL, NO_DATA, INDETERMINATE] }
+        generatedAt: { type: string, format: date-time }
+        subjects: { type: array, items: { $ref: '#/components/schemas/SubjectRef' } }
+        query: { type: object }
+        result: { type: [object, array, 'null'], description: Tool-specific payload is selected by method.tool and method.toolVersion. }
+        coverage: { $ref: '#/components/schemas/Coverage' }
+        evidence: { type: array, items: { $ref: '#/components/schemas/EvidenceRef' } }
+        gaps: { type: array, items: { $ref: '#/components/schemas/GapRef' } }
+        uncertainties: { type: array, items: { $ref: '#/components/schemas/UncertaintyStatement' } }
+        assumptions: { type: array, items: { $ref: '#/components/schemas/Assumption' } }
+        sourceReferences: { type: array, items: { $ref: '#/components/schemas/SourceReference' } }
+        quality: { $ref: '#/components/schemas/Quality' }
+        method: { $ref: '#/components/schemas/Method' }
+        snapshot: { $ref: '#/components/schemas/Snapshot' }
+        warnings: { type: array, items: { $ref: '#/components/schemas/Warning' } }
+        page: { $ref: '#/components/schemas/Page' }
+        execution: { $ref: '#/components/schemas/Execution' }
+    SubjectRef:
+      type: object
+      additionalProperties: false
+      required: [kind, id]
+      properties: { kind: { type: string }, id: { type: string }, version: { type: [string, integer] } }
+    EvidenceRef:
+      type: object
+      additionalProperties: false
+      required: [id, type]
+      properties: { id: { type: string }, type: { type: string }, timeRange: { $ref: '#/components/schemas/EvidenceTimeRange' }, summaryHash: { type: string, pattern: '^[a-f0-9]{64}$' } }
+    GapRef:
+      type: object
+      additionalProperties: false
+      required: [timeRange, reasonCodes]
+      properties: { id: { type: string }, timeRange: { $ref: '#/components/schemas/EvidenceTimeRange' }, reasonCodes: { type: array, items: { type: string } }, observability: { type: string } }
+    UncertaintyStatement:
+      type: object
+      additionalProperties: false
+      required: [quantity, model]
+      properties:
+        quantity: { type: string }
+        model: { enum: [HARD_RADIUS, STDDEV, COVARIANCE, INTERVAL, UNKNOWN] }
+        value: {}
+        unit: { type: string }
+        confidenceLevel: { type: number, minimum: 0, maximum: 1 }
+        conclusion: { type: string }
+        sourceRefs: { type: array, items: { type: string } }
+    Coverage:
+      type: object
+      additionalProperties: false
+      properties:
+        requestedTime: { $ref: '#/components/schemas/TimeRange' }
+        evaluableTime: { type: array, items: { $ref: '#/components/schemas/EvidenceTimeRange' } }
+        observedDurationMs: { type: number, minimum: 0 }
+        requestedDurationMs: { type: number, minimum: 0 }
+        temporalRatio: { type: number, minimum: 0, maximum: 1 }
+        spatialScope: { type: array, items: { type: object, additionalProperties: false, properties: { id: { type: string }, version: { type: string } } } }
+    Assumption:
+      type: object
+      additionalProperties: false
+      required: [code, description]
+      properties: { code: { type: string }, description: { type: string } }
+    SourceReference:
+      type: object
+      additionalProperties: false
+      required: [sourceId]
+      properties: { sourceId: { type: string }, rawReference: { type: string } }
+    Quality:
+      type: object
+      additionalProperties: false
+      required: [grade, flags]
+      properties: { grade: { enum: [A, B, C, D, UNKNOWN] }, score: { type: number }, flags: { type: array, items: { type: string } } }
+    Method:
+      type: object
+      additionalProperties: false
+      required: [tool, toolVersion, algorithm, algorithmVersion, mobilityDbVersion, postgisVersion, interpolationPolicy, uncertaintyPolicy, metricDimension, sqlTemplateHash]
+      properties:
+        tool: { type: string }
+        toolVersion: { type: string }
+        algorithm: { type: string }
+        algorithmVersion: { type: string }
+        mobilityDbVersion: { type: string }
+        postgisVersion: { type: string }
+        interpolationPolicy: { type: string }
+        uncertaintyPolicy: { type: string }
+        metricDimension: { enum: [2D, 3D] }
+        sqlTemplateHash: { type: string, pattern: '^[a-f0-9]{64}$' }
+    TrackletVersionSnapshot:
+      type: object
+      additionalProperties: false
+      required: [trackletId, trackletVersionId, versionNo]
+      properties: { trackletId: { type: string }, trackletVersionId: { type: string }, versionNo: { type: integer, minimum: 1 } }
+    Snapshot:
+      type: object
+      additionalProperties: false
+      required: [dataScopeId, trackletVersions]
+      properties:
+        dataScopeId: { type: string, format: uuid }
+        databaseSnapshotId: { type: string }
+        trackletVersions: { type: array, items: { $ref: '#/components/schemas/TrackletVersionSnapshot' } }
+        timeSolutionIds: { type: array, items: { type: string, format: uuid } }
+        clockModelIds: { type: array, items: { type: string, format: uuid } }
+        spatialObjectVersionIds: { type: array, items: { type: string, format: uuid } }
+        coverageSliceIds: { type: array, items: { type: string, format: uuid } }
+        datastreamIds: { type: array, items: { type: string, format: uuid } }
+        sensorPoseVersionIds: { type: array, items: { type: string, format: uuid } }
+        sensorExtrinsicVersionIds: { type: array, items: { type: string, format: uuid } }
+        sensorStatusIntervalIds: { type: array, items: { type: string, format: uuid } }
+        detectorModelIds: { type: array, items: { type: string, format: uuid } }
+        watermarkRevisionIds: { type: array, items: { type: string, format: uuid } }
+        processingRunIds: { type: array, items: { type: string, format: uuid } }
+        ruleProfileIds: { type: array, items: { type: string, format: uuid } }
+        sourceReliabilityProfileIds: { type: array, items: { type: string, format: uuid } }
+    Warning:
+      type: object
+      additionalProperties: false
+      required: [code, message]
+      properties: { code: { type: string }, message: { type: string }, intervals: { type: array, items: { $ref: '#/components/schemas/EvidenceTimeRange' } } }
+    Page:
+      type: object
+      additionalProperties: false
+      required: [returned, truncated]
+      properties: { nextCursor: { type: string }, returned: { type: integer, minimum: 0 }, truncated: { type: boolean } }
+    Execution:
+      type: object
+      additionalProperties: false
+      required: [elapsedMs, cacheHit]
+      properties: { elapsedMs: { type: number, minimum: 0 }, candidateCount: { type: integer, minimum: 0 }, exactCount: { type: integer, minimum: 0 }, cacheHit: { type: boolean } }
+    ToolDefinition:
+      type: object
+      required: [name, version, description, inputSchemaUri, outputSchemaUri, defaultTimeoutMs, maxTimeoutMs, costClass, maxRows, idempotent, dataScopePolicy, interpolationPolicy, gapPolicy, uncertaintyPolicy]
+      properties:
+        name: { type: string }
+        version: { type: string }
+        description: { type: string }
+        inputSchemaUri: { type: string }
+        outputSchemaUri: { type: string }
+        defaultTimeoutMs: { type: integer }
+        maxTimeoutMs: { type: integer }
+        costClass: { enum: [LOW, MEDIUM, HIGH] }
+        maxRows: { type: integer }
+        maxCandidates: { type: integer }
+        idempotent: { type: boolean }
+        cacheableWhenPinned: { type: boolean }
+        dataScopePolicy: { const: REQUIRED_EXACT_MATCH }
+        interpolationPolicy: { const: TOOL_DECLARED_NO_CROSS_GAP }
+        gapPolicy: { const: UNKNOWN_DOMAIN_EXPLICIT }
+        uncertaintyPolicy: { const: REPORT_SEPARATE_DIMENSIONS }
+        errorCodes: { type: array, items: { type: string } }

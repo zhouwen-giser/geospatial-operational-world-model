@@ -15,6 +15,11 @@ export interface AppConfig {
   projectionBatchSize: number;
   projectionPollMs: number;
   sourcePriorities: Record<string, number>;
+  analysisSrid: number;
+  analysisSpaceKey: string;
+  trackletMaxTimeGapMs: number;
+  trackletMaxDistanceGapM: number;
+  trackletMaxRequiredSpeedMps: number;
 }
 
 function intEnv(name: string, fallback: number): number {
@@ -52,6 +57,11 @@ export function loadConfig(): AppConfig {
     maxLateArrivalMs: intEnv("MAX_LATE_ARRIVAL_MS", 86_400_000),
     projectionBatchSize: intEnv("PROJECTION_BATCH_SIZE", 200),
     projectionPollMs: intEnv("PROJECTION_POLL_MS", 250),
-    sourcePriorities: parseSourcePriorities(process.env.SOURCE_PRIORITIES)
+    sourcePriorities: parseSourcePriorities(process.env.SOURCE_PRIORITIES),
+    analysisSrid: intEnv("ANALYSIS_SRID", 32650),
+    analysisSpaceKey: process.env.ANALYSIS_SPACE_KEY ?? "default",
+    trackletMaxTimeGapMs: intEnv("TRACKLET_MAX_TIME_GAP_MS", 10_000),
+    trackletMaxDistanceGapM: intEnv("TRACKLET_MAX_DISTANCE_GAP_M", 250),
+    trackletMaxRequiredSpeedMps: intEnv("TRACKLET_MAX_REQUIRED_SPEED_MPS", 80)
   };
 }

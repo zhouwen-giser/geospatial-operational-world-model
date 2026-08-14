@@ -1,5 +1,7 @@
 # 12 — Acceptance Report
 
+> Historical v1.1 acceptance report; it must not be presented as v1.2 runtime evidence.
+
 ## Release verdict
 
 **CONDITIONAL GO** for Stage 1 engineering and read-only/影子 Agent pilot. **NOT YET ACCEPTED for production control.**

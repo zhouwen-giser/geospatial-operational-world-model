@@ -1,5 +1,7 @@
 # 10 — Recommended Architecture
 
+> Historical v1.1 baseline. See document 13 for the GOWM+ foundation / STAS application split.
+
 ## 最终建议
 
 **Feasibility: GO. Release/production use: CONDITIONAL GO.**

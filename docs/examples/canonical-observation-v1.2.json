@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.2",
+  "observationId": "camera-01:frame-42:target-17",
+  "dataScopeKey": "campus-real",
+  "sourceRecordKey": "frame-42:target-17",
+  "sourceRevisionNo": 1,
+  "originKind": "PHYSICAL_SENSOR",
+  "observer": { "type": "Camera", "id": "camera-01" },
+  "subject": { "type": "ObservedTarget", "id": "camera-01:session-a:17" },
+  "sourceLocalTargetId": "17",
+  "trackerSessionId": "session-a",
+  "observationType": "position",
+  "source": "camera-01",
+  "datastreamKey": "camera-01:detections",
+  "producerPipelineKey": "camera-01:detector-v7",
+  "rawReference": "s3://evidence/frame-42.json#target-17",
+  "qualityFlags": [],
+  "metadata": { "frameNo": 42 },
+  "timeSolution": {
+    "phenomenonTimeEstimate": "2026-08-13T00:00:01.000Z",
+    "phenomenonTimeWindow": {
+      "start": "2026-08-13T00:00:00.950Z",
+      "end": "2026-08-13T00:00:01.051Z"
+    },
+    "uncertaintySeconds": 0.05,
+    "correctionMethod": "PTP_OFFSET_V2",
+    "clockModelVersion": "camera-01-clock-v2",
+    "clockDomain": "CAMERA_PTP",
+    "clockOffsetSeconds": 0.003,
+    "clockDriftPpm": 0.4,
+    "clockResidualSigmaMs": 12,
+    "clockEstimationMethod": "PTP_CALIBRATION",
+    "sourceTime": "2026-08-13T00:00:00.997Z",
+    "sourceEmittedTime": "2026-08-13T00:00:01.010Z",
+    "upstreamReceivedTime": "2026-08-13T00:00:01.040Z",
+    "processedTime": "2026-08-13T00:00:01.045Z"
+  },
+  "measurements": [
+    {
+      "measurementKey": "position-ground-plane",
+      "measurementStage": "NORMALIZED",
+      "observedProperty": "position",
+      "resultKind": "POSITION",
+      "analysisSpaceKey": "campus-utm50n",
+      "position": { "x": 448252.1, "y": 4417768.4, "srid": 32650 },
+      "sourceGeometry": { "type": "Point", "coordinates": [116.4, 39.9] },
+      "uncertainty": {
+        "model": "HARD_RADIUS",
+        "unit": "m",
+        "horizontalValue": 5,
+        "confidenceLevel": 0.95
+      },
+      "measurementModel": "CAMERA_GROUND_PLANE_PROJECTION",
+      "measurementModelVersion": "7.2",
+      "calibrationVersion": "camera-01-cal-202608",
+      "algorithmConfidence": 0.87,
+      "qualityScore": 0.91,
+      "qualityFlags": [],
+      "continuityToken": "session-a:17",
+      "manualCutBefore": false,
+      "attributes": { "objectType": "person" }
+    }
+  ],
+  "assertions": [
+    {
+      "assertionKind": "OBJECT_CLASSIFICATION",
+      "label": "person",
+      "probability": 0.87,
+      "calibrationVersion": "detector-cal-3",
+      "basisReference": "detector-v7",
+      "inputMeasurementKeys": ["position-ground-plane"]
+    }
+  ],
+  "entityBindingStatus": "CANDIDATE"
+}
