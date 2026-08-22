@@ -103,11 +103,16 @@ that same test separately with `RUN_DB_INTEGRATION=1`, where it passed.
 
 ## Commit/push/PR
 
-Pending immediately after this report is validated. The intended commit is:
-
 ```text
-chore(v0.2): lock capability platform baseline
+commit: d9b57249c3410b83d0144cf13c84f4cbc25d360b
+message: chore(v0.2): lock capability platform baseline
+remote branch: origin/codex/gowm-capability-platform-v0.2
+remote SHA after P00 implementation commit: d9b57249c3410b83d0144cf13c84f4cbc25d360b
+Draft PR: https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/1
 ```
+
+The PR is intentionally Draft. The stale local GitHub CLI token was not used;
+the authenticated GitHub connector created the PR after the Git push succeeded.
 
 ## Blockers
 
