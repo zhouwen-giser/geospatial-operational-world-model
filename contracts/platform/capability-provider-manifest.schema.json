@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:capability-provider-manifest",
+  "title": "CapabilityProviderManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["providerProtocolVersion", "provider", "endpoints", "capabilities"],
+  "properties": {
+    "providerProtocolVersion": { "const": "1.0" },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerId", "providerVersion", "owner", "implementationDigest"],
+      "properties": {
+        "providerId": {
+          "$ref": "common-definitions.schema.json#/$defs/providerId"
+        },
+        "providerVersion": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "owner": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "implementationDigest": {
+          "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+        },
+        "sourceRef": { "type": "string", "format": "uri", "maxLength": 512 },
+        "sourceGitCommit": {
+          "$ref": "common-definitions.schema.json#/$defs/gitCommitSha1"
+        }
+      }
+    },
+    "endpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest", "liveness", "readiness", "execute", "job"],
+      "properties": {
+        "manifest": { "type": "string", "pattern": "^/", "maxLength": 256 },
+        "liveness": { "type": "string", "pattern": "^/", "maxLength": 256 },
+        "readiness": { "type": "string", "pattern": "^/", "maxLength": 256 },
+        "execute": {
+          "type": "string",
+          "pattern": "^/.*\\{operationId\\}",
+          "maxLength": 256
+        },
+        "job": {
+          "type": "string",
+          "pattern": "^/.*\\{jobId\\}",
+          "maxLength": 256
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": { "$ref": "capability-descriptor.schema.json" }
+    }
+  }
+}

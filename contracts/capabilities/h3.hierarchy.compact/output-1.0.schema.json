@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.hierarchy.compact:output:1.0",
+  "title": "H3HierarchyCompactOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cells"],
+  "properties": {
+    "cells": {
+      "type": "array",
+      "maxItems": 1000000,
+      "uniqueItems": true,
+      "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3Cell" }
+    }
+  }
+}

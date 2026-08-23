@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:spatial.count-in-area:input:1.0",
+  "title": "SpatialCountInAreaInputV1",
+  "$ref": "../spatial-provider/operations.schema.json#/$defs/countInput"
+}

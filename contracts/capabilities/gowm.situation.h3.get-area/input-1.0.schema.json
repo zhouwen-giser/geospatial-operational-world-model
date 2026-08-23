@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:gowm.situation.h3.get-area:input:1.0",
+  "title": "GowmSituationH3GetAreaInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["area", "resolution"],
+  "properties": {
+    "area": {
+      "oneOf": [
+        { "$ref": "../geometry/geometry.schema.json#/$defs/polygon" },
+        { "$ref": "../geometry/geometry.schema.json#/$defs/multiPolygon" }
+      ]
+    },
+    "resolution": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/situationResolution" }
+  }
+}

@@ -25,6 +25,11 @@ import { EventRepository } from "../../../packages/runtime/src/event-repository.
 import { TrajectoryRepository } from "../../../packages/runtime/src/trajectory-repository.js";
 import { WorldEventBus } from "../../../packages/runtime/src/bus.js";
 import { timedResponse } from "./response.js";
+import {
+  applyCompatibilityHeaders,
+  createWorldApiCompatibilityRuntime,
+  gatewayTransportContext
+} from "./compatibility.js";
 
 export function buildWorldApi(): FastifyInstance {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? "info" }, bodyLimit: 10 * 1024 * 1024 });
@@ -37,6 +42,13 @@ export function buildWorldApi(): FastifyInstance {
   const trajectories = new TrajectoryRepository(pool);
   const bus = new WorldEventBus();
   const version = () => world.worldVersion();
+  const compatibility = createWorldApiCompatibilityRuntime((evidence) => {
+    app.log.info({ compatibilityParity: evidence }, "World API compatibility parity observation");
+  });
+
+  app.addHook("onSend", async (request, reply) => {
+    applyCompatibilityHeaders(request, reply, compatibility);
+  });
 
   app.setErrorHandler((error, _request, reply) => {
     const statusCode = (error as Error & { statusCode?: number }).statusCode ?? 500;
@@ -91,7 +103,7 @@ export function buildWorldApi(): FastifyInstance {
     const parsed = NearbyQuerySchema.safeParse(request.body);
     if (!parsed.success) return reply.code(422).send({ error: "invalid_query", issues: parsed.error.issues });
     const point: PointGeometry = { type: "Point", coordinates: [parsed.data.location.lon, parsed.data.location.lat] };
-    return timedResponse(version,
+    return compatibility.adapter.execute("spatial.nearby", parsed.data, () => timedResponse(version,
       () => spatial.nearby({
         point,
         radiusM: parsed.data.radiusM,
@@ -100,21 +112,21 @@ export function buildWorldApi(): FastifyInstance {
         ...(parsed.data.objectTypes ? { objectTypes: parsed.data.objectTypes } : {})
       }),
       (facts) => ({ count: facts.length, nearestDistanceM: facts[0]?.distanceM ?? null, radiusM: parsed.data.radiusM }),
-      (facts) => facts.map((entry) => entry.object.freshnessMs));
+      (facts) => facts.map((entry) => entry.object.freshnessMs)), gatewayTransportContext(request));
   });
 
   app.post("/spatial/nearest", async (request, reply) => {
     const parsed = NearbyQuerySchema.omit({ radiusM: true }).safeParse(request.body);
     if (!parsed.success) return reply.code(422).send({ error: "invalid_query", issues: parsed.error.issues });
     const point: PointGeometry = { type: "Point", coordinates: [parsed.data.location.lon, parsed.data.location.lat] };
-    return timedResponse(version, () => spatial.nearest({
+    return compatibility.adapter.execute("spatial.nearest", parsed.data, () => timedResponse(version, () => spatial.nearest({
       point,
       filter: parsed.data.filter,
       limit: parsed.data.limit,
       ...(parsed.data.objectTypes ? { objectTypes: parsed.data.objectTypes } : {})
     }),
       (facts) => ({ count: facts.length, nearestDistanceM: facts[0]?.distanceM ?? null }),
-      (facts) => facts.map((entry) => entry.object.freshnessMs));
+      (facts) => facts.map((entry) => entry.object.freshnessMs)), gatewayTransportContext(request));
   });
 
   app.post("/spatial/in-area", async (request, reply) => {
@@ -122,9 +134,9 @@ export function buildWorldApi(): FastifyInstance {
     if (!parsed.success) return reply.code(422).send({ error: "invalid_query", issues: parsed.error.issues });
     const geometryIssues = validateGeometry(parsed.data.area as Geometry);
     if (geometryIssues.length) return reply.code(422).send({ error: "invalid_geometry", issues: geometryIssues });
-    return timedResponse(version, () => spatial.within(parsed.data as Parameters<SpatialRepository["within"]>[0]),
+    return compatibility.adapter.execute("spatial.in-area", parsed.data, () => timedResponse(version, () => spatial.within(parsed.data as Parameters<SpatialRepository["within"]>[0]),
       (facts) => ({ count: facts.length, byType: countBy(facts.map((object) => String(object.type))) }),
-      (facts) => facts.map((object) => object.freshnessMs));
+      (facts) => facts.map((object) => object.freshnessMs)), gatewayTransportContext(request));
   });
 
   app.post("/spatial/intersections", async (request, reply) => {
@@ -133,9 +145,9 @@ export function buildWorldApi(): FastifyInstance {
     if (!parsed.success) return reply.code(422).send({ error: "invalid_geometry", issues: parsed.error.issues });
     const geometryIssues = validateGeometry(parsed.data as Geometry);
     if (geometryIssues.length) return reply.code(422).send({ error: "invalid_geometry", issues: geometryIssues });
-    return timedResponse(version,
+    return compatibility.adapter.execute("spatial.intersections", { ...body, geometry: parsed.data }, () => timedResponse(version,
       () => spatial.intersections({ geometry: parsed.data as Geometry, ...(body.objectTypes ? { objectTypes: body.objectTypes } : {}), limit: body.limit ?? 1_000 }),
-      (facts) => ({ count: facts.length }));
+      (facts) => ({ count: facts.length })), gatewayTransportContext(request));
   });
 
   app.post("/spatial/near-route", async (request, reply) => {
@@ -143,16 +155,20 @@ export function buildWorldApi(): FastifyInstance {
     if (!parsed.success) return reply.code(422).send({ error: "invalid_query", issues: parsed.error.issues });
     const geometryIssues = validateGeometry(parsed.data.route as Geometry);
     if (geometryIssues.length) return reply.code(422).send({ error: "invalid_geometry", issues: geometryIssues });
-    return timedResponse(version, () => spatial.nearRoute(parsed.data as Parameters<SpatialRepository["nearRoute"]>[0]),
-      (facts) => ({ count: facts.length, nearestDistanceM: facts[0]?.distanceM ?? null }));
+    return compatibility.adapter.execute("spatial.near-route", parsed.data,
+      () => timedResponse(version, () => spatial.nearRoute(parsed.data as Parameters<SpatialRepository["nearRoute"]>[0]),
+        (facts) => ({ count: facts.length, nearestDistanceM: facts[0]?.distanceM ?? null })),
+      gatewayTransportContext(request));
   });
   app.post("/spatial/objects-along-route", async (request, reply) => {
     const parsed = RouteQuerySchema.safeParse(request.body);
     if (!parsed.success) return reply.code(422).send({ error: "invalid_query", issues: parsed.error.issues });
     const geometryIssues = validateGeometry(parsed.data.route as Geometry);
     if (geometryIssues.length) return reply.code(422).send({ error: "invalid_geometry", issues: geometryIssues });
-    return timedResponse(version, () => spatial.nearRoute(parsed.data as Parameters<SpatialRepository["nearRoute"]>[0]),
-      (facts) => ({ count: facts.length, nearestDistanceM: facts[0]?.distanceM ?? null }));
+    return compatibility.adapter.execute("spatial.objects-along-route", parsed.data,
+      () => timedResponse(version, () => spatial.nearRoute(parsed.data as Parameters<SpatialRepository["nearRoute"]>[0]),
+        (facts) => ({ count: facts.length, nearestDistanceM: facts[0]?.distanceM ?? null })),
+      gatewayTransportContext(request));
   });
 
   app.post("/spatial/containing-areas", async (request, reply) => {
@@ -174,12 +190,16 @@ export function buildWorldApi(): FastifyInstance {
     if (!parsed.success) return reply.code(422).send({ error: "invalid_query", issues: parsed.error.issues });
     const geometryIssues = validateGeometry(parsed.data.area as Geometry);
     if (geometryIssues.length) return reply.code(422).send({ error: "invalid_geometry", issues: geometryIssues });
-    return timedResponse(version, () => spatial.areaSummary(parsed.data.area as Geometry),
-      (facts) => ({ total: Object.values(facts).reduce((sum, value) => sum + value, 0), byType: facts }));
+    return compatibility.adapter.execute("spatial.area-summary", parsed.data,
+      () => timedResponse(version, () => spatial.areaSummary(parsed.data.area as Geometry),
+        (facts) => ({ total: Object.values(facts).reduce((sum, value) => sum + value, 0), byType: facts })),
+      gatewayTransportContext(request));
   });
 
   app.get("/situation/cells/:index", async (request, reply) => {
-    const cell = await situation.getCell((request.params as { index: string }).index);
+    const index = (request.params as { index: string }).index;
+    const cell = await compatibility.adapter.execute("situation.get-cell", { h3Index: index },
+      () => situation.getCell(index), gatewayTransportContext(request));
     return cell ? cell : reply.code(404).send({ error: "cell_not_found" });
   });
 
@@ -193,8 +213,10 @@ export function buildWorldApi(): FastifyInstance {
     if (geometryIssues.length) return reply.code(422).send({ error: "invalid_geometry", issues: geometryIssues });
     const resolution = body.resolution ?? 9;
     if (!Number.isInteger(resolution) || resolution < 7 || resolution > 10) return reply.code(422).send({ error: "resolution_must_be_r7_to_r10" });
-    return timedResponse(version, () => situation.areaCells(parsed.data as Geometry, resolution),
-      (facts) => ({ cellCount: facts.length, totals: sumSituation(facts) }));
+    return compatibility.adapter.execute("situation.get-area", { area: parsed.data, resolution },
+      () => timedResponse(version, () => situation.areaCells(parsed.data as Geometry, resolution),
+        (facts) => ({ cellCount: facts.length, totals: sumSituation(facts) })),
+      gatewayTransportContext(request));
   });
 
   app.get("/situation/cells/:index/neighbors", async (request, reply) => {
@@ -224,7 +246,7 @@ export function buildWorldApi(): FastifyInstance {
     app.post(path, async (request, reply) => {
       const parsed = HotspotQuerySchema.safeParse({ ...(request.body as object), ...(metric ? { metric } : {}) });
       if (!parsed.success) return reply.code(422).send({ error: "invalid_query", issues: parsed.error.issues });
-      return timedResponse(version,
+      const legacy = () => timedResponse(version,
         () => situation.ranked({
           resolution: parsed.data.resolution,
           metric: metric ?? parsed.data.metric,
@@ -233,6 +255,18 @@ export function buildWorldApi(): FastifyInstance {
           ...(parsed.data.parentCell ? { parentCell: parsed.data.parentCell } : {})
         }),
         (facts) => ({ count: facts.length, metric: metric ?? parsed.data.metric, resolution: parsed.data.resolution }));
+      if (path === "/situation/hotspots") {
+        return compatibility.adapter.execute("situation.get-hotspots", parsed.data, legacy, gatewayTransportContext(request));
+      }
+      if (path === "/situation/coverage-gaps") {
+        const { resolution, limit, parentCell } = parsed.data;
+        return compatibility.adapter.execute("situation.get-coverage-gaps", {
+          resolution,
+          limit,
+          ...(parentCell === undefined ? {} : { parentCell })
+        }, legacy, gatewayTransportContext(request));
+      }
+      return legacy();
     });
   }
 

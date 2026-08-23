@@ -5,6 +5,12 @@
   "description": "GOWM+ unified geospatial data foundation with independently deployable STAS analysis service",
   "type": "module",
   "license": "MIT",
+  "workspaces": [
+    "packages/platform/*",
+    "packages/integrations/*",
+    "services/gateway/*",
+    "services/providers/*"
+  ],
   "engines": {
     "node": ">=22"
   },
@@ -17,6 +23,7 @@
     "validate:stas": "node validation/scripts/stas-all-tools-e2e.mjs",
     "validate:ingest-stas": "tsx validation/scripts/ingest-to-stas-e2e.ts",
     "validate:evidence": "node validation/scripts/collect-runtime-evidence.mjs",
+    "validate:boundaries": "node validation/architecture/validate-capability-boundaries.mjs",
     "dev:api": "tsx services/world-api/src/index.ts",
     "dev:ingest": "tsx services/observation-ingest/src/index.ts",
     "dev:worker": "tsx services/projection-worker/src/index.ts",
@@ -24,11 +31,13 @@
     "dev:stas": "npm --prefix services/stas run dev",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
+    "db:assert": "tsx scripts/run-db-assertions.ts",
     "simulate": "tsx simulator/src/index.ts",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
     "test:scenario": "vitest run tests/scenario",
     "test:integration": "vitest run tests/integration",
+    "test:platform": "vitest run tests/platform",
     "test:stas": "npm --prefix services/stas test",
     "benchmark": "npm run build && node dist/tests/performance/benchmark.js",
     "benchmark:postgis": "npm run build && node dist/tests/performance/postgis-benchmark.js",

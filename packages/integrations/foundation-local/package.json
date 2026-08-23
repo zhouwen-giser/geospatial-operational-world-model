@@ -1,0 +1,13 @@
+{
+  "name": "@gowm/foundation-local-adapters",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@gowm/foundation-ports": "*",
+    "@gowm/platform-contract-runtime": "*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

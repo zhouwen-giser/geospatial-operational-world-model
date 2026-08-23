@@ -23,6 +23,8 @@ RUN npm --prefix services/stas ci --omit=dev --ignore-scripts && npm cache clean
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/services/stas/dist ./services/stas/dist
 COPY database ./database
+COPY config ./config
+COPY contracts ./contracts
 COPY scripts ./scripts
 USER node
 CMD ["node", "dist/services/world-api/src/index.js"]

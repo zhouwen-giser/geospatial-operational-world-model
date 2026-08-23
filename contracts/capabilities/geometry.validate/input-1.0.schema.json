@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry.validate:input:1.0",
+  "title": "GeometryValidateInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["geometry"],
+  "properties": {
+    "geometry": { "$ref": "../geometry/geometry.schema.json" }
+  }
+}

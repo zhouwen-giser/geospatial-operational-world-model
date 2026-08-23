@@ -1,0 +1,286 @@
+{
+  "phase": "P08",
+  "generatedAt": "2026-08-23T02:13:02.4222579+08:00",
+  "implementationStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "providers": {
+    "interactive": {
+      "providerId": "gowm.h3.interactive.bridge",
+      "providerVersion": "0.2.0",
+      "operations": [
+        "h3.index.points",
+        "h3.geometry.cover",
+        "h3.cells.to-geojson",
+        "h3.neighborhood.disk",
+        "h3.hierarchy.parent",
+        "h3.hierarchy.children",
+        "h3.hierarchy.compact",
+        "h3.hierarchy.uncompact"
+      ],
+      "execution": {
+        "bindings": ["SYNC_HTTP"],
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW",
+        "criticalPathPolicy": "LOCAL_PREFERRED"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumNeighborRadius": 20
+      }
+    },
+    "analysis": {
+      "providerId": "gowm.h3.analysis.bridge",
+      "providerVersion": "0.2.0",
+      "operations": [
+        "h3.analytics.aggregate",
+        "h3.analytics.coverage",
+        "h3.analytics.flow"
+      ],
+      "execution": {
+        "bindings": ["SYNC_HTTP"],
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "HIGH",
+        "criticalPathPolicy": "REMOTE_ALLOWED"
+      },
+      "limits": {
+        "maximumInputBytes": 67108864,
+        "maximumOutputBytes": 134217728,
+        "maximumCells": 5000000,
+        "maximumBatchItems": 100000
+      }
+    },
+    "allowlistsDisjoint": true,
+    "asyncAdvertised": false,
+    "providerToProviderCallsAllowed": false
+  },
+  "sourceLock": {
+    "sourceRef": "zhouwen-giser/h3-spatial-toolkit@74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+    "sourceGitCommit": "74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+    "toolkitVersion": "0.3.0",
+    "engine": "h3-js",
+    "engineVersion": "4.5.0",
+    "license": "Apache-2.0",
+    "licenseStatus": "APPROVED",
+    "sourceCopiedIntoGowm": false,
+    "externalCheckoutClean": true,
+    "directAlgorithmImportInBridge": false
+  },
+  "contract": {
+    "draft": "https://json-schema.org/draft/2020-12/schema",
+    "operationSchemaPairs": 11,
+    "newOperationSchemaPairs": 10,
+    "existingSchemaPairReused": "h3.index.points@1.0",
+    "sharedDefinitions": "urn:gowm:capability:h3:definitions:1.0",
+    "canonicalGeometrySchema": "urn:gowm:capability:geometry:geojson-geometry:1.0",
+    "topLevelUnknownFieldsRejected": true,
+    "generatedBundle": "packages/platform/contract-runtime/src/generated/schema-bundle.ts",
+    "generatedHashes": "packages/platform/contract-runtime/src/generated/schema-hashes.ts",
+    "generatedTypes": "packages/platform/contract-runtime/src/generated/contracts.ts"
+  },
+  "upstream": {
+    "httpRoutes": {
+      "h3.index.points": "POST /v1/h3/index",
+      "h3.geometry.cover": "POST /v1/h3/polygon/cover",
+      "h3.neighborhood.disk": "POST /v1/h3/neighbors",
+      "h3.analytics.aggregate": "POST /v1/h3/aggregate",
+      "h3.analytics.coverage": "POST /v1/h3/coverage",
+      "h3.analytics.flow": "POST /v1/h3/flow"
+    },
+    "lockedPackageOperations": [
+      "h3.cells.to-geojson",
+      "h3.hierarchy.parent",
+      "h3.hierarchy.children",
+      "h3.hierarchy.compact",
+      "h3.hierarchy.uncompact"
+    ],
+    "arbitraryUrlAllowed": false,
+    "redirectsAllowed": false,
+    "attestationRequired": true,
+    "packageSelfCheckRequired": true
+  },
+  "semantics": {
+    "coverSemantics": "CENTER_CONTAINMENT_COVER",
+    "candidateOnly": true,
+    "exactVerificationRequired": true,
+    "flowGapPolicy": "SEQUENCE_ISOLATED",
+    "genericResolutionPolicy": {
+      "GLOBAL": 2,
+      "REGIONAL": 4,
+      "CITY": 7,
+      "DISTRICT": 8,
+      "STREET": 10,
+      "FINE": 12
+    },
+    "situationResolutionPolicyOwnedElsewhere": true,
+    "dataSnapshot": "NONE",
+    "worldEvidenceFabricated": false,
+    "worldVersionFabricated": false
+  },
+  "verification": [
+    {
+      "command": "git -C .intake/h3-spatial-toolkit-v0.3.0 rev-parse HEAD and status --short",
+      "status": "PASS",
+      "result": "74fc8657072dd58a2f8e4317c1caef8bfd10e024; clean"
+    },
+    {
+      "command": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd tsc -p packages/integrations/h3-toolkit-bridge/tsconfig.json --noEmit",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd tsc -p validation/h3-bridge/tsconfig.json --noEmit",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd tsc -p services/providers/h3-interactive-provider/tsconfig.json --noEmit",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd tsc -p services/providers/h3-analysis-provider/tsconfig.json --noEmit",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd vitest run --config validation/h3-bridge/vitest.config.ts --reporter verbose",
+      "status": "PASS",
+      "testFilesPassed": 1,
+      "testsPassed": 13,
+      "testsFailed": 0,
+      "coverage": [
+        "exact source and manifest snapshots",
+        "disjoint provider allowlists and QoS",
+        "center-containment candidate cover",
+        "no fabricated World data or evidence",
+        "generic resolution normalization",
+        "source attestation fail-closed",
+        "six locked Toolkit HTTP routes",
+        "package-only GeoJSON and hierarchy delegation",
+        "strict output drift rejection",
+        "UNKNOWN-gap sequence isolation",
+        "cover coverage flow and neighbor budget rejection",
+        "Provider SDK conformance",
+        "Provider Protocol HTTP",
+        "Apache notice SBOM and no-source-copy"
+      ]
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS"
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    },
+    {
+      "command": "npm.cmd test",
+      "status": "PASS",
+      "testFilesPassed": 14,
+      "testFilesSkipped": 1,
+      "testsPassed": 58,
+      "testsSkipped": 1,
+      "testsFailed": 0
+    },
+    {
+      "command": "npx.cmd tsx validation/h3-bridge/toolkit-api-e2e.ts http://127.0.0.1:3000",
+      "status": "BLOCKED",
+      "detail": "Toolkit API readiness failed: fetch failed. No immutable Toolkit service was running."
+    },
+    {
+      "command": "npx.cmd tsx validation/h3-bridge/h3-pg-golden.ts postgresql://gowm:gowm@localhost:55490/gowm",
+      "status": "BLOCKED",
+      "detail": "PostgreSQL was reachable but rejected the unavailable credential with SQLSTATE 28P01 before parity SQL executed."
+    },
+    {
+      "command": "rg forbidden provider/gateway and direct h3-js/@h3-toolkit imports in bridge source",
+      "status": "PASS",
+      "detail": "No matches."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC-045",
+      "status": "BLOCKED",
+      "evidence": "Read-only Tokyo/Beijing/antimeridian point parity harness exists; real database credential is unavailable and PostgreSQL returns 28P01."
+    },
+    {
+      "id": "AC-046",
+      "status": "BLOCKED",
+      "evidence": "The harness compares parent, children and gridDisk sets across h3-js and h3-pg, but authentication fails before queries run."
+    },
+    {
+      "id": "AC-047",
+      "status": "PASS",
+      "evidence": "Cover output schema and runtime lock CENTER_CONTAINMENT_COVER, candidateOnly=true and exactVerificationRequired=true."
+    },
+    {
+      "id": "AC-048",
+      "status": "PARTIAL",
+      "evidence": "The H3 bridge requires exact verification and never treats cover as final; real Spatial/PostGIS cross-E2E was not run."
+    },
+    {
+      "id": "AC-049",
+      "status": "PASS",
+      "evidence": "Generic named resolution mapping is versioned separately from the GOWM Situation R7-R10 policy."
+    },
+    {
+      "id": "AC-050",
+      "status": "PASS",
+      "evidence": "Generic outputs cannot contain worldVersion; strict output drift tests reject it and results carry no Data Snapshot or evidence references."
+    },
+    {
+      "id": "AC-051",
+      "status": "NOT_RUN",
+      "evidence": "Real Situation worldVersion and metric-profile integration is owned by P09/P14 and is not claimed by the generic P08 providers."
+    },
+    {
+      "id": "AC-052",
+      "status": "PARTIAL",
+      "evidence": "The bridge preserves separate trajectory sequences and emits SEQUENCE_ISOLATED; real Toolkit/MobilityDB E2E was unavailable."
+    },
+    {
+      "id": "AC-053",
+      "status": "PASS",
+      "evidence": "Cover, coverage and flow input-budget exceedances and radius exceedance return BUDGET_EXCEEDED; only synchronous execution is advertised."
+    },
+    {
+      "id": "AC-054",
+      "status": "PASS",
+      "evidence": "Interactive and analysis bridges have disjoint operation sets, provider IDs, health processes, deadlines, cost classes and resource limits."
+    },
+    {
+      "id": "AC-055",
+      "status": "PASS",
+      "evidence": "Apache-2.0 notice/license, immutable source lock and CycloneDX SBOM attribution are tracked; Toolkit source is not copied."
+    }
+  ],
+  "notRun": [
+    "Real immutable H3 Toolkit API E2E",
+    "Real h3-js 4.5.0 versus h3-pg/h3_postgis 4.5.x parity queries",
+    "Real Spatial/PostGIS boundary-sensitive exact verification",
+    "Real MobilityDB UNKNOWN-gap flow E2E",
+    "Real Situation worldVersion and metric-profile integration"
+  ],
+  "blockers": [
+    {
+      "kind": "TOOLKIT_API_UNAVAILABLE",
+      "implementationBlocked": false,
+      "requiredToClosePhase": true
+    },
+    {
+      "kind": "DATABASE_CREDENTIAL_UNAVAILABLE",
+      "sqlState": "28P01",
+      "implementationBlocked": false,
+      "requiredToClosePhase": true
+    }
+  ],
+  "dockerInvoked": false,
+  "commitPushPrPerformed": false
+}

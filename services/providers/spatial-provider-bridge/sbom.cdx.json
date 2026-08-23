@@ -1,0 +1,49 @@
+{
+  "$schema": "https://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:ff2b8e5d-6f55-5e18-a614-7db8c11b01f1",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-23T00:00:00.000Z",
+    "component": {
+      "type": "application",
+      "bom-ref": "pkg:npm/%40gowm/spatial-provider-bridge@0.2.0",
+      "group": "@gowm",
+      "name": "spatial-provider-bridge",
+      "version": "0.2.0",
+      "licenses": [{ "expression": "MIT" }]
+    }
+  },
+  "components": [
+    {
+      "type": "application",
+      "bom-ref": "urn:gowm:source:zip:spatial-analysis-service:1.0.0",
+      "name": "spatial-analysis-service",
+      "version": "1.0.0",
+      "hashes": [{
+        "alg": "SHA-256",
+        "content": "15cdaf00f3c5ee911eac1351c2d9a59ff06a5de93a176ce81b644b19ee5de322"
+      }],
+      "licenses": [{ "expression": "Apache-2.0" }],
+      "properties": [
+        { "name": "gowm:integration", "value": "protocol-reference-only" },
+        { "name": "gowm:source-copied", "value": "false" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/pg@8.23.0",
+      "name": "pg",
+      "version": "8.23.0",
+      "purl": "pkg:npm/pg@8.23.0",
+      "licenses": [{ "expression": "MIT" }]
+    }
+  ],
+  "dependencies": [{
+    "ref": "pkg:npm/%40gowm/spatial-provider-bridge@0.2.0",
+    "dependsOn": [
+      "pkg:npm/pg@8.23.0"
+    ]
+  }]
+}

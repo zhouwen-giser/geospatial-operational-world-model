@@ -1,0 +1,72 @@
+{
+  "phase": "P12",
+  "status": "PARTIAL",
+  "recordedAt": "2026-08-23",
+  "checks": [
+    {
+      "id": "AC-024",
+      "status": "PASS",
+      "evidence": "Provider failure is retained as a platform error carrying the exact DAG node id, controlled provider id, code and retryability."
+    },
+    {
+      "id": "AC-069",
+      "status": "PASS",
+      "evidence": "A cyclic two-node plan is rejected before any provider operation is called."
+    },
+    {
+      "id": "AC-070",
+      "status": "PASS",
+      "evidence": "A source output attested with a scalar schema/kind is rejected before it can bind to a position input."
+    },
+    {
+      "id": "AC-076",
+      "status": "PASS",
+      "evidence": "Aggregate node row, candidate, byte and execution budgets are validated against both the plan and Gateway policy before execution."
+    },
+    {
+      "id": "AC-077",
+      "status": "PASS",
+      "evidence": "ALLOW_PARTIAL retains the failed node and its warning while returning the independently completed node; unavailable output is never fabricated."
+    },
+    {
+      "id": "AC-078",
+      "status": "PARTIAL",
+      "evidence": "Input/output hashes and terminal node records survive construction of a new runtime over the same store. PostgreSQL tables, atomic claim, transition ledger and least-privilege grants parse successfully, but a real PostgreSQL restart run is NOT_RUN because current database credentials and Docker escalation are unavailable."
+    },
+    {
+      "id": "P12-SYNC-ASYNC-CANCEL",
+      "status": "PASS",
+      "evidence": "The runtime and HTTP routes cover synchronous execution, respond-async submission, lookup, cancellation and unified job lookup."
+    },
+    {
+      "id": "P12-NESTED-TARGET-BINDING",
+      "status": "PASS",
+      "evidence": "World Query v2 builds a strict nested operation request from canonical typed leaves. Whole-request, precondition, and output target paths; duplicate and ancestor paths; unsafe prototype segments; and depth over eight are rejected before provider execution."
+    },
+    {
+      "id": "P12-PLATFORM-TESTS",
+      "status": "PASS",
+      "evidence": "The P12 runtime suite passed 12 tests, including schema-validated nested targetPath construction, leaf and assembled-request validation, fail-closed target-path cases, canonical request-envelope construction from typed field/output-path bindings, and an explicit typed value-equality precondition. A fresh aggregate platform run passed 6 files and 47 tests."
+    },
+    {
+      "id": "P12-TYPECHECK-BOUNDARIES",
+      "status": "PASS",
+      "evidence": "npm.cmd run check and npm.cmd run validate:boundaries passed."
+    },
+    {
+      "id": "P12-SQL-AST",
+      "status": "PASS",
+      "evidence": "pgsql-parser parsed migration 013 as 19 statements and database assertion 005 as one statement after removing the psql meta-command."
+    },
+    {
+      "id": "P12-REAL-POSTGRES-RESTART",
+      "status": "NOT_RUN",
+      "evidence": "The reachable isolated PostgreSQL endpoint requires credentials unavailable to this phase; new Docker execution requires escalation while the current approval quota is unavailable."
+    },
+    {
+      "id": "P12-DELIVERY",
+      "status": "BLOCKED",
+      "evidence": "The sandbox cannot create .git/index.lock and the escalation request is unavailable under the current usage limit."
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "phase": "P04",
+  "generatedAt": "2026-08-23T02:39:22.0891193+08:00",
+  "implementationStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "source": {
+    "branch": "codex/gowm-capability-platform-v0.2",
+    "committedHead": "e100cc0fd0b7b27f8a386232dc2b261de7841547",
+    "platformChangesCommitted": false
+  },
+  "acceptance": [
+    {
+      "id": "AC-020",
+      "status": "PASS",
+      "evidence": "CapabilityRegistry requires explicit approval, validates the canonical manifest, binds client/provider identity, rejects duplicate operation-version routes, and resolves only the requested approved version. Security tests reject caller-selected URLs, unapproved endpoints, and dynamic discovery."
+    },
+    {
+      "id": "AC-021",
+      "status": "PASS",
+      "evidence": "A two-Provider controlled integration retained separate healthy and failing health states, and the explicit regression completed the unrelated healthy elevation direct operation while the other Provider remained not ready."
+    },
+    {
+      "id": "AC-022",
+      "status": "PASS",
+      "evidence": "A deterministic-clock integration opened provider-a after two failures, rejected work while open, admitted a probe after the reset interval, closed on success, and left provider-b closed with zero failures."
+    },
+    {
+      "id": "AC-023",
+      "status": "PARTIAL",
+      "evidence": "Fresh Gateway and query-runtime instances replayed/resumed over shared durable-store abstractions. PostgreSQL idempotency/job stores, migration 011/013 tables, lease recovery functions, and assertions parse, but real PostgreSQL migration plus Gateway/job/database restart were NOT_RUN."
+    },
+    {
+      "id": "AC-024",
+      "status": "PASS",
+      "evidence": "A controlled DAG failure persisted nodeId, controlled providerId, platform error code, and retryability. Security/redaction tests retained these identifiers while excluding sensitive Provider payload details."
+    }
+  ],
+  "phaseCapabilities": [
+    {
+      "id": "P04-DIRECT-EXECUTION-AUDIT",
+      "status": "PASS",
+      "evidence": "Generic direct execution completed elevation.sample.mock without operation-specific Gateway code; replay avoided Provider work and emitted COMPLETED then REPLAYED audit outcomes."
+    },
+    {
+      "id": "P04-MIGRATION-011-STATIC",
+      "status": "PASS",
+      "evidence": "SQL AST verification parsed append-only migration 011 and database assertion 002; this is static evidence, not a live database claim."
+    },
+    {
+      "id": "P04-REAL-POSTGRES-RESTART",
+      "status": "NOT_RUN",
+      "evidence": "Approved database credentials were unavailable and the current Docker/escalation platform usage limit prevented provisioning a replacement environment."
+    }
+  ],
+  "verification": [
+    {
+      "command": "npx.cmd vitest run tests/platform/provider-gateway.test.ts tests/platform/provider-sdk-deadline.test.ts",
+      "status": "PASS",
+      "testFilesPassed": 2,
+      "testsPassed": 10,
+      "testsFailed": 0
+    },
+    {
+      "command": "npx.cmd vitest run --config validation/security-snapshot/vitest.config.ts",
+      "status": "PASS",
+      "testFilesPassed": 3,
+      "testsPassed": 14,
+      "testsFailed": 0
+    },
+    {
+      "command": "npx.cmd vitest run tests/platform/world-query-runtime.test.ts",
+      "status": "PASS",
+      "testFilesPassed": 1,
+      "testsPassed": 9,
+      "testsFailed": 0
+    },
+    {
+      "command": "npm.cmd run verify:sql",
+      "status": "PASS",
+      "detail": "SQL AST verification passed migrations 001-013 and assertions 001-005."
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS"
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    }
+  ],
+  "evidenceKinds": {
+    "registryDirectCircuitAudit": "CONTROLLED_IN_PROCESS",
+    "nodeErrorIdentity": "CONTROLLED_IN_PROCESS",
+    "sqlMigrationVerification": "STATIC_AST",
+    "durableStoreRestartAbstraction": "CONTROLLED_IN_PROCESS",
+    "livePostgreSQL": "NOT_RUN",
+    "realProcessRestart": "NOT_RUN"
+  },
+  "notRun": [
+    "Real PostgreSQL migration 011/013 and assertion execution",
+    "Real PostgreSQL-backed idempotency and job recovery",
+    "Real Gateway, Provider, and database process restart",
+    "Containerized HTTP direct-execution acceptance"
+  ],
+  "delivery": {
+    "semanticCommit": "BLOCKED",
+    "push": "BLOCKED",
+    "draftPrUpdate": "BLOCKED",
+    "reason": "The sandbox cannot create .git/index.lock and the authorized escalated Git operation is unavailable under the current platform usage limit.",
+    "workaroundUsed": false
+  }
+}

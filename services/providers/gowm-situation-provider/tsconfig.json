@@ -1,0 +1,15 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../../..",
+    "outDir": "./dist",
+    "declaration": false
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../../packages/platform/contract-runtime/src/**/*.ts",
+    "../../../packages/platform/provider-sdk/src/**/*.ts",
+    "../../../packages/runtime/src/**/*.ts",
+    "../../../packages/world-model-core/src/**/*.ts"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry.make-valid:input:1.0",
+  "title": "GeometryMakeValidInputV1",
+  "$ref": "../geometry-provider/definitions.schema.json#/$defs/unaryInput"
+}

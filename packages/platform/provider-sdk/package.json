@@ -1,0 +1,12 @@
+{
+  "name": "@gowm/provider-sdk",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@gowm/platform-contract-runtime": "*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:provider-lock",
+  "title": "ProviderLock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["lockVersion", "generatedAt", "providers"],
+  "properties": {
+    "lockVersion": { "const": "1.0" },
+    "generatedAt": { "type": "string", "format": "date" },
+    "providers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "providerKey",
+          "sourceKind",
+          "version",
+          "sourceRef",
+          "licenseStatus",
+          "redistributionAllowed"
+        ],
+        "properties": {
+          "providerKey": { "type": "string", "pattern": "^[a-z][a-z0-9.-]{2,127}$" },
+          "sourceKind": { "enum": ["ZIP", "GITHUB_COMMIT", "OCI_IMAGE", "NPM_PACKAGE"] },
+          "version": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "sourceRef": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "sourceSha256": { "$ref": "common-definitions.schema.json#/$defs/sha256Hex" },
+          "sourceGitCommit": {
+            "$ref": "common-definitions.schema.json#/$defs/gitCommitSha1"
+          },
+          "licenseStatus": { "enum": ["APPROVED", "UNSPECIFIED", "REVIEW_REQUIRED"] },
+          "redistributionAllowed": { "type": "boolean" },
+          "noticePath": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "sbomPath": { "type": "string", "minLength": 1, "maxLength": 512 }
+        }
+      }
+    }
+  }
+}

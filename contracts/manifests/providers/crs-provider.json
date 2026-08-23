@@ -1,0 +1,353 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.crs-normalization.bridge",
+    "providerVersion": "0.2.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:46f982fbdbab77c2fccd9141796d6f4db9474e4b048fd3fc3d361305e5d34ae7",
+    "sourceRef": "urn:gowm:source:zip:crs-normalization-service:1.0.0"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "crs.check-source",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:crs.check-source:input:1.0",
+      "inputSchemaHash": "sha256:a5636ed9811408c2f9b825a5bd06e96193a677503dac120e143d03c07811917b",
+      "outputSchemaUri": "urn:gowm:capability:crs.check-source:output:1.0",
+      "outputSchemaHash": "sha256:f49c4c5b68b637e4d4f69b823609d802a85b70f4f5031573879350e758618577",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:crs.check-source:input:1.0",
+            "schemaHash": "sha256:a5636ed9811408c2f9b825a5bd06e96193a677503dac120e143d03c07811917b",
+            "valueKind": "SCALAR",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:crs.check-source:output:1.0",
+            "schemaHash": "sha256:f49c4c5b68b637e4d4f69b823609d802a85b70f4f5031573879350e758618577",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "crs.normalize.point",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:crs.normalize.point:input:1.0",
+      "inputSchemaHash": "sha256:79829b7f7886e74ee21c387787295a0a060fc84e058477f81622a63d7c33b01f",
+      "outputSchemaUri": "urn:gowm:capability:crs.normalize.point:output:1.0",
+      "outputSchemaHash": "sha256:65e3d7008c209deff7dc722ad095cfbc85a94e31b276150be4174c54ff69f2bd",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:crs.normalize.point:input:1.0",
+            "schemaHash": "sha256:79829b7f7886e74ee21c387787295a0a060fc84e058477f81622a63d7c33b01f",
+            "valueKind": "POSITION",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:crs.normalize.point:output:1.0",
+            "schemaHash": "sha256:65e3d7008c209deff7dc722ad095cfbc85a94e31b276150be4174c54ff69f2bd",
+            "valueKind": "POSITION",
+            "unitSemantics": "ANGULAR_DEGREES"
+          },
+          {
+            "name": "coordinate",
+            "path": "/coordinate",
+            "schemaUri": "urn:gowm:v0.2:value:array",
+            "schemaHash": "sha256:8e1e4dd66e9483d8341c51dc5ec424d8e6510ae35cdbc53040d0bab497459945",
+            "valueKind": "POSITION",
+            "unitSemantics": "ANGULAR_DEGREES"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "crs.normalize.points",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:crs.normalize.points:input:1.0",
+      "inputSchemaHash": "sha256:93e8203810904b4632a23ab5b556968cc2c3bc491deb6e940a03119f4e55024e",
+      "outputSchemaUri": "urn:gowm:capability:crs.normalize.points:output:1.0",
+      "outputSchemaHash": "sha256:1f5dcecfb6bbc79af70918e93cdce36e76d709762c3fdda65b45415e32000110",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:crs.normalize.points:input:1.0",
+            "schemaHash": "sha256:93e8203810904b4632a23ab5b556968cc2c3bc491deb6e940a03119f4e55024e",
+            "valueKind": "POSITIONS",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:crs.normalize.points:output:1.0",
+            "schemaHash": "sha256:1f5dcecfb6bbc79af70918e93cdce36e76d709762c3fdda65b45415e32000110",
+            "valueKind": "POSITIONS",
+            "unitSemantics": "ANGULAR_DEGREES"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "crs.normalize.geometry",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:crs.normalize.geometry:input:1.0",
+      "inputSchemaHash": "sha256:7fc8378d45a22dd722ad59f51b1105d904ad1b9f3c3189f474c2ae2e63632ec0",
+      "outputSchemaUri": "urn:gowm:capability:crs.normalize.geometry:output:1.0",
+      "outputSchemaHash": "sha256:986d20049d2e5a25e8fa668f0c9ffd43bb01a82183c7703ce1483723a4f5d580",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:crs.normalize.geometry:input:1.0",
+            "schemaHash": "sha256:7fc8378d45a22dd722ad59f51b1105d904ad1b9f3c3189f474c2ae2e63632ec0",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:crs.normalize.geometry:output:1.0",
+            "schemaHash": "sha256:986d20049d2e5a25e8fa668f0c9ffd43bb01a82183c7703ce1483723a4f5d580",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "ANGULAR_DEGREES"
+          },
+          {
+            "name": "geometry",
+            "path": "/geometry",
+            "schemaUri": "urn:gowm:capability:geometry:geojson-geometry:1.0",
+            "schemaHash": "sha256:b7ccb71c1399dc32c48698f21a77dba14f12d46166fef8f37c9b0b8e1fbd3504",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "ANGULAR_DEGREES"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "crs.normalize.feature",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:crs.normalize.feature:input:1.0",
+      "inputSchemaHash": "sha256:067555b9cfeda8c7e0b6af3f7b0c105e4adad19ffcd34da14f9d7118f42cad5e",
+      "outputSchemaUri": "urn:gowm:capability:crs.normalize.feature:output:1.0",
+      "outputSchemaHash": "sha256:38299b2e493711e4e153037dad06b1968223b7304351c755641f81f64c6051ce",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:crs.normalize.feature:input:1.0",
+            "schemaHash": "sha256:067555b9cfeda8c7e0b6af3f7b0c105e4adad19ffcd34da14f9d7118f42cad5e",
+            "valueKind": "FEATURE",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:crs.normalize.feature:output:1.0",
+            "schemaHash": "sha256:38299b2e493711e4e153037dad06b1968223b7304351c755641f81f64c6051ce",
+            "valueKind": "FEATURE",
+            "unitSemantics": "ANGULAR_DEGREES"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "crs.normalize.feature-collection",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:crs.normalize.feature-collection:input:1.0",
+      "inputSchemaHash": "sha256:fb1b0f5776391007b4da5565bc1096acbdcd79920fc83356a82a9bd8f61339ee",
+      "outputSchemaUri": "urn:gowm:capability:crs.normalize.feature-collection:output:1.0",
+      "outputSchemaHash": "sha256:55c1c5b19bdf227000bbcd1594a5c144dcd65df610342dbf4de45ea2a02fa939",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:crs.normalize.feature-collection:input:1.0",
+            "schemaHash": "sha256:fb1b0f5776391007b4da5565bc1096acbdcd79920fc83356a82a9bd8f61339ee",
+            "valueKind": "FEATURE_COLLECTION",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:crs.normalize.feature-collection:output:1.0",
+            "schemaHash": "sha256:55c1c5b19bdf227000bbcd1594a5c144dcd65df610342dbf4de45ea2a02fa939",
+            "valueKind": "FEATURE_COLLECTION",
+            "unitSemantics": "ANGULAR_DEGREES"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:execution-receipt",
+  "title": "ExecutionReceipt",
+  "description": "Append-only method record. This is never a World Evidence reference.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receiptId",
+    "operationId",
+    "operationVersion",
+    "providerId",
+    "providerVersion",
+    "inputHash",
+    "outputHash",
+    "computeSnapshotHash",
+    "generatedAt",
+    "durationMs",
+    "method",
+    "changes",
+    "warnings"
+  ],
+  "properties": {
+    "receiptId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "operationId": { "$ref": "common-definitions.schema.json#/$defs/operationId" },
+    "operationVersion": {
+      "$ref": "common-definitions.schema.json#/$defs/operationVersion"
+    },
+    "providerId": { "$ref": "common-definitions.schema.json#/$defs/providerId" },
+    "providerVersion": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "inputHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+    "outputHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+    "computeSnapshotHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+    },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "durationMs": { "type": "number", "minimum": 0 },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "engineVersion", "methodId", "methodVersion"],
+      "properties": {
+        "engine": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "engineVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "methodId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "methodVersion": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repairApplied", "typeChanged"],
+      "properties": {
+        "repairApplied": { "type": "boolean" },
+        "typeChanged": { "type": "boolean" },
+        "inputGeometryType": { "type": "string", "maxLength": 64 },
+        "outputGeometryType": { "type": "string", "maxLength": 64 }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 128,
+      "items": { "type": "string", "maxLength": 1024 }
+    }
+  }
+}

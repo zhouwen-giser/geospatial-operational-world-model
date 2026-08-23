@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "*.ts",
+    "../../packages/platform/**/*.ts",
+    "../../packages/integrations/h3-toolkit-bridge/src/**/*.ts",
+    "../../services/gateway/world-capability-gateway/src/**/*.ts",
+    "../../services/providers/*/src/**/*.ts"
+  ],
+  "exclude": ["../../node_modules", "../../dist", "../../services/stas"]
+}

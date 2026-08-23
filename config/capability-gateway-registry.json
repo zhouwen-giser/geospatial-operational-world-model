@@ -1,0 +1,77 @@
+{
+  "configVersion": "1.0",
+  "providers": [
+    {
+      "providerId": "gowm.crs-normalization.bridge",
+      "providerVersion": "0.2.0",
+      "implementationDigest": "sha256:46f982fbdbab77c2fccd9141796d6f4db9474e4b048fd3fc3d361305e5d34ae7",
+      "manifestHash": "sha256:f9ebefcd927e17fd5e62438daba54a283a9a8c457773f2347806e286b67ae674",
+      "manifestPath": "contracts/manifests/providers/crs-provider.json",
+      "endpoint": "http://crs-provider-bridge:8086",
+      "approvalId": "compose-crs-provider-v0.2",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "CRS_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.geometry.bridge",
+      "providerVersion": "0.2.0",
+      "implementationDigest": "sha256:b1eb384a02a8de948f11520b9fdbd882bddc4288c502782bff888b25c8d9b548",
+      "manifestHash": "sha256:7b21c400904f5443b67ccde27a6c835c2b77e2aee97eac7127bc463aaf117e44",
+      "manifestPath": "contracts/manifests/providers/geometry-provider.json",
+      "endpoint": "http://geometry-provider-bridge:8087",
+      "approvalId": "compose-geometry-provider-v0.2",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "GEOMETRY_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.h3.interactive.bridge",
+      "providerVersion": "0.2.0",
+      "implementationDigest": "sha256:419f649959cbce5592538011d27bcc5be2628aa9819f69d7698f75383df341f3",
+      "manifestHash": "sha256:4bbd9d7e34408f4f13c9b0fb2a941d7005fa34d8772a87203cab1eab44e34c6d",
+      "manifestPath": "contracts/manifests/providers/h3-interactive-provider.json",
+      "endpoint": "http://h3-interactive-provider:8088",
+      "approvalId": "compose-h3-interactive-v0.2",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.h3.analysis.bridge",
+      "providerVersion": "0.2.0",
+      "implementationDigest": "sha256:017ec13d92ce6ec309a565d464162c10bcc301ee0938de4b75ea1afa505331a9",
+      "manifestHash": "sha256:72433676566bb35b6fd91a07451f1d5f9b3807ef50c7e7b6e32b27a6589efe09",
+      "manifestPath": "contracts/manifests/providers/h3-analysis-provider.json",
+      "endpoint": "http://h3-analysis-provider:8089",
+      "approvalId": "compose-h3-analysis-v0.2",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "H3_ANALYSIS_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "providerVersion": "0.2.0",
+      "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00",
+      "manifestHash": "sha256:41da4a22a4bca774e31407bdfa7c620af3efcca7c04dca1b1b0d7101d46ebe46",
+      "manifestPath": "contracts/manifests/providers/spatial-provider.json",
+      "endpoint": "http://spatial-provider-bridge:8091",
+      "approvalId": "compose-spatial-provider-v0.2",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "SPATIAL_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.situation.h3",
+      "providerVersion": "0.2.0",
+      "implementationDigest": "sha256:22e6e6160b0fcb59616c7c86ecec81622cd1aa9fd1da179d54a5b03f90f94a9f",
+      "manifestHash": "sha256:9d81824a99beeaff8861fedaaf441a5a45e752d82f6380ea9d1723909ea86e01",
+      "manifestPath": "contracts/manifests/providers/gowm-situation-provider.json",
+      "endpoint": "http://gowm-situation-provider:8092",
+      "approvalId": "compose-gowm-situation-v0.2",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "SITUATION_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    }
+  ]
+}

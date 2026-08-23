@@ -1,0 +1,101 @@
+{
+  "phase": "P15",
+  "generatedAt": "2026-08-23T02:31:47.9559541+08:00",
+  "implementationStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "acceptance": [
+    {
+      "id": "AC-019",
+      "status": "PARTIAL",
+      "evidence": "Same key and payload replayed across newly constructed Gateway and Provider instances without Provider work; the same key with a different payload conflicted. The store was a durable abstraction, not PostgreSQL, so the required postgres gate is NOT_RUN."
+    },
+    {
+      "id": "AC-058",
+      "status": "PARTIAL",
+      "evidence": "Missing DataScope was independently rejected before Gateway routing and inside the Provider SDK; hostile scope/SQL values remained parameters. Real PostgreSQL SQL-scope filtering and cross-scope denial are NOT_RUN."
+    },
+    {
+      "id": "AC-089",
+      "status": "PARTIAL",
+      "evidence": "Fresh Gateway, Provider and query-runtime instances replayed and resumed correctly over shared durable-store abstractions. No real Gateway/provider/database restart was run or claimed."
+    },
+    {
+      "id": "AC-090",
+      "status": "PASS",
+      "evidence": "Bearer-token and raw Point-coordinate canaries were absent from the public direct response, Provider-health response, durable DAG result and audit event; low-cardinality error code, nodeId and controlled providerId remained present."
+    }
+  ],
+  "securityGates": [
+    {
+      "id": "P15-FORGED-DIRECT-DAG",
+      "status": "PASS",
+      "evidence": "The public direct schema rejects caller securityContext, and the query validator recursively rejects reserved identity, scope, attestation and Gateway fields in parameters and nested plan literals before execution."
+    },
+    {
+      "id": "P15-GATEWAY-PROVIDER-DOUBLE-ENFORCEMENT",
+      "status": "PASS",
+      "evidence": "DataScope absence is rejected once by DirectExecutionService with zero Provider calls and independently by ProviderRuntime with zero operation-handler calls."
+    },
+    {
+      "id": "P15-SSRF-SQL-DISCOVERY",
+      "status": "PASS",
+      "evidence": "Unapproved, loopback, credential-bearing, path-bearing and query-bearing Provider endpoints fail Registry registration; caller providerUrl does not affect the fixed route; unknown dynamic discovery is rejected; Spatial SQL uses bind parameters for hostile strings and Geometry."
+    },
+    {
+      "id": "P15-BUDGET-DEADLINE-CANCEL",
+      "status": "PASS",
+      "evidence": "Input budget fails before operation work, deadline expiry fails closed after bounded in-flight work, and cancellation observed after an in-flight DAG node discards the late result and persists CANCELLED with no output."
+    },
+    {
+      "id": "P15-SNAPSHOT-RECEIPT-EVIDENCE",
+      "status": "PASS",
+      "evidence": "Receipt input/output/Compute Snapshot hashes are canonical; Data Snapshot and Evidence remain distinct; data-bound results require Data Snapshot; world-independent results reject fabricated Data Snapshot/Evidence; fresh and replayed forged Provider, receipt and schema identities are rejected."
+    },
+    {
+      "id": "P15-ERROR-REDACTION",
+      "status": "PASS",
+      "evidence": "Public and durable errors use stable messages and recursively redacted details, and Provider-health exceptions use a stable detail; code, nodeId and providerId are preserved while token and Geometry/coordinate canaries are absent."
+    }
+  ],
+  "verification": [
+    {
+      "command": "npx.cmd tsc -p validation/security-snapshot/tsconfig.json --noEmit",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd vitest run --config validation/security-snapshot/vitest.config.ts",
+      "status": "PASS",
+      "testFilesPassed": 3,
+      "testsPassed": 14,
+      "testsFailed": 0
+    },
+    {
+      "command": "npm.cmd run test:platform",
+      "status": "PASS",
+      "testFilesPassed": 6,
+      "testsPassed": 42,
+      "testsFailed": 0
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS"
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    },
+    {
+      "command": "real PostgreSQL idempotency, cross-scope denial and Gateway/provider/database restart",
+      "status": "NOT_RUN",
+      "detail": "Approved database credentials were unavailable; Docker was not invoked per root coordination."
+    }
+  ],
+  "notRun": [
+    "Real PostgreSQL-backed idempotency replay/conflict",
+    "Real PostgreSQL SQL-scope cross-scope denial",
+    "Real Gateway/provider/database restart and recovery"
+  ],
+  "dockerInvoked": false,
+  "commitPushPrPerformed": false
+}

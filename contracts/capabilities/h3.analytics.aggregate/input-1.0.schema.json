@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.analytics.aggregate:input:1.0",
+  "title": "H3AnalyticsAggregateInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["records", "operation", "resolution"],
+  "properties": {
+    "records": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "cell": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3Cell" },
+          "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+          "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+          "value": { "type": "number" },
+          "weight": { "type": "number" },
+          "distinct": { "oneOf": [{ "type": "string", "maxLength": 512 }, { "type": "number" }] }
+        },
+        "anyOf": [
+          { "required": ["cell"] },
+          { "required": ["longitude", "latitude"] }
+        ]
+      }
+    },
+    "operation": { "enum": ["count", "sum", "average", "min", "max", "weightedAverage", "density", "distinctCount"] },
+    "resolution": { "$ref": "../h3.common/definitions.schema.json#/$defs/resolution" },
+    "metric": { "type": "string", "minLength": 1, "maxLength": 128 }
+  }
+}

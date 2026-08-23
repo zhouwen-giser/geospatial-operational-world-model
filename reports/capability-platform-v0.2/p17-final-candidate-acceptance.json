@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "P17",
+  "generatedAt": "2026-08-23T02:51:00+08:00",
+  "status": "BLOCKED",
+  "statusReason": "Documentation and traceability are current, but no committed and pushed SHA contains the v0.2 implementation and the Required real runtime matrix remains blocked or not run.",
+  "source": {
+    "branch": "codex/gowm-capability-platform-v0.2",
+    "baseSha": "d1ff3b81b8bf577965b00edc1bd06acaaeda706c",
+    "lastCommittedLocalSha": "e100cc0fd0b7b27f8a386232dc2b261de7841547",
+    "lastPushedRemoteSha": "e100cc0fd0b7b27f8a386232dc2b261de7841547",
+    "implementationCommitted": false,
+    "candidateSha": null
+  },
+  "acceptance": [
+    {
+      "id": "AC-093",
+      "status": "PASS",
+      "evidence": "README.md and docs/architecture/CAPABILITY_PLATFORM_V0.2.md document the six controlled Providers, all 50 manifest operations, their PREVIEW/EXPERIMENTAL maturity, and the implemented architectural boundaries."
+    },
+    {
+      "id": "AC-094",
+      "status": "PASS",
+      "evidence": "README.md, PROJECT_STATUS.md, and the final candidate report explicitly retain production identity, CRS/grid certification, real Provider/database/restart, HA, PITR, load/SLO, license, Situation multi-scope, and Git delivery limitations."
+    },
+    {
+      "id": "AC-095",
+      "status": "BLOCKED",
+      "evidence": "The last committed local and remote branch SHAs are both e100cc0fd0b7b27f8a386232dc2b261de7841547, but the v0.2 implementation is an uncommitted worktree. There is no candidate SHA containing the implementation, so equality of the old committed SHA is not promoted to PASS."
+    },
+    {
+      "id": "AC-096",
+      "status": "BLOCKED",
+      "evidence": "Draft PR #1 remains Draft because Required real Provider/PostgreSQL/Docker/restart/cross-capability gates and semantic commit/push delivery are incomplete."
+    }
+  ],
+  "documentation": {
+    "readme": "README.md",
+    "architecture": "docs/architecture/CAPABILITY_PLATFORM_V0.2.md",
+    "projectStatus": "PROJECT_STATUS.md",
+    "changelog": "CHANGELOG.md",
+    "traceability": "validation/TRACEABILITY.md",
+    "finalCandidateReport": "reports/capability-platform-v0.2/final-candidate-report.md"
+  },
+  "verification": [
+    {
+      "command": "PowerShell JSON parse for reports/capability-platform-v0.2/*.json",
+      "status": "PASS",
+      "detail": "All 19 JSON evidence files present at check time parsed successfully."
+    },
+    {
+      "command": "PowerShell local Markdown-link existence check for P17 documentation",
+      "status": "PASS",
+      "detail": "All local links in the six P17 documentation files resolved."
+    },
+    {
+      "command": "Provider manifest operation/maturity comparison with README catalog",
+      "status": "PASS",
+      "detail": "Six controlled Provider manifests contained 50 operations and every operation ID appeared in README.md; PREVIEW and EXPERIMENTAL groupings matched the manifests."
+    },
+    {
+      "command": "Root final repository and real-runtime acceptance gates",
+      "status": "NOT_RUN",
+      "owner": "root/P16",
+      "detail": "This documentation phase does not promote earlier or controlled evidence to the final real-runtime matrix."
+    }
+  ],
+  "delivery": {
+    "semanticCommit": "BLOCKED",
+    "push": "BLOCKED",
+    "draftPrUpdate": "BLOCKED",
+    "readyForReview": false,
+    "merge": "NOT_RUN",
+    "tagOrRelease": "NOT_RUN",
+    "deployment": "NOT_RUN"
+  },
+  "finalMarker": "GOWM_CAPABILITY_PLATFORM_V0_2_GOAL_BLOCKED"
+}

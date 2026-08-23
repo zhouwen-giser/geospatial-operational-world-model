@@ -1,0 +1,161 @@
+{
+  "phase": "P06",
+  "generatedAt": "2026-08-23T01:37:38.0863237+08:00",
+  "implementationStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "provider": {
+    "providerId": "gowm.crs-normalization.bridge",
+    "providerVersion": "0.2.0",
+    "providerProtocolVersion": "1.0",
+    "operationCount": 6,
+    "registeredOperations": [
+      "crs.check-source",
+      "crs.normalize.point",
+      "crs.normalize.points",
+      "crs.normalize.geometry",
+      "crs.normalize.feature",
+      "crs.normalize.feature-collection"
+    ],
+    "unregisteredConvenienceOperation": "crs.normalize",
+    "targetCrs": "EPSG:4326",
+    "axisConvention": "TRADITIONAL_GIS",
+    "strictBestOperation": true,
+    "networkEnabled": false,
+    "providerUrlSource": "APPROVED_REGISTRY_ENDPOINT_STARTUP_CONFIGURATION_ONLY"
+  },
+  "sourceLock": {
+    "sourceRef": "inputs/crs-normalization-service-v1.0.zip",
+    "sourceSha256": "3110e7b344d138908d27e759ede70701b8a20dd7bbbd9795b3a57d02b8d70995",
+    "openApiSha256": "cd261d963c074394e01addeff32fad16dcdaef03bd2ae9f44dafae57ab9f6c06",
+    "contractTreeSha256": "9aa3e3415f1de2e4751dc428138f416c3da7057b7f6f7c3df4cad89b7b3b4e93",
+    "licenseStatus": "UNSPECIFIED",
+    "redistributionAllowed": false,
+    "expandedSourceTrackedByGit": false
+  },
+  "operationContractHashes": {
+    "crs.check-source@1.0": {
+      "input": "sha256:a5636ed9811408c2f9b825a5bd06e96193a677503dac120e143d03c07811917b",
+      "output": "sha256:f49c4c5b68b637e4d4f69b823609d802a85b70f4f5031573879350e758618577"
+    },
+    "crs.normalize.point@1.0": {
+      "input": "sha256:79829b7f7886e74ee21c387787295a0a060fc84e058477f81622a63d7c33b01f",
+      "output": "sha256:65e3d7008c209deff7dc722ad095cfbc85a94e31b276150be4174c54ff69f2bd"
+    },
+    "crs.normalize.points@1.0": {
+      "input": "sha256:93e8203810904b4632a23ab5b556968cc2c3bc491deb6e940a03119f4e55024e",
+      "output": "sha256:1f5dcecfb6bbc79af70918e93cdce36e76d709762c3fdda65b45415e32000110"
+    },
+    "crs.normalize.geometry@1.0": {
+      "input": "sha256:7fc8378d45a22dd722ad59f51b1105d904ad1b9f3c3189f474c2ae2e63632ec0",
+      "output": "sha256:986d20049d2e5a25e8fa668f0c9ffd43bb01a82183c7703ce1483723a4f5d580",
+      "sharedCanonicalContract": true
+    },
+    "crs.normalize.feature@1.0": {
+      "input": "sha256:067555b9cfeda8c7e0b6af3f7b0c105e4adad19ffcd34da14f9d7118f42cad5e",
+      "output": "sha256:38299b2e493711e4e153037dad06b1968223b7304351c755641f81f64c6051ce"
+    },
+    "crs.normalize.feature-collection@1.0": {
+      "input": "sha256:fb1b0f5776391007b4da5565bc1096acbdcd79920fc83356a82a9bd8f61339ee",
+      "output": "sha256:55c1c5b19bdf227000bbcd1594a5c144dcd65df610342dbf4de45ea2a02fa939"
+    }
+  },
+  "verification": [
+    {
+      "command": "npx.cmd vitest run --config validation/provider-conformance/crs/vitest.config.ts",
+      "status": "PASS",
+      "testFilesPassed": 1,
+      "testsPassed": 7,
+      "testsFailed": 0,
+      "coverage": [
+        "fixed six-operation allowlist",
+        "all six input/output schemas loaded from the committed canonical contract bundle",
+        "runtime-to-checked-in manifest parity",
+        "source and license lock parity",
+        "Provider SDK conformance",
+        "EPSG:3857 point fixture",
+        "Z preservation and warning",
+        "strict upstream response validation",
+        "missing-grid fail closed with no fallback",
+        "no arbitrary target CRS",
+        "approved endpoint configuration digest",
+        "receipt and compute-snapshot attestations",
+        "all six fixed upstream routes"
+      ]
+    },
+    {
+      "command": "npx.cmd tsx scripts/sync-crs-contracts.ts --check && node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check",
+      "status": "PASS",
+      "detail": "All six CRS schema pairs, generated runtime types/hashes, and the checked-in provider manifest are current."
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS",
+      "detail": "Root strict TypeScript and STAS typecheck passed after strict readiness boolean narrowing."
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    },
+    {
+      "command": "git ls-files -- '.intake/**' and git check-ignore -v <expanded CRS path>",
+      "status": "PASS",
+      "detail": "No expanded POC path is tracked; .gitignore ignores the isolated .intake tree."
+    },
+    {
+      "command": "docker image inspect geospatial-crs-service:1.0.0",
+      "status": "NOT_RUN_APPROVAL_QUOTA",
+      "detail": "The required Docker escalation was rejected because the execution approval quota was exhausted. No alternate launch path was used after rejection."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC-030",
+      "status": "NOT_RUN",
+      "evidence": "The bridge EPSG:3857 contract/receipt path passes with a protocol-faithful fixture, but the required real POC process could not be started because Docker approval was unavailable."
+    },
+    {
+      "id": "AC-031",
+      "status": "PARTIAL",
+      "evidence": "A typed GRID_NOT_AVAILABLE response is mapped fail-closed to PROVIDER_NOT_READY with retryable=false and exactly one upstream call; real EPSG:27700 POC execution remains NOT_RUN."
+    },
+    {
+      "id": "AC-032",
+      "status": "PARTIAL",
+      "evidence": "Protocol-faithful execution proves trailing Z is byte-for-number preserved and Z_NOT_TRANSFORMED is recorded; real POC execution remains NOT_RUN."
+    },
+    {
+      "id": "AC-033",
+      "status": "PASS",
+      "evidence": "A successful upstream response with an unknown field is rejected with SCHEMA_MISMATCH before a platform result is assembled."
+    },
+    {
+      "id": "AC-034",
+      "status": "PASS",
+      "evidence": "Execution Receipt includes canonical input/output hashes and source/target/axis/PROJ/integration/proj.db/grid/strict/network attestations; Compute Snapshot carries database/grid/package artifacts."
+    },
+    {
+      "id": "AC-035",
+      "status": "PASS",
+      "evidence": "Operation input schemas reject targetCrs and the client maps only six fixed operation IDs to fixed upstream routes. Requests cannot provide a URL, route, target CRS, vertical datum, Grid choice, or raster option."
+    },
+    {
+      "id": "AC-036",
+      "status": "PASS",
+      "evidence": "The source lock keeps licenseStatus=UNSPECIFIED and redistributionAllowed=false; expanded input is ignored and untracked; no POC source/package/image was added."
+    }
+  ],
+  "notRun": [
+    "Real POC process build/start",
+    "Real EPSG:3857 point normalization through POC",
+    "Real EPSG:27700 missing-grid fail-closed execution",
+    "Real POC Z preservation",
+    "Live proj.db and offline grid-bundle digest extraction"
+  ],
+  "blocker": {
+    "kind": "EXECUTION_APPROVAL_QUOTA",
+    "scope": "REAL_POC_DOCKER_ONLY",
+    "implementationBlocked": false,
+    "requiredToClosePhase": true
+  }
+}

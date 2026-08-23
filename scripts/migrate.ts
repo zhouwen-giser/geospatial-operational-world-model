@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import pg from "pg";
 import { loadConfig } from "../packages/world-model-core/src/config.js";
 
@@ -51,12 +52,46 @@ export async function migrate(): Promise<void> {
       END
     $provision$`);
     await pool.query("SELECT set_config('gowm.stas_db_password','',false)");
+    assertDistinctRuntimePasswords();
+    await provisionRuntimeLogin(pool, "gowm_gateway_service", "GATEWAY_DB_PASSWORD", "gowm.gateway_db_password");
+    await provisionRuntimeLogin(pool, "gowm_gateway_registry_service", "GATEWAY_REGISTRY_DB_PASSWORD", "gowm.gateway_registry_db_password");
+    await provisionRuntimeLogin(pool, "gowm_spatial_service", "SPATIAL_DB_PASSWORD", "gowm.spatial_db_password");
+    await provisionRuntimeLogin(pool, "gowm_situation_service", "SITUATION_DB_PASSWORD", "gowm.situation_db_password");
   } finally {
     await pool.end();
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+async function provisionRuntimeLogin(
+  pool: pg.Pool,
+  role: "gowm_gateway_service" | "gowm_gateway_registry_service" | "gowm_spatial_service" | "gowm_situation_service",
+  environmentName: string,
+  settingName: string
+): Promise<void> {
+  const password = process.env[environmentName];
+  if (password === undefined) return;
+  if (!/^[A-Za-z0-9_-]{32,128}$/u.test(password)) {
+    throw new Error(`${environmentName} must contain 32-128 URL-safe characters`);
+  }
+  await pool.query("SELECT set_config($1,$2,false)", [settingName, password]);
+  try {
+    await pool.query(`DO $provision$
+      BEGIN
+        EXECUTE format('ALTER ROLE ${role} LOGIN PASSWORD %L',current_setting('${settingName}'));
+      END
+    $provision$`);
+  } finally {
+    await pool.query("SELECT set_config($1,'',false)", [settingName]);
+  }
+}
+
+function assertDistinctRuntimePasswords(): void {
+  const names = ["GATEWAY_DB_PASSWORD", "GATEWAY_REGISTRY_DB_PASSWORD", "SPATIAL_DB_PASSWORD", "SITUATION_DB_PASSWORD"];
+  const configured = names.map((name) => process.env[name]).filter((value): value is string => value !== undefined);
+  if (new Set(configured).size !== configured.length) throw new Error("capability runtime database passwords must be distinct");
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   migrate().catch((error: unknown) => {
     process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`);
     process.exitCode = 1;
