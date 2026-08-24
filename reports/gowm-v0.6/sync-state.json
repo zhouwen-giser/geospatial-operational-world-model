@@ -1,0 +1,55 @@
+{
+  "goal": "GOWM+ Road Coverage Planning v0.6",
+  "targetVersion": "0.6.0",
+  "status": "IN_PROGRESS",
+  "phase": "R00",
+  "predecessor": {
+    "branch": "codex/gowm-network-routing-v0.5",
+    "version": "0.5.0",
+    "markers": [
+      "NETWORK_READY",
+      "ROUTING_READY"
+    ],
+    "sha": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "remoteSha": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "draftPr": 3,
+    "mergeable": "MERGEABLE",
+    "mergeStateStatus": "CLEAN"
+  },
+  "candidate": {
+    "branch": "codex/gowm-road-coverage-v0.6",
+    "base": "codex/gowm-network-routing-v0.5",
+    "baseSha": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "localSha": null,
+    "remoteSha": null,
+    "draftPr": null
+  },
+  "milestones": {
+    "predecessorReady": true,
+    "obligationsReady": false,
+    "solverReady": false,
+    "verifierReady": false,
+    "roadCoverageReady": false
+  },
+  "acceptance": {
+    "passed": [
+      "AC-B001",
+      "AC-B002",
+      "AC-B003",
+      "AC-B004",
+      "AC-B005",
+      "AC-B006",
+      "AC-B007",
+      "AC-B008",
+      "AC-B010",
+      "AC-B011",
+      "AC-B012"
+    ],
+    "failed": [],
+    "blocked": [],
+    "notRun": [
+      "AC-B009_R01"
+    ]
+  },
+  "blockers": []
+}
