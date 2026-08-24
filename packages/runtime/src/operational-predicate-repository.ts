@@ -44,6 +44,23 @@ export class OperationalPredicateRepository {
     const row = result.rows[0] as Record<string,unknown> | undefined;
     return row ? mapStoredEvaluation(row) : undefined;
   }
+
+  async replay(dataScopeKey: string,evaluationId: string): Promise<"MATCH"|"DIFFERENCE"> {
+    if (!await this.get(dataScopeKey,evaluationId)) {
+      throw new Error("predicate evaluation was unavailable in the authorized scope");
+    }
+    const created = await this.pool.query<{ replay_id: string }>(
+      "SELECT replay_external_predicate_evaluation($1,$2) AS replay_id",[dataScopeKey,evaluationId]
+    );
+    const result = await this.pool.query<{ outcome: "MATCH"|"DIFFERENCE" }>(
+      `SELECT outcome FROM predicate_evaluation_replay
+       WHERE data_scope_key=$1 AND evaluation_id=$2 AND replay_id=$3::uuid`,
+      [dataScopeKey,evaluationId,created.rows[0]?.replay_id]
+    );
+    const outcome = result.rows[0]?.outcome;
+    if (!outcome) throw new Error("predicate replay was unavailable in the authorized scope");
+    return outcome;
+  }
 }
 
 function mapStoredEvaluation(row: Record<string,unknown>): StoredPredicateEvaluation {

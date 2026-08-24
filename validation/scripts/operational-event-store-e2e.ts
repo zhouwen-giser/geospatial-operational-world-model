@@ -210,6 +210,7 @@ try {
     predicateId: `predicate-no-data-${suffix}`,externalAuthority: "planner-e2e",
     subject: { externalReferenceId: `unknown-${suffix}` },operator: "HAS_OBSERVED"
   });
+  const predicateReplay = await predicates.replay(scope,occurred.evaluation.evaluationId);
   const factCountsAfter = await pool.query<{ identities: string;observations: string;world_events: string }>(
     `SELECT (SELECT count(*) FROM world_reference_identity)::text AS identities,
             (SELECT count(*) FROM world_observation)::text AS observations,
@@ -218,7 +219,7 @@ try {
   if (occurred.evaluation.status!=="SUPPORTED" || occurred.evaluation.supportingEvidenceIds.length!==1 ||
       occurred.evaluation.observabilityAssessment?.status!=="SOURCE_UNHEALTHY" ||
       occurredRetry.evaluation.evaluationId!==occurred.evaluation.evaluationId ||
-      noData.evaluation.status!=="NO_DATA" ||
+      noData.evaluation.status!=="NO_DATA" || predicateReplay!=="MATCH" ||
       JSON.stringify(factCountsBefore.rows[0])!==JSON.stringify(factCountsAfter.rows[0])) {
     throw new Error("external predicate evaluation E2E invariant failed");
   }
@@ -246,6 +247,7 @@ try {
       observabilityStatus: occurred.evaluation.observabilityAssessment?.status,
       idempotentEvaluationId: occurred.evaluation.evaluationId,
       supportingEvidence: occurred.evaluation.supportingEvidenceIds.length,
+      replay: predicateReplay,
       worldFactsUnchanged: true
     },
     observability: {
