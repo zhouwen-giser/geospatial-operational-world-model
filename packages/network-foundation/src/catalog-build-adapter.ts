@@ -102,11 +102,22 @@ export function materializeOsmArtifactPreview(input: {
   readonly dataset: NetworkDatasetVersion;
   readonly buildPolicy: NetworkBuildPolicy;
   readonly artifactContentHash: string;
+  readonly license: "ODbL-1.0";
+  readonly attribution: "© OpenStreetMap contributors";
+  readonly sourceUrl: string;
+  readonly sourceVersion: string;
   readonly features: readonly SourceLineFeature[];
 }): MaterializedNetworkBuild {
   if (!hashPattern.test(input.artifactContentHash)) throw new Error("OSM artifact hash is invalid");
+  if (input.license !== "ODbL-1.0" || input.attribution !== "© OpenStreetMap contributors" ||
+      !input.sourceUrl.startsWith("https://") || !input.sourceVersion) {
+    throw new Error("OSM artifact provenance or ODbL attribution is incomplete");
+  }
   return assemble(input.dataset, input.buildPolicy, input.features, "OSM_ARTIFACT_PREVIEW", [
     "OSM_ARTIFACT_PREVIEW is not a Stable catalog authority",
-    `artifact=${input.artifactContentHash}`
+    `artifact=${input.artifactContentHash}`,
+    `license=${input.license}`,
+    `attribution=${input.attribution}`,
+    `source=${input.sourceUrl}@${input.sourceVersion}`
   ]);
 }

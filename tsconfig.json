@@ -24,6 +24,7 @@
     "scripts/**/*.ts",
     "validation/scripts/network-topology-runtime-client.ts",
     "validation/scripts/network-turn-runtime-client.ts",
+    "validation/scripts/network-profile-runtime-client.ts",
     "tests/**/*.ts",
     "vitest.config.ts"
   ],

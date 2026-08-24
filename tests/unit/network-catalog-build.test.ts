@@ -87,11 +87,17 @@ describe("network catalog build adapter", () => {
       dataset,
       buildPolicy: request.buildPolicy,
       artifactContentHash: `sha256:${"f".repeat(64)}`,
+      license: "ODbL-1.0",
+      attribution: "© OpenStreetMap contributors",
+      sourceUrl: "https://www.openstreetmap.org/export",
+      sourceVersion: "fixture-2026-08-25",
       features
     });
     expect(result.adapterKind).toBe("OSM_ARTIFACT_PREVIEW");
     expect(result.warnings).toContain("OSM_ARTIFACT_PREVIEW is not a Stable catalog authority");
     expect(result.warnings[1]).toContain("sha256:");
+    expect(result.warnings).toContain("license=ODbL-1.0");
+    expect(result.warnings).toContain("attribution=© OpenStreetMap contributors");
   });
 
   it("derives stable graph-internal Node, Edge and directed Arc keys", () => {

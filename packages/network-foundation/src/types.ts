@@ -175,3 +175,70 @@ export interface CompiledTurnRestrictions {
   readonly diagnostics: readonly TurnRestrictionDiagnostic[];
   readonly contentHash: string;
 }
+
+export type NetworkVehicleClass = "ROAD_VEHICLE" | "UGV";
+
+export interface NetworkTravelProfile {
+  readonly profileKey: string;
+  readonly version: string;
+  readonly vehicleClass: NetworkVehicleClass;
+  readonly allowedRoadClasses: readonly string[];
+  readonly allowedSurfaces: readonly string[];
+  readonly onewayPolicy: "STRICT" | "IGNORE_FOR_EMERGENCY";
+  readonly maximumSpeedMmPerS?: number;
+  readonly requiredAccessMask: number;
+  readonly contentHash: string;
+}
+
+export interface NetworkCostWeights {
+  readonly distance: number;
+  readonly time: number;
+  readonly risk: number;
+  readonly energy: number;
+  readonly surface: number;
+}
+
+export interface NetworkCostProfile {
+  readonly profileKey: string;
+  readonly version: string;
+  readonly weights: NetworkCostWeights;
+  readonly roundingPolicy: "HALF_AWAY_FROM_ZERO";
+  readonly contentHash: string;
+}
+
+export interface NetworkArcConditionOverride {
+  readonly arcKey: string;
+  readonly traversalAllowed: boolean;
+  readonly speedOverrideMmPerS?: number;
+  readonly riskOverrideMicroUnits?: number;
+  readonly accessOverrideMask?: number;
+  readonly costMultiplierPpm?: number;
+  readonly penaltyUnits?: number;
+  readonly reasonCodes: readonly string[];
+  readonly evidence: readonly unknown[];
+  readonly contentHash: string;
+}
+
+export interface NetworkConditionSnapshot {
+  readonly conditionSnapshotKey: string;
+  readonly sourceSnapshotVersion: string;
+  readonly observedAt: string;
+  readonly validUntil: string;
+  readonly completeness: "COMPLETE" | "PARTIAL";
+  readonly sourceContentHash: string;
+  readonly conditions: readonly NetworkArcConditionOverride[];
+  readonly metadata: Readonly<Record<string, unknown>>;
+  readonly contentHash: string;
+}
+
+export interface NetworkArcCostMetrics {
+  readonly distanceMm: number;
+  readonly durationMs: number;
+  readonly riskMicroUnits: number;
+  readonly energyMwh: number;
+  readonly surfacePenaltyUnits: number;
+  readonly combinedCostUnits: number;
+  readonly speedMmPerS: number;
+  readonly conditionSnapshotKey?: string;
+  readonly contentHash: string;
+}

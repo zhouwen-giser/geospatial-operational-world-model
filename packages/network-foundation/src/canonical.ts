@@ -20,6 +20,6 @@ export function sha256(value: unknown): string {
   return `sha256:${createHash("sha256").update(canonicalJson(value)).digest("hex")}`;
 }
 
-export function stableKey(prefix: "nd" | "ed" | "ar" | "tr" | "ts", value: unknown): string {
+export function stableKey(prefix: "nd" | "ed" | "ar" | "tr" | "ts" | "cs", value: unknown): string {
   return `${prefix}_${sha256(value).slice("sha256:".length)}`;
 }

@@ -1,0 +1,24 @@
+{
+  "phase": "N03",
+  "status": "PASS",
+  "acceptance": {
+    "AC-N030": "PASS_OSM_ODBL_ATTRIBUTION_REQUIRED",
+    "AC-N031": "PASS_ROAD_VEHICLE_FILTER",
+    "AC-N032": "PASS_UGV_CLASS_AND_SURFACE_FILTER",
+    "AC-N033": "PASS_STRICT_ONEWAY",
+    "AC-N034": "PASS_DISTANCE_MM_EXACT",
+    "AC-N035": "PASS_DURATION_MS_EXACT",
+    "AC-N036": "PASS_WEIGHTED_COST_DETERMINISTIC",
+    "AC-N037": "PASS_CLOSED_ARC_EXCLUDED",
+    "AC-N038": "PASS_SPEED_OVERRIDE_NEW_SNAPSHOT_ONLY",
+    "AC-N039": "PASS_RISK_OVERRIDE_WITH_EVIDENCE",
+    "AC-N040": "PASS_HISTORICAL_SNAPSHOT_REPLAY"
+  },
+  "tests": {
+    "focusedUnit": "8 PASS",
+    "typecheck": "PASS",
+    "sqlAst": "PASS_42_MIGRATIONS_27_ASSERTIONS",
+    "realDatabase": "PASS_n03-20260825t0158"
+  },
+  "runtimeEvidence": "reports/gowm-v0.5/n03-runtime-n03-20260825t0158.json"
+}
