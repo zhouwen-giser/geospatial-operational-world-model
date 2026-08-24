@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type {
   GowmV04OperationalTaskEvent,
+  GowmV04OperationalTaskSnapshot,
   GowmV04CommonReferenceKey,
   GowmV04ExternalCorrelationClaim
 } from "../../platform/contract-runtime/src/generated/contracts.js";
@@ -86,6 +87,7 @@ export const OperationalEventIngestSchema = z.object({
 
 export type OperationalEventIngest = z.infer<typeof OperationalEventIngestSchema>;
 export type OperationalTaskEvent = GowmV04OperationalTaskEvent;
+export type OperationalTaskSnapshot = GowmV04OperationalTaskSnapshot;
 export type OperationalReferenceKey = GowmV04CommonReferenceKey;
 export type OperationalCorrelationClaim = GowmV04ExternalCorrelationClaim;
 
@@ -95,6 +97,10 @@ export function parseOperationalEventIngest(input: unknown): OperationalEventIng
 
 export function assertOperationalTaskEvent(event: unknown): asserts event is OperationalTaskEvent {
   assertContract<OperationalTaskEvent>("gowm-v0.4/operational-task-event.schema.json",event);
+}
+
+export function assertOperationalTaskSnapshot(snapshot: unknown): asserts snapshot is OperationalTaskSnapshot {
+  assertContract<OperationalTaskSnapshot>("gowm-v0.4/operational-task-snapshot.schema.json",snapshot);
 }
 
 export function validateOperationalEventTime(

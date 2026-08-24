@@ -20,7 +20,7 @@ async function main(): Promise<void> {
   process.stdout.write("projection-worker ready\n");
   while (running) {
     const result = await worker.tick();
-    if (result.claimed === 0) await delay(config.projectionPollMs);
+    if (result.claimed === 0 && result.operationalProjected === 0) await delay(config.projectionPollMs);
   }
 }
 

@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import pg from "pg";
 import { OperationalEventRepository } from "../../packages/runtime/src/operational-event-repository.js";
+import { OperationalProjectionRepository } from "../../packages/runtime/src/operational-projection-repository.js";
 import { closeDatabasePool } from "../../packages/runtime/src/db.js";
 import { buildObservationApp } from "../../services/observation-ingest/src/app.js";
 
@@ -23,6 +24,7 @@ try {
     [scope]
   );
   const repository = new OperationalEventRepository(pool);
+  const projections = new OperationalProjectionRepository(pool);
   const input = {
     dataScopeKey: scope,
     sourceAuthority: "provider-e2e",
@@ -95,12 +97,25 @@ try {
       acceptedBody.eventTime!==eventTime || typeof acceptedBody.receivedTime!=="string") {
     throw new Error("operational event HTTP boundary E2E invariant failed");
   }
+  const operationalProjected = await projections.projectPending(100);
+  const snapshot = await projections.get(scope,taskId);
+  const replay = await projections.rebuild(scope);
+  if (operationalProjected<2 || !snapshot || snapshot.controlState!=="NO_CONTROL_EVENT" ||
+      snapshot.activityState!=="ACTIVE_OBSERVED" || snapshot.outcomeVerification!=="UNVERIFIED" ||
+      snapshot.observability!=="FRESH" || replay.currentHash!==replay.replayHash) {
+    throw new Error("operational four-dimensional projection E2E invariant failed");
+  }
   process.stdout.write(`${JSON.stringify({
     result: "OPERATIONAL_EVENT_STORE_E2E_PASS",
     scope,eventId,worldVersion: accepted.event.worldVersion,
     duplicateStatus: duplicate.status,timelineEvents: timeline.length,
     outboxRows: Number(counts.outbox_count),claimRows: Number(counts.claim_count),scopeLeakRows: Number(counts.leaked_count),
-    http: { deniedStatus: denied.statusCode,acceptedStatus: httpAccepted.statusCode,duplicateStatus: httpDuplicate.statusCode }
+    http: { deniedStatus: denied.statusCode,acceptedStatus: httpAccepted.statusCode,duplicateStatus: httpDuplicate.statusCode },
+    projection: {
+      projected: operationalProjected,controlState: snapshot.controlState,activityState: snapshot.activityState,
+      outcomeVerification: snapshot.outcomeVerification,observability: snapshot.observability,
+      worldVersion: snapshot.worldVersion,replayHash: replay.replayHash
+    }
   })}\n`);
 } finally {
   await app.close();
