@@ -1,0 +1,31 @@
+{
+  "lockVersion": "1.0",
+  "phase": "D00",
+  "baseImage": {
+    "reference": "mobilitydb/mobilitydb:18-3.6-1.3@sha256:8409e3897e2b88561bef4374110c3da5f7ff56838a7745315f1c2f111305dd24",
+    "postgresMajor": 18,
+    "postgisMinor": "3.6",
+    "mobilitydbMinor": "1.3"
+  },
+  "sources": [
+    {
+      "name": "h3-pg",
+      "version": "4.5.0",
+      "url": "https://api.pgxn.org/dist/h3/4.5.0/h3-4.5.0.zip",
+      "sha256": "72f48359cd49ffaa38eb22fbaa607d5497e0144a8f94824f826beb0b370c40d8",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "pgRouting",
+      "version": "4.0.1",
+      "url": "https://github.com/pgRouting/pgrouting/archive/v4.0.1.tar.gz",
+      "sha256": "21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699",
+      "license": "GPL-2.0-or-later"
+    }
+  ],
+  "validatedImage": {
+    "name": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+    "contentDigest": "sha256:a502c7ce9ef773b4e0f4097ade3b88172f901d1e2d17ed246932d38a04026fae",
+    "runId": "gowm-v05-d00-20260824t2245-codex"
+  }
+}

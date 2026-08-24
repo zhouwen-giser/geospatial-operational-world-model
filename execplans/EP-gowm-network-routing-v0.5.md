@@ -42,7 +42,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] B01 Source Lock
 - [x] A00 Architecture ADR
 - [x] A01 Contracts
-- [ ] D00 Database Image
+- [x] D00 Database Image
 - [ ] D01 Network Schema
 - [ ] D02 Network Read Contract
 - [ ] N00 Catalog Build Adapter
@@ -74,6 +74,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - The existing migration lock covers only 001-014, so v0.5 records an additional immutable 001-032 lock without changing the older lock.
 - The supplied reference archive has no redistributable license declaration; every permitted concept is mapped to a clean-room implementation target and all coverage-planning lifecycle/solver artifacts are excluded.
 - The existing generator previously dropped base object properties when a schema also used `oneOf`; A01 now merges base and branch requirements so generated route request types preserve every mandatory field.
+- Docker Desktop 4.81.0 could not start because four stale Windows Unix-socket reparse points survived a prior crash. A controlled process/WSL cold restart and exact transient-socket cleanup restored Docker Engine 29.6.1 without deleting images, containers, configuration, or volumes.
+- D00 built and exercised the required composite database image. PostgreSQL 18.6, PostGIS 3.6.4, MobilityDB 1.3.0, h3/h3_postgis 4.5.0, and pgRouting 4.0.1 coexist; all baseline migrations and assertions pass in the image.
 
 ## Failed attempts retained
 
@@ -84,7 +86,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - `python scripts/validate_task_package.py`: `TASK_PACKAGE_VALID schemas=19 providers=2 examples=8 acceptance=155`
 - Reference input `Get-FileHash`: exact locked SHA-256 match.
 - `git rev-parse HEAD` and `git rev-parse origin/main`: both `db575f79c874a69f65a2043a7e463338524b713d` after fetch.
+- D00 runtime run `gowm-v05-d00-20260824t2245-codex`: 63/63 recorded commands passed; image content digest `sha256:a502c7ce9ef773b4e0f4097ade3b88172f901d1e2d17ed246932d38a04026fae`.
 
 ## Remaining work
 
-Execute B01 through S01 in order. Required real-runtime gates remain `NOT_RUN` until exercised against the pinned database image.
+Execute D01 through S01 in order. D00 real database gates are complete; later network/routing runtime gates remain `NOT_RUN` until their phases are implemented.

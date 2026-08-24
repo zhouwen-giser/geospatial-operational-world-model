@@ -30,6 +30,7 @@
     "validate:operational-events": "node --import tsx validation/scripts/operational-event-store-e2e.ts",
     "validate:operational-provider": "node --import tsx validation/scripts/operational-provider-gateway-e2e.ts",
     "validate:operational-ready": "node --import tsx validation/scripts/operational-reality-ready-e2e.ts",
+    "validate:network-db-runtime": "node validation/scripts/network-db-runtime-gate.mjs",
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",
     "validate:stable-runtime": "node validation/scripts/stable-security-load-recovery.mjs",
