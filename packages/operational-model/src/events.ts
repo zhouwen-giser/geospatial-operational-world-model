@@ -6,7 +6,9 @@ import type {
   GowmV04OperationalEventTimeline,
   GowmV04OperationalQueryResult,
   GowmV04CommonReferenceKey,
-  GowmV04ExternalCorrelationClaim
+  GowmV04ExternalCorrelationClaim,
+  GowmV04ExternalPredicate,
+  GowmV04PredicateEvaluation
 } from "../../platform/contract-runtime/src/generated/contracts.js";
 import { assertContract } from "../../platform/contract-runtime/src/schema-validator.js";
 
@@ -96,6 +98,8 @@ export type OperationalEventTimeline = GowmV04OperationalEventTimeline;
 export type OperationalQueryResult = GowmV04OperationalQueryResult;
 export type OperationalReferenceKey = GowmV04CommonReferenceKey;
 export type OperationalCorrelationClaim = GowmV04ExternalCorrelationClaim;
+export type ExternalPredicate = GowmV04ExternalPredicate;
+export type PredicateEvaluation = GowmV04PredicateEvaluation;
 
 export function parseOperationalEventIngest(input: unknown): OperationalEventIngest {
   return OperationalEventIngestSchema.parse(input);
@@ -133,6 +137,14 @@ export function assertOperationalEventTimeline(timeline: unknown): asserts timel
 
 export function assertOperationalQueryResult(result: unknown): asserts result is OperationalQueryResult {
   assertContract<OperationalQueryResult>("gowm-v0.4/operational-query-result.schema.json",result);
+}
+
+export function assertExternalPredicate(predicate: unknown): asserts predicate is ExternalPredicate {
+  assertContract<ExternalPredicate>("gowm-v0.4/external-predicate.schema.json",predicate);
+}
+
+export function assertPredicateEvaluation(evaluation: unknown): asserts evaluation is PredicateEvaluation {
+  assertContract<PredicateEvaluation>("gowm-v0.4/predicate-evaluation.schema.json",evaluation);
 }
 
 export function validateOperationalEventTime(

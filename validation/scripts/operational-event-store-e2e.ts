@@ -4,6 +4,7 @@ import { OperationalEventRepository } from "../../packages/runtime/src/operation
 import { OperationalProjectionRepository } from "../../packages/runtime/src/operational-projection-repository.js";
 import { OperationalCorrelationRepository } from "../../packages/runtime/src/operational-correlation-repository.js";
 import { OperationalReadRepository } from "../../packages/runtime/src/operational-read-repository.js";
+import { OperationalPredicateRepository } from "../../packages/runtime/src/operational-predicate-repository.js";
 import { closeDatabasePool } from "../../packages/runtime/src/db.js";
 import { buildObservationApp } from "../../services/observation-ingest/src/app.js";
 
@@ -29,6 +30,7 @@ try {
   const projections = new OperationalProjectionRepository(pool);
   const correlations = new OperationalCorrelationRepository(pool);
   const reads = new OperationalReadRepository(pool);
+  const predicates = new OperationalPredicateRepository(pool);
   const input = {
     dataScopeKey: scope,
     sourceAuthority: "provider-e2e",
@@ -139,6 +141,32 @@ try {
       crossScope.result.tasks.length!==0 || !/^sha256:[0-9a-f]{64}$/u.test(found.snapshot.scopeDigest)) {
     throw new Error("operational scoped read contract E2E invariant failed");
   }
+  const factCountsBefore = await pool.query<{ identities: string;observations: string;world_events: string }>(
+    `SELECT (SELECT count(*) FROM world_reference_identity)::text AS identities,
+            (SELECT count(*) FROM world_observation)::text AS observations,
+            (SELECT count(*) FROM world_event)::text AS world_events`
+  );
+  const occurred = await predicates.evaluate(scope,{
+    predicateId: `predicate-occurred-${suffix}`,externalAuthority: "planner-e2e",
+    subject: snapshot.referenceKey,operator: "EVENT_OCCURRED",
+    object: { eventType: "EXECUTION_PROGRESS_OBSERVED" }
+  });
+  const occurredRetry = await predicates.evaluate(scope,occurred.predicate);
+  const noData = await predicates.evaluate(scope,{
+    predicateId: `predicate-no-data-${suffix}`,externalAuthority: "planner-e2e",
+    subject: { externalReferenceId: `unknown-${suffix}` },operator: "HAS_OBSERVED"
+  });
+  const factCountsAfter = await pool.query<{ identities: string;observations: string;world_events: string }>(
+    `SELECT (SELECT count(*) FROM world_reference_identity)::text AS identities,
+            (SELECT count(*) FROM world_observation)::text AS observations,
+            (SELECT count(*) FROM world_event)::text AS world_events`
+  );
+  if (occurred.evaluation.status!=="SUPPORTED" || occurred.evaluation.supportingEvidenceIds.length!==1 ||
+      occurredRetry.evaluation.evaluationId!==occurred.evaluation.evaluationId ||
+      noData.evaluation.status!=="NO_DATA" ||
+      JSON.stringify(factCountsBefore.rows[0])!==JSON.stringify(factCountsAfter.rows[0])) {
+    throw new Error("external predicate evaluation E2E invariant failed");
+  }
   process.stdout.write(`${JSON.stringify({
     result: "OPERATIONAL_EVENT_STORE_E2E_PASS",
     scope,eventId,worldVersion: accepted.event.worldVersion,
@@ -157,6 +185,12 @@ try {
     readContract: {
       taskCount: found.result.tasks.length,timelineEvents: readTimeline.result.events.length,
       crossScopeTaskCount: crossScope.result.tasks.length,scopeDigest: found.snapshot.scopeDigest
+    },
+    predicateEvaluation: {
+      supportedStatus: occurred.evaluation.status,noDataStatus: noData.evaluation.status,
+      idempotentEvaluationId: occurred.evaluation.evaluationId,
+      supportingEvidence: occurred.evaluation.supportingEvidenceIds.length,
+      worldFactsUnchanged: true
     }
   })}\n`);
 } finally {
