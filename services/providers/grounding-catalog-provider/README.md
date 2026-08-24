@@ -11,3 +11,9 @@ Runtime configuration requires `GROUNDING_CATALOG_DATABASE_URL`,
 Use the `gowm_reference_service` login for reference mode and
 `gowm_catalog_service` for dataset mode, and `gowm_evidence_service` for World
 Evidence plus Result Registry mode.
+
+The hash-locked Gateway deployment set is
+`config/grounding-gateway-registry.json`. Regenerate the three full Provider
+Protocol manifests with `npx tsx scripts/sync-grounding-provider-contracts.ts`;
+the platform test suite compares those artifacts byte-for-byte with the runtime
+manifests before the deployment locks are accepted.

@@ -1,4 +1,8 @@
-import type { CapabilityDescriptor, CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
+import {
+  getContractSchemaHash,
+  type CapabilityDescriptor,
+  type CapabilityProviderManifest
+} from "../../../../packages/platform/contract-runtime/src/index.js";
 import {
   createProviderRuntime,
   sha256,
@@ -112,7 +116,17 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
     snapshotPolicy: { dataSnapshot: "REQUIRED", computeSnapshot: "REQUIRED" },
     ports: {
       inputs: [{ name: "request", schemaUri: schemas.inputSchemaUri, schemaHash: schemas.inputSchemaHash, valueKind: "ANY", unitSemantics: "UNSPECIFIED" }],
-      outputs: [{ name: "result", schemaUri: schemas.outputSchemaUri, schemaHash: schemas.outputSchemaHash, valueKind: listOperation ? "ROW_SET" : "ANY", unitSemantics: "UNSPECIFIED" }]
+      outputs: [
+        { name: "result", schemaUri: schemas.outputSchemaUri, schemaHash: schemas.outputSchemaHash, valueKind: listOperation ? "ROW_SET" : "ANY", unitSemantics: "UNSPECIFIED" },
+        ...(["reference.resolve", "reference.search"].includes(operationId) ? [{
+          name: "candidateReferenceKey",
+          path: "/resolutions/0/candidates/0/candidate/referenceKey",
+          schemaUri: "urn:gowm:v0.4:reference-key",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.4:reference-key"),
+          valueKind: "REFERENCE_KEY" as const,
+          unitSemantics: "UNSPECIFIED" as const
+        }] : [])
+      ]
     }
   };
   return {

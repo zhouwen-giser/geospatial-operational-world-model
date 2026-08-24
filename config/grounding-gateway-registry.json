@@ -1,0 +1,41 @@
+{
+  "configVersion": "1.0",
+  "providers": [
+    {
+      "providerId": "gowm.reference-catalog",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:071f93af7b3a738c407ae337db285b5afd4250d552c1f1564b319ae4fc9d3e2f",
+      "manifestHash": "sha256:d41d8de82139e59cda3fb72a1b3130a51a6d85dcf001ae4374f933768c0864ab",
+      "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
+      "endpoint": "http://reference-catalog-provider:8090",
+      "approvalId": "grounding-reference-catalog-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.dataset-catalog",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:cdb47b50ae8ddf25feb6b616bfa3aef5f1791549064befd6de55d2b0ee8b048b",
+      "manifestHash": "sha256:609785cfcf7073ab129fe66b54ced9cdb9c1a943203d48098c418470874f8598",
+      "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
+      "endpoint": "http://dataset-catalog-provider:8091",
+      "approvalId": "grounding-dataset-catalog-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "DATASET_CATALOG_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.world-evidence",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:933b0ce8bfbcc76801edfe3352085a48a6147ae87600398f38657a254f93f7be",
+      "manifestHash": "sha256:09e5dc0e09f05bb6997c21344814b0d7d57e835a6db9c9adade2c15fd15df420",
+      "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
+      "endpoint": "http://world-evidence-provider:8093",
+      "approvalId": "grounding-world-evidence-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "WORLD_EVIDENCE_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    }
+  ]
+}

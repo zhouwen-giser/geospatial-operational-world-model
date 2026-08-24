@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { getContractSchemaHash } from "../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError } from "../../packages/platform/provider-sdk/src/index.js";
@@ -5,6 +6,7 @@ import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "..
 import { decodeEvidenceCursor, encodeEvidenceCursor } from "../../services/providers/grounding-catalog-provider/src/evidence-cursor.js";
 import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
 import type { CatalogSqlPool } from "../../services/providers/grounding-catalog-provider/src/types.js";
+import { loadControlledProviderDeployments } from "../../services/gateway/world-capability-gateway/src/config.js";
 
 const pool: CatalogSqlPool = {
   async connect() {
@@ -26,6 +28,14 @@ describe("grounding catalog providers", () => {
       expect(capability.inputSchemaHash).toBe(getContractSchemaHash(capability.inputSchemaUri));
       expect(capability.outputSchemaHash).toBe(getContractSchemaHash(capability.outputSchemaUri));
     }
+    expect(provider.runtime.manifest.capabilities.find((capability) => capability.operationId === "reference.resolve")?.ports.outputs).toContainEqual({
+      name: "candidateReferenceKey",
+      path: "/resolutions/0/candidates/0/candidate/referenceKey",
+      schemaUri: "urn:gowm:v0.4:reference-key",
+      schemaHash: getContractSchemaHash("urn:gowm:v0.4:reference-key"),
+      valueKind: "REFERENCE_KEY",
+      unitSemantics: "UNSPECIFIED"
+    });
   });
 
   it("registers Dataset/Layer/Feature operations as dataset-scoped", () => {
@@ -109,5 +119,22 @@ describe("grounding catalog providers", () => {
       scopeDigest,
       snapshotVersion: "sha256:changed"
     }, cursorSecret)).toThrow(ProviderProtocolError);
+  });
+
+  it("loads the controlled Grounding Gateway registry with frozen full manifests", async () => {
+    const deployments = await loadControlledProviderDeployments(resolve("config/grounding-gateway-registry.json"));
+    expect(deployments.map((deployment) => deployment.providerId)).toEqual([
+      "gowm.reference-catalog", "gowm.dataset-catalog", "gowm.world-evidence"
+    ]);
+    expect(deployments.flatMap((deployment) => deployment.approvedManifest.capabilities)).toHaveLength(20);
+    expect(deployments.every((deployment) =>
+      deployment.approvedManifest.provider.implementationDigest === deployment.implementationDigest
+    )).toBe(true);
+    const modes = ["reference", "dataset", "evidence"] as const;
+    for (const [index, mode] of modes.entries()) {
+      expect(deployments[index]?.approvedManifest).toEqual(
+        createGroundingCatalogProvider({ mode, pool, cursorSecret }).runtime.manifest
+      );
+    }
   });
 });
