@@ -2,6 +2,7 @@ import { z } from "zod";
 import type {
   GowmV04OperationalTaskEvent,
   GowmV04OperationalTaskSnapshot,
+  GowmV04CorrelationFinding,
   GowmV04CommonReferenceKey,
   GowmV04ExternalCorrelationClaim
 } from "../../platform/contract-runtime/src/generated/contracts.js";
@@ -21,7 +22,7 @@ export const OPERATIONAL_EVENT_TYPES = [
   "EXECUTION_CANCELLED_OBSERVED","OBSERVATION_GAP_OPENED","OBSERVATION_GAP_CLOSED"
 ] as const;
 
-const ReferenceKeySchema = z.object({
+export const OperationalReferenceKeySchema = z.object({
   namespace: z.literal("gowm"),
   kind: z.enum(REFERENCE_KINDS),
   id: z.string().regex(/^wrf_[0-9a-f]{32}$/u),
@@ -36,7 +37,7 @@ const EvidenceRefSchema = z.object({
   observedAt: z.iso.datetime({ offset: true }).optional()
 }).strict();
 
-const ExternalCorrelationClaimSchema = z.object({
+export const OperationalCorrelationClaimSchema = z.object({
   claimId: z.string().min(1),
   externalAuthority: z.string().min(1),
   externalKind: z.enum([
@@ -64,14 +65,14 @@ export const OperationalEventIngestSchema = z.object({
   operationalTaskId: z.string().min(1).max(256),
   eventType: z.enum(OPERATIONAL_EVENT_TYPES),
   eventTime: z.iso.datetime({ offset: true }),
-  subjectReferenceKey: ReferenceKeySchema.optional(),
-  actorReferenceKeys: z.array(ReferenceKeySchema).max(100),
-  targetReferenceKeys: z.array(ReferenceKeySchema).max(100),
+  subjectReferenceKey: OperationalReferenceKeySchema.optional(),
+  actorReferenceKeys: z.array(OperationalReferenceKeySchema).max(100),
+  targetReferenceKeys: z.array(OperationalReferenceKeySchema).max(100),
   geometryRef: z.string().min(1).max(2048).optional(),
   payload: z.record(z.string(), z.unknown()),
   confidence: z.number().min(0).max(1).optional(),
   provenance: z.array(EvidenceRefSchema).min(1).max(100),
-  correlationClaims: z.array(ExternalCorrelationClaimSchema).max(32).optional()
+  correlationClaims: z.array(OperationalCorrelationClaimSchema).max(32).optional()
 }).strict().superRefine((event, context) => {
   for (const claim of event.correlationClaims ?? []) {
     if (claim.externalValue === event.operationalTaskId) {
@@ -88,6 +89,7 @@ export const OperationalEventIngestSchema = z.object({
 export type OperationalEventIngest = z.infer<typeof OperationalEventIngestSchema>;
 export type OperationalTaskEvent = GowmV04OperationalTaskEvent;
 export type OperationalTaskSnapshot = GowmV04OperationalTaskSnapshot;
+export type CorrelationFinding = GowmV04CorrelationFinding;
 export type OperationalReferenceKey = GowmV04CommonReferenceKey;
 export type OperationalCorrelationClaim = GowmV04ExternalCorrelationClaim;
 
@@ -101,6 +103,24 @@ export function assertOperationalTaskEvent(event: unknown): asserts event is Ope
 
 export function assertOperationalTaskSnapshot(snapshot: unknown): asserts snapshot is OperationalTaskSnapshot {
   assertContract<OperationalTaskSnapshot>("gowm-v0.4/operational-task-snapshot.schema.json",snapshot);
+}
+
+export const CorrelationResolveInputSchema = z.object({
+  dataScopeKey: z.string().min(1).max(256),
+  correlationHint: OperationalCorrelationClaimSchema,
+  actorReferenceKeys: z.array(OperationalReferenceKeySchema).max(100).default([]),
+  timeRange: z.object({
+    from: z.iso.datetime({ offset: true }).optional(),
+    to: z.iso.datetime({ offset: true }).optional()
+  }).strict().refine((range) => !range.from || !range.to || Date.parse(range.to)>=Date.parse(range.from), {
+    message: "timeRange.to must not precede timeRange.from"
+  }).optional()
+}).strict();
+
+export type CorrelationResolveInput = z.infer<typeof CorrelationResolveInputSchema>;
+
+export function assertCorrelationFinding(finding: unknown): asserts finding is CorrelationFinding {
+  assertContract<CorrelationFinding>("gowm-v0.4/correlation-finding.schema.json",finding);
 }
 
 export function validateOperationalEventTime(

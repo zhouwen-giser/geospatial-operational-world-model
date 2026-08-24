@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import pg from "pg";
 import { OperationalEventRepository } from "../../packages/runtime/src/operational-event-repository.js";
 import { OperationalProjectionRepository } from "../../packages/runtime/src/operational-projection-repository.js";
+import { OperationalCorrelationRepository } from "../../packages/runtime/src/operational-correlation-repository.js";
 import { closeDatabasePool } from "../../packages/runtime/src/db.js";
 import { buildObservationApp } from "../../services/observation-ingest/src/app.js";
 
@@ -25,6 +26,7 @@ try {
   );
   const repository = new OperationalEventRepository(pool);
   const projections = new OperationalProjectionRepository(pool);
+  const correlations = new OperationalCorrelationRepository(pool);
   const input = {
     dataScopeKey: scope,
     sourceAuthority: "provider-e2e",
@@ -105,6 +107,25 @@ try {
       snapshot.observability!=="FRESH" || replay.currentHash!==replay.replayHash) {
     throw new Error("operational four-dimensional projection E2E invariant failed");
   }
+  const exactFinding = await correlations.resolve({
+    dataScopeKey: scope,correlationHint: input.correlationClaims[0],actorReferenceKeys: []
+  });
+  const noMatchFinding = await correlations.resolve({
+    dataScopeKey: scope,
+    correlationHint: {
+      claimId: `missing-${suffix}`,externalAuthority: "planner-missing",externalKind: "EXECUTION_INTENT",
+      externalValue: `missing-${suffix}`,matchBasis: "PROPAGATED_CORRELATION_ID",confidence: 0.2,
+      observedAt: eventTime,receivedAt: receivedTime,evidenceIds: []
+    },
+    actorReferenceKeys: []
+  });
+  const correlationReplay = await correlations.replay(scope,exactFinding.findingId);
+  if (exactFinding.relation!=="REALIZES" || exactFinding.matchBasis!=="PROVIDER_DECLARED" ||
+      exactFinding.operationalTaskReferenceKey?.id!==snapshot.referenceKey.id ||
+      noMatchFinding.relation!=="NO_MATCH_FOUND" || "operationalTaskReferenceKey" in noMatchFinding ||
+      correlationReplay!=="MATCH") {
+    throw new Error("operational correlation E2E invariant failed");
+  }
   process.stdout.write(`${JSON.stringify({
     result: "OPERATIONAL_EVENT_STORE_E2E_PASS",
     scope,eventId,worldVersion: accepted.event.worldVersion,
@@ -115,6 +136,10 @@ try {
       projected: operationalProjected,controlState: snapshot.controlState,activityState: snapshot.activityState,
       outcomeVerification: snapshot.outcomeVerification,observability: snapshot.observability,
       worldVersion: snapshot.worldVersion,replayHash: replay.replayHash
+    },
+    correlation: {
+      exactRelation: exactFinding.relation,exactBasis: exactFinding.matchBasis,
+      noMatchRelation: noMatchFinding.relation,replay: correlationReplay
     }
   })}\n`);
 } finally {
