@@ -1,0 +1,14 @@
+{
+  "phase": "S01",
+  "status": "PASS",
+  "stableContentSha": "2ffd012ae421092c0d957877404038ddcf90cdab",
+  "acceptance": {
+    "AC-S018": "PASS_EXACT_LOCAL_REMOTE_CONTENT_SHA",
+    "AC-S019": "PASS_REQUIRED_GATE_BEFORE_REVIEW_READINESS",
+    "AC-S020": "PASS_PROTECTED_ACTIONS_NOT_RUN",
+    "AC-S021": "PASS_NETWORK_READY_ROUTING_READY",
+    "AC-S022": "PASS_COMPLETE_MARKER"
+  },
+  "required": { "total": 154, "passed": 154, "blocked": 0, "failed": 0, "notRun": 0 },
+  "optional": { "AC-R027": "NOT_RUN_OPTIONAL" }
+}

@@ -59,7 +59,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] G00 Gateway Integration
 - [x] T00 Security/Performance/Recovery
 - [x] S00 Documentation/Version
-- [ ] S01 Final Candidate
+- [x] S01 Final Candidate
 
 ## Decisions
 
@@ -113,7 +113,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - G00 real run `g00-20260825t1200` registered Network/Route providers in the controlled Gateway, completed Direct Snap and Route, executed a typed World-state→Route→Verify DAG, failed closed on a wrong schema lock, cancelled an async job, and replayed the completed job after reconstructing the Gateway runtime over the same store.
 - T00 fresh/upgrade migration acceptance passed with migrations 001–047 and 32 SQL assertions. Route run `r01-final-20260825t1700` proved all remaining required Route cases, including exact PostGIS Avoid Area through a least-privilege scoped read function. S/M fixture p95 was 11.437 ms Snap, 11.000 ms Shortest Path, and 11.002 ms for a bounded 2×2 Matrix. PostgreSQL restart recovery preserved exactly one request/result/candidate, redaction tests covered tokens/locations/routes, and both DB SPDX and service CycloneDX SBOMs were generated.
 - S00 converges README, authority ADR, operations/recovery runbook, CHANGELOG, PROJECT_STATUS, VERSION and npm lock metadata on 0.5.0. The documentation explicitly separates pinned route computation from Operational Reality, dispatch, coverage, multi-vehicle optimization, and production SLO/HA/PITR claims.
+- S01 reconciles all 154 Required acceptance rows to PASS with no failed, blocked, or Required NOT_RUN rows. Stable content SHA `2ffd012ae421092c0d957877404038ddcf90cdab` matched local, origin, `ls-remote`, and Draft PR head before the evidence-only report commit. Optional AC-R027 remains NOT_RUN and PREVIEW; protected publication actions remain NOT_RUN.
 
 ## Remaining work
 
-Execute S01 exact-SHA and Required-matrix reconciliation. All implementation, runtime, and documentation/version gates pass.
+Complete. Preserve Draft PR #3 for review; merge, tag, release, image publication, and deployment remain separately controlled.

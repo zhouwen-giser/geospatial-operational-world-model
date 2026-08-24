@@ -1,0 +1,35 @@
+{
+  "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
+  "decision": "PASS",
+  "requiredCases": 154,
+  "passedCases": 154,
+  "blockedCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "passedRanges": [
+    "AC-B001..AC-B008",
+    "AC-A001..AC-A010",
+    "AC-D001..AC-D007",
+    "AC-N001..AC-N048",
+    "AC-P001..AC-P020",
+    "AC-R001..AC-R026",
+    "AC-R028",
+    "AC-G001..AC-G012",
+    "AC-S001..AC-S022"
+  ],
+  "optional": [{ "id": "AC-R027", "status": "NOT_RUN_OPTIONAL" }],
+  "candidateContentSha": "2ffd012ae421092c0d957877404038ddcf90cdab",
+  "candidateContentShaEvidence": {
+    "local": "2ffd012ae421092c0d957877404038ddcf90cdab",
+    "origin": "2ffd012ae421092c0d957877404038ddcf90cdab",
+    "lsRemote": "2ffd012ae421092c0d957877404038ddcf90cdab",
+    "draftPrHead": "2ffd012ae421092c0d957877404038ddcf90cdab"
+  },
+  "s01": {
+    "AC-S018": "PASS_EXACT_LOCAL_REMOTE_CONTENT_SHA",
+    "AC-S019": "PASS_ALL_REQUIRED_GATES_BEFORE_REVIEW_READINESS_DRAFT_RETAINED_BY_DELIVERY_INSTRUCTION",
+    "AC-S020": "PASS_NO_MERGE_TAG_RELEASE_IMAGE_PUBLICATION_OR_DEPLOY",
+    "AC-S021": "PASS_NETWORK_READY_AND_ROUTING_READY",
+    "AC-S022": "PASS_STABLE_CANDIDATE_COMPLETE_MARKER"
+  }
+}
