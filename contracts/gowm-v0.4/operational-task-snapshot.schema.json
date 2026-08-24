@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:operational-task-snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "referenceKey",
+    "operationalTaskId",
+    "taskType",
+    "controlState",
+    "activityState",
+    "outcomeVerification",
+    "observability",
+    "actorReferenceKeys",
+    "targetReferenceKeys",
+    "evidenceIds",
+    "worldVersion",
+    "projectionPolicyVersion"
+  ],
+  "properties": {
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "operationalTaskId": {
+      "type": "string"
+    },
+    "taskType": {
+      "type": "string"
+    },
+    "controlState": {
+      "enum": [
+        "NO_CONTROL_EVENT",
+        "REQUESTED_OBSERVED",
+        "ACCEPTED_OBSERVED",
+        "REJECTED_OBSERVED",
+        "COMPLETED_REPORTED",
+        "FAILED_REPORTED",
+        "CANCELLED_REPORTED"
+      ]
+    },
+    "activityState": {
+      "enum": [
+        "NOT_OBSERVED",
+        "STARTED_OBSERVED",
+        "ACTIVE_OBSERVED",
+        "PAUSED_OBSERVED",
+        "STOPPED_OBSERVED",
+        "UNKNOWN"
+      ]
+    },
+    "outcomeVerification": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "UNVERIFIED",
+        "PARTIALLY_VERIFIED",
+        "VERIFIED",
+        "CONTRADICTED",
+        "INDETERMINATE"
+      ]
+    },
+    "observability": {
+      "enum": [
+        "FRESH",
+        "STALE",
+        "OBSERVATION_GAP",
+        "NO_DATA"
+      ]
+    },
+    "actorReferenceKeys": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      }
+    },
+    "targetReferenceKeys": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      }
+    },
+    "firstObservedAt": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "lastObservedAt": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "lastReceivedAt": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "evidenceIds": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "string"
+      }
+    },
+    "worldVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "projectionPolicyVersion": {
+      "type": "string"
+    }
+  }
+}

@@ -1387,6 +1387,362 @@ export type SpatialSummarizeAreaInputV1 = SpatialProviderOperationContractsV1Sum
 
 export type SpatialSummarizeAreaOutputV1 = SpatialProviderOperationContractsV1SummarizeOutput;
 
+export type GowmV04CatalogQueryRequest = {
+  cursor?: string;
+  limit?: number;
+  query?: string;
+  referenceKey?: GowmV04CommonReferenceKey;
+  schemaVersion: "1.0";
+  types?: Array<string>;
+};
+
+export type GowmV04CatalogResult = {
+  items: Array<unknown>;
+  nextCursor?: string;
+  schemaVersion: "1.0";
+  truncated: boolean;
+};
+
+export type GowmV04Common = Record<string, unknown>;
+
+export type GowmV04CommonDateTime = string;
+
+export type GowmV04CommonEvidenceRef = {
+  authority: string;
+  evidenceId: string;
+  evidenceType: string;
+  observedAt?: GowmV04CommonDateTime;
+  worldVersion?: number;
+};
+
+export type GowmV04CommonGeometrySummary = {
+  bbox?: [number, number, number, number] | [number, number, number, number, number] | [number, number, number, number, number, number];
+  centroid?: [number, number] | [number, number, number];
+  crs?: string;
+  geometryRef?: string;
+  geometryType: string;
+};
+
+export type GowmV04CommonReferenceKey = {
+  id: string;
+  kind: "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATA_SCOPE" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "QUERY_RESULT" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "OPERATIONAL_TASK";
+  namespace: "gowm";
+  version: string;
+};
+
+export type GowmV04CommonSha256 = string;
+
+export type GowmV04CommonTimeRange = {
+  from?: GowmV04CommonDateTime;
+  to?: GowmV04CommonDateTime;
+};
+
+export type GowmV04CorrelationFinding = {
+  correlationConfidence?: number;
+  evidenceIds: Array<string>;
+  externalAuthority: string;
+  externalKind: string;
+  externalValue: string;
+  findingId: string;
+  matchBasis: "PROPAGATED_CORRELATION_ID" | "PROVIDER_DECLARED" | "MANUAL_CONFIRMATION" | "RESOURCE_AND_TIME_MATCH" | "SPATIOTEMPORAL_INFERENCE";
+  methodVersion: string;
+  operationalEventIds: Array<string>;
+  operationalTaskReferenceKey?: GowmV04CommonReferenceKey;
+  relation: "REPORTS_EXECUTION_OF" | "REALIZES" | "PARTIALLY_REALIZES" | "POSSIBLY_CORRESPONDS_TO" | "NO_MATCH_FOUND" | "CONFLICTING_MATCHES";
+  worldVersion: number;
+};
+
+export type GowmV04DatasetDescriptor = {
+  currentVersion: string;
+  datasetKind: "VECTOR" | "RASTER" | "ELEVATION" | "NETWORK" | "POINT_CLOUD" | "TILESET" | "CURRENT_PROJECTION";
+  name: string;
+  referenceKey: GowmV04CommonReferenceKey;
+  versions: Array<{
+  contentHash: GowmV04CommonSha256;
+  crs?: string;
+  publishedAt: GowmV04CommonDateTime;
+  retiredAt?: GowmV04CommonDateTime;
+  schemaVersion: string;
+  source?: string;
+  sourceVersion?: string;
+  version: string;
+}>;
+};
+
+export type GowmV04DerivedReference = {
+  artifactRef?: string;
+  computeSnapshotHash: GowmV04CommonSha256;
+  dataSnapshotHash: GowmV04CommonSha256;
+  derivedType: "GEOMETRY" | "REFERENCE_SET" | "RANKED_REFERENCE_SET" | "ANALYSIS_RESULT";
+  geometrySummary?: GowmV04CommonGeometrySummary;
+  inputReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  methodVersion: string;
+  operator: string;
+  referenceKey: GowmV04CommonReferenceKey;
+  revalidationRequired: boolean;
+  sourceNodeId?: string;
+  sourceQueryId: string;
+  validUntil?: GowmV04CommonDateTime;
+};
+
+export type GowmV04ExtensionProviderManifest = {
+  operations: Array<{
+  dataSnapshot: "REQUIRED" | "OPTIONAL";
+  inputSchemaFile: string;
+  inputSchemaHash: string;
+  maturity: "EXPERIMENTAL" | "PREVIEW" | "STABLE" | "DEPRECATED";
+  operationId: string;
+  operationVersion: string;
+  outputSchemaFile: string;
+  outputSchemaHash: string;
+  scopePolicy: "DATA_SCOPE_REQUIRED" | "DATASET_SCOPE_REQUIRED";
+}>;
+  providerId: string;
+  providerVersion: string;
+};
+
+export type GowmV04ExternalCorrelationClaim = {
+  claimId: string;
+  confidence?: number;
+  evidenceIds: Array<string>;
+  externalAuthority: string;
+  externalKind: "PLANNING_TASK" | "PLANNING_STEP" | "EXECUTION_INTENT" | "OPERATION_CORRELATION" | "PROVIDER_ACTION" | "DEVICE_COMMAND";
+  externalValue: string;
+  matchBasis: "PROPAGATED_CORRELATION_ID" | "PROVIDER_DECLARED" | "MANUAL_CONFIRMATION" | "RESOURCE_AND_TIME_MATCH" | "SPATIOTEMPORAL_INFERENCE";
+  observedAt: GowmV04CommonDateTime;
+  receivedAt: GowmV04CommonDateTime;
+  relationHint?: "REPORTS_EXECUTION_OF" | "REALIZES" | "RELATED_TO";
+};
+
+export type GowmV04ExternalPredicate = {
+  externalAuthority: string;
+  object?: unknown;
+  operator: "IS_INSIDE" | "IS_NEAR" | "INTERSECTS" | "HAS_REACHED" | "HAS_STOPPED" | "HAS_OBSERVED" | "EVENT_OCCURRED" | "STATE_EQUALS";
+  parameters?: Record<string, unknown>;
+  predicateId: string;
+  sourceVersion?: string;
+  subject: (GowmV04CommonReferenceKey) | ({
+  externalReferenceId: string;
+});
+  validTime?: GowmV04CommonTimeRange;
+};
+
+export type GowmV04LayerDescriptor = {
+  crs?: string;
+  currentVersion: string;
+  datasetReferenceKey: GowmV04CommonReferenceKey;
+  geometryType?: string;
+  layerType: string;
+  name: string;
+  referenceKey: GowmV04CommonReferenceKey;
+  validTime?: GowmV04CommonTimeRange;
+};
+
+export type GowmV04ObservabilityAssessment = {
+  assessmentId: string;
+  coverageSufficient: boolean;
+  evidenceIds: Array<string>;
+  gapIntervals?: Array<GowmV04CommonTimeRange>;
+  lastReliableObservationAt?: GowmV04CommonDateTime;
+  policyVersion: string;
+  status: "FRESH" | "STALE" | "OBSERVATION_GAP" | "NO_DATA" | "SOURCE_UNHEALTHY" | "INDETERMINATE";
+  warnings?: Array<string>;
+  worldVersion: number;
+};
+
+export type GowmV04OperationalEventTimeline = {
+  events: Array<GowmV04OperationalTaskEvent>;
+  nextCursor?: string;
+  operationalTaskReferenceKey?: GowmV04CommonReferenceKey;
+  schemaVersion: "1.0";
+  truncated: boolean;
+};
+
+export type GowmV04OperationalQueryRequest = {
+  actorReferenceKeys?: Array<GowmV04CommonReferenceKey>;
+  correlationHints?: Array<GowmV04ExternalCorrelationClaim>;
+  cursor?: string;
+  limit?: number;
+  referenceKey?: GowmV04CommonReferenceKey;
+  schemaVersion: "1.0";
+  timeRange?: GowmV04CommonTimeRange;
+};
+
+export type GowmV04OperationalQueryResult = {
+  correlationFindings?: Array<GowmV04CorrelationFinding>;
+  nextCursor?: string;
+  schemaVersion: "1.0";
+  tasks: Array<GowmV04OperationalTaskSnapshot>;
+  truncated: boolean;
+};
+
+export type GowmV04OperationalTaskEvent = {
+  actorReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  confidence?: number;
+  correlationClaims?: Array<GowmV04ExternalCorrelationClaim>;
+  eventId: string;
+  eventTime: GowmV04CommonDateTime;
+  eventType: "CONTROL_REQUEST_OBSERVED" | "CONTROL_ACCEPTED_OBSERVED" | "CONTROL_REJECTED_OBSERVED" | "EXECUTION_STARTED_OBSERVED" | "EXECUTION_PROGRESS_OBSERVED" | "EXECUTION_PAUSED_OBSERVED" | "EXECUTION_STOPPED_OBSERVED" | "CONTROL_COMPLETED_REPORTED" | "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED" | "PHYSICAL_EFFECT_CONFIRMED" | "PHYSICAL_EFFECT_CONTRADICTED" | "EXECUTION_FAILED_OBSERVED" | "EXECUTION_CANCELLED_OBSERVED" | "OBSERVATION_GAP_OPENED" | "OBSERVATION_GAP_CLOSED";
+  geometryRef?: string;
+  operationalTaskId: string;
+  payload: Record<string, unknown>;
+  provenance: Array<GowmV04CommonEvidenceRef>;
+  receivedTime: GowmV04CommonDateTime;
+  subjectReferenceKey?: GowmV04CommonReferenceKey;
+  targetReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  worldVersion: number;
+};
+
+export type GowmV04OperationalTaskSnapshot = {
+  activityState: "NOT_OBSERVED" | "STARTED_OBSERVED" | "ACTIVE_OBSERVED" | "PAUSED_OBSERVED" | "STOPPED_OBSERVED" | "UNKNOWN";
+  actorReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  controlState: "NO_CONTROL_EVENT" | "REQUESTED_OBSERVED" | "ACCEPTED_OBSERVED" | "REJECTED_OBSERVED" | "COMPLETED_REPORTED" | "FAILED_REPORTED" | "CANCELLED_REPORTED";
+  evidenceIds: Array<string>;
+  firstObservedAt?: GowmV04CommonDateTime;
+  lastObservedAt?: GowmV04CommonDateTime;
+  lastReceivedAt?: GowmV04CommonDateTime;
+  observability: "FRESH" | "STALE" | "OBSERVATION_GAP" | "NO_DATA";
+  operationalTaskId: string;
+  outcomeVerification: "NOT_APPLICABLE" | "UNVERIFIED" | "PARTIALLY_VERIFIED" | "VERIFIED" | "CONTRADICTED" | "INDETERMINATE";
+  projectionPolicyVersion: string;
+  referenceKey: GowmV04CommonReferenceKey;
+  targetReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  taskType: string;
+  worldVersion: number;
+};
+
+export type GowmV04PredicateEvaluation = {
+  assumptions: Array<string>;
+  contradictingEvidenceIds: Array<string>;
+  evaluatedAtWorldVersion: number;
+  evaluationId: string;
+  methodVersion: string;
+  observabilityAssessment?: GowmV04ObservabilityAssessment;
+  predicateId: string;
+  status: "SUPPORTED" | "NOT_SUPPORTED" | "PARTIALLY_SUPPORTED" | "INDETERMINATE" | "NO_DATA" | "CONFLICTING";
+  supportingEvidenceIds: Array<string>;
+  warnings: Array<string>;
+};
+
+export type GowmV04QueryResultReference = {
+  artifactRefs?: Array<string>;
+  computeSnapshotHash: GowmV04CommonSha256;
+  createdAt: GowmV04CommonDateTime;
+  dataSnapshotHash: GowmV04CommonSha256;
+  queryId: string;
+  referenceKey: GowmV04CommonReferenceKey;
+  resultHash: GowmV04CommonSha256;
+  status: "COMPLETED" | "PARTIAL" | "NO_DATA" | "INDETERMINATE";
+  validUntil?: GowmV04CommonDateTime;
+};
+
+export type ReferenceDescriptor = {
+  aliases?: Array<string>;
+  displayName: string;
+  geometrySummary?: GowmV04CommonGeometrySummary;
+  provenance: Array<GowmV04CommonEvidenceRef>;
+  referenceKey: GowmV04CommonReferenceKey;
+  referenceType: string;
+  revalidationRequired: boolean;
+  stateQuality?: {
+  freshnessMs?: number;
+  stale?: boolean;
+  stateConfidence?: number;
+};
+  validUntil?: GowmV04CommonDateTime;
+  version: {
+  objectVersion?: string;
+  referenceVersion: string;
+  worldVersion?: number;
+};
+};
+
+export type ReferenceKey = GowmV04CommonReferenceKey;
+
+export type ReferenceResolveRequest = {
+  context: {
+  anchorReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  language?: string;
+  mapViewport?: [number, number, number, number];
+};
+  limitPerMention: number;
+  mentions: Array<{
+  expectedKinds?: Array<string>;
+  mentionId: string;
+  semanticRole?: string;
+  surfaceText: string;
+}>;
+  schemaVersion: "1.0";
+};
+
+export type ReferenceResolveResult = {
+  resolutions: Array<{
+  candidates: Array<{
+  candidate: ReferenceDescriptor;
+  matchScore: number;
+  matchedBy: "EXACT_REFERENCE_KEY" | "EXACT_EXTERNAL_ID" | "EXACT_CODE" | "EXACT_CANONICAL_NAME" | "EXACT_ALIAS" | "PINYIN" | "FUZZY_NAME" | "SPATIAL_CONTEXT";
+}>;
+  mentionId: string;
+  status: "RESOLVED_EXACT" | "SUGGESTED_UNIQUE" | "AMBIGUOUS" | "UNRESOLVED" | "INVALID";
+}>;
+  resolverVersion: string;
+  schemaVersion: "1.0";
+  worldVersion: number;
+};
+
+export type GowmV04ReferenceSet = {
+  memberCount: number;
+  members: Array<GowmV04CommonReferenceKey>;
+  membersTruncated: boolean;
+  nextCursor?: string;
+  referenceKey: GowmV04CommonReferenceKey;
+  semanticType: string;
+  sourceQueryId: string;
+  validUntil?: GowmV04CommonDateTime;
+};
+
+export type GowmV04ReferenceValidateRequest = {
+  references: Array<{
+  expectedType?: string;
+  maximumAgeMs?: number;
+  minimumWorldVersion?: number;
+  referenceKey: GowmV04CommonReferenceKey;
+}>;
+  schemaVersion: "1.0";
+};
+
+export type GowmV04ReferenceValidateResult = {
+  results: Array<{
+  descriptor?: ReferenceDescriptor;
+  referenceKey: GowmV04CommonReferenceKey;
+  revalidationRequired: boolean;
+  status: "VALID" | "STALE" | "EXPIRED" | "NOT_FOUND" | "TYPE_MISMATCH" | "VERSION_CONFLICT" | "SCOPE_DENIED";
+  warnings?: Array<string>;
+}>;
+  schemaVersion: "1.0";
+};
+
+export type GowmV04SpatialFeatureDescriptor = {
+  displayName?: string;
+  featureType: string;
+  geometrySummary?: GowmV04CommonGeometrySummary;
+  layerReferenceKey: GowmV04CommonReferenceKey;
+  properties?: Record<string, unknown>;
+  referenceKey: GowmV04CommonReferenceKey;
+  validTime?: GowmV04CommonTimeRange;
+  version: string;
+};
+
+export type GowmV04WorldFactResult = {
+  evidence: Array<GowmV04CommonEvidenceRef>;
+  facts: Array<Record<string, unknown>>;
+  referenceKey: GowmV04CommonReferenceKey;
+  schemaVersion: "1.0";
+  unknowns: Array<string>;
+  warnings?: Array<string>;
+  worldVersion: number;
+};
+
 export type CapabilityCatalog = {
   catalogVersion: string;
   endpoints: Array<{
