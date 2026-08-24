@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C02",
+  "status": "BLOCKED_EXTERNAL",
+  "recordedAt": "2026-08-24T02:31:52.689Z",
+  "source": {
+    "branch": "codex/gowm-capability-platform-v0.2",
+    "implementationSha": "698fc77918a73ae7675b1df34efdc744ea202738",
+    "localSha": "698fc77918a73ae7675b1df34efdc744ea202738",
+    "remoteSha": "698fc77918a73ae7675b1df34efdc744ea202738",
+    "lockedMigrationsUnchanged": "001-014",
+    "appendOnlyRepairs": [
+      "015_world_query_claim_runtime_fix.sql",
+      "016_capability_port_path_contract_fix.sql"
+    ]
+  },
+  "runtime": {
+    "postgresql": "18.6",
+    "postgis": "3.6.4",
+    "mobilitydb": "1.3.0",
+    "h3Pg": "4.5.0",
+    "h3Js": "4.5.0",
+    "registryProviders": 6,
+    "registryOperations": 50
+  },
+  "acceptance": [
+    {
+      "id": "AC-C005",
+      "status": "PASS",
+      "evidence": "Fresh PostgreSQL install applied 001-016, repeat execution verified stored checksums, and all six assertion files passed."
+    },
+    {
+      "id": "AC-C006",
+      "status": "PASS",
+      "evidence": "A database built from historical immutable migrations 001-010 upgraded through 011-016; all six assertion files passed."
+    },
+    {
+      "id": "AC-C007",
+      "status": "BLOCKED_EXTERNAL",
+      "evidence": "The exact locked CRS, Geometry, Spatial archives and H3 Toolkit source revision are absent; no substitute implementation was used."
+    },
+    {
+      "id": "AC-C008",
+      "status": "BLOCKED_EXTERNAL",
+      "evidence": "The exact required CRS/Geometry/H3/Spatial DAGs cannot execute without the locked external Provider inputs."
+    },
+    {
+      "id": "AC-C009",
+      "status": "PASS",
+      "evidence": "A public dataScopeClaim injection was rejected with 422 INVALID_REQUEST before routing; real SQL scope and service-role assertions passed."
+    },
+    {
+      "id": "AC-C010",
+      "status": "PASS_AVAILABLE_RUNTIME",
+      "evidence": "Gateway stop/start produced durable Idempotent-Replay false then true; PostgreSQL restart recovered all assertions and Spatial/Situation readiness."
+    },
+    {
+      "id": "AC-C012",
+      "status": "PASS",
+      "evidence": "PR #1 remains Draft and unmerged; no tag, release, or deployment was performed."
+    }
+  ],
+  "realEvidence": [
+    "fresh and v0.1-upgrade PostgreSQL migrations/assertions",
+    "h3-js/h3-pg parity and live database operations",
+    "least-privilege six-provider durable Registry synchronization",
+    "Gateway to Situation Provider to PostgreSQL with durable replay",
+    "Gateway to Spatial Provider to gowm_spatial_v1",
+    "scope-injection rejection",
+    "Gateway and PostgreSQL restart recovery"
+  ],
+  "controlledEvidence": [
+    "runtime acceptance 28/28",
+    "database integration 1/1",
+    "full npm run verify"
+  ],
+  "blockers": [
+    {
+      "code": "V02_LOCKED_PROVIDER_INPUTS_ABSENT",
+      "affects": ["AC-C007", "AC-C008"],
+      "resolution": "Supply the exact immutable prior CRS, Geometry, Spatial archives and H3 Toolkit revision, then execute the required real DAG matrix."
+    }
+  ]
+}
