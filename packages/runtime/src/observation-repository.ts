@@ -46,12 +46,15 @@ export class ObservationRepository {
            source_revision_no,supersedes_observation_id,origin_kind,source_local_target_id,
            tracker_session_id,datastream_key,producer_pipeline_key,source_time_raw,source_time_ticks,
            source_time_value,result_time,source_emitted_time,upstream_received_time,source_processed_time,raw_reference,
-           payload_hash,quality_flags,entity_binding_status
+           payload_hash,quality_flags,entity_binding_status,
+           execution_intent_id,operation_correlation_id,external_planning_task_id,
+           external_planning_step_id,provider_action_id,device_command_id
          ) VALUES (
            $1,$2,$3,$4,$5,$6,
            CASE WHEN $7::jsonb IS NULL THEN NULL ELSE ST_SetSRID(ST_Force2D(ST_GeomFromGeoJSON($7::jsonb)),4326) END,
            $8,$9::jsonb,$10,$11,$12,$13,$14,$15::jsonb,$16,$17,$18,$19,$20,$21,$22,$23,$24,
-           $25,$26,$27,$28,$29::numeric,$30,$31,$32,$33,$34,$35,$36,$37::text[],$38
+           $25,$26,$27,$28,$29::numeric,$30,$31,$32,$33,$34,$35,$36,$37::text[],$38,
+           $39,$40,$41,$42,$43,$44
          ) ON CONFLICT DO NOTHING RETURNING observation_id`,
         [
           observation.observationId,observation.observer.type,observation.observer.id,
@@ -69,7 +72,10 @@ export class ObservationRepository {
           bundle.timeSolution.sourceTime ?? null,bundle.timeSolution.resultTime ?? null,
           bundle.timeSolution.sourceEmittedTime ?? null,bundle.timeSolution.upstreamReceivedTime ?? null,
           bundle.timeSolution.processedTime ?? null,bundle.rawReference,bundle.payloadHash,
-          bundle.qualityFlags,bundle.entityBindingStatus
+          bundle.qualityFlags,bundle.entityBindingStatus,
+          bundle.executionIntentId ?? null,bundle.operationCorrelationId ?? null,
+          bundle.externalPlanningTaskId ?? null,bundle.externalPlanningStepId ?? null,
+          bundle.providerActionId ?? null,bundle.deviceCommandId ?? null
         ]
       );
 
@@ -164,6 +170,8 @@ export class ObservationRepository {
         causationId: observation.observationId,
         ...(observation.geometry ? { geometry: observation.geometry } : {}),
         timestamp: observation.receivedAt,
+        dataScopeKey: bundle.dataScopeKey,
+        ...externalCorrelationFields(bundle),
         payload: {
           observationId: observation.observationId,
           observer: observation.observer,
@@ -579,6 +587,17 @@ export class ObservationRepository {
       [observationId,message.slice(0,4_000)]
     );
   }
+}
+
+function externalCorrelationFields(bundle: CanonicalObservationBundle) {
+  return {
+    ...(bundle.executionIntentId === undefined ? {} : { executionIntentId: bundle.executionIntentId }),
+    ...(bundle.operationCorrelationId === undefined ? {} : { operationCorrelationId: bundle.operationCorrelationId }),
+    ...(bundle.externalPlanningTaskId === undefined ? {} : { externalPlanningTaskId: bundle.externalPlanningTaskId }),
+    ...(bundle.externalPlanningStepId === undefined ? {} : { externalPlanningStepId: bundle.externalPlanningStepId }),
+    ...(bundle.providerActionId === undefined ? {} : { providerActionId: bundle.providerActionId }),
+    ...(bundle.deviceCommandId === undefined ? {} : { deviceCommandId: bundle.deviceCommandId })
+  };
 }
 
 function sha256(value: string): string {

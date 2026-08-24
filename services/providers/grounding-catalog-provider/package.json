@@ -1,0 +1,14 @@
+{
+  "name": "@gowm/grounding-catalog-provider",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/services/providers/grounding-catalog-provider/src/index.js"
+  },
+  "exports": {
+    ".": "./src/provider.ts"
+  }
+}

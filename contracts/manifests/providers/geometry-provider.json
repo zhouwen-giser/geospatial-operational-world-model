@@ -1,0 +1,1042 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.geometry.bridge",
+    "providerVersion": "0.2.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:b1eb384a02a8de948f11520b9fdbd882bddc4288c502782bff888b25c8d9b548",
+    "sourceRef": "urn:gowm:source:zip:geometry-tool-service:1.0.0"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "geometry.validate",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "VALIDATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.validate:input:1.0",
+      "inputSchemaHash": "sha256:1c6ac9e0f2e5332f1b50f57f48c2c679ac092fb33d4022854fd22ef812043b10",
+      "outputSchemaUri": "urn:gowm:capability:geometry.validate:output:1.0",
+      "outputSchemaHash": "sha256:a69b57fc43a7d434ed975c0e0c2435be145cba95568436e4723d3e13ba7135c8",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.validate:input:1.0",
+            "schemaHash": "sha256:1c6ac9e0f2e5332f1b50f57f48c2c679ac092fb33d4022854fd22ef812043b10",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.validate:output:1.0",
+            "schemaHash": "sha256:a69b57fc43a7d434ed975c0e0c2435be145cba95568436e4723d3e13ba7135c8",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "valid",
+            "path": "/valid",
+            "schemaUri": "urn:gowm:v0.2:value:boolean",
+            "schemaHash": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
+            "valueKind": "SCALAR",
+            "unitSemantics": "DIMENSIONLESS"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.normalize",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.normalize:input:1.0",
+      "inputSchemaHash": "sha256:2e37e045310887fce12d9ece486d845bbc9827dabe3959c87ba52f02eaa6fac8",
+      "outputSchemaUri": "urn:gowm:capability:geometry.normalize:output:1.0",
+      "outputSchemaHash": "sha256:62f71676dc1dff412f11725a217304015cc5b9d74b52aa5f5db27252dbacae69",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.normalize:input:1.0",
+            "schemaHash": "sha256:2e37e045310887fce12d9ece486d845bbc9827dabe3959c87ba52f02eaa6fac8",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.normalize:output:1.0",
+            "schemaHash": "sha256:62f71676dc1dff412f11725a217304015cc5b9d74b52aa5f5db27252dbacae69",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.force-2d",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.force-2d:input:1.0",
+      "inputSchemaHash": "sha256:f4b65a4834e59a6f4dafb1371017863b433710a915188298aaafdc4de6d2e6c6",
+      "outputSchemaUri": "urn:gowm:capability:geometry.force-2d:output:1.0",
+      "outputSchemaHash": "sha256:cd470db0a1d48f3f133a3868ac5a55b40e334b6dc9af1f75f8006b1ee16c6e2b",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.force-2d:input:1.0",
+            "schemaHash": "sha256:f4b65a4834e59a6f4dafb1371017863b433710a915188298aaafdc4de6d2e6c6",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.force-2d:output:1.0",
+            "schemaHash": "sha256:cd470db0a1d48f3f133a3868ac5a55b40e334b6dc9af1f75f8006b1ee16c6e2b",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.remove-repeated-points",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.remove-repeated-points:input:1.0",
+      "inputSchemaHash": "sha256:6be07afaa67052a3ab6699532f34f6c130da7fc0b2f0ecb8ee86a1d874089f20",
+      "outputSchemaUri": "urn:gowm:capability:geometry.remove-repeated-points:output:1.0",
+      "outputSchemaHash": "sha256:77ae07d87e788b6dfc36d40d2abc8694dde5bc9bf92ba40c9b424b26347dbfba",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.remove-repeated-points:input:1.0",
+            "schemaHash": "sha256:6be07afaa67052a3ab6699532f34f6c130da7fc0b2f0ecb8ee86a1d874089f20",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.remove-repeated-points:output:1.0",
+            "schemaHash": "sha256:77ae07d87e788b6dfc36d40d2abc8694dde5bc9bf92ba40c9b424b26347dbfba",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.centroid",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.centroid:input:1.0",
+      "inputSchemaHash": "sha256:00407643a4691e2327d1430a22425490591e0610be924bec0f54378d30df1109",
+      "outputSchemaUri": "urn:gowm:capability:geometry.centroid:output:1.0",
+      "outputSchemaHash": "sha256:fccf7c5d616030bda5be8e84c34337e4ea22b683f820b64ab908ba76f38ffda2",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.centroid:input:1.0",
+            "schemaHash": "sha256:00407643a4691e2327d1430a22425490591e0610be924bec0f54378d30df1109",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.centroid:output:1.0",
+            "schemaHash": "sha256:fccf7c5d616030bda5be8e84c34337e4ea22b683f820b64ab908ba76f38ffda2",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.bounding-box",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.bounding-box:input:1.0",
+      "inputSchemaHash": "sha256:3ffb7d752e645eeba4053f5c109a73dc98e501eb0ce5d1046e362219da83e4ed",
+      "outputSchemaUri": "urn:gowm:capability:geometry.bounding-box:output:1.0",
+      "outputSchemaHash": "sha256:f6c3a244e9421ddbd2ec42b31e781da68d2b5aed7bebe28f7a5a76e9cf1fd714",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.bounding-box:input:1.0",
+            "schemaHash": "sha256:3ffb7d752e645eeba4053f5c109a73dc98e501eb0ce5d1046e362219da83e4ed",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.bounding-box:output:1.0",
+            "schemaHash": "sha256:f6c3a244e9421ddbd2ec42b31e781da68d2b5aed7bebe28f7a5a76e9cf1fd714",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.geometry-hash",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.geometry-hash:input:1.0",
+      "inputSchemaHash": "sha256:dadb85a0a267a94e2662794b5dd68cd1daa090f110c6508c7240d5ca9fe2fed1",
+      "outputSchemaUri": "urn:gowm:capability:geometry.geometry-hash:output:1.0",
+      "outputSchemaHash": "sha256:006580b184f1c3e1a60d71a9ae25f6f692238357ffccfe426a51ee32ce8d3683",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.geometry-hash:input:1.0",
+            "schemaHash": "sha256:dadb85a0a267a94e2662794b5dd68cd1daa090f110c6508c7240d5ca9fe2fed1",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.geometry-hash:output:1.0",
+            "schemaHash": "sha256:006580b184f1c3e1a60d71a9ae25f6f692238357ffccfe426a51ee32ce8d3683",
+            "valueKind": "SCALAR",
+            "unitSemantics": "DIMENSIONLESS"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.predicate",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.predicate:input:1.0",
+      "inputSchemaHash": "sha256:b3813b2f20ff67db6d941ce5ec8691ece73146a3efeacf6e79e30d0ac0b28d44",
+      "outputSchemaUri": "urn:gowm:capability:geometry.predicate:output:1.0",
+      "outputSchemaHash": "sha256:69e436b2aeff645c62b749b75d70dba3d9b2697a95025c68e16916cf8d2857e5",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.predicate:input:1.0",
+            "schemaHash": "sha256:b3813b2f20ff67db6d941ce5ec8691ece73146a3efeacf6e79e30d0ac0b28d44",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.predicate:output:1.0",
+            "schemaHash": "sha256:69e436b2aeff645c62b749b75d70dba3d9b2697a95025c68e16916cf8d2857e5",
+            "valueKind": "SCALAR",
+            "unitSemantics": "DIMENSIONLESS"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.make-valid",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.make-valid:input:1.0",
+      "inputSchemaHash": "sha256:0bfcb8551696f1783b421c9fa80943a74abf00140ef154f12c6b6bc054e8682a",
+      "outputSchemaUri": "urn:gowm:capability:geometry.make-valid:output:1.0",
+      "outputSchemaHash": "sha256:a8297d0918ce8a7a9e9effd3565ac6a4e83791f1d92af6a0bcc9259b2589d44a",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.make-valid:input:1.0",
+            "schemaHash": "sha256:0bfcb8551696f1783b421c9fa80943a74abf00140ef154f12c6b6bc054e8682a",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.make-valid:output:1.0",
+            "schemaHash": "sha256:a8297d0918ce8a7a9e9effd3565ac6a4e83791f1d92af6a0bcc9259b2589d44a",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "geometry",
+            "path": "/geometry",
+            "schemaUri": "urn:gowm:capability:geometry:geojson-geometry:1.0",
+            "schemaHash": "sha256:b7ccb71c1399dc32c48698f21a77dba14f12d46166fef8f37c9b0b8e1fbd3504",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.buffer",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.buffer:input:1.0",
+      "inputSchemaHash": "sha256:c72c0b8a29e7b0b331b5da8b3c6977f6239425b6bc7e89406394882c7e8057c6",
+      "outputSchemaUri": "urn:gowm:capability:geometry.buffer:output:1.0",
+      "outputSchemaHash": "sha256:47cf6c61f983cbe32589e6e02cd88c9abf1f16870a78da342305664b646d11d6",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.buffer:input:1.0",
+            "schemaHash": "sha256:c72c0b8a29e7b0b331b5da8b3c6977f6239425b6bc7e89406394882c7e8057c6",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.buffer:output:1.0",
+            "schemaHash": "sha256:47cf6c61f983cbe32589e6e02cd88c9abf1f16870a78da342305664b646d11d6",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.intersection",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.intersection:input:1.0",
+      "inputSchemaHash": "sha256:a332e1f9f8bc42c29fe37d415fbcdceab573b74bcea5b397ff78f9646ac66bf6",
+      "outputSchemaUri": "urn:gowm:capability:geometry.intersection:output:1.0",
+      "outputSchemaHash": "sha256:02cb2e87e9517cacfd97e04d96c85b3b61a9a34f9a576afd97d9a55baa89d703",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.intersection:input:1.0",
+            "schemaHash": "sha256:a332e1f9f8bc42c29fe37d415fbcdceab573b74bcea5b397ff78f9646ac66bf6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.intersection:output:1.0",
+            "schemaHash": "sha256:02cb2e87e9517cacfd97e04d96c85b3b61a9a34f9a576afd97d9a55baa89d703",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.union",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.union:input:1.0",
+      "inputSchemaHash": "sha256:69c72e8d8bf399a65673625a1dddee3ba3b147527e7864ad007f4052ba4c71e2",
+      "outputSchemaUri": "urn:gowm:capability:geometry.union:output:1.0",
+      "outputSchemaHash": "sha256:d2adf6b03a71e30835d30d96acad8923965c3f5257209f9e0fb32f230213a8e9",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.union:input:1.0",
+            "schemaHash": "sha256:69c72e8d8bf399a65673625a1dddee3ba3b147527e7864ad007f4052ba4c71e2",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.union:output:1.0",
+            "schemaHash": "sha256:d2adf6b03a71e30835d30d96acad8923965c3f5257209f9e0fb32f230213a8e9",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.difference",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.difference:input:1.0",
+      "inputSchemaHash": "sha256:8222702875dc29e9fe307399b3bc8f3f53565e5d6f210023e297872aef6e186f",
+      "outputSchemaUri": "urn:gowm:capability:geometry.difference:output:1.0",
+      "outputSchemaHash": "sha256:93eb27ab83f721476c4fac96609ef674ccd00d7824269cb1e45d2255ae564051",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.difference:input:1.0",
+            "schemaHash": "sha256:8222702875dc29e9fe307399b3bc8f3f53565e5d6f210023e297872aef6e186f",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.difference:output:1.0",
+            "schemaHash": "sha256:93eb27ab83f721476c4fac96609ef674ccd00d7824269cb1e45d2255ae564051",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.symmetric-difference",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.symmetric-difference:input:1.0",
+      "inputSchemaHash": "sha256:25bc99f72faf3b22d656fa0c1f4528f5a83ae31c7c15a6f3201bcdfdb1e0b93a",
+      "outputSchemaUri": "urn:gowm:capability:geometry.symmetric-difference:output:1.0",
+      "outputSchemaHash": "sha256:476a93cff041b76a7ddbc42e7830f3f6cdd21bebbab7f4988a56dfe87d85aa2d",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.symmetric-difference:input:1.0",
+            "schemaHash": "sha256:25bc99f72faf3b22d656fa0c1f4528f5a83ae31c7c15a6f3201bcdfdb1e0b93a",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.symmetric-difference:output:1.0",
+            "schemaHash": "sha256:476a93cff041b76a7ddbc42e7830f3f6cdd21bebbab7f4988a56dfe87d85aa2d",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.simplify",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.simplify:input:1.0",
+      "inputSchemaHash": "sha256:952212d1177131e3d4825989deae473bff4d3ee31a7176e7a920099308d13781",
+      "outputSchemaUri": "urn:gowm:capability:geometry.simplify:output:1.0",
+      "outputSchemaHash": "sha256:b5181b2b78cb25d098bf8b4f574cf400d15d9843bc12fd050b3d9d4f5c0a3852",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.simplify:input:1.0",
+            "schemaHash": "sha256:952212d1177131e3d4825989deae473bff4d3ee31a7176e7a920099308d13781",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.simplify:output:1.0",
+            "schemaHash": "sha256:b5181b2b78cb25d098bf8b4f574cf400d15d9843bc12fd050b3d9d4f5c0a3852",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.simplify-preserve-topology",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.simplify-preserve-topology:input:1.0",
+      "inputSchemaHash": "sha256:abce6cff4c13a05b0abe7ed5982dfce1da02fbc538b69739a4b2839dbb1f9628",
+      "outputSchemaUri": "urn:gowm:capability:geometry.simplify-preserve-topology:output:1.0",
+      "outputSchemaHash": "sha256:482ce8ffb956f4e1e44ea02f8edb680a8d7d0d057ee9af054cb8667923f0fd10",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.simplify-preserve-topology:input:1.0",
+            "schemaHash": "sha256:abce6cff4c13a05b0abe7ed5982dfce1da02fbc538b69739a4b2839dbb1f9628",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.simplify-preserve-topology:output:1.0",
+            "schemaHash": "sha256:482ce8ffb956f4e1e44ea02f8edb680a8d7d0d057ee9af054cb8667923f0fd10",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.convex-hull",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.convex-hull:input:1.0",
+      "inputSchemaHash": "sha256:3ec6f4dcfc4ba12225ec3697b79c26a42727edf74f6aad7e11df5d686daaa489",
+      "outputSchemaUri": "urn:gowm:capability:geometry.convex-hull:output:1.0",
+      "outputSchemaHash": "sha256:03fad4c5a2979b678167b0ad8a57fb48da6d7a19bc80f058c5bcb6ded3f4a51e",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.convex-hull:input:1.0",
+            "schemaHash": "sha256:3ec6f4dcfc4ba12225ec3697b79c26a42727edf74f6aad7e11df5d686daaa489",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.convex-hull:output:1.0",
+            "schemaHash": "sha256:03fad4c5a2979b678167b0ad8a57fb48da6d7a19bc80f058c5bcb6ded3f4a51e",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.closest-point",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.closest-point:input:1.0",
+      "inputSchemaHash": "sha256:36beccbb9749b5f63d6ba666d1d5a5a8c7f2c477b71679d7150c5b15c3439c2a",
+      "outputSchemaUri": "urn:gowm:capability:geometry.closest-point:output:1.0",
+      "outputSchemaHash": "sha256:e42340009cd6750af9f48174e740a467fddcc2c3a2046c21b059ca40b8106fa5",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.closest-point:input:1.0",
+            "schemaHash": "sha256:36beccbb9749b5f63d6ba666d1d5a5a8c7f2c477b71679d7150c5b15c3439c2a",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.closest-point:output:1.0",
+            "schemaHash": "sha256:e42340009cd6750af9f48174e740a467fddcc2c3a2046c21b059ca40b8106fa5",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "geometry.shortest-line",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "TRANSFORMATION",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:geometry.shortest-line:input:1.0",
+      "inputSchemaHash": "sha256:b5e96b7c772d6a299ccd1b48cff9e91378af2a04afa16b0f5735ee0b3716868f",
+      "outputSchemaUri": "urn:gowm:capability:geometry.shortest-line:output:1.0",
+      "outputSchemaHash": "sha256:d80205fa74d2e7dc58ada447b4abea509f525aed25e92143b15701b5dd09d187",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumBatchItems": 1,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:geometry.shortest-line:input:1.0",
+            "schemaHash": "sha256:b5e96b7c772d6a299ccd1b48cff9e91378af2a04afa16b0f5735ee0b3716868f",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:geometry.shortest-line:output:1.0",
+            "schemaHash": "sha256:d80205fa74d2e7dc58ada447b4abea509f525aed25e92143b15701b5dd09d187",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    }
+  ]
+}

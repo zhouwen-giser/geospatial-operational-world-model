@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:gowm.foundation.h3.project-point:output:1.0",
+  "title": "GowmFoundationH3ProjectPointOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cells", "candidateOnly", "exactSpatialAuthority"],
+  "properties": {
+    "cells": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 16,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^(?:[0-9]|1[0-5])$": { "type": "string", "pattern": "^[0-9a-f]{15}$" }
+      }
+    },
+    "candidateOnly": { "const": true },
+    "exactSpatialAuthority": { "const": "POSTGIS" }
+  }
+}

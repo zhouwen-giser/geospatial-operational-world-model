@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:crs.normalize.geometry:output:1.0",
+  "title": "CrsNormalizeGeometryOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "geometry",
+    "sourceCrs",
+    "targetCrs",
+    "axisOrder",
+    "coordinateCount",
+    "zTransformed",
+    "normalizationMethod",
+    "transformation",
+    "warnings"
+  ],
+  "properties": {
+    "geometry": { "$ref": "../geometry/geometry.schema.json" },
+    "sourceCrs": { "type": "string", "pattern": "^EPSG:[1-9][0-9]{0,5}$" },
+    "targetCrs": { "const": "EPSG:4326" },
+    "axisOrder": {
+      "type": "array",
+      "prefixItems": [{ "const": "longitude" }, { "const": "latitude" }],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "coordinateCount": { "type": "integer", "minimum": 0 },
+    "zTransformed": { "const": false },
+    "normalizationMethod": { "enum": ["CANONICAL_IDENTITY", "PROJ_STRICT_BEST_OFFLINE"] },
+    "transformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine",
+        "engineVersion",
+        "integration",
+        "integrationVersion",
+        "sourceCrs",
+        "targetCrs",
+        "strictBestOperation",
+        "networkEnabled",
+        "cacheHit"
+      ],
+      "properties": {
+        "engine": { "enum": ["GOWM", "PROJ"] },
+        "engineVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "integration": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "integrationVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "sourceCrs": { "type": "string", "pattern": "^EPSG:[1-9][0-9]{0,5}$" },
+        "targetCrs": { "const": "EPSG:4326" },
+        "strictBestOperation": { "const": true },
+        "networkEnabled": { "const": false },
+        "cacheHit": { "type": "boolean" }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "enum": [
+              "SOURCE_ALREADY_WGS84",
+              "GRID_FALLBACK",
+              "LOW_ACCURACY_TRANSFORMATION",
+              "Z_NOT_TRANSFORMED",
+              "BBOX_DROPPED"
+            ]
+          },
+          "message": { "type": "string", "minLength": 1, "maxLength": 1024 }
+        }
+      }
+    }
+  }
+}

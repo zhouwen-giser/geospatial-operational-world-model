@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:gowm-situation-provider:definitions:1.0",
+  "title": "GowmSituationProviderDefinitionsV1",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "situationResolution": {
+      "type": "integer",
+      "minimum": 7,
+      "maximum": 10
+    },
+    "h3Cell": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{15,16}$"
+    },
+    "metricName": {
+      "enum": ["activity", "risk", "coverage", "freshness", "observations"]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agentCount",
+        "vehicleCount",
+        "sensorCount",
+        "incidentCount",
+        "observationCount",
+        "riskScore",
+        "coverageScore",
+        "activityScore",
+        "freshnessScore"
+      ],
+      "properties": {
+        "agentCount": { "type": "integer", "minimum": 0 },
+        "vehicleCount": { "type": "integer", "minimum": 0 },
+        "sensorCount": { "type": "integer", "minimum": 0 },
+        "incidentCount": { "type": "integer", "minimum": 0 },
+        "observationCount": { "type": "integer", "minimum": 0 },
+        "riskScore": { "type": "number", "minimum": 0, "maximum": 100 },
+        "coverageScore": { "type": "number", "minimum": 0, "maximum": 100 },
+        "activityScore": { "type": "number", "minimum": 0, "maximum": 100 },
+        "freshnessScore": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agentCount",
+        "vehicleCount",
+        "sensorCount",
+        "incidentCount",
+        "observationCount",
+        "riskScore",
+        "coverageScore",
+        "activityScore",
+        "freshnessScore"
+      ],
+      "properties": {
+        "agentCount": { "type": "integer", "minimum": 0 },
+        "vehicleCount": { "type": "integer", "minimum": 0 },
+        "sensorCount": { "type": "integer", "minimum": 0 },
+        "incidentCount": { "type": "integer", "minimum": 0 },
+        "observationCount": { "type": "integer", "minimum": 0 },
+        "riskScore": { "type": "number", "minimum": 0 },
+        "coverageScore": { "type": "number", "minimum": 0 },
+        "activityScore": { "type": "number", "minimum": 0 },
+        "freshnessScore": { "type": "number", "minimum": 0 }
+      }
+    },
+    "metricProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profileId", "profileVersion", "authority", "resolutionPolicy", "scoreMinimum", "scoreMaximum"],
+      "properties": {
+        "profileId": { "const": "gowm.h3-situation.metrics" },
+        "profileVersion": { "const": "1.0" },
+        "authority": { "const": "GOWM Foundation" },
+        "resolutionPolicy": { "const": "GOWM_SITUATION_R7_R10" },
+        "scoreMinimum": { "const": 0 },
+        "scoreMaximum": { "const": 100 }
+      }
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["h3Index", "resolution", "metrics", "updatedAt", "worldVersion"],
+      "properties": {
+        "h3Index": { "$ref": "#/$defs/h3Cell" },
+        "resolution": { "$ref": "#/$defs/situationResolution" },
+        "metrics": { "$ref": "#/$defs/metrics" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "worldVersion": { "type": "integer", "minimum": 0 },
+        "boundary": { "$ref": "../geometry/geometry.schema.json#/$defs/polygon" }
+      }
+    },
+    "rankedInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resolution"],
+      "properties": {
+        "resolution": { "$ref": "#/$defs/situationResolution" },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "parentCell": { "$ref": "#/$defs/h3Cell" }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.hierarchy.children:output:1.0",
+  "title": "H3HierarchyChildrenOutputV1",
+  "type": "array",
+  "maxItems": 1000000,
+  "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3CellValue" }
+}

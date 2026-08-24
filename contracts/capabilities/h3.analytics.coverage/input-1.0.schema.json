@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.analytics.coverage:input:1.0",
+  "title": "H3AnalyticsCoverageInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["area", "resolution"],
+  "properties": {
+    "area": { "$ref": "../h3.common/definitions.schema.json#/$defs/polygonal" },
+    "resolution": { "$ref": "../h3.common/definitions.schema.json#/$defs/resolution" },
+    "visitedCells": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3Cell" }
+    },
+    "visitedPoints": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/geoPoint" }
+    }
+  }
+}

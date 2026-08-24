@@ -1,4 +1,4 @@
-# GOWM+ v0.1.0 operations runbook
+# GOWM+ v0.4 candidate operations runbook
 
 ## Preconditions
 
@@ -25,6 +25,11 @@ docker compose up -d stas
 curl --fail http://127.0.0.1:8080/readyz
 ```
 
+Grounding deployments additionally start the Reference, Dataset, World
+Evidence, Operational Reality Providers and the controlled Gateway using
+distinct transport and database credentials. Never expose a Provider directly
+as the public trust boundary.
+
 PowerShell uses `Copy-Item`, `npm.cmd`, and the same Docker Compose commands.
 Never commit `.env`.
 
@@ -42,7 +47,26 @@ docker compose exec -T postgres psql -X -U gowm -d gowm \
   -v ON_ERROR_STOP=1 -f database/tests/001_v12_assertions.sql
 ```
 
-Fixtures are validation-only and must never be loaded into production.
+The stable candidate contains migrations 001–032. Migrations 001–014 are
+byte-locked in `database/migration-baseline-lock.json`; never edit an applied
+migration. Fixtures are validation-only and must never be loaded into
+production.
+
+## Candidate gates
+
+```bash
+npm run verify
+npm run validate:boundaries
+npm run validate:stable-contracts
+DATABASE_ADMIN_URL=<admin-url> npm run validate:stable-migrations
+DATABASE_URL=<database-url> npm run validate:operational-ready
+DATABASE_URL=<database-url> GOWM_DB_CONTAINER=<exact-container-name> \
+  npm run validate:stable-runtime
+```
+
+`validate:stable-migrations` creates and removes uniquely named disposable
+databases. `validate:stable-runtime` deliberately restarts only the exact
+container named in `GOWM_DB_CONTAINER`; never point it at a production system.
 
 ## Health and role checks
 
@@ -73,8 +97,9 @@ Do not restore over the only copy.
 
 For PITR, configure external WAL archiving and base-backup retention appropriate
 to the deployment. Rehearse recovery to a timestamp in an isolated environment,
-record recovery point/lag, then execute the same assertions. v0.1.0 supplies the
-procedure but does not claim a completed production backup/PITR rehearsal.
+record recovery point/lag, then execute the same assertions. This candidate
+supplies the procedure but does not claim a completed production backup/PITR
+rehearsal.
 
 ## Rollback
 

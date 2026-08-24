@@ -105,6 +105,7 @@ export function mapObservation(row: Record<string, unknown>): ObservationEnvelop
     receivedAt: iso(row.received_at) ?? new Date(0).toISOString(),
     source: String(row.source),
     correlationId: String(row.correlation_id),
+    ...externalCorrelationFields(row),
     metadata: json<Record<string, unknown>>(row.metadata, {}),
     schemaVersion: row.schema_version === "1.2" ? "1.2" : "1.0"
   };
@@ -162,7 +163,20 @@ export function mapWorldEvent(row: Record<string, unknown>): WorldEvent {
     worldVersion: Number(row.world_version),
     correlationId: String(row.correlation_id),
     causationId: String(row.causation_id),
+    ...externalCorrelationFields(row),
     payload: json<Record<string, unknown>>(row.payload, {}),
-    schemaVersion: "1.0"
+    schemaVersion: "1.0",
+    ...(row.data_scope_key === null || row.data_scope_key === undefined ? {} : { dataScopeKey: String(row.data_scope_key) })
+  };
+}
+
+function externalCorrelationFields(row: Record<string, unknown>) {
+  return {
+    ...(row.execution_intent_id === null || row.execution_intent_id === undefined ? {} : { executionIntentId: String(row.execution_intent_id) }),
+    ...(row.operation_correlation_id === null || row.operation_correlation_id === undefined ? {} : { operationCorrelationId: String(row.operation_correlation_id) }),
+    ...(row.external_planning_task_id === null || row.external_planning_task_id === undefined ? {} : { externalPlanningTaskId: String(row.external_planning_task_id) }),
+    ...(row.external_planning_step_id === null || row.external_planning_step_id === undefined ? {} : { externalPlanningStepId: String(row.external_planning_step_id) }),
+    ...(row.provider_action_id === null || row.provider_action_id === undefined ? {} : { providerActionId: String(row.provider_action_id) }),
+    ...(row.device_command_id === null || row.device_command_id === undefined ? {} : { deviceCommandId: String(row.device_command_id) })
   };
 }

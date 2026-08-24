@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:gowm.situation.h3.get-area:output:1.0",
+  "title": "GowmSituationH3GetAreaOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cells", "summary", "worldVersion", "metricProfile"],
+  "properties": {
+    "cells": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/cell" }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cellCount", "totals"],
+      "properties": {
+        "cellCount": { "type": "integer", "minimum": 0, "maximum": 100000 },
+        "totals": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/totals" }
+      }
+    },
+    "worldVersion": { "type": "integer", "minimum": 0 },
+    "metricProfile": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/metricProfile" }
+  }
+}

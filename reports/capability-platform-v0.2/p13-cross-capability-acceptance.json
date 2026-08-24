@@ -1,0 +1,220 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "P13",
+  "title": "Cross-capability World Query DAG acceptance",
+  "generatedAt": "2026-08-22T18:57:22.2478791Z",
+  "status": "PARTIAL",
+  "statusReason": "All controlled in-process Provider Runtime chains pass, but the same chains were not executed against the real external CRS, Geometry, H3 Toolkit, and PostgreSQL services.",
+  "executionClass": "CONTROLLED_IN_PROCESS_PROVIDER_RUNTIMES_WITH_FIXTURE_UPSTREAMS",
+  "environment": {
+    "os": "Windows",
+    "node": "v22.14.0",
+    "npm": "10.9.2"
+  },
+  "verification": [
+    {
+      "command": "npx.cmd tsc -p validation\\cross-capability\\tsconfig.json --noEmit",
+      "status": "PASS",
+      "result": "exit 0 after the concurrent P16 streaming-client edit stabilized"
+    },
+    {
+      "command": "npx.cmd vitest run --config validation\\cross-capability\\vitest.config.ts",
+      "status": "PASS",
+      "result": "1 file passed; 6 tests passed; 0 failed"
+    },
+    {
+      "command": "npx.cmd vitest run tests\\platform\\world-query-runtime.test.ts",
+      "status": "PASS",
+      "result": "1 file passed; 12 tests passed; 0 failed, including nested targetPath construction, leaf/full-request schema validation, and fail-closed rejection cases"
+    },
+    {
+      "command": "node packages\\platform\\contract-runtime\\scripts\\generate-contract-types.mjs --check",
+      "status": "PASS",
+      "result": "generated contracts, schema bundle, and schema hashes are current"
+    },
+    {
+      "command": "npx.cmd vitest run tests\\platform\\canonical-hash.test.ts",
+      "status": "PASS",
+      "result": "1 file passed; 2 canonical contract/hash tests passed; 0 failed"
+    },
+    {
+      "command": "npm.cmd run test:platform",
+      "status": "PASS",
+      "result": "6 files passed; 47 tests passed; 0 failed"
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS",
+      "result": "root TypeScript and STAS TypeScript checks exited 0"
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    }
+  ],
+  "providerLocks": [
+    {
+      "providerId": "gowm.crs-normalization.bridge",
+      "operationId": "crs.normalize.point",
+      "inputSchemaHash": "sha256:79829b7f7886e74ee21c387787295a0a060fc84e058477f81622a63d7c33b01f",
+      "outputSchemaHash": "sha256:65e3d7008c209deff7dc722ad095cfbc85a94e31b276150be4174c54ff69f2bd"
+    },
+    {
+      "providerId": "gowm.crs-normalization.bridge",
+      "operationId": "crs.normalize.geometry",
+      "inputSchemaHash": "sha256:7fc8378d45a22dd722ad59f51b1105d904ad1b9f3c3189f474c2ae2e63632ec0",
+      "outputSchemaHash": "sha256:986d20049d2e5a25e8fa668f0c9ffd43bb01a82183c7703ce1483723a4f5d580"
+    },
+    {
+      "providerId": "gowm.geometry.bridge",
+      "operationId": "geometry.validate",
+      "inputSchemaHash": "sha256:1c6ac9e0f2e5332f1b50f57f48c2c679ac092fb33d4022854fd22ef812043b10",
+      "outputSchemaHash": "sha256:a69b57fc43a7d434ed975c0e0c2435be145cba95568436e4723d3e13ba7135c8"
+    },
+    {
+      "providerId": "gowm.geometry.bridge",
+      "operationId": "geometry.make-valid",
+      "inputSchemaHash": "sha256:0bfcb8551696f1783b421c9fa80943a74abf00140ef154f12c6b6bc054e8682a",
+      "outputSchemaHash": "sha256:a8297d0918ce8a7a9e9effd3565ac6a4e83791f1d92af6a0bcc9259b2589d44a"
+    },
+    {
+      "providerId": "gowm.h3.interactive.bridge",
+      "operationId": "h3.geometry.cover",
+      "inputSchemaHash": "sha256:195594da879bf7af10455b91ebc51ca11a0c21c81786e61d073f82fa8200fbbe",
+      "outputSchemaHash": "sha256:c839420e4ea78331a8a0f5b18bc6c9fad5aee6248d25553e64d51699d3ef9c87"
+    },
+    {
+      "providerId": "gowm.h3.analysis.bridge",
+      "operationId": "h3.analytics.flow",
+      "inputSchemaHash": "sha256:39e236fab0ea79e485230b5edda9be941dde839adda152b82c2dd8aab48b7a95",
+      "outputSchemaHash": "sha256:9ca3c076ffd005c0b153a040c445b31aabec5f09d0f38943f834ea60dd14d764"
+    },
+    {
+      "providerId": "gowm.situation.h3",
+      "operationId": "gowm.situation.h3.get-cell",
+      "inputSchemaHash": "sha256:7390ec83b3708c8e6c19bb530cca8900e4a462e23a149f8d457052f295665b60",
+      "outputSchemaHash": "sha256:b1fe5f98c108a31515dfef914b51d44deef380217a0ab34d0123a75fe91bdadf"
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "operationId": "spatial.find-nearby",
+      "inputSchemaHash": "sha256:17f7d021a954e30721adb28d02aae1803061455da9f153c1af019779d92ae846",
+      "outputSchemaHash": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23"
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "operationId": "spatial.find-in-area",
+      "inputSchemaHash": "sha256:f902acdbe64e91474b7f3d2a94d8cad72a7a2d6182265981a770fb472a8914dd",
+      "outputSchemaHash": "sha256:8aa8231c04110a4fcf235e759bcdd4f2e97db20097bbff62f9161b4ce6f4d161"
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "operationId": "spatial.find-intersections",
+      "inputSchemaHash": "sha256:8f347f836dd9c299f16cb60d2fc22dcfc5b4addab9c77024f530a9bdd4d7bea0",
+      "outputSchemaHash": "sha256:3bbfc710db6a82e02592075ec75bafb648575242794dbfd3ff39c6df9c53979c"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC-071",
+      "status": "PARTIAL",
+      "controlledStatus": "PASS",
+      "realServiceStatus": "NOT_RUN",
+      "evidence": "The actual CRS and Spatial Provider Runtimes execute a projected EPSG:3857 point through typed DAG bindings. The normalized [116.4,39.9] coordinate reaches parameterized ST_DWithin under DataScope default; the Spatial result has CONSISTENT_AT_START Data Snapshot and current-projection Evidence."
+    },
+    {
+      "id": "AC-072",
+      "status": "PARTIAL",
+      "controlledStatus": "PASS",
+      "realServiceStatus": "NOT_RUN",
+      "evidence": "The actual CRS, Geometry, and Spatial Provider Runtimes execute Normalize to immutable Validate to parameterized ST_Covers. Validation returns valid=true and repairApplied=false before the exact query."
+    },
+    {
+      "id": "AC-073",
+      "status": "PARTIAL",
+      "controlledStatus": "PASS",
+      "realServiceStatus": "NOT_RUN",
+      "evidence": "A self-intersecting polygon returns valid=false. VALUE_EQUALS fails, the Spatial node is SKIPPED with attempt=0, the World Query is PARTIAL, and zero Spatial operation SQL calls occur."
+    },
+    {
+      "id": "AC-074",
+      "status": "PARTIAL",
+      "controlledStatus": "PASS",
+      "realServiceStatus": "NOT_RUN",
+      "evidence": "The invalid polygon proceeds only through the explicit geometry.make-valid node. The CRS node's typed /geometry output binds directly to /input/geometry; explicit canonical literals bind /input/coordinateSpace and /input/coordinateLayout. No repair operand is accepted from request parameters. The Receipt records repairApplied=true and Polygon to MultiPolygon type change; a second immutable validation passes and the exact Spatial query executes."
+    },
+    {
+      "id": "AC-075",
+      "status": "PARTIAL",
+      "controlledStatus": "PASS",
+      "realServiceStatus": "NOT_RUN",
+      "evidence": "H3 cover returns candidateOnly=true and exactVerificationRequired=true with no Data Snapshot or World Evidence. The scoped Situation provider resolves two ReferenceKeys from controlled world-data mappings; Spatial receives both through a parameterized JSONB prefilter and ST_Intersects returns one exact object with CONSISTENT_AT_START Data Snapshot and Evidence."
+    },
+    {
+      "id": "P13-TRACKLET-H3-FLOW",
+      "status": "PARTIAL",
+      "controlledStatus": "PASS",
+      "realServiceStatus": "NOT_RUN",
+      "evidence": "Two tracklet sequences separated by an UNKNOWN gap reach the H3 analysis bridge as two distinct trajectory arrays. The output declares gapPolicy=SEQUENCE_ISOLATED and creates no World Data Snapshot or Evidence."
+    }
+  ],
+  "evidenceBoundaries": {
+    "computeOnly": [
+      "CRS",
+      "Geometry",
+      "generic H3 cover",
+      "generic H3 flow"
+    ],
+    "worldDataBound": [
+      "GOWM H3 Situation candidate lookup",
+      "Spatial exact query"
+    ],
+    "receiptIsEvidence": false,
+    "h3CandidateIsExact": false
+  },
+  "externalExecution": {
+    "crsProviderProcess": "NOT_RUN",
+    "geometryProviderProcess": "NOT_RUN",
+    "h3ToolkitApi": "NOT_RUN",
+    "realPostgreSqlSpatial": "BLOCKED",
+    "blockers": [
+      "No complete approved external-provider chain was available for this scoped run.",
+      "Real PostgreSQL credentials for the reachable lab port were rejected with SQLSTATE 28P01.",
+      "Docker and Git escalation remain unavailable because the execution platform usage limit was reached."
+    ]
+  },
+  "nestedTargetBinding": {
+    "status": "CLOSED_IN_CONTROLLED_RUNTIME",
+    "planSchemaHash": "sha256:bb155872e977aa9d60a0a62872e8507eb4a93137bd9cdfd309e13e800058e057",
+    "canonicalLeafSchemas": [
+      {
+        "schemaUri": "urn:gowm:capability:geometry:geojson-geometry:1.0",
+        "schemaHash": "sha256:b7ccb71c1399dc32c48698f21a77dba14f12d46166fef8f37c9b0b8e1fbd3504"
+      },
+      {
+        "schemaUri": "urn:gowm:capability:geometry:coordinate-space:1.0",
+        "schemaHash": "sha256:d577f514c2678da920466a24fcfef4323d03bce0ec40a0fd39551c4713fa80ca"
+      },
+      {
+        "schemaUri": "urn:gowm:capability:geometry:coordinate-layout:1.0",
+        "schemaHash": "sha256:07ae94b9e82b8ac12ecff4dbc1559b70d0dd58ae36967b086ca14cfdec333481"
+      }
+    ],
+    "safetyRules": [
+      "targetPath is a bounded rooted JSON Pointer and is valid only on composite node input bindings",
+      "whole request bindings, precondition bindings, and query output bindings cannot use targetPath",
+      "duplicate and ancestor-descendant target paths are rejected before provider execution",
+      "decoded __proto__, prototype, and constructor segments and paths deeper than eight object segments are rejected",
+      "runtime assignment creates object-only null-prototype containers and rejects collisions",
+      "each source leaf is validated by its canonical typed port and the assembled request is validated by the target operation input schema"
+    ]
+  },
+  "coveredElsewhere": [
+    "AC-069 cycle rejection in P12",
+    "AC-070 typed port mismatch rejection in P12",
+    "AC-076 aggregate budget rejection in P12",
+    "AC-077 partial result behavior in P12",
+    "AC-078 memory resume PASS and real PostgreSQL restart PARTIAL in P12"
+  ]
+}

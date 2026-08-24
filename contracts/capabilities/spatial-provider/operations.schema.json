@@ -1,0 +1,411 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:spatial-provider:operations:1.0",
+  "title": "SpatialProviderOperationContractsV1",
+  "$defs": {
+    "location": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["longitude", "latitude"],
+          "properties": {
+            "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+            "latitude": { "type": "number", "minimum": -90, "maximum": 90 }
+          }
+        },
+        {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "prefixItems": [
+            { "type": "number", "minimum": -180, "maximum": 180 },
+            { "type": "number", "minimum": -90, "maximum": 90 }
+          ],
+          "items": { "type": "number" }
+        }
+      ]
+    },
+    "objectTypes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 64 }
+    },
+    "cursor": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 2048,
+      "pattern": "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$"
+    },
+    "commonQueryProperties": {
+      "objectTypes": { "$ref": "#/$defs/objectTypes" },
+      "observedFrom": { "type": "string", "format": "date-time" },
+      "observedTo": { "type": "string", "format": "date-time" },
+      "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+      "cursor": { "$ref": "#/$defs/cursor" },
+      "includeGeometry": { "type": "boolean" },
+      "crs": { "const": "EPSG:4326" }
+    },
+    "queryGeometry": { "$ref": "../geometry/geometry.schema.json" },
+    "areaGeometry": {
+      "oneOf": [
+        { "$ref": "../geometry/geometry.schema.json#/$defs/polygon" },
+        { "$ref": "../geometry/geometry.schema.json#/$defs/multiPolygon" }
+      ]
+    },
+    "routeGeometry": {
+      "oneOf": [
+        { "$ref": "../geometry/geometry.schema.json#/$defs/lineString" },
+        { "$ref": "../geometry/geometry.schema.json#/$defs/multiLineString" }
+      ]
+    },
+    "referenceKey": {
+      "$ref": "../../platform/common-definitions.schema.json#/$defs/referenceKey"
+    },
+    "candidateReferences": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50000,
+      "items": { "$ref": "#/$defs/referenceKey" }
+    },
+    "resultProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "summary"],
+      "properties": {
+        "authority": { "const": "GOWM Foundation" },
+        "sourceObservationId": {
+          "oneOf": [
+            { "type": "string", "minLength": 1, "maxLength": 256 },
+            { "type": "null" }
+          ]
+        },
+        "summary": { "type": "object" }
+      }
+    },
+    "objectResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "referenceKey",
+        "objectType",
+        "status",
+        "source",
+        "properties",
+        "observedAt",
+        "receivedAt",
+        "updatedAt",
+        "worldVersion",
+        "confidence",
+        "freshnessMs",
+        "provenance"
+      ],
+      "properties": {
+        "referenceKey": { "$ref": "#/$defs/referenceKey" },
+        "objectType": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "subtype": { "type": ["string", "null"], "maxLength": 128 },
+        "status": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "source": { "type": ["string", "null"], "maxLength": 256 },
+        "properties": { "type": "object" },
+        "observedAt": { "type": ["string", "null"], "format": "date-time" },
+        "receivedAt": { "type": ["string", "null"], "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "worldVersion": { "type": "integer", "minimum": 0 },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "freshnessMs": { "type": ["integer", "null"], "minimum": 0 },
+        "provenance": { "$ref": "#/$defs/resultProvenance" },
+        "distanceM": { "type": "number", "minimum": 0 },
+        "geometry": { "$ref": "#/$defs/queryGeometry" }
+      }
+    },
+    "queryContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["crs", "snapshotConsistency", "candidateCount", "rowCount", "evidenceTruncated"],
+      "properties": {
+        "crs": { "const": "EPSG:4326" },
+        "snapshotConsistency": { "const": "CONSISTENT_AT_START" },
+        "candidateCount": { "type": "integer", "minimum": 0, "maximum": 50000 },
+        "rowCount": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "distanceUnit": { "const": "meter" },
+        "nextCursor": { "$ref": "#/$defs/cursor" },
+        "evidenceTruncated": { "type": "boolean" }
+      }
+    },
+    "objectPageOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objects", "page", "context"],
+      "properties": {
+        "objects": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/objectResult" }
+        },
+        "page": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["count", "truncated"],
+          "properties": {
+            "count": { "type": "integer", "minimum": 0, "maximum": 1000 },
+            "truncated": { "type": "boolean" },
+            "nextCursor": { "$ref": "#/$defs/cursor" }
+          }
+        },
+        "context": { "$ref": "#/$defs/queryContext" }
+      }
+    },
+    "nearbyInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["location", "radiusM"],
+      "properties": {
+        "location": { "$ref": "#/$defs/location" },
+        "radiusM": { "type": "number", "exclusiveMinimum": 0, "maximum": 20000000 },
+        "objectTypes": { "$ref": "#/$defs/objectTypes" },
+        "observedFrom": { "type": "string", "format": "date-time" },
+        "observedTo": { "type": "string", "format": "date-time" },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "cursor": { "$ref": "#/$defs/cursor" },
+        "includeGeometry": { "type": "boolean" },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "nearestInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["location"],
+      "properties": {
+        "location": { "$ref": "#/$defs/location" },
+        "maxDistanceM": { "type": "number", "exclusiveMinimum": 0, "maximum": 20000000 },
+        "objectTypes": { "$ref": "#/$defs/objectTypes" },
+        "observedFrom": { "type": "string", "format": "date-time" },
+        "observedTo": { "type": "string", "format": "date-time" },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "cursor": { "$ref": "#/$defs/cursor" },
+        "includeGeometry": { "type": "boolean" },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "areaInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry"],
+      "properties": {
+        "geometry": { "$ref": "#/$defs/areaGeometry" },
+        "candidateReferences": { "$ref": "#/$defs/candidateReferences" },
+        "objectTypes": { "$ref": "#/$defs/objectTypes" },
+        "observedFrom": { "type": "string", "format": "date-time" },
+        "observedTo": { "type": "string", "format": "date-time" },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "cursor": { "$ref": "#/$defs/cursor" },
+        "includeGeometry": { "type": "boolean" },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "intersectionsInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry"],
+      "properties": {
+        "geometry": { "$ref": "#/$defs/queryGeometry" },
+        "candidateReferences": { "$ref": "#/$defs/candidateReferences" },
+        "objectTypes": { "$ref": "#/$defs/objectTypes" },
+        "observedFrom": { "type": "string", "format": "date-time" },
+        "observedTo": { "type": "string", "format": "date-time" },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "cursor": { "$ref": "#/$defs/cursor" },
+        "includeGeometry": { "type": "boolean" },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "routeInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "distanceM"],
+      "properties": {
+        "route": { "$ref": "#/$defs/routeGeometry" },
+        "distanceM": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000000 },
+        "objectTypes": { "$ref": "#/$defs/objectTypes" },
+        "observedFrom": { "type": "string", "format": "date-time" },
+        "observedTo": { "type": "string", "format": "date-time" },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "cursor": { "$ref": "#/$defs/cursor" },
+        "includeGeometry": { "type": "boolean" },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "containingAreaInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry"],
+      "properties": {
+        "geometry": { "$ref": "#/$defs/queryGeometry" },
+        "layerKeys": { "type": "array", "minItems": 1, "maxItems": 50, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 128 } },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "cursor": { "$ref": "#/$defs/cursor" },
+        "includeGeometry": { "type": "boolean" },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "countInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry"],
+      "properties": {
+        "geometry": { "$ref": "#/$defs/areaGeometry" },
+        "objectTypes": { "$ref": "#/$defs/objectTypes" },
+        "observedFrom": { "type": "string", "format": "date-time" },
+        "observedTo": { "type": "string", "format": "date-time" },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "countOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "sourceReferences", "context"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 0, "maximum": 50000 },
+        "sourceReferences": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/referenceKey" } },
+        "context": { "$ref": "#/$defs/queryContext" }
+      }
+    },
+    "summarizeInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry", "groupBy"],
+      "properties": {
+        "geometry": { "$ref": "#/$defs/areaGeometry" },
+        "groupBy": { "enum": ["objectType", "subtype", "status", "source"] },
+        "objectTypes": { "$ref": "#/$defs/objectTypes" },
+        "observedFrom": { "type": "string", "format": "date-time" },
+        "observedTo": { "type": "string", "format": "date-time" },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "summarizeOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "groups", "sourceReferences", "context"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0, "maximum": 50000 },
+        "groups": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["key", "count"],
+            "properties": {
+              "key": { "type": ["string", "null"], "maxLength": 256 },
+              "count": { "type": "integer", "minimum": 1, "maximum": 50000 }
+            }
+          }
+        },
+        "sourceReferences": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/referenceKey" } },
+        "context": { "$ref": "#/$defs/queryContext" }
+      }
+    },
+    "joinInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relation"],
+      "properties": {
+        "leftObjectTypes": { "$ref": "#/$defs/objectTypes" },
+        "rightObjectTypes": { "$ref": "#/$defs/objectTypes" },
+        "relation": { "enum": ["intersects", "within", "covers", "dwithin", "nearest"] },
+        "distanceM": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000000 },
+        "nearestK": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "leftLimit": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "resultLimit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "crs": { "const": "EPSG:4326" }
+      },
+      "allOf": [
+        { "if": { "properties": { "relation": { "const": "dwithin" } }, "required": ["relation"] }, "then": { "required": ["distanceM"] } },
+        { "if": { "properties": { "relation": { "const": "nearest" } }, "required": ["relation"] }, "then": { "required": ["nearestK"] } }
+      ]
+    },
+    "joinOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pairs", "page", "context"],
+      "properties": {
+        "pairs": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["leftReferenceKey", "rightReferenceKey"],
+            "properties": {
+              "leftReferenceKey": { "$ref": "#/$defs/referenceKey" },
+              "rightReferenceKey": { "$ref": "#/$defs/referenceKey" },
+              "distanceM": { "type": "number", "minimum": 0 },
+              "rank": { "type": "integer", "minimum": 1, "maximum": 20 }
+            }
+          }
+        },
+        "page": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["count", "truncated"],
+          "properties": {
+            "count": { "type": "integer", "minimum": 0, "maximum": 1000 },
+            "truncated": { "type": "boolean" }
+          }
+        },
+        "context": { "$ref": "#/$defs/queryContext" }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "op"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9_]{0,63}$" },
+        "op": { "enum": ["count", "distinct_count", "sum", "avg", "min", "max"] },
+        "field": { "enum": ["objectType", "subtype", "status", "source", "properties.battery"] }
+      }
+    },
+    "aggregateInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metrics"],
+      "properties": {
+        "areaLayerKeys": { "type": "array", "minItems": 1, "maxItems": 50, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 128 } },
+        "objectTypes": { "$ref": "#/$defs/objectTypes" },
+        "relation": { "enum": ["covers", "intersects"] },
+        "metrics": { "type": "array", "minItems": 1, "maxItems": 10, "items": { "$ref": "#/$defs/metric" } },
+        "areaLimit": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "crs": { "const": "EPSG:4326" }
+      }
+    },
+    "aggregateOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["areas", "context"],
+      "properties": {
+        "areas": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["areaReferenceKey", "metrics"],
+            "properties": {
+              "areaReferenceKey": { "$ref": "#/$defs/referenceKey" },
+              "metrics": {
+                "type": "object",
+                "maxProperties": 10,
+                "additionalProperties": { "type": ["number", "null"] }
+              }
+            }
+          }
+        },
+        "context": { "$ref": "#/$defs/queryContext" }
+      }
+    }
+  }
+}

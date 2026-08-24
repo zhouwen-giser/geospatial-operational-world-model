@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:h3-cell-set-envelope",
+  "title": "H3CellSetEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "resolution",
+    "cells",
+    "truncated",
+    "semantics",
+    "candidateOnly",
+    "exactVerificationRequired"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "resolution": { "type": "integer", "minimum": 0, "maximum": 15 },
+    "cells": {
+      "type": "array",
+      "maxItems": 1000000,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[0-9a-f]{15,16}$" }
+    },
+    "truncated": { "type": "boolean" },
+    "semantics": {
+      "enum": ["INDEX", "CENTER_CONTAINMENT_COVER", "CANDIDATE_SET", "AGGREGATION_BUCKETS"]
+    },
+    "candidateOnly": { "type": "boolean" },
+    "exactVerificationRequired": { "type": "boolean" },
+    "nextCursor": { "type": "string", "minLength": 1, "maxLength": 2048 }
+  }
+}

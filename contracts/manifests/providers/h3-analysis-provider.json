@@ -1,0 +1,188 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.h3.analysis.bridge",
+    "providerVersion": "0.2.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:017ec13d92ce6ec309a565d464162c10bcc301ee0938de4b75ea1afa505331a9",
+    "sourceRef": "https://github.com/zhouwen-giser/h3-spatial-toolkit/commit/74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+    "sourceGitCommit": "74fc8657072dd58a2f8e4317c1caef8bfd10e024"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "h3.analytics.aggregate",
+      "operationVersion": "1.0",
+      "semanticRole": "GENERIC_ANALYSIS",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.analytics.aggregate:input:1.0",
+      "inputSchemaHash": "sha256:0dd2901a30b4731dee2120930a3f2845a51a0ff5ca0000387f5337c2d1c303ba",
+      "outputSchemaUri": "urn:gowm:capability:h3.analytics.aggregate:output:1.0",
+      "outputSchemaHash": "sha256:b2c844adf07053632e1383c367b015584e986661a8b58df6b648f909d5e216e9",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 67108864,
+        "maximumOutputBytes": 134217728,
+        "maximumCells": 5000000,
+        "maximumCandidates": 5000000,
+        "maximumRows": 5000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 50000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.analytics.aggregate:input:1.0",
+            "schemaHash": "sha256:0dd2901a30b4731dee2120930a3f2845a51a0ff5ca0000387f5337c2d1c303ba",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.analytics.aggregate:output:1.0",
+            "schemaHash": "sha256:b2c844adf07053632e1383c367b015584e986661a8b58df6b648f909d5e216e9",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.analytics.coverage",
+      "operationVersion": "1.0",
+      "semanticRole": "GENERIC_ANALYSIS",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.analytics.coverage:input:1.0",
+      "inputSchemaHash": "sha256:153da64fb71492997229faa47b182cb27b216c0d8cb7f2d0a4ff422cae6e8aa1",
+      "outputSchemaUri": "urn:gowm:capability:h3.analytics.coverage:output:1.0",
+      "outputSchemaHash": "sha256:1baa5b818303f8a09e4bb489d47d444122df1392712d5285109ff1bf66001eff",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 67108864,
+        "maximumOutputBytes": 134217728,
+        "maximumCells": 5000000,
+        "maximumCandidates": 5000000,
+        "maximumRows": 5000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 50000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.analytics.coverage:input:1.0",
+            "schemaHash": "sha256:153da64fb71492997229faa47b182cb27b216c0d8cb7f2d0a4ff422cae6e8aa1",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "ANGULAR_DEGREES"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.analytics.coverage:output:1.0",
+            "schemaHash": "sha256:1baa5b818303f8a09e4bb489d47d444122df1392712d5285109ff1bf66001eff",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.analytics.flow",
+      "operationVersion": "1.0",
+      "semanticRole": "GENERIC_ANALYSIS",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "REMOTE_ALLOWED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.analytics.flow:input:1.0",
+      "inputSchemaHash": "sha256:39e236fab0ea79e485230b5edda9be941dde839adda152b82c2dd8aab48b7a95",
+      "outputSchemaUri": "urn:gowm:capability:h3.analytics.flow:output:1.0",
+      "outputSchemaHash": "sha256:9ca3c076ffd005c0b153a040c445b31aabec5f09d0f38943f834ea60dd14d764",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 67108864,
+        "maximumOutputBytes": 134217728,
+        "maximumCells": 5000000,
+        "maximumCandidates": 5000000,
+        "maximumRows": 5000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 50000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.analytics.flow:input:1.0",
+            "schemaHash": "sha256:39e236fab0ea79e485230b5edda9be941dde839adda152b82c2dd8aab48b7a95",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.analytics.flow:output:1.0",
+            "schemaHash": "sha256:9ca3c076ffd005c0b153a040c445b31aabec5f09d0f38943f834ea60dd14d764",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    }
+  ]
+}

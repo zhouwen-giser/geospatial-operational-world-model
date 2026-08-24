@@ -1,0 +1,4 @@
+Read CODEX_GOAL_PROMPT.md and all referenced package files. Run preflight and
+validation, inspect the actual GOWM+ v0.2 branch/PR/worktree state, and execute
+C00 immediately. Continue through S04. Do not implement WSGS or SACS. Do not
+merge, tag, release or deploy.

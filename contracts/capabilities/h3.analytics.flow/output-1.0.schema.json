@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.analytics.flow:output:1.0",
+  "title": "H3AnalyticsFlowOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["resolution", "directed", "gapPolicy", "flows"],
+  "properties": {
+    "resolution": { "type": "integer", "minimum": 0, "maximum": 15 },
+    "directed": { "type": "boolean" },
+    "gapPolicy": { "const": "SEQUENCE_ISOLATED" },
+    "flows": {
+      "type": "array",
+      "maxItems": 5000000,
+      "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/flow" }
+    }
+  }
+}

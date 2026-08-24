@@ -109,7 +109,7 @@ async function main(): Promise<void> {
       phenomenonTime: new Date(start+5_000).toISOString(),x: 448260,y: 4417768,continuityToken: `${trackerSession}:17:b`
     });
     const canonical = await json(`${ingestUrl}/observations/${encodeURIComponent(String(first.observationId))}/canonical`) as Record<string,unknown>;
-    const mobility = await json(`${worldUrl}/trajectory/${encodeURIComponent(targetId)}/mobility?source=${encodeURIComponent(source)}`) as Record<string,unknown>;
+    const mobility = await waitForMobility(targetId, source);
     if (canonical.canonicalEvidenceContractVersion !== "1.2") throw new Error("canonical evidence contract missing");
     if (Number(mobility.sequenceCount) !== 2) throw new Error(`expected two sequences, got ${mobility.sequenceCount}`);
     const gaps = mobility.gaps as Array<Record<string,unknown>>;
@@ -223,6 +223,19 @@ async function waitForObject(id: string, observationId: string): Promise<Record<
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error(`projection timeout for ${observationId}`);
+}
+
+async function waitForMobility(targetId: string, source: string): Promise<Record<string, unknown>> {
+  const url = `${worldUrl}/trajectory/${encodeURIComponent(targetId)}/mobility?source=${encodeURIComponent(source)}`;
+  const deadline = Date.now() + 15_000;
+  while (Date.now() < deadline) {
+    const response = await fetch(url);
+    const text = await response.text();
+    if (response.ok) return JSON.parse(text) as Record<string, unknown>;
+    if (response.status !== 404) throw new Error(`${response.status} ${url}: ${text}`);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  throw new Error(`mobility projection timeout for ${targetId} from ${source}`);
 }
 
 async function waitForSseEvent(url: string, subjectId: string): Promise<Record<string, unknown>> {

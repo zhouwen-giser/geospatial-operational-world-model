@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:predicate-evaluation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evaluationId",
+    "predicateId",
+    "status",
+    "evaluatedAtWorldVersion",
+    "supportingEvidenceIds",
+    "contradictingEvidenceIds",
+    "assumptions",
+    "warnings",
+    "methodVersion"
+  ],
+  "properties": {
+    "evaluationId": {
+      "type": "string"
+    },
+    "predicateId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "SUPPORTED",
+        "NOT_SUPPORTED",
+        "PARTIALLY_SUPPORTED",
+        "INDETERMINATE",
+        "NO_DATA",
+        "CONFLICTING"
+      ]
+    },
+    "evaluatedAtWorldVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "supportingEvidenceIds": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "string"
+      }
+    },
+    "contradictingEvidenceIds": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "string"
+      }
+    },
+    "observabilityAssessment": {
+      "$ref": "observability-assessment.schema.json"
+    },
+    "assumptions": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "methodVersion": {
+      "type": "string"
+    }
+  }
+}

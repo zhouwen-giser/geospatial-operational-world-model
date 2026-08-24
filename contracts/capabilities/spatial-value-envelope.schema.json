@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:spatial-value-envelope",
+  "title": "SpatialValueEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "valueKind", "value", "crs", "coordinateLayout"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "valueKind": {
+      "enum": ["POSITION", "POSITIONS", "GEOMETRY", "FEATURE", "FEATURE_COLLECTION"]
+    },
+    "value": {},
+    "crs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "code", "axisConvention"],
+      "properties": {
+        "authority": { "const": "EPSG" },
+        "code": { "type": "integer", "minimum": 1 },
+        "axisConvention": { "const": "TRADITIONAL_GIS" }
+      }
+    },
+    "coordinateLayout": { "enum": ["XY", "XYZ"] }
+  }
+}

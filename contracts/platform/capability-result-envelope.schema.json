@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:capability-result-envelope",
+  "title": "CapabilityResultEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "providerProtocolVersion",
+    "requestId",
+    "operation",
+    "status",
+    "computeSnapshot",
+    "receipts",
+    "evidenceReferences",
+    "warnings",
+    "consumption",
+    "execution"
+  ],
+  "properties": {
+    "providerProtocolVersion": { "const": "1.0" },
+    "requestId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operationId", "operationVersion"],
+      "properties": {
+        "operationId": { "$ref": "common-definitions.schema.json#/$defs/operationId" },
+        "operationVersion": {
+          "$ref": "common-definitions.schema.json#/$defs/operationVersion"
+        }
+      }
+    },
+    "status": {
+      "enum": ["COMPLETED", "PARTIAL", "NO_DATA", "INDETERMINATE", "FAILED"]
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaUri", "schemaHash", "value"],
+      "properties": {
+        "schemaUri": { "$ref": "common-definitions.schema.json#/$defs/schemaUri" },
+        "schemaHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+        "value": {}
+      }
+    },
+    "dataSnapshot": { "$ref": "data-snapshot-context.schema.json" },
+    "computeSnapshot": { "$ref": "compute-snapshot-context.schema.json" },
+    "receipts": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "$ref": "execution-receipt.schema.json" }
+    },
+    "evidenceReferences": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": { "$ref": "evidence-reference.schema.json" }
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "type": "string", "maxLength": 1024 }
+    },
+    "consumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outputBytes"],
+      "properties": {
+        "inputBytes": { "type": "integer", "minimum": 0 },
+        "outputBytes": { "type": "integer", "minimum": 0 },
+        "rows": { "type": "integer", "minimum": 0 },
+        "candidates": { "type": "integer", "minimum": 0 },
+        "vertices": { "type": "integer", "minimum": 0 },
+        "cells": { "type": "integer", "minimum": 0 },
+        "batchItems": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerId", "providerVersion", "elapsedMs"],
+      "properties": {
+        "providerId": { "$ref": "common-definitions.schema.json#/$defs/providerId" },
+        "providerVersion": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "elapsedMs": { "type": "number", "minimum": 0 },
+        "resultHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" }
+      }
+    },
+    "error": { "$ref": "platform-error.schema.json" }
+  }
+}

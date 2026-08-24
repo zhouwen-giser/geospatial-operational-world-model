@@ -174,6 +174,15 @@ const ObservationAssertionSchema = z.object({
   inputMeasurementKeys: z.array(z.string().min(1).max(256)).default([])
 }).strict();
 
+const ExternalCorrelationFields = {
+  executionIntentId: z.string().min(1).max(512).optional(),
+  operationCorrelationId: z.string().min(1).max(512).optional(),
+  externalPlanningTaskId: z.string().min(1).max(512).optional(),
+  externalPlanningStepId: z.string().min(1).max(512).optional(),
+  providerActionId: z.string().min(1).max(512).optional(),
+  deviceCommandId: z.string().min(1).max(512).optional()
+};
+
 export const CanonicalObservationInputSchema = z.object({
   schemaVersion: z.literal("1.2"),
   observationId: z.string().min(1).max(256),
@@ -192,6 +201,7 @@ export const CanonicalObservationInputSchema = z.object({
   producerPipelineKey: z.string().min(1).max(256),
   rawReference: z.string().min(1).max(2_048),
   correlationId: z.string().min(1).max(256).optional(),
+  ...ExternalCorrelationFields,
   qualityFlags: z.array(z.string().min(1).max(128)).default([]),
   metadata: z.record(z.string(), z.unknown()).default({}),
   timeSolution: CanonicalTimeSolutionSchema,

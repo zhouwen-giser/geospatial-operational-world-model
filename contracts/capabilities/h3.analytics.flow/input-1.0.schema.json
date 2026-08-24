@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.analytics.flow:input:1.0",
+  "title": "H3AnalyticsFlowInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["trajectories", "resolution"],
+  "properties": {
+    "trajectories": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sequenceId", "points"],
+        "properties": {
+          "sequenceId": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "points": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 100000,
+            "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/trajectoryPoint" }
+          }
+        }
+      }
+    },
+    "resolution": { "$ref": "../h3.common/definitions.schema.json#/$defs/resolution" },
+    "directed": { "type": "boolean", "default": true }
+  }
+}

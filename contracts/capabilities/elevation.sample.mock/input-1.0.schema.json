@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:elevation.sample.mock:input:1.0",
+  "title": "ElevationSampleMockInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["longitude", "latitude"],
+  "properties": {
+    "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+    "latitude": { "type": "number", "minimum": -90, "maximum": 90 }
+  }
+}

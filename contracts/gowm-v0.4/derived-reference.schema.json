@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:derived-reference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "referenceKey",
+    "derivedType",
+    "operator",
+    "sourceQueryId",
+    "inputReferenceKeys",
+    "dataSnapshotHash",
+    "computeSnapshotHash",
+    "methodVersion",
+    "revalidationRequired"
+  ],
+  "properties": {
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "derivedType": {
+      "enum": [
+        "GEOMETRY",
+        "REFERENCE_SET",
+        "RANKED_REFERENCE_SET",
+        "ANALYSIS_RESULT"
+      ]
+    },
+    "operator": {
+      "type": "string"
+    },
+    "sourceQueryId": {
+      "type": "string"
+    },
+    "sourceNodeId": {
+      "type": "string"
+    },
+    "inputReferenceKeys": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      }
+    },
+    "dataSnapshotHash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "computeSnapshotHash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "methodVersion": {
+      "type": "string"
+    },
+    "geometrySummary": {
+      "$ref": "common.schema.json#/$defs/geometrySummary"
+    },
+    "artifactRef": {
+      "type": "string"
+    },
+    "validUntil": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "revalidationRequired": {
+      "type": "boolean"
+    }
+  }
+}

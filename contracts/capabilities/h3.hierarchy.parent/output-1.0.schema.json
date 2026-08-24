@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.hierarchy.parent:output:1.0",
+  "title": "H3HierarchyParentOutputV1",
+  "$ref": "../h3.common/definitions.schema.json#/$defs/h3CellValue"
+}

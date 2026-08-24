@@ -99,7 +99,16 @@ export interface SubjectRef {
   id: string;
 }
 
-export interface ObservationEnvelope {
+export interface ExternalCorrelationMetadata {
+  executionIntentId?: string;
+  operationCorrelationId?: string;
+  externalPlanningTaskId?: string;
+  externalPlanningStepId?: string;
+  providerActionId?: string;
+  deviceCommandId?: string;
+}
+
+export interface ObservationEnvelope extends ExternalCorrelationMetadata {
   observationId: string;
   observer: ObserverRef;
   subject: SubjectRef;
@@ -198,7 +207,7 @@ export interface ObservationAssertionInput {
 }
 
 /** Public v1.2 command. receivedAt is deliberately absent: the HTTP boundary owns it. */
-export interface CanonicalObservationInput {
+export interface CanonicalObservationInput extends ExternalCorrelationMetadata {
   schemaVersion: "1.2";
   observationId: string;
   dataScopeKey: string;
@@ -225,7 +234,7 @@ export interface CanonicalObservationInput {
 }
 
 /** Internal immutable bundle produced by both v1.1 compatibility and v1.2 inputs. */
-export interface CanonicalObservationBundle {
+export interface CanonicalObservationBundle extends ExternalCorrelationMetadata {
   envelope: ObservationEnvelope;
   dataScopeKey: string;
   sourceRecordKey: string;
@@ -289,7 +298,7 @@ export const WORLD_EVENT_TYPES = [
 
 export type WorldEventType = (typeof WORLD_EVENT_TYPES)[number] | (string & {});
 
-export interface WorldEvent {
+export interface WorldEvent extends ExternalCorrelationMetadata {
   eventId: string;
   eventType: WorldEventType;
   subject: SubjectRef;
@@ -300,6 +309,7 @@ export interface WorldEvent {
   causationId: string;
   payload: Record<string, unknown>;
   schemaVersion: "1.0";
+  dataScopeKey?: string;
 }
 
 export interface TrajectoryPoint {

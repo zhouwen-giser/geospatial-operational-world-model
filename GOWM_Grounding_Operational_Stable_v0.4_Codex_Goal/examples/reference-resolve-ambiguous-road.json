@@ -1,0 +1,23 @@
+{
+  "request": {
+    "schemaVersion": "1.0",
+    "mentions": [
+      {
+        "mentionId": "m1",
+        "surfaceText": "滨河路",
+        "expectedKinds": [
+          "Road",
+          "RoadSegment"
+        ],
+        "semanticRole": "ROUTE"
+      }
+    ],
+    "context": {
+      "anchorReferenceKeys": [],
+      "language": "zh-CN"
+    },
+    "limitPerMention": 5
+  },
+  "expectedStatus": "AMBIGUOUS",
+  "expectedMinimumCandidates": 2
+}

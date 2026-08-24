@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:operational-query-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "correlationHints": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "$ref": "external-correlation-claim.schema.json"
+      }
+    },
+    "timeRange": {
+      "$ref": "common.schema.json#/$defs/timeRange"
+    },
+    "actorReferenceKeys": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      }
+    },
+    "cursor": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    }
+  }
+}

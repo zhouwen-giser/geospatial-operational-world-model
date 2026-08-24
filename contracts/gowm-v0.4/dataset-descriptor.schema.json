@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:dataset-descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "referenceKey",
+    "datasetKind",
+    "name",
+    "currentVersion",
+    "versions"
+  ],
+  "properties": {
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "datasetKind": {
+      "enum": [
+        "VECTOR",
+        "RASTER",
+        "ELEVATION",
+        "NETWORK",
+        "POINT_CLOUD",
+        "TILESET",
+        "CURRENT_PROJECTION"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "currentVersion": {
+      "type": "string"
+    },
+    "versions": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "schemaVersion",
+          "contentHash",
+          "publishedAt"
+        ],
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "string"
+          },
+          "contentHash": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "crs": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "sourceVersion": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "$ref": "common.schema.json#/$defs/dateTime"
+          },
+          "retiredAt": {
+            "$ref": "common.schema.json#/$defs/dateTime"
+          }
+        }
+      }
+    }
+  }
+}

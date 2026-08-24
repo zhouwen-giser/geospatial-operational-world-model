@@ -1,0 +1,25 @@
+{
+  "findingId": "corr-finding-001",
+  "externalAuthority": "SDAR_PLANNING",
+  "externalKind": "OPERATION_CORRELATION",
+  "externalValue": "op-corr-b913",
+  "operationalTaskReferenceKey": {
+    "namespace": "gowm",
+    "kind": "OPERATIONAL_TASK",
+    "id": "wrf_33333333333333333333333333333333",
+    "version": "8"
+  },
+  "operationalEventIds": [
+    "event-1",
+    "event-2"
+  ],
+  "relation": "REPORTS_EXECUTION_OF",
+  "matchBasis": "PROPAGATED_CORRELATION_ID",
+  "correlationConfidence": 1.0,
+  "evidenceIds": [
+    "event-1",
+    "event-2"
+  ],
+  "worldVersion": 12001,
+  "methodVersion": "correlation-resolver/1.0"
+}

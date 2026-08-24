@@ -1,0 +1,569 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.spatial-analysis.bridge",
+    "providerVersion": "0.2.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00",
+    "sourceRef": "urn:gowm:source:zip:spatial-analysis-service:1.0.0"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "spatial.find-nearby",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:spatial.find-nearby:input:1.0",
+      "inputSchemaHash": "sha256:17f7d021a954e30721adb28d02aae1803061455da9f153c1af019779d92ae846",
+      "outputSchemaUri": "urn:gowm:capability:spatial.find-nearby:output:1.0",
+      "outputSchemaHash": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.find-nearby:input:1.0",
+            "schemaHash": "sha256:17f7d021a954e30721adb28d02aae1803061455da9f153c1af019779d92ae846",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.find-nearby:output:1.0",
+            "schemaHash": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.find-nearest",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:spatial.find-nearest:input:1.0",
+      "inputSchemaHash": "sha256:e4d9469132ed17ee8d12bf7c1cb2e270bce231bda7a8ecb2010209353cd470e3",
+      "outputSchemaUri": "urn:gowm:capability:spatial.find-nearest:output:1.0",
+      "outputSchemaHash": "sha256:010f52a157540f619a74eb5811b06fdfc0d71d3f87956374d5162c72dbdfb0fc",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.find-nearest:input:1.0",
+            "schemaHash": "sha256:e4d9469132ed17ee8d12bf7c1cb2e270bce231bda7a8ecb2010209353cd470e3",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.find-nearest:output:1.0",
+            "schemaHash": "sha256:010f52a157540f619a74eb5811b06fdfc0d71d3f87956374d5162c72dbdfb0fc",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.find-in-area",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:spatial.find-in-area:input:1.0",
+      "inputSchemaHash": "sha256:f902acdbe64e91474b7f3d2a94d8cad72a7a2d6182265981a770fb472a8914dd",
+      "outputSchemaUri": "urn:gowm:capability:spatial.find-in-area:output:1.0",
+      "outputSchemaHash": "sha256:8aa8231c04110a4fcf235e759bcdd4f2e97db20097bbff62f9161b4ce6f4d161",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.find-in-area:input:1.0",
+            "schemaHash": "sha256:f902acdbe64e91474b7f3d2a94d8cad72a7a2d6182265981a770fb472a8914dd",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.find-in-area:output:1.0",
+            "schemaHash": "sha256:8aa8231c04110a4fcf235e759bcdd4f2e97db20097bbff62f9161b4ce6f4d161",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.find-intersections",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:spatial.find-intersections:input:1.0",
+      "inputSchemaHash": "sha256:8f347f836dd9c299f16cb60d2fc22dcfc5b4addab9c77024f530a9bdd4d7bea0",
+      "outputSchemaUri": "urn:gowm:capability:spatial.find-intersections:output:1.0",
+      "outputSchemaHash": "sha256:3bbfc710db6a82e02592075ec75bafb648575242794dbfd3ff39c6df9c53979c",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.find-intersections:input:1.0",
+            "schemaHash": "sha256:8f347f836dd9c299f16cb60d2fc22dcfc5b4addab9c77024f530a9bdd4d7bea0",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.find-intersections:output:1.0",
+            "schemaHash": "sha256:3bbfc710db6a82e02592075ec75bafb648575242794dbfd3ff39c6df9c53979c",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.find-near-route",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:spatial.find-near-route:input:1.0",
+      "inputSchemaHash": "sha256:e098a98156a7c8121065e3dfc5a8c016668d2e9f8a6d5c513f574e0d8b572da7",
+      "outputSchemaUri": "urn:gowm:capability:spatial.find-near-route:output:1.0",
+      "outputSchemaHash": "sha256:2fe2dc8b8deff99e5341f0853d09a34d9d87ba9bfe700c767ae953ab297048a1",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.find-near-route:input:1.0",
+            "schemaHash": "sha256:e098a98156a7c8121065e3dfc5a8c016668d2e9f8a6d5c513f574e0d8b572da7",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.find-near-route:output:1.0",
+            "schemaHash": "sha256:2fe2dc8b8deff99e5341f0853d09a34d9d87ba9bfe700c767ae953ab297048a1",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.find-containing-area",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:spatial.find-containing-area:input:1.0",
+      "inputSchemaHash": "sha256:3d7632db31b6fa5194c471ed01d6badad7d100c462998b3245bba7d20da32af9",
+      "outputSchemaUri": "urn:gowm:capability:spatial.find-containing-area:output:1.0",
+      "outputSchemaHash": "sha256:ce7845e97fc32bf00d30d62615783b176ce51c4d7af153025e1aebedbdc314ba",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.find-containing-area:input:1.0",
+            "schemaHash": "sha256:3d7632db31b6fa5194c471ed01d6badad7d100c462998b3245bba7d20da32af9",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.find-containing-area:output:1.0",
+            "schemaHash": "sha256:ce7845e97fc32bf00d30d62615783b176ce51c4d7af153025e1aebedbdc314ba",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.count-in-area",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:spatial.count-in-area:input:1.0",
+      "inputSchemaHash": "sha256:568b2b70946034456972e7350d6245d10f7bd287cfcd9340109a418059e69d9a",
+      "outputSchemaUri": "urn:gowm:capability:spatial.count-in-area:output:1.0",
+      "outputSchemaHash": "sha256:98b710891a57a7cb07072e39aea7ff62824735be33a90e231dc27dc255ca3251",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.count-in-area:input:1.0",
+            "schemaHash": "sha256:568b2b70946034456972e7350d6245d10f7bd287cfcd9340109a418059e69d9a",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.count-in-area:output:1.0",
+            "schemaHash": "sha256:98b710891a57a7cb07072e39aea7ff62824735be33a90e231dc27dc255ca3251",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.summarize-area",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:spatial.summarize-area:input:1.0",
+      "inputSchemaHash": "sha256:64dd5e3b012a4d1cfe2a88537f362af5ea858f69ea76a3a350deb16887532146",
+      "outputSchemaUri": "urn:gowm:capability:spatial.summarize-area:output:1.0",
+      "outputSchemaHash": "sha256:e2fbd724632974869817a947d52304297a80de3b7782dfee8e83878f8397cf41",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.summarize-area:input:1.0",
+            "schemaHash": "sha256:64dd5e3b012a4d1cfe2a88537f362af5ea858f69ea76a3a350deb16887532146",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.summarize-area:output:1.0",
+            "schemaHash": "sha256:e2fbd724632974869817a947d52304297a80de3b7782dfee8e83878f8397cf41",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.join",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "EXPERIMENTAL",
+      "inputSchemaUri": "urn:gowm:capability:spatial.join:input:1.0",
+      "inputSchemaHash": "sha256:1afa71b0bae0aa9252252f09a93b89db24ef7514b24913ad615f9bdcdec94bb0",
+      "outputSchemaUri": "urn:gowm:capability:spatial.join:output:1.0",
+      "outputSchemaHash": "sha256:a2a60c82a15bd9370e3432930c00bec455b238a649bb336058942baa61b06cc9",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 10000,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.join:input:1.0",
+            "schemaHash": "sha256:1afa71b0bae0aa9252252f09a93b89db24ef7514b24913ad615f9bdcdec94bb0",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.join:output:1.0",
+            "schemaHash": "sha256:a2a60c82a15bd9370e3432930c00bec455b238a649bb336058942baa61b06cc9",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "spatial.aggregate",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "EXPERIMENTAL",
+      "inputSchemaUri": "urn:gowm:capability:spatial.aggregate:input:1.0",
+      "inputSchemaHash": "sha256:ce8ed683104f823c81e79e72f571390a9d7b75e908e2d3339806a6731c6df0f0",
+      "outputSchemaUri": "urn:gowm:capability:spatial.aggregate:output:1.0",
+      "outputSchemaHash": "sha256:0dba68490f13ad807a18b9620068574a35450297f4727ddefaa0aeeb62d12eaa",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 50000,
+        "maximumVertices": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:spatial.aggregate:input:1.0",
+            "schemaHash": "sha256:ce8ed683104f823c81e79e72f571390a9d7b75e908e2d3339806a6731c6df0f0",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:spatial.aggregate:output:1.0",
+            "schemaHash": "sha256:0dba68490f13ad807a18b9620068574a35450297f4727ddefaa0aeeb62d12eaa",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    }
+  ]
+}

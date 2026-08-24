@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:reference-resolve-result",
+  "title": "ReferenceResolveResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "resolutions",
+    "worldVersion",
+    "resolverVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "worldVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "resolverVersion": {
+      "type": "string"
+    },
+    "resolutions": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mentionId",
+          "status",
+          "candidates"
+        ],
+        "properties": {
+          "mentionId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "RESOLVED_EXACT",
+              "SUGGESTED_UNIQUE",
+              "AMBIGUOUS",
+              "UNRESOLVED",
+              "INVALID"
+            ]
+          },
+          "candidates": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "candidate",
+                "matchedBy",
+                "matchScore"
+              ],
+              "properties": {
+                "candidate": {
+                  "$ref": "reference-descriptor.schema.json"
+                },
+                "matchedBy": {
+                  "enum": [
+                    "EXACT_REFERENCE_KEY",
+                    "EXACT_EXTERNAL_ID",
+                    "EXACT_CODE",
+                    "EXACT_CANONICAL_NAME",
+                    "EXACT_ALIAS",
+                    "PINYIN",
+                    "FUZZY_NAME",
+                    "SPATIAL_CONTEXT"
+                  ]
+                },
+                "matchScore": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

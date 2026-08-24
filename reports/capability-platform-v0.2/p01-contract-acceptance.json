@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "P01",
+  "generatedAt": "2026-08-22T17:18:54.997Z",
+  "source": {
+    "branch": "codex/gowm-capability-platform-v0.2",
+    "prePhaseHead": "e100cc0fd0b7b27f8a386232dc2b261de7841547"
+  },
+  "contractSource": {
+    "platform": "contracts/platform",
+    "capabilities": "contracts/capabilities",
+    "generatedTypes": "packages/platform/contract-runtime/src/generated/contracts.ts",
+    "generatedSchemaBundle": "packages/platform/contract-runtime/src/generated/schema-bundle.ts",
+    "generatedSchemaHashes": "packages/platform/contract-runtime/src/generated/schema-hashes.ts",
+    "hashAlgorithm": "SHA-256 over canonical JSON with lexicographically sorted object keys, preserved array order, and UTF-8 encoding"
+  },
+  "tests": [
+    {
+      "command": "npx.cmd vitest run --config validation/gateway-contract/vitest.config.ts",
+      "status": "PASS",
+      "observed": "1 file; 15 tests passed"
+    },
+    {
+      "command": "npx.cmd tsc -p packages/platform/contract-runtime/tsconfig.json --noEmit",
+      "status": "PASS",
+      "observed": "exit 0"
+    },
+    {
+      "command": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check",
+      "status": "PASS",
+      "observed": "exit 0; generated TypeScript, schema bundle, and hashes current"
+    },
+    {
+      "command": "npx.cmd tsc -p tsconfig.json --noEmit",
+      "status": "PASS",
+      "observed": "exit 0 after parallel P01-P05 slices converged"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC-009",
+      "status": "PASS",
+      "evidence": "Committed JSON Schema deterministically generates TypeScript, runtime schema bundle, and hash registry; stale generation fails --check."
+    },
+    {
+      "id": "AC-010",
+      "status": "PASS",
+      "evidence": "validateOperationSchemaAttestation rejects input/output schema hash drift."
+    },
+    {
+      "id": "AC-011",
+      "status": "PASS",
+      "evidence": "Manifest semantic test accepts one operation at versions 1.0 and 2.0 while rejecting duplicate operation/version keys."
+    },
+    {
+      "id": "AC-012",
+      "status": "PASS",
+      "evidence": "Controlled catalog semantic validation rejects enabled PLANNED and RETIRED registrations and non-approved endpoints."
+    },
+    {
+      "id": "AC-013",
+      "status": "PASS",
+      "evidence": "World-independent result test requires a receipt and rejects fake World Evidence when evaluated against its descriptor."
+    },
+    {
+      "id": "AC-014",
+      "status": "PASS",
+      "evidence": "World-independent result test requires Compute Snapshot and rejects a Data Snapshot."
+    },
+    {
+      "id": "AC-015",
+      "status": "PARTIAL",
+      "evidence": "Frozen Gateway and Provider OpenAPI paths reference the correct public/internal schemas and include catalog detail, health/readiness, jobs, cancellation, and receipts. Runtime route parity remains for P03/P04/P12 execution services."
+    }
+  ],
+  "trustBoundary": {
+    "publicRequest": "GatewayExecuteRequest",
+    "trustedInternalRequest": "ProviderExecutionRequest",
+    "callerSuppliedIdentityOrScopeAccepted": false,
+    "providerAbsoluteUrlAcceptedFromManifest": false,
+    "formatValidation": ["date", "date-time", "duration", "email", "hostname", "ipv4", "ipv6", "uri", "uri-reference", "uuid"]
+  },
+  "residual": [
+    "Runtime OpenAPI parity is intentionally deferred until the Gateway and asynchronous query runtime routes exist.",
+    "Operation-level schemas beyond the shared envelopes, elevation mock, and the four Foundation local operations are added by their owning integration phases."
+  ]
+}

@@ -1,0 +1,305 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.reference-catalog",
+    "providerVersion": "1.0.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:071f93af7b3a738c407ae337db285b5afd4250d552c1f1564b319ae4fc9d3e2f",
+    "sourceRef": "urn:gowm:source:in-tree:grounding-catalog:1.0.0"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "reference.get",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaUri": "urn:gowm:v0.4:reference-descriptor",
+      "outputSchemaHash": "sha256:276d3d168e37dd13abfd705d308b16b128b6e6519daf00f98830bd570593a25c",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:catalog-query-request",
+            "schemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.4:reference-descriptor",
+            "schemaHash": "sha256:276d3d168e37dd13abfd705d308b16b128b6e6519daf00f98830bd570593a25c",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "reference.resolve",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:reference-resolve-request",
+      "inputSchemaHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+      "outputSchemaUri": "urn:gowm:v0.4:reference-resolve-result",
+      "outputSchemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:reference-resolve-request",
+            "schemaHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.4:reference-resolve-result",
+            "schemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "candidateReferenceKey",
+            "path": "/resolutions/0/candidates/0/candidate/referenceKey",
+            "schemaUri": "urn:gowm:v0.4:reference-key",
+            "schemaHash": "sha256:240470501ee453cf97ce536b62b81ce2a32efc6cf01d02accab0a88b7ca2a403",
+            "valueKind": "REFERENCE_KEY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "reference.validate",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:reference-validate-request",
+      "inputSchemaHash": "sha256:9f929d148f42d9c2369c14a51a5d23fdeca85285d3ec86e5a1fbb64feb5daf78",
+      "outputSchemaUri": "urn:gowm:v0.4:reference-validate-result",
+      "outputSchemaHash": "sha256:de8d65cd11642cc84d496238adfe840f97471a1e63e209bec26ea1d590273f2d",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:reference-validate-request",
+            "schemaHash": "sha256:9f929d148f42d9c2369c14a51a5d23fdeca85285d3ec86e5a1fbb64feb5daf78",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.4:reference-validate-result",
+            "schemaHash": "sha256:de8d65cd11642cc84d496238adfe840f97471a1e63e209bec26ea1d590273f2d",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "reference.batch-get",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:reference-validate-request",
+      "inputSchemaHash": "sha256:9f929d148f42d9c2369c14a51a5d23fdeca85285d3ec86e5a1fbb64feb5daf78",
+      "outputSchemaUri": "urn:gowm:v0.4:catalog-result",
+      "outputSchemaHash": "sha256:75085357cb0cce92f0567250d4b229503182bbff9aaec2956adfb811a569e1d4",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:reference-validate-request",
+            "schemaHash": "sha256:9f929d148f42d9c2369c14a51a5d23fdeca85285d3ec86e5a1fbb64feb5daf78",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.4:catalog-result",
+            "schemaHash": "sha256:75085357cb0cce92f0567250d4b229503182bbff9aaec2956adfb811a569e1d4",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "reference.search",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:reference-resolve-request",
+      "inputSchemaHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+      "outputSchemaUri": "urn:gowm:v0.4:reference-resolve-result",
+      "outputSchemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:reference-resolve-request",
+            "schemaHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.4:reference-resolve-result",
+            "schemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "candidateReferenceKey",
+            "path": "/resolutions/0/candidates/0/candidate/referenceKey",
+            "schemaUri": "urn:gowm:v0.4:reference-key",
+            "schemaHash": "sha256:240470501ee453cf97ce536b62b81ce2a32efc6cf01d02accab0a88b7ca2a403",
+            "valueKind": "REFERENCE_KEY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    }
+  ]
+}

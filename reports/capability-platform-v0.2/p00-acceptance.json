@@ -1,0 +1,114 @@
+{
+  "phase": "P00",
+  "completedAt": "2026-08-23T00:45:10+08:00",
+  "decision": "PASS",
+  "source": {
+    "gowmSha": "d1ff3b81b8bf577965b00edc1bd06acaaeda706c",
+    "remoteDefaultBranch": "codex/unify-gowm-stas-v0.1.0",
+    "h3Sha": "74fc8657072dd58a2f8e4317c1caef8bfd10e024"
+  },
+  "checks": [
+    {
+      "id": "AC-001",
+      "status": "PASS",
+      "evidence": "Package preflight emitted PREFLIGHT_PASS and independently computed SHA-256 values match all three input locks."
+    },
+    {
+      "id": "AC-002",
+      "status": "PASS",
+      "evidence": "Remote GOWM default HEAD and H3 main were queried and equal their locked commits; no source drift exists."
+    },
+    {
+      "id": "AC-003",
+      "status": "PASS",
+      "evidence": "Expanded task/provider/H3 inputs exist only under ignored .intake and are absent from tracked source."
+    },
+    {
+      "id": "AC-004",
+      "status": "NOT_RUN",
+      "ownerPhase": "P02-P04"
+    },
+    {
+      "id": "AC-005",
+      "status": "NOT_RUN",
+      "ownerPhase": "P03-P08"
+    },
+    {
+      "id": "AC-006",
+      "status": "NOT_RUN",
+      "ownerPhase": "P05"
+    },
+    {
+      "id": "AC-007",
+      "status": "NOT_RUN",
+      "ownerPhase": "P01-P03"
+    },
+    {
+      "id": "AC-008",
+      "status": "NOT_RUN",
+      "ownerPhase": "P03"
+    }
+  ],
+  "commands": [
+    {
+      "command": "python scripts/validate_task_package.py",
+      "status": "PASS",
+      "summary": "TASK_PACKAGE_VALID schemas=13 examples=5 acceptance=96"
+    },
+    {
+      "command": "bash scripts/preflight.sh .",
+      "status": "PASS",
+      "summary": "PREFLIGHT_PASS after selecting a valid local python3 in ignored intake tooling"
+    },
+    {
+      "command": "npm.cmd run verify",
+      "status": "PASS",
+      "summary": "TypeScript and SQL checks; root 25 pass/1 explicit DB skip; STAS 39 pass; builds pass"
+    },
+    {
+      "command": "docker compose config --quiet",
+      "status": "PASS",
+      "summary": "Isolated process-local configuration validates"
+    },
+    {
+      "command": "docker version",
+      "status": "PASS",
+      "summary": "Docker Desktop 4.81.0 and Linux Engine 29.6.1 responded after startup; database/provider gates remain separately pending"
+    },
+    {
+      "command": "docker compose up -d --build",
+      "status": "PASS",
+      "summary": "Isolated stack built; migrations 001-010 exited 0; postgres, mqtt, APIs, worker, STAS, and MCP became healthy/running"
+    },
+    {
+      "command": "database/tests/001_v12_assertions.sql",
+      "status": "PASS",
+      "summary": "GOWM+ v1.2 database assertions PASS on PostgreSQL 18.4, PostGIS/Raster 3.6.4, MobilityDB 1.3.0, H3/H3-PostGIS 4.5.0"
+    },
+    {
+      "command": "RUN_DB_INTEGRATION=1 npm.cmd run test:integration",
+      "status": "PASS",
+      "summary": "1 real PostGIS/MobilityDB/H3 integration test passed"
+    },
+    {
+      "command": "node dist/tests/integration/http-acceptance.js",
+      "status": "PASS",
+      "summary": "All G1-G8 checks passed after the client correctly polled asynchronous Mobility projection"
+    },
+    {
+      "command": "npm.cmd run validate:stas",
+      "status": "PASS",
+      "summary": "15/15 real STAS tools, persistence/replay, scope denial, and candidate cap passed"
+    },
+    {
+      "command": "npm.cmd run validate:ingest-stas",
+      "status": "PASS",
+      "summary": "Three observations produced three immutable versions, two sequences, one UNKNOWN gap, and exact replay"
+    },
+    {
+      "command": "npm.cmd run validate:evidence",
+      "status": "PASS",
+      "summary": "Runtime versions, role denials, and the 10,001-candidate plan were captured"
+    }
+  ]
+}

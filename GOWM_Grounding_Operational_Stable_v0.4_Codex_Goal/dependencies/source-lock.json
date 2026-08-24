@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-08-23",
+  "repository": "zhouwen-giser/geospatial-operational-world-model",
+  "v02": {
+    "branch": "codex/gowm-capability-platform-v0.2",
+    "headAtPackageGeneration": "1887e56a18b77aa9692cca9d86b00413906816f4",
+    "draftPullRequest": 1,
+    "baseBranch": "codex/unify-gowm-stas-v0.1.0",
+    "baseSha": "d1ff3b81b8bf577965b00edc1bd06acaaeda706c",
+    "policy": "Re-fetch and use the actual latest committed/pushed head."
+  },
+  "target": {
+    "branch": "codex/gowm-grounding-operational-v0.4-stable",
+    "version": "0.4.0",
+    "stackedBase": "codex/gowm-capability-platform-v0.2"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:common",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "referenceKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "namespace",
+        "kind",
+        "id",
+        "version"
+      ],
+      "properties": {
+        "namespace": {
+          "const": "gowm"
+        },
+        "kind": {
+          "enum": [
+            "WORLD_OBJECT",
+            "SPATIAL_OBJECT",
+            "DATA_SCOPE",
+            "DATASET",
+            "LAYER",
+            "LAYER_FEATURE",
+            "QUERY_RESULT",
+            "DERIVED_REFERENCE",
+            "REFERENCE_SET",
+            "OPERATIONAL_TASK"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^wrf_[0-9a-f]{32}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      }
+    },
+    "geometrySummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "geometryType"
+      ],
+      "properties": {
+        "geometryType": {
+          "type": "string"
+        },
+        "centroid": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        },
+        "bbox": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 6,
+          "items": {
+            "type": "number"
+          }
+        },
+        "geometryRef": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "crs": {
+          "type": "string",
+          "maxLength": 64
+        }
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceId",
+        "authority",
+        "evidenceType"
+      ],
+      "properties": {
+        "evidenceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "evidenceType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "worldVersion": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observedAt": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    },
+    "timeRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "to": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    }
+  }
+}

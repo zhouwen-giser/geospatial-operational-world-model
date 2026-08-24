@@ -13,12 +13,41 @@ import { createWorldEvent } from "../../event-model/src/events.js";
 import { mapObservation } from "./row-mappers.js";
 import { insertEvent } from "./world-repository.js";
 import { withTransaction } from "./db.js";
+import {
+  Canonical4326CrsNormalizationAdapter,
+  H3PgLocalAdapter
+} from "../../integrations/foundation-local/src/index.js";
+import type {
+  CrsNormalizationPort,
+  FoundationComputeSnapshot,
+  FoundationExecution,
+  H3LocalAdapter,
+  H3ProjectionResult,
+  LocalSqlExecutor,
+  FoundationProcessingReceipt
+} from "../../platform/foundation-ports/src/index.js";
 
 export interface ProjectionResult {
   observationId: string;
   decision: ProjectionDecision;
   worldVersion: number;
   events: WorldEvent[];
+  processingReceiptIds: string[];
+}
+
+export type H3AdapterFactory = (client: pg.PoolClient) => H3LocalAdapter;
+export type CrsAdapterFactory = () => CrsNormalizationPort;
+
+type FoundationProcessingStage =
+  | "CRS_NORMALIZATION"
+  | "GEOMETRY_VALIDATION"
+  | "H3_INDEXING";
+
+interface FoundationReceiptRecord {
+  receipt: FoundationProcessingReceipt;
+  computeSnapshot: FoundationComputeSnapshot;
+  executionContext: FoundationExecution<unknown>["executionContext"];
+  details?: Record<string, unknown>;
 }
 
 interface CurrentRow {
@@ -55,8 +84,19 @@ const TYPE_COUNTER: Record<string, "agent_count" | "vehicle_count" | "sensor_cou
 
 export class ProjectionProcessor {
   private readonly config = loadConfig();
+  private readonly h3AdapterFactory: H3AdapterFactory;
+  private readonly crsAdapterFactory: CrsAdapterFactory;
 
-  constructor(private readonly pool: pg.Pool) {}
+  constructor(
+    private readonly pool: pg.Pool,
+    h3AdapterFactory?: H3AdapterFactory,
+    crsAdapterFactory?: CrsAdapterFactory
+  ) {
+    this.h3AdapterFactory = h3AdapterFactory ?? ((client) => new H3PgLocalAdapter(sqlExecutor(client), {
+      h3PgVersion: process.env.H3_PG_VERSION ?? "4.5.0"
+    }));
+    this.crsAdapterFactory = crsAdapterFactory ?? (() => new Canonical4326CrsNormalizationAdapter());
+  }
 
   async process(observationId: string): Promise<ProjectionResult> {
     return withTransaction(this.pool, async (client) => {
@@ -89,7 +129,8 @@ export class ProjectionProcessor {
           observationId,
           decision: { apply: false, reason: "superseded" },
           worldVersion: Number(observationRow.world_version ?? 0),
-          events: []
+          events: [],
+          processingReceiptIds: []
         };
       }
       if (observationRow.entity_binding_status === "CANDIDATE") {
@@ -98,20 +139,34 @@ export class ProjectionProcessor {
           observationId,
           decision: { apply: false,reason: "candidate-unresolved" },
           worldVersion: await this.sequenceValue(client),
-          events: []
+          events: [],
+          processingReceiptIds: []
         };
       }
 
-      const created = await this.ensureObject(client, observation, String(observationRow.data_scope_key));
-      const currentRow = await this.currentRow(client, observation.subject.id);
+      const crsExecution = observation.geometry
+        ? await this.crsAdapterFactory().normalizeGeometry({
+            sourceCrs: "EPSG:4326",
+            geometry: observation.geometry
+          })
+        : undefined;
+      const projectionObservation: ObservationEnvelope = crsExecution
+        ? { ...observation, geometry: crsExecution.result.geometry }
+        : observation;
+
+      const created = await this.ensureObject(client, projectionObservation, String(observationRow.data_scope_key));
+      const currentRow = await this.currentRow(client, projectionObservation.subject.id);
       const current = toCurrentProjection(currentRow);
-      const decision = decideProjection(current, observation, {
+      const decision = decideProjection(current, projectionObservation, {
         sourcePriorities: this.config.sourcePriorities,
         conflictWindowMs: 5_000,
         maxOutOfOrderMs: this.config.maxLateArrivalMs
       });
-      const point = observation.geometry?.type === "Point" ? observation.geometry : undefined;
-      const h3 = point ? await this.projectPointToH3(client, point) : undefined;
+      const point = projectionObservation.geometry?.type === "Point"
+        ? projectionObservation.geometry
+        : undefined;
+      const h3Execution = point ? await this.projectPointToH3(client, point) : undefined;
+      const h3 = h3Execution?.projection;
       const evidence: EvidenceProjectionRef = {
         ...(observationRow.time_solution_id ? { timeSolutionId: String(observationRow.time_solution_id) } : {}),
         ...(observationRow.position_measurement_id ? { positionMeasurementId: String(observationRow.position_measurement_id) } : {}),
@@ -119,11 +174,53 @@ export class ProjectionProcessor {
       };
 
       const version = decision.apply
-        ? await this.applyState(client, observation, point, h3, evidence)
+        ? await this.applyState(client, projectionObservation, point, h3, evidence)
         : Number(currentRow?.version ?? (await this.sequenceValue(client)));
 
+      const processingReceiptIds: string[] = [];
+      if (crsExecution) {
+        for (const supporting of crsExecution.supportingReceipts) {
+          await this.persistFoundationReceipt(
+            client,
+            observationId,
+            version,
+            "GEOMETRY_VALIDATION",
+            {
+              ...supporting,
+              executionContext: crsExecution.executionContext,
+              details: { supportingForReceiptId: crsExecution.receipt.receiptId }
+            }
+          );
+          processingReceiptIds.push(supporting.receipt.receiptId);
+        }
+        await this.persistFoundationReceipt(
+          client,
+          observationId,
+          version,
+          "CRS_NORMALIZATION",
+          crsExecution
+        );
+        processingReceiptIds.push(crsExecution.receipt.receiptId);
+      }
+      if (h3Execution) {
+        await this.persistFoundationReceipt(
+          client,
+          observationId,
+          version,
+          "H3_INDEXING",
+          {
+            ...h3Execution.execution,
+            details: {
+              candidateOnly: h3Execution.execution.result.candidateOnly,
+              exactSpatialAuthority: h3Execution.execution.result.exactSpatialAuthority
+            }
+          }
+        );
+        processingReceiptIds.push(h3Execution.execution.receipt.receiptId);
+      }
+
       if (point && h3) {
-        await this.incrementObservationSituation(client, observation, h3, version);
+        await this.incrementObservationSituation(client, projectionObservation, h3, version);
       }
 
       const events: WorldEvent[] = [];
@@ -131,48 +228,48 @@ export class ProjectionProcessor {
         if (created) {
           events.push(createWorldEvent({
             eventType: "ObjectCreated",
-            subject: observation.subject,
+            subject: projectionObservation.subject,
             worldVersion: version,
-            correlationId: observation.correlationId,
-            causationId: observation.observationId,
-            ...(observation.geometry ? { geometry: observation.geometry } : {}),
+            correlationId: projectionObservation.correlationId,
+            causationId: projectionObservation.observationId,
+            ...(projectionObservation.geometry ? { geometry: projectionObservation.geometry } : {}),
             payload: { createdFromObservation: true }
           }));
         }
 
         events.push(createWorldEvent({
           eventType: point ? "ObjectMoved" : "ObjectStateChanged",
-          subject: observation.subject,
+          subject: projectionObservation.subject,
           worldVersion: version,
-          correlationId: observation.correlationId,
-          causationId: observation.observationId,
-          ...(observation.geometry ? { geometry: observation.geometry } : {}),
-          timestamp: observation.observedAt,
+          correlationId: projectionObservation.correlationId,
+          causationId: projectionObservation.observationId,
+          ...(projectionObservation.geometry ? { geometry: projectionObservation.geometry } : {}),
+          timestamp: projectionObservation.observedAt,
           payload: {
-            observationType: observation.observationType,
-            sourceObservationId: observation.observationId,
-            source: observation.source,
-            confidence: observation.confidence,
+            observationType: projectionObservation.observationType,
+            sourceObservationId: projectionObservation.observationId,
+            source: projectionObservation.source,
+            confidence: projectionObservation.confidence,
             fusionDecision: decision.reason
           }
         }));
 
         if (point && h3) {
-          await this.moveObjectSituation(client, observation.subject.type, currentRow, h3, version);
-          events.push(...await this.updateGeofences(client, observation, point, version));
+          await this.moveObjectSituation(client, projectionObservation.subject.type, currentRow, h3, version);
+          events.push(...await this.updateGeofences(client, projectionObservation, point, version));
         }
       }
 
       if (point) {
         events.push(createWorldEvent({
           eventType: "TrajectoryUpdated",
-          subject: observation.subject,
+          subject: projectionObservation.subject,
           worldVersion: version,
-          correlationId: observation.correlationId,
-          causationId: observation.observationId,
+          correlationId: projectionObservation.correlationId,
+          causationId: projectionObservation.observationId,
           geometry: point,
-          timestamp: observation.observedAt,
-          payload: { observationId: observation.observationId }
+          timestamp: projectionObservation.observedAt,
+          payload: { observationId: projectionObservation.observationId }
         }));
       }
 
@@ -184,7 +281,13 @@ export class ProjectionProcessor {
         [observationId, decision.apply ? "projected" : "superseded", decision.apply ? null : decision.reason]
       );
       await this.completeQueue(client, observationId);
-      return { observationId, decision, worldVersion: version, events };
+      return {
+        observationId,
+        decision,
+        worldVersion: version,
+        events,
+        processingReceiptIds
+      };
     });
   }
 
@@ -224,20 +327,82 @@ export class ProjectionProcessor {
     return Boolean(result.rowCount);
   }
 
-  private async projectPointToH3(client: pg.PoolClient, point: PointGeometry): Promise<H3Projection> {
+  private async projectPointToH3(
+    client: pg.PoolClient,
+    point: PointGeometry
+  ): Promise<{ projection: H3Projection; execution: FoundationExecution<H3ProjectionResult> }> {
     const [longitude, latitude] = point.coordinates;
-    const result = await client.query<{ r7: string; r8: string; r9: string; r10: string }>(
-      `WITH point AS (SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326) AS geometry)
-       SELECT h3_latlng_to_cell(geometry, 7)::text AS r7,
-              h3_latlng_to_cell(geometry, 8)::text AS r8,
-              h3_latlng_to_cell(geometry, 9)::text AS r9,
-              h3_latlng_to_cell(geometry, 10)::text AS r10
-       FROM point`,
-      [longitude, latitude]
+    const execution = await this.h3AdapterFactory(client).projectPoint({
+      point: { longitude, latitude },
+      resolutions: [7, 8, 9, 10]
+    });
+    return {
+      projection: {
+        r7: requiredCell(execution.result.cells, 7),
+        r8: requiredCell(execution.result.cells, 8),
+        r9: requiredCell(execution.result.cells, 9),
+        r10: requiredCell(execution.result.cells, 10)
+      },
+      execution
+    };
+  }
+
+  private async persistFoundationReceipt(
+    client: pg.PoolClient,
+    observationId: string,
+    worldVersion: number,
+    stage: FoundationProcessingStage,
+    execution: FoundationReceiptRecord
+  ): Promise<void> {
+    const { receipt, computeSnapshot } = execution;
+    await client.query(
+      `INSERT INTO foundation_processing_receipt (
+         receipt_id, processing_stage,
+         operation_id, operation_version, provider_id, provider_version,
+         adapter_kind, engine_name, engine_version, method_id, method_version,
+         policy_version, input_schema_hash, output_schema_hash,
+         compute_snapshot_hash, input_hash, output_hash, status, duration_ms,
+         observation_id, projection_run_id, world_version,
+         compute_snapshot, changes, warnings, details, generated_at
+       ) VALUES (
+         $1, $2,
+         $3, $4, $5, $6,
+         'LOCAL_ADAPTER', $7, $8, $9, $10,
+         $11, $12, $13,
+         $14, $15, $16, 'SUCCEEDED', $17,
+         $18, NULL, $19,
+         $20::jsonb, $21::jsonb, $22::text[], $23::jsonb, $24
+       )`,
+      [
+        receipt.receiptId,
+        stage,
+        receipt.operationId,
+        receipt.operationVersion,
+        receipt.providerId,
+        receipt.providerVersion,
+        receipt.method.engine,
+        receipt.method.engineVersion,
+        receipt.method.methodId,
+        receipt.method.methodVersion,
+        computeSnapshot.policy.version,
+        computeSnapshot.schemas.inputSchemaHash,
+        computeSnapshot.schemas.outputSchemaHash,
+        receipt.computeSnapshotHash,
+        receipt.inputHash,
+        receipt.outputHash,
+        Math.round(receipt.durationMs),
+        observationId,
+        worldVersion,
+        JSON.stringify(computeSnapshot),
+        JSON.stringify(receipt.changes),
+        receipt.warnings,
+        JSON.stringify({
+          executionContext: execution.executionContext,
+          ...execution.details
+        }),
+        receipt.generatedAt
+      ]
     );
-    const row = result.rows[0];
-    if (!row) throw new Error("h3-pg failed to project point");
-    return row;
   }
 
   private async currentRow(client: pg.PoolClient, objectId: string): Promise<CurrentRow | undefined> {
@@ -473,4 +638,19 @@ function h3Entries(h3: H3Projection): Array<[number, string]> {
     h3.r9 ? [9, h3.r9] : undefined,
     h3.r10 ? [10, h3.r10] : undefined
   ].filter((entry): entry is [number, string] => entry !== undefined);
+}
+
+function sqlExecutor(client: pg.PoolClient): LocalSqlExecutor {
+  return {
+    async query<Row>(text: string, values: readonly unknown[]) {
+      const result = await client.query(text, [...values]);
+      return { rows: result.rows as Row[] };
+    }
+  };
+}
+
+function requiredCell(cells: Readonly<Record<string, string>>, resolution: number): string {
+  const cell = cells[String(resolution)];
+  if (!cell) throw new Error(`H3 local adapter omitted resolution ${resolution}`);
+  return cell;
 }

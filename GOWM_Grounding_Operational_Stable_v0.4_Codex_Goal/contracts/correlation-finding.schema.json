@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:correlation-finding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "findingId",
+    "externalAuthority",
+    "externalKind",
+    "externalValue",
+    "relation",
+    "matchBasis",
+    "operationalEventIds",
+    "evidenceIds",
+    "worldVersion",
+    "methodVersion"
+  ],
+  "properties": {
+    "findingId": {
+      "type": "string"
+    },
+    "externalAuthority": {
+      "type": "string"
+    },
+    "externalKind": {
+      "type": "string"
+    },
+    "externalValue": {
+      "type": "string"
+    },
+    "operationalTaskReferenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "operationalEventIds": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "string"
+      }
+    },
+    "relation": {
+      "enum": [
+        "REPORTS_EXECUTION_OF",
+        "REALIZES",
+        "PARTIALLY_REALIZES",
+        "POSSIBLY_CORRESPONDS_TO",
+        "NO_MATCH_FOUND",
+        "CONFLICTING_MATCHES"
+      ]
+    },
+    "matchBasis": {
+      "enum": [
+        "PROPAGATED_CORRELATION_ID",
+        "PROVIDER_DECLARED",
+        "MANUAL_CONFIRMATION",
+        "RESOURCE_AND_TIME_MATCH",
+        "SPATIOTEMPORAL_INFERENCE"
+      ]
+    },
+    "correlationConfidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "evidenceIds": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "string"
+      }
+    },
+    "worldVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "methodVersion": {
+      "type": "string"
+    }
+  }
+}

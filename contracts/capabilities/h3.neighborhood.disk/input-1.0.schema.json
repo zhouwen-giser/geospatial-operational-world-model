@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.neighborhood.disk:input:1.0",
+  "title": "H3NeighborhoodDiskInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cell"],
+  "properties": {
+    "cell": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3Cell" },
+    "radius": { "type": "integer", "minimum": 0, "maximum": 1000, "default": 1 }
+  }
+}

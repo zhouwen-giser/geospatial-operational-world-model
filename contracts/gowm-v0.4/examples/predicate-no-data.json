@@ -1,0 +1,30 @@
+{
+  "evaluationId": "eval-001",
+  "predicateId": "expected-enter-area-a",
+  "status": "NO_DATA",
+  "evaluatedAtWorldVersion": 12001,
+  "supportingEvidenceIds": [],
+  "contradictingEvidenceIds": [],
+  "observabilityAssessment": {
+    "assessmentId": "obs-assess-001",
+    "status": "OBSERVATION_GAP",
+    "coverageSufficient": false,
+    "gapIntervals": [
+      {
+        "from": "2026-08-23T10:00:00Z",
+        "to": "2026-08-23T10:10:00Z"
+      }
+    ],
+    "evidenceIds": [],
+    "policyVersion": "observability/1.0",
+    "worldVersion": 12001,
+    "warnings": [
+      "No reliable position observation in the requested window"
+    ]
+  },
+  "assumptions": [],
+  "warnings": [
+    "NO_DATA is not a negative fact"
+  ],
+  "methodVersion": "predicate-evaluator/1.0"
+}

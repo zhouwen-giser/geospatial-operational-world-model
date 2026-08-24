@@ -1,0 +1,48 @@
+{
+  "lockVersion": "1.0",
+  "providerKey": "geometry",
+  "providerId": "gowm.geometry.bridge",
+  "sourceKind": "ZIP",
+  "sourceRef": "inputs/geometry-tool-service-v1.0.zip",
+  "version": "1.0.0",
+  "sourceSha256": "3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d",
+  "openApiSha256": "f45ad64ab0781289e960e826dde220db85c295d45d2d69e4f1afbf163e7cd600",
+  "engine": "GEOS-WASM-WORKER-POOL",
+  "engineVersion": "3.13.0-CAPI-1.19.0",
+  "integration": "geos-wasm",
+  "integrationVersion": "3.1.1",
+  "licenseStatus": "UNSPECIFIED",
+  "redistributionAllowed": false,
+  "publishableArtifacts": [
+    "GOWM bridge source",
+    "GOWM provider operation registration and source lock",
+    "GOWM conformance tests",
+    "GOWM execution evidence"
+  ],
+  "forbiddenReleaseArtifacts": [
+    "expanded Geometry POC source",
+    "Geometry POC package",
+    "Geometry POC container image"
+  ],
+  "upstreamRoutes": {
+    "execute": "POST /v1/geometry/execute",
+    "readiness": "GET /ready"
+  },
+  "unsupportedOperations": [
+    "reproject",
+    "geodesic-*",
+    "spatial_join",
+    "rasterize",
+    "shortest_path",
+    "h3_polyfill"
+  ],
+  "deploymentAttestationRequired": [
+    "locked source ZIP SHA-256",
+    "locked OpenAPI SHA-256",
+    "GEOS version",
+    "geos-wasm version",
+    "GEOS worker pool enabled",
+    "project license remains unspecified",
+    "approved Registry endpoint configuration digest"
+  ]
+}

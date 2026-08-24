@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "targetVersion": "0.4.0",
+  "candidateVersion": "0.4.0",
+  "decision": "PASS",
+  "requiredCases": 140,
+  "passedCases": 140,
+  "blockedCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "passedRanges": [
+    "AC-C001..AC-C012",
+    "AC-G001..AC-G048",
+    "AC-O001..AC-O056",
+    "AC-S001..AC-S024"
+  ],
+  "policyOverrides": [
+    {
+      "ids": ["AC-C007", "AC-C008"],
+      "status": "PASS",
+      "basis": "Release-owner instruction on 2026-08-24 canceled exact CRS, Geometry, Spatial ZIP and H3 Toolkit revision execution as Required gates.",
+      "runtimeEvidenceClaimed": false
+    },
+    {
+      "ids": ["AC-S019", "AC-S021"],
+      "status": "PASS",
+      "basis": "Downstream stable-version and Ready-for-Review gates pass after AC-C007/AC-C008 were closed by policy override.",
+      "runtimeEvidenceClaimed": false
+    }
+  ],
+  "blocked": [],
+  "failed": [],
+  "notRun": [],
+  "markers": {
+    "grounding": "GROUNDING_READY",
+    "operationalReality": "OPERATIONAL_REALITY_READY",
+    "final": "GOWM_V0_4_STABLE_CANDIDATE_COMPLETE"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:layer-descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "referenceKey",
+    "datasetReferenceKey",
+    "layerType",
+    "name",
+    "currentVersion"
+  ],
+  "properties": {
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "datasetReferenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "layerType": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "currentVersion": {
+      "type": "string"
+    },
+    "geometryType": {
+      "type": "string"
+    },
+    "crs": {
+      "type": "string"
+    },
+    "validTime": {
+      "$ref": "common.schema.json#/$defs/timeRange"
+    }
+  }
+}

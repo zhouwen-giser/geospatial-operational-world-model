@@ -1,5 +1,55 @@
 # Changelog
 
+## 0.4.0 - 2026-08-24
+
+- Added frozen v0.3 Reference, Dataset/Layer/Feature, derived-result, and World
+  Evidence contracts with four controlled Grounding Providers and 28 Gateway
+  capabilities.
+- Added immutable OperationalTask events, four-dimensional projections,
+  correlation claims/findings, external predicate evaluation, observability,
+  analysis replay, and the independently served Operational Reality Provider.
+- Proved `GROUNDING_READY` and `OPERATIONAL_REALITY_READY` over real HTTP and
+  PostgreSQL, including typed DAGs, exact replay, cancellation races, and
+  Gateway/database restart recovery.
+- Added stable byte locks, clean/v0.1/v0.2 migration paths through migration
+  032, replay checksums, cross-scope adversarial checks, and measured local
+  search/timeline/projection gates.
+- Promoted the stable candidate to `0.4.0` after the release owner explicitly
+  removed exact CRS, Geometry, Spatial ZIP and H3 Toolkit revision execution
+  from the Required gate policy. AC-C007/AC-C008 and downstream AC-S019/AC-S021
+  pass by that policy override; this is not a claim that those external inputs
+  were executed.
+
+## 0.2.0 - Unreleased
+
+- Added JSON-Schema-first Capability Provider, result, receipt/evidence,
+  snapshot, Gateway, and World Query v2 contracts with generated TypeScript and
+  deterministic schema locks.
+- Added the Provider SDK and conformance kit, controlled Capability Registry,
+  direct execution, health/circuit isolation, idempotency, audit, typed DAG
+  execution, asynchronous jobs, cancellation, and persistence adapters.
+- Added local-only Foundation CRS, Geometry, and h3-pg ports so projection does
+  not synchronously depend on the Gateway or remote Providers.
+- Added original GOWM bridges and manifests for locked CRS, Geometry, H3
+  interactive/analysis, GOWM H3 Situation, and Spatial capabilities. The
+  controlled catalog declares 50 versioned operations.
+- Added opaque ReferenceKeys, the scope-filtered `gowm_spatial_v1` read
+  contract, Foundation processing receipts, World Query persistence, and
+  separate least-privilege runtime, Registry-bootstrap, Spatial, and Situation
+  database roles.
+- Refactored GOWM H3 Situation to delegate generic H3 primitives to the locked
+  local H3 Toolkit adapter while retaining GOWM-owned World Version and metric
+  projection semantics.
+- Added legacy World read compatibility modes and split MCP read/analysis tools
+  from Observation command tools.
+- Retained strict release boundaries: expanded Provider inputs remain excluded;
+  CRS/Geometry source, packages, and images are not publishable without a
+  project-level license; H3/Spatial Apache-2.0 Notice and SBOM material remains.
+- Candidate status is **BLOCKED**. Required real external Provider,
+  PostgreSQL/Docker, exact cross-capability, scope, and restart gates remain
+  `NOT_RUN/BLOCKED`; implementation changes are not committed/pushed, Draft PR
+  #1 remains Draft, and no merge/tag/release/deploy occurred.
+
 ## 0.1.0 - 2026-08-13
 
 - Integrated the GOWM v1.2 and validated STAS baselines into one authority model.

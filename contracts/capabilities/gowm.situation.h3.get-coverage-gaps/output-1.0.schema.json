@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:output:1.0",
+  "title": "GowmSituationH3GetCoverageGapsOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cells", "metric", "resolution", "worldVersion", "metricProfile"],
+  "properties": {
+    "cells": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/cell" }
+    },
+    "metric": { "const": "coverage" },
+    "resolution": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/situationResolution" },
+    "worldVersion": { "type": "integer", "minimum": 0 },
+    "metricProfile": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/metricProfile" }
+  }
+}

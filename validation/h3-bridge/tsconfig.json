@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "*.ts",
+    "../../packages/integrations/h3-toolkit-bridge/src/**/*.ts",
+    "../../packages/platform/contract-runtime/src/**/*.ts",
+    "../../packages/platform/provider-sdk/src/**/*.ts",
+    "../../packages/platform/conformance-kit/src/**/*.ts",
+    "../../services/providers/h3-interactive-provider/src/**/*.ts",
+    "../../services/providers/h3-analysis-provider/src/**/*.ts"
+  ]
+}

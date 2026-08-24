@@ -1,0 +1,16 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../platform/foundation-ports/src/**/*.ts",
+    "../../spatial-engine/src/geometry.ts",
+    "../../world-model-core/src/types.ts"
+  ],
+  "exclude": [
+    "../../../node_modules",
+    "../../../dist"
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:reference-descriptor",
+  "title": "ReferenceDescriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "referenceKey",
+    "referenceType",
+    "displayName",
+    "version",
+    "revalidationRequired",
+    "provenance"
+  ],
+  "properties": {
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "referenceType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "aliases": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      }
+    },
+    "stateQuality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stateConfidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "freshnessMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stale": {
+          "type": "boolean"
+        }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "referenceVersion"
+      ],
+      "properties": {
+        "referenceVersion": {
+          "type": "string"
+        },
+        "objectVersion": {
+          "type": "string"
+        },
+        "worldVersion": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "geometrySummary": {
+      "$ref": "common.schema.json#/$defs/geometrySummary"
+    },
+    "validUntil": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "revalidationRequired": {
+      "type": "boolean"
+    },
+    "provenance": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "common.schema.json#/$defs/evidenceRef"
+      }
+    }
+  }
+}

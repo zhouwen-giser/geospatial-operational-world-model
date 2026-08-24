@@ -1,0 +1,81 @@
+{
+  "phase": "P03",
+  "generatedAt": "2026-08-23T02:39:22.0891193+08:00",
+  "implementationStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "source": {
+    "branch": "codex/gowm-capability-platform-v0.2",
+    "committedHead": "e100cc0fd0b7b27f8a386232dc2b261de7841547",
+    "platformChangesCommitted": false
+  },
+  "acceptance": [
+    {
+      "id": "AC-016",
+      "status": "PASS",
+      "evidence": "Provider runtime construction validates the canonical manifest, requires one exact handler descriptor per operation/version, recomputes canonical input/output schema hashes, and rejects missing, extra, duplicate, or drifted operations. The elevation mock conformance invocation passed."
+    },
+    {
+      "id": "AC-017",
+      "status": "PASS",
+      "evidence": "A delayed elevation operation exceeded its effective deadline, observed abort, and mapped to DEADLINE_EXCEEDED. A separate regression passed for a deadline beyond the Node single-timer range."
+    },
+    {
+      "id": "AC-018",
+      "status": "PASS",
+      "evidence": "Provider conformance forced maximumResultBytes=1 and the SDK rejected the actual output with BUDGET_EXCEEDED. A regression made a non-conforming Provider bypass its own budget and proved DirectExecutionService independently rejects the oversized response; the validation is also applied after idempotent lookup."
+    },
+    {
+      "id": "AC-019",
+      "status": "PARTIAL",
+      "evidence": "Same key and payload replay and same key with changed payload conflict passed in the Provider process-local cache and across fresh Gateway/runtime instances sharing a durable-store abstraction. The matrix requires PostgreSQL; real PostgreSQL execution and process restart were NOT_RUN."
+    }
+  ],
+  "verification": [
+    {
+      "command": "npx.cmd vitest run tests/platform/provider-gateway.test.ts tests/platform/provider-sdk-deadline.test.ts",
+      "status": "PASS",
+      "testFilesPassed": 2,
+      "testsPassed": 10,
+      "testsFailed": 0
+    },
+    {
+      "command": "npx.cmd vitest run --config validation/security-snapshot/vitest.config.ts",
+      "status": "PASS",
+      "testFilesPassed": 3,
+      "testsPassed": 14,
+      "testsFailed": 0
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS"
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    },
+    {
+      "command": "real PostgreSQL-backed idempotency and process restart",
+      "status": "NOT_RUN",
+      "detail": "Approved database credentials were unavailable and the current Docker/escalation platform usage limit prevented provisioning a replacement environment."
+    }
+  ],
+  "evidenceKinds": {
+    "providerConformance": "CONTROLLED_IN_PROCESS",
+    "gatewayOutputBudget": "CONTROLLED_IN_PROCESS_WITH_NONCONFORMING_PROVIDER",
+    "durableStoreRestartAbstraction": "CONTROLLED_IN_PROCESS",
+    "livePostgreSQL": "NOT_RUN",
+    "realProcessRestart": "NOT_RUN"
+  },
+  "notRun": [
+    "Real PostgreSQL-backed Provider/Gateway idempotency replay and conflict",
+    "Real Gateway, Provider, and database restart replay"
+  ],
+  "delivery": {
+    "semanticCommit": "BLOCKED",
+    "push": "BLOCKED",
+    "draftPrUpdate": "BLOCKED",
+    "reason": "The sandbox cannot create .git/index.lock and the authorized escalated Git operation is unavailable under the current platform usage limit.",
+    "workaroundUsed": false
+  }
+}

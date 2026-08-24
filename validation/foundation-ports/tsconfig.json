@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "*.ts",
+    "../../packages/integrations/foundation-local/src/**/*.ts",
+    "../../packages/platform/foundation-ports/src/**/*.ts",
+    "../../packages/spatial-engine/src/geometry.ts",
+    "../../packages/world-model-core/src/types.ts"
+  ],
+  "exclude": [
+    "../../node_modules",
+    "../../dist"
+  ]
+}

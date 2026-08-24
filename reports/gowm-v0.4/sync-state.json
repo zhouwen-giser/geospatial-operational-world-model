@@ -1,0 +1,45 @@
+{
+  "goal": "GOWM+ v0.3 Grounding Foundation + v0.4 Operational Reality",
+  "targetVersion": "0.4.0",
+  "candidateVersion": "0.4.0",
+  "status": "COMPLETE",
+  "phase": "S04",
+  "source": {
+    "v02Branch": "codex/gowm-capability-platform-v0.2",
+    "candidateBaseSha": "99c56b4e095222b1a4120ff5d49f39c3cb6ea43d",
+    "pullRequest": 1
+  },
+  "candidate": {
+    "branch": "codex/gowm-grounding-operational-v0.4-stable",
+    "contentSha": "0d0d4d2e5a3c1b958fc6c7f138dbc20257b89696",
+    "localShaAtReconciliation": "0d0d4d2e5a3c1b958fc6c7f138dbc20257b89696",
+    "remoteShaAtReconciliation": "0d0d4d2e5a3c1b958fc6c7f138dbc20257b89696",
+    "pullRequest": 2,
+    "pullRequestDraft": false,
+    "targetBranch": "main"
+  },
+  "milestones": {
+    "v02RunnableGatesClosed": true,
+    "v02ExactExternalGatesClosed": true,
+    "v02ExactExternalGatesClosureBasis": "RELEASE_OWNER_POLICY_OVERRIDE",
+    "groundingReady": true,
+    "operationalRealityReady": true,
+    "stableCandidate": true
+  },
+  "acceptance": {
+    "required": 140,
+    "passed": 140,
+    "blocked": [],
+    "failed": [],
+    "notRun": []
+  },
+  "policyOverrides": [
+    {
+      "ids": ["AC-C007", "AC-C008", "AC-S019", "AC-S021"],
+      "authorizedAt": "2026-08-24",
+      "runtimeEvidenceClaimed": false
+    }
+  ],
+  "blockers": [],
+  "next": "Push the stable release commit, target PR #2 at main, and mark it Ready for Review."
+}

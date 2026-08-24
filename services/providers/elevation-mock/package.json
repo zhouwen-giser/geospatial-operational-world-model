@@ -1,0 +1,13 @@
+{
+  "name": "@gowm/elevation-mock-provider",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/services/providers/elevation-mock/src/index.js"
+  },
+  "exports": {
+    ".": "./src/provider.ts"
+  }
+}

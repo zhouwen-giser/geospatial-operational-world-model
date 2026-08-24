@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:input:1.0",
+  "title": "GowmSituationH3GetCoverageGapsInputV1",
+  "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/rankedInput"
+}

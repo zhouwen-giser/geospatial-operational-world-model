@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "*.ts",
+    "../../packages/platform/contract-runtime/src/**/*.ts",
+    "../../packages/platform/provider-sdk/src/**/*.ts",
+    "../../services/gateway/world-capability-gateway/src/**/*.ts",
+    "../../services/providers/elevation-mock/src/**/*.ts",
+    "../../services/providers/spatial-provider-bridge/src/sql.ts"
+  ],
+  "exclude": ["../../node_modules", "../../dist"]
+}

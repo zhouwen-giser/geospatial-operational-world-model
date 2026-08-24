@@ -1,0 +1,492 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.h3.interactive.bridge",
+    "providerVersion": "0.2.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:419f649959cbce5592538011d27bcc5be2628aa9819f69d7698f75383df341f3",
+    "sourceRef": "https://github.com/zhouwen-giser/h3-spatial-toolkit/commit/74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+    "sourceGitCommit": "74fc8657072dd58a2f8e4317c1caef8bfd10e024"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "h3.index.points",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_INDEX",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "LOCAL_PREFERRED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.index.points:input:1.0",
+      "inputSchemaHash": "sha256:60323a543a0aa3008a8d9b30c92aa018911a2cb2be75630634d1f6373698d64f",
+      "outputSchemaUri": "urn:gowm:capability:h3.index.points:output:1.0",
+      "outputSchemaHash": "sha256:465764a8efd740dd30b3789ea341a2cac542a5732b8ee72a7ab34512dafac5bd",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumCandidates": 1000000,
+        "maximumRows": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 10000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.index.points:input:1.0",
+            "schemaHash": "sha256:60323a543a0aa3008a8d9b30c92aa018911a2cb2be75630634d1f6373698d64f",
+            "valueKind": "POSITIONS",
+            "unitSemantics": "ANGULAR_DEGREES"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.index.points:output:1.0",
+            "schemaHash": "sha256:465764a8efd740dd30b3789ea341a2cac542a5732b8ee72a7ab34512dafac5bd",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.geometry.cover",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_INDEX",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "LOCAL_PREFERRED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.geometry.cover:input:1.0",
+      "inputSchemaHash": "sha256:195594da879bf7af10455b91ebc51ca11a0c21c81786e61d073f82fa8200fbbe",
+      "outputSchemaUri": "urn:gowm:capability:h3.geometry.cover:output:1.0",
+      "outputSchemaHash": "sha256:c839420e4ea78331a8a0f5b18bc6c9fad5aee6248d25553e64d51699d3ef9c87",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumCandidates": 1000000,
+        "maximumRows": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 10000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.geometry.cover:input:1.0",
+            "schemaHash": "sha256:195594da879bf7af10455b91ebc51ca11a0c21c81786e61d073f82fa8200fbbe",
+            "valueKind": "GEOMETRY",
+            "unitSemantics": "ANGULAR_DEGREES"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.geometry.cover:output:1.0",
+            "schemaHash": "sha256:c839420e4ea78331a8a0f5b18bc6c9fad5aee6248d25553e64d51699d3ef9c87",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          },
+          {
+            "name": "cells",
+            "path": "/cells",
+            "schemaUri": "urn:gowm:v0.2:value:array",
+            "schemaHash": "sha256:8e1e4dd66e9483d8341c51dc5ec424d8e6510ae35cdbc53040d0bab497459945",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          },
+          {
+            "name": "candidateOnly",
+            "path": "/candidateOnly",
+            "schemaUri": "urn:gowm:v0.2:value:boolean",
+            "schemaHash": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
+            "valueKind": "SCALAR",
+            "unitSemantics": "DIMENSIONLESS"
+          },
+          {
+            "name": "exactVerificationRequired",
+            "path": "/exactVerificationRequired",
+            "schemaUri": "urn:gowm:v0.2:value:boolean",
+            "schemaHash": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
+            "valueKind": "SCALAR",
+            "unitSemantics": "DIMENSIONLESS"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.cells.to-geojson",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_INDEX",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "LOCAL_PREFERRED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.cells.to-geojson:input:1.0",
+      "inputSchemaHash": "sha256:eb60ca86ebcee14efbc66dd1c5ce62463a0c8edb382bbd7c5d37ec5a7877cfc2",
+      "outputSchemaUri": "urn:gowm:capability:h3.cells.to-geojson:output:1.0",
+      "outputSchemaHash": "sha256:4a962acc22284a57a70770c88cd7a3e3ad11099851e28080a5ea40e5e0197611",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumCandidates": 1000000,
+        "maximumRows": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 10000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.cells.to-geojson:input:1.0",
+            "schemaHash": "sha256:eb60ca86ebcee14efbc66dd1c5ce62463a0c8edb382bbd7c5d37ec5a7877cfc2",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.cells.to-geojson:output:1.0",
+            "schemaHash": "sha256:4a962acc22284a57a70770c88cd7a3e3ad11099851e28080a5ea40e5e0197611",
+            "valueKind": "FEATURE_COLLECTION",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.neighborhood.disk",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_INDEX",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "LOCAL_PREFERRED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.neighborhood.disk:input:1.0",
+      "inputSchemaHash": "sha256:16f1fb420f09d767b7a179fcc9f31b0681e6aa5574ead7a32837f2420b330e7e",
+      "outputSchemaUri": "urn:gowm:capability:h3.neighborhood.disk:output:1.0",
+      "outputSchemaHash": "sha256:5ef6bb008fa91d82c645496298ddf683adb50146f0cb3312876c0970e47aabe6",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumCandidates": 1000000,
+        "maximumRows": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 10000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.neighborhood.disk:input:1.0",
+            "schemaHash": "sha256:16f1fb420f09d767b7a179fcc9f31b0681e6aa5574ead7a32837f2420b330e7e",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.neighborhood.disk:output:1.0",
+            "schemaHash": "sha256:5ef6bb008fa91d82c645496298ddf683adb50146f0cb3312876c0970e47aabe6",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.hierarchy.parent",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_INDEX",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "LOCAL_PREFERRED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.hierarchy.parent:input:1.0",
+      "inputSchemaHash": "sha256:c9e880c03a1fc136569b8cfec3e6539d18f5904dc1e8a5c7bfe0ba429bd04ef3",
+      "outputSchemaUri": "urn:gowm:capability:h3.hierarchy.parent:output:1.0",
+      "outputSchemaHash": "sha256:569519227746e07e5170f5afa58d37287621c8ce3a376d655fa6c048de2d16a3",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumCandidates": 1000000,
+        "maximumRows": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 10000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.hierarchy.parent:input:1.0",
+            "schemaHash": "sha256:c9e880c03a1fc136569b8cfec3e6539d18f5904dc1e8a5c7bfe0ba429bd04ef3",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.hierarchy.parent:output:1.0",
+            "schemaHash": "sha256:569519227746e07e5170f5afa58d37287621c8ce3a376d655fa6c048de2d16a3",
+            "valueKind": "H3_CELL",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.hierarchy.children",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_INDEX",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "LOCAL_PREFERRED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.hierarchy.children:input:1.0",
+      "inputSchemaHash": "sha256:ef657157e9f9ef0e507197996b4abadb06fb765cf31092e8be9f091cb1ee8b75",
+      "outputSchemaUri": "urn:gowm:capability:h3.hierarchy.children:output:1.0",
+      "outputSchemaHash": "sha256:70764a18ef86d76304cef93b57ca2f7b182aa1cd35415283e275b9215c485a9e",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumCandidates": 1000000,
+        "maximumRows": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 10000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.hierarchy.children:input:1.0",
+            "schemaHash": "sha256:ef657157e9f9ef0e507197996b4abadb06fb765cf31092e8be9f091cb1ee8b75",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.hierarchy.children:output:1.0",
+            "schemaHash": "sha256:70764a18ef86d76304cef93b57ca2f7b182aa1cd35415283e275b9215c485a9e",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.hierarchy.compact",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_INDEX",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "LOCAL_PREFERRED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.hierarchy.compact:input:1.0",
+      "inputSchemaHash": "sha256:bc9fe865c1731eeef8325b9b4c86458d84807b6cbcb14bf879b32659970fede7",
+      "outputSchemaUri": "urn:gowm:capability:h3.hierarchy.compact:output:1.0",
+      "outputSchemaHash": "sha256:f134bbefbaa878fa457699dcf27e9499c625574a47a4623835c1e242049a0f52",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumCandidates": 1000000,
+        "maximumRows": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 10000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.hierarchy.compact:input:1.0",
+            "schemaHash": "sha256:bc9fe865c1731eeef8325b9b4c86458d84807b6cbcb14bf879b32659970fede7",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.hierarchy.compact:output:1.0",
+            "schemaHash": "sha256:f134bbefbaa878fa457699dcf27e9499c625574a47a4623835c1e242049a0f52",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "h3.hierarchy.uncompact",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_PRIMITIVE",
+      "dataBinding": "CALLER_DATA_BOUND",
+      "resultSemantics": "DERIVED_INDEX",
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
+      "criticalPathPolicy": "LOCAL_PREFERRED",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:h3.hierarchy.uncompact:input:1.0",
+      "inputSchemaHash": "sha256:bbd8403e3027191d05b2ff2f4d7180836326dd4ca3942275dd216c41d94b637d",
+      "outputSchemaUri": "urn:gowm:capability:h3.hierarchy.uncompact:output:1.0",
+      "outputSchemaHash": "sha256:7b996d71846b776ab5897dbbb3af0e369d4b66269c6e77a9120d9c788b408de9",
+      "scopePolicy": "REQUEST_CONTEXT",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 16777216,
+        "maximumOutputBytes": 67108864,
+        "maximumCells": 1000000,
+        "maximumCandidates": 1000000,
+        "maximumRows": 1000000,
+        "maximumBatchItems": 100000,
+        "maximumVertices": 10000000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "NONE",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:h3.hierarchy.uncompact:input:1.0",
+            "schemaHash": "sha256:bbd8403e3027191d05b2ff2f4d7180836326dd4ca3942275dd216c41d94b637d",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:h3.hierarchy.uncompact:output:1.0",
+            "schemaHash": "sha256:7b996d71846b776ab5897dbbb3af0e369d4b66269c6e77a9120d9c788b408de9",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
+      }
+    }
+  ]
+}

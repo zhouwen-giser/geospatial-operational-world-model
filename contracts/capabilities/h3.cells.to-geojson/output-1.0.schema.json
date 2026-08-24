@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.cells.to-geojson:output:1.0",
+  "title": "H3CellsToGeoJsonOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "features"],
+  "properties": {
+    "type": { "const": "FeatureCollection" },
+    "features": {
+      "type": "array",
+      "maxItems": 250000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "properties", "geometry"],
+        "properties": {
+          "type": { "const": "Feature" },
+          "properties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["cell"],
+            "properties": {
+              "cell": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3Cell" }
+            }
+          },
+          "geometry": { "$ref": "../geometry/geometry.schema.json#/$defs/polygon" }
+        }
+      }
+    }
+  }
+}

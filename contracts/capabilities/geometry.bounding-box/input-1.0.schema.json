@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry.bounding-box:input:1.0",
+  "title": "GeometryBoundingBoxInputV1",
+  "$ref": "../geometry-provider/definitions.schema.json#/$defs/unaryInput"
+}

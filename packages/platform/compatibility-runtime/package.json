@@ -1,0 +1,10 @@
+{
+  "name": "@gowm/platform-compatibility-runtime",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:capability-catalog",
+  "title": "CapabilityCatalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["catalogVersion", "generatedAt", "endpoints", "registrations"],
+  "properties": {
+    "catalogVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "endpoints": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["endpointId", "baseUri", "approval", "healthPolicy"],
+        "properties": {
+          "endpointId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+          "baseUri": { "type": "string", "format": "uri", "pattern": "^https?://" },
+          "approval": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status", "approvedBy", "approvedAt", "configurationDigest"],
+            "properties": {
+              "status": { "enum": ["APPROVED", "PENDING", "REVOKED"] },
+              "approvedBy": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "approvedAt": { "type": "string", "format": "date-time" },
+              "configurationDigest": {
+                "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+              }
+            }
+          },
+          "healthPolicy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["livenessPath", "readinessPath", "intervalMs", "timeoutMs"],
+            "properties": {
+              "livenessPath": { "type": "string", "pattern": "^/", "maxLength": 256 },
+              "readinessPath": { "type": "string", "pattern": "^/", "maxLength": 256 },
+              "intervalMs": { "type": "integer", "minimum": 100 },
+              "timeoutMs": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "registrations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1024,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "descriptor",
+          "providerId",
+          "providerVersion",
+          "endpointId",
+          "enabled"
+        ],
+        "properties": {
+          "descriptor": { "$ref": "capability-descriptor.schema.json" },
+          "providerId": { "$ref": "common-definitions.schema.json#/$defs/providerId" },
+          "providerVersion": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "endpointId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+          "enabled": { "type": "boolean" },
+          "priority": { "type": "integer", "minimum": 0, "maximum": 1000 }
+        }
+      }
+    }
+  }
+}

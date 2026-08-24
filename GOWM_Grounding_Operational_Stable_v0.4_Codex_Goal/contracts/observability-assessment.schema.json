@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:observability-assessment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assessmentId",
+    "status",
+    "coverageSufficient",
+    "evidenceIds",
+    "policyVersion",
+    "worldVersion"
+  ],
+  "properties": {
+    "assessmentId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "FRESH",
+        "STALE",
+        "OBSERVATION_GAP",
+        "NO_DATA",
+        "SOURCE_UNHEALTHY",
+        "INDETERMINATE"
+      ]
+    },
+    "coverageSufficient": {
+      "type": "boolean"
+    },
+    "lastReliableObservationAt": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "gapIntervals": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "common.schema.json#/$defs/timeRange"
+      }
+    },
+    "evidenceIds": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "string"
+      }
+    },
+    "policyVersion": {
+      "type": "string"
+    },
+    "worldVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

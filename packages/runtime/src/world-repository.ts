@@ -40,16 +40,23 @@ export async function insertEvent(client: pg.PoolClient, event: WorldEvent): Pro
   await client.query(
     `INSERT INTO world_event (
        event_id, event_type, subject_type, subject_id, event_time, geometry,
-       world_version, correlation_id, causation_id, payload, schema_version
+       world_version, correlation_id, causation_id, payload, schema_version,data_scope_key,
+       execution_intent_id,operation_correlation_id,external_planning_task_id,
+       external_planning_step_id,provider_action_id,device_command_id
      ) VALUES (
        $1::uuid, $2, $3, $4, $5,
        CASE WHEN $6::jsonb IS NULL THEN NULL ELSE ST_SetSRID(ST_Force2D(ST_GeomFromGeoJSON($6::jsonb)), 4326) END,
-       $7, $8, $9, $10::jsonb, $11
+       $7, $8, $9, $10::jsonb, $11,
+       COALESCE($12,(SELECT data_scope_key FROM world_object WHERE id=$4),'default'),
+       $13,$14,$15,$16,$17,$18
      )`,
     [
       event.eventId, event.eventType, event.subject.type, event.subject.id, event.timestamp,
       event.geometry ? JSON.stringify(event.geometry) : null, event.worldVersion,
-      event.correlationId, event.causationId, JSON.stringify(event.payload), event.schemaVersion
+      event.correlationId, event.causationId, JSON.stringify(event.payload), event.schemaVersion,
+      event.dataScopeKey ?? null,event.executionIntentId ?? null,event.operationCorrelationId ?? null,
+      event.externalPlanningTaskId ?? null,event.externalPlanningStepId ?? null,
+      event.providerActionId ?? null,event.deviceCommandId ?? null
     ]
   );
 }

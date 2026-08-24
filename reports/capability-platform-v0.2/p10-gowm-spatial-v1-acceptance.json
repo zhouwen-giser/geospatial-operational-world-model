@@ -1,0 +1,115 @@
+{
+  "phase": "P10",
+  "generatedAt": "2026-08-23T02:06:20.0346039+08:00",
+  "implementationStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "readContract": {
+    "schema": "gowm_spatial_v1",
+    "migration": "database/migrations/012_gowm_spatial_v1_read_contract.sql",
+    "migrationSha256": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10",
+    "databaseAssertion": "database/tests/003_gowm_spatial_v1_assertions.sql",
+    "databaseAssertionSha256": "0ea196d332689ce646a257ec469ec808f42347106026e351f25f7fafb4ae45c3",
+    "views": [
+      "gowm_spatial_v1.current_object",
+      "gowm_spatial_v1.current_geometry",
+      "gowm_spatial_v1.layer_feature",
+      "gowm_spatial_v1.dataset_descriptor"
+    ],
+    "providerRole": "spatial_provider",
+    "baseTablePrivileges": false,
+    "defaultTransactionReadOnly": true,
+    "scopeFunction": "gowm_spatial_v1.set_data_scope(text)",
+    "snapshotConsistency": "CONSISTENT_AT_START",
+    "publicIdentity": "opaque ReferenceKey"
+  },
+  "verification": [
+    {
+      "command": "node validation/provider-conformance/spatial/validate-spatial-architecture.mjs",
+      "status": "PASS",
+      "result": "SPATIAL_ARCHITECTURE_PASS",
+      "detail": "Verified contract-view-only SQL, explicit base-table revokes, contract grants, SQL scope function, read-only transaction boundary, snapshot honesty, source lock, and migration-012 digest."
+    },
+    {
+      "command": "npx.cmd vitest run --config validation/provider-conformance/spatial/vitest.config.ts",
+      "status": "PASS",
+      "testsPassed": 10,
+      "testsFailed": 0,
+      "detail": "Mocked SQL-protocol tests exercised DataScope ordering, opaque outputs, current snapshot, signed cursors, budgets, denial mapping, and the Provider HTTP protocol."
+    },
+    {
+      "command": "git diff --exit-code d1ff3b81b8bf577965b00edc1bd06acaaeda706c -- database/migrations/001_...010_*.sql",
+      "status": "PASS",
+      "result": "MIGRATIONS_001_010_IMMUTABLE_PASS"
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS",
+      "detail": "Root strict TypeScript and STAS typecheck passed."
+    },
+    {
+      "command": "database/tests/003_gowm_spatial_v1_assertions.sql against fresh and upgraded PostgreSQL",
+      "status": "NOT_RUN",
+      "detail": "TEST_DATABASE_URL, DATABASE_URL, and SPATIAL_DATABASE_URL are unset. Docker API access is denied by the current sandbox, and no new Docker escalation was requested."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC-056",
+      "status": "PASS",
+      "evidence": "The GOWM-owned repository contains only static schema-qualified reads of gowm_spatial_v1 views; the architecture validator rejects base-table or non-contract schema references."
+    },
+    {
+      "id": "AC-057",
+      "status": "PARTIAL",
+      "evidence": "Migration 012 explicitly revokes canonical base tables and grants only the four views/functions to spatial_provider, and database assertion 003 verifies privileges. The assertion was not executed against live PostgreSQL in this run."
+    },
+    {
+      "id": "AC-058",
+      "status": "PARTIAL",
+      "evidence": "Security-barrier views filter with the transaction-local trusted scope, repository execution sets scope before reads, and cross-scope cursor use is rejected. The live two-scope PostgreSQL assertion was not run."
+    },
+    {
+      "id": "AC-059",
+      "status": "PASS",
+      "evidence": "Migration 012 creates append-only wrf_* public identities; provider schemas and results expose ReferenceKey and never expose the canonical World Object primary key."
+    },
+    {
+      "id": "AC-060",
+      "status": "PARTIAL",
+      "evidence": "The view and provider mapping carry freshnessMs, confidence, source, provenance summary, source observation provenance, and World Evidence. Provider execution tests pass; a live database result was not captured."
+    },
+    {
+      "id": "AC-061",
+      "status": "PASS",
+      "evidence": "Current-projection results and Data Snapshot resources report CONSISTENT_AT_START with AT_LEAST pinning; static validation forbids a PINNED claim in the repository."
+    },
+    {
+      "id": "AC-084",
+      "status": "NOT_RUN",
+      "evidence": "Fresh PostgreSQL migration application was not runnable without a database URL or Docker API access."
+    },
+    {
+      "id": "AC-085",
+      "status": "NOT_RUN",
+      "evidence": "Upgrade of an existing v0.1 dataset was not runnable without a database URL or Docker API access."
+    },
+    {
+      "id": "AC-086",
+      "status": "PASS",
+      "evidence": "Migrations 001-010 are byte-identical to the locked reference commit d1ff3b81b8bf577965b00edc1bd06acaaeda706c."
+    }
+  ],
+  "notRun": [
+    "Fresh PostgreSQL migration chain",
+    "Existing v0.1 database upgrade",
+    "Live role privilege and cross-scope assertions",
+    "Live contract-view query execution"
+  ],
+  "blocker": {
+    "kind": "POSTGRES_RUNTIME_UNAVAILABLE",
+    "databaseUrlsPresent": false,
+    "dockerApiAccessible": false,
+    "implementationBlocked": false,
+    "requiredToClosePhase": true
+  }
+}

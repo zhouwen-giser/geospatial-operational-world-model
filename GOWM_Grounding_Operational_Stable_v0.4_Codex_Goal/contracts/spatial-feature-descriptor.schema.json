@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:spatial-feature-descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "referenceKey",
+    "layerReferenceKey",
+    "featureType",
+    "version"
+  ],
+  "properties": {
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "layerReferenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "featureType": {
+      "type": "string"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "geometrySummary": {
+      "$ref": "common.schema.json#/$defs/geometrySummary"
+    },
+    "properties": {
+      "type": "object"
+    },
+    "validTime": {
+      "$ref": "common.schema.json#/$defs/timeRange"
+    }
+  }
+}

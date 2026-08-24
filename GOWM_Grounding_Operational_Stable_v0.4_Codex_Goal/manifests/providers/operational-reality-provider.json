@@ -1,0 +1,94 @@
+{
+  "providerId": "gowm.operational-reality",
+  "providerVersion": "1.0.0",
+  "operations": [
+    {
+      "operationId": "operational-task.find",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/operational-query-request.schema.json",
+      "inputSchemaHash": "sha256:8ad08440e1e6842255d0bbc15602bf15408f96b1c136722e488032e30eca6ec8",
+      "outputSchemaFile": "contracts/operational-query-result.schema.json",
+      "outputSchemaHash": "sha256:f663dd601d78381f4bb2f893928397bc7c5366fbf22d596e64f36f2eb888f322",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "operational-task.get",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/operational-query-request.schema.json",
+      "inputSchemaHash": "sha256:8ad08440e1e6842255d0bbc15602bf15408f96b1c136722e488032e30eca6ec8",
+      "outputSchemaFile": "contracts/operational-task-snapshot.schema.json",
+      "outputSchemaHash": "sha256:266359fc72e3f7b114ebb5693c9f55dc2143c73f2fe470581147082fd13f1738",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "operational-task.get-timeline",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/operational-query-request.schema.json",
+      "inputSchemaHash": "sha256:8ad08440e1e6842255d0bbc15602bf15408f96b1c136722e488032e30eca6ec8",
+      "outputSchemaFile": "contracts/operational-event-timeline.schema.json",
+      "outputSchemaHash": "sha256:c38abf0868b05bac0e62ef4a1741115837bd832c85d5f01e4c49bb204223c962",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "operational-task.find-by-correlation",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/operational-query-request.schema.json",
+      "inputSchemaHash": "sha256:8ad08440e1e6842255d0bbc15602bf15408f96b1c136722e488032e30eca6ec8",
+      "outputSchemaFile": "contracts/operational-query-result.schema.json",
+      "outputSchemaHash": "sha256:f663dd601d78381f4bb2f893928397bc7c5366fbf22d596e64f36f2eb888f322",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "world-event.find-by-correlation",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/operational-query-request.schema.json",
+      "inputSchemaHash": "sha256:8ad08440e1e6842255d0bbc15602bf15408f96b1c136722e488032e30eca6ec8",
+      "outputSchemaFile": "contracts/operational-event-timeline.schema.json",
+      "outputSchemaHash": "sha256:c38abf0868b05bac0e62ef4a1741115837bd832c85d5f01e4c49bb204223c962",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "correlation.resolve",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/operational-query-request.schema.json",
+      "inputSchemaHash": "sha256:8ad08440e1e6842255d0bbc15602bf15408f96b1c136722e488032e30eca6ec8",
+      "outputSchemaFile": "contracts/correlation-finding.schema.json",
+      "outputSchemaHash": "sha256:575b30eab7c5b5a422395a4cc17d5bd37520697dd9d1d13ba3573e6903d47aa8",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "predicate.evaluate",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/external-predicate.schema.json",
+      "inputSchemaHash": "sha256:4ada1a2e340fc58904e96c989e255b4c658958415b6db45fb31913d99b8717ef",
+      "outputSchemaFile": "contracts/predicate-evaluation.schema.json",
+      "outputSchemaHash": "sha256:d1d0d1d168ede096d6dd1caf590def9000b2305b7a5d2daa4a972b2c74bf2e31",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "observability.evaluate",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/operational-query-request.schema.json",
+      "inputSchemaHash": "sha256:8ad08440e1e6842255d0bbc15602bf15408f96b1c136722e488032e30eca6ec8",
+      "outputSchemaFile": "contracts/observability-assessment.schema.json",
+      "outputSchemaHash": "sha256:c09af934b708bb3c784c36d9388439d881f7580e40bdc77dc0228c05c3be7776",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    }
+  ]
+}

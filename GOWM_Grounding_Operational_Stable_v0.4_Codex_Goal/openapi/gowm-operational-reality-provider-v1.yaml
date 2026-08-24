@@ -1,0 +1,37 @@
+openapi: 3.1.0
+info:
+  title: GOWM Operational Reality Provider
+  version: 1.0.0
+paths:
+  /v1/provider-operations/operational-task.find:execute:
+    post:
+      operationId: findOperationalTasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../contracts/operational-query-request.schema.json
+      responses:
+        "200":
+          description: Operational tasks
+          content:
+            application/json:
+              schema:
+                $ref: ../contracts/operational-query-result.schema.json
+  /v1/provider-operations/predicate.evaluate:execute:
+    post:
+      operationId: evaluateExternalPredicate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../contracts/external-predicate.schema.json
+      responses:
+        "200":
+          description: Predicate evaluation
+          content:
+            application/json:
+              schema:
+                $ref: ../contracts/predicate-evaluation.schema.json

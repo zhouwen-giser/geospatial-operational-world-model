@@ -1,0 +1,48 @@
+{
+  "phase": "P09",
+  "status": "PARTIAL",
+  "recordedAt": "2026-08-23",
+  "sourceLock": {
+    "toolkit": "zhouwen-giser/h3-spatial-toolkit@74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+    "toolkitVersion": "0.3.0",
+    "engine": "h3-js",
+    "engineVersion": "4.5.0"
+  },
+  "checks": [
+    {
+      "id": "P09-KERNEL-DELEGATION",
+      "status": "PASS",
+      "evidence": "H3SituationIndex delegates generic grid primitives through H3KernelPort to H3ToolkitLocalAdapter."
+    },
+    {
+      "id": "P09-ONE-H3-JS-IMPORT",
+      "status": "PASS",
+      "evidence": "Architecture validation rejects h3-js imports outside packages/integrations/h3-toolkit-local."
+    },
+    {
+      "id": "P09-SITUATION-POLICY",
+      "status": "PASS",
+      "evidence": "GOWM retains only the R7-R10 Situation policy and world-metric projection; the adapter owns grid computation."
+    },
+    {
+      "id": "P09-COMPATIBILITY-UNIT",
+      "status": "PASS",
+      "evidence": "3 files / 12 tests passed for H3 compatibility, delegation and C1-C10 scenarios."
+    },
+    {
+      "id": "P09-ROOT-TYPECHECK",
+      "status": "PASS",
+      "evidence": "npm.cmd run check passed."
+    },
+    {
+      "id": "P09-REAL-HTTP-REGRESSION",
+      "status": "NOT_RUN",
+      "evidence": "Post-change Docker acceptance requires an escalated Docker command; current approval quota is unavailable."
+    },
+    {
+      "id": "P09-DELIVERY",
+      "status": "BLOCKED",
+      "evidence": "The sandbox cannot create .git/index.lock and the escalation request is unavailable under the current usage limit."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:elevation.sample.mock:output:1.0",
+  "title": "ElevationSampleMockOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["elevationMeters", "source"],
+  "properties": {
+    "elevationMeters": { "type": "number" },
+    "source": { "const": "MOCK_FIXED" }
+  }
+}

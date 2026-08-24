@@ -1,0 +1,132 @@
+openapi: 3.1.0
+info:
+  title: GOWM Capability Provider Protocol
+  version: 1.0.0
+  description: Internal protocol used only by controlled Gateway Registry bindings.
+paths:
+  /.well-known/gowm-capability-provider:
+    get:
+      operationId: getProviderManifest
+      responses:
+        "200":
+          description: Provider-declared manifest; registry approval remains separate
+          content:
+            application/json:
+              schema:
+                $ref: ../capability-provider-manifest.schema.json
+  /health/live:
+    get:
+      operationId: getProviderLiveness
+      responses:
+        "200":
+          description: Process liveness
+  /health/ready:
+    get:
+      operationId: getProviderReadiness
+      responses:
+        "200":
+          description: Operation dependency readiness
+        "503":
+          description: Provider is not ready
+  /v1/provider-operations/{operationId}:execute:
+    post:
+      operationId: executeProviderOperation
+      parameters:
+        - $ref: "#/components/parameters/OperationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../provider-execution-request.schema.json
+      responses:
+        "200":
+          description: Completed capability result
+          content:
+            application/json:
+              schema:
+                $ref: ../capability-result-envelope.schema.json
+        "202":
+          description: Provider job accepted
+          content:
+            application/json:
+              schema:
+                $ref: ../job-record.schema.json
+        "400":
+          $ref: "#/components/responses/PlatformError"
+        "403":
+          $ref: "#/components/responses/PlatformError"
+        "409":
+          $ref: "#/components/responses/PlatformError"
+  /v1/provider-jobs/{jobId}:
+    get:
+      operationId: getProviderJob
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: Provider job status/result
+          content:
+            application/json:
+              schema:
+                $ref: ../job-record.schema.json
+        "404":
+          $ref: "#/components/responses/PlatformError"
+  /v1/provider-jobs/{jobId}:cancel:
+    post:
+      operationId: cancelProviderJob
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: Cancelled or terminal provider job
+          content:
+            application/json:
+              schema:
+                $ref: ../job-record.schema.json
+        "409":
+          $ref: "#/components/responses/PlatformError"
+  /v1/provider-receipts/{receiptId}:
+    get:
+      operationId: getProviderReceipt
+      parameters:
+        - $ref: "#/components/parameters/ReceiptId"
+      responses:
+        "200":
+          description: Provider execution receipt
+          content:
+            application/json:
+              schema:
+                $ref: ../execution-receipt.schema.json
+        "404":
+          $ref: "#/components/responses/PlatformError"
+components:
+  parameters:
+    OperationId:
+      in: path
+      name: operationId
+      required: true
+      schema:
+        type: string
+        pattern: ^[a-z][a-z0-9.-]{2,127}$
+    JobId:
+      in: path
+      name: jobId
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+    ReceiptId:
+      in: path
+      name: receiptId
+      required: true
+      schema:
+        type: string
+        maxLength: 256
+  responses:
+    PlatformError:
+      description: Fail-closed provider error
+      content:
+        application/json:
+          schema:
+            $ref: ../platform-error.schema.json

@@ -88,6 +88,40 @@ describe("GOWM+ canonical observation v1.2",() => {
     expect(normalizeObservationInput(changed,"2026-08-13T00:00:04.000Z").payloadHash).not.toBe(first.payloadHash);
   });
 
+  it("propagates external correlation metadata as evidence without changing internal identity",() => {
+    const correlated = CanonicalObservationInputSchema.parse({
+      ...canonicalInput(),
+      executionIntentId: "intent-42",
+      operationCorrelationId: "operation-42",
+      externalPlanningTaskId: "planning-task-42",
+      externalPlanningStepId: "planning-step-7",
+      providerActionId: "provider-action-9",
+      deviceCommandId: "device-command-3"
+    });
+    const bundle = normalizeObservationInput(correlated,"2026-08-13T00:00:03.000Z");
+    expect(bundle).toMatchObject({
+      executionIntentId: "intent-42",
+      operationCorrelationId: "operation-42",
+      externalPlanningTaskId: "planning-task-42",
+      externalPlanningStepId: "planning-step-7",
+      providerActionId: "provider-action-9",
+      deviceCommandId: "device-command-3"
+    });
+    expect(bundle.envelope).toMatchObject({
+      observationId: correlated.observationId,
+      externalPlanningTaskId: "planning-task-42",
+      operationCorrelationId: "operation-42"
+    });
+    const changed = normalizeObservationInput(
+      CanonicalObservationInputSchema.parse({ ...correlated,externalPlanningTaskId: "planning-task-43" }),
+      "2026-08-13T00:00:04.000Z"
+    );
+    expect(changed.payloadHash).not.toBe(bundle.payloadHash);
+    expect(CanonicalObservationInputSchema.safeParse({
+      ...canonicalInput(),operationCorrelationId: "x".repeat(513)
+    }).success).toBe(false);
+  });
+
   it("rejects client-owned receivedAt and invalid typed uncertainty",() => {
     expect(ObservationInputSchema.safeParse({ ...canonicalInput(),receivedAt: "2026-08-13T00:00:03Z" }).success).toBe(false);
     const broken = canonicalInput();

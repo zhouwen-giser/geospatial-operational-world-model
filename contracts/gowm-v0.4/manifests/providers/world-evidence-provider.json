@@ -1,0 +1,105 @@
+{
+  "providerId": "gowm.world-evidence",
+  "providerVersion": "1.0.0",
+  "operations": [
+    {
+      "operationId": "world.get-current-state",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/world-fact-result.schema.json",
+      "outputSchemaHash": "sha256:920062e401515fc021aebe87dde56023dcfadfbf2bb59d2d791c9a1b86966ddb",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "world.get-geometry",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/world-fact-result.schema.json",
+      "outputSchemaHash": "sha256:920062e401515fc021aebe87dde56023dcfadfbf2bb59d2d791c9a1b86966ddb",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "world.get-provenance",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/world-fact-result.schema.json",
+      "outputSchemaHash": "sha256:920062e401515fc021aebe87dde56023dcfadfbf2bb59d2d791c9a1b86966ddb",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "world.get-observations",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/catalog-result.schema.json",
+      "outputSchemaHash": "sha256:e1efea73a0a57cd71ba303c36e165df05e936ad5b0cb8747390cf305e2f3f609",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "world.get-event-timeline",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/catalog-result.schema.json",
+      "outputSchemaHash": "sha256:e1efea73a0a57cd71ba303c36e165df05e936ad5b0cb8747390cf305e2f3f609",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "world.get-state-history",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/catalog-result.schema.json",
+      "outputSchemaHash": "sha256:e1efea73a0a57cd71ba303c36e165df05e936ad5b0cb8747390cf305e2f3f609",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "result.get",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/query-result-reference.schema.json",
+      "outputSchemaHash": "sha256:b9ba565da7d8cdbfda40afca326ea99e39d7d50116a930e2b3e170210fa54107",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "result.validate",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/reference-validate-result.schema.json",
+      "outputSchemaHash": "sha256:db667246c3347ae334e49609df2ffada4fbae620d6812c187d50d3d260362384",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "reference-set.get-members",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/reference-set.schema.json",
+      "outputSchemaHash": "sha256:0a7fd18d832b09268f2c5641c9cbce58a273fb15e69214bc08b7a709ce02e5d9",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    }
+  ]
+}

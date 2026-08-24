@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:compute-snapshot-context",
+  "title": "ComputeSnapshotContext",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["provider", "operation", "engine", "policy", "schemas"],
+  "properties": {
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerId", "providerVersion"],
+      "properties": {
+        "providerId": {
+          "$ref": "common-definitions.schema.json#/$defs/providerId"
+        },
+        "providerVersion": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "implementationDigest": {
+          "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+        }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operationId", "operationVersion"],
+      "properties": {
+        "operationId": {
+          "$ref": "common-definitions.schema.json#/$defs/operationId"
+        },
+        "operationVersion": {
+          "$ref": "common-definitions.schema.json#/$defs/operationVersion"
+        }
+      }
+    },
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "digest": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "digest"],
+      "properties": {
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "digest": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" }
+      }
+    },
+    "schemas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inputSchemaHash", "outputSchemaHash"],
+      "properties": {
+        "inputSchemaHash": {
+          "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+        },
+        "outputSchemaHash": {
+          "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "name", "version"],
+        "properties": {
+          "kind": { "enum": ["IMAGE", "PACKAGE", "GRID", "DATABASE"] },
+          "name": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "version": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "digest": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry.buffer:input:1.0",
+  "title": "GeometryBufferInputV1",
+  "$ref": "../geometry-provider/definitions.schema.json#/$defs/bufferInput"
+}

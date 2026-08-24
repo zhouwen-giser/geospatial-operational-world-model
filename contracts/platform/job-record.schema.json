@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:job-record",
+  "title": "JobRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "jobId",
+    "requestId",
+    "kind",
+    "status",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "jobId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "requestId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "kind": { "enum": ["DIRECT_OPERATION", "WORLD_QUERY"] },
+    "status": {
+      "enum": ["QUEUED", "RUNNING", "COMPLETED", "PARTIAL", "FAILED", "CANCELLED"]
+    },
+    "operation": { "$ref": "common-definitions.schema.json#/$defs/operationRef" },
+    "queryId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": "string", "format": "date-time" },
+    "result": {
+      "oneOf": [
+        { "$ref": "capability-result-envelope.schema.json" },
+        { "$ref": "world-query-result.schema.json" }
+      ]
+    },
+    "error": { "$ref": "platform-error.schema.json" }
+  }
+}

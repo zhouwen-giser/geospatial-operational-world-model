@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:external-correlation-claim",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "claimId",
+    "externalAuthority",
+    "externalKind",
+    "externalValue",
+    "matchBasis",
+    "observedAt",
+    "receivedAt",
+    "evidenceIds"
+  ],
+  "properties": {
+    "claimId": {
+      "type": "string"
+    },
+    "externalAuthority": {
+      "type": "string"
+    },
+    "externalKind": {
+      "enum": [
+        "PLANNING_TASK",
+        "PLANNING_STEP",
+        "EXECUTION_INTENT",
+        "OPERATION_CORRELATION",
+        "PROVIDER_ACTION",
+        "DEVICE_COMMAND"
+      ]
+    },
+    "externalValue": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "relationHint": {
+      "enum": [
+        "REPORTS_EXECUTION_OF",
+        "REALIZES",
+        "RELATED_TO"
+      ]
+    },
+    "matchBasis": {
+      "enum": [
+        "PROPAGATED_CORRELATION_ID",
+        "PROVIDER_DECLARED",
+        "MANUAL_CONFIRMATION",
+        "RESOURCE_AND_TIME_MATCH",
+        "SPATIOTEMPORAL_INFERENCE"
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "observedAt": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "receivedAt": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "evidenceIds": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "providerId": "gowm.geometry.bridge",
+  "providerVersion": "0.2.0",
+  "providerProtocolVersion": "1.0",
+  "registeredOperations": [
+    "geometry.validate@1.0",
+    "geometry.normalize@1.0",
+    "geometry.force-2d@1.0",
+    "geometry.remove-repeated-points@1.0",
+    "geometry.centroid@1.0",
+    "geometry.bounding-box@1.0",
+    "geometry.geometry-hash@1.0",
+    "geometry.predicate@1.0",
+    "geometry.make-valid@1.0",
+    "geometry.buffer@1.0",
+    "geometry.intersection@1.0",
+    "geometry.union@1.0",
+    "geometry.difference@1.0",
+    "geometry.symmetric-difference@1.0",
+    "geometry.simplify@1.0",
+    "geometry.simplify-preserve-topology@1.0",
+    "geometry.convex-hull@1.0",
+    "geometry.closest-point@1.0",
+    "geometry.shortest-line@1.0"
+  ],
+  "unregisteredBoundaryOperations": [
+    "geometry.reproject",
+    "geometry.geodesic-distance",
+    "geometry.geodesic-area",
+    "geometry.geodesic-length",
+    "geometry.spatial-join",
+    "geometry.rasterize",
+    "geometry.shortest-path",
+    "geometry.h3-polyfill"
+  ],
+  "sourcePublication": "PROHIBITED_LICENSE_UNSPECIFIED",
+  "upstreamRouteAllowlist": ["POST /v1/geometry/execute", "GET /ready"]
+}

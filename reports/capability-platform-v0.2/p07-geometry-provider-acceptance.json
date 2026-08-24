@@ -1,0 +1,218 @@
+{
+  "phase": "P07",
+  "generatedAt": "2026-08-23T01:59:18.5758358+08:00",
+  "implementationStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "provider": {
+    "providerId": "gowm.geometry.bridge",
+    "providerVersion": "0.2.0",
+    "providerProtocolVersion": "1.0",
+    "operationCount": 19,
+    "registeredOperations": [
+      "geometry.validate",
+      "geometry.normalize",
+      "geometry.force-2d",
+      "geometry.remove-repeated-points",
+      "geometry.centroid",
+      "geometry.bounding-box",
+      "geometry.geometry-hash",
+      "geometry.predicate",
+      "geometry.make-valid",
+      "geometry.buffer",
+      "geometry.intersection",
+      "geometry.union",
+      "geometry.difference",
+      "geometry.symmetric-difference",
+      "geometry.simplify",
+      "geometry.simplify-preserve-topology",
+      "geometry.convex-hull",
+      "geometry.closest-point",
+      "geometry.shortest-line"
+    ],
+    "unregisteredBoundaryOperations": [
+      "geometry.reproject",
+      "geometry.geodesic-distance",
+      "geometry.geodesic-area",
+      "geometry.geodesic-length",
+      "geometry.spatial-join",
+      "geometry.rasterize",
+      "geometry.shortest-path",
+      "geometry.h3-polyfill"
+    ],
+    "upstreamExecuteRoute": "POST /v1/geometry/execute",
+    "upstreamReadinessRoute": "GET /ready",
+    "arbitraryUrlAllowed": false,
+    "providerToProviderCallsAllowed": false,
+    "implicitRepairAllowed": false,
+    "explicitRepairOperation": "geometry.make-valid",
+    "bridgeAdmission": {
+      "defaultMaximumInFlight": 32,
+      "defaultMaximumQueueSize": 128,
+      "bounded": true
+    }
+  },
+  "sourceLock": {
+    "sourceRef": "inputs/geometry-tool-service-v1.0.zip",
+    "sourceSha256": "3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d",
+    "openApiSha256": "f45ad64ab0781289e960e826dde220db85c295d45d2d69e4f1afbf163e7cd600",
+    "engine": "GEOS-WASM-WORKER-POOL",
+    "engineVersion": "3.13.0-CAPI-1.19.0",
+    "integration": "geos-wasm",
+    "integrationVersion": "3.1.1",
+    "licenseStatus": "UNSPECIFIED",
+    "redistributionAllowed": false,
+    "expandedSourceTrackedByGit": false
+  },
+  "contract": {
+    "draft": "https://json-schema.org/draft/2020-12/schema",
+    "operationSchemaPairs": 19,
+    "unknownFieldsRejected": true,
+    "sharedDefinitions": "urn:gowm:capability:geometry-provider:definitions:1.0",
+    "generatedBundle": "packages/platform/contract-runtime/src/generated/schema-bundle.ts",
+    "generatedHashes": "packages/platform/contract-runtime/src/generated/schema-hashes.ts",
+    "generatedTypes": "packages/platform/contract-runtime/src/generated/contracts.ts"
+  },
+  "receiptProvenance": [
+    "canonical input hash",
+    "canonical output hash",
+    "compute snapshot hash",
+    "repair applied",
+    "geometry type change and input/output types",
+    "precision grid or floating precision",
+    "declared coordinate space and units",
+    "GEOS engine and version",
+    "geos-wasm integration and version",
+    "locked source ZIP and OpenAPI hashes",
+    "input and output schema hashes"
+  ],
+  "verification": [
+    {
+      "command": "Get-FileHash -Algorithm SHA256 .intake/GOWM_Capability_Platform_v0.2_Codex_Goal/inputs/geometry-tool-service-v1.0.zip",
+      "status": "PASS",
+      "result": "3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d"
+    },
+    {
+      "command": "Get-FileHash -Algorithm SHA256 .intake/providers/geometry-tool-service-v1.0/geometry-tool-service/openapi/geometry-api.openapi.json",
+      "status": "PASS",
+      "result": "f45ad64ab0781289e960e826dde220db85c295d45d2d69e4f1afbf163e7cd600"
+    },
+    {
+      "command": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd tsc -p services/providers/geometry-provider-bridge/tsconfig.json --noEmit",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd vitest run tests/platform/geometry-provider-bridge.test.ts --reporter verbose",
+      "status": "PASS",
+      "testFilesPassed": 1,
+      "testsPassed": 12,
+      "testsFailed": 0,
+      "coverage": [
+        "exact 19-operation registration and unsupported-operation absence",
+        "checked-in operation/source/license lock parity",
+        "immutable validate with strict no-repair upstream request",
+        "all 19 operation schema-locked execution paths",
+        "explicit make-valid type-change receipt",
+        "EPSG:4326 planar angular-unit buffer guard",
+        "same-coordinate-space guard before upstream call",
+        "typed retryable worker-timeout mapping and recovery",
+        "strict successful-upstream response validation",
+        "bounded bridge queue overload and drain recovery",
+        "Provider SDK conformance including deadline/budget/schema locks",
+        "protocol manifest and worker-pool readiness routes"
+      ]
+    },
+    {
+      "command": "npx.cmd vitest run --config validation/gateway-contract/vitest.config.ts",
+      "status": "PASS",
+      "testFilesPassed": 1,
+      "testsPassed": 15,
+      "testsFailed": 0
+    },
+    {
+      "command": "npm.cmd run test:platform",
+      "status": "PASS",
+      "testFilesPassed": 5,
+      "testsPassed": 28,
+      "testsFailed": 0
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS",
+      "detail": "Root strict TypeScript and STAS typecheck passed after concurrent DAG work converged."
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    },
+    {
+      "command": "git ls-files -- '.intake/**' and git check-ignore -v <expanded Geometry path>",
+      "status": "PASS",
+      "detail": "No .intake source is tracked; the isolated expanded Geometry POC is ignored."
+    },
+    {
+      "command": "npm.cmd ci --ignore-scripts --no-audit --no-fund (inside ignored Geometry POC)",
+      "status": "BLOCKED",
+      "detail": "Sandbox execution returned EPERM creating the isolated node_modules directory. The required controlled escalation was then rejected because the execution approval quota was exhausted; no workaround was attempted."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC-037",
+      "status": "PARTIAL",
+      "evidence": "Bridge-level execution deep-compares the caller input before/after validate and proves the upstream request is strict with repairInvalid=false. The matrix classifies this as real-provider, and the real POC process run is blocked."
+    },
+    {
+      "id": "AC-038",
+      "status": "PARTIAL",
+      "evidence": "All non-make-valid requests force repairInvalid=false; only geometry.make-valid maps to make_valid and records explicit repair. Real-provider execution remains blocked."
+    },
+    {
+      "id": "AC-039",
+      "status": "PASS",
+      "evidence": "A Polygon-to-MultiPolygon make-valid result records repairApplied=true, typeChanged=true and both geometry types in the canonical Execution Receipt."
+    },
+    {
+      "id": "AC-040",
+      "status": "PASS",
+      "evidence": "EPSG:4326 buffer 1000 requires planarAcknowledged=true, sends planar=true, and reports angular coordinate-space degrees without a metre unit."
+    },
+    {
+      "id": "AC-041",
+      "status": "PARTIAL",
+      "evidence": "The bridge maps POC OPERATION_TIMEOUT to retryable DEADLINE_EXCEEDED and the next execution succeeds. The locked POC source uses terminate-and-replace workers, but a current real-process timeout/replacement run is blocked."
+    },
+    {
+      "id": "AC-042",
+      "status": "PARTIAL",
+      "evidence": "The bridge admission gate proves one active plus one queued request, rejects the third with retryable OVERLOADED, and drains to zero. The upstream real worker-queue overload run is blocked."
+    },
+    {
+      "id": "AC-043",
+      "status": "PASS",
+      "evidence": "The runtime manifest and checked-in registration contain exactly 19 allowed operations; reproject, geodesic operations, spatial join, rasterize, shortest path and H3 polyfill are absent."
+    },
+    {
+      "id": "AC-044",
+      "status": "PASS",
+      "evidence": "The source lock preserves licenseStatus=UNSPECIFIED and redistributionAllowed=false; no expanded POC source, package, dependency tree or image is tracked/published."
+    }
+  ],
+  "notRun": [
+    "Real Geometry POC process build/start",
+    "Real validate immutability through the POC process",
+    "Real explicit make-valid through the POC process",
+    "Real GEOS worker timeout termination/replacement/recovery",
+    "Real upstream worker-queue overload/recovery"
+  ],
+  "blocker": {
+    "kind": "EXECUTION_APPROVAL_QUOTA",
+    "scope": "REAL_POC_DEPENDENCY_INSTALL_AND_PROCESS_ONLY",
+    "implementationBlocked": false,
+    "requiredToClosePhase": true
+  }
+}

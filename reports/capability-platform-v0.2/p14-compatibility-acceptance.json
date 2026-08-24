@@ -1,0 +1,95 @@
+{
+  "phase": "P14",
+  "status": "PARTIAL",
+  "recordedAt": "2026-08-23",
+  "acceptance": [
+    {
+      "id": "AC-079",
+      "status": "PARTIAL",
+      "evidence": "World API compatibility routes remain present. Unit dual-run compares adapted result hashes and semantic hashes, returns legacy on match/mismatch/Gateway error, and permits per-route cutover only with a zero-mismatch parity attestation. A real PostgreSQL + Spatial Provider + Gateway dual-run corpus was NOT_RUN."
+    },
+    {
+      "id": "AC-080",
+      "status": "PARTIAL",
+      "evidence": "Four fixed GOWM-owned H3 Situation capabilities and old-route adapters are implemented with World Version/metric profile preserved. Unit/provider compatibility passed; real database old-route versus Gateway parity was NOT_RUN. Multi-scope Situation serving is BLOCKED because the legacy situation_cell projection has no DataScope column."
+    },
+    {
+      "id": "AC-081",
+      "status": "PASS",
+      "evidence": "world-query-mcp-readonly exposes exactly six fixed read/analysis tools and invokes only allowlisted Gateway operations; test proves no publish tool is present."
+    },
+    {
+      "id": "AC-082",
+      "status": "PASS",
+      "evidence": "observation-command-mcp exposes only publish_observation and publish_canonical_observation on the Observation Ingest command path; neither appears in the read-only MCP."
+    },
+    {
+      "id": "AC-083",
+      "status": "PASS",
+      "evidence": "The compatibility client and read-only MCP use a compile-time operation allowlist. Gateway capability detail supplies schema locks only for an already allowlisted operation; no MCP catalog can register or select an operation."
+    }
+  ],
+  "checks": [
+    {
+      "id": "P14-SCOPED-TESTS",
+      "status": "PASS",
+      "command": "npx.cmd vitest run tests/platform/compatibility-migration.test.ts",
+      "evidence": "1 file / 11 tests passed."
+    },
+    {
+      "id": "P14-PLATFORM-TESTS",
+      "status": "PASS",
+      "command": "npm.cmd run test:platform",
+      "evidence": "6 files / 42 tests passed."
+    },
+    {
+      "id": "P14-LEGACY-MCP-REGRESSION",
+      "status": "PASS",
+      "command": "npx.cmd vitest run tests/scenario/mcp.test.ts",
+      "evidence": "1 file / 1 test passed; the deprecated combined MCP compatibility server remains available."
+    },
+    {
+      "id": "P14-CONTRACT-GENERATOR",
+      "status": "PASS",
+      "command": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check",
+      "evidence": "Generated TypeScript, schema bundle and hashes are current."
+    },
+    {
+      "id": "P14-ROOT-CHECK",
+      "status": "PASS",
+      "command": "npm.cmd run check",
+      "evidence": "Root TypeScript and STAS typecheck passed."
+    },
+    {
+      "id": "P14-BOUNDARIES",
+      "status": "PASS",
+      "command": "npm.cmd run validate:boundaries",
+      "evidence": "CAPABILITY_BOUNDARIES_PASS."
+    },
+    {
+      "id": "P14-SITUATION-PROVIDER-CONFORMANCE",
+      "status": "PASS",
+      "evidence": "Shared Provider conformance checks passed for manifest parity, strict input, idempotency, schema locks, output budget, deadline and DATA_SCOPE_REQUIRED. Batch candidate ReferenceKeys are selected from scoped GOWM data and marked candidateOnly/exactVerificationRequired."
+    },
+    {
+      "id": "P14-SINGLE-SCOPE-GUARD",
+      "status": "PASS",
+      "evidence": "Production repository adapter checks before and after each legacy Situation read that data_scope contains exactly the configured pinned scope; multi-scope readiness and reads fail closed."
+    },
+    {
+      "id": "P14-MULTI-SCOPE-SITUATION",
+      "status": "BLOCKED",
+      "evidence": "Legacy situation_cell/situation_cell_scored has no DataScope column. P14 was forbidden to change migrations, so arbitrary multi-scope Situation reads are not supported or claimed."
+    },
+    {
+      "id": "P14-REAL-DUAL-RUN",
+      "status": "NOT_RUN",
+      "evidence": "No live PostgreSQL + legacy World API + registered Spatial/Situation Providers + Gateway environment was started in this bounded task; no production parity attestation was emitted."
+    },
+    {
+      "id": "P14-DELIVERY",
+      "status": "BLOCKED",
+      "evidence": "No commit or push was attempted because the parent reported the known git-index quota blocker."
+    }
+  ]
+}

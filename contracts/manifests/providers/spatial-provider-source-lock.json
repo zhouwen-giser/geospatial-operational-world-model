@@ -1,0 +1,51 @@
+{
+  "lockVersion": "1.0",
+  "providerKey": "spatial-analysis",
+  "providerId": "gowm.spatial-analysis.bridge",
+  "sourceKind": "ZIP",
+  "sourceRef": "inputs/spatial-analysis-service-v1.0.zip",
+  "version": "1.0.0",
+  "sourceSha256": "15cdaf00f3c5ee911eac1351c2d9a59ff06a5de93a176ce81b644b19ee5de322",
+  "openApiSha256": "ab22b8fd16adf48d91e8c5ed477a88a36268de958e4cd9359e756204c2701882",
+  "contractTreeSha256": "e04d74689caec0fee2bbdb2eb970ca43e2c22bbab3dc97d966c6471d1a711ae4",
+  "canonicalDefinitionsSha256": "dccc85ee342619bbee9ca3decc7c4daf3674f8d9f2d3a7a886b53b825c34124b",
+  "readContract": "gowm_spatial_v1",
+  "readContractMigration": "database/migrations/012_gowm_spatial_v1_read_contract.sql",
+  "readContractMigrationSha256": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10",
+  "licenseStatus": "APPROVED",
+  "license": "Apache-2.0",
+  "redistributionAllowed": true,
+  "noticePath": "services/providers/spatial-provider-bridge/THIRD_PARTY_NOTICES.md",
+  "sbomPath": "services/providers/spatial-provider-bridge/sbom.cdx.json",
+  "sourceCopiedIntoGowm": false,
+  "integrationDecision": "REFERENCE_ONLY_REIMPLEMENTATION",
+  "deploymentAttestationRequired": [
+    "PostGIS library version exact match",
+    "migration 012 SHA-256",
+    "spatial_provider read-only role and contract grants"
+  ],
+  "publishableArtifacts": [
+    "original GOWM bridge source",
+    "canonical GOWM operation schemas",
+    "GOWM provider manifest and source lock",
+    "GOWM conformance and security tests",
+    "GOWM execution evidence"
+  ],
+  "excludedArtifacts": [
+    "expanded Spatial POC source",
+    "Spatial POC package",
+    "Spatial POC container image"
+  ],
+  "operations": [
+    "spatial.find-nearby",
+    "spatial.find-nearest",
+    "spatial.find-in-area",
+    "spatial.find-intersections",
+    "spatial.find-near-route",
+    "spatial.find-containing-area",
+    "spatial.count-in-area",
+    "spatial.summarize-area",
+    "spatial.join",
+    "spatial.aggregate"
+  ]
+}

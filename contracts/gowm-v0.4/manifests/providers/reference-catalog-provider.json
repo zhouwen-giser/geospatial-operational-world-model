@@ -1,0 +1,61 @@
+{
+  "providerId": "gowm.reference-catalog",
+  "providerVersion": "1.0.0",
+  "operations": [
+    {
+      "operationId": "reference.get",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/reference-descriptor.schema.json",
+      "outputSchemaHash": "sha256:59393bb6bd298bea40e3598d3d69c67fb4bd92de9953fc76ef1b0658e2d19218",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "reference.resolve",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/reference-resolve-request.schema.json",
+      "inputSchemaHash": "sha256:16d73c457ce186f12557fe52bbebca65e757754ed6d00671faad7e3c65b46a0a",
+      "outputSchemaFile": "contracts/reference-resolve-result.schema.json",
+      "outputSchemaHash": "sha256:d8cfb0673f90abd2c88b60522b3df0158f8035f69daf9b760a649566acf27749",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "reference.validate",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/reference-validate-request.schema.json",
+      "inputSchemaHash": "sha256:cc82bb4d811e91972d022d9742e20d66dfb00a4d00c02e5b7433c51fd252b19e",
+      "outputSchemaFile": "contracts/reference-validate-result.schema.json",
+      "outputSchemaHash": "sha256:db667246c3347ae334e49609df2ffada4fbae620d6812c187d50d3d260362384",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "reference.batch-get",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/reference-validate-request.schema.json",
+      "inputSchemaHash": "sha256:cc82bb4d811e91972d022d9742e20d66dfb00a4d00c02e5b7433c51fd252b19e",
+      "outputSchemaFile": "contracts/catalog-result.schema.json",
+      "outputSchemaHash": "sha256:e1efea73a0a57cd71ba303c36e165df05e936ad5b0cb8747390cf305e2f3f609",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "reference.search",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/reference-resolve-request.schema.json",
+      "inputSchemaHash": "sha256:16d73c457ce186f12557fe52bbebca65e757754ed6d00671faad7e3c65b46a0a",
+      "outputSchemaFile": "contracts/reference-resolve-result.schema.json",
+      "outputSchemaHash": "sha256:d8cfb0673f90abd2c88b60522b3df0158f8035f69daf9b760a649566acf27749",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    }
+  ]
+}
