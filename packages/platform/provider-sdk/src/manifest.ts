@@ -29,10 +29,10 @@ export function assertManifestMatchesOperations(
     if (operation.descriptor !== descriptor && JSON.stringify(operation.descriptor) !== JSON.stringify(descriptor)) {
       throw new ProviderProtocolError("SCHEMA_MISMATCH", `runtime descriptor ${key} differs from manifest`);
     }
-    if (sha256(operation.inputSchema) !== descriptor.inputSchemaHash) {
+    if ((operation.inputSchemaLockHash ?? sha256(operation.inputSchema)) !== descriptor.inputSchemaHash) {
       throw new ProviderProtocolError("SCHEMA_MISMATCH", `input schema hash mismatch for ${key}`);
     }
-    if (sha256(operation.outputSchema) !== descriptor.outputSchemaHash) {
+    if ((operation.outputSchemaLockHash ?? sha256(operation.outputSchema)) !== descriptor.outputSchemaHash) {
       throw new ProviderProtocolError("SCHEMA_MISMATCH", `output schema hash mismatch for ${key}`);
     }
     byKey.delete(key);

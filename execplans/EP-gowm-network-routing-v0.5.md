@@ -50,7 +50,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] N02 Turn Restrictions
 - [x] N03 Profiles/Costs/Conditions
 - [x] N04 Validation/Activation
-- [ ] P00 Network Provider
+- [x] P00 Network Provider
 - [ ] P01 Network Real Acceptance
 - [ ] R00 Route Runtime
 - [ ] R01 Basic Route Plan
@@ -83,6 +83,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - N02 adds unique directed pairwise resolution, deterministic multi-edge restriction automata, persistent FATAL/WARNING diagnostics, and real activation blocking. Migration 041 lets fixed trigger validators inspect Catalog authority without granting the builder direct base-table reads.
 - N03 adds ROAD_VEHICLE/UGV filtering, BigInt-backed fixed-point cost recomputation, immutable Condition Snapshots, required ODbL attribution, and migration 042 contract-aligned surface/energy/condition fields.
 - N04 adds controlled Catalog Feature bindings and advisory-lock atomic activation. Concurrent real calls serialized into one head, historical versions remained queryable, and failed builds did not change the head.
+- P00 adds the deployable `gowm.network` Provider over the fixed `gowm_network_v1` surface. It preserves the frozen raw-schema byte locks, uses scoped repeatable-read transactions, and separates deterministic directed/product-state search from independent path replay.
 
 ## Failed attempts retained
 
@@ -100,7 +101,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - N02 runtime run `n02-20260825t0149`: 1 pairwise and 2 sequence rules persisted in an isolated clone; FATAL/WARNING diagnostics were recorded and an activation probe was rejected for the activation-blocking hard rule.
 - N03 runtime run `n03-20260825t0158`: ROAD_VEHICLE/UGV profiles produced 3 legal Arc cost rows with exact fixed-point recomputation; two pinned snapshots proved closure, speed/risk override and historical replay without Arc mutation.
 - N04 runtime run `n04-20260825t0228`: two concurrent activation calls produced 2 ACTIVATE/1 RETIRE events, one final head, retained pinned history, failed-build isolation and matching replay hashes.
+- P00 full repository verification: 159 Vitest tests passed with one explicit skip, 39 STAS tests passed, 43 migration and 28 assertion SQL ASTs passed, and TypeScript/build passed. Network unit evidence covers exact partial fractions, directed no-path matrices, Pairwise/Multi-edge restrictions, exactly-once penalties and independent mutation detection.
 
 ## Remaining work
 
-Execute P00 through S01 in order. `NETWORK_READY` is proven; Provider and routing runtime gates remain `NOT_RUN` until their phases are implemented.
+Execute P01 through S01 in order. `NETWORK_READY` and the P00 Provider implementation are proven; AC-P002..AC-P020 remain `NOT_RUN` until P01 runs real PostgreSQL/pgRouting acceptance.

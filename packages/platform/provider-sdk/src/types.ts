@@ -52,6 +52,10 @@ export interface ProviderOperation<Input = unknown, Output = unknown> {
   descriptor: CapabilityDescriptor;
   inputSchema: JsonSchema;
   outputSchema: JsonSchema;
+  /** Frozen source-byte hash when a contract manifest locks the schema artifact rather than canonical JSON. */
+  inputSchemaLockHash?: `sha256:${string}`;
+  /** Frozen source-byte hash when a contract manifest locks the schema artifact rather than canonical JSON. */
+  outputSchemaLockHash?: `sha256:${string}`;
   method: ProviderMethod;
   handle(input: Input, context: ProviderHandlerContext): Promise<ProviderOperationResult<Output>>;
 }
