@@ -46,7 +46,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] D01 Network Schema
 - [x] D02 Network Read Contract
 - [x] N00 Catalog Build Adapter
-- [ ] N01 Topology/Directed Arc
+- [x] N01 Topology/Directed Arc
 - [ ] N02 Turn Restrictions
 - [ ] N03 Profiles/Costs/Conditions
 - [ ] N04 Validation/Activation
@@ -79,6 +79,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - D01 adds migrations 033-038 and proves them from an empty database through run `d01-20260824t2359`; the model uses immutable directed topology, versioned conditions, source Feature bindings, fixed-point costs, and append-only activation events.
 - D02 adds migration 039 as the only Provider SQL surface. Eleven security-barrier views and five controlled functions enforce transaction-local DataScope/DatasetScope, base-table denial, bounded directed snapping, complete snapshot resolution, and route-planner-only projection.
 - N00 adds a Foundation-owned Catalog adapter with fixed scoped queries, deterministic fixed-point materialization, stable graph-internal key primitives, and an OSM artifact path explicitly constrained to PREVIEW.
+- N01 adds deterministic topology segmentation and least-privilege PostgreSQL persistence. Real execution exposed missing schema visibility for `network_builder`; append-only migration 040 repairs only schema `USAGE` and assertion 025 prevents mutable grant expansion.
 
 ## Failed attempts retained
 
@@ -92,7 +93,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - D00 runtime run `gowm-v05-d00-20260824t2245-codex`: 63/63 recorded commands passed; image content digest `sha256:a502c7ce9ef773b4e0f4097ade3b88172f901d1e2d17ed246932d38a04026fae`.
 - D01 runtime run `d01-20260824t2359`: 65/65 recorded commands passed; migrations 001-038 and assertions 001-023 passed in fresh database `gowm_v05_d01_20260824t2359`.
 - D02 runtime run `d01-d02-20260824t2353`: 67/67 recorded commands passed; migrations 001-039 and assertions 001-024 passed in fresh database `gowm_v05_d01_d02_20260824t2353`.
+- N01 runtime run `n01-20260825t0101`: migrations 001-040 replayed in a fresh database; 25 Nodes, 14 Edges and 27 directed Arcs persisted through the real builder role with reproducible hashes and all orientation checks passing.
 
 ## Remaining work
 
-Execute N01 through S01 in order. D00-D02 real database gates and N00 adapter tests are complete; topology and routing runtime gates remain `NOT_RUN` until their phases are implemented.
+Execute N02 through S01 in order. N01 real topology persistence is complete; turn semantics and routing runtime gates remain `NOT_RUN` until their phases are implemented.

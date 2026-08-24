@@ -2,7 +2,7 @@
   "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
   "targetVersion": "0.5.0",
   "status": "IN_PROGRESS",
-  "phase": "N00",
+  "phase": "N01",
   "baseline": {
     "branch": "main",
     "version": "0.4.0",
@@ -12,8 +12,8 @@
   "candidate": {
     "branch": "codex/gowm-network-routing-v0.5",
     "baseSha": "db575f79c874a69f65a2043a7e463338524b713d",
-    "localSha": "ba7dadf",
-    "remoteSha": "ba7dadf",
+    "localSha": "9f863d0",
+    "remoteSha": "9f863d0",
     "draftPr": 3
   },
   "milestones": {
@@ -22,11 +22,11 @@
     "stableCandidate": false
   },
   "acceptance": {
-    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N010"],
+    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N021"],
     "failed": [],
     "blocked": [],
-    "notRun": ["AC-N011..AC-S022"]
+    "notRun": ["AC-N022..AC-S022"]
   },
   "blockers": [],
-  "next": "Execute N01 topological segmentation and directed Arc build."
+  "next": "Execute N02 pairwise and multi-edge turn restriction ingestion/compiler/automaton."
 }

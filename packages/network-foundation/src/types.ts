@@ -58,3 +58,47 @@ export interface NetworkCatalogRepository {
   getDatasetVersion(request: NetworkBuildRequest): Promise<NetworkDatasetVersion | null>;
   listLineFeatures(request: NetworkBuildRequest): Promise<readonly SourceLineFeature[]>;
 }
+
+export interface BuiltNetworkNode {
+  readonly nodeKey: string;
+  readonly position: NormalizedPosition;
+  readonly topologyIdentity: string;
+}
+
+export interface BuiltNetworkEdge {
+  readonly edgeKey: string;
+  readonly sourceFeatureReferenceKey: string;
+  readonly sourceFeatureVersion: string;
+  readonly sourceNodeKey: string;
+  readonly targetNodeKey: string;
+  readonly splitStartPpm: number;
+  readonly splitEndPpm: number;
+  readonly positions: readonly NormalizedPosition[];
+  readonly lengthMm: number;
+  readonly roadClass: string;
+  readonly surface?: string;
+  readonly isBridge: boolean;
+  readonly isTunnel: boolean;
+  readonly layerLevel: number;
+  readonly oneway: "BIDIRECTIONAL" | "FORWARD_ONLY" | "REVERSE_ONLY";
+}
+
+export interface BuiltNetworkArc {
+  readonly arcKey: string;
+  readonly edgeKey: string;
+  readonly sourceNodeKey: string;
+  readonly targetNodeKey: string;
+  readonly direction: "FORWARD" | "REVERSE";
+  readonly positions: readonly NormalizedPosition[];
+  readonly lengthMm: number;
+  readonly defaultSpeedMmPerS: number;
+}
+
+export interface BuiltNetworkTopology {
+  readonly nodes: readonly BuiltNetworkNode[];
+  readonly edges: readonly BuiltNetworkEdge[];
+  readonly arcs: readonly BuiltNetworkArc[];
+  readonly topologyHash: string;
+  readonly contentHash: string;
+  readonly diagnostics: readonly string[];
+}

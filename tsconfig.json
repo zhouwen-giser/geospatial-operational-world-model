@@ -22,6 +22,7 @@
     "services/**/*.ts",
     "simulator/**/*.ts",
     "scripts/**/*.ts",
+    "validation/scripts/network-topology-runtime-client.ts",
     "tests/**/*.ts",
     "vitest.config.ts"
   ],
