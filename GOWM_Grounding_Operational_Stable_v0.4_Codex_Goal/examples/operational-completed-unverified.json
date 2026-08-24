@@ -1,0 +1,36 @@
+{
+  "referenceKey": {
+    "namespace": "gowm",
+    "kind": "OPERATIONAL_TASK",
+    "id": "wrf_33333333333333333333333333333333",
+    "version": "8"
+  },
+  "operationalTaskId": "op-task-001",
+  "taskType": "UGV_NAVIGATION",
+  "controlState": "COMPLETED_REPORTED",
+  "activityState": "STOPPED_OBSERVED",
+  "outcomeVerification": "UNVERIFIED",
+  "observability": "OBSERVATION_GAP",
+  "actorReferenceKeys": [
+    {
+      "namespace": "gowm",
+      "kind": "WORLD_OBJECT",
+      "id": "wrf_11111111111111111111111111111111",
+      "version": "17"
+    }
+  ],
+  "targetReferenceKeys": [
+    {
+      "namespace": "gowm",
+      "kind": "LAYER_FEATURE",
+      "id": "wrf_22222222222222222222222222222222",
+      "version": "3"
+    }
+  ],
+  "evidenceIds": [
+    "provider-report-1",
+    "last-position-1"
+  ],
+  "worldVersion": 12001,
+  "projectionPolicyVersion": "operational-task-projection/1.0"
+}

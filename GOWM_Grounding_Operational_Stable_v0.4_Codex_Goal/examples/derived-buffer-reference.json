@@ -1,0 +1,24 @@
+{
+  "referenceKey": {
+    "namespace": "gowm",
+    "kind": "DERIVED_REFERENCE",
+    "id": "wrf_66666666666666666666666666666666",
+    "version": "1"
+  },
+  "derivedType": "GEOMETRY",
+  "operator": "BUFFER",
+  "sourceQueryId": "query-buffer-1",
+  "sourceNodeId": "buffer",
+  "inputReferenceKeys": [
+    {
+      "namespace": "gowm",
+      "kind": "WORLD_OBJECT",
+      "id": "wrf_11111111111111111111111111111111",
+      "version": "17"
+    }
+  ],
+  "dataSnapshotHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "computeSnapshotHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "methodVersion": "spatial.buffer/1.0",
+  "revalidationRequired": true
+}

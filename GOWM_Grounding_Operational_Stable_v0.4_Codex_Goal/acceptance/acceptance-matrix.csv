@@ -1,0 +1,141 @@
+id,required,area,scenario,expected,test_type
+AC-C001,yes,CurrentState,Remote source reconciliation,"Actual PR head, worktree and status reports are reconciled",source
+AC-C002,yes,CurrentState,No worktree theft,Existing uncommitted work is not stashed/reset/overwritten,git-safety
+AC-C003,yes,V02,Committed implementation,v0.2 implementation is covered by committed/pushed SHA,git
+AC-C004,yes,V02,Stale report correction,PROJECT_STATUS/P17 reflect actual Git state,docs
+AC-C005,yes,V02,Fresh migrations 001-014,Real PostgreSQL fresh install passes,real-db
+AC-C006,yes,V02,Upgrade to 014,Existing v0.1 data upgrades without loss,real-db
+AC-C007,yes,V02,Real providers,Locked CRS/Geometry/H3/Spatial execute through Gateway,real-provider
+AC-C008,yes,V02,Real DAG,Required exact cross-capability DAGs pass,real-e2e
+AC-C009,yes,V02,Scope attacks,Cross-scope access is denied without leakage,security
+AC-C010,yes,V02,Restart/idempotency,Gateway/provider/DB restart preserves results,recovery
+AC-C011,yes,V02,Stacked branch,v0.3/v0.4 branch starts at exact v0.2 candidate,git
+AC-C012,yes,V02,No automatic merge,PR #1 remains user-controlled,github
+AC-G001,yes,Reference,ReferenceKey immutable,Existing keys remain stable through upgrade,real-db
+AC-G002,yes,Reference,Entity kind extension,New identity kinds register without changing old migrations,migration
+AC-G003,yes,Reference,Canonical name,Exact canonical name resolves correctly,real-db
+AC-G004,yes,Reference,Alias,Exact alias resolves correctly,real-db
+AC-G005,yes,Reference,Code,Exact equipment/feature code resolves correctly,real-db
+AC-G006,yes,Reference,External ID,Authorized external identifier resolves,real-db
+AC-G007,yes,Reference,Pinyin,Configured pinyin alias resolves deterministically,real-db
+AC-G008,yes,Reference,Fuzzy limit,pg_trgm query is bounded and indexed,performance
+AC-G009,yes,Reference,Ambiguous road,"Same road name returns multiple candidates, not arbitrary first",real-e2e
+AC-G010,yes,Reference,Scope before rank,Unauthorized candidates never enter rank/count,security
+AC-G011,yes,Reference,No scope leakage,No result/count/timing detail reveals other scope,security
+AC-G012,yes,Reference,Score separation,matchScore and stateConfidence remain separate,contract
+AC-G013,yes,Reference,Descriptor version,Name/descriptor history is append-only/versioned,real-db
+AC-G014,yes,Reference,Retirement,Retired name/reference validates as expired/retired,real-db
+AC-G015,yes,Reference,Batch get,"Batch access is ordered, bounded and scope-safe",real-e2e
+AC-G016,yes,Reference,Provider manifest,Reference operations register with correct schema hashes,contract
+AC-G017,yes,Reference,Gateway direct,reference.resolve works through real Gateway,real-e2e
+AC-G018,yes,Reference,Gateway DAG,reference.resolve can feed world.get-current-state,real-e2e
+AC-G019,yes,Catalog,Vector dataset,Versioned vector dataset can be registered/read,real-db
+AC-G020,yes,Catalog,Current projection dataset,Current projection is exposed honestly,real-db
+AC-G021,yes,Catalog,Future kinds,Raster/Elevation/Network kinds validate without fake implementation,contract
+AC-G022,yes,Catalog,Layer version,Layer version is immutable and current head is derived,real-db
+AC-G023,yes,Catalog,Feature version,Feature geometry history is preserved,real-db
+AC-G024,yes,Catalog,SpatialObject binding,Existing spatial object binds without data duplication,real-db
+AC-G025,yes,Catalog,Dataset scope,Cross-dataset/scope access is denied,security
+AC-G026,yes,Catalog,CRS/version metadata,"Dataset/layer outputs include CRS, source and lineage",contract
+AC-G027,yes,Catalog,Feature paging,Feature lists use stable cursor,real-e2e
+AC-G028,yes,Catalog,Provider operations,dataset/layer/feature operations execute through Gateway,real-e2e
+AC-G029,yes,Derived,Result reference,Completed World Query receives stable public result reference,real-db
+AC-G030,yes,Derived,Derived geometry,Derived reference stores inputs/snapshot/method,real-db
+AC-G031,yes,Derived,Reference set,Immutable member set and count are correct,real-db
+AC-G032,yes,Derived,Large set paging,Large set does not expand without limit,real-e2e
+AC-G033,yes,Derived,TTL,Expired result cannot be used as current without validation,real-e2e
+AC-G034,yes,Derived,Revalidation,Reference/result validation reports stale/expired/version conflict,real-e2e
+AC-G035,yes,Derived,Audit retention,Expiry does not delete audit/result lineage,real-db
+AC-G036,yes,Derived,Idempotent creation,Same query/result hash does not duplicate derived identity,real-db
+AC-G037,yes,Derived,Scope,Result/reference set cannot cross scope,security
+AC-G038,yes,Derived,Replay,Frozen query input reproduces result checksum or reports data-version difference,replay
+AC-G039,yes,WorldEvidence,Current state,Returns worldVersion/freshness/confidence/provenance,real-e2e
+AC-G040,yes,WorldEvidence,Geometry,Geometry result includes CRS and version,real-e2e
+AC-G041,yes,WorldEvidence,Observation history,Immutable observations are paged/stably ordered,real-e2e
+AC-G042,yes,WorldEvidence,Event timeline,World events are distinct from current state,real-e2e
+AC-G043,yes,WorldEvidence,Late event,Late event is queryable without current-state regression,real-db
+AC-G044,yes,WorldEvidence,No data,NO_DATA is not rendered as negative fact,contract
+AC-G045,yes,WorldEvidence,Evidence authority,Evidence references resolve to authorized records,security
+AC-G046,yes,V03Gate,Grounding ready,All reference/catalog/evidence capabilities are available,real-e2e
+AC-G047,yes,V03Gate,No WSGS dependency,GOWM code imports no WSGS/SACS/SDAR/A2A package,architecture
+AC-G048,yes,V03Gate,Contract freeze,gowm-reference/catalog/evidence 1.0 compatibility checks pass,contract
+AC-O001,yes,OperationalEvent,Stable event id,Duplicate retry does not duplicate event,real-db
+AC-O002,yes,OperationalEvent,Event immutable,Update/delete is rejected,real-db
+AC-O003,yes,OperationalEvent,Event/received time,Both times preserved and validated,real-db
+AC-O004,yes,OperationalEvent,Future skew,Invalid future event is rejected or quarantined by policy,real-db
+AC-O005,yes,OperationalEvent,Late arrival,Late event retained and projection policy applied,real-db
+AC-O006,yes,OperationalEvent,Correlation claims,"Propagated correlation fields create claims, not truth",real-db
+AC-O007,yes,OperationalEvent,Scope,Events and claims are scope isolated,security
+AC-O008,yes,OperationalEvent,Outbox,Event/projector transaction has no ghost partial update,fault
+AC-O009,yes,Projection,Four dimensions,Current snapshot exposes four independent state dimensions,real-e2e
+AC-O010,yes,Projection,Provider complete unverified,COMPLETED_REPORTED does not imply VERIFIED,real-e2e
+AC-O011,yes,Projection,Physical confirmed,Explicit physical evidence can set VERIFIED,real-e2e
+AC-O012,yes,Projection,Contradicted,Contradictory evidence sets CONTRADICTED without rewriting control report,real-e2e
+AC-O013,yes,Projection,Gap,Gap changes observability without fabricating activity result,real-e2e
+AC-O014,yes,Projection,No regression,Older/no-time event cannot regress newer current snapshot,race
+AC-O015,yes,Projection,Stable tie break,Same time/priority/confidence uses event id tie break,unit
+AC-O016,yes,Projection,Replay,Rebuilt snapshot hash equals live projection,replay
+AC-O017,yes,Projection,World version,Each projection change advances worldVersion monotonically,real-db
+AC-O018,yes,Projection,Task identity,OperationalTask id differs from external planning ids,contract
+AC-O019,yes,Projection,One-to-many,One external task can correlate with several operational tasks,real-e2e
+AC-O020,yes,Projection,Many-to-one,Several external steps can correlate to one operational task,real-e2e
+AC-O021,yes,Correlation,Exact operation id,Exact operationCorrelationId resolves with highest basis,real-e2e
+AC-O022,yes,Correlation,Provider action,Provider-declared action resolves without becoming physical truth,real-e2e
+AC-O023,yes,Correlation,Resource/time candidate,Inference is marked POSSIBLY_CORRESPONDS_TO,real-e2e
+AC-O024,yes,Correlation,Conflicting exact ids,Conflicting matches return CONFLICTING_MATCHES,real-e2e
+AC-O025,yes,Correlation,No match,"No match returns NO_MATCH_FOUND, not fabricated candidate",real-e2e
+AC-O026,yes,Correlation,Confidence separation,correlationConfidence not reused as state confidence,contract
+AC-O027,yes,Correlation,Finding immutable,Correlation findings are append-only,real-db
+AC-O028,yes,Correlation,No mutation,Resolution does not alter OperationalTask or external system,architecture
+AC-O029,yes,Correlation,Method version,Finding records method/policy/world version,contract
+AC-O030,yes,Correlation,Replay,Correlation can be recomputed from frozen evidence,replay
+AC-O031,yes,Predicate,IS_INSIDE supported,Sufficient location/area evidence returns SUPPORTED,real-e2e
+AC-O032,yes,Predicate,IS_NEAR threshold,Metric distance and uncertainty are respected,real-e2e
+AC-O033,yes,Predicate,HAS_STOPPED,Motion/stop evidence supports or remains indeterminate,real-e2e
+AC-O034,yes,Predicate,EVENT_OCCURRED,Event timeline supports predicate,real-e2e
+AC-O035,yes,Predicate,STATE_EQUALS,Current state version and evidence are explicit,real-e2e
+AC-O036,yes,Predicate,NO_DATA,Missing data returns NO_DATA,real-e2e
+AC-O037,yes,Predicate,INDETERMINATE,Insufficient coverage returns INDETERMINATE,real-e2e
+AC-O038,yes,Predicate,NOT_SUPPORTED gate,Negative result requires sufficient coverage and opposite evidence,security
+AC-O039,yes,Predicate,CONFLICTING,Conflicting sources remain conflicting,real-e2e
+AC-O040,yes,Predicate,Input not fact,External predicate is not inserted into world fact tables,architecture
+AC-O041,yes,Observability,Fresh,Fresh observation and healthy source assessed correctly,real-e2e
+AC-O042,yes,Observability,Stale,Age beyond SLA produces STALE,real-e2e
+AC-O043,yes,Observability,Gap interval,Explicit gap interval is returned,real-e2e
+AC-O044,yes,Observability,Source unhealthy,Source health prevents negative conclusion,real-e2e
+AC-O045,yes,Observability,Coverage sufficient,Coverage evidence is separate from object absence,contract
+AC-O046,yes,Gateway,Operational provider manifest,All v0.4 operations have schema hashes and policies,contract
+AC-O047,yes,Gateway,Direct get,operational-task.get works through Gateway,real-e2e
+AC-O048,yes,Gateway,Correlation DAG,External hint→correlation→timeline works,real-e2e
+AC-O049,yes,Gateway,Predicate DAG,Predicate→observability→spatial/state operations works,real-e2e
+AC-O050,yes,Gateway,Node error,Node/provider identity retained in failure,contract
+AC-O051,yes,Gateway,Cancellation,Late result cannot overwrite cancelled evaluation,race
+AC-O052,yes,Gateway,Idempotency,Same predicate request replays exact result,real-db
+AC-O053,yes,Gateway,Restart,Operational job resumes safely after restart,recovery
+AC-O054,yes,Gateway,No domain algorithm,Gateway has no operational projection/predicate code,architecture
+AC-O055,yes,V04Gate,Operational ready,Operational Reality full E2E passes,real-e2e
+AC-O056,yes,V04Gate,Contract freeze,Operational/correlation/predicate contracts v1 pass compatibility,contract
+AC-S001,yes,Migration,Old migration immutable,001-014 hashes unchanged,contract
+AC-S002,yes,Migration,Fresh v0.4,Clean DB applies all migrations/assertions,real-db
+AC-S003,yes,Migration,v0.1 to v0.4,Historical baseline upgrades without loss,real-db
+AC-S004,yes,Migration,v0.2 to v0.4,Capability branch data upgrades without loss,real-db
+AC-S005,yes,Migration,Failure rollback,Failed migration leaves no partial schema,real-db
+AC-S006,yes,Replay,Reference projection rebuild,Search projection checksum stable,replay
+AC-S007,yes,Replay,Operational projection rebuild,Task snapshot checksum stable,replay
+AC-S008,yes,Security,Cross-scope names,Name search leaks no other scope data,security
+AC-S009,yes,Security,Cross-scope events,Operational query leaks no other scope data,security
+AC-S010,yes,Security,Cursor integrity,Tampered cursor is rejected,security
+AC-S011,yes,Security,Log redaction,Names/geometry/token policy is followed,security
+AC-S012,yes,Performance,Reference search,Target candidate query uses indexes and bounds,performance
+AC-S013,yes,Performance,Timeline,Scoped timeline p95 target is measured,performance
+AC-S014,yes,Performance,Projection lag,Operational projection lag is measured/bounded,performance
+AC-S015,yes,Recovery,DB restart,Reference and operational reads recover,recovery
+AC-S016,yes,Recovery,Projector restart,No duplicate/rollback after projector restart,recovery
+AC-S017,yes,Docs,Authority boundary,Docs distinguish planning/control/reality,docs
+AC-S018,yes,Docs,Non-claims,Production IdP/HA/PITR/load limits are explicit,docs
+AC-S019,yes,Version,Version 0.4.0,VERSION/package/changelog/contracts agree,release
+AC-S020,yes,Git,Exact SHA,Local/remote candidate SHA identical,git
+AC-S021,yes,PR,Ready status,Stacked PR becomes Ready only with all Required gates,github
+AC-S022,yes,Delivery,No protected actions,No merge/tag/release/deploy performed,github
+AC-S023,yes,Architecture,No upper-layer dependency,No WSGS/SACS/SDAR/A2A dependency introduced,architecture
+AC-S024,yes,Stable,Final marker,Final report emits correct completion/block marker,report

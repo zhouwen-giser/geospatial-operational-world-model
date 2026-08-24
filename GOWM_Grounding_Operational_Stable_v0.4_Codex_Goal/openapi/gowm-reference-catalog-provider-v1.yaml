@@ -1,0 +1,37 @@
+openapi: 3.1.0
+info:
+  title: GOWM Reference and Dataset Catalog Provider
+  version: 1.0.0
+paths:
+  /v1/provider-operations/reference.resolve:execute:
+    post:
+      operationId: resolveReferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../contracts/reference-resolve-request.schema.json
+      responses:
+        "200":
+          description: Resolution result
+          content:
+            application/json:
+              schema:
+                $ref: ../contracts/reference-resolve-result.schema.json
+  /v1/provider-operations/reference.validate:execute:
+    post:
+      operationId: validateReferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../contracts/reference-validate-request.schema.json
+      responses:
+        "200":
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: ../contracts/reference-validate-result.schema.json

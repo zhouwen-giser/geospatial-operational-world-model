@@ -1,0 +1,7 @@
+phase_group,acceptance_range,deliverable
+C00-C03,AC-C001..AC-C012,v0.2 reconciliation and stacked branch
+G00-G04,AC-G001..AC-G028,reference/catalog foundation
+G05-G08,AC-G029..AC-G048,"derived results, evidence, grounding ready"
+O00-O05,AC-O001..AC-O030,"events, projection, correlation"
+O06-O10,AC-O031..AC-O056,"predicate, observability, provider, ready"
+S00-S04,AC-S001..AC-S024,"migration, security, performance, stable candidate"

@@ -1,0 +1,21 @@
+{
+  "datasetKind": "VECTOR",
+  "datasetReferenceKey": {
+    "namespace": "gowm",
+    "kind": "DATASET",
+    "id": "wrf_44444444444444444444444444444444",
+    "version": "roads-2026.08"
+  },
+  "layerReferenceKey": {
+    "namespace": "gowm",
+    "kind": "LAYER",
+    "id": "wrf_55555555555555555555555555555555",
+    "version": "4"
+  },
+  "featureReferenceKey": {
+    "namespace": "gowm",
+    "kind": "LAYER_FEATURE",
+    "id": "wrf_22222222222222222222222222222222",
+    "version": "3"
+  }
+}
