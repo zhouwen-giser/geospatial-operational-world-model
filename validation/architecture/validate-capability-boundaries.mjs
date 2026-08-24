@@ -49,6 +49,12 @@ for (const criticalPath of ["services/observation-ingest", "services/projection-
   ]);
 }
 
+for (const sourceRoot of ["packages", "services", "scripts", "simulator"]) {
+  inspect(sourceRoot, [
+    ["Upper-layer WSGS/SACS/SDAR/A2A dependency", /(?:from\s+["'][^"']*(?:wsgs|sacs|sdar|a2a)[^"']*["']|require\(["'][^"']*(?:wsgs|sacs|sdar|a2a)[^"']*["']\))/i]
+  ]);
+}
+
 for (const file of sourceFiles("packages")) {
   const path = relative(repositoryRoot, file).replaceAll("\\", "/");
   const content = readFileSync(file, "utf8");

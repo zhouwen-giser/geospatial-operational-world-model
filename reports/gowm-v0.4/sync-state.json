@@ -1,56 +1,41 @@
 {
   "goal": "GOWM+ v0.3 Grounding Foundation + v0.4 Operational Reality",
   "targetVersion": "0.4.0",
-  "status": "IN_PROGRESS",
-  "phase": "C03",
+  "candidateVersion": "0.4.0-rc.1",
+  "status": "BLOCKED_EXTERNAL",
+  "phase": "S04",
   "source": {
     "v02Branch": "codex/gowm-capability-platform-v0.2",
-    "headAtPackageGeneration": "1887e56a18b77aa9692cca9d86b00413906816f4",
-    "actualLocalHead": "698fc77918a73ae7675b1df34efdc744ea202738",
-    "actualRemoteHead": "698fc77918a73ae7675b1df34efdc744ea202738",
-    "pullRequest": 1,
-    "pullRequestDraft": true
+    "candidateBaseSha": "99c56b4e095222b1a4120ff5d49f39c3cb6ea43d",
+    "pullRequest": 1
   },
   "candidate": {
     "branch": "codex/gowm-grounding-operational-v0.4-stable",
-    "localSha": "99c56b4e095222b1a4120ff5d49f39c3cb6ea43d",
-    "remoteSha": "99c56b4e095222b1a4120ff5d49f39c3cb6ea43d",
-    "baseSha": "99c56b4e095222b1a4120ff5d49f39c3cb6ea43d"
+    "contentSha": "11e022f0fa258e1d67ac985fa80ddb01f6aac102",
+    "localShaAtReconciliation": "11e022f0fa258e1d67ac985fa80ddb01f6aac102",
+    "remoteShaAtReconciliation": "11e022f0fa258e1d67ac985fa80ddb01f6aac102",
+    "pullRequest": 2,
+    "pullRequestDraft": true
   },
   "milestones": {
-    "v02Closed": false,
-    "groundingReady": false,
-    "operationalRealityReady": false,
+    "v02RunnableGatesClosed": true,
+    "v02ExactExternalGatesClosed": false,
+    "groundingReady": true,
+    "operationalRealityReady": true,
     "stableCandidate": false
   },
   "acceptance": {
-    "passed": [
-      "AC-C001",
-      "AC-C002",
-      "AC-C003",
-      "AC-C004",
-      "AC-C005",
-      "AC-C006",
-      "AC-C009",
-      "AC-C010",
-      "AC-C011",
-      "AC-C012"
-    ],
+    "required": 140,
+    "passed": 136,
+    "blocked": ["AC-C007", "AC-C008", "AC-S019", "AC-S021"],
     "failed": [],
-    "blocked": [
-      "AC-C007",
-      "AC-C008"
-    ],
-    "notRun": [
-      "AC-G001..AC-S024"
-    ]
+    "notRun": []
   },
   "blockers": [
-    {
-      "code": "V02_LOCKED_PROVIDER_INPUTS_ABSENT",
-      "acceptance": ["AC-C007", "AC-C008"],
-      "detail": "Exact locked prior CRS, Geometry, Spatial archives and H3 Toolkit source revision are unavailable; no substitute was used."
-    }
+    "CRS ZIP sha256:3110e7b344d138908d27e759ede70701b8a20dd7bbbd9795b3a57d02b8d70995 absent",
+    "Geometry ZIP sha256:3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d absent",
+    "Spatial ZIP sha256:15cdaf00f3c5ee911eac1351c2d9a59ff06a5de93a176ce81b644b19ee5de322 absent",
+    "H3 Toolkit commit 74fc8657072dd58a2f8e4317c1caef8bfd10e024 absent"
   ],
-  "next": "G00: freeze the v0.3 Reference, Catalog, Derived Result, and Provider contracts/ADRs while retaining the external C02 blocker."
+  "next": "Supply and verify the immutable external inputs, execute AC-C007/AC-C008, rerun S04, promote to 0.4.0, and only then mark PR #2 Ready."
 }

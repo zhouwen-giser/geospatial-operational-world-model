@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0",
+  "targetVersion": "0.4.0",
+  "candidateVersion": "0.4.0-rc.1",
+  "decision": "BLOCKED_EXTERNAL",
+  "requiredCases": 140,
+  "passedCases": 136,
+  "blockedCases": 4,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "passedRanges": [
+    "AC-C001..AC-C006",
+    "AC-C009..AC-C012",
+    "AC-G001..AC-G048",
+    "AC-O001..AC-O056",
+    "AC-S001..AC-S018",
+    "AC-S020",
+    "AC-S022..AC-S024"
+  ],
+  "blocked": [
+    {
+      "id": "AC-C007",
+      "status": "BLOCKED_EXTERNAL",
+      "reason": "Exact locked CRS, Geometry, Spatial POC and H3 Toolkit inputs are absent."
+    },
+    {
+      "id": "AC-C008",
+      "status": "BLOCKED_EXTERNAL",
+      "reason": "Exact cross-capability DAGs depend on the absent locked inputs."
+    },
+    {
+      "id": "AC-S019",
+      "status": "BLOCKED_EXTERNAL",
+      "reason": "Stable 0.4.0 promotion is forbidden while Required C02 gates are blocked; candidate remains 0.4.0-rc.1."
+    },
+    {
+      "id": "AC-S021",
+      "status": "BLOCKED_EXTERNAL",
+      "reason": "Draft PR #2 cannot become Ready for Review while Required gates are blocked."
+    }
+  ],
+  "failed": [],
+  "notRun": [],
+  "markers": {
+    "grounding": "GROUNDING_READY",
+    "operationalReality": "OPERATIONAL_REALITY_READY",
+    "final": "GOWM_V0_4_STABLE_CANDIDATE_BLOCKED"
+  }
+}

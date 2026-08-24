@@ -32,6 +32,7 @@
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",
     "validate:stable-runtime": "node validation/scripts/stable-security-load-recovery.mjs",
     "validate:stable-version": "node validation/scripts/stable-version-guard.mjs",
+    "validate:stable-final": "node validation/scripts/stable-final-candidate.mjs",
     "validate:boundaries": "node validation/architecture/validate-capability-boundaries.mjs",
     "dev:api": "tsx services/world-api/src/index.ts",
     "dev:ingest": "tsx services/observation-ingest/src/index.ts",
