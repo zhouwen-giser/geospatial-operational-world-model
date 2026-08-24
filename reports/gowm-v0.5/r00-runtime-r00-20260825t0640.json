@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "R00",
+  "runId": "r00-20260825t0640",
+  "sourceDatabase": "gowm_v05_p01_20260825t0610",
+  "database": "gowm_v05_r00_20260825t0640",
+  "status": "PASS",
+  "commands": [
+    { "command": "createdb --template gowm_v05_p01_20260825t0610 gowm_v05_r00_20260825t0640", "status": "PASS" },
+    { "command": "psql <045_route_runtime.sql>", "status": "PASS" },
+    { "command": "psql <030_route_runtime_assertions.sql>", "status": "PASS" }
+  ],
+  "summary": {
+    "idempotentReplay": true,
+    "expiredLeaseReclaimed": true,
+    "generationAdvanced": true,
+    "lateCompletionRejectedAfterCancel": true,
+    "directProviderMutationDenied": true
+  },
+  "errors": []
+}
