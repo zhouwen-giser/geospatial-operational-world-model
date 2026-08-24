@@ -2,18 +2,15 @@
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
 Capability Service Plane and a controlled World Capability Gateway. The
-Version `0.4.0` adds stable Grounding and Operational Reality contracts,
-four controlled Grounding Providers, immutable operational evidence and
-projections, typed World Query DAGs, and replay/recovery gates without moving
-domain algorithms into the Gateway.
+Version `0.5.0` adds an authoritative immutable Network Graph foundation,
+read-only Network and basic Route Planning Providers, independent route
+verification, immutable QUERY_RESULT publication, and Gateway/DAG integration
+without moving topology or routing algorithms into the Gateway.
 
-> **Stable-candidate status (2026-08-24): COMPLETE.** All runnable v0.3/v0.4
-> gates pass, including real PostgreSQL, Provider/Gateway HTTP, scope,
-> migration, replay, cancellation, and restart checks. The release owner
-> explicitly removed exact CRS, Geometry, Spatial ZIP and H3 Toolkit revision
-> execution from the Required gate policy. AC-C007/AC-C008 and downstream
-> AC-S019/AC-S021 therefore pass by policy override, without claiming those
-> external artifacts were executed.
+> **v0.5 candidate status (2026-08-25): NETWORK_READY / ROUTING_READY.** The
+> required Network, Route, verifier, Gateway, migration, security, performance,
+> replay, cancellation, and restart gates pass on real PostgreSQL/PostGIS with
+> pgRouting 4.0.1. Final publication actions remain separately controlled.
 
 See [PROJECT_STATUS.md](PROJECT_STATUS.md) for the exact delivery boundary and
 [the v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md) for the
@@ -23,7 +20,7 @@ trust and ownership model.
 
 | Plane | Responsibility | Prohibited responsibility |
 |---|---|---|
-| Data Foundation | Canonical observations, time, measurements, current projection, immutable TrackletVersions, `gowm_spatial_v1`, and local processing receipts | Synchronous dependency on the Gateway or remote Providers |
+| Data Foundation | Canonical observations, time, measurements, current projection, immutable TrackletVersions, Network GraphVersions, `gowm_spatial_v1`, `gowm_network_v1`, and local processing receipts | Synchronous dependency on the Gateway or remote Providers |
 | Capability Service Plane | Versioned CRS, Geometry, H3, Situation, Spatial, and application Provider operations | Provider-to-Provider calls or canonical Foundation writes |
 | World Capability Gateway | Trusted identity/scope, controlled registry, schema/version policy, budgets, routing, idempotency, typed DAGs, jobs, receipts, and audit | PROJ, GEOS, H3, PostGIS, MobilityDB, STAS algorithms, arbitrary SQL/URLs, or dynamic tool discovery |
 
@@ -74,6 +71,13 @@ Operational Reality operations for tasks, timelines, correlation, predicates,
 and observability. Their canonical v1 schemas are byte-locked under
 `contracts/gowm-v0.4`.
 
+The v0.5 Network catalog adds 11 stable read operations for graph lookup,
+diagnostics, directed snapping, shortest path, bounded cost matrix, path
+verification/expansion, connectivity, and reachability. The Route Planning
+Provider adds stable validation/planning/verification plus PREVIEW alternatives.
+Routes pin dataset, graph, profile, cost, and condition identity; candidate
+metrics use fixed-point integers and are replayed by an independent verifier.
+
 ## Contracts and execution
 
 JSON Schemas under `contracts/platform` and `contracts/capabilities` are the
@@ -102,11 +106,11 @@ Only data-bound operations may return a Data Snapshot and Evidence References.
 
 ## Database and ownership
 
-The PostgreSQL 18 baseline includes PostGIS 3.6, MobilityDB 1.3, and h3-pg /
-h3_postgis 4.5. Migrations `001`-`014` remain byte-locked; append-only
-migrations through `032` add Grounding identity/catalog/result/evidence and
-Operational Reality event/projection/correlation/predicate/observability
-contracts.
+The PostgreSQL 18 baseline includes PostGIS 3.6, MobilityDB 1.3, h3-pg /
+h3_postgis 4.5, and pgRouting 4.0.1. Migrations `001`-`032` remain the locked
+v0.4 baseline; append-only migrations through `047` add Network authority,
+scoped reads, profiles/conditions, route runtime/result publication, and the
+least-privilege exact Avoid Area read function.
 
 The Spatial Provider uses its own read-only connection and may read only
 `gowm_spatial_v1`. SQL-level scope filtering returns opaque `ReferenceKey`
@@ -128,6 +132,8 @@ npm run check
 npm run verify:sql
 npm test
 npm run validate:boundaries
+npm run validate:gowm-v05-migrations
+npm run validate:gowm-v05-performance
 node validation/scripts/stable-contract-compatibility.mjs
 node validation/architecture/validate-release-boundaries.mjs
 ```
@@ -160,22 +166,28 @@ URL and exact disposable database container name; see the operations runbook.
   made for them.
 - Operating-area CRS/grid certification, production mixed-load qualification,
   HA, and backup/PITR rehearsal remain explicit production non-claims.
+- Basic Route results are plans over pinned inputs. They are not device
+  dispatch, execution authorization, physical completion, observed reality,
+  regional road coverage, or multi-vehicle optimization.
+- The recorded Snap/Shortest/Matrix timings use the S/M acceptance fixture;
+  they are regression budgets, not production SLO or capacity claims.
 - The legacy H3 Situation projection is safe only for its configured single
   scope; arbitrary multi-scope serving remains blocked until the underlying
   projection is scope-aware.
-- The stable-candidate matrix is complete and PR #2 may be made Ready for
-  Review against `main`.
+- PR #3 remains Draft until final exact-SHA reconciliation; merge, tag, release,
+  image publication, and deployment remain user-controlled actions.
 
 ## Documentation and evidence
 
 - [v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md)
 - [Capability contract ADR](docs/adr/002-capability-platform-contract-boundaries.md)
+- [Network and routing authority ADR](docs/adr/005-network-routing-authority.md)
 - [Project status](PROJECT_STATUS.md)
 - [Traceability](validation/TRACEABILITY.md)
 - [Phase evidence](reports/capability-platform-v0.2/)
 - [v0.3/v0.4 phase evidence](reports/gowm-v0.4/)
 - [v0.1 unified architecture](docs/17_UNIFIED_PLATFORM_V0.1.0.md)
-- [Operations runbook](docs/18_OPERATIONS_RUNBOOK.md)
+- [v0.5 operations runbook](docs/18_OPERATIONS_RUNBOOK.md)
 
 The v0.1/v0.2 baselines and their evidence remain preserved. Stable-candidate
 completion authorizes initiating review/merge to `main`; tag, release, and

@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.5.0 - 2026-08-25
+
+- Added the authoritative immutable Network Dataset→GraphVersion foundation,
+  deterministic topology builder, directed Arcs, pairwise and multi-edge turn
+  restrictions, travel/cost profiles, versioned Condition Snapshots, validation,
+  diagnostics, replay, and atomic activation.
+- Added the scoped, read-only `gowm_network_v1` contract, the 11-operation
+  `gowm.network` Provider, and the four-operation `gowm.route-planning`
+  Provider with coordinate/reference endpoints, ordered Waypoints, Via/Avoid
+  constraints, exact PostGIS Avoid Area evaluation, five fixed-point objectives,
+  immutable QUERY_RESULT publication, TTL, cancellation, and exact replay.
+- Added an independent route verifier that replays arc identity, continuity,
+  direction, fractions, turn legality, metrics, pinned freshness, and mutation
+  detection without importing solver legality or cost helpers.
+- Added PostgreSQL 18.6/PostGIS 3.6.4/MobilityDB 1.3.0/H3 4.5.0/pgRouting 4.0.1
+  runtime evidence, migrations through 047, 32 SQL assertions, fresh and
+  v0.4→v0.5 migration gates, restart recovery, measured S/M fixture gates,
+  log redaction, and DB/service SBOMs.
+- Declared `NETWORK_READY` and `ROUTING_READY`. A Route Plan remains a pinned
+  computational result, not dispatch, observed reality, coverage proof, or a
+  production-sized performance/availability claim.
+
 ## 0.4.0 - 2026-08-24
 
 - Added frozen v0.3 Reference, Dataset/Layer/Feature, derived-result, and World

@@ -58,7 +58,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] R03 Results/Alternatives Preview
 - [x] G00 Gateway Integration
 - [x] T00 Security/Performance/Recovery
-- [ ] S00 Documentation/Version
+- [x] S00 Documentation/Version
 - [ ] S01 Final Candidate
 
 ## Decisions
@@ -112,7 +112,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - R03 migration 046 atomically publishes Route Request, Candidate, Segment, Verification, QUERY_RESULT identity, TTL and terminal state under the lease generation fence. Real run `r03-20260825t1040` persisted three exact results and replayed the coordinate request byte-equivalently.
 - G00 real run `g00-20260825t1200` registered Network/Route providers in the controlled Gateway, completed Direct Snap and Route, executed a typed World-state→Route→Verify DAG, failed closed on a wrong schema lock, cancelled an async job, and replayed the completed job after reconstructing the Gateway runtime over the same store.
 - T00 fresh/upgrade migration acceptance passed with migrations 001–047 and 32 SQL assertions. Route run `r01-final-20260825t1700` proved all remaining required Route cases, including exact PostGIS Avoid Area through a least-privilege scoped read function. S/M fixture p95 was 11.437 ms Snap, 11.000 ms Shortest Path, and 11.002 ms for a bounded 2×2 Matrix. PostgreSQL restart recovery preserved exactly one request/result/candidate, redaction tests covered tokens/locations/routes, and both DB SPDX and service CycloneDX SBOMs were generated.
+- S00 converges README, authority ADR, operations/recovery runbook, CHANGELOG, PROJECT_STATUS, VERSION and npm lock metadata on 0.5.0. The documentation explicitly separates pinned route computation from Operational Reality, dispatch, coverage, multi-vehicle optimization, and production SLO/HA/PITR claims.
 
 ## Remaining work
 
-Execute S00 then S01. Network, Route, Gateway, migration, security, performance, and recovery gates pass; documentation/version convergence and the exact-SHA final candidate gate remain.
+Execute S01 exact-SHA and Required-matrix reconciliation. All implementation, runtime, and documentation/version gates pass.

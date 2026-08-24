@@ -2,7 +2,7 @@
   "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
   "targetVersion": "0.5.0",
   "status": "IN_PROGRESS",
-  "phase": "T00",
+  "phase": "S00",
   "baseline": {
     "branch": "main",
     "version": "0.4.0",
@@ -22,11 +22,11 @@
     "stableCandidate": false
   },
   "acceptance": {
-    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N040", "AC-P001..AC-P020", "AC-R001..AC-R026", "AC-R028", "AC-G001..AC-G012", "AC-S001..AC-S014"],
+    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N040", "AC-P001..AC-P020", "AC-R001..AC-R026", "AC-R028", "AC-G001..AC-G012", "AC-S001..AC-S017"],
     "failed": [],
     "blocked": [],
-    "notRun": ["AC-R027_OPTIONAL", "AC-S015..AC-S022"]
+    "notRun": ["AC-R027_OPTIONAL", "AC-S018..AC-S022"]
   },
   "blockers": [],
-  "next": "Execute S00 documentation and version convergence."
+  "next": "Execute S01 exact-SHA and Required-matrix final candidate reconciliation."
 }

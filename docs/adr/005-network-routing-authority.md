@@ -36,3 +36,5 @@ GOWM+ already owns versioned datasets, layers, features, opaque ReferenceKeys, c
 ## Consequences
 
 There is one auditable graph lineage from a pinned NETWORK DatasetVersion. Active-pointer changes never alter a pinned historical route. A condition change can make an older result `STALE` but cannot rewrite it. Provider failure cannot mutate graph truth, and Gateway failure cannot change routing semantics. Coverage routing, multi-vehicle optimization, OR-Tools, device dispatch, WSGS, SACS, SDAR, SMPP, and A2A remain outside v0.5.
+
+Exact Avoid Area evaluation is exposed only as the scoped `gowm_network_v1.arcs_intersecting_areas` security-definer read function. Route roles do not receive general Public/PostGIS execution or Network base-table privileges. Coordinate snapping uses the request's bounded `snapToleranceM` and otherwise defaults to 100 metres so distant candidates cannot create zero-length route shortcuts.

@@ -1,0 +1,18 @@
+{
+  "phase": "S00",
+  "status": "PASS",
+  "targetVersion": "0.5.0",
+  "acceptance": {
+    "AC-S015": "PASS_PLAN_REALITY_DISPATCH_AUTHORITY_EXPLICIT",
+    "AC-S016": "PASS_COVERAGE_MULTIVEHICLE_PRODUCTION_SLO_NONCLAIMS",
+    "AC-S017": "PASS_VERSION_PACKAGE_LOCK_CHANGELOG_CONTRACTS_AGREE"
+  },
+  "documents": [
+    "README.md",
+    "docs/adr/005-network-routing-authority.md",
+    "docs/18_OPERATIONS_RUNBOOK.md",
+    "CHANGELOG.md",
+    "PROJECT_STATUS.md"
+  ],
+  "versionFiles": ["VERSION", "package.json", "package-lock.json"]
+}
