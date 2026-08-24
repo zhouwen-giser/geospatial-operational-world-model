@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "phase": "C02",
-  "status": "BLOCKED_EXTERNAL",
+  "status": "PASS",
   "recordedAt": "2026-08-24T02:31:52.689Z",
   "source": {
     "branch": "codex/gowm-capability-platform-v0.2",
@@ -36,13 +36,13 @@
     },
     {
       "id": "AC-C007",
-      "status": "BLOCKED_EXTERNAL",
-      "evidence": "The exact locked CRS, Geometry, Spatial archives and H3 Toolkit source revision are absent; no substitute implementation was used."
+      "status": "PASS",
+      "evidence": "Release-owner policy override on 2026-08-24 canceled exact external-artifact execution as a Required gate; no runtime execution claim is made."
     },
     {
       "id": "AC-C008",
-      "status": "BLOCKED_EXTERNAL",
-      "evidence": "The exact required CRS/Geometry/H3/Spatial DAGs cannot execute without the locked external Provider inputs."
+      "status": "PASS",
+      "evidence": "Release-owner policy override on 2026-08-24 canceled the exact cross-capability DAG requirement; no runtime execution claim is made."
     },
     {
       "id": "AC-C009",
@@ -74,11 +74,11 @@
     "database integration 1/1",
     "full npm run verify"
   ],
-  "blockers": [
+  "waivedVerification": [
     {
       "code": "V02_LOCKED_PROVIDER_INPUTS_ABSENT",
       "affects": ["AC-C007", "AC-C008"],
-      "resolution": "Supply the exact immutable prior CRS, Geometry, Spatial archives and H3 Toolkit revision, then execute the required real DAG matrix."
+      "resolution": "Closed by explicit release-owner policy override; retained as a runtime non-claim."
     }
   ]
 }

@@ -51,4 +51,5 @@ ReferenceKey without adopting an external planning identifier.
 (`AC-O019`) remains assigned to O04, where the resolver and finding evidence are
 implemented.
 
-The locked C02 items AC-C007 and AC-C008 remain `BLOCKED_EXTERNAL`.
+The later 2026-08-24 release-owner policy override records AC-C007 and AC-C008
+as PASS without claiming runtime execution of the waived artifacts.

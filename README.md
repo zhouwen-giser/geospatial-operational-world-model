@@ -2,18 +2,18 @@
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
 Capability Service Plane and a controlled World Capability Gateway. The
-`0.4.0-rc.1` candidate adds stable Grounding and Operational Reality contracts,
+Version `0.4.0` adds stable Grounding and Operational Reality contracts,
 four controlled Grounding Providers, immutable operational evidence and
 projections, typed World Query DAGs, and replay/recovery gates without moving
 domain algorithms into the Gateway.
 
-> **Candidate status (2026-08-24): BLOCKED_EXTERNAL.** All runnable v0.3/v0.4
+> **Stable-candidate status (2026-08-24): COMPLETE.** All runnable v0.3/v0.4
 > gates pass, including real PostgreSQL, Provider/Gateway HTTP, scope,
-> migration, replay, cancellation, and restart checks. Final `0.4.0` promotion
-> and Ready-for-Review remain blocked only by the absent immutable CRS,
-> Geometry, Spatial POC archives and H3 Toolkit revision required by
-> AC-C007/AC-C008. Draft PR #2 has not been merged, tagged, released, or
-> deployed.
+> migration, replay, cancellation, and restart checks. The release owner
+> explicitly removed exact CRS, Geometry, Spatial ZIP and H3 Toolkit revision
+> execution from the Required gate policy. AC-C007/AC-C008 and downstream
+> AC-S019/AC-S021 therefore pass by policy override, without claiming those
+> external artifacts were executed.
 
 See [PROJECT_STATUS.md](PROJECT_STATUS.md) for the exact delivery boundary and
 [the v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md) for the
@@ -149,20 +149,22 @@ URL and exact disposable database container name; see the operations runbook.
 - `.intake` and the uploaded Provider ZIPs are excluded from tracked and release
   artifacts.
 
-## Known blockers and non-claims
+## Known qualifications and non-claims
 
 - The current Gateway bearer-token integration is a controlled deployment
   mechanism, not a production IdP or authorization system.
-- Exact real-runtime execution of the locked CRS, Geometry, Spatial POC and H3
-  Toolkit inputs remains `BLOCKED_EXTERNAL`; their required hashes/revision are
-  listed in `reports/gowm-v0.4/c02-v02-real-runtime-closure.md`.
+- Exact real-runtime execution of the formerly locked CRS, Geometry, Spatial
+  POC and H3 Toolkit inputs was waived as a Required release gate. Their
+  historical hashes/revision remain listed in
+  `reports/gowm-v0.4/c02-v02-real-runtime-closure.md`; no execution claim is
+  made for them.
 - Operating-area CRS/grid certification, production mixed-load qualification,
   HA, and backup/PITR rehearsal remain explicit production non-claims.
 - The legacy H3 Situation projection is safe only for its configured single
   scope; arbitrary multi-scope serving remains blocked until the underlying
   projection is scope-aware.
-- Final stable-version promotion and Ready-for-Review are prohibited while the
-  two Required external gates remain blocked. Draft PR #2 must remain Draft.
+- The stable-candidate matrix is complete and PR #2 may be made Ready for
+  Review against `main`.
 
 ## Documentation and evidence
 
@@ -175,5 +177,6 @@ URL and exact disposable database container name; see the operations runbook.
 - [v0.1 unified architecture](docs/17_UNIFIED_PLATFORM_V0.1.0.md)
 - [Operations runbook](docs/18_OPERATIONS_RUNBOOK.md)
 
-The v0.1/v0.2 baselines and their evidence remain preserved. No merge, tag,
-release, or production deployment is authorized by this candidate.
+The v0.1/v0.2 baselines and their evidence remain preserved. Stable-candidate
+completion authorizes initiating review/merge to `main`; tag, release, and
+production deployment remain separate actions.

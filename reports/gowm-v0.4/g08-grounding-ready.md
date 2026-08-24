@@ -44,6 +44,6 @@ operation-specific code or untyped JSON extraction.
 
 AC-G018 and AC-G046–G048 pass at the real Gateway/Provider/database boundary.
 Together with G00–G07, the v0.3 Grounding Foundation is ready for the v0.4
-Operational Reality phases. This status does not waive the unrelated C02
-locked-Provider blocker (AC-C007/AC-C008), and does not authorize merge, tag,
-release, or deployment.
+Operational Reality phases. At phase execution this did not waive the then-open
+C02 locked-Provider gates. The later 2026-08-24 release-owner policy override
+records AC-C007/AC-C008 as PASS without claiming runtime execution.

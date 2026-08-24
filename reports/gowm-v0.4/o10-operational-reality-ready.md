@@ -34,5 +34,6 @@ The phase also passes `CAPABILITY_BOUNDARIES_PASS` and the full repository
 verification suite: 117 Vitest assertions (one declared environment skip), all
 39 STAS assertions, SQL AST checks, type checks, and production builds.
 
-The locked C02 prerequisites AC-C007 and AC-C008 remain `BLOCKED_EXTERNAL` and
-are not represented as passing.
+The later 2026-08-24 release-owner policy override records the formerly open
+C02 prerequisites AC-C007 and AC-C008 as PASS without claiming runtime
+execution of the waived artifacts.

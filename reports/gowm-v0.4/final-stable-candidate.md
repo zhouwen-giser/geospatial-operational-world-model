@@ -2,29 +2,34 @@
 
 ## Decision
 
-`BLOCKED_EXTERNAL`
+`PASS — STABLE CANDIDATE COMPLETE`
 
-All runnable Grounding, Operational Reality, compatibility, migration, scope,
-load, and recovery gates pass. Final stable promotion is blocked by two
-Required v0.2 closure cases whose exact immutable third-party inputs were not
-supplied. The software therefore remains `0.4.0-rc.1` and Draft PR #2 remains
-Draft.
+All Grounding, Operational Reality, compatibility, migration, scope, load, and
+recovery gates pass. On 2026-08-24 the release owner explicitly removed exact
+CRS, Geometry, Spatial ZIP and H3 Toolkit revision execution from the Required
+gate policy. AC-C007/AC-C008 and downstream AC-S019/AC-S021 therefore pass by
+policy override. The software version is `0.4.0`, and PR #2 is authorized to
+target `main` and become Ready for Review.
+
+The policy override closes a release gate; it does not create runtime evidence.
+No claim is made that the waived external artifacts or their exact DAG matrix
+were executed.
 
 ## Candidate
 
 - branch: `codex/gowm-grounding-operational-v0.4-stable`;
-- stacked base: `codex/gowm-capability-platform-v0.2@99c56b4`;
-- reconciled content SHA: `11e022f0fa258e1d67ac985fa80ddb01f6aac102`;
-- local and remote content SHA matched exactly at S04 reconciliation;
-- PR: `#2`, Draft, merge state clean.
+- integrated v0.2 base: `codex/gowm-capability-platform-v0.2@99c56b4`;
+- policy-reconciliation SHA: `14cb7606505d58913d078934d9d3d15ffd65d209`;
+- PR: `#2`, authorized for Ready-for-Review against `main`.
 
 ## v0.2 closure
 
 Fresh/upgrade migrations, real PostgreSQL, H3 JS/PG parity, live Gateway,
-Spatial/Situation providers, scope attacks, durable idempotency, and restart
-recovery pass. AC-C007/AC-C008 remain `BLOCKED_EXTERNAL` because the locked CRS,
-Geometry, Spatial POC archives and H3 Toolkit revision are absent. No substitute
-was treated as exact evidence.
+Spatial/Situation Providers, scope attacks, durable idempotency, and restart
+recovery pass. AC-C007/AC-C008 pass under the explicit release-owner policy
+override. The historical CRS, Geometry, Spatial POC archive hashes and H3
+Toolkit revision remain recorded for traceability, but no substitute was
+treated as exact runtime evidence.
 
 ## v0.3 Grounding Foundation
 
@@ -66,14 +71,15 @@ pass.
 
 Verified with PostgreSQL 18.6, PostGIS 3.6.4, MobilityDB 1.3.0, and
 h3/h3_postgis 4.5.0. Provider and Gateway checks use real loopback HTTP rather
-than in-process substitution. The final repository suite passes 117 Vitest
+than in-process substitution. The accepted repository suite passes 117 Vitest
 assertions with one declared environment skip, all 39 STAS assertions, SQL AST
 checks, type checks, and production builds.
 
 ## Performance and recovery
 
-The accepted S02 run measured timeline p95 at `18.967 ms` over 60 reads,
-initial projection at `22.540 ms`, and restarted-projector lag at `14.892 ms`.
+The final accepted S02 run (`s02-mt6vwa63`) measured timeline p95 at
+`23.395 ms` over 60 reads, initial projection at `22.914 ms`, and
+restarted-projector lag at `10.706 ms`.
 The scoped Reference plan used
 `reference_search_projection_scope_exact_idx`. Concurrent retry produced one
 accepted event and seven duplicates. A real PostgreSQL container restart was
@@ -85,35 +91,28 @@ SLO qualification.
 ## Required matrix
 
 - total Required: 140;
-- passed: 136;
-- blocked external: AC-C007, AC-C008, AC-S019, AC-S021;
+- passed: 140;
+- blocked: none;
 - failed: none;
 - undeclared not-run: none.
 
-AC-S019 and AC-S021 are downstream safety blocks: final `0.4.0` and Ready PR
-status are forbidden while AC-C007/AC-C008 remain blocked. AC-S024 passes by
-emitting the correct blocked marker.
+AC-C007, AC-C008, AC-S019, and AC-S021 are recorded as `PASS` by explicit
+release-owner policy override. All other cases pass on their recorded evidence.
 
 ## Known deployment qualifications
 
 Production IdP/authorization, operating-area CRS/grid certification, HA,
-backup/PITR rehearsal, and production-sized mixed-load/SLO qualification are
-explicit non-claims.
+backup/PITR rehearsal, production-sized mixed-load/SLO qualification, and exact
+execution of the waived external artifacts are explicit non-claims.
 
-## Explicitly not performed
+## Delivery boundary
 
-- merge;
-- tag or release;
-- production deployment;
-- WSGS, SACS, SDAR, SMPP, or A2A changes.
-
-## Unblock procedure
-
-Supply the exact locked CRS/Geometry/Spatial archives and H3 Toolkit commit,
-verify their hashes/revision, execute AC-C007/AC-C008, then rerun the complete
-matrix. Only a zero-blocked result may promote `VERSION` and the root package to
-`0.4.0` and mark PR #2 Ready for Review.
+- initiating review/merge of PR #2 into `main`: authorized;
+- merge completion: review-controlled;
+- tag or release: not performed;
+- production deployment: not performed;
+- WSGS, SACS, SDAR, SMPP, or A2A changes: not performed.
 
 ## Final marker
 
-`GOWM_V0_4_STABLE_CANDIDATE_BLOCKED`
+`GOWM_V0_4_STABLE_CANDIDATE_COMPLETE`

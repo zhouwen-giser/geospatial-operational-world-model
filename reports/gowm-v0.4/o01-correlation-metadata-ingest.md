@@ -45,5 +45,6 @@ value is promoted to a GOWM reference identity or other internal truth.
 - `AC-O007` (event/claim portion): `PASS` — stored fields and claims are
   explicitly scoped and tested against cross-scope leakage.
 
-The two locked C02 external-evidence items remain `BLOCKED_EXTERNAL`; O01 does
-not alter their status.
+O01 did not alter the then-open C02 external-evidence items. The later
+2026-08-24 release-owner policy override records AC-C007/AC-C008 as PASS
+without claiming runtime execution.

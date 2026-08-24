@@ -2,14 +2,15 @@
 
 ## Decision
 
-`PARTIAL — BLOCKED_EXTERNAL`
+`PASS`
 
-README, changelog, project status, engineering manifest, and operations runbook
-are updated for the v0.4 Grounding and Operational Reality candidate. The root
-package and `VERSION` agree on `0.4.0-rc.1`.
+README, changelog, project status, engineering manifest, and operations evidence
+describe the v0.4 Grounding and Operational Reality stable candidate. The root
+package, lock file, changelog, and `VERSION` agree on `0.4.0`.
 
-Final `0.4.0` is intentionally not written. The master prompt permits stable
-promotion only after every Required gate passes; AC-C007 and AC-C008 remain
-`BLOCKED_EXTERNAL` because their immutable inputs were not supplied. The
-candidate documentation records that boundary and the production IdP, HA,
-PITR, certification, and load-limit non-claims.
+The release owner explicitly removed exact CRS, Geometry, Spatial ZIP and H3
+Toolkit revision execution from the Required gate policy on 2026-08-24.
+AC-C007/AC-C008 therefore pass by policy override, without asserting runtime
+execution of those artifacts; downstream stable-version case AC-S019 passes.
+Production IdP, HA, PITR, certification, and load-limit qualifications remain
+non-claims.

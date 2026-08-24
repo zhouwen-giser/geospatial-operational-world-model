@@ -48,4 +48,5 @@ snapshot is directly written by the ingest path.
 - `AC-O008`: event/outbox atomicity is `PASS`; projector atomic replacement is
   intentionally completed and re-verified in O03.
 
-The locked C02 items AC-C007 and AC-C008 remain `BLOCKED_EXTERNAL`.
+The later 2026-08-24 release-owner policy override records AC-C007 and AC-C008
+as PASS without claiming runtime execution of the waived artifacts.

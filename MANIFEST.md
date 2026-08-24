@@ -1,4 +1,4 @@
-# GOWM+ v0.4.0-rc.1 engineering manifest
+# GOWM+ v0.4.0 engineering manifest
 
 Prepared: 2026-08-24
 

@@ -39,4 +39,5 @@ conflicting evidence remain distinct outcomes.
   all 39 STAS tests passed; TypeScript, SQL AST, and production builds passed.
 
 O07 adds first-class source health, watermark, coverage, and gap assessments.
-The locked C02 items AC-C007 and AC-C008 remain `BLOCKED_EXTERNAL`.
+The later 2026-08-24 release-owner policy override records AC-C007 and AC-C008
+as PASS without claiming runtime execution of the waived artifacts.

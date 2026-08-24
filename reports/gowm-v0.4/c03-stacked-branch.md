@@ -13,11 +13,12 @@ The stacked Pull Request base is
 `codex/gowm-capability-platform-v0.2`. It remains Draft and user-controlled.
 No merge, tag, release, or deployment was performed.
 
-## Retained blocker
+## Historical gate state
 
-AC-C007 and AC-C008 remain `BLOCKED_EXTERNAL` because the immutable prior CRS,
-Geometry, Spatial POC archives and H3 Toolkit revision are unavailable. Branch
-creation does not clear or downgrade that blocker.
+At C03 execution AC-C007 and AC-C008 were blocked because the immutable prior
+CRS, Geometry, Spatial POC archives and H3 Toolkit revision were unavailable.
+The later 2026-08-24 release-owner policy override records both as PASS without
+claiming runtime execution.
 
 ## Acceptance
 

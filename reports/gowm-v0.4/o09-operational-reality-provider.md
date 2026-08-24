@@ -36,6 +36,7 @@ repositories and SQL contracts.
   all 39 STAS assertions, SQL AST validation, type checking, and production
   builds.
 
-O10 adds the full multi-node DAG, durable cancellation/restart, and
-Operational Reality ready gate. The locked C02 items AC-C007 and AC-C008 remain
-`BLOCKED_EXTERNAL`.
+O10 adds the full multi-node DAG, durable cancellation/restart, and Operational
+Reality ready gate. The later 2026-08-24 release-owner policy override records
+AC-C007 and AC-C008 as PASS without claiming runtime execution of the waived
+artifacts.

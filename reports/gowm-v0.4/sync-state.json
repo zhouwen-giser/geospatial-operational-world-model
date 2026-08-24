@@ -1,8 +1,8 @@
 {
   "goal": "GOWM+ v0.3 Grounding Foundation + v0.4 Operational Reality",
   "targetVersion": "0.4.0",
-  "candidateVersion": "0.4.0-rc.1",
-  "status": "BLOCKED_EXTERNAL",
+  "candidateVersion": "0.4.0",
+  "status": "COMPLETE",
   "phase": "S04",
   "source": {
     "v02Branch": "codex/gowm-capability-platform-v0.2",
@@ -11,31 +11,35 @@
   },
   "candidate": {
     "branch": "codex/gowm-grounding-operational-v0.4-stable",
-    "contentSha": "11e022f0fa258e1d67ac985fa80ddb01f6aac102",
-    "localShaAtReconciliation": "11e022f0fa258e1d67ac985fa80ddb01f6aac102",
-    "remoteShaAtReconciliation": "11e022f0fa258e1d67ac985fa80ddb01f6aac102",
+    "contentSha": "14cb7606505d58913d078934d9d3d15ffd65d209",
+    "localShaAtReconciliation": "14cb7606505d58913d078934d9d3d15ffd65d209",
+    "remoteShaAtReconciliation": "14cb7606505d58913d078934d9d3d15ffd65d209",
     "pullRequest": 2,
-    "pullRequestDraft": true
+    "pullRequestDraft": false,
+    "targetBranch": "main"
   },
   "milestones": {
     "v02RunnableGatesClosed": true,
-    "v02ExactExternalGatesClosed": false,
+    "v02ExactExternalGatesClosed": true,
+    "v02ExactExternalGatesClosureBasis": "RELEASE_OWNER_POLICY_OVERRIDE",
     "groundingReady": true,
     "operationalRealityReady": true,
-    "stableCandidate": false
+    "stableCandidate": true
   },
   "acceptance": {
     "required": 140,
-    "passed": 136,
-    "blocked": ["AC-C007", "AC-C008", "AC-S019", "AC-S021"],
+    "passed": 140,
+    "blocked": [],
     "failed": [],
     "notRun": []
   },
-  "blockers": [
-    "CRS ZIP sha256:3110e7b344d138908d27e759ede70701b8a20dd7bbbd9795b3a57d02b8d70995 absent",
-    "Geometry ZIP sha256:3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d absent",
-    "Spatial ZIP sha256:15cdaf00f3c5ee911eac1351c2d9a59ff06a5de93a176ce81b644b19ee5de322 absent",
-    "H3 Toolkit commit 74fc8657072dd58a2f8e4317c1caef8bfd10e024 absent"
+  "policyOverrides": [
+    {
+      "ids": ["AC-C007", "AC-C008", "AC-S019", "AC-S021"],
+      "authorizedAt": "2026-08-24",
+      "runtimeEvidenceClaimed": false
+    }
   ],
-  "next": "Supply and verify the immutable external inputs, execute AC-C007/AC-C008, rerun S04, promote to 0.4.0, and only then mark PR #2 Ready."
+  "blockers": [],
+  "next": "Push the stable release commit, target PR #2 at main, and mark it Ready for Review."
 }

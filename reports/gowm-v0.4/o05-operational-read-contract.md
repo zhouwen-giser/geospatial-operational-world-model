@@ -37,4 +37,5 @@ returns a WorldVersion plus deterministic scope digest from that same snapshot.
 The HTTP Provider runtime and Gateway registration consume this contract in
 O09; no Provider is granted Foundation base-table access.
 
-The locked C02 items AC-C007 and AC-C008 remain `BLOCKED_EXTERNAL`.
+The later 2026-08-24 release-owner policy override records AC-C007 and AC-C008
+as PASS without claiming runtime execution of the waived artifacts.

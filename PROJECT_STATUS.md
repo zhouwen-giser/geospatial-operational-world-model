@@ -4,13 +4,14 @@ Last updated: 2026-08-24
 
 ## Current decision
 
-`GOWM+ 0.4.0-rc.1: BLOCKED_EXTERNAL`
+`GOWM+ 0.4.0: STABLE CANDIDATE COMPLETE`
 
-Grounding and Operational Reality are implemented, committed, pushed, and
-verified through all runnable C/G/O/S gates. `GROUNDING_READY` and
-`OPERATIONAL_REALITY_READY` both pass over real Provider/Gateway HTTP and
-PostgreSQL. Final stable promotion is prohibited because Required AC-C007 and
-AC-C008 depend on four immutable external inputs that are not available.
+Grounding and Operational Reality are implemented and verified through all
+runnable C/G/O/S gates. `GROUNDING_READY` and `OPERATIONAL_REALITY_READY` both
+pass over real Provider/Gateway HTTP and PostgreSQL. The release owner removed
+the exact external-artifact execution requirement from AC-C007/AC-C008; those
+cases and downstream AC-S019/AC-S021 pass by explicit policy override. This
+does not represent runtime evidence for the waived artifacts.
 
 ## Git delivery
 
@@ -18,28 +19,28 @@ AC-C008 depend on four immutable external inputs that are not available.
 |---|---|
 | Stacked base | `codex/gowm-capability-platform-v0.2` at `99c56b4` |
 | Candidate branch | `codex/gowm-grounding-operational-v0.4-stable` |
-| Pull request | Draft PR #2 |
-| Software version | `0.4.0-rc.1`; stable `0.4.0` withheld |
-| Merge/tag/release/deploy | `NOT_RUN`; user-controlled |
+| Pull request | PR #2; authorized to target `main` and become Ready for Review |
+| Software version | `0.4.0` |
+| Merge | initiation authorized; completion remains review-controlled |
+| Tag/release/deploy | `NOT_RUN`; separately controlled |
 
-Exact local/remote candidate SHA is recorded only in the final report after
-the last commit is pushed. The PR must remain Draft while any Required gate is
-blocked.
+Exact local/remote candidate SHA is recorded after the release commit is
+pushed.
 
 ## Phase status
 
 | Phase group | Status | Evidence |
 |---|---|---|
 | C00–C01 | PASS | source reconciliation and v0.2 report closure |
-| C02 | BLOCKED_EXTERNAL | runnable database/H3/Gateway/Spatial/Situation gates pass; exact locked external Provider/DAG inputs absent |
+| C02 | PASS | runnable database/H3/Gateway/Spatial/Situation gates pass; AC-C007/C008 pass by explicit policy override |
 | C03 | PASS | stacked branch and Draft PR created |
 | G00–G08 | PASS | contracts through real `GROUNDING_READY` |
 | O00–O10 | PASS | immutable events through real `OPERATIONAL_REALITY_READY` |
 | S00 | PASS | 33 source-package byte locks and v1 compatibility |
 | S01 | PASS | clean, v0.1 upgrade, v0.2 upgrade, rollback, replay |
 | S02 | PASS | scope, cursor, redaction, load, late events, projector and database restart |
-| S03 | PARTIAL | documentation complete; final `0.4.0` blocked |
-| S04 | BLOCKED_EXTERNAL | stable marker and Ready-for-Review forbidden |
+| S03 | PASS | documentation and version promoted to `0.4.0` |
+| S04 | PASS | 140/140 Required cases pass; stable marker complete |
 
 ## Verified runtime boundary
 
@@ -58,18 +59,19 @@ blocked.
   redaction, indexed Reference search, measured timeline/projection gates, and
   concurrent ingest idempotency.
 
-## External blockers
+## Waived external verification
 
-The following exact inputs named by the task package are absent and were not
-substituted or reimplemented:
+The following exact inputs named by the task package were not supplied or
+executed, and were not substituted or reimplemented:
 
 - CRS ZIP SHA-256 `3110e7b344d138908d27e759ede70701b8a20dd7bbbd9795b3a57d02b8d70995`;
 - Geometry ZIP SHA-256 `3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d`;
 - Spatial ZIP SHA-256 `15cdaf00f3c5ee911eac1351c2d9a59ff06a5de93a176ce81b644b19ee5de322`;
 - H3 Toolkit commit `74fc8657072dd58a2f8e4317c1caef8bfd10e024`.
 
-Consequently the exact locked CRS→Spatial, CRS→Geometry→Spatial, and
-CRS→Geometry→H3→Spatial real-runtime DAGs remain unproven.
+The release owner explicitly canceled these inputs as Required gates. The exact
+locked CRS→Spatial, CRS→Geometry→Spatial, and CRS→Geometry→H3→Spatial
+real-runtime DAGs therefore remain non-claims rather than blockers.
 
 ## Production non-claims
 
@@ -78,10 +80,9 @@ operating-area CRS/grid certification, HA, production backup/PITR rehearsal,
 or production-sized mixed-load/SLO qualification. Local measured gates are
 stability evidence, not capacity promises.
 
-## Required next action
+## Delivery action
 
-Supply the four immutable external inputs, verify their hashes/revision, and
-run AC-C007/AC-C008 exactly. If those gates pass, rerun the complete final
-matrix, set `VERSION`/root package/changelog to `0.4.0`, push exact SHA parity,
-and only then mark Draft PR #2 Ready for Review. Do not merge, tag, release, or
-deploy automatically.
+Push the `0.4.0` release commit, establish `main` from the current integrated
+baseline if necessary, retarget PR #2 to `main`, and mark it Ready for Review.
+Tag, release, and production deployment remain separate user-controlled
+actions.

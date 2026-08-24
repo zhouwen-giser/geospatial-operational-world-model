@@ -26,9 +26,10 @@ container restart.
 - after a real PostgreSQL container restart, fresh Reference and Operational
   repositories recover the persisted records.
 
-Measured in the accepted run: timeline p95 was `18.967 ms` over 60 reads,
-initial projection was `22.540 ms`, and restarted-projector lag was
-`14.892 ms`. These are local stability measurements, not production SLO or
+Measured in the final accepted run (`s02-mt6vwa63`): timeline p95 was
+`23.395 ms` over 60 reads, initial projection was `22.914 ms`, and
+restarted-projector lag was `10.706 ms`. These are local stability
+measurements, not production SLO or
 capacity claims.
 
 Run with:

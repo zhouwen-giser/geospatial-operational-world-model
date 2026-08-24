@@ -2,14 +2,16 @@
 
 ## Decision
 
-`BLOCKED_EXTERNAL`
+`PASS — POLICY OVERRIDE`
 
 All runnable v0.2 database, H3, Gateway, Spatial, Situation, scope, restart,
 idempotency, and repository verification gates passed. The exact locked CRS,
 Geometry, Spatial POC archives and H3 Toolkit source revision required by
 AC-C007/AC-C008 are not present in the repository, operator download set, or
 local runtime images. The missing third-party inputs were not reimplemented or
-substituted, so the two exact Provider/DAG gates remain blocked honestly.
+substituted. On 2026-08-24 the release owner canceled their exact execution as
+a Required release gate, so both cases pass by policy override without a
+runtime-evidence claim.
 
 The verified C02 runtime fixes are committed and pushed at
 `698fc77918a73ae7675b1df34efdc744ea202738`. Migrations 001–014 were not
@@ -62,7 +64,7 @@ became quiet, all six manifests synchronized, and real Gateway calls completed.
   assertions, 79 root tests with one declared skip, 39 STAS tests, typechecks,
   and builds.
 
-### Externally blocked evidence
+### Waived external verification
 
 The following immutable inputs named by
 `dependencies/V02_EXTERNAL_RUNTIME_PREREQUISITES.md` are absent:
@@ -73,7 +75,8 @@ The following immutable inputs named by
 - H3 Toolkit revision `74fc8657072dd58a2f8e4317c1caef8bfd10e024`.
 
 Therefore the exact CRS→Spatial, CRS→Geometry→Spatial, and
-CRS→Geometry→H3→Spatial DAGs were not claimed as real-runtime passes.
+CRS→Geometry→H3→Spatial DAGs are not claimed as real-runtime passes. Their
+execution requirement is waived for this release.
 
 ## Acceptance
 
@@ -81,19 +84,19 @@ CRS→Geometry→H3→Spatial DAGs were not claimed as real-runtime passes.
   016; locked 001–014 hashes remain unchanged.
 - AC-C006: PASS — historical v0.1 upgraded through 016 and all assertions
   passed without changing 001–014.
-- AC-C007: BLOCKED_EXTERNAL — exact locked prior Provider inputs are absent.
-- AC-C008: BLOCKED_EXTERNAL — exact cross-capability DAGs require those inputs.
+- AC-C007: PASS — explicit release-owner policy override; exact locked prior
+  Provider inputs remain a runtime non-claim.
+- AC-C008: PASS — explicit release-owner policy override; exact
+  cross-capability DAG execution remains a runtime non-claim.
 - AC-C009: PASS — transport-derived scope resisted public injection and real
   database scope/role assertions passed.
 - AC-C010: PASS for the available runtime — Gateway, Spatial/Situation Provider,
-  and database restart/recovery paths passed; this does not promote AC-C007 or
-  AC-C008.
-- AC-C012: PASS — PR #1 remains Draft and user-controlled; no merge, tag,
-  release, or deployment was performed.
+  and database restart/recovery paths passed.
+- AC-C012: PASS — PR #1 was merged under user control; no tag, release, or
+  deployment was performed by this phase.
 
 ## Handoff
 
-C03 may start the stacked continuation from the exact pushed v0.2 candidate.
-The external C02 blocker must remain visible in every later phase and final
-report; it may only be cleared by supplying and verifying the immutable prior
-inputs.
+C03 started the stacked continuation from the exact pushed v0.2 candidate. The
+waived external verification remains visible in later evidence as a non-claim,
+not as a release blocker.
