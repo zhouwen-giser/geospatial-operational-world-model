@@ -1,0 +1,20 @@
+{
+  "lockVersion": "1.0",
+  "baseline": "v0.2",
+  "migrations": {
+    "001_initial_schema.sql": "9491075269f48755a83787fa3649d0b12c1ed03eda1e0925ef8a9ce484cf427e",
+    "002_views_and_functions.sql": "56eb394285aca3d55f67ddd951f91f2c1035abda458edfa22b0ade3836611297",
+    "003_situation_observer.sql": "a7bfcaa6fd984395f5115ca9b6c43cb2fcdfb18c6497e1c68e2a07a0bb21283d",
+    "004_geography_indexes.sql": "20e9db17e91a0f73f4d0a14dec1eafa65751bab8532e784226d8d2c123e9d3c9",
+    "005_situation_rank_indexes.sql": "ccbe4f30f8990f800bc5a32abb8ef56ecf75281abeaa910b3b8a43f4f8769ebc",
+    "006_observation_altitude.sql": "366421f5f76e117838e8116f99644ffe3a86584a58abf84587c6a8b13b1a8a71",
+    "007_active_relation_uniqueness.sql": "a607ce9013fa86c842cf645edcd28d8e56d5f484794eba4dfc74afea8b42ae85",
+    "008_h3_pg.sql": "2887028d9cd389119df2be650dcbb9f4700c34826dd74d27b44f7fe3de0bf914",
+    "009_gowm_plus_canonical_evidence_and_mobility.sql": "1d428971cad16f7ed602a39594c5835736044744b8a8b46a18e641e6d2d5435c",
+    "010_unified_stas_contracts_roles_and_coverage.sql": "e61a99392a713b6490aedb5c4ef89420cf056c8fbc278680eec06f5d2ed782b8",
+    "011_capability_gateway_persistence.sql": "823d66f46e4a405a71d10e76ba95c849283811f65e09514d548f8a915ea8a35f",
+    "012_gowm_spatial_v1_read_contract.sql": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10",
+    "013_world_query_runtime_persistence.sql": "16bb9e5f6c294c3d2b7eb6925e61d0d6c592b8dc3ec9a25293c10f4e4f244f95",
+    "014_capability_runtime_service_principals.sql": "9c66fd567e3755782e8a2db2b4d60e2e4e8790fc9d3729dd0cc74b82fdf8aaf9"
+  }
+}
