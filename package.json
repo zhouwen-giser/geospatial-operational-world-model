@@ -16,7 +16,9 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && npm --prefix services/stas run build",
-    "check": "tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "check": "npm run verify:contracts && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "generate:contracts": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs",
+    "verify:contracts": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check",
     "verify:sql": "node scripts/verify-sql.mjs",
     "verify": "npm run check && npm run verify:sql && npm test && npm --prefix services/stas test && npm run build",
     "verify:v1.2": "npm run verify",

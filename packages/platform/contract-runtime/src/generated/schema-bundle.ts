@@ -8245,6 +8245,1256 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     }
   },
+  "gowm-v0.5/cost-profile.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:cost-profile",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "profileId",
+      "version",
+      "weights",
+      "contentHash"
+    ],
+    "properties": {
+      "profileId": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string"
+      },
+      "weights": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "distance",
+          "time",
+          "risk",
+          "energy",
+          "surface"
+        ],
+        "properties": {
+          "distance": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "time": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "risk": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "energy": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "surface": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "roundingPolicy": {
+        "const": "HALF_AWAY_FROM_ZERO"
+      },
+      "contentHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      }
+    }
+  },
+  "gowm-v0.5/network-build-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-build-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "requestId",
+      "networkDatasetReferenceKey",
+      "networkDatasetVersion",
+      "buildPolicyVersion"
+    ],
+    "properties": {
+      "requestId": {
+        "type": "string"
+      },
+      "networkDatasetReferenceKey": {
+        "$ref": "network-common.schema.json#/$defs/referenceKey"
+      },
+      "networkDatasetVersion": {
+        "type": "string"
+      },
+      "buildPolicyVersion": {
+        "type": "string"
+      },
+      "sourceAdapter": {
+        "enum": [
+          "CATALOG_VECTOR_LAYER",
+          "OSM_ARTIFACT"
+        ]
+      },
+      "layerReferenceKeys": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "$ref": "network-common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "activateWhenValidated": {
+        "type": "boolean"
+      },
+      "deadlineMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "maximum": 86400000
+      }
+    }
+  },
+  "gowm-v0.5/network-build-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-build-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "requestId",
+      "status",
+      "diagnostics"
+    ],
+    "properties": {
+      "requestId": {
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "ACCEPTED",
+          "RUNNING",
+          "VALIDATED",
+          "ACTIVE",
+          "FAILED",
+          "CANCELLED"
+        ]
+      },
+      "graphVersion": {
+        "$ref": "network-graph-version.schema.json"
+      },
+      "diagnostics": {
+        "type": "array",
+        "maxItems": 10000,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "severity",
+            "count"
+          ],
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "severity": {
+              "enum": [
+                "INFO",
+                "WARNING",
+                "ERROR",
+                "FATAL"
+              ]
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sampleRefs": {
+              "type": "array",
+              "maxItems": 20,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.5/network-common.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-common",
+    "$defs": {
+      "sha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "dateTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "referenceKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "namespace",
+          "kind",
+          "id",
+          "version"
+        ],
+        "properties": {
+          "namespace": {
+            "const": "gowm"
+          },
+          "kind": {
+            "enum": [
+              "WORLD_OBJECT",
+              "SPATIAL_OBJECT",
+              "DATA_SCOPE",
+              "DATASET",
+              "LAYER",
+              "LAYER_FEATURE",
+              "QUERY_RESULT",
+              "DERIVED_REFERENCE",
+              "REFERENCE_SET",
+              "OPERATIONAL_TASK"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^wrf_[0-9a-f]{32}$"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "position": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "coordinates",
+          "crs"
+        ],
+        "properties": {
+          "coordinates": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 3,
+            "items": {
+              "type": "number"
+            }
+          },
+          "crs": {
+            "const": "EPSG:4326"
+          }
+        }
+      },
+      "directedState": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "arcKey",
+          "fractionPpm",
+          "direction"
+        ],
+        "properties": {
+          "arcKey": {
+            "type": "string",
+            "pattern": "^arc_[0-9a-f]{32,64}$"
+          },
+          "fractionPpm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "direction": {
+            "enum": [
+              "FORWARD",
+              "REVERSE"
+            ]
+          },
+          "headingMicrodegrees": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 359999999
+          },
+          "sourceFeatureReferenceKey": {
+            "$ref": "#/$defs/referenceKey"
+          }
+        }
+      },
+      "networkLocation": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/position"
+          },
+          {
+            "$ref": "#/$defs/referenceKey"
+          },
+          {
+            "$ref": "#/$defs/directedState"
+          }
+        ]
+      },
+      "routeSegment": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "graphVersion",
+          "arcKey",
+          "startFractionPpm",
+          "endFractionPpm",
+          "segmentRole"
+        ],
+        "properties": {
+          "graphVersion": {
+            "type": "string"
+          },
+          "arcKey": {
+            "type": "string"
+          },
+          "startFractionPpm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "endFractionPpm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "segmentRole": {
+            "enum": [
+              "ROUTE",
+              "VIA",
+              "ACCESS",
+              "EXIT"
+            ]
+          },
+          "sourceFeatureReferenceKey": {
+            "$ref": "#/$defs/referenceKey"
+          },
+          "distanceMm": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "riskMicroUnits": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "energyMwh": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "turnPenaltyUnits": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.5/network-condition-snapshot.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-condition-snapshot",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "conditionSnapshotId",
+      "graphVersion",
+      "snapshotHash",
+      "validFrom",
+      "status"
+    ],
+    "properties": {
+      "conditionSnapshotId": {
+        "type": "string"
+      },
+      "graphVersion": {
+        "type": "string"
+      },
+      "sourceWorldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "validFrom": {
+        "$ref": "network-common.schema.json#/$defs/dateTime"
+      },
+      "validTo": {
+        "$ref": "network-common.schema.json#/$defs/dateTime"
+      },
+      "snapshotHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "status": {
+        "enum": [
+          "ACTIVE",
+          "SUPERSEDED",
+          "EXPIRED"
+        ]
+      },
+      "conditionCount": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  },
+  "gowm-v0.5/network-cost-matrix-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-cost-matrix-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "routingSnapshot",
+      "points",
+      "objective"
+    ],
+    "properties": {
+      "routingSnapshot": {
+        "$ref": "routing-snapshot.schema.json"
+      },
+      "points": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 500,
+        "items": {
+          "$ref": "network-common.schema.json#/$defs/directedState"
+        }
+      },
+      "objective": {
+        "enum": [
+          "SHORTEST_DISTANCE",
+          "FASTEST",
+          "LOWEST_RISK",
+          "LOWEST_ENERGY",
+          "WEIGHTED"
+        ]
+      },
+      "deadlineMs": {
+        "type": "integer",
+        "minimum": 1
+      }
+    }
+  },
+  "gowm-v0.5/network-cost-matrix-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-cost-matrix-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "routingSnapshot",
+      "pointCount",
+      "entries",
+      "resultHash"
+    ],
+    "properties": {
+      "routingSnapshot": {
+        "$ref": "routing-snapshot.schema.json"
+      },
+      "pointCount": {
+        "type": "integer",
+        "minimum": 2
+      },
+      "entries": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fromIndex",
+            "toIndex",
+            "reachable"
+          ],
+          "properties": {
+            "fromIndex": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "toIndex": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "reachable": {
+              "type": "boolean"
+            },
+            "costUnits": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "resultHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      }
+    }
+  },
+  "gowm-v0.5/network-graph-version.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-graph-version",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "networkDatasetReferenceKey",
+      "networkDatasetVersion",
+      "graphVersion",
+      "buildPolicyVersion",
+      "sourceContentHash",
+      "topologyHash",
+      "contentHash",
+      "status",
+      "counts"
+    ],
+    "properties": {
+      "networkDatasetReferenceKey": {
+        "$ref": "network-common.schema.json#/$defs/referenceKey"
+      },
+      "networkDatasetVersion": {
+        "type": "string"
+      },
+      "graphVersion": {
+        "type": "string"
+      },
+      "buildPolicyVersion": {
+        "type": "string"
+      },
+      "sourceContentHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "topologyHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "contentHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "status": {
+        "enum": [
+          "BUILDING",
+          "VALIDATED",
+          "ACTIVE",
+          "RETIRED",
+          "FAILED"
+        ]
+      },
+      "counts": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nodes",
+          "edges",
+          "arcs",
+          "turnRules"
+        ],
+        "properties": {
+          "nodes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "edges": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "arcs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "turnRules": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "createdAt": {
+        "$ref": "network-common.schema.json#/$defs/dateTime"
+      },
+      "validatedAt": {
+        "$ref": "network-common.schema.json#/$defs/dateTime"
+      },
+      "activatedAt": {
+        "$ref": "network-common.schema.json#/$defs/dateTime"
+      },
+      "buildReceiptId": {
+        "type": "string"
+      }
+    }
+  },
+  "gowm-v0.5/network-provider-manifest.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:provider-manifest-extension",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "providerId",
+      "providerVersion",
+      "operations"
+    ],
+    "properties": {
+      "providerId": {
+        "type": "string"
+      },
+      "providerVersion": {
+        "type": "string"
+      },
+      "operations": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operationId",
+            "operationVersion",
+            "maturity",
+            "inputSchemaFile",
+            "inputSchemaHash",
+            "outputSchemaFile",
+            "outputSchemaHash",
+            "scopePolicy",
+            "dataSnapshot",
+            "executionMode"
+          ],
+          "properties": {
+            "operationId": {
+              "type": "string"
+            },
+            "operationVersion": {
+              "type": "string"
+            },
+            "maturity": {
+              "enum": [
+                "EXPERIMENTAL",
+                "PREVIEW",
+                "STABLE",
+                "DEPRECATED"
+              ]
+            },
+            "inputSchemaFile": {
+              "type": "string"
+            },
+            "inputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "outputSchemaFile": {
+              "type": "string"
+            },
+            "outputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "scopePolicy": {
+              "const": "DATA_SCOPE_REQUIRED"
+            },
+            "dataSnapshot": {
+              "const": "REQUIRED"
+            },
+            "executionMode": {
+              "enum": [
+                "SYNC",
+                "SYNC_OR_ASYNC"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.5/network-shortest-path-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-shortest-path-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "routingSnapshot",
+      "start",
+      "destination",
+      "objective"
+    ],
+    "properties": {
+      "routingSnapshot": {
+        "$ref": "routing-snapshot.schema.json"
+      },
+      "start": {
+        "$ref": "network-common.schema.json#/$defs/directedState"
+      },
+      "destination": {
+        "$ref": "network-common.schema.json#/$defs/directedState"
+      },
+      "objective": {
+        "enum": [
+          "SHORTEST_DISTANCE",
+          "FASTEST",
+          "LOWEST_RISK",
+          "LOWEST_ENERGY",
+          "WEIGHTED"
+        ]
+      },
+      "turnLegality": {
+        "enum": [
+          "STRICT",
+          "IGNORE_SOFT_PENALTIES"
+        ]
+      },
+      "maximumSegments": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100000
+      },
+      "deadlineMs": {
+        "type": "integer",
+        "minimum": 1
+      }
+    }
+  },
+  "gowm-v0.5/network-shortest-path-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-shortest-path-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "status",
+      "routingSnapshot",
+      "segments",
+      "metrics",
+      "resultHash"
+    ],
+    "properties": {
+      "status": {
+        "enum": [
+          "COMPLETED",
+          "NO_PATH",
+          "INDETERMINATE"
+        ]
+      },
+      "routingSnapshot": {
+        "$ref": "routing-snapshot.schema.json"
+      },
+      "segments": {
+        "type": "array",
+        "maxItems": 100000,
+        "items": {
+          "$ref": "network-common.schema.json#/$defs/routeSegment"
+        }
+      },
+      "metrics": {
+        "$ref": "path-metrics.schema.json"
+      },
+      "resultHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "warnings": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.5/network-snap-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-snap-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "routingSnapshot",
+      "location",
+      "maxDistanceM",
+      "limit"
+    ],
+    "properties": {
+      "routingSnapshot": {
+        "$ref": "routing-snapshot.schema.json"
+      },
+      "location": {
+        "$ref": "network-common.schema.json#/$defs/networkLocation"
+      },
+      "headingDegrees": {
+        "type": "number",
+        "minimum": 0,
+        "exclusiveMaximum": 360
+      },
+      "maxDistanceM": {
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "maximum": 10000
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20
+      }
+    }
+  },
+  "gowm-v0.5/network-snap-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:network-snap-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "status",
+      "candidates",
+      "routingSnapshot"
+    ],
+    "properties": {
+      "status": {
+        "enum": [
+          "RESOLVED_UNIQUE",
+          "AMBIGUOUS",
+          "UNREACHABLE",
+          "INVALID"
+        ]
+      },
+      "routingSnapshot": {
+        "$ref": "routing-snapshot.schema.json"
+      },
+      "candidates": {
+        "type": "array",
+        "maxItems": 20,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "distanceMm",
+            "candidateScore"
+          ],
+          "properties": {
+            "state": {
+              "$ref": "network-common.schema.json#/$defs/directedState"
+            },
+            "distanceMm": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "headingDifferenceMicrodegrees": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "candidateScore": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.5/path-metrics.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:path-metrics",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "distanceMm",
+      "durationMs",
+      "riskMicroUnits",
+      "energyMwh",
+      "combinedCostUnits"
+    ],
+    "properties": {
+      "distanceMm": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "durationMs": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "riskMicroUnits": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "energyMwh": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "combinedCostUnits": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  },
+  "gowm-v0.5/route-planning-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:route-planning-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "requestId",
+      "start",
+      "destination",
+      "travelProfile",
+      "costProfile",
+      "objective",
+      "deadlineMs"
+    ],
+    "properties": {
+      "requestId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "routingSnapshot": {
+        "$ref": "routing-snapshot.schema.json"
+      },
+      "useActiveGraph": {
+        "type": "boolean"
+      },
+      "start": {
+        "$ref": "network-common.schema.json#/$defs/networkLocation"
+      },
+      "destination": {
+        "$ref": "network-common.schema.json#/$defs/networkLocation"
+      },
+      "waypoints": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "network-common.schema.json#/$defs/networkLocation"
+        }
+      },
+      "travelProfile": {
+        "type": "string"
+      },
+      "costProfile": {
+        "type": "string"
+      },
+      "conditionSnapshotId": {
+        "type": "string"
+      },
+      "viaReferences": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "network-common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "avoidReferences": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "network-common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "avoidAreas": {
+        "type": "array",
+        "maxItems": 20,
+        "items": {
+          "type": "object"
+        }
+      },
+      "startHeading": {
+        "type": "number",
+        "minimum": 0,
+        "exclusiveMaximum": 360
+      },
+      "destinationHeading": {
+        "type": "number",
+        "minimum": 0,
+        "exclusiveMaximum": 360
+      },
+      "snapToleranceM": {
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "maximum": 10000
+      },
+      "objective": {
+        "enum": [
+          "SHORTEST_DISTANCE",
+          "FASTEST",
+          "LOWEST_RISK",
+          "LOWEST_ENERGY",
+          "WEIGHTED"
+        ]
+      },
+      "alternativeCount": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "deadlineMs": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 300000
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "routingSnapshot"
+        ]
+      },
+      {
+        "required": [
+          "useActiveGraph"
+        ],
+        "properties": {
+          "useActiveGraph": {
+            "const": true
+          }
+        }
+      }
+    ]
+  },
+  "gowm-v0.5/route-planning-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:route-planning-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "requestId",
+      "status",
+      "queryResultReferenceKey",
+      "routingSnapshot",
+      "candidates",
+      "validUntil",
+      "revalidationRequired"
+    ],
+    "properties": {
+      "requestId": {
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "COMPLETED",
+          "PARTIAL",
+          "NO_PATH",
+          "FAILED",
+          "CANCELLED"
+        ]
+      },
+      "queryResultReferenceKey": {
+        "$ref": "network-common.schema.json#/$defs/referenceKey"
+      },
+      "routingSnapshot": {
+        "$ref": "routing-snapshot.schema.json"
+      },
+      "candidates": {
+        "type": "array",
+        "maxItems": 5,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rank",
+            "routeSignature",
+            "segments",
+            "metrics",
+            "verification"
+          ],
+          "properties": {
+            "rank": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "routeSignature": {
+              "$ref": "network-common.schema.json#/$defs/sha256"
+            },
+            "segments": {
+              "type": "array",
+              "maxItems": 100000,
+              "items": {
+                "$ref": "network-common.schema.json#/$defs/routeSegment"
+              }
+            },
+            "metrics": {
+              "$ref": "path-metrics.schema.json"
+            },
+            "verification": {
+              "$ref": "route-verification-report.schema.json"
+            }
+          }
+        }
+      },
+      "validUntil": {
+        "$ref": "network-common.schema.json#/$defs/dateTime"
+      },
+      "revalidationRequired": {
+        "const": true
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.5/route-verification-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:route-verification-report",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "status",
+      "checks",
+      "verifierVersion",
+      "verifiedResultHash"
+    ],
+    "properties": {
+      "status": {
+        "enum": [
+          "VALID",
+          "STALE",
+          "INVALID",
+          "INDETERMINATE"
+        ]
+      },
+      "checks": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "UNKNOWN"
+              ]
+            },
+            "details": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "verifierVersion": {
+        "type": "string"
+      },
+      "verifiedResultHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.5/routing-snapshot.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:routing-snapshot",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "networkDatasetVersion",
+      "graphVersion",
+      "travelProfileVersion",
+      "costProfileVersion",
+      "graphContentHash",
+      "costContentHash"
+    ],
+    "properties": {
+      "networkDatasetVersion": {
+        "type": "string"
+      },
+      "graphVersion": {
+        "type": "string"
+      },
+      "travelProfileVersion": {
+        "type": "string"
+      },
+      "costProfileVersion": {
+        "type": "string"
+      },
+      "conditionSnapshotId": {
+        "type": "string"
+      },
+      "sourceWorldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "graphContentHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "costContentHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "conditionContentHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      },
+      "capturedAt": {
+        "$ref": "network-common.schema.json#/$defs/dateTime"
+      }
+    }
+  },
+  "gowm-v0.5/travel-profile.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.5:travel-profile",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "profileId",
+      "version",
+      "vehicleClass",
+      "contentHash"
+    ],
+    "properties": {
+      "profileId": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string"
+      },
+      "vehicleClass": {
+        "enum": [
+          "ROAD_VEHICLE",
+          "UGV"
+        ]
+      },
+      "allowedRoadClasses": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "allowedSurfaces": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "maximumSlopePpm": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "minimumWidthMm": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "maximumHeightMm": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "maximumWeightKg": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "onewayPolicy": {
+        "enum": [
+          "STRICT",
+          "IGNORE_FOR_EMERGENCY"
+        ]
+      },
+      "contentHash": {
+        "$ref": "network-common.schema.json#/$defs/sha256"
+      }
+    }
+  },
   "platform/capability-catalog.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.2:capability-catalog",

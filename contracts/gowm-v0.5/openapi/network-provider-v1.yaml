@@ -1,0 +1,54 @@
+openapi: 3.1.0
+info:
+  title: GOWM Network Provider
+  version: 1.0.0
+paths:
+  /v1/provider-operations/network.snap.point:execute:
+    post:
+      operationId: snapPoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../network-snap-request.schema.json
+      responses:
+        "200":
+          description: Snap result
+          content:
+            application/json:
+              schema:
+                $ref: ../network-snap-result.schema.json
+  /v1/provider-operations/network.path.shortest:execute:
+    post:
+      operationId: shortestPath
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../network-shortest-path-request.schema.json
+      responses:
+        "200":
+          description: Path result
+          content:
+            application/json:
+              schema:
+                $ref: ../network-shortest-path-result.schema.json
+  /v1/provider-operations/network.path.cost-matrix:execute:
+    post:
+      operationId: costMatrix
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../network-cost-matrix-request.schema.json
+      responses:
+        "200":
+          description: Matrix
+          content:
+            application/json:
+              schema:
+                $ref: ../network-cost-matrix-result.schema.json
+        "202": { description: Async job accepted }

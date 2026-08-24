@@ -1,0 +1,22 @@
+{
+  "requestId": "network-build-001",
+  "networkDatasetReferenceKey": {
+    "namespace": "gowm",
+    "kind": "DATASET",
+    "id": "wrf_11111111111111111111111111111111",
+    "version": "roads-2026.08"
+  },
+  "networkDatasetVersion": "roads-2026.08",
+  "buildPolicyVersion": "network-build/1.0",
+  "sourceAdapter": "CATALOG_VECTOR_LAYER",
+  "layerReferenceKeys": [
+    {
+      "namespace": "gowm",
+      "kind": "LAYER",
+      "id": "wrf_55555555555555555555555555555555",
+      "version": "3"
+    }
+  ],
+  "activateWhenValidated": true,
+  "deadlineMs": 3600000
+}

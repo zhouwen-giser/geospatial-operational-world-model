@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-cost-matrix-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "routingSnapshot",
+    "pointCount",
+    "entries",
+    "resultHash"
+  ],
+  "properties": {
+    "routingSnapshot": {
+      "$ref": "routing-snapshot.schema.json"
+    },
+    "pointCount": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fromIndex",
+          "toIndex",
+          "reachable"
+        ],
+        "properties": {
+          "fromIndex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "toIndex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reachable": {
+            "type": "boolean"
+          },
+          "costUnits": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "resultHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    }
+  }
+}

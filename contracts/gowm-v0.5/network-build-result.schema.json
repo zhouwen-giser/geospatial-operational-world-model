@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-build-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestId",
+    "status",
+    "diagnostics"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ACCEPTED",
+        "RUNNING",
+        "VALIDATED",
+        "ACTIVE",
+        "FAILED",
+        "CANCELLED"
+      ]
+    },
+    "graphVersion": {
+      "$ref": "network-graph-version.schema.json"
+    },
+    "diagnostics": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "severity",
+          "count"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "INFO",
+              "WARNING",
+              "ERROR",
+              "FATAL"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sampleRefs": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

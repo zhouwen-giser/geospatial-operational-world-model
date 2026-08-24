@@ -2,7 +2,7 @@
   "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
   "targetVersion": "0.5.0",
   "status": "IN_PROGRESS",
-  "phase": "A00",
+  "phase": "A01",
   "baseline": {
     "branch": "main",
     "version": "0.4.0",
@@ -22,11 +22,11 @@
     "stableCandidate": false
   },
   "acceptance": {
-    "passed": ["AC-B001..AC-B008", "AC-A006..AC-A009"],
+    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010"],
     "failed": [],
     "blocked": [],
-    "notRun": ["AC-A001..AC-S022"]
+    "notRun": ["AC-D001..AC-S022"]
   },
   "blockers": [],
-  "next": "Execute A01 network and routing machine contracts."
+  "next": "Execute D00 database image and pgRouting 4.0.1 runtime gate."
 }

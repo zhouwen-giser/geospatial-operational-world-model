@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-shortest-path-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "routingSnapshot",
+    "segments",
+    "metrics",
+    "resultHash"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "COMPLETED",
+        "NO_PATH",
+        "INDETERMINATE"
+      ]
+    },
+    "routingSnapshot": {
+      "$ref": "routing-snapshot.schema.json"
+    },
+    "segments": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "$ref": "network-common.schema.json#/$defs/routeSegment"
+      }
+    },
+    "metrics": {
+      "$ref": "path-metrics.schema.json"
+    },
+    "resultHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -8,7 +8,8 @@ const repositoryRoot = resolve(scriptDirectory, "../../../..");
 const contractRoots = [
   resolve(repositoryRoot, "contracts/platform"),
   resolve(repositoryRoot, "contracts/capabilities"),
-  resolve(repositoryRoot, "contracts/gowm-v0.4")
+  resolve(repositoryRoot, "contracts/gowm-v0.4"),
+  resolve(repositoryRoot, "contracts/gowm-v0.5")
 ];
 const generatedDirectory = resolve(repositoryRoot, "packages/platform/contract-runtime/src/generated");
 const contractsOutput = resolve(generatedDirectory, "contracts.ts");
@@ -90,9 +91,25 @@ function schemaToType(schema, currentKey) {
   }
   if (Object.hasOwn(schema, "const")) return literal(schema.const);
   if (schema.enum) return schema.enum.map(literal).join(" | ");
-  if (schema.oneOf) return schema.oneOf.map((item) => `(${schemaToType(item, currentKey)})`).join(" | ");
-  if (schema.anyOf) return schema.anyOf.map((item) => `(${schemaToType(item, currentKey)})`).join(" | ");
-  if (schema.allOf) return schema.allOf.map((item) => `(${schemaToType(item, currentKey)})`).join(" & ");
+  for (const [keyword, separator] of [["oneOf", " | "], ["anyOf", " | "], ["allOf", " & "]]) {
+    if (!schema[keyword]) continue;
+    const { [keyword]: branches, ...base } = schema;
+    const hasStructuralBase = ["type", "properties", "required", "additionalProperties", "patternProperties", "items", "prefixItems"]
+      .some((name) => Object.hasOwn(base, name));
+    if (hasStructuralBase && (keyword === "oneOf" || keyword === "anyOf")) {
+      return branches.map((item) => {
+        const merged = {
+          ...base,
+          ...item,
+          properties: { ...(base.properties ?? {}), ...(item.properties ?? {}) },
+          required: [...new Set([...(base.required ?? []), ...(item.required ?? [])])]
+        };
+        return `(${schemaToType(merged, currentKey)})`;
+      }).join(separator);
+    }
+    const branchType = branches.map((item) => `(${schemaToType(item, currentKey)})`).join(separator);
+    return hasStructuralBase ? `(${schemaToType(base, currentKey)}) & (${branchType})` : branchType;
+  }
   const types = Array.isArray(schema.type) ? schema.type : schema.type ? [schema.type] : [];
   if (types.length > 1) {
     return types.map((type) => schemaToType({ ...schema, type }, currentKey)).join(" | ");

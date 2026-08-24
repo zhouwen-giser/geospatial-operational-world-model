@@ -1,0 +1,70 @@
+{
+  "requestId": "route-001",
+  "status": "COMPLETED",
+  "queryResultReferenceKey": {
+    "namespace": "gowm",
+    "kind": "QUERY_RESULT",
+    "id": "wrf_44444444444444444444444444444444",
+    "version": "1"
+  },
+  "routingSnapshot": {
+    "networkDatasetVersion": "roads-2026.08",
+    "graphVersion": "graph-2026.08-build-1",
+    "travelProfileVersion": "ugv/1.0",
+    "costProfileVersion": "balanced/1.0",
+    "conditionSnapshotId": "condition-12001",
+    "sourceWorldVersion": 12001,
+    "graphContentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "costContentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "conditionContentHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "capturedAt": "2026-08-24T08:00:00Z"
+  },
+  "candidates": [
+    {
+      "rank": 1,
+      "routeSignature": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "segments": [
+        {
+          "graphVersion": "graph-2026.08-build-1",
+          "arcKey": "arc_11111111111111111111111111111111",
+          "startFractionPpm": 125000,
+          "endFractionPpm": 1000000,
+          "segmentRole": "ROUTE",
+          "sourceFeatureReferenceKey": {
+            "namespace": "gowm",
+            "kind": "LAYER_FEATURE",
+            "id": "wrf_22222222222222222222222222222222",
+            "version": "7"
+          },
+          "distanceMm": 112000,
+          "durationMs": 15000,
+          "riskMicroUnits": 10,
+          "energyMwh": 4,
+          "turnPenaltyUnits": 0
+        }
+      ],
+      "metrics": {
+        "distanceMm": 112000,
+        "durationMs": 15000,
+        "riskMicroUnits": 10,
+        "energyMwh": 4,
+        "combinedCostUnits": 15014
+      },
+      "verification": {
+        "status": "VALID",
+        "checks": [
+          {
+            "code": "ARC_CONTINUITY",
+            "status": "PASS"
+          }
+        ],
+        "verifierVersion": "route-verifier/1.0",
+        "verifiedResultHash": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "warnings": []
+      }
+    }
+  ],
+  "validUntil": "2026-08-24T08:05:00Z",
+  "revalidationRequired": true,
+  "warnings": []
+}

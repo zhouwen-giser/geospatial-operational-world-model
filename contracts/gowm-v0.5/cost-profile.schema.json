@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:cost-profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profileId",
+    "version",
+    "weights",
+    "contentHash"
+  ],
+  "properties": {
+    "profileId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "distance",
+        "time",
+        "risk",
+        "energy",
+        "surface"
+      ],
+      "properties": {
+        "distance": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "time": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "risk": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "energy": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "surface": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "roundingPolicy": {
+      "const": "HALF_AWAY_FROM_ZERO"
+    },
+    "contentHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    }
+  }
+}

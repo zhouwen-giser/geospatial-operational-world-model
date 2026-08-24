@@ -1,0 +1,138 @@
+{
+  "providerId": "gowm.network",
+  "providerVersion": "1.0.0",
+  "operations": [
+    {
+      "operationId": "network.graph.get",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-snap-request.schema.json",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-graph-version.schema.json",
+      "outputSchemaHash": "sha256:947f7f3d6a35b8e3bda52722b16f7e42dc612820c12fbd6a3b1af855dd35411c",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.graph.list",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-snap-request.schema.json",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-build-result.schema.json",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.graph.diagnose",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-snap-request.schema.json",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-build-result.schema.json",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.snap.point",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-snap-request.schema.json",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-snap-result.schema.json",
+      "outputSchemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.snap.points",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-snap-request.schema.json",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-snap-result.schema.json",
+      "outputSchemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.path.shortest",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-shortest-path-request.schema.json",
+      "inputSchemaHash": "sha256:b1bed7cd90744523d035567b0fbae0382a8fddc014728fef93158cadbdc48355",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-shortest-path-result.schema.json",
+      "outputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.path.cost-matrix",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-cost-matrix-request.schema.json",
+      "inputSchemaHash": "sha256:6dc75cdca2990e8239dd060f1d93bed26959d37ab32507fbc96d92844bda0a55",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-cost-matrix-result.schema.json",
+      "outputSchemaHash": "sha256:058346014c99499e53b6b58a2509ef1308c321aad10e4a2525991678824e68f7",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC_OR_ASYNC"
+    },
+    {
+      "operationId": "network.path.expand",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-shortest-path-result.schema.json",
+      "inputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-shortest-path-result.schema.json",
+      "outputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.path.verify",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-shortest-path-result.schema.json",
+      "inputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "outputSchemaFile": "contracts/gowm-v0.5/route-verification-report.schema.json",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.connectivity.inspect",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-snap-request.schema.json",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-build-result.schema.json",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "network.reachability",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/gowm-v0.5/network-snap-request.schema.json",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaFile": "contracts/gowm-v0.5/network-build-result.schema.json",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    }
+  ]
+}

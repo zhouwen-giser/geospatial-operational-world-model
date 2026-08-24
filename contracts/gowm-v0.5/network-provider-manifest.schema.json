@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:provider-manifest-extension",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "providerId",
+    "providerVersion",
+    "operations"
+  ],
+  "properties": {
+    "providerId": {
+      "type": "string"
+    },
+    "providerVersion": {
+      "type": "string"
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "operationVersion",
+          "maturity",
+          "inputSchemaFile",
+          "inputSchemaHash",
+          "outputSchemaFile",
+          "outputSchemaHash",
+          "scopePolicy",
+          "dataSnapshot",
+          "executionMode"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string"
+          },
+          "operationVersion": {
+            "type": "string"
+          },
+          "maturity": {
+            "enum": [
+              "EXPERIMENTAL",
+              "PREVIEW",
+              "STABLE",
+              "DEPRECATED"
+            ]
+          },
+          "inputSchemaFile": {
+            "type": "string"
+          },
+          "inputSchemaHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "outputSchemaFile": {
+            "type": "string"
+          },
+          "outputSchemaHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "scopePolicy": {
+            "const": "DATA_SCOPE_REQUIRED"
+          },
+          "dataSnapshot": {
+            "const": "REQUIRED"
+          },
+          "executionMode": {
+            "enum": [
+              "SYNC",
+              "SYNC_OR_ASYNC"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

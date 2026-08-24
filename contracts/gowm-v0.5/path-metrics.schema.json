@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:path-metrics",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "distanceMm",
+    "durationMs",
+    "riskMicroUnits",
+    "energyMwh",
+    "combinedCostUnits"
+  ],
+  "properties": {
+    "distanceMm": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "durationMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "riskMicroUnits": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "energyMwh": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "combinedCostUnits": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

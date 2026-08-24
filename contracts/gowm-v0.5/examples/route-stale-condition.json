@@ -1,0 +1,11 @@
+{
+  "routeResultReferenceKey": {
+    "namespace": "gowm",
+    "kind": "QUERY_RESULT",
+    "id": "wrf_44444444444444444444444444444444",
+    "version": "1"
+  },
+  "originalConditionSnapshotId": "condition-12001",
+  "currentConditionSnapshotId": "condition-12002",
+  "expectedVerificationStatus": "STALE"
+}

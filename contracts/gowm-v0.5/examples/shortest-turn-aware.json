@@ -1,0 +1,28 @@
+{
+  "routingSnapshot": {
+    "networkDatasetVersion": "roads-2026.08",
+    "graphVersion": "graph-2026.08-build-1",
+    "travelProfileVersion": "ugv/1.0",
+    "costProfileVersion": "balanced/1.0",
+    "conditionSnapshotId": "condition-12001",
+    "sourceWorldVersion": 12001,
+    "graphContentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "costContentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "conditionContentHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "capturedAt": "2026-08-24T08:00:00Z"
+  },
+  "start": {
+    "arcKey": "arc_11111111111111111111111111111111",
+    "fractionPpm": 125000,
+    "direction": "FORWARD"
+  },
+  "destination": {
+    "arcKey": "arc_22222222222222222222222222222222",
+    "fractionPpm": 875000,
+    "direction": "FORWARD"
+  },
+  "objective": "FASTEST",
+  "turnLegality": "STRICT",
+  "maximumSegments": 10000,
+  "deadlineMs": 10000
+}
