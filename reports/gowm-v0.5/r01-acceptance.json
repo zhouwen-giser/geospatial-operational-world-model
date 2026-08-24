@@ -1,0 +1,21 @@
+{
+  "phase": "R01",
+  "status": "PASS",
+  "implementation": {
+    "manifest": "PASS_4_FROZEN_OPERATIONS",
+    "coordinateEndpoints": "PASS_REAL_E2E",
+    "jointSnapCandidates": "PASS_IMPLEMENTED",
+    "orderedWaypoints": "PASS_REAL_E2E",
+    "viaReferences": "PASS_IMPLEMENTED",
+    "avoidReferences": "PASS_REAL_E2E",
+    "objectives": "PASS_FIXED_POINT_ENGINE",
+    "queryResultIdentityTtl": "PASS_CONTRACT"
+  },
+  "realDatabase": {
+    "runId": "r01-20260825t0720",
+    "database": "gowm_v05_r00_20260825t0640",
+    "role": "route_planner_provider inherited by ephemeral LOGIN",
+    "result": "PASS"
+  },
+  "remainingAcceptance": "AC-R019..AC-R025 require R02/R03; full AC-R001..AC-R028 rollup deferred"
+}

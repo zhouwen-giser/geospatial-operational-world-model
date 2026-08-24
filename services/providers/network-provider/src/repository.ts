@@ -38,6 +38,22 @@ export class NetworkRepository {
     this.now = options.now ?? (() => new Date());
   }
 
+  async loadPinned(snapshotValue: unknown, security: { dataScopeKey?: string; datasetScopeKey?: string }, deadlineRemainingMs: number): Promise<LoadedNetwork> {
+    const dataScopeKey = security.dataScopeKey?.trim(); const datasetScopeKey = security.datasetScopeKey?.trim();
+    if (!dataScopeKey || !datasetScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "network data and dataset scopes are required");
+    const client = await this.options.pool.connect().catch((cause: unknown) => { throw new ProviderProtocolError("PROVIDER_NOT_READY", "network read pool is unavailable", { retryable: true, cause }); });
+    let open = false;
+    try {
+      await client.query("BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY"); open = true;
+      const timeout = Math.max(1, Math.min(this.statementTimeoutMs, Math.floor(deadlineRemainingMs)));
+      await client.query("SELECT set_config('statement_timeout',$1::text,true)", [`${timeout}ms`]);
+      await client.query("SELECT gowm_network_v1.set_scope($1::text,$2::text)", [dataScopeKey, datasetScopeKey]);
+      const network = await this.loadNetwork(client, routingSnapshot(snapshotValue), dataScopeKey, datasetScopeKey);
+      await client.query("COMMIT"); open = false; return network;
+    } catch (error) { if (open) await client.query("ROLLBACK").catch(() => undefined); throw mapDatabaseError(error); }
+    finally { client.release(); }
+  }
+
   async execute(operationId: NetworkOperationId, inputValue: unknown, security: { dataScopeKey?: string; datasetScopeKey?: string }, deadlineRemainingMs: number): Promise<NetworkExecutionResult> {
     const dataScopeKey = security.dataScopeKey?.trim();
     const datasetScopeKey = security.datasetScopeKey?.trim();

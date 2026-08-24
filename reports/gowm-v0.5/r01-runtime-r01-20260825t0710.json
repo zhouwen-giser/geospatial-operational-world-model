@@ -1,0 +1,74 @@
+{
+  "phase": "R01",
+  "runId": "r01-20260825t0710",
+  "database": "gowm_v05_r00_20260825t0640",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3165
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3053
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "postgres",
+        "psql",
+        "<create r01_r01_20260825t0710 redacted>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3200
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--name",
+        "gowm-r01-20260825t0710-route-proxy",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--publish",
+        "127.0.0.1::5432",
+        "node:22-bookworm",
+        "<fixed proxy>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 791
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}",
+        "gowm-r01-20260825t0710-route-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 60
+    }
+  ],
+  "summary": null,
+  "errors": [
+    "error: network scope is unavailable\n    at D:\\Code\\agent-app\\geospatial-operational-world-model\\node_modules\\pg\\lib\\client.js:694:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async loadSnapshot (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\route-planning-runtime-gate.ts:30:109)\n    at async <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\route-planning-runtime-gate.ts:22:17)"
+  ]
+}

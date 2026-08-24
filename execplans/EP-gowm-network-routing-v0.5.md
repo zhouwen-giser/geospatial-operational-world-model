@@ -53,7 +53,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] P00 Network Provider
 - [x] P01 Network Real Acceptance
 - [x] R00 Route Runtime
-- [ ] R01 Basic Route Plan
+- [x] R01 Basic Route Plan
 - [ ] R02 Independent Verifier
 - [ ] R03 Results/Alternatives Preview
 - [ ] G00 Gateway Integration
@@ -86,6 +86,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - P00 adds the deployable `gowm.network` Provider over the fixed `gowm_network_v1` surface. It preserves the frozen raw-schema byte locks, uses scoped repeatable-read transactions, and separates deterministic directed/product-state search from independent path replay.
 - P01 proves all 20 Network Provider rows on an isolated real PostgreSQL/pgRouting database. Runtime discovery added a controlled WGS84 snapping function and read-contract Heading column instead of granting Provider access to Public/PostGIS functions; internal `ar_` identities are mapped deterministically to frozen external `arc_` keys.
 - R00 adds a private Route runtime with controlled submit/claim/cancel/complete functions, generation-fenced leases, immutable result tables and append-only progress. A real cancel-vs-late-completion race and expired-lease reclaim passed without granting direct Provider table mutation.
+- R01 adds the frozen four-operation `gowm.route-planning` Provider. It jointly evaluates directed snap candidates, routes ordered locations, honors Via/Avoid Feature references, supports all fixed-point objectives, and returns QUERY_RESULT identity, TTL and independently verified candidates.
 
 ## Failed attempts retained
 
@@ -106,7 +107,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - P00 full repository verification: 159 Vitest tests passed with one explicit skip, 39 STAS tests passed, 43 migration and 28 assertion SQL ASTs passed, and TypeScript/build passed. Network unit evidence covers exact partial fractions, directed no-path matrices, Pairwise/Multi-edge restrictions, exactly-once penalties and independent mutation detection.
 - P01 runtime run `p01-20260825t0610`: all AC-P001..AC-P020 passed on real PostgreSQL; directed distance `222640` matched pgRouting 4.0.1, and the same Provider pool returned `sha256:19adb184100ed2716645673f1a1f3c96f40cf2318e81eac4d7b20664d996cd87` before and after PostgreSQL restart.
 - R00 runtime database `gowm_v05_r00_20260825t0640`: migration 045 and assertion 030 passed, including idempotent request identity, expired lease reclaim to the next generation, cancellation fencing and denial of late completion.
+- R01 runtime run `r01-20260825t0720`: a real `route_planner_provider` role completed coordinate routing, ordered Waypoints and an Avoid Reference route on the P01 graph through the R00 runtime.
 
 ## Remaining work
 
-Execute R01 through S01 in order. Route persistence primitives pass; full AC-R001..AC-R028 remain pending Provider/planner/verifier/result phases.
+Execute R02 through S01 in order. Basic Route planning passes; verifier independence, stale checks and immutable result publication remain pending.

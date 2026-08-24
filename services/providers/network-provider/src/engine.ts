@@ -24,14 +24,15 @@ export function shortestPath(
   maximumSegments: number,
   ignoreSoftPenalties = false,
   nowMs: () => number = Date.now,
-  deadlineAtMs = Number.POSITIVE_INFINITY
+  deadlineAtMs = Number.POSITIVE_INFINITY,
+  excludedArcKeys: ReadonlySet<string> = new Set()
 ): Row {
   assertState(start);
   assertState(destination);
   const byKey = new Map(network.arcs.map((arc) => [arc.key, arc]));
   const startArc = byKey.get(start.arcKey);
   const destinationArc = byKey.get(destination.arcKey);
-  if (!startArc || !destinationArc || startArc.direction !== start.direction || destinationArc.direction !== destination.direction) {
+  if (!startArc || !destinationArc || excludedArcKeys.has(start.arcKey) || excludedArcKeys.has(destination.arcKey) || startArc.direction !== start.direction || destinationArc.direction !== destination.direction) {
     return noPath(network.routingSnapshot);
   }
   if (startArc.key === destinationArc.key && destination.fractionPpm >= start.fractionPpm) {
@@ -41,6 +42,7 @@ export function shortestPath(
   const maxHistory = Math.max(1, ...network.turnRules.map((rule) => rule.sequence.length - 1));
   const outgoing = new Map<string, NetworkArc[]>();
   for (const arc of network.arcs) {
+    if (excludedArcKeys.has(arc.key)) continue;
     const values = outgoing.get(arc.source) ?? [];
     values.push(arc);
     outgoing.set(arc.source, values);

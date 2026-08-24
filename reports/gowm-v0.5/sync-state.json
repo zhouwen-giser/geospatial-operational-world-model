@@ -2,7 +2,7 @@
   "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
   "targetVersion": "0.5.0",
   "status": "IN_PROGRESS",
-  "phase": "R00",
+  "phase": "R01",
   "baseline": {
     "branch": "main",
     "version": "0.4.0",
@@ -12,8 +12,8 @@
   "candidate": {
     "branch": "codex/gowm-network-routing-v0.5",
     "baseSha": "db575f79c874a69f65a2043a7e463338524b713d",
-    "localSha": "be0b8a8",
-    "remoteSha": "be0b8a8",
+    "localSha": "831cf00",
+    "remoteSha": "831cf00",
     "draftPr": 3
   },
   "milestones": {
@@ -28,5 +28,5 @@
     "notRun": ["AC-R001..AC-S022"]
   },
   "blockers": [],
-  "next": "Execute R01 basic Route Provider planning."
+  "next": "Execute R02 independent Route verifier."
 }
