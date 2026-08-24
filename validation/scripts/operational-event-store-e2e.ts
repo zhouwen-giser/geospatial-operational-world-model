@@ -5,6 +5,7 @@ import { OperationalProjectionRepository } from "../../packages/runtime/src/oper
 import { OperationalCorrelationRepository } from "../../packages/runtime/src/operational-correlation-repository.js";
 import { OperationalReadRepository } from "../../packages/runtime/src/operational-read-repository.js";
 import { OperationalPredicateRepository } from "../../packages/runtime/src/operational-predicate-repository.js";
+import { OperationalObservabilityRepository } from "../../packages/runtime/src/operational-observability-repository.js";
 import { closeDatabasePool } from "../../packages/runtime/src/db.js";
 import { buildObservationApp } from "../../services/observation-ingest/src/app.js";
 
@@ -31,6 +32,7 @@ try {
   const correlations = new OperationalCorrelationRepository(pool);
   const reads = new OperationalReadRepository(pool);
   const predicates = new OperationalPredicateRepository(pool);
+  const observability = new OperationalObservabilityRepository(pool);
   const input = {
     dataScopeKey: scope,
     sourceAuthority: "provider-e2e",
@@ -141,6 +143,58 @@ try {
       crossScope.result.tasks.length!==0 || !/^sha256:[0-9a-f]{64}$/u.test(found.snapshot.scopeDigest)) {
     throw new Error("operational scoped read contract E2E invariant failed");
   }
+  const assessmentFrom = new Date(Date.parse(eventTime)-1_000).toISOString();
+  const assessmentTo = new Date(Date.now()+10_000).toISOString();
+  await pool.query(
+    `INSERT INTO operational_source_health_revision(
+       data_scope_key,source_authority,health_status,valid_from,observed_at,evidence_id
+     ) VALUES ($1,'provider-e2e','HEALTHY',clock_timestamp()-interval '1 hour',clock_timestamp(),$2)`,
+    [scope,`health-${suffix}`]
+  );
+  await pool.query(
+    `INSERT INTO operational_source_watermark_revision(
+       data_scope_key,source_authority,closed_through_event_time,allowed_lateness,completeness_state,evidence_id
+     ) VALUES ($1,'provider-e2e',$2::timestamptz+interval '1 hour',interval '5 seconds','COMPLETE',$3)`,
+    [scope,assessmentTo,`watermark-${suffix}`]
+  );
+  await pool.query(
+    `INSERT INTO operational_coverage_evidence(
+       data_scope_key,subject_reference_key,source_authority,valid_time,coverage_sufficient,evidence_id,policy_version
+     ) VALUES ($1,$2,'provider-e2e',tstzrange($3::timestamptz,$4::timestamptz+interval '1 minute','[)'),true,$5,'coverage-e2e-v1')`,
+    [scope,snapshot.referenceKey.id,assessmentFrom,assessmentTo,`coverage-${suffix}`]
+  );
+  const assessmentInput = {
+    dataScopeKey: scope,subjectReferenceKey: snapshot.referenceKey,
+    timeRange: { from: assessmentFrom,to: assessmentTo },expectedSources: ["provider-e2e"]
+  };
+  const freshAssessment = await observability.assess({ ...assessmentInput,freshnessSlaSeconds: 300 });
+  const staleAssessment = await observability.assess({ ...assessmentInput,freshnessSlaSeconds: 1 });
+  await pool.query(
+    `INSERT INTO operational_observation_gap(
+       data_scope_key,subject_reference_key,source_authority,gap_time,evidence_id,reason
+     ) VALUES ($1,$2,'provider-e2e',tstzrange($3::timestamptz,$4::timestamptz,'[)'),$5,'E2E explicit gap')`,
+    [scope,snapshot.referenceKey.id,assessmentFrom,assessmentTo,`gap-${suffix}`]
+  );
+  const gapAssessment = await observability.assess({
+    ...assessmentInput,timeRange: { from: assessmentFrom,to: new Date(Date.parse(assessmentTo)-1).toISOString() },
+    freshnessSlaSeconds: 300
+  });
+  await pool.query(
+    `INSERT INTO operational_source_health_revision(
+       data_scope_key,source_authority,health_status,valid_from,observed_at,evidence_id
+     ) VALUES ($1,'provider-e2e','UNHEALTHY',clock_timestamp(),clock_timestamp(),$2)`,
+    [scope,`health-unhealthy-${suffix}`]
+  );
+  const unhealthyAssessment = await observability.assess({
+    ...assessmentInput,timeRange: { from: new Date(Date.parse(assessmentFrom)+1).toISOString(),to: assessmentTo },
+    freshnessSlaSeconds: 300
+  });
+  if (freshAssessment.assessment.status!=="FRESH" || !freshAssessment.assessment.coverageSufficient ||
+      staleAssessment.assessment.status!=="STALE" || gapAssessment.assessment.status!=="OBSERVATION_GAP" ||
+      gapAssessment.assessment.gapIntervals?.length!==1 ||
+      unhealthyAssessment.assessment.status!=="SOURCE_UNHEALTHY" || unhealthyAssessment.assessment.coverageSufficient) {
+    throw new Error("operational observability E2E invariant failed");
+  }
   const factCountsBefore = await pool.query<{ identities: string;observations: string;world_events: string }>(
     `SELECT (SELECT count(*) FROM world_reference_identity)::text AS identities,
             (SELECT count(*) FROM world_observation)::text AS observations,
@@ -162,6 +216,7 @@ try {
             (SELECT count(*) FROM world_event)::text AS world_events`
   );
   if (occurred.evaluation.status!=="SUPPORTED" || occurred.evaluation.supportingEvidenceIds.length!==1 ||
+      occurred.evaluation.observabilityAssessment?.status!=="SOURCE_UNHEALTHY" ||
       occurredRetry.evaluation.evaluationId!==occurred.evaluation.evaluationId ||
       noData.evaluation.status!=="NO_DATA" ||
       JSON.stringify(factCountsBefore.rows[0])!==JSON.stringify(factCountsAfter.rows[0])) {
@@ -188,9 +243,16 @@ try {
     },
     predicateEvaluation: {
       supportedStatus: occurred.evaluation.status,noDataStatus: noData.evaluation.status,
+      observabilityStatus: occurred.evaluation.observabilityAssessment?.status,
       idempotentEvaluationId: occurred.evaluation.evaluationId,
       supportingEvidence: occurred.evaluation.supportingEvidenceIds.length,
       worldFactsUnchanged: true
+    },
+    observability: {
+      freshStatus: freshAssessment.assessment.status,staleStatus: staleAssessment.assessment.status,
+      gapStatus: gapAssessment.assessment.status,gapIntervals: gapAssessment.assessment.gapIntervals?.length,
+      unhealthyStatus: unhealthyAssessment.assessment.status,
+      coverageSufficient: freshAssessment.assessment.coverageSufficient
     }
   })}\n`);
 } finally {

@@ -8,7 +8,8 @@ import type {
   GowmV04CommonReferenceKey,
   GowmV04ExternalCorrelationClaim,
   GowmV04ExternalPredicate,
-  GowmV04PredicateEvaluation
+  GowmV04PredicateEvaluation,
+  GowmV04ObservabilityAssessment
 } from "../../platform/contract-runtime/src/generated/contracts.js";
 import { assertContract } from "../../platform/contract-runtime/src/schema-validator.js";
 
@@ -100,6 +101,7 @@ export type OperationalReferenceKey = GowmV04CommonReferenceKey;
 export type OperationalCorrelationClaim = GowmV04ExternalCorrelationClaim;
 export type ExternalPredicate = GowmV04ExternalPredicate;
 export type PredicateEvaluation = GowmV04PredicateEvaluation;
+export type ObservabilityAssessment = GowmV04ObservabilityAssessment;
 
 export function parseOperationalEventIngest(input: unknown): OperationalEventIngest {
   return OperationalEventIngestSchema.parse(input);
@@ -145,6 +147,24 @@ export function assertExternalPredicate(predicate: unknown): asserts predicate i
 
 export function assertPredicateEvaluation(evaluation: unknown): asserts evaluation is PredicateEvaluation {
   assertContract<PredicateEvaluation>("gowm-v0.4/predicate-evaluation.schema.json",evaluation);
+}
+
+export const ObservabilityRequestSchema = z.object({
+  dataScopeKey: z.string().min(1).max(256),
+  subjectReferenceKey: OperationalReferenceKeySchema,
+  timeRange: z.object({
+    from: z.iso.datetime({ offset: true }),to: z.iso.datetime({ offset: true })
+  }).strict().refine((range) => Date.parse(range.to)>Date.parse(range.from),{
+    message: "timeRange.to must follow timeRange.from"
+  }),
+  expectedSources: z.array(z.string().min(1).max(128)).min(1).max(100),
+  freshnessSlaSeconds: z.number().int().positive().max(86_400).default(300)
+}).strict();
+
+export type ObservabilityRequest = z.infer<typeof ObservabilityRequestSchema>;
+
+export function assertObservabilityAssessment(assessment: unknown): asserts assessment is ObservabilityAssessment {
+  assertContract<ObservabilityAssessment>("gowm-v0.4/observability-assessment.schema.json",assessment);
 }
 
 export function validateOperationalEventTime(

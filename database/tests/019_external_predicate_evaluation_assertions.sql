@@ -58,6 +58,19 @@ SELECT pg_temp.add_predicate_event('predicate-confirmed','PHYSICAL_EFFECT_CONFIR
 SELECT pg_temp.add_predicate_event('predicate-contradicted','PHYSICAL_EFFECT_CONTRADICTED');
 SELECT project_operational_task('predicate-evaluation-a','predicate-task');
 
+INSERT INTO operational_source_health_revision(
+  data_scope_key,source_authority,health_status,valid_from,observed_at,evidence_id
+) VALUES ('predicate-evaluation-a','predicate-test','HEALTHY',clock_timestamp()-interval '1 hour',clock_timestamp(),'predicate-health');
+INSERT INTO operational_source_watermark_revision(
+  data_scope_key,source_authority,closed_through_event_time,allowed_lateness,completeness_state,evidence_id
+) VALUES ('predicate-evaluation-a','predicate-test',clock_timestamp()+interval '1 hour',interval '5 seconds','COMPLETE','predicate-watermark');
+INSERT INTO operational_coverage_evidence(
+  data_scope_key,subject_reference_key,source_authority,valid_time,coverage_sufficient,evidence_id,policy_version
+) VALUES (
+  'predicate-evaluation-a',(SELECT reference_key FROM predicate_refs WHERE name='predicate-subject'),'predicate-test',
+  tstzrange(clock_timestamp()-interval '1 hour',clock_timestamp()+interval '1 hour','[)'),true,'predicate-coverage','coverage-v1'
+);
+
 CREATE TEMP TABLE predicate_test_baseline AS
 SELECT (SELECT count(*) FROM world_reference_identity) AS identities,
        (SELECT count(*) FROM world_observation) AS observations,
@@ -167,6 +180,8 @@ BEGIN
     SELECT 1 FROM external_predicate_evaluation evaluation JOIN predicate_results result USING(evaluation_id)
     WHERE result.label='not-supported' AND evaluation.evidence_snapshot->>'coverageSufficient'='true'
       AND jsonb_array_length(evaluation.contradicting_evidence_ids)>0
+      AND evaluation.observability_assessment->>'status'='FRESH'
+      AND evaluation.observability_assessment->>'coverageSufficient'='true'
   ) THEN RAISE EXCEPTION 'NOT_SUPPORTED lacked sufficient coverage or explicit opposite evidence'; END IF;
   IF EXISTS (
     SELECT 1 FROM external_predicate_evaluation evaluation JOIN predicate_results result USING(evaluation_id)

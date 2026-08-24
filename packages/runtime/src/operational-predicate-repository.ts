@@ -36,6 +36,7 @@ export class OperationalPredicateRepository {
       `SELECT predicate,status,evaluated_at_world_version,supporting_evidence_ids,
               contradicting_evidence_ids,assumptions,warnings,method_version,
               predicate_id,evaluation_id,evidence_snapshot,input_hash,result_hash
+              ,observability_assessment
        FROM external_predicate_evaluation
        WHERE data_scope_key=$1 AND evaluation_id=$2`,
       [dataScopeKey,evaluationId]
@@ -58,6 +59,9 @@ function mapStoredEvaluation(row: Record<string,unknown>): StoredPredicateEvalua
     warnings: json(row.warnings),
     methodVersion: String(row.method_version)
   };
+  if (row.observability_assessment!==null && row.observability_assessment!==undefined) {
+    evaluation.observabilityAssessment = json(row.observability_assessment);
+  }
   assertExternalPredicate(predicate);
   assertPredicateEvaluation(evaluation);
   return {
