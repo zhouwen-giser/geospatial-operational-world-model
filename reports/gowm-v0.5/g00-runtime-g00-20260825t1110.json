@@ -1,0 +1,74 @@
+{
+  "phase": "G00",
+  "runId": "g00-20260825t1110",
+  "database": "gowm_v05_r03_20260825t1040",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3166
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3050
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "postgres",
+        "psql",
+        "<create g00_g00_20260825t1110 redacted>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3205
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--name",
+        "gowm-g00-20260825t1110-gateway-proxy",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--publish",
+        "127.0.0.1::5432",
+        "node:22-bookworm",
+        "<fixed proxy>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 805
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}",
+        "gowm-g00-20260825t1110-gateway-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 50
+    }
+  ],
+  "summary": null,
+  "errors": [
+    "ProviderProtocolError: World query plan semantic validation failed\n    at QueryPlanValidator.fail (D:\\Code\\agent-app\\geospatial-operational-world-model\\services\\gateway\\world-capability-gateway\\src\\query-plan-validation.ts:421:11)\n    at QueryPlanValidator.validate (D:\\Code\\agent-app\\geospatial-operational-world-model\\services\\gateway\\world-capability-gateway\\src\\query-plan-validation.ts:70:32)\n    at WorldQueryRuntime.submit (D:\\Code\\agent-app\\geospatial-operational-world-model\\services\\gateway\\world-capability-gateway\\src\\query-plan-runtime.ts:67:46)\n    at <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-routing-gateway-e2e.ts:34:253)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+  ]
+}

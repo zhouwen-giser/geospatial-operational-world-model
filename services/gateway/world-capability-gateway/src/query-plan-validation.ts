@@ -7,6 +7,7 @@ import type {
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import {
   getContractSchemaHash,
+  isContractSchemaHash,
   validateContract,
   validateWorldQueryPlanSemantics
 } from "../../../../packages/platform/contract-runtime/src/index.js";
@@ -174,7 +175,7 @@ export class QueryPlanValidator {
   private assertCanonicalSchema(schemaUri: string, schemaHash: string, nodeId: string): void {
     try {
       const canonicalHash = getContractSchemaHash(schemaUri);
-      if (canonicalHash !== schemaHash) this.fail("Registry schema hash differs from the canonical contract", {
+      if (!isContractSchemaHash(schemaUri, schemaHash)) this.fail("Registry schema hash differs from the canonical or frozen source-byte contract", {
         nodeId,
         schemaUri,
         registeredHash: schemaHash,

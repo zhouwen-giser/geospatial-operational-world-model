@@ -56,7 +56,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] R01 Basic Route Plan
 - [x] R02 Independent Verifier
 - [x] R03 Results/Alternatives Preview
-- [ ] G00 Gateway Integration
+- [x] G00 Gateway Integration
 - [ ] T00 Security/Performance/Recovery
 - [ ] S00 Documentation/Version
 - [ ] S01 Final Candidate
@@ -110,7 +110,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - R01 runtime run `r01-20260825t0720`: a real `route_planner_provider` role completed coordinate routing, ordered Waypoints and an Avoid Reference route on the P01 graph through the R00 runtime.
 - R02 adds a verifier implementation with no Solver imports. Unit differential tests reject metric and forbidden-turn mutation; real run `r02-20260825t1020` returned `STALE` for an immutable P01 route after both a newer Condition Snapshot and a different active Graph, and `INVALID` after metric mutation.
 - R03 migration 046 atomically publishes Route Request, Candidate, Segment, Verification, QUERY_RESULT identity, TTL and terminal state under the lease generation fence. Real run `r03-20260825t1040` persisted three exact results and replayed the coordinate request byte-equivalently.
+- G00 real run `g00-20260825t1200` registered Network/Route providers in the controlled Gateway, completed Direct Snap and Route, executed a typed World-state→Route→Verify DAG, failed closed on a wrong schema lock, cancelled an async job, and replayed the completed job after reconstructing the Gateway runtime over the same store.
 
 ## Remaining work
 
-Execute G00 through S01 in order. Route results now publish immutably and replay exactly; Gateway registry/DAG/job integration remains pending.
+Execute T00 through S01 in order. Gateway integration passes; the consolidated security, performance, migration-upgrade and restart/recovery matrix remains pending.

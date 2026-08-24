@@ -118,6 +118,17 @@ export function getContractSchemaHash(nameOrId: string): `sha256:${string}` {
   return digest as `sha256:${string}`;
 }
 
+const sourceByteSchemaHashes: Readonly<Record<string, `sha256:${string}`>> = {
+  "urn:gowm:v0.5:route-planning-request": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+  "urn:gowm:v0.5:route-planning-result": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+  "urn:gowm:v0.5:route-verification-report": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd"
+};
+
+/** Accepts the canonical schema digest or an explicitly frozen source-byte digest. */
+export function isContractSchemaHash(nameOrId: string, digest: string): boolean {
+  return getContractSchemaHash(nameOrId) === digest || sourceByteSchemaHashes[nameOrId] === digest;
+}
+
 export function listContractSchemas(): Array<{ key: string; id?: string; title?: string }> {
   return Object.entries(bundledSchemas)
     .map(([key, rawSchema]) => {
