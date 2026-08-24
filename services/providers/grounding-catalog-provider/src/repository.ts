@@ -32,7 +32,8 @@ export class GroundingCatalogRepository {
   ): Promise<GroundingCatalogExecutionResult> {
     const dataScopeKey = security.dataScopeKey?.trim();
     if (!dataScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "data scope is required");
-    const isDataset = !operationId.startsWith("reference.");
+    const isDataset = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.");
+    const isResult = operationId.startsWith("result.") || operationId.startsWith("reference-set.");
     const datasetScopeKey = security.datasetScopeKey?.trim();
     if (isDataset && !datasetScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "dataset scope is required");
     const client = await this.options.pool.connect().catch((cause: unknown) => {
@@ -47,12 +48,15 @@ export class GroundingCatalogRepository {
       await client.query("SELECT set_config('lock_timeout', $1::text, true)", [`${Math.min(this.lockTimeoutMs, statementTimeout)}ms`]);
       if (isDataset) {
         await client.query("SELECT gowm_catalog_v1.set_scope($1::text,$2::text)", [dataScopeKey, datasetScopeKey]);
+      } else if (isResult) {
+        await client.query("SELECT gowm_result_v1.set_data_scope($1::text)", [dataScopeKey]);
       } else {
         await client.query("SELECT gowm_reference_v1.set_data_scope($1::text)", [dataScopeKey]);
       }
-      const snapshot = await this.snapshot(client, dataScopeKey, isDataset ? datasetScopeKey : undefined, isDataset);
+      const snapshot = await this.snapshot(client, dataScopeKey, isDataset ? datasetScopeKey : undefined, isDataset ? "dataset" : isResult ? "result" : "reference");
       const result = isDataset
         ? await this.datasetOperation(client, operationId, asRecord(input), snapshot)
+        : isResult ? await this.resultOperation(client, operationId, asRecord(input), snapshot)
         : await this.referenceOperation(client, operationId, asRecord(input), snapshot);
       await client.query("COMMIT");
       open = false;
@@ -65,12 +69,12 @@ export class GroundingCatalogRepository {
     }
   }
 
-  async readiness(mode: "reference" | "dataset"): Promise<{ ready: boolean; reasons: string[] }> {
+  async readiness(mode: "reference" | "dataset" | "result"): Promise<{ ready: boolean; reasons: string[] }> {
     let client: CatalogSqlClient | undefined;
     try {
       client = await this.options.pool.connect();
-      const schema = mode === "reference" ? "gowm_reference_v1" : "gowm_catalog_v1";
-      const view = mode === "reference" ? "current_descriptor" : "dataset";
+      const schema = mode === "reference" ? "gowm_reference_v1" : mode === "dataset" ? "gowm_catalog_v1" : "gowm_result_v1";
+      const view = mode === "reference" ? "current_descriptor" : mode === "dataset" ? "dataset" : "query_result";
       await client.query(`SELECT * FROM ${schema}.${view} LIMIT 0`);
       await client.query(`SELECT * FROM ${schema}.scope_resource LIMIT 0`);
       return { ready: true, reasons: [] };
@@ -85,16 +89,22 @@ export class GroundingCatalogRepository {
     client: CatalogSqlClient,
     dataScopeKey: string,
     datasetScopeKey: string | undefined,
-    isDataset: boolean
+    mode: "reference" | "dataset" | "result"
   ): Promise<{ context: DataSnapshotContext; version: string; worldVersion: number; scopeDigest: `sha256:${string}` }> {
-    const schema = isDataset ? "gowm_catalog_v1" : "gowm_reference_v1";
-    const versionResult = isDataset
+    const schema = mode === "dataset" ? "gowm_catalog_v1" : mode === "result" ? "gowm_result_v1" : "gowm_reference_v1";
+    const versionResult = mode === "dataset"
       ? await client.query("SELECT reference_key,version,content_hash FROM gowm_catalog_v1.dataset ORDER BY reference_key")
+      : mode === "result"
+        ? await client.query(`SELECT reference_key,version_marker FROM (
+            SELECT reference_key,result_hash AS version_marker FROM gowm_result_v1.query_result
+            UNION ALL SELECT reference_key,data_snapshot_hash || ':' || compute_snapshot_hash FROM gowm_result_v1.derived_reference
+            UNION ALL SELECT reference_key,member_count::text FROM gowm_result_v1.reference_set
+          ) snapshot_rows ORDER BY reference_key`)
       : await client.query("SELECT COALESCE(max(descriptor_version),0)::text AS version, COALESCE(max(world_version),0) AS world_version FROM gowm_reference_v1.current_descriptor");
     const resourceResult = await client.query(`SELECT reference_key_value FROM ${schema}.scope_resource ORDER BY reference_key LIMIT 1`);
     const referenceKey = referenceKeyValue(resourceResult.rows[0]?.reference_key_value);
-    const version = isDataset ? sha256(versionResult.rows) : requiredString(versionResult.rows[0]?.version, "snapshot.version");
-    const worldVersion = isDataset ? 0 : safeInteger(versionResult.rows[0]?.world_version, "snapshot.world_version");
+    const version = mode === "reference" ? requiredString(versionResult.rows[0]?.version, "snapshot.version") : sha256(versionResult.rows);
+    const worldVersion = mode === "reference" ? safeInteger(versionResult.rows[0]?.world_version, "snapshot.world_version") : 0;
     const scopeDigest = catalogScopeDigest(dataScopeKey, datasetScopeKey);
     const capturedAt = (this.options.now ?? (() => new Date()))().toISOString();
     return {
@@ -123,7 +133,8 @@ export class GroundingCatalogRepository {
   ): Promise<GroundingCatalogExecutionResult> {
     if (operationId === "reference.get") {
       const descriptor = await this.descriptor(client, referenceId(input.referenceKey));
-      return result(descriptor, snapshot.context, descriptor ? 1 : 0, descriptor ? 1 : 0);
+      if (!descriptor) throw scopeOpaqueNotFound("reference");
+      return result(descriptor, snapshot.context, 1, 1);
     }
     if (operationId === "reference.resolve" || operationId === "reference.search") {
       const mentions = Array.isArray(input.mentions) ? input.mentions.map(asRecord) : [];
@@ -200,7 +211,8 @@ export class GroundingCatalogRepository {
   ): Promise<GroundingCatalogExecutionResult> {
     if (operationId === "dataset.get") {
       const item = await this.dataset(client, referenceId(input.referenceKey));
-      return result(item, snapshot.context, item ? 1 : 0, item ? 1 : 0);
+      if (!item) throw scopeOpaqueNotFound("dataset");
+      return result(item, snapshot.context, 1, 1);
     }
     if (operationId === "layer.get") {
       const query = await client.query(
@@ -210,7 +222,8 @@ export class GroundingCatalogRepository {
          WHERE layer.reference_key=$1::text`, [referenceId(input.referenceKey)]
       );
       const item = query.rows[0] ? mapLayer(query.rows[0]) : undefined;
-      return result(item, snapshot.context, item ? 1 : 0, item ? 1 : 0);
+      if (!item) throw scopeOpaqueNotFound("layer");
+      return result(item, snapshot.context, 1, 1);
     }
     if (operationId === "feature.get") {
       const query = await client.query(
@@ -220,7 +233,8 @@ export class GroundingCatalogRepository {
          WHERE feature.reference_key=$1::text`, [referenceId(input.referenceKey)]
       );
       const item = query.rows[0] ? mapFeature(query.rows[0]) : undefined;
-      return result(item, snapshot.context, item ? 1 : 0, item ? 1 : 0);
+      if (!item) throw scopeOpaqueNotFound("feature");
+      return result(item, snapshot.context, 1, 1);
     }
     const limit = Math.min(optionalInteger(input.limit, 100), this.maximumRows);
     const cursor = decodeCatalogCursor(typeof input.cursor === "string" ? input.cursor : undefined, {
@@ -272,6 +286,82 @@ export class GroundingCatalogRepository {
       v: 1, operationId, scopeDigest: snapshot.scopeDigest, snapshotVersion: snapshot.version, after: afterId
     }, this.options.cursorSecret) : undefined;
     return result({ schemaVersion: "1.0", items: items.filter(Boolean), truncated, ...(nextCursor ? { nextCursor } : {}) }, snapshot.context, visible.length, query.rows.length);
+  }
+
+  private async resultOperation(
+    client: CatalogSqlClient,
+    operationId: GroundingCatalogOperationId,
+    input: Row,
+    snapshot: { context: DataSnapshotContext; version: string; worldVersion: number; scopeDigest: `sha256:${string}` }
+  ): Promise<GroundingCatalogExecutionResult> {
+    if (operationId === "result.get") {
+      const query = await client.query("SELECT * FROM gowm_result_v1.query_result WHERE reference_key=$1::text", [referenceId(input.referenceKey)]);
+      const item = query.rows[0] ? mapQueryResultReference(query.rows[0]) : undefined;
+      if (!item) throw scopeOpaqueNotFound("result reference");
+      return result(item, snapshot.context, 1, 1);
+    }
+    if (operationId === "result.validate") {
+      const references = Array.isArray(input.references) ? input.references.map(asRecord) : [];
+      const results = [];
+      for (const requested of references) {
+        const key = referenceKeyValue(requested.referenceKey);
+        const validation = await client.query<{ status: unknown; revalidation_required: unknown }>(
+          "SELECT * FROM gowm_result_v1.validate($1::text,$2::text,clock_timestamp())", [key.id, key.version]
+        );
+        const row = validation.rows[0];
+        results.push({
+          referenceKey: key,
+          status: requiredString(row?.status, "validation.status"),
+          revalidationRequired: Boolean(row?.revalidation_required)
+        });
+      }
+      return result({ schemaVersion: "1.0", results }, snapshot.context, results.length, references.length);
+    }
+    if (operationId === "reference-set.get-members") {
+      const setKey = referenceId(input.referenceKey);
+      const setQuery = await client.query("SELECT * FROM gowm_result_v1.reference_set WHERE reference_key=$1::text", [setKey]);
+      const setRow = setQuery.rows[0];
+      if (!setRow) throw scopeOpaqueNotFound("reference set");
+      const validUntil = date(setRow.valid_until, "valid_until");
+      if (new Date(validUntil).getTime() <= (this.options.now?.() ?? new Date()).getTime()) {
+        throw new ProviderProtocolError("INVALID_REQUEST", "reference set is expired and requires validation");
+      }
+      const limit = Math.min(optionalInteger(input.limit, 100), this.maximumRows);
+      const cursor = decodeCatalogCursor(typeof input.cursor === "string" ? input.cursor : undefined, {
+        operationId,
+        scopeDigest: snapshot.scopeDigest,
+        snapshotVersion: snapshot.version
+      }, this.options.cursorSecret);
+      let afterOrdinal = -1;
+      if (cursor) {
+        const located = await client.query("SELECT member_ordinal FROM gowm_result_v1.reference_set_member WHERE set_reference_key=$1::text AND reference_key=$2::text", [setKey, cursor.after]);
+        if (!located.rows[0]) throw new ProviderProtocolError("INVALID_REQUEST", "cursor member is unavailable in this reference set");
+        afterOrdinal = safeInteger(located.rows[0].member_ordinal, "member_ordinal");
+      }
+      const membersQuery = await client.query(
+        `SELECT * FROM gowm_result_v1.reference_set_member
+         WHERE set_reference_key=$1::text AND member_ordinal>$2::integer
+         ORDER BY member_ordinal LIMIT $3::integer`, [setKey, afterOrdinal, limit + 1]
+      );
+      const truncated = membersQuery.rows.length > limit;
+      const visible = membersQuery.rows.slice(0, limit);
+      const members = visible.map((row) => referenceKeyValue(row.reference_key_value));
+      const last = members.at(-1);
+      const nextCursor = truncated && last ? encodeCatalogCursor({
+        v: 1, operationId, scopeDigest: snapshot.scopeDigest, snapshotVersion: snapshot.version, after: last.id
+      }, this.options.cursorSecret) : undefined;
+      return result({
+        referenceKey: referenceKeyValue(setRow.reference_key_value),
+        semanticType: requiredString(setRow.semantic_type, "semantic_type"),
+        memberCount: safeInteger(setRow.member_count, "member_count"),
+        members,
+        membersTruncated: truncated,
+        ...(nextCursor ? { nextCursor } : {}),
+        sourceQueryId: requiredString(setRow.source_query_id, "source_query_id"),
+        validUntil
+      }, snapshot.context, members.length, membersQuery.rows.length);
+    }
+    throw new ProviderProtocolError("OPERATION_NOT_FOUND", `unsupported result operation ${operationId}`);
   }
 
   private async dataset(client: CatalogSqlClient, id: string): Promise<Row | undefined> {
@@ -363,6 +453,20 @@ function mapFeature(row: Row): Row {
   });
 }
 
+function mapQueryResultReference(row: Row): Row {
+  return compact({
+    referenceKey: referenceKeyValue(row.reference_key_value),
+    queryId: requiredString(row.query_id, "query_id"),
+    resultHash: requiredString(row.result_hash, "result_hash"),
+    status: requiredString(row.status, "status"),
+    dataSnapshotHash: requiredString(row.data_snapshot_hash, "data_snapshot_hash"),
+    computeSnapshotHash: requiredString(row.compute_snapshot_hash, "compute_snapshot_hash"),
+    createdAt: date(row.created_at, "created_at"),
+    validUntil: finiteDate(row.valid_until),
+    artifactRefs: Array.isArray(row.artifact_refs) ? row.artifact_refs : []
+  });
+}
+
 function validateReference(requested: Row, key: ReferenceKey, descriptor: Row, now: Date): Row {
   if (typeof requested.expectedType === "string" && requested.expectedType !== descriptor.referenceType) return { status: "TYPE_MISMATCH", revalidationRequired: true };
   const version = asRecord(descriptor.version);
@@ -439,6 +543,9 @@ function finite(value: unknown, name: string): number {
 function positive(value: number, name: string): number { if (!Number.isSafeInteger(value) || value < 1) throw new Error(`${name} must be positive`); return value; }
 function bounded(value: number, maximum: number, name: string): number { const checked = positive(value, name); if (checked > maximum) throw new Error(`${name} must not exceed ${maximum}`); return checked; }
 function budgetExceeded(maximum: number): ProviderProtocolError { return new ProviderProtocolError("BUDGET_EXCEEDED", "catalog candidate budget exceeded", { details: { maximumCandidates: maximum } }); }
+function scopeOpaqueNotFound(kind: string): ProviderProtocolError {
+  return new ProviderProtocolError("SCOPE_DENIED", `${kind} is unavailable in the authorized scope`, { retryable: false });
+}
 function mapDatabaseError(error: unknown): ProviderProtocolError {
   if (error instanceof ProviderProtocolError) return error;
   const code = isRecord(error) && typeof error.code === "string" ? error.code : undefined;

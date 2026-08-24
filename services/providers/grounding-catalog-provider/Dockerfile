@@ -22,5 +22,5 @@ COPY services/stas/package.json services/stas/package-lock.json services/stas/
 RUN npm --prefix services/stas ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY --from=build /app/dist ./dist
 USER node
-EXPOSE 8090 8091
+EXPOSE 8090 8091 8093
 CMD ["node", "dist/services/providers/grounding-catalog-provider/src/index.js"]

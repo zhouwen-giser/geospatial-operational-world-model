@@ -59,6 +59,7 @@ export async function migrate(): Promise<void> {
     await provisionRuntimeLogin(pool, "gowm_situation_service", "SITUATION_DB_PASSWORD", "gowm.situation_db_password");
     await provisionRuntimeLogin(pool, "gowm_reference_service", "REFERENCE_DB_PASSWORD", "gowm.reference_db_password");
     await provisionRuntimeLogin(pool, "gowm_catalog_service", "CATALOG_DB_PASSWORD", "gowm.catalog_db_password");
+    await provisionRuntimeLogin(pool, "gowm_result_service", "RESULT_DB_PASSWORD", "gowm.result_db_password");
   } finally {
     await pool.end();
   }
@@ -67,7 +68,7 @@ export async function migrate(): Promise<void> {
 async function provisionRuntimeLogin(
   pool: pg.Pool,
   role: "gowm_gateway_service" | "gowm_gateway_registry_service" | "gowm_spatial_service" | "gowm_situation_service" |
-    "gowm_reference_service" | "gowm_catalog_service",
+    "gowm_reference_service" | "gowm_catalog_service" | "gowm_result_service",
   environmentName: string,
   settingName: string
 ): Promise<void> {
@@ -91,7 +92,7 @@ async function provisionRuntimeLogin(
 function assertDistinctRuntimePasswords(): void {
   const names = [
     "GATEWAY_DB_PASSWORD", "GATEWAY_REGISTRY_DB_PASSWORD", "SPATIAL_DB_PASSWORD", "SITUATION_DB_PASSWORD",
-    "REFERENCE_DB_PASSWORD", "CATALOG_DB_PASSWORD"
+    "REFERENCE_DB_PASSWORD", "CATALOG_DB_PASSWORD", "RESULT_DB_PASSWORD"
   ];
   const configured = names.map((name) => process.env[name]).filter((value): value is string => value !== undefined);
   if (new Set(configured).size !== configured.length) throw new Error("capability runtime database passwords must be distinct");

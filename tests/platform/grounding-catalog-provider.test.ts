@@ -40,6 +40,20 @@ describe("grounding catalog providers", () => {
     }
   });
 
+  it("registers the Result Registry operations as data-scoped", () => {
+    const provider = createGroundingCatalogProvider({ mode: "result", pool, cursorSecret });
+    expect(provider.runtime.manifest.provider.providerId).toBe("gowm.result-registry");
+    expect(provider.runtime.manifest.capabilities.map((capability) => capability.operationId)).toEqual([
+      "result.get", "result.validate", "reference-set.get-members"
+    ]);
+    for (const capability of provider.runtime.manifest.capabilities) {
+      expect(capability.scopePolicy).toBe("DATA_SCOPE_REQUIRED");
+      expect(capability.dataBinding).toBe("WORLD_SNAPSHOT_BOUND");
+      expect(capability.inputSchemaHash).toBe(getContractSchemaHash(capability.inputSchemaUri));
+      expect(capability.outputSchemaHash).toBe(getContractSchemaHash(capability.outputSchemaUri));
+    }
+  });
+
   it("binds signed cursors to operation, scope, and snapshot", () => {
     const scopeDigest = catalogScopeDigest("default", "tenant-a");
     const cursor = encodeCatalogCursor({

@@ -22,9 +22,16 @@ export const DATASET_OPERATION_IDS = [
   "feature.get"
 ] as const;
 
+export const RESULT_OPERATION_IDS = [
+  "result.get",
+  "result.validate",
+  "reference-set.get-members"
+] as const;
+
 export type ReferenceOperationId = (typeof REFERENCE_OPERATION_IDS)[number];
 export type DatasetOperationId = (typeof DATASET_OPERATION_IDS)[number];
-export type GroundingCatalogOperationId = ReferenceOperationId | DatasetOperationId;
+export type ResultOperationId = (typeof RESULT_OPERATION_IDS)[number];
+export type GroundingCatalogOperationId = ReferenceOperationId | DatasetOperationId | ResultOperationId;
 
 const schemaNames: Record<GroundingCatalogOperationId, readonly [string, string]> = {
   "reference.get": ["catalog-query-request", "reference-descriptor"],
@@ -37,7 +44,10 @@ const schemaNames: Record<GroundingCatalogOperationId, readonly [string, string]
   "layer.get": ["catalog-query-request", "layer-descriptor"],
   "layer.list": ["catalog-query-request", "catalog-result"],
   "layer.find-features": ["catalog-query-request", "catalog-result"],
-  "feature.get": ["catalog-query-request", "spatial-feature-descriptor"]
+  "feature.get": ["catalog-query-request", "spatial-feature-descriptor"],
+  "result.get": ["catalog-query-request", "query-result-reference"],
+  "result.validate": ["reference-validate-request", "reference-validate-result"],
+  "reference-set.get-members": ["catalog-query-request", "reference-set"]
 };
 
 export interface OperationSchemas {
@@ -65,5 +75,5 @@ export const GROUNDING_CATALOG_OPERATION_SCHEMAS = Object.fromEntries(
 ) as Record<GroundingCatalogOperationId, OperationSchemas>;
 
 export function operationsForMode(mode: GroundingCatalogMode): readonly GroundingCatalogOperationId[] {
-  return mode === "reference" ? REFERENCE_OPERATION_IDS : DATASET_OPERATION_IDS;
+  return mode === "reference" ? REFERENCE_OPERATION_IDS : mode === "dataset" ? DATASET_OPERATION_IDS : RESULT_OPERATION_IDS;
 }

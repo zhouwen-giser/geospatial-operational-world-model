@@ -1,4 +1,4 @@
-export type GroundingCatalogMode = "reference" | "dataset";
+export type GroundingCatalogMode = "reference" | "dataset" | "result";
 
 export interface CatalogSqlResult<Row extends Record<string, unknown> = Record<string, unknown>> {
   rows: Row[];
