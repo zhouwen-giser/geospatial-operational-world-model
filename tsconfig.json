@@ -28,6 +28,7 @@
     "validation/scripts/network-activation-runtime-client.ts",
     "validation/scripts/network-provider-runtime-gate.ts",
     "validation/scripts/route-planning-runtime-gate.ts",
+    "validation/scripts/route-verifier-runtime-gate.ts",
     "tests/**/*.ts",
     "vitest.config.ts"
   ],

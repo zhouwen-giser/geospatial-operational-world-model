@@ -1,0 +1,162 @@
+{
+  "phase": "R02",
+  "runId": "r02-20260825t1020",
+  "database": "gowm_v05_r00_20260825t0640",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3196
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3052
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "postgres",
+        "psql",
+        "<create r02_r02_20260825t1020 redacted>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3241
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--name",
+        "gowm-r02-20260825t1020-verifier-proxy",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--publish",
+        "127.0.0.1::5432",
+        "node:22-bookworm",
+        "<fixed proxy>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 863
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}",
+        "gowm-r02-20260825t1020-verifier-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 52
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "--force",
+        "gowm-r02-20260825t1020-verifier-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 899
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "postgres",
+        "--command",
+        "DROP ROLE r02_r02_20260825t1020"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3225
+    }
+  ],
+  "summary": {
+    "plannedStatus": "COMPLETED",
+    "staleStatus": "STALE",
+    "invalidMetricStatus": "INVALID",
+    "pinnedGraph": "p01-20260825t0610",
+    "immutableResultHash": "sha256:385536173c1e089b44fdaf0e4d91d0bb476ce2c4dbb93dd51e0f0559cfacecf9",
+    "checks": [
+      {
+        "code": "ARC_IDENTITY_VERSION",
+        "status": "PASS"
+      },
+      {
+        "code": "ARC_CONTINUITY",
+        "status": "PASS"
+      },
+      {
+        "code": "DIRECTION",
+        "status": "PASS"
+      },
+      {
+        "code": "PARTIAL_FRACTIONS",
+        "status": "PASS"
+      },
+      {
+        "code": "TURN_LEGALITY",
+        "status": "PASS",
+        "details": {
+          "turnPenaltyUnits": 0
+        }
+      },
+      {
+        "code": "SEGMENT_METRICS",
+        "status": "PASS"
+      },
+      {
+        "code": "AGGREGATE_METRICS",
+        "status": "PASS",
+        "details": {
+          "distanceMm": 0,
+          "durationMs": 0,
+          "riskMicroUnits": 0,
+          "energyMwh": 0,
+          "combinedCostUnits": 0
+        }
+      },
+      {
+        "code": "ROUTE_SIGNATURE",
+        "status": "PASS"
+      },
+      {
+        "code": "GRAPH_CURRENT",
+        "status": "FAIL"
+      },
+      {
+        "code": "PROFILE_CURRENT",
+        "status": "PASS"
+      },
+      {
+        "code": "CONDITION_CURRENT",
+        "status": "FAIL"
+      }
+    ]
+  },
+  "errors": []
+}

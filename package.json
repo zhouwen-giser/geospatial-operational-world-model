@@ -38,6 +38,7 @@
     "validate:network-activation-runtime": "npm run build && node --import tsx validation/scripts/network-activation-runtime-gate.ts",
     "validate:network-provider-runtime": "npm run build && node --import tsx validation/scripts/network-provider-runtime-gate.ts",
     "validate:route-planning-runtime": "npm run build && node --import tsx validation/scripts/route-planning-runtime-gate.ts",
+    "validate:route-verifier-runtime": "npm run build && node --import tsx validation/scripts/route-verifier-runtime-gate.ts",
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",
     "validate:stable-runtime": "node validation/scripts/stable-security-load-recovery.mjs",

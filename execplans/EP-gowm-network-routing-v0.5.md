@@ -54,7 +54,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] P01 Network Real Acceptance
 - [x] R00 Route Runtime
 - [x] R01 Basic Route Plan
-- [ ] R02 Independent Verifier
+- [x] R02 Independent Verifier
 - [ ] R03 Results/Alternatives Preview
 - [ ] G00 Gateway Integration
 - [ ] T00 Security/Performance/Recovery
@@ -108,7 +108,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - P01 runtime run `p01-20260825t0610`: all AC-P001..AC-P020 passed on real PostgreSQL; directed distance `222640` matched pgRouting 4.0.1, and the same Provider pool returned `sha256:19adb184100ed2716645673f1a1f3c96f40cf2318e81eac4d7b20664d996cd87` before and after PostgreSQL restart.
 - R00 runtime database `gowm_v05_r00_20260825t0640`: migration 045 and assertion 030 passed, including idempotent request identity, expired lease reclaim to the next generation, cancellation fencing and denial of late completion.
 - R01 runtime run `r01-20260825t0720`: a real `route_planner_provider` role completed coordinate routing, ordered Waypoints and an Avoid Reference route on the P01 graph through the R00 runtime.
+- R02 adds a verifier implementation with no Solver imports. Unit differential tests reject metric and forbidden-turn mutation; real run `r02-20260825t1020` returned `STALE` for an immutable P01 route after both a newer Condition Snapshot and a different active Graph, and `INVALID` after metric mutation.
 
 ## Remaining work
 
-Execute R02 through S01 in order. Basic Route planning passes; verifier independence, stale checks and immutable result publication remain pending.
+Execute R03 through S01 in order. Independent verification and stale detection pass; immutable Result Registry publication and exact terminal replay remain pending.

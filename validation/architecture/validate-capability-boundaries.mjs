@@ -45,6 +45,12 @@ inspect("services/providers", [
   ["Provider imports Gateway implementation", /services[\\/]gateway/]
 ]);
 
+for (const file of sourceFiles("services/providers/route-planning-provider/src")) {
+  if (!file.endsWith(`${sep}verifier.ts`)) continue;
+  const content = readFileSync(file, "utf8");
+  if (/network-provider[\\/]src[\\/]engine/.test(content)) findings.push(`${relative(repositoryRoot, file)}: independent verifier imports solver implementation`);
+}
+
 for (const criticalPath of ["services/observation-ingest", "services/projection-worker"]) {
   inspect(criticalPath, [
     ["Foundation critical path imports Gateway", /services[\\/]gateway/],

@@ -1,7 +1,8 @@
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
-import { shortestPath, verifyPath, type Objective } from "../../network-provider/src/engine.js";
+import { shortestPath, type Objective } from "../../network-provider/src/engine.js";
 import { NetworkRepository } from "../../network-provider/src/repository.js";
 import type { DirectedState, LoadedNetwork, NetworkProviderOptions, NetworkSqlPool, Row, RoutingSnapshot } from "../../network-provider/src/types.js";
+import { verifyRouteCandidate } from "./verifier.js";
 
 export interface RoutePlannerOptions extends NetworkProviderOptions { resultTtlMs?: number; }
 export interface RouteExecution { output: Row; dataSnapshot: LoadedNetwork["dataSnapshot"]; rows: number; candidates: number; }
@@ -40,7 +41,7 @@ export class RoutePlanner {
       for (const path of paths) { const signature = routeSignature(path); if (!distinct.has(signature)) distinct.set(signature, path); }
       const ranked = [...distinct.entries()].sort(([, left], [, right]) => metric(left, objective(input.objective)) - metric(right, objective(input.objective)) || routeSignature(left).localeCompare(routeSignature(right)));
       const wanted = alternatives ? Math.min(integer(input.alternativeCount ?? 1, "alternativeCount"), 5) : 1;
-      const candidates = ranked.slice(0, wanted).map(([signature, path], index) => ({ rank: index + 1, routeSignature: signature, segments: path.segments, metrics: path.metrics, verification: verifyPath(network, path) }));
+      const candidates = ranked.slice(0, wanted).map(([signature, path], index) => { const candidate = { rank: index + 1, routeSignature: signature, segments: path.segments, metrics: path.metrics }; return { ...candidate, verification: verifyRouteCandidate(network, candidate) }; });
       const status = candidates.length ? "COMPLETED" : "NO_PATH";
       const output = result(input, snapshot, status, candidates, this.ttlMs);
       await this.complete(submitted.id, run.generation, run.owner, status, sha256(output));
@@ -51,9 +52,9 @@ export class RoutePlanner {
   async verify(inputValue: unknown, security: Scope, deadlineMs: number): Promise<RouteExecution> {
     const input = asRow(inputValue); const snapshot = routingSnapshot(input.routingSnapshot);
     const network = await this.network.loadPinned(snapshot, security, deadlineMs); const candidates = arrayOrEmpty(input.candidates).map(asRow);
-    const reports = candidates.map((candidate) => verifyPath(network, { status: "COMPLETED", routingSnapshot: snapshot, segments: candidate.segments, metrics: candidate.metrics, warnings: [], resultHash: routePathHash(snapshot, candidate) }));
-    const valid = reports.every((report) => report.status === "VALID");
-    return { output: { status: valid ? "VALID" : "INVALID", checks: reports.flatMap((report) => arrayOrEmpty(report.checks)), verifierVersion: "gowm-route-independent-verifier/1.0.0", verifiedResultHash: sha256(input) }, dataSnapshot: network.dataSnapshot, rows: network.arcs.length, candidates: candidates.length };
+    const freshness = await this.network.inspectFreshness(network, security, deadlineMs); const reports = candidates.map((candidate) => verifyRouteCandidate(network, candidate, freshness));
+    const status = reports.some((report) => report.status === "INVALID") ? "INVALID" : reports.some((report) => report.status === "INDETERMINATE") ? "INDETERMINATE" : reports.some((report) => report.status === "STALE") ? "STALE" : "VALID";
+    return { output: { status, checks: reports.flatMap((report) => arrayOrEmpty(report.checks)), verifierVersion: "gowm-route-independent-verifier/1.0.0", verifiedResultHash: sha256(input), warnings: reports.flatMap((report) => arrayOrEmpty(report.warnings)) }, dataSnapshot: network.dataSnapshot, rows: network.arcs.length, candidates: candidates.length };
   }
 
   private async snapshot(input: Row, _security: Scope, _deadlineMs: number): Promise<RoutingSnapshot> { if (input.routingSnapshot) return routingSnapshot(input.routingSnapshot); throw new ProviderProtocolError("INVALID_REQUEST", "useActiveGraph resolution requires an explicit graph key and is unavailable in v0.5 stable requests"); }
@@ -73,7 +74,6 @@ function routeLegs(network: LoadedNetwork, states: DirectedState[], objectiveVal
 function result(input: Row, snapshot: RoutingSnapshot, status: string, candidates: Row[], ttlMs: number): Row { return { requestId:string(input.requestId),status,queryResultReferenceKey:queryReference(sha256(input)),routingSnapshot:snapshot,candidates,validUntil:new Date(Date.now()+ttlMs).toISOString(),revalidationRequired:true,warnings:[] }; }
 function queryReference(hash: string): Row { return { namespace:"gowm",kind:"QUERY_RESULT",id:`wrf_${hash.slice(7,39)}`,version:"1" }; }
 function routeSignature(path: Row): string { return sha256({ segments: arrayOrEmpty(path.segments).map((segment)=>{const row=asRow(segment); return [row.arcKey,row.startFractionPpm,row.endFractionPpm];}) }); }
-function routePathHash(snapshot: RoutingSnapshot,candidate: Row): string { const core={status:"COMPLETED",routingSnapshot:snapshot,segments:candidate.segments,metrics:candidate.metrics,warnings:[]}; return sha256(core); }
 function metric(path: Row, objectiveValue: Objective): number { const values=asRow(path.metrics); const key=objectiveValue==="SHORTEST_DISTANCE"?"distanceMm":objectiveValue==="FASTEST"?"durationMs":objectiveValue==="LOWEST_RISK"?"riskMicroUnits":objectiveValue==="LOWEST_ENERGY"?"energyMwh":"combinedCostUnits"; return integer(values[key],key); }
 function cartesian(sets: DirectedState[][], maximum: number): DirectedState[][] { let result:DirectedState[][]=[[]]; for(const set of sets){result=result.flatMap((prefix)=>set.map((item)=>[...prefix,item])).slice(0,maximum);} return result; }
 function routingSnapshot(value:unknown):RoutingSnapshot{const row=asRow(value);return row as unknown as RoutingSnapshot;}

@@ -1,0 +1,18 @@
+{
+  "phase": "R02",
+  "status": "PASS",
+  "acceptance": {
+    "AC-R017": "PASS_REAL_E2E_NEW_CONDITION_STALE",
+    "AC-R018": "PASS_REAL_E2E_ACTIVE_GRAPH_STALE_NO_REWRITE",
+    "AC-R019": "PASS_ARCHITECTURE_NO_SOLVER_IMPORT",
+    "AC-R020": "PASS_DIFFERENTIAL_METRIC_MUTATION",
+    "AC-R021": "PASS_DIFFERENTIAL_FORBIDDEN_TURN_MUTATION"
+  },
+  "realDatabase": {
+    "runId": "r02-20260825t1020",
+    "database": "gowm_v05_r00_20260825t0640",
+    "role": "route_planner_provider inherited by ephemeral LOGIN",
+    "result": "PASS"
+  },
+  "immutableResultHash": "sha256:385536173c1e089b44fdaf0e4d91d0bb476ce2c4dbb93dd51e0f0559cfacecf9"
+}
