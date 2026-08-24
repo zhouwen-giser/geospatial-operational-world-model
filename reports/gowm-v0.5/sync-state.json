@@ -2,7 +2,7 @@
   "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
   "targetVersion": "0.5.0",
   "status": "IN_PROGRESS",
-  "phase": "D00",
+  "phase": "D01",
   "baseline": {
     "branch": "main",
     "version": "0.4.0",
@@ -12,8 +12,8 @@
   "candidate": {
     "branch": "codex/gowm-network-routing-v0.5",
     "baseSha": "db575f79c874a69f65a2043a7e463338524b713d",
-    "localSha": "2f82a2b6868973ff04193dbaf8c53eebf3e4c101",
-    "remoteSha": "2f82a2b6868973ff04193dbaf8c53eebf3e4c101",
+    "localSha": "08aa5db449a4de1749e4bb215a1f7fe03259c56e",
+    "remoteSha": "08aa5db449a4de1749e4bb215a1f7fe03259c56e",
     "draftPr": 3
   },
   "milestones": {
@@ -22,11 +22,11 @@
     "stableCandidate": false
   },
   "acceptance": {
-    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007"],
+    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N009"],
     "failed": [],
     "blocked": [],
-    "notRun": ["AC-D011..AC-S022"]
+    "notRun": ["AC-N010..AC-S022"]
   },
   "blockers": [],
-  "next": "Execute D01 append-only network schema migrations and immutable graph constraints."
+  "next": "Execute D02 gowm_network_v1 scoped read contract and Provider role gate."
 }

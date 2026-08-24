@@ -1,0 +1,569 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "d01-20260824t2359",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "database": "gowm_v05_d01_20260824t2359",
+  "migrationMaximum": 38,
+  "assertionMaximum": 23,
+  "startedAt": "2026-08-24T15:46:44.457Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3153
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3049
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "gowm_v05_d01_20260824t2359"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3283
+    },
+    {
+      "command": [
+        "migration",
+        "001_initial_schema.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3574
+    },
+    {
+      "command": [
+        "migration",
+        "002_views_and_functions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3210
+    },
+    {
+      "command": [
+        "migration",
+        "003_situation_observer.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3230
+    },
+    {
+      "command": [
+        "migration",
+        "004_geography_indexes.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3202
+    },
+    {
+      "command": [
+        "migration",
+        "005_situation_rank_indexes.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3209
+    },
+    {
+      "command": [
+        "migration",
+        "006_observation_altitude.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3197
+    },
+    {
+      "command": [
+        "migration",
+        "007_active_relation_uniqueness.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3192
+    },
+    {
+      "command": [
+        "migration",
+        "008_h3_pg.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3331
+    },
+    {
+      "command": [
+        "migration",
+        "009_gowm_plus_canonical_evidence_and_mobility.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3773
+    },
+    {
+      "command": [
+        "migration",
+        "010_unified_stas_contracts_roles_and_coverage.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3318
+    },
+    {
+      "command": [
+        "migration",
+        "011_capability_gateway_persistence.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3310
+    },
+    {
+      "command": [
+        "migration",
+        "012_gowm_spatial_v1_read_contract.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3233
+    },
+    {
+      "command": [
+        "migration",
+        "013_world_query_runtime_persistence.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3304
+    },
+    {
+      "command": [
+        "migration",
+        "014_capability_runtime_service_principals.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3223
+    },
+    {
+      "command": [
+        "migration",
+        "015_world_query_claim_runtime_fix.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3204
+    },
+    {
+      "command": [
+        "migration",
+        "016_capability_port_path_contract_fix.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3205
+    },
+    {
+      "command": [
+        "migration",
+        "017_reference_identity_catalog.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3233
+    },
+    {
+      "command": [
+        "migration",
+        "018_reference_resolution_candidate_dedup.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3194
+    },
+    {
+      "command": [
+        "migration",
+        "019_dataset_layer_feature_catalog.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3268
+    },
+    {
+      "command": [
+        "migration",
+        "020_grounding_catalog_provider_runtime.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3226
+    },
+    {
+      "command": [
+        "migration",
+        "021_reference_resolution_exact_match_precedence.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3186
+    },
+    {
+      "command": [
+        "migration",
+        "022_derived_result_registry.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3235
+    },
+    {
+      "command": [
+        "migration",
+        "023_world_evidence_read_contract.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3219
+    },
+    {
+      "command": [
+        "migration",
+        "024_grounding_replay_audit.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3289
+    },
+    {
+      "command": [
+        "migration",
+        "025_external_correlation_claims.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3336
+    },
+    {
+      "command": [
+        "migration",
+        "026_operational_event_store.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3207
+    },
+    {
+      "command": [
+        "migration",
+        "027_operational_task_projection.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3234
+    },
+    {
+      "command": [
+        "migration",
+        "028_operational_correlation_resolver.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3221
+    },
+    {
+      "command": [
+        "migration",
+        "029_operational_reality_read_contract.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3201
+    },
+    {
+      "command": [
+        "migration",
+        "030_external_predicate_evaluation.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3210
+    },
+    {
+      "command": [
+        "migration",
+        "031_operational_observability.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3232
+    },
+    {
+      "command": [
+        "migration",
+        "032_operational_analysis_findings_replay.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3204
+    },
+    {
+      "command": [
+        "migration",
+        "033_network_graph_catalog.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3223
+    },
+    {
+      "command": [
+        "migration",
+        "034_network_topology.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3217
+    },
+    {
+      "command": [
+        "migration",
+        "035_network_turns_and_bindings.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3224
+    },
+    {
+      "command": [
+        "migration",
+        "036_network_profiles_and_costs.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3225
+    },
+    {
+      "command": [
+        "migration",
+        "037_network_conditions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3238
+    },
+    {
+      "command": [
+        "migration",
+        "038_network_build_and_activation.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3220
+    },
+    {
+      "command": [
+        "assertion",
+        "001_v12_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3197
+    },
+    {
+      "command": [
+        "assertion",
+        "002_capability_gateway_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3218
+    },
+    {
+      "command": [
+        "assertion",
+        "003_gowm_spatial_v1_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3224
+    },
+    {
+      "command": [
+        "assertion",
+        "004_foundation_processing_receipt_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3219
+    },
+    {
+      "command": [
+        "assertion",
+        "005_world_query_persistence_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3228
+    },
+    {
+      "command": [
+        "assertion",
+        "006_capability_runtime_principal_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3199
+    },
+    {
+      "command": [
+        "assertion",
+        "007_reference_identity_catalog_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3206
+    },
+    {
+      "command": [
+        "assertion",
+        "008_dataset_layer_feature_catalog_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3242
+    },
+    {
+      "command": [
+        "assertion",
+        "009_reference_search_projection_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3262
+    },
+    {
+      "command": [
+        "assertion",
+        "010_grounding_catalog_provider_runtime_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3194
+    },
+    {
+      "command": [
+        "assertion",
+        "011_derived_result_registry_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3295
+    },
+    {
+      "command": [
+        "assertion",
+        "012_world_evidence_read_contract_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3251
+    },
+    {
+      "command": [
+        "assertion",
+        "013_grounding_security_replay_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3247
+    },
+    {
+      "command": [
+        "assertion",
+        "014_external_correlation_claim_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3212
+    },
+    {
+      "command": [
+        "assertion",
+        "015_operational_event_store_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3212
+    },
+    {
+      "command": [
+        "assertion",
+        "016_operational_projection_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3240
+    },
+    {
+      "command": [
+        "assertion",
+        "017_operational_correlation_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3242
+    },
+    {
+      "command": [
+        "assertion",
+        "018_operational_read_contract_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3216
+    },
+    {
+      "command": [
+        "assertion",
+        "019_external_predicate_evaluation_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3252
+    },
+    {
+      "command": [
+        "assertion",
+        "020_operational_observability_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3218
+    },
+    {
+      "command": [
+        "assertion",
+        "021_operational_analysis_findings_replay_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3211
+    },
+    {
+      "command": [
+        "assertion",
+        "022_pgrouting_runtime_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3230
+    },
+    {
+      "command": [
+        "assertion",
+        "023_network_schema_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3228
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_d01_20260824t2359",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--tuples-only",
+        "--no-align",
+        "--command",
+        "SELECT jsonb_build_object(\n    'migrationCount', 38,\n    'assertionCount', 23,\n    'networkTables', (SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name LIKE 'network_%'),\n    'readViews', (SELECT count(*) FROM information_schema.views WHERE table_schema='gowm_network_v1'),\n    'networkProviderReadOnly', CASE WHEN 38 >= 39 THEN\n      (SELECT rolconfig @> ARRAY['default_transaction_read_only=on'] FROM pg_roles WHERE rolname='network_provider')\n      ELSE NULL END,\n    'routePlannerReadOnly', CASE WHEN 38 >= 39 THEN\n      (SELECT rolconfig @> ARRAY['default_transaction_read_only=on'] FROM pg_roles WHERE rolname='route_planner_provider')\n      ELSE NULL END\n  );"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3192
+    }
+  ],
+  "summary": {
+    "readViews": 0,
+    "networkTables": 18,
+    "assertionCount": 23,
+    "migrationCount": 38,
+    "routePlannerReadOnly": null,
+    "networkProviderReadOnly": null
+  },
+  "errors": [],
+  "finishedAt": "2026-08-24T15:50:15.159Z"
+}
