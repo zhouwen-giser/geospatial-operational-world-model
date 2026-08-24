@@ -1,0 +1,16 @@
+{
+  "phase": "N00",
+  "status": "PASS",
+  "acceptance": {
+    "AC-N011": "PASS_STABLE_KEY_PRIMITIVES",
+    "AC-N012": "PASS_SOURCE_AND_GRAPH_IDENTITY_HASH_TOPOLOGY_RECHECK_N01",
+    "catalogNetworkDataset": "PASS",
+    "catalogLayerAllowlist": "PASS",
+    "invalidOrZeroLengthSource": "FAIL_CLOSED",
+    "osmArtifact": "PREVIEW_ONLY"
+  },
+  "tests": {
+    "focusedUnit": "4 PASS",
+    "typecheck": "PASS"
+  }
+}

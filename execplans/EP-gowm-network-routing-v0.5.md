@@ -45,7 +45,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] D00 Database Image
 - [x] D01 Network Schema
 - [x] D02 Network Read Contract
-- [ ] N00 Catalog Build Adapter
+- [x] N00 Catalog Build Adapter
 - [ ] N01 Topology/Directed Arc
 - [ ] N02 Turn Restrictions
 - [ ] N03 Profiles/Costs/Conditions
@@ -78,6 +78,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - D00 built and exercised the required composite database image. PostgreSQL 18.6, PostGIS 3.6.4, MobilityDB 1.3.0, h3/h3_postgis 4.5.0, and pgRouting 4.0.1 coexist; all baseline migrations and assertions pass in the image.
 - D01 adds migrations 033-038 and proves them from an empty database through run `d01-20260824t2359`; the model uses immutable directed topology, versioned conditions, source Feature bindings, fixed-point costs, and append-only activation events.
 - D02 adds migration 039 as the only Provider SQL surface. Eleven security-barrier views and five controlled functions enforce transaction-local DataScope/DatasetScope, base-table denial, bounded directed snapping, complete snapshot resolution, and route-planner-only projection.
+- N00 adds a Foundation-owned Catalog adapter with fixed scoped queries, deterministic fixed-point materialization, stable graph-internal key primitives, and an OSM artifact path explicitly constrained to PREVIEW.
 
 ## Failed attempts retained
 
@@ -94,4 +95,4 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 
 ## Remaining work
 
-Execute N00 through S01 in order. D00-D02 real database gates are complete; graph-build and routing runtime gates remain `NOT_RUN` until their phases are implemented.
+Execute N01 through S01 in order. D00-D02 real database gates and N00 adapter tests are complete; topology and routing runtime gates remain `NOT_RUN` until their phases are implemented.
