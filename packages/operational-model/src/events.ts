@@ -3,6 +3,8 @@ import type {
   GowmV04OperationalTaskEvent,
   GowmV04OperationalTaskSnapshot,
   GowmV04CorrelationFinding,
+  GowmV04OperationalEventTimeline,
+  GowmV04OperationalQueryResult,
   GowmV04CommonReferenceKey,
   GowmV04ExternalCorrelationClaim
 } from "../../platform/contract-runtime/src/generated/contracts.js";
@@ -90,6 +92,8 @@ export type OperationalEventIngest = z.infer<typeof OperationalEventIngestSchema
 export type OperationalTaskEvent = GowmV04OperationalTaskEvent;
 export type OperationalTaskSnapshot = GowmV04OperationalTaskSnapshot;
 export type CorrelationFinding = GowmV04CorrelationFinding;
+export type OperationalEventTimeline = GowmV04OperationalEventTimeline;
+export type OperationalQueryResult = GowmV04OperationalQueryResult;
 export type OperationalReferenceKey = GowmV04CommonReferenceKey;
 export type OperationalCorrelationClaim = GowmV04ExternalCorrelationClaim;
 
@@ -121,6 +125,14 @@ export type CorrelationResolveInput = z.infer<typeof CorrelationResolveInputSche
 
 export function assertCorrelationFinding(finding: unknown): asserts finding is CorrelationFinding {
   assertContract<CorrelationFinding>("gowm-v0.4/correlation-finding.schema.json",finding);
+}
+
+export function assertOperationalEventTimeline(timeline: unknown): asserts timeline is OperationalEventTimeline {
+  assertContract<OperationalEventTimeline>("gowm-v0.4/operational-event-timeline.schema.json",timeline);
+}
+
+export function assertOperationalQueryResult(result: unknown): asserts result is OperationalQueryResult {
+  assertContract<OperationalQueryResult>("gowm-v0.4/operational-query-result.schema.json",result);
 }
 
 export function validateOperationalEventTime(

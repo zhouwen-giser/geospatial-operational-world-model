@@ -3,6 +3,7 @@ import pg from "pg";
 import { OperationalEventRepository } from "../../packages/runtime/src/operational-event-repository.js";
 import { OperationalProjectionRepository } from "../../packages/runtime/src/operational-projection-repository.js";
 import { OperationalCorrelationRepository } from "../../packages/runtime/src/operational-correlation-repository.js";
+import { OperationalReadRepository } from "../../packages/runtime/src/operational-read-repository.js";
 import { closeDatabasePool } from "../../packages/runtime/src/db.js";
 import { buildObservationApp } from "../../services/observation-ingest/src/app.js";
 
@@ -27,6 +28,7 @@ try {
   const repository = new OperationalEventRepository(pool);
   const projections = new OperationalProjectionRepository(pool);
   const correlations = new OperationalCorrelationRepository(pool);
+  const reads = new OperationalReadRepository(pool);
   const input = {
     dataScopeKey: scope,
     sourceAuthority: "provider-e2e",
@@ -126,6 +128,17 @@ try {
       correlationReplay!=="MATCH") {
     throw new Error("operational correlation E2E invariant failed");
   }
+  const found = await reads.find(scope,{
+    referenceKey: snapshot.referenceKey,actorReferenceKeys: input.actorReferenceKeys,
+    from: new Date(Date.parse(eventTime)-1_000).toISOString(),limit: 10
+  });
+  const readTimeline = await reads.timeline(scope,snapshot.referenceKey,{ limit: 10 });
+  const crossScope = await reads.find("default",{ referenceKey: snapshot.referenceKey,limit: 10 });
+  if (found.result.tasks.length!==1 || found.result.tasks[0]?.operationalTaskId!==taskId ||
+      readTimeline.result.events.length!==1 || readTimeline.result.events[0]?.eventId!==eventId ||
+      crossScope.result.tasks.length!==0 || !/^sha256:[0-9a-f]{64}$/u.test(found.snapshot.scopeDigest)) {
+    throw new Error("operational scoped read contract E2E invariant failed");
+  }
   process.stdout.write(`${JSON.stringify({
     result: "OPERATIONAL_EVENT_STORE_E2E_PASS",
     scope,eventId,worldVersion: accepted.event.worldVersion,
@@ -140,6 +153,10 @@ try {
     correlation: {
       exactRelation: exactFinding.relation,exactBasis: exactFinding.matchBasis,
       noMatchRelation: noMatchFinding.relation,replay: correlationReplay
+    },
+    readContract: {
+      taskCount: found.result.tasks.length,timelineEvents: readTimeline.result.events.length,
+      crossScopeTaskCount: crossScope.result.tasks.length,scopeDigest: found.snapshot.scopeDigest
     }
   })}\n`);
 } finally {
