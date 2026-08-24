@@ -1,0 +1,23 @@
+{
+  "phase": "D02",
+  "status": "PASS",
+  "runId": "d01-d02-20260824t2353",
+  "database": "gowm_v05_d01_d02_20260824t2353",
+  "acceptance": {
+    "AC-N010": "PASS",
+    "scopedReadViews": "PASS_11_VIEWS",
+    "controlledFunctions": "PASS_5_FUNCTIONS",
+    "networkProviderBaseTables": "DENIED",
+    "routePlannerProviderBaseTables": "DENIED",
+    "routePlannerProjectionIsolation": "PASS",
+    "crossScopeVisibility": "EMPTY_NO_LEAK"
+  },
+  "runtime": {
+    "migrations": "39 PASS",
+    "assertions": "24 PASS",
+    "commands": "67 PASS",
+    "networkProviderReadOnly": true,
+    "routePlannerProviderReadOnly": true
+  },
+  "repositoryVerify": "PASS"
+}

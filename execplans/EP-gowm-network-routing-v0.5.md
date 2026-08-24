@@ -44,7 +44,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] A01 Contracts
 - [x] D00 Database Image
 - [x] D01 Network Schema
-- [ ] D02 Network Read Contract
+- [x] D02 Network Read Contract
 - [ ] N00 Catalog Build Adapter
 - [ ] N01 Topology/Directed Arc
 - [ ] N02 Turn Restrictions
@@ -77,6 +77,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - Docker Desktop 4.81.0 could not start because four stale Windows Unix-socket reparse points survived a prior crash. A controlled process/WSL cold restart and exact transient-socket cleanup restored Docker Engine 29.6.1 without deleting images, containers, configuration, or volumes.
 - D00 built and exercised the required composite database image. PostgreSQL 18.6, PostGIS 3.6.4, MobilityDB 1.3.0, h3/h3_postgis 4.5.0, and pgRouting 4.0.1 coexist; all baseline migrations and assertions pass in the image.
 - D01 adds migrations 033-038 and proves them from an empty database through run `d01-20260824t2359`; the model uses immutable directed topology, versioned conditions, source Feature bindings, fixed-point costs, and append-only activation events.
+- D02 adds migration 039 as the only Provider SQL surface. Eleven security-barrier views and five controlled functions enforce transaction-local DataScope/DatasetScope, base-table denial, bounded directed snapping, complete snapshot resolution, and route-planner-only projection.
 
 ## Failed attempts retained
 
@@ -89,7 +90,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - `git rev-parse HEAD` and `git rev-parse origin/main`: both `db575f79c874a69f65a2043a7e463338524b713d` after fetch.
 - D00 runtime run `gowm-v05-d00-20260824t2245-codex`: 63/63 recorded commands passed; image content digest `sha256:a502c7ce9ef773b4e0f4097ade3b88172f901d1e2d17ed246932d38a04026fae`.
 - D01 runtime run `d01-20260824t2359`: 65/65 recorded commands passed; migrations 001-038 and assertions 001-023 passed in fresh database `gowm_v05_d01_20260824t2359`.
+- D02 runtime run `d01-d02-20260824t2353`: 67/67 recorded commands passed; migrations 001-039 and assertions 001-024 passed in fresh database `gowm_v05_d01_d02_20260824t2353`.
 
 ## Remaining work
 
-Execute D02 through S01 in order. D00-D01 real database gates are complete; later read/network/routing runtime gates remain `NOT_RUN` until their phases are implemented.
+Execute N00 through S01 in order. D00-D02 real database gates are complete; graph-build and routing runtime gates remain `NOT_RUN` until their phases are implemented.
