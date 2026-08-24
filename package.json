@@ -1,6 +1,6 @@
 {
   "name": "geospatial-operational-world-model",
-  "version": "0.1.0",
+  "version": "0.4.0-rc.1",
   "private": true,
   "description": "GOWM+ unified geospatial data foundation with independently deployable STAS analysis service",
   "type": "module",
@@ -31,6 +31,7 @@
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",
     "validate:stable-runtime": "node validation/scripts/stable-security-load-recovery.mjs",
+    "validate:stable-version": "node validation/scripts/stable-version-guard.mjs",
     "validate:boundaries": "node validation/architecture/validate-capability-boundaries.mjs",
     "dev:api": "tsx services/world-api/src/index.ts",
     "dev:ingest": "tsx services/observation-ingest/src/index.ts",

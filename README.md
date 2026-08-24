@@ -1,17 +1,19 @@
 # Geospatial Operational World Model Plus (GOWM+)
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
-Capability Service Plane and a controlled World Capability Gateway. The v0.2
-work adds versioned Provider contracts, direct execution, typed World Query
-DAGs, and integrations for CRS, Geometry, H3, GOWM H3 Situation, and Spatial
-Analysis without moving domain algorithms into the Gateway.
+Capability Service Plane and a controlled World Capability Gateway. The
+`0.4.0-rc.1` candidate adds stable Grounding and Operational Reality contracts,
+four controlled Grounding Providers, immutable operational evidence and
+projections, typed World Query DAGs, and replay/recovery gates without moving
+domain algorithms into the Gateway.
 
-> **Candidate status (2026-08-23): BLOCKED.** The framework and controlled
-> in-process verification are present in the working tree, but the complete
-> real PostgreSQL, external Provider, Docker, restart, and cross-capability
-> runtime gates have not run. The v0.2 changes are also not committed or pushed;
-> Draft PR #1 remains Draft. This repository state is not a release candidate
-> and has not been merged, tagged, released, or deployed.
+> **Candidate status (2026-08-24): BLOCKED_EXTERNAL.** All runnable v0.3/v0.4
+> gates pass, including real PostgreSQL, Provider/Gateway HTTP, scope,
+> migration, replay, cancellation, and restart checks. Final `0.4.0` promotion
+> and Ready-for-Review remain blocked only by the absent immutable CRS,
+> Geometry, Spatial POC archives and H3 Toolkit revision required by
+> AC-C007/AC-C008. Draft PR #2 has not been merged, tagged, released, or
+> deployed.
 
 See [PROJECT_STATUS.md](PROJECT_STATUS.md) for the exact delivery boundary and
 [the v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md) for the
@@ -29,6 +31,13 @@ The public execute body cannot supply identity, DataScope, DatasetScope, or a
 Provider URL. Deployment-owned configuration selects an approved Provider, the
 Gateway creates a bounded internal attestation, and the Provider validates the
 request and scope again.
+
+Planning, control, and operational reality are separate authorities. External
+planning identifiers, correlation hints, predicates, and Provider-declared
+actions are immutable claims or evaluation inputs—not World Facts. Control
+completion reports affect only the control dimension; physical verification
+requires independent evidence. Correlation/evaluation never mutates the
+external planner or controller.
 
 Foundation projection uses local ports for canonical EPSG:4326 validation and
 normalization plus transaction-local h3-pg computation. A Gateway or remote
@@ -57,6 +66,13 @@ and participate in a DAG without operation-specific Gateway code.
 H3 cover and Situation lookup are candidate/coarse operations. They never
 replace exact boundary decisions; boundary-sensitive results must be verified
 by the Spatial Provider/PostGIS.
+
+The stable Grounding registry adds four independently controlled Providers and
+28 capabilities: Reference resolution/search/validation, Dataset/Layer/Feature
+catalog access, World Evidence/result/reference-set reads, and eight
+Operational Reality operations for tasks, timelines, correlation, predicates,
+and observability. Their canonical v1 schemas are byte-locked under
+`contracts/gowm-v0.4`.
 
 ## Contracts and execution
 
@@ -87,9 +103,10 @@ Only data-bound operations may return a Data Snapshot and Evidence References.
 ## Database and ownership
 
 The PostgreSQL 18 baseline includes PostGIS 3.6, MobilityDB 1.3, and h3-pg /
-h3_postgis 4.5. Migrations `001`-`010` remain immutable; v0.2 appends Gateway
-persistence, the `gowm_spatial_v1` contract, World Query persistence, and
-least-privilege runtime principals.
+h3_postgis 4.5. Migrations `001`-`014` remain byte-locked; append-only
+migrations through `032` add Grounding identity/catalog/result/evidence and
+Operational Reality event/projection/correlation/predicate/observability
+contracts.
 
 The Spatial Provider uses its own read-only connection and may read only
 `gowm_spatial_v1`. SQL-level scope filtering returns opaque `ReferenceKey`
@@ -111,14 +128,12 @@ npm run check
 npm run verify:sql
 npm test
 npm run validate:boundaries
+node validation/scripts/stable-contract-compatibility.mjs
 node validation/architecture/validate-release-boundaries.mjs
 ```
 
-These commands validate code and controlled tests only. They do not establish
-the outstanding real-runtime claims. Real acceptance additionally requires the
-locked external CRS, Geometry, and H3 services, PostgreSQL-backed Spatial and
-Situation Providers, the Gateway, restart recovery, cross-scope adversarial
-tests, and the required DAGs in one controlled environment.
+Real local stability gates additionally require an isolated PostgreSQL admin
+URL and exact disposable database container name; see the operations runbook.
 
 ## License and release boundaries
 
@@ -134,21 +149,20 @@ tests, and the required DAGs in one controlled environment.
 - `.intake` and the uploaded Provider ZIPs are excluded from tracked and release
   artifacts.
 
-## Known production blockers
+## Known blockers and non-claims
 
 - The current Gateway bearer-token integration is a controlled deployment
   mechanism, not a production IdP or authorization system.
-- Operating-area CRS certification, required offline grid bundles, and the real
-  CRS process remain unverified.
-- Real Geometry worker timeout/overload recovery, H3 JS/PG parity, Spatial index
-  plans/mixed load, complete Provider/Gateway/database restart recovery, HA,
-  backup/PITR rehearsal, and target SLO evidence remain `NOT_RUN` or `BLOCKED`.
+- Exact real-runtime execution of the locked CRS, Geometry, Spatial POC and H3
+  Toolkit inputs remains `BLOCKED_EXTERNAL`; their required hashes/revision are
+  listed in `reports/gowm-v0.4/c02-v02-real-runtime-closure.md`.
+- Operating-area CRS/grid certification, production mixed-load qualification,
+  HA, and backup/PITR rehearsal remain explicit production non-claims.
 - The legacy H3 Situation projection is safe only for its configured single
   scope; arbitrary multi-scope serving remains blocked until the underlying
   projection is scope-aware.
-- Final semantic commits, push parity, and Ready-for-Review transition are
-  blocked by the current Git execution constraint. Draft PR #1 must remain
-  Draft.
+- Final stable-version promotion and Ready-for-Review are prohibited while the
+  two Required external gates remain blocked. Draft PR #2 must remain Draft.
 
 ## Documentation and evidence
 
@@ -157,8 +171,9 @@ tests, and the required DAGs in one controlled environment.
 - [Project status](PROJECT_STATUS.md)
 - [Traceability](validation/TRACEABILITY.md)
 - [Phase evidence](reports/capability-platform-v0.2/)
+- [v0.3/v0.4 phase evidence](reports/gowm-v0.4/)
 - [v0.1 unified architecture](docs/17_UNIFIED_PLATFORM_V0.1.0.md)
 - [Operations runbook](docs/18_OPERATIONS_RUNBOOK.md)
 
-The v0.1 baseline and its evidence remain preserved. No merge, tag, release, or
-production deployment is authorized by the v0.2 work.
+The v0.1/v0.2 baselines and their evidence remain preserved. No merge, tag,
+release, or production deployment is authorized by this candidate.
