@@ -36,6 +36,18 @@
       "approvedBy": "gowm-release-operator",
       "transportTokenEnv": "WORLD_EVIDENCE_PROVIDER_TRANSPORT_TOKEN",
       "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.operational-reality",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:7015fd72a95688051550da2ab533cfe792d3fe44312e4328035c7b72450bf68b",
+      "manifestHash": "sha256:516813d4a711a7e725ea056be3fc079269d1012da3aeb86c6df13617c08324cc",
+      "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
+      "endpoint": "http://operational-reality-provider:8094",
+      "approvalId": "operational-reality-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
     }
   ]
 }

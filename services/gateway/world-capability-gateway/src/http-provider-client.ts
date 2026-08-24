@@ -104,7 +104,7 @@ export class HttpProviderClient implements ProviderClient {
       },
       body: JSON.stringify(request)
     }, remainingMs);
-    if (!response.ok) throw providerHttpError(response.status, payload);
+    if (!response.ok) throw providerHttpError(response.status, payload, this.providerId);
     return payload as CapabilityResultEnvelope;
   }
 
@@ -303,8 +303,9 @@ async function readWithAbort(
   });
 }
 
-function providerHttpError(status: number, payload: unknown): ProviderProtocolError {
-  const candidate = isRecord(payload) && isRecord(payload.error) ? payload.error.code : undefined;
+function providerHttpError(status: number, payload: unknown, providerId: string): ProviderProtocolError {
+  const upstreamError = isRecord(payload) && isRecord(payload.error) ? payload.error : undefined;
+  const candidate = upstreamError?.code;
   const code = typeof candidate === "string" && (PROVIDER_ERROR_CODES as readonly string[]).includes(candidate)
     ? candidate as ProviderErrorCode
     : status === 408 || status === 504
@@ -319,7 +320,12 @@ function providerHttpError(status: number, payload: unknown): ProviderProtocolEr
               ? "INVALID_REQUEST"
               : "INTERNAL_PROVIDER_ERROR";
   return new ProviderProtocolError(code, `provider returned ${code}`, {
-    details: { upstreamStatus: status }
+    ...(typeof upstreamError?.retryable === "boolean" ? { retryable: upstreamError.retryable } : {}),
+    details: {
+      upstreamStatus: status,
+      providerId,
+      stage: "PROVIDER_EXECUTION"
+    }
   });
 }
 
