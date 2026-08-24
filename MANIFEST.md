@@ -1,13 +1,15 @@
-# GOWM+ v0.1.0 engineering manifest
+# GOWM+ v0.4.0 engineering manifest
 
-Prepared: 2026-08-13
+Prepared: 2026-08-24
 
 ## Included
 
 - unified TypeScript source under `packages/`, `services/`, `scripts/`, and `simulator/`
-- PostgreSQL migrations 001-010 and deterministic validation fixtures
+- PostgreSQL migrations 001-032, immutable baseline locks, and deterministic
+  validation fixtures
 - pinned database and application Dockerfiles plus Compose topology
-- independent STAS service, OpenAPI, 15-tool registry, SQL templates, and tests
+- independent STAS service, controlled Gateway/Providers, Grounding and
+  Operational Reality contracts, OpenAPI, SQL templates, and tests
 - architecture, ADR, ownership, operations, verification, traceability, and defects
 - npm dependency locks and final package checksum manifest
 
@@ -24,7 +26,8 @@ Prepared: 2026-08-13
 - `NOT_RUN`: no runtime evidence was produced
 - `BLOCKED`: a required external authority or environment is absent
 
-The authoritative status is `validation/FINAL_ACCEPTANCE.md`. Historical source
+The authoritative status is `PROJECT_STATUS.md` and
+`reports/gowm-v0.4/final-stable-candidate.md` when generated. Historical source
 reports in `docs/01_*` through `docs/16_*` are retained as baseline material and
 must not override the v0.1.0 ownership or acceptance records.
 

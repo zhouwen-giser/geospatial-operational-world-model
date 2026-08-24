@@ -11,6 +11,7 @@ import {
   buildGatewayApp,
   CapabilityRegistry,
   DirectExecutionService,
+  HttpProviderClient,
   InProcessProviderClient,
   MemoryAuditSink,
   MemoryGatewayIdempotencyStore,
@@ -164,6 +165,46 @@ describe("Provider SDK and conformance", () => {
 });
 
 describe("Capability Registry and direct execution", () => {
+  it("retains the controlled provider identity when an HTTP provider rejects a request", async () => {
+    const runtime = createElevationMockProvider();
+    const client = new HttpProviderClient({
+      endpoint: new URL("http://127.0.0.1:33010/"),
+      providerId: runtime.manifest.provider.providerId,
+      providerVersion: runtime.manifest.provider.providerVersion,
+      implementationDigest: runtime.manifest.provider.implementationDigest as `sha256:${string}`,
+      manifestHash: sha256(runtime.manifest),
+      approvedManifest: runtime.manifest,
+      transportToken: "provider-transport-test-token-32-bytes-minimum",
+      allowPlaintextPrivateNetwork: true,
+      fetch: async (_input, init) => init?.method === "POST"
+        ? new Response(JSON.stringify({
+            schemaVersion: "1.0",
+            requestId: "provider_request_test",
+            error: {
+              code: "INVALID_REQUEST",
+              message: "Request validation failed",
+              retryable: false,
+              stage: "PROVIDER_EXECUTION",
+              providerId: runtime.manifest.provider.providerId
+            }
+          }), { status: 422, headers: { "content-type": "application/json" } })
+        : new Response(JSON.stringify(runtime.manifest), {
+            status: 200,
+            headers: { "content-type": "application/json" }
+          })
+    });
+
+    await expect(client.execute("elevation.sample.mock", providerRequest(runtime))).rejects.toMatchObject({
+      code: "INVALID_REQUEST",
+      retryable: false,
+      details: {
+        upstreamStatus: 422,
+        providerId: runtime.manifest.provider.providerId,
+        stage: "PROVIDER_EXECUTION"
+      }
+    });
+  });
+
   it("registers a future provider and executes it without operation-specific Gateway code", async () => {
     const runtime = createElevationMockProvider();
     const { direct, audit } = gatewayHarness(runtime);

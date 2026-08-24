@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "operationalTaskReferenceKey": {
+    "namespace": "gowm",
+    "kind": "OPERATIONAL_TASK",
+    "id": "wrf_33333333333333333333333333333333",
+    "version": "8"
+  },
+  "events": [],
+  "truncated": false
+}

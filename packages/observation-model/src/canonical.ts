@@ -41,6 +41,7 @@ function normalizeV12(input: CanonicalObservationInput, receivedAt: string): Can
     receivedAt,
     source: input.source,
     correlationId: input.correlationId ?? input.observationId,
+    ...externalCorrelationFields(input),
     metadata: input.metadata,
     schemaVersion: "1.2"
   };
@@ -61,12 +62,26 @@ function normalizeV12(input: CanonicalObservationInput, receivedAt: string): Can
     datastreamKey: input.datastreamKey,
     producerPipelineKey: input.producerPipelineKey,
     rawReference: input.rawReference,
+    ...externalCorrelationFields(input),
     payloadHash: sha256(canonicalJson(semanticCommand)),
     qualityFlags: input.qualityFlags,
     timeSolution: input.timeSolution,
     measurements: input.measurements,
     assertions: input.assertions,
     entityBindingStatus: input.entityBindingStatus
+  };
+}
+
+function externalCorrelationFields(input: CanonicalObservationInput): Pick<CanonicalObservationInput,
+  "executionIntentId" | "operationCorrelationId" | "externalPlanningTaskId" |
+  "externalPlanningStepId" | "providerActionId" | "deviceCommandId"> {
+  return {
+    ...(input.executionIntentId === undefined ? {} : { executionIntentId: input.executionIntentId }),
+    ...(input.operationCorrelationId === undefined ? {} : { operationCorrelationId: input.operationCorrelationId }),
+    ...(input.externalPlanningTaskId === undefined ? {} : { externalPlanningTaskId: input.externalPlanningTaskId }),
+    ...(input.externalPlanningStepId === undefined ? {} : { externalPlanningStepId: input.externalPlanningStepId }),
+    ...(input.providerActionId === undefined ? {} : { providerActionId: input.providerActionId }),
+    ...(input.deviceCommandId === undefined ? {} : { deviceCommandId: input.deviceCommandId })
   };
 }
 

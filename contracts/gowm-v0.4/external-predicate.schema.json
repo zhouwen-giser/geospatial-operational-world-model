@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:external-predicate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "predicateId",
+    "externalAuthority",
+    "subject",
+    "operator"
+  ],
+  "properties": {
+    "predicateId": {
+      "type": "string"
+    },
+    "externalAuthority": {
+      "type": "string"
+    },
+    "sourceVersion": {
+      "type": "string"
+    },
+    "subject": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/referenceKey"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "externalReferenceId"
+          ],
+          "properties": {
+            "externalReferenceId": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "operator": {
+      "enum": [
+        "IS_INSIDE",
+        "IS_NEAR",
+        "INTERSECTS",
+        "HAS_REACHED",
+        "HAS_STOPPED",
+        "HAS_OBSERVED",
+        "EVENT_OCCURRED",
+        "STATE_EQUALS"
+      ]
+    },
+    "object": {},
+    "validTime": {
+      "$ref": "common.schema.json#/$defs/timeRange"
+    },
+    "parameters": {
+      "type": "object"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import type { Geometry, SubjectRef, WorldEvent, WorldEventType } from "../../world-model-core/src/types.js";
+import type { ExternalCorrelationMetadata, Geometry, SubjectRef, WorldEvent, WorldEventType } from "../../world-model-core/src/types.js";
 
-export interface EventInput {
+export interface EventInput extends ExternalCorrelationMetadata {
   eventType: WorldEventType;
   subject: SubjectRef;
   worldVersion: number;
@@ -10,6 +10,7 @@ export interface EventInput {
   payload?: Record<string, unknown>;
   geometry?: Geometry;
   timestamp?: string;
+  dataScopeKey?: string;
 }
 
 export function createWorldEvent(input: EventInput): WorldEvent {
@@ -23,6 +24,19 @@ export function createWorldEvent(input: EventInput): WorldEvent {
     correlationId: input.correlationId,
     causationId: input.causationId,
     payload: input.payload ?? {},
-    schemaVersion: "1.0"
+    schemaVersion: "1.0",
+    ...(input.dataScopeKey === undefined ? {} : { dataScopeKey: input.dataScopeKey }),
+    ...externalCorrelationFields(input)
+  };
+}
+
+function externalCorrelationFields(input: ExternalCorrelationMetadata): ExternalCorrelationMetadata {
+  return {
+    ...(input.executionIntentId === undefined ? {} : { executionIntentId: input.executionIntentId }),
+    ...(input.operationCorrelationId === undefined ? {} : { operationCorrelationId: input.operationCorrelationId }),
+    ...(input.externalPlanningTaskId === undefined ? {} : { externalPlanningTaskId: input.externalPlanningTaskId }),
+    ...(input.externalPlanningStepId === undefined ? {} : { externalPlanningStepId: input.externalPlanningStepId }),
+    ...(input.providerActionId === undefined ? {} : { providerActionId: input.providerActionId }),
+    ...(input.deviceCommandId === undefined ? {} : { deviceCommandId: input.deviceCommandId })
   };
 }

@@ -5,12 +5,14 @@ import { ObservationRepository } from "../../../packages/runtime/src/observation
 import { EventRepository } from "../../../packages/runtime/src/event-repository.js";
 import { ProjectionProcessor } from "../../../packages/runtime/src/projection.js";
 import { WorldEventBus } from "../../../packages/runtime/src/bus.js";
+import { OperationalProjectionRepository } from "../../../packages/runtime/src/operational-projection-repository.js";
 
 export interface WorkerTickResult {
   claimed: number;
   projected: number;
   failed: number;
   eventsPublished: number;
+  operationalProjected: number;
 }
 
 export class ProjectionWorker {
@@ -18,6 +20,7 @@ export class ProjectionWorker {
   private readonly observations: ObservationRepository;
   private readonly events: EventRepository;
   private readonly processor: ProjectionProcessor;
+  private readonly operational: OperationalProjectionRepository;
   private readonly bus = new WorldEventBus();
   private readonly workerName = `${process.env.HOSTNAME ?? "local"}-${randomUUID()}`;
 
@@ -25,6 +28,7 @@ export class ProjectionWorker {
     this.observations = new ObservationRepository(pool);
     this.events = new EventRepository(pool);
     this.processor = new ProjectionProcessor(pool);
+    this.operational = new OperationalProjectionRepository(pool);
   }
 
   async tick(): Promise<WorkerTickResult> {
@@ -41,8 +45,9 @@ export class ProjectionWorker {
         process.stderr.write(`projection failed ${id}: ${error instanceof Error ? error.stack : String(error)}\n`);
       }
     }
+    const operationalProjected = await this.operational.projectPending(this.config.projectionBatchSize);
     const eventsPublished = await this.relayEvents();
-    return { claimed: ids.length, projected, failed, eventsPublished };
+    return { claimed: ids.length, projected, failed, eventsPublished, operationalProjected };
   }
 
   async relayEvents(): Promise<number> {

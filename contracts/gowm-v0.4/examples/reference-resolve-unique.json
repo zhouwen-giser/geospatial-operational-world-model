@@ -1,0 +1,21 @@
+{
+  "request": {
+    "schemaVersion": "1.0",
+    "mentions": [
+      {
+        "mentionId": "m1",
+        "surfaceText": "2号车",
+        "expectedKinds": [
+          "UGV"
+        ],
+        "semanticRole": "ACTOR"
+      }
+    ],
+    "context": {
+      "anchorReferenceKeys": [],
+      "language": "zh-CN"
+    },
+    "limitPerMention": 5
+  },
+  "expectedStatus": "SUGGESTED_UNIQUE"
+}

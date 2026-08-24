@@ -8,12 +8,15 @@ import { databasePool } from "../../../packages/runtime/src/db.js";
 import { ObservationRepository } from "../../../packages/runtime/src/observation-repository.js";
 import { WorldEventBus } from "../../../packages/runtime/src/bus.js";
 import { EventRepository } from "../../../packages/runtime/src/event-repository.js";
+import { OperationalEventIngestSchema } from "../../../packages/operational-model/src/events.js";
+import { OperationalEventRepository } from "../../../packages/runtime/src/operational-event-repository.js";
 
 export function buildObservationApp(): FastifyInstance {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? "info" } });
   const config = loadConfig();
   const repository = new ObservationRepository(databasePool());
   const eventRepository = new EventRepository(databasePool());
+  const operationalEventRepository = new OperationalEventRepository(databasePool());
   const bus = new WorldEventBus();
 
   app.get("/health", async () => ({ status: "ok", service: "observation-ingest", timestamp: new Date().toISOString() }));
@@ -73,6 +76,32 @@ export function buildObservationApp(): FastifyInstance {
       measurementIds: result.measurementIds ?? [],
       trackletVersionId: result.trackletVersionId ?? null
     });
+  });
+
+  app.post("/operational-events", async (request, reply) => {
+    const parsed = OperationalEventIngestSchema.safeParse(request.body);
+    if (!parsed.success) return reply.code(422).send({ error: "invalid_operational_event",issues: parsed.error.issues });
+    const authorizedScope = request.headers["x-data-scope-key"];
+    if (typeof authorizedScope!=="string" || authorizedScope!==parsed.data.dataScopeKey) {
+      return reply.code(403).send({ error: "operational_event_scope_denied" });
+    }
+    try {
+      const result = await operationalEventRepository.insert(parsed.data,new Date().toISOString());
+      return reply.code(result.status==="duplicate" ? 200 : 202).send({
+        eventId: result.event.eventId,
+        operationalTaskId: result.event.operationalTaskId,
+        status: result.status,
+        arrivalClassification: result.arrivalClassification,
+        eventTime: result.event.eventTime,
+        receivedTime: result.event.receivedTime,
+        worldVersion: result.event.worldVersion
+      });
+    } catch (error) {
+      const code = (error as { code?: unknown }).code;
+      if (code==="23505") return reply.code(409).send({ error: "operational_event_idempotency_conflict" });
+      if (code==="22007") return reply.code(422).send({ error: "operational_event_future_skew" });
+      throw error;
+    }
   });
 
   app.get("/observations/:id", async (request, reply) => {

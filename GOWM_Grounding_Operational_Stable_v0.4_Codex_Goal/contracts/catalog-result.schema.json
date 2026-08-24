@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:catalog-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "items",
+    "truncated"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {}
+    },
+    "truncated": {
+      "type": "boolean"
+    },
+    "nextCursor": {
+      "type": "string",
+      "maxLength": 2048
+    }
+  }
+}

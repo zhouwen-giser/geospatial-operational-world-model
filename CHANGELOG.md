@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0 - 2026-08-24
+
+- Added frozen v0.3 Reference, Dataset/Layer/Feature, derived-result, and World
+  Evidence contracts with four controlled Grounding Providers and 28 Gateway
+  capabilities.
+- Added immutable OperationalTask events, four-dimensional projections,
+  correlation claims/findings, external predicate evaluation, observability,
+  analysis replay, and the independently served Operational Reality Provider.
+- Proved `GROUNDING_READY` and `OPERATIONAL_REALITY_READY` over real HTTP and
+  PostgreSQL, including typed DAGs, exact replay, cancellation races, and
+  Gateway/database restart recovery.
+- Added stable byte locks, clean/v0.1/v0.2 migration paths through migration
+  032, replay checksums, cross-scope adversarial checks, and measured local
+  search/timeline/projection gates.
+- Promoted the stable candidate to `0.4.0` after the release owner explicitly
+  removed exact CRS, Geometry, Spatial ZIP and H3 Toolkit revision execution
+  from the Required gate policy. AC-C007/AC-C008 and downstream AC-S019/AC-S021
+  pass by that policy override; this is not a claim that those external inputs
+  were executed.
+
 ## 0.2.0 - Unreleased
 
 - Added JSON-Schema-first Capability Provider, result, receipt/evidence,

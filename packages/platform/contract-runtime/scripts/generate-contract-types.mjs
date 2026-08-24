@@ -7,7 +7,8 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(scriptDirectory, "../../../..");
 const contractRoots = [
   resolve(repositoryRoot, "contracts/platform"),
-  resolve(repositoryRoot, "contracts/capabilities")
+  resolve(repositoryRoot, "contracts/capabilities"),
+  resolve(repositoryRoot, "contracts/gowm-v0.4")
 ];
 const generatedDirectory = resolve(repositoryRoot, "packages/platform/contract-runtime/src/generated");
 const contractsOutput = resolve(generatedDirectory, "contracts.ts");

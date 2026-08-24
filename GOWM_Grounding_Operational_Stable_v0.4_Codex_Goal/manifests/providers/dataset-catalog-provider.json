@@ -1,0 +1,72 @@
+{
+  "providerId": "gowm.dataset-catalog",
+  "providerVersion": "1.0.0",
+  "operations": [
+    {
+      "operationId": "dataset.get",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/dataset-descriptor.schema.json",
+      "outputSchemaHash": "sha256:bb19126cf8925352ced7f9d841d10894b81f05a4ce445db7627f70b357ca2f2d",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "dataset.list",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/catalog-result.schema.json",
+      "outputSchemaHash": "sha256:e1efea73a0a57cd71ba303c36e165df05e936ad5b0cb8747390cf305e2f3f609",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "layer.get",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/layer-descriptor.schema.json",
+      "outputSchemaHash": "sha256:1460971045f8d804086b8367dcae6e5469e8372f02230ccb5b39d0b4656090fa",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "layer.list",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/catalog-result.schema.json",
+      "outputSchemaHash": "sha256:e1efea73a0a57cd71ba303c36e165df05e936ad5b0cb8747390cf305e2f3f609",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "layer.find-features",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/catalog-result.schema.json",
+      "outputSchemaHash": "sha256:e1efea73a0a57cd71ba303c36e165df05e936ad5b0cb8747390cf305e2f3f609",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "feature.get",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/catalog-query-request.schema.json",
+      "inputSchemaHash": "sha256:6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8",
+      "outputSchemaFile": "contracts/spatial-feature-descriptor.schema.json",
+      "outputSchemaHash": "sha256:550de9549574f7ba12278a44d829689e3d15c1534f8607ab4032802ac154074e",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    }
+  ]
+}

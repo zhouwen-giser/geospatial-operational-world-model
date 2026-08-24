@@ -6548,6 +6548,1703 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
     "title": "SpatialSummarizeAreaOutputV1",
     "$ref": "../spatial-provider/operations.schema.json#/$defs/summarizeOutput"
   },
+  "gowm-v0.4/catalog-query-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:catalog-query-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "types": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "type": "string"
+        }
+      },
+      "query": {
+        "type": "string",
+        "maxLength": 512
+      },
+      "cursor": {
+        "type": "string",
+        "maxLength": 2048
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000
+      }
+    }
+  },
+  "gowm-v0.4/catalog-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:catalog-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "items",
+      "truncated"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "items": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {}
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "nextCursor": {
+        "type": "string",
+        "maxLength": 2048
+      }
+    }
+  },
+  "gowm-v0.4/common.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:common",
+    "$defs": {
+      "sha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "dateTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "referenceKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "namespace",
+          "kind",
+          "id",
+          "version"
+        ],
+        "properties": {
+          "namespace": {
+            "const": "gowm"
+          },
+          "kind": {
+            "enum": [
+              "WORLD_OBJECT",
+              "SPATIAL_OBJECT",
+              "DATA_SCOPE",
+              "DATASET",
+              "LAYER",
+              "LAYER_FEATURE",
+              "QUERY_RESULT",
+              "DERIVED_REFERENCE",
+              "REFERENCE_SET",
+              "OPERATIONAL_TASK"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^wrf_[0-9a-f]{32}$"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "geometrySummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "geometryType"
+        ],
+        "properties": {
+          "geometryType": {
+            "type": "string"
+          },
+          "centroid": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 3,
+            "items": {
+              "type": "number"
+            }
+          },
+          "bbox": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 6,
+            "items": {
+              "type": "number"
+            }
+          },
+          "geometryRef": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "crs": {
+            "type": "string",
+            "maxLength": 64
+          }
+        }
+      },
+      "evidenceRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "evidenceId",
+          "authority",
+          "evidenceType"
+        ],
+        "properties": {
+          "evidenceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "authority": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "evidenceType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "worldVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "observedAt": {
+            "$ref": "#/$defs/dateTime"
+          }
+        }
+      },
+      "timeRange": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "$ref": "#/$defs/dateTime"
+          },
+          "to": {
+            "$ref": "#/$defs/dateTime"
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.4/correlation-finding.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:correlation-finding",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "findingId",
+      "externalAuthority",
+      "externalKind",
+      "externalValue",
+      "relation",
+      "matchBasis",
+      "operationalEventIds",
+      "evidenceIds",
+      "worldVersion",
+      "methodVersion"
+    ],
+    "properties": {
+      "findingId": {
+        "type": "string"
+      },
+      "externalAuthority": {
+        "type": "string"
+      },
+      "externalKind": {
+        "type": "string"
+      },
+      "externalValue": {
+        "type": "string"
+      },
+      "operationalTaskReferenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "operationalEventIds": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "type": "string"
+        }
+      },
+      "relation": {
+        "enum": [
+          "REPORTS_EXECUTION_OF",
+          "REALIZES",
+          "PARTIALLY_REALIZES",
+          "POSSIBLY_CORRESPONDS_TO",
+          "NO_MATCH_FOUND",
+          "CONFLICTING_MATCHES"
+        ]
+      },
+      "matchBasis": {
+        "enum": [
+          "PROPAGATED_CORRELATION_ID",
+          "PROVIDER_DECLARED",
+          "MANUAL_CONFIRMATION",
+          "RESOURCE_AND_TIME_MATCH",
+          "SPATIOTEMPORAL_INFERENCE"
+        ]
+      },
+      "correlationConfidence": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "evidenceIds": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "type": "string"
+        }
+      },
+      "worldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "methodVersion": {
+        "type": "string"
+      }
+    }
+  },
+  "gowm-v0.4/dataset-descriptor.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:dataset-descriptor",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "datasetKind",
+      "name",
+      "currentVersion",
+      "versions"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "datasetKind": {
+        "enum": [
+          "VECTOR",
+          "RASTER",
+          "ELEVATION",
+          "NETWORK",
+          "POINT_CLOUD",
+          "TILESET",
+          "CURRENT_PROJECTION"
+        ]
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      },
+      "currentVersion": {
+        "type": "string"
+      },
+      "versions": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "schemaVersion",
+            "contentHash",
+            "publishedAt"
+          ],
+          "properties": {
+            "version": {
+              "type": "string"
+            },
+            "schemaVersion": {
+              "type": "string"
+            },
+            "contentHash": {
+              "$ref": "common.schema.json#/$defs/sha256"
+            },
+            "crs": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "sourceVersion": {
+              "type": "string"
+            },
+            "publishedAt": {
+              "$ref": "common.schema.json#/$defs/dateTime"
+            },
+            "retiredAt": {
+              "$ref": "common.schema.json#/$defs/dateTime"
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.4/derived-reference.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:derived-reference",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "derivedType",
+      "operator",
+      "sourceQueryId",
+      "inputReferenceKeys",
+      "dataSnapshotHash",
+      "computeSnapshotHash",
+      "methodVersion",
+      "revalidationRequired"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "derivedType": {
+        "enum": [
+          "GEOMETRY",
+          "REFERENCE_SET",
+          "RANKED_REFERENCE_SET",
+          "ANALYSIS_RESULT"
+        ]
+      },
+      "operator": {
+        "type": "string"
+      },
+      "sourceQueryId": {
+        "type": "string"
+      },
+      "sourceNodeId": {
+        "type": "string"
+      },
+      "inputReferenceKeys": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "dataSnapshotHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "computeSnapshotHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "methodVersion": {
+        "type": "string"
+      },
+      "geometrySummary": {
+        "$ref": "common.schema.json#/$defs/geometrySummary"
+      },
+      "artifactRef": {
+        "type": "string"
+      },
+      "validUntil": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "revalidationRequired": {
+        "type": "boolean"
+      }
+    }
+  },
+  "gowm-v0.4/extension-provider-manifest.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:extension-provider-manifest",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "providerId",
+      "providerVersion",
+      "operations"
+    ],
+    "properties": {
+      "providerId": {
+        "type": "string"
+      },
+      "providerVersion": {
+        "type": "string"
+      },
+      "operations": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operationId",
+            "operationVersion",
+            "maturity",
+            "inputSchemaFile",
+            "inputSchemaHash",
+            "outputSchemaFile",
+            "outputSchemaHash",
+            "scopePolicy",
+            "dataSnapshot"
+          ],
+          "properties": {
+            "operationId": {
+              "type": "string"
+            },
+            "operationVersion": {
+              "type": "string"
+            },
+            "maturity": {
+              "enum": [
+                "EXPERIMENTAL",
+                "PREVIEW",
+                "STABLE",
+                "DEPRECATED"
+              ]
+            },
+            "inputSchemaFile": {
+              "type": "string"
+            },
+            "inputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "outputSchemaFile": {
+              "type": "string"
+            },
+            "outputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "scopePolicy": {
+              "enum": [
+                "DATA_SCOPE_REQUIRED",
+                "DATASET_SCOPE_REQUIRED"
+              ]
+            },
+            "dataSnapshot": {
+              "enum": [
+                "REQUIRED",
+                "OPTIONAL"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.4/external-correlation-claim.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:external-correlation-claim",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "claimId",
+      "externalAuthority",
+      "externalKind",
+      "externalValue",
+      "matchBasis",
+      "observedAt",
+      "receivedAt",
+      "evidenceIds"
+    ],
+    "properties": {
+      "claimId": {
+        "type": "string"
+      },
+      "externalAuthority": {
+        "type": "string"
+      },
+      "externalKind": {
+        "enum": [
+          "PLANNING_TASK",
+          "PLANNING_STEP",
+          "EXECUTION_INTENT",
+          "OPERATION_CORRELATION",
+          "PROVIDER_ACTION",
+          "DEVICE_COMMAND"
+        ]
+      },
+      "externalValue": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      },
+      "relationHint": {
+        "enum": [
+          "REPORTS_EXECUTION_OF",
+          "REALIZES",
+          "RELATED_TO"
+        ]
+      },
+      "matchBasis": {
+        "enum": [
+          "PROPAGATED_CORRELATION_ID",
+          "PROVIDER_DECLARED",
+          "MANUAL_CONFIRMATION",
+          "RESOURCE_AND_TIME_MATCH",
+          "SPATIOTEMPORAL_INFERENCE"
+        ]
+      },
+      "confidence": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "observedAt": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "receivedAt": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "evidenceIds": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.4/external-predicate.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:external-predicate",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "predicateId",
+      "externalAuthority",
+      "subject",
+      "operator"
+    ],
+    "properties": {
+      "predicateId": {
+        "type": "string"
+      },
+      "externalAuthority": {
+        "type": "string"
+      },
+      "sourceVersion": {
+        "type": "string"
+      },
+      "subject": {
+        "oneOf": [
+          {
+            "$ref": "common.schema.json#/$defs/referenceKey"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "externalReferenceId"
+            ],
+            "properties": {
+              "externalReferenceId": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "operator": {
+        "enum": [
+          "IS_INSIDE",
+          "IS_NEAR",
+          "INTERSECTS",
+          "HAS_REACHED",
+          "HAS_STOPPED",
+          "HAS_OBSERVED",
+          "EVENT_OCCURRED",
+          "STATE_EQUALS"
+        ]
+      },
+      "object": {},
+      "validTime": {
+        "$ref": "common.schema.json#/$defs/timeRange"
+      },
+      "parameters": {
+        "type": "object"
+      }
+    }
+  },
+  "gowm-v0.4/layer-descriptor.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:layer-descriptor",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "datasetReferenceKey",
+      "layerType",
+      "name",
+      "currentVersion"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "datasetReferenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "layerType": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      },
+      "currentVersion": {
+        "type": "string"
+      },
+      "geometryType": {
+        "type": "string"
+      },
+      "crs": {
+        "type": "string"
+      },
+      "validTime": {
+        "$ref": "common.schema.json#/$defs/timeRange"
+      }
+    }
+  },
+  "gowm-v0.4/observability-assessment.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:observability-assessment",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "assessmentId",
+      "status",
+      "coverageSufficient",
+      "evidenceIds",
+      "policyVersion",
+      "worldVersion"
+    ],
+    "properties": {
+      "assessmentId": {
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "FRESH",
+          "STALE",
+          "OBSERVATION_GAP",
+          "NO_DATA",
+          "SOURCE_UNHEALTHY",
+          "INDETERMINATE"
+        ]
+      },
+      "coverageSufficient": {
+        "type": "boolean"
+      },
+      "lastReliableObservationAt": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "gapIntervals": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "common.schema.json#/$defs/timeRange"
+        }
+      },
+      "evidenceIds": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "type": "string"
+        }
+      },
+      "policyVersion": {
+        "type": "string"
+      },
+      "worldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.4/operational-event-timeline.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:operational-event-timeline",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "events",
+      "truncated"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "operationalTaskReferenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "events": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "$ref": "operational-task-event.schema.json"
+        }
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "nextCursor": {
+        "type": "string",
+        "maxLength": 2048
+      }
+    }
+  },
+  "gowm-v0.4/operational-query-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:operational-query-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "correlationHints": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "$ref": "external-correlation-claim.schema.json"
+        }
+      },
+      "timeRange": {
+        "$ref": "common.schema.json#/$defs/timeRange"
+      },
+      "actorReferenceKeys": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "cursor": {
+        "type": "string",
+        "maxLength": 2048
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000
+      }
+    }
+  },
+  "gowm-v0.4/operational-query-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:operational-query-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "tasks",
+      "truncated"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "tasks": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "$ref": "operational-task-snapshot.schema.json"
+        }
+      },
+      "correlationFindings": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "$ref": "correlation-finding.schema.json"
+        }
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "nextCursor": {
+        "type": "string",
+        "maxLength": 2048
+      }
+    }
+  },
+  "gowm-v0.4/operational-task-event.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:operational-task-event",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "eventId",
+      "operationalTaskId",
+      "eventType",
+      "eventTime",
+      "receivedTime",
+      "actorReferenceKeys",
+      "targetReferenceKeys",
+      "payload",
+      "provenance",
+      "worldVersion"
+    ],
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "operationalTaskId": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "eventType": {
+        "enum": [
+          "CONTROL_REQUEST_OBSERVED",
+          "CONTROL_ACCEPTED_OBSERVED",
+          "CONTROL_REJECTED_OBSERVED",
+          "EXECUTION_STARTED_OBSERVED",
+          "EXECUTION_PROGRESS_OBSERVED",
+          "EXECUTION_PAUSED_OBSERVED",
+          "EXECUTION_STOPPED_OBSERVED",
+          "CONTROL_COMPLETED_REPORTED",
+          "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED",
+          "PHYSICAL_EFFECT_CONFIRMED",
+          "PHYSICAL_EFFECT_CONTRADICTED",
+          "EXECUTION_FAILED_OBSERVED",
+          "EXECUTION_CANCELLED_OBSERVED",
+          "OBSERVATION_GAP_OPENED",
+          "OBSERVATION_GAP_CLOSED"
+        ]
+      },
+      "eventTime": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "receivedTime": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "subjectReferenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "actorReferenceKeys": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "targetReferenceKeys": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "geometryRef": {
+        "type": "string"
+      },
+      "payload": {
+        "type": "object"
+      },
+      "confidence": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "provenance": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 100,
+        "items": {
+          "$ref": "common.schema.json#/$defs/evidenceRef"
+        }
+      },
+      "correlationClaims": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "$ref": "external-correlation-claim.schema.json"
+        }
+      },
+      "worldVersion": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  },
+  "gowm-v0.4/operational-task-snapshot.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:operational-task-snapshot",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "operationalTaskId",
+      "taskType",
+      "controlState",
+      "activityState",
+      "outcomeVerification",
+      "observability",
+      "actorReferenceKeys",
+      "targetReferenceKeys",
+      "evidenceIds",
+      "worldVersion",
+      "projectionPolicyVersion"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "operationalTaskId": {
+        "type": "string"
+      },
+      "taskType": {
+        "type": "string"
+      },
+      "controlState": {
+        "enum": [
+          "NO_CONTROL_EVENT",
+          "REQUESTED_OBSERVED",
+          "ACCEPTED_OBSERVED",
+          "REJECTED_OBSERVED",
+          "COMPLETED_REPORTED",
+          "FAILED_REPORTED",
+          "CANCELLED_REPORTED"
+        ]
+      },
+      "activityState": {
+        "enum": [
+          "NOT_OBSERVED",
+          "STARTED_OBSERVED",
+          "ACTIVE_OBSERVED",
+          "PAUSED_OBSERVED",
+          "STOPPED_OBSERVED",
+          "UNKNOWN"
+        ]
+      },
+      "outcomeVerification": {
+        "enum": [
+          "NOT_APPLICABLE",
+          "UNVERIFIED",
+          "PARTIALLY_VERIFIED",
+          "VERIFIED",
+          "CONTRADICTED",
+          "INDETERMINATE"
+        ]
+      },
+      "observability": {
+        "enum": [
+          "FRESH",
+          "STALE",
+          "OBSERVATION_GAP",
+          "NO_DATA"
+        ]
+      },
+      "actorReferenceKeys": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "targetReferenceKeys": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "firstObservedAt": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "lastObservedAt": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "lastReceivedAt": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "evidenceIds": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "type": "string"
+        }
+      },
+      "worldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "projectionPolicyVersion": {
+        "type": "string"
+      }
+    }
+  },
+  "gowm-v0.4/predicate-evaluation.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:predicate-evaluation",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "evaluationId",
+      "predicateId",
+      "status",
+      "evaluatedAtWorldVersion",
+      "supportingEvidenceIds",
+      "contradictingEvidenceIds",
+      "assumptions",
+      "warnings",
+      "methodVersion"
+    ],
+    "properties": {
+      "evaluationId": {
+        "type": "string"
+      },
+      "predicateId": {
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "SUPPORTED",
+          "NOT_SUPPORTED",
+          "PARTIALLY_SUPPORTED",
+          "INDETERMINATE",
+          "NO_DATA",
+          "CONFLICTING"
+        ]
+      },
+      "evaluatedAtWorldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "supportingEvidenceIds": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "type": "string"
+        }
+      },
+      "contradictingEvidenceIds": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "type": "string"
+        }
+      },
+      "observabilityAssessment": {
+        "$ref": "observability-assessment.schema.json"
+      },
+      "assumptions": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string"
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string"
+        }
+      },
+      "methodVersion": {
+        "type": "string"
+      }
+    }
+  },
+  "gowm-v0.4/query-result-reference.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:query-result-reference",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "queryId",
+      "resultHash",
+      "status",
+      "dataSnapshotHash",
+      "computeSnapshotHash",
+      "createdAt"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "queryId": {
+        "type": "string"
+      },
+      "resultHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "status": {
+        "enum": [
+          "COMPLETED",
+          "PARTIAL",
+          "NO_DATA",
+          "INDETERMINATE"
+        ]
+      },
+      "dataSnapshotHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "computeSnapshotHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "createdAt": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "validUntil": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "artifactRefs": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.4/reference-descriptor.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:reference-descriptor",
+    "title": "ReferenceDescriptor",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "referenceType",
+      "displayName",
+      "version",
+      "revalidationRequired",
+      "provenance"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "referenceType": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "displayName": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      },
+      "aliases": {
+        "type": "array",
+        "maxItems": 64,
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "stateQuality": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "stateConfidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "freshnessMs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "stale": {
+            "type": "boolean"
+          }
+        }
+      },
+      "version": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "referenceVersion"
+        ],
+        "properties": {
+          "referenceVersion": {
+            "type": "string"
+          },
+          "objectVersion": {
+            "type": "string"
+          },
+          "worldVersion": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "geometrySummary": {
+        "$ref": "common.schema.json#/$defs/geometrySummary"
+      },
+      "validUntil": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "revalidationRequired": {
+        "type": "boolean"
+      },
+      "provenance": {
+        "type": "array",
+        "maxItems": 64,
+        "items": {
+          "$ref": "common.schema.json#/$defs/evidenceRef"
+        }
+      }
+    }
+  },
+  "gowm-v0.4/reference-key.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:reference-key",
+    "title": "ReferenceKey",
+    "$ref": "common.schema.json#/$defs/referenceKey"
+  },
+  "gowm-v0.4/reference-resolve-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:reference-resolve-request",
+    "title": "ReferenceResolveRequest",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "mentions",
+      "context",
+      "limitPerMention"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "mentions": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 32,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mentionId",
+            "surfaceText"
+          ],
+          "properties": {
+            "mentionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "surfaceText": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "expectedKinds": {
+              "type": "array",
+              "maxItems": 32,
+              "items": {
+                "type": "string",
+                "maxLength": 128
+              }
+            },
+            "semanticRole": {
+              "type": "string",
+              "maxLength": 64
+            }
+          }
+        }
+      },
+      "context": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "anchorReferenceKeys"
+        ],
+        "properties": {
+          "anchorReferenceKeys": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "$ref": "common.schema.json#/$defs/referenceKey"
+            }
+          },
+          "mapViewport": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number"
+            }
+          },
+          "language": {
+            "type": "string",
+            "maxLength": 32
+          }
+        }
+      },
+      "limitPerMention": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20
+      }
+    }
+  },
+  "gowm-v0.4/reference-resolve-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:reference-resolve-result",
+    "title": "ReferenceResolveResult",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "resolutions",
+      "worldVersion",
+      "resolverVersion"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "worldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "resolverVersion": {
+        "type": "string"
+      },
+      "resolutions": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mentionId",
+            "status",
+            "candidates"
+          ],
+          "properties": {
+            "mentionId": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "RESOLVED_EXACT",
+                "SUGGESTED_UNIQUE",
+                "AMBIGUOUS",
+                "UNRESOLVED",
+                "INVALID"
+              ]
+            },
+            "candidates": {
+              "type": "array",
+              "maxItems": 20,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "candidate",
+                  "matchedBy",
+                  "matchScore"
+                ],
+                "properties": {
+                  "candidate": {
+                    "$ref": "reference-descriptor.schema.json"
+                  },
+                  "matchedBy": {
+                    "enum": [
+                      "EXACT_REFERENCE_KEY",
+                      "EXACT_EXTERNAL_ID",
+                      "EXACT_CODE",
+                      "EXACT_CANONICAL_NAME",
+                      "EXACT_ALIAS",
+                      "PINYIN",
+                      "FUZZY_NAME",
+                      "SPATIAL_CONTEXT"
+                    ]
+                  },
+                  "matchScore": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.4/reference-set.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:reference-set",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "semanticType",
+      "memberCount",
+      "members",
+      "membersTruncated",
+      "sourceQueryId"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "semanticType": {
+        "type": "string"
+      },
+      "memberCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "members": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "$ref": "common.schema.json#/$defs/referenceKey"
+        }
+      },
+      "membersTruncated": {
+        "type": "boolean"
+      },
+      "nextCursor": {
+        "type": "string",
+        "maxLength": 2048
+      },
+      "sourceQueryId": {
+        "type": "string"
+      },
+      "validUntil": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      }
+    }
+  },
+  "gowm-v0.4/reference-validate-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:reference-validate-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "references"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "references": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 100,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "referenceKey"
+          ],
+          "properties": {
+            "referenceKey": {
+              "$ref": "common.schema.json#/$defs/referenceKey"
+            },
+            "expectedType": {
+              "type": "string"
+            },
+            "minimumWorldVersion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maximumAgeMs": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.4/reference-validate-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:reference-validate-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "results"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "results": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "referenceKey",
+            "status",
+            "revalidationRequired"
+          ],
+          "properties": {
+            "referenceKey": {
+              "$ref": "common.schema.json#/$defs/referenceKey"
+            },
+            "status": {
+              "enum": [
+                "VALID",
+                "STALE",
+                "EXPIRED",
+                "NOT_FOUND",
+                "TYPE_MISMATCH",
+                "VERSION_CONFLICT",
+                "SCOPE_DENIED"
+              ]
+            },
+            "revalidationRequired": {
+              "type": "boolean"
+            },
+            "descriptor": {
+              "$ref": "reference-descriptor.schema.json"
+            },
+            "warnings": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.4/spatial-feature-descriptor.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:spatial-feature-descriptor",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "layerReferenceKey",
+      "featureType",
+      "version"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "layerReferenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "featureType": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string"
+      },
+      "geometrySummary": {
+        "$ref": "common.schema.json#/$defs/geometrySummary"
+      },
+      "properties": {
+        "type": "object"
+      },
+      "validTime": {
+        "$ref": "common.schema.json#/$defs/timeRange"
+      }
+    }
+  },
+  "gowm-v0.4/world-fact-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.4:world-fact-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "referenceKey",
+      "worldVersion",
+      "facts",
+      "evidence",
+      "unknowns"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "worldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "facts": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "type": "object"
+        }
+      },
+      "evidence": {
+        "type": "array",
+        "maxItems": 1000,
+        "items": {
+          "$ref": "common.schema.json#/$defs/evidenceRef"
+        }
+      },
+      "unknowns": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string"
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
   "platform/capability-catalog.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.2:capability-catalog",

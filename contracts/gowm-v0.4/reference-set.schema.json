@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.4:reference-set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "referenceKey",
+    "semanticType",
+    "memberCount",
+    "members",
+    "membersTruncated",
+    "sourceQueryId"
+  ],
+  "properties": {
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "semanticType": {
+      "type": "string"
+    },
+    "memberCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "members": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      }
+    },
+    "membersTruncated": {
+      "type": "boolean"
+    },
+    "nextCursor": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "sourceQueryId": {
+      "type": "string"
+    },
+    "validUntil": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    }
+  }
+}
