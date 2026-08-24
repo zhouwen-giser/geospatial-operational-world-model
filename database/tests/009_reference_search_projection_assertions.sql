@@ -42,6 +42,7 @@ DECLARE
   budget_count integer;
   first_order text[];
   second_order text[];
+  exact_kind text;
 BEGIN
   first_count := rebuild_reference_search_projection('reference-search-test');
   second_count := rebuild_reference_search_projection('reference-search-test');
@@ -55,6 +56,21 @@ BEGIN
   FROM gowm_reference_v1.resolve('中央路', ARRAY['DATASET'], 20, 0.3, 1000);
   IF ambiguous_count <> 2 THEN
     RAISE EXCEPTION 'same-scope ambiguous road did not retain both candidates: %', ambiguous_count;
+  END IF;
+
+  INSERT INTO world_reference_name(
+    reference_key, data_scope_key, name_kind, language_tag, name_text,
+    normalized_text, source_ref, confidence
+  ) VALUES (
+    'wrf_' || lpad(to_hex(1), 32, '0'), 'reference-search-test', 'ALIAS', 'en',
+    'reference search exact alias', 'reference search exact alias', 'reference-search-exact-precedence', 1
+  );
+  PERFORM rebuild_reference_search_projection('reference-search-test');
+  SELECT matched_by INTO STRICT exact_kind
+  FROM gowm_reference_v1.resolve('reference search exact alias', ARRAY['DATASET'], 20, 0.3, 1000)
+  WHERE reference_key='wrf_' || lpad(to_hex(1), 32, '0');
+  IF exact_kind <> 'ALIAS' THEN
+    RAISE EXCEPTION 'exact alias was displaced by a higher-priority fuzzy source: %', exact_kind;
   END IF;
 
   SELECT count(*) INTO budget_count
