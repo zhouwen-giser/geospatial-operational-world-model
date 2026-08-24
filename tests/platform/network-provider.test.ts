@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
+import { ProviderProtocolError } from "../../packages/platform/provider-sdk/src/index.js";
 import { matrix, shortestPath, verifyPath } from "../../services/providers/network-provider/src/engine.js";
 import { createNetworkProvider } from "../../services/providers/network-provider/src/provider.js";
 import type { LoadedNetwork, NetworkArc, NetworkSqlPool, RoutingSnapshot, TurnRule } from "../../services/providers/network-provider/src/types.js";
@@ -64,6 +65,7 @@ describe("gowm.network provider", () => {
       { fromIndex: 1, toIndex: 0, reachable: false },
       { fromIndex: 1, toIndex: 1, reachable: true, costUnits: 0 }
     ]);
+    expect(() => shortestPath(network([a, b]), { arcKey: a.key, fractionPpm: 0, direction: "FORWARD" }, { arcKey: b.key, fractionPpm: 1_000_000, direction: "FORWARD" }, "SHORTEST_DISTANCE", 1)).toThrow(ProviderProtocolError);
   });
 
   it("enforces pairwise and multi-edge restrictions and charges a penalty once", () => {

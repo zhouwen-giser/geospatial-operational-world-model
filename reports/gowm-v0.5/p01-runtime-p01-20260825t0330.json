@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "P01",
+  "runId": "p01-20260825t0330",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "sourceDatabase": "gowm_v05_n04_20260825t0228",
+  "database": "gowm_v05_p01_20260825t0330",
+  "startedAt": "2026-08-24T17:33:06.540Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3155
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3050
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "--template",
+        "gowm_v05_n04_20260825t0228",
+        "gowm_v05_p01_20260825t0330"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3327
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_p01_20260825t0330",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<create p01b_p01_20260825t0330/p01p_p01_20260825t0330 with redacted passwords>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3246
+    }
+  ],
+  "acceptance": {},
+  "summary": null,
+  "errors": [
+    "error: �û� \"p01b_p01_20260825t0330\" Password ��֤ʧ��\n    at D:\\Code\\agent-app\\geospatial-operational-world-model\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async seedFixture (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-provider-runtime-gate.ts:164:18)\n    at async <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-provider-runtime-gate.ts:58:19)"
+  ],
+  "finishedAt": "2026-08-24T17:33:19.418Z"
+}

@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "P01",
+  "runId": "p01-20260825t0450",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "sourceDatabase": "gowm_v05_n04_20260825t0228",
+  "database": "gowm_v05_p01_20260825t0450",
+  "startedAt": "2026-08-24T17:40:43.137Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3158
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3053
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "--template",
+        "gowm_v05_n04_20260825t0228",
+        "gowm_v05_p01_20260825t0450"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3384
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_p01_20260825t0450",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<migration 044_network_arc_heading_read_contract.sql>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3202
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_p01_20260825t0450",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<create p01b_p01_20260825t0450/p01p_p01_20260825t0450 with redacted passwords>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3210
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3054
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--name",
+        "gowm-p01-20260825t0450-postgres-proxy",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--publish",
+        "127.0.0.1::5432",
+        "node:22-bookworm",
+        "<fixed TCP proxy>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 836
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}",
+        "gowm-p01-20260825t0450-postgres-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 53
+    }
+  ],
+  "acceptance": {
+    "AC-P001": "PASS_MANIFEST_AND_GRAPH_CONTRACT"
+  },
+  "summary": null,
+  "errors": [
+    "ProviderProtocolError: operation output schema validation failed\n    at assertOperationSchema (D:\\Code\\agent-app\\geospatial-operational-world-model\\packages\\platform\\provider-sdk\\src\\runtime.ts:231:11)\n    at assembleResult (D:\\Code\\agent-app\\geospatial-operational-world-model\\packages\\platform\\provider-sdk\\src\\runtime.ts:122:35)\n    at <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\packages\\platform\\provider-sdk\\src\\runtime.ts:76:16)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Object.execute (D:\\Code\\agent-app\\geospatial-operational-world-model\\packages\\platform\\provider-sdk\\src\\runtime.ts:64:14)\n    at async <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-provider-runtime-gate.ts:96:25)"
+  ],
+  "finishedAt": "2026-08-24T17:41:03.325Z"
+}

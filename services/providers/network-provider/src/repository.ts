@@ -131,7 +131,7 @@ export class NetworkRepository {
     const latitude = finite(coordinates[1], "latitude");
     const limit = integer(input.limit, "limit");
     const raw = await client.query(
-      "SELECT * FROM gowm_network_v1.snap_candidates($1::uuid,ST_SetSRID(ST_MakePoint($2::float8,$3::float8),4326),32)",
+      "SELECT * FROM gowm_network_v1.snap_candidates_wgs84($1::uuid,$2::float8,$3::float8,32)",
       [requiredString(network.graph.graph_version_id, "graph_version_id"), longitude, latitude]
     );
     const byId = new Map(network.arcs.map((arc) => [arc.id, arc]));
@@ -182,7 +182,7 @@ export class NetworkRepository {
     const arcResult = await client.query(
       `SELECT arc.arc_id,arc.arc_key,arc.source_node_id,arc.target_node_id,arc.direction,
               edge.source_feature_reference_key,arc.access_mask,
-              round(mod(degrees(ST_Azimuth(ST_StartPoint(ST_Force2D(arc.oriented_geometry)),ST_EndPoint(ST_Force2D(arc.oriented_geometry))))+360,360)*1000000)::bigint AS heading_microdegrees,
+              arc.heading_microdegrees,
               cost.distance_mm,cost.duration_ms,cost.risk_microunits,cost.energy_mwh,cost.combined_cost_units,
               condition.traversal_allowed,condition.penalty_units AS condition_penalty_units,
               condition.risk_override_microunits,condition.access_override_mask,condition.cost_multiplier_ppm,
@@ -206,7 +206,7 @@ export class NetworkRepository {
         : Math.ceil(safeInteger(row.distance_mm, "distance_mm") * 1000 / safeInteger(row.speed_override_mm_per_s, "speed_override_mm_per_s"));
       const sourceId = optionalString(row.source_feature_reference_key);
       return [{
-        id: String(row.arc_id), key: requiredString(row.arc_key, "arc_key"),
+        id: String(row.arc_id), key: externalArcKey(requiredString(row.arc_key, "arc_key")),
         source: String(row.source_node_id), target: String(row.target_node_id), direction: direction(row.direction),
         headingMicrodegrees: safeInteger(row.heading_microdegrees, "heading_microdegrees"),
         ...(sourceId === undefined ? {} : { sourceFeatureReferenceKey: referenceKey("LAYER_FEATURE", sourceId, requested.networkDatasetVersion) }),
@@ -228,7 +228,7 @@ export class NetworkRepository {
     const datasetReferenceId = requiredString(graph.dataset_reference_key, "dataset_reference_key");
     const capturedAt = this.now().toISOString();
     return {
-      routingSnapshot: { ...requested, capturedAt: requested.capturedAt ?? capturedAt }, graph, arcs, turnRules,
+      routingSnapshot: { ...requested }, graph, arcs, turnRules,
       dataSnapshot: {
         consistency: "PINNED", capturedAt,
         scopeDigest: sha256({ dataScopeKey, datasetScopeKey }),
@@ -265,6 +265,7 @@ function objective(value: unknown): Objective { if (value === "SHORTEST_DISTANCE
 function direction(value: unknown): "FORWARD" | "REVERSE" { if (value === "FORWARD" || value === "REVERSE") return value; throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "invalid arc direction"); }
 function referenceKey(kind: "DATASET" | "LAYER_FEATURE", id: string, version: string): PlatformCommonDefinitionsReferenceKey { return { namespace: "gowm", kind, id, version }; }
 function circularDifference(a: number, b: number): number { const raw = Math.abs(a - b) % 360_000_000; return Math.min(raw, 360_000_000 - raw); }
+function externalArcKey(value: string): string { if (!/^ar_[0-9a-f]{64}$/u.test(value)) throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "internal Arc key is invalid"); return `arc_${value.slice(3)}`; }
 function multiplyPpm(value: number, ppm: number): number { return Number((BigInt(value) * BigInt(ppm) + 500_000n) / 1_000_000n); }
 function bigint(value: unknown, name: string): bigint { try { const parsed = BigInt(String(value)); if (parsed < 0n) throw new Error(); return parsed; } catch { throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", `${name} must be a non-negative integer`); } }
 function digest(value: unknown, name: string): `sha256:${string}` { const text = requiredString(value, name); if (!/^sha256:[0-9a-f]{64}$/u.test(text)) throw new ProviderProtocolError("INVALID_REQUEST", `${name} must be sha256`); return text as `sha256:${string}`; }

@@ -1,0 +1,22 @@
+{
+  "phase": "P01",
+  "status": "PASS",
+  "acceptance": {
+    "AC-P001..AC-P020": "PASS_REAL_POSTGRESQL_PGROUTING_PROVIDER_RESOURCE_DIFFERENTIAL_RECOVERY"
+  },
+  "runtime": {
+    "runId": "p01-20260825t0610",
+    "database": "gowm_v05_p01_20260825t0610",
+    "providerRole": "network_provider inherited by ephemeral LOGIN",
+    "builderRole": "network_builder inherited by separate ephemeral LOGIN",
+    "pgRoutingDifferentialDistance": 222640,
+    "resultHashBeforeRestart": "sha256:19adb184100ed2716645673f1a1f3c96f40cf2318e81eac4d7b20664d996cd87",
+    "resultHashAfterRestart": "sha256:19adb184100ed2716645673f1a1f3c96f40cf2318e81eac4d7b20664d996cd87"
+  },
+  "tests": {
+    "realDatabase": "PASS_20_OF_20",
+    "sqlRuntimeAssertion029": "PASS",
+    "repositoryVerify": "PASS_159_VITEST_1_SKIP_39_STAS_44_MIGRATIONS_29_ASSERTIONS"
+  },
+  "runtimeEvidence": "reports/gowm-v0.5/p01-runtime-p01-20260825t0610.json"
+}

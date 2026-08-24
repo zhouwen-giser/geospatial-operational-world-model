@@ -72,6 +72,7 @@ export function shortestPath(
       const transition = turnEffect(current.history, destinationArc.key, network.turnRules, ignoreSoftPenalties);
       if (!transition.forbidden) {
         const keys = [...current.arcKeys, destinationArc.key];
+        if (keys.length > maximumSegments) throw new ProviderProtocolError("BUDGET_EXCEEDED", "network segment budget exceeded", { details: { maximumSegments } });
         const arcs = keys.map((key) => byKey.get(key)).filter((arc): arc is NetworkArc => arc !== undefined);
         chosen = { arcs, turnPenalty: current.turnPenalty + transition.penalty };
         break;

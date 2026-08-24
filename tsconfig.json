@@ -26,6 +26,7 @@
     "validation/scripts/network-turn-runtime-client.ts",
     "validation/scripts/network-profile-runtime-client.ts",
     "validation/scripts/network-activation-runtime-client.ts",
+    "validation/scripts/network-provider-runtime-gate.ts",
     "tests/**/*.ts",
     "vitest.config.ts"
   ],

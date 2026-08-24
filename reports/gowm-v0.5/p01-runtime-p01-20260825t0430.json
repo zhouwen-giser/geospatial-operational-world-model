@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "P01",
+  "runId": "p01-20260825t0430",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "sourceDatabase": "gowm_v05_n04_20260825t0228",
+  "database": "gowm_v05_p01_20260825t0430",
+  "startedAt": "2026-08-24T17:38:54.344Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3164
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3050
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "--template",
+        "gowm_v05_n04_20260825t0228",
+        "gowm_v05_p01_20260825t0430"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3385
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_p01_20260825t0430",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<migration 044_network_arc_heading_read_contract.sql>"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 3184
+    }
+  ],
+  "acceptance": {},
+  "summary": null,
+  "errors": [
+    "Error: Command failed: docker compose exec --no-TTY postgres psql --username gowm --dbname gowm_v05_p01_20260825t0430 --set ON_ERROR_STOP=on --command BEGIN;\n\nCREATE OR REPLACE VIEW gowm_network_v1.arc WITH (security_barrier = true) AS\nSELECT arc.graph_version_id, arc.arc_id, arc.arc_key, arc.edge_id, arc.source_node_id,\n       arc.target_node_id, arc.direction, arc.oriented_geometry, arc.length_mm,\n       arc.default_speed_mm_per_s, arc.transit_eligible, arc.service_eligible,\n       arc.access_mask, arc.profile_constraints,\n       round(mod(degrees(ST_Azimuth(\n         ST_StartPoint(ST_Force2D(arc.oriented_geometry)),\n         ST_EndPoint(ST_Force2D(arc.oriented_geometry))\n       )) + 360, 360) * 1000000)::bigint AS heading_microdegrees\nFROM public.network_arc arc\nJOIN public.network_graph_version version USING (graph_version_id, data_scope_key)\nWHERE arc.data_scope_key = gowm_network_v1.current_data_scope_key()\n  AND version.dataset_scope_key = gowm_network_v1.current_dataset_scope_key();\n\nCOMMIT;\n\nERROR:  function mod(double precision, integer) does not exist\nLINE 8:        round(mod(degrees(ST_Azimuth(\n                     ^\nHINT:  No function matches the given name and argument types. You might need to add explicit type casts.\n\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execFileSync (node:child_process:918:15)\n    at docker (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-provider-runtime-gate.ts:39:20)\n    at <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-provider-runtime-gate.ts:56:3)"
+  ],
+  "finishedAt": "2026-08-24T17:39:07.138Z"
+}
