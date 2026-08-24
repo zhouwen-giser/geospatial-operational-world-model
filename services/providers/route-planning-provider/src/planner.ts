@@ -23,7 +23,7 @@ export class RoutePlanner {
     const input = asRow(inputValue); const snapshot = await this.snapshot(input, security, deadlineMs);
     const network = await this.network.loadPinned(snapshot, security, deadlineMs);
     const submitted = await this.submit(input, security);
-    if (submitted.terminal) throw new ProviderProtocolError("IDEMPOTENCY_CONFLICT", "completed route replay requires persisted result publication");
+    if (submitted.terminal) { const replay = await this.replay(submitted.id, security); if (!replay) throw new ProviderProtocolError("IDEMPOTENCY_CONFLICT", "terminal route result is unavailable"); return { output: replay, dataSnapshot: network.dataSnapshot, rows: network.arcs.length, candidates: arrayOrEmpty(replay.candidates).length }; }
     const run = await this.claim(submitted.id, `sync:${input.requestId}`, Math.max(1, Math.ceil(Math.min(deadlineMs, integer(input.deadlineMs, "deadlineMs")) / 1000)));
     try {
       const locations = [input.start, ...arrayOrEmpty(input.waypoints), ...arrayOrEmpty(input.viaReferences), input.destination];
@@ -44,7 +44,7 @@ export class RoutePlanner {
       const candidates = ranked.slice(0, wanted).map(([signature, path], index) => { const candidate = { rank: index + 1, routeSignature: signature, segments: path.segments, metrics: path.metrics }; return { ...candidate, verification: verifyRouteCandidate(network, candidate) }; });
       const status = candidates.length ? "COMPLETED" : "NO_PATH";
       const output = result(input, snapshot, status, candidates, this.ttlMs);
-      await this.complete(submitted.id, run.generation, run.owner, status, sha256(output));
+      await this.publish(submitted.id, run.generation, run.owner, output);
       return { output, dataSnapshot: network.dataSnapshot, rows: network.arcs.length, candidates: candidates.length };
     } catch (error) { await this.complete(submitted.id, run.generation, run.owner, "FAILED", null).catch(() => undefined); throw error; }
   }
@@ -66,7 +66,9 @@ export class RoutePlanner {
   private async submit(input: Row, scope: Scope): Promise<{ id: string; terminal: boolean }> { const client = await this.options.pool.connect(); try { const hash = sha256(input); const reference = queryReference(hash); const query = await client.query("SELECT route_request_id::text,status,replayed FROM route_planner_runtime.submit_route_request($1,$2,$3,$4,$5,$6::jsonb,$7)", [scope.dataScopeKey, scope.datasetScopeKey, string(input.requestId), string(input.requestId), hash, JSON.stringify(input), reference.id]); const row = query.rows[0]; if (!row) throw new Error("route submission unavailable"); return { id: string(row.route_request_id), terminal: ["COMPLETED","NO_PATH","FAILED","CANCELLED"].includes(String(row.status)) }; } finally { client.release(); } }
   private async claim(id: string, owner: string, seconds: number): Promise<{ generation: number; owner: string }> { const client = await this.options.pool.connect(); try { const query = await client.query("SELECT generation FROM route_planner_runtime.claim_route_request($1::uuid,$2,$3)", [id, owner, seconds]); return { generation: integer(query.rows[0]?.generation, "generation"), owner }; } finally { client.release(); } }
   private async complete(id: string, generation: number, owner: string, status: string, hash: string | null): Promise<void> { const client = await this.options.pool.connect(); try { const query = await client.query("SELECT route_planner_runtime.complete_route_request($1::uuid,$2,$3,$4,$5) AS completed", [id, generation, owner, status, hash]); if (query.rows[0]?.completed !== true) throw new ProviderProtocolError("IDEMPOTENCY_CONFLICT", "route completion lost its generation fence"); } finally { client.release(); } }
-  private async finishNoPath(input: Row, network: LoadedNetwork, id: string, run: { generation: number; owner: string }): Promise<RouteExecution> { const output = result(input, network.routingSnapshot, "NO_PATH", [], this.ttlMs); await this.complete(id, run.generation, run.owner, "NO_PATH", sha256(output)); return { output, dataSnapshot: network.dataSnapshot, rows: network.arcs.length, candidates: 0 }; }
+  private async publish(id: string, generation: number, owner: string, output: Row): Promise<void> { const client = await this.options.pool.connect(); try { const query = await client.query("SELECT route_planner_runtime.publish_route_result($1::uuid,$2,$3,$4::jsonb,$5,$6,$7,$8) AS published", [id,generation,owner,JSON.stringify(output),sha256(output),sha256(output.routingSnapshot),"gowm-route-product-state/1.0.0","gowm-route-independent-verifier/1.0.0"]); if (query.rows[0]?.published!==true) throw new ProviderProtocolError("IDEMPOTENCY_CONFLICT","route publication lost its generation fence"); } finally { client.release(); } }
+  private async replay(id: string, scope: Scope): Promise<Row | undefined> { const client=await this.options.pool.connect(); try { const query=await client.query("SELECT route_planner_runtime.get_route_result($1::uuid,$2,$3) AS result",[id,scope.dataScopeKey,scope.datasetScopeKey]); const value=query.rows[0]?.result; return isRow(value)?value:undefined; } finally { client.release(); } }
+  private async finishNoPath(input: Row, network: LoadedNetwork, id: string, run: { generation: number; owner: string }): Promise<RouteExecution> { const output = result(input, network.routingSnapshot, "NO_PATH", [], this.ttlMs); await this.publish(id, run.generation, run.owner, output); return { output, dataSnapshot: network.dataSnapshot, rows: network.arcs.length, candidates: 0 }; }
 }
 
 type Scope = { dataScopeKey?: string; datasetScopeKey?: string };

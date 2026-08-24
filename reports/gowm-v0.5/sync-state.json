@@ -2,7 +2,7 @@
   "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
   "targetVersion": "0.5.0",
   "status": "IN_PROGRESS",
-  "phase": "R02",
+  "phase": "R03",
   "baseline": {
     "branch": "main",
     "version": "0.4.0",
@@ -12,8 +12,8 @@
   "candidate": {
     "branch": "codex/gowm-network-routing-v0.5",
     "baseSha": "db575f79c874a69f65a2043a7e463338524b713d",
-    "localSha": "b02828d",
-    "remoteSha": "b02828d",
+    "localSha": "38095d8",
+    "remoteSha": "38095d8",
     "draftPr": 3
   },
   "milestones": {
@@ -22,11 +22,11 @@
     "stableCandidate": false
   },
   "acceptance": {
-    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N040", "AC-P001..AC-P020", "AC-R001..AC-R002", "AC-R005", "AC-R007", "AC-R014", "AC-R016..AC-R021", "AC-R024..AC-R026", "AC-R028"],
+    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N040", "AC-P001..AC-P020", "AC-R001..AC-R002", "AC-R005", "AC-R007", "AC-R014..AC-R026", "AC-R028"],
     "failed": [],
     "blocked": [],
-    "notRun": ["AC-R003..AC-R004", "AC-R006", "AC-R008..AC-R013", "AC-R015", "AC-R022..AC-R023", "AC-R027", "AC-G001..AC-S022"]
+    "notRun": ["AC-R003..AC-R004", "AC-R006", "AC-R008..AC-R013", "AC-R027_OPTIONAL", "AC-G001..AC-S022"]
   },
   "blockers": [],
-  "next": "Execute R03 immutable Result Registry publication and exact idempotent replay."
+  "next": "Execute G00 Gateway registry, Direct, typed DAG, async, cancel and restart integration."
 }
