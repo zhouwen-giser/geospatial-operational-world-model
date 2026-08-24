@@ -11,9 +11,9 @@
   },
   "candidate": {
     "branch": "codex/gowm-grounding-operational-v0.4-stable",
-    "contentSha": "14cb7606505d58913d078934d9d3d15ffd65d209",
-    "localShaAtReconciliation": "14cb7606505d58913d078934d9d3d15ffd65d209",
-    "remoteShaAtReconciliation": "14cb7606505d58913d078934d9d3d15ffd65d209",
+    "contentSha": "0d0d4d2e5a3c1b958fc6c7f138dbc20257b89696",
+    "localShaAtReconciliation": "0d0d4d2e5a3c1b958fc6c7f138dbc20257b89696",
+    "remoteShaAtReconciliation": "0d0d4d2e5a3c1b958fc6c7f138dbc20257b89696",
     "pullRequest": 2,
     "pullRequestDraft": false,
     "targetBranch": "main"

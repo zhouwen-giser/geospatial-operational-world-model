@@ -19,13 +19,14 @@ does not represent runtime evidence for the waived artifacts.
 |---|---|
 | Stacked base | `codex/gowm-capability-platform-v0.2` at `99c56b4` |
 | Candidate branch | `codex/gowm-grounding-operational-v0.4-stable` |
-| Pull request | PR #2; authorized to target `main` and become Ready for Review |
+| Pull request | PR #2; Ready for Review against `main`; merge state `CLEAN` |
 | Software version | `0.4.0` |
 | Merge | initiation authorized; completion remains review-controlled |
 | Tag/release/deploy | `NOT_RUN`; separately controlled |
 
-Exact local/remote candidate SHA is recorded after the release commit is
-pushed.
+Stable content SHA `0d0d4d2e5a3c1b958fc6c7f138dbc20257b89696` matched locally and remotely at
+delivery reconciliation. The final documentation-only reconciliation HEAD is
+reported in the handoff after push.
 
 ## Phase status
 
@@ -82,7 +83,5 @@ stability evidence, not capacity promises.
 
 ## Delivery action
 
-Push the `0.4.0` release commit, establish `main` from the current integrated
-baseline if necessary, retarget PR #2 to `main`, and mark it Ready for Review.
-Tag, release, and production deployment remain separate user-controlled
-actions.
+Review and, when approved, merge PR #2 into `main`. Tag, release, and production
+deployment remain separate user-controlled actions.

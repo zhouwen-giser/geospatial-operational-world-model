@@ -19,8 +19,9 @@ were executed.
 
 - branch: `codex/gowm-grounding-operational-v0.4-stable`;
 - integrated v0.2 base: `codex/gowm-capability-platform-v0.2@99c56b4`;
-- policy-reconciliation SHA: `14cb7606505d58913d078934d9d3d15ffd65d209`;
-- PR: `#2`, authorized for Ready-for-Review against `main`.
+- stable content SHA: `0d0d4d2e5a3c1b958fc6c7f138dbc20257b89696`;
+- local/remote stable content SHA: exact match at delivery reconciliation;
+- PR: `#2`, Ready-for-Review against `main`, GitHub merge state `CLEAN`.
 
 ## v0.2 closure
 
