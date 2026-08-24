@@ -2,7 +2,7 @@
   "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
   "targetVersion": "0.5.0",
   "status": "IN_PROGRESS",
-  "phase": "B01",
+  "phase": "A00",
   "baseline": {
     "branch": "main",
     "version": "0.4.0",
@@ -22,11 +22,11 @@
     "stableCandidate": false
   },
   "acceptance": {
-    "passed": ["AC-B001..AC-B008"],
+    "passed": ["AC-B001..AC-B008", "AC-A006..AC-A009"],
     "failed": [],
     "blocked": [],
     "notRun": ["AC-A001..AC-S022"]
   },
   "blockers": [],
-  "next": "Execute A00 architecture authority freeze."
+  "next": "Execute A01 network and routing machine contracts."
 }

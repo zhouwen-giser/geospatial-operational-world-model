@@ -1,0 +1,16 @@
+{
+  "phase": "A00",
+  "status": "PASS",
+  "acceptance": {
+    "AC-A006": "PASS",
+    "AC-A007": "PASS",
+    "AC-A008": "PASS",
+    "AC-A009": "PASS"
+  },
+  "evidence": [
+    "docs/adr/005-network-routing-authority.md",
+    "config/network-routing-authority.json",
+    "tests/platform/gowm-v05-architecture.test.ts",
+    "validation/architecture/validate-capability-boundaries.mjs"
+  ]
+}

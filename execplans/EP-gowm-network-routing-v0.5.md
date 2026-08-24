@@ -40,7 +40,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 
 - [x] B00 Baseline Reconciliation
 - [x] B01 Source Lock
-- [ ] A00 Architecture ADR
+- [x] A00 Architecture ADR
 - [ ] A01 Contracts
 - [ ] D00 Database Image
 - [ ] D01 Network Schema
