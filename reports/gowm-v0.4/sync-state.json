@@ -2,7 +2,7 @@
   "goal": "GOWM+ v0.3 Grounding Foundation + v0.4 Operational Reality",
   "targetVersion": "0.4.0",
   "status": "IN_PROGRESS",
-  "phase": "C02",
+  "phase": "C03",
   "source": {
     "v02Branch": "codex/gowm-capability-platform-v0.2",
     "headAtPackageGeneration": "1887e56a18b77aa9692cca9d86b00413906816f4",
@@ -13,9 +13,9 @@
   },
   "candidate": {
     "branch": "codex/gowm-grounding-operational-v0.4-stable",
-    "localSha": null,
-    "remoteSha": null,
-    "baseSha": null
+    "localSha": "99c56b4e095222b1a4120ff5d49f39c3cb6ea43d",
+    "remoteSha": "99c56b4e095222b1a4120ff5d49f39c3cb6ea43d",
+    "baseSha": "99c56b4e095222b1a4120ff5d49f39c3cb6ea43d"
   },
   "milestones": {
     "v02Closed": false,
@@ -33,6 +33,7 @@
       "AC-C006",
       "AC-C009",
       "AC-C010",
+      "AC-C011",
       "AC-C012"
     ],
     "failed": [],
@@ -41,7 +42,6 @@
       "AC-C008"
     ],
     "notRun": [
-      "AC-C011",
       "AC-G001..AC-S024"
     ]
   },
@@ -52,5 +52,5 @@
       "detail": "Exact locked prior CRS, Geometry, Spatial archives and H3 Toolkit source revision are unavailable; no substitute was used."
     }
   ],
-  "next": "C03: create the stacked v0.4 continuation from the exact pushed v0.2 candidate while retaining the external C02 blocker."
+  "next": "G00: freeze the v0.3 Reference, Catalog, Derived Result, and Provider contracts/ADRs while retaining the external C02 blocker."
 }
