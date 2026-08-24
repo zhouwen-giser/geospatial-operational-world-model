@@ -1,6 +1,7 @@
 import type { DataSnapshotContext, PlatformCommonDefinitionsReferenceKey as ReferenceKey } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "./cursor.js";
+import { decodeEvidenceCursor, encodeEvidenceCursor } from "./evidence-cursor.js";
 import type { GroundingCatalogOperationId } from "./schemas.js";
 import type {
   CatalogSqlClient,
@@ -33,7 +34,7 @@ export class GroundingCatalogRepository {
     const dataScopeKey = security.dataScopeKey?.trim();
     if (!dataScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "data scope is required");
     const isDataset = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.");
-    const isResult = operationId.startsWith("result.") || operationId.startsWith("reference-set.");
+    const isEvidence = operationId.startsWith("world.") || operationId.startsWith("result.") || operationId.startsWith("reference-set.");
     const datasetScopeKey = security.datasetScopeKey?.trim();
     if (isDataset && !datasetScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "dataset scope is required");
     const client = await this.options.pool.connect().catch((cause: unknown) => {
@@ -48,15 +49,15 @@ export class GroundingCatalogRepository {
       await client.query("SELECT set_config('lock_timeout', $1::text, true)", [`${Math.min(this.lockTimeoutMs, statementTimeout)}ms`]);
       if (isDataset) {
         await client.query("SELECT gowm_catalog_v1.set_scope($1::text,$2::text)", [dataScopeKey, datasetScopeKey]);
-      } else if (isResult) {
-        await client.query("SELECT gowm_result_v1.set_data_scope($1::text)", [dataScopeKey]);
+      } else if (isEvidence) {
+        await client.query("SELECT gowm_evidence_v1.set_data_scope($1::text)", [dataScopeKey]);
       } else {
         await client.query("SELECT gowm_reference_v1.set_data_scope($1::text)", [dataScopeKey]);
       }
-      const snapshot = await this.snapshot(client, dataScopeKey, isDataset ? datasetScopeKey : undefined, isDataset ? "dataset" : isResult ? "result" : "reference");
+      const snapshot = await this.snapshot(client, dataScopeKey, isDataset ? datasetScopeKey : undefined, isDataset ? "dataset" : isEvidence ? "evidence" : "reference");
       const result = isDataset
         ? await this.datasetOperation(client, operationId, asRecord(input), snapshot)
-        : isResult ? await this.resultOperation(client, operationId, asRecord(input), snapshot)
+        : isEvidence ? await this.evidenceOperation(client, operationId, asRecord(input), snapshot)
         : await this.referenceOperation(client, operationId, asRecord(input), snapshot);
       await client.query("COMMIT");
       open = false;
@@ -69,12 +70,12 @@ export class GroundingCatalogRepository {
     }
   }
 
-  async readiness(mode: "reference" | "dataset" | "result"): Promise<{ ready: boolean; reasons: string[] }> {
+  async readiness(mode: "reference" | "dataset" | "evidence"): Promise<{ ready: boolean; reasons: string[] }> {
     let client: CatalogSqlClient | undefined;
     try {
       client = await this.options.pool.connect();
-      const schema = mode === "reference" ? "gowm_reference_v1" : mode === "dataset" ? "gowm_catalog_v1" : "gowm_result_v1";
-      const view = mode === "reference" ? "current_descriptor" : mode === "dataset" ? "dataset" : "query_result";
+      const schema = mode === "reference" ? "gowm_reference_v1" : mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1";
+      const view = mode === "reference" ? "current_descriptor" : mode === "dataset" ? "dataset" : "current_state";
       await client.query(`SELECT * FROM ${schema}.${view} LIMIT 0`);
       await client.query(`SELECT * FROM ${schema}.scope_resource LIMIT 0`);
       return { ready: true, reasons: [] };
@@ -89,22 +90,36 @@ export class GroundingCatalogRepository {
     client: CatalogSqlClient,
     dataScopeKey: string,
     datasetScopeKey: string | undefined,
-    mode: "reference" | "dataset" | "result"
+    mode: "reference" | "dataset" | "evidence"
   ): Promise<{ context: DataSnapshotContext; version: string; worldVersion: number; scopeDigest: `sha256:${string}` }> {
-    const schema = mode === "dataset" ? "gowm_catalog_v1" : mode === "result" ? "gowm_result_v1" : "gowm_reference_v1";
+    const schema = mode === "dataset" ? "gowm_catalog_v1" : mode === "evidence" ? "gowm_evidence_v1" : "gowm_reference_v1";
     const versionResult = mode === "dataset"
       ? await client.query("SELECT reference_key,version,content_hash FROM gowm_catalog_v1.dataset ORDER BY reference_key")
-      : mode === "result"
+      : mode === "evidence"
         ? await client.query(`SELECT reference_key,version_marker FROM (
-            SELECT reference_key,result_hash AS version_marker FROM gowm_result_v1.query_result
+            SELECT reference_key,world_version::text AS version_marker FROM gowm_evidence_v1.current_state
+            UNION ALL SELECT 'observation:' || reference_key,
+              count(*)::text || ':' || max(created_at)::text || ':' || max(observation_id)
+              FROM gowm_evidence_v1.observation GROUP BY reference_key
+            UNION ALL SELECT 'event:' || reference_key,
+              count(*)::text || ':' || max(created_at)::text || ':' || max(event_id)
+              FROM gowm_evidence_v1.world_event GROUP BY reference_key
+            UNION ALL SELECT reference_key,result_hash FROM gowm_result_v1.query_result
             UNION ALL SELECT reference_key,data_snapshot_hash || ':' || compute_snapshot_hash FROM gowm_result_v1.derived_reference
             UNION ALL SELECT reference_key,member_count::text FROM gowm_result_v1.reference_set
-          ) snapshot_rows ORDER BY reference_key`)
+          ) snapshot_rows ORDER BY reference_key,version_marker`)
       : await client.query("SELECT COALESCE(max(descriptor_version),0)::text AS version, COALESCE(max(world_version),0) AS world_version FROM gowm_reference_v1.current_descriptor");
     const resourceResult = await client.query(`SELECT reference_key_value FROM ${schema}.scope_resource ORDER BY reference_key LIMIT 1`);
     const referenceKey = referenceKeyValue(resourceResult.rows[0]?.reference_key_value);
     const version = mode === "reference" ? requiredString(versionResult.rows[0]?.version, "snapshot.version") : sha256(versionResult.rows);
-    const worldVersion = mode === "reference" ? safeInteger(versionResult.rows[0]?.world_version, "snapshot.world_version") : 0;
+    const worldVersion = mode === "reference"
+      ? safeInteger(versionResult.rows[0]?.world_version, "snapshot.world_version")
+      : mode === "evidence"
+        ? safeInteger((await client.query(`SELECT GREATEST(
+            COALESCE((SELECT max(world_version) FROM gowm_evidence_v1.current_state),0),
+            COALESCE((SELECT max(world_version) FROM gowm_evidence_v1.world_event),0)
+          ) AS world_version`)).rows[0]?.world_version, "snapshot.world_version")
+        : 0;
     const scopeDigest = catalogScopeDigest(dataScopeKey, datasetScopeKey);
     const capturedAt = (this.options.now ?? (() => new Date()))().toISOString();
     return {
@@ -288,12 +303,15 @@ export class GroundingCatalogRepository {
     return result({ schemaVersion: "1.0", items: items.filter(Boolean), truncated, ...(nextCursor ? { nextCursor } : {}) }, snapshot.context, visible.length, query.rows.length);
   }
 
-  private async resultOperation(
+  private async evidenceOperation(
     client: CatalogSqlClient,
     operationId: GroundingCatalogOperationId,
     input: Row,
     snapshot: { context: DataSnapshotContext; version: string; worldVersion: number; scopeDigest: `sha256:${string}` }
   ): Promise<GroundingCatalogExecutionResult> {
+    if (operationId.startsWith("world.")) {
+      return this.worldEvidenceOperation(client, operationId, input, snapshot);
+    }
     if (operationId === "result.get") {
       const query = await client.query("SELECT * FROM gowm_result_v1.query_result WHERE reference_key=$1::text", [referenceId(input.referenceKey)]);
       const item = query.rows[0] ? mapQueryResultReference(query.rows[0]) : undefined;
@@ -301,21 +319,17 @@ export class GroundingCatalogRepository {
       return result(item, snapshot.context, 1, 1);
     }
     if (operationId === "result.validate") {
-      const references = Array.isArray(input.references) ? input.references.map(asRecord) : [];
-      const results = [];
-      for (const requested of references) {
-        const key = referenceKeyValue(requested.referenceKey);
-        const validation = await client.query<{ status: unknown; revalidation_required: unknown }>(
-          "SELECT * FROM gowm_result_v1.validate($1::text,$2::text,clock_timestamp())", [key.id, key.version]
-        );
-        const row = validation.rows[0];
-        results.push({
-          referenceKey: key,
-          status: requiredString(row?.status, "validation.status"),
-          revalidationRequired: Boolean(row?.revalidation_required)
-        });
-      }
-      return result({ schemaVersion: "1.0", results }, snapshot.context, results.length, references.length);
+      const key = referenceKeyValue(input.referenceKey);
+      const validation = await client.query<{ status: unknown; revalidation_required: unknown }>(
+        "SELECT * FROM gowm_result_v1.validate($1::text,$2::text,clock_timestamp())", [key.id, key.version]
+      );
+      const row = validation.rows[0];
+      const results = [{
+        referenceKey: key,
+        status: requiredString(row?.status, "validation.status"),
+        revalidationRequired: Boolean(row?.revalidation_required)
+      }];
+      return result({ schemaVersion: "1.0", results }, snapshot.context, 1, 1);
     }
     if (operationId === "reference-set.get-members") {
       const setKey = referenceId(input.referenceKey);
@@ -361,7 +375,130 @@ export class GroundingCatalogRepository {
         validUntil
       }, snapshot.context, members.length, membersQuery.rows.length);
     }
-    throw new ProviderProtocolError("OPERATION_NOT_FOUND", `unsupported result operation ${operationId}`);
+    throw new ProviderProtocolError("OPERATION_NOT_FOUND", `unsupported evidence operation ${operationId}`);
+  }
+
+  private async worldEvidenceOperation(
+    client: CatalogSqlClient,
+    operationId: GroundingCatalogOperationId,
+    input: Row,
+    snapshot: { context: DataSnapshotContext; version: string; worldVersion: number; scopeDigest: `sha256:${string}` }
+  ): Promise<GroundingCatalogExecutionResult> {
+    const inputKey = referenceKeyValue(input.referenceKey);
+    if (operationId === "world.get-current-state") {
+      const query = await client.query("SELECT * FROM gowm_evidence_v1.current_state WHERE reference_key=$1::text", [inputKey.id]);
+      const row = query.rows[0];
+      if (!row) return worldNoData(inputKey, snapshot, "CURRENT_STATE_UNAVAILABLE");
+      const worldVersion = safeInteger(row.world_version, "world_version");
+      const evidence = typeof row.source_observation_id === "string" ? [{
+        evidenceId: row.source_observation_id,
+        authority: "GOWM Foundation",
+        evidenceType: "OBSERVATION",
+        worldVersion,
+        ...(finiteDate(row.observed_at) ? { observedAt: finiteDate(row.observed_at) } : {})
+      }] : [];
+      return result({
+        schemaVersion: "1.0",
+        referenceKey: referenceKeyValue(row.reference_key_value),
+        worldVersion,
+        facts: [{
+          factKind: "CURRENT_PROJECTION",
+          fields: isRecord(row.state) ? row.state : {},
+          objectType: requiredString(row.object_type, "object_type"),
+          ...(optionalString(row.subtype) ? { subtype: optionalString(row.subtype) } : {}),
+          properties: isRecord(row.properties) ? row.properties : {},
+          confidence: finite(row.confidence, "confidence"),
+          freshnessMs: row.freshness_ms === null ? null : safeInteger(row.freshness_ms, "freshness_ms"),
+          observedAt: finiteDate(row.observed_at),
+          receivedAt: finiteDate(row.received_at),
+          source: optionalString(row.source),
+          sourceObservationId: optionalString(row.source_observation_id),
+          uncertainty: isRecord(row.uncertainty_summary) ? row.uncertainty_summary : null
+        }],
+        evidence,
+        unknowns: []
+      }, snapshot.context, 1, 1);
+    }
+    if (operationId === "world.get-geometry") {
+      const query = await client.query("SELECT * FROM gowm_evidence_v1.current_geometry WHERE reference_key=$1::text", [inputKey.id]);
+      const row = query.rows[0];
+      if (!row) return worldNoData(inputKey, snapshot, "GEOMETRY_UNAVAILABLE");
+      return result({
+        schemaVersion: "1.0",
+        referenceKey: referenceKeyValue(row.reference_key_value),
+        worldVersion: safeInteger(row.world_version, "world_version"),
+        facts: [{ factKind: "CURRENT_GEOMETRY", geometry: row.geometry, geometryType: row.geometry_type, bbox: row.bbox, crs: row.crs, version: String(row.world_version), observedAt: finiteDate(row.observed_at) }],
+        evidence: [],
+        unknowns: []
+      }, snapshot.context, 1, 1);
+    }
+    if (operationId === "world.get-provenance") {
+      const query = await client.query("SELECT * FROM gowm_evidence_v1.provenance WHERE reference_key=$1::text", [inputKey.id]);
+      const row = query.rows[0];
+      if (!row) return worldNoData(inputKey, snapshot, "PROVENANCE_UNAVAILABLE");
+      const worldVersion = safeInteger(row.world_version, "world_version");
+      const evidence = typeof row.source_observation_id === "string" ? [{
+        evidenceId: row.source_observation_id, authority: "GOWM Foundation", evidenceType: "OBSERVATION", worldVersion,
+        ...(finiteDate(row.observed_at) ? { observedAt: finiteDate(row.observed_at) } : {})
+      }] : [];
+      return result({
+        schemaVersion: "1.0", referenceKey: referenceKeyValue(row.reference_key_value), worldVersion,
+        facts: [{
+          factKind: "PROVENANCE",
+          source: optionalString(row.source), sourceObservationId: optionalString(row.source_observation_id),
+          evidenceKind: optionalString(row.evidence_kind), projectionPolicyVersion: optionalString(row.projection_policy_version),
+          timeSolutionId: optionalString(row.time_solution_id), positionMeasurementId: optionalString(row.position_measurement_id),
+          uncertainty: isRecord(row.uncertainty_summary) ? row.uncertainty_summary : null,
+          confidence: finite(row.confidence, "confidence"), observedAt: finiteDate(row.observed_at), receivedAt: finiteDate(row.received_at)
+        }],
+        evidence, unknowns: []
+      }, snapshot.context, 1, 1);
+    }
+    return this.worldTimeline(client, operationId, inputKey, input, snapshot);
+  }
+
+  private async worldTimeline(
+    client: CatalogSqlClient,
+    operationId: GroundingCatalogOperationId,
+    inputKey: ReferenceKey,
+    input: Row,
+    snapshot: { context: DataSnapshotContext; version: string; worldVersion: number; scopeDigest: `sha256:${string}` }
+  ): Promise<GroundingCatalogExecutionResult> {
+    const limit = Math.min(optionalInteger(input.limit, 100), this.maximumRows);
+    const cursor = decodeEvidenceCursor(typeof input.cursor === "string" ? input.cursor : undefined, {
+      operationId, scopeDigest: snapshot.scopeDigest, snapshotVersion: snapshot.version
+    }, this.options.cursorSecret);
+    const eventTimeline = operationId === "world.get-event-timeline";
+    const query = eventTimeline
+      ? await client.query(
+          `SELECT * FROM gowm_evidence_v1.world_event
+           WHERE reference_key=$1::text
+             AND (event_time,world_version,event_id) > ($2::timestamptz,$3::bigint,$4::text)
+           ORDER BY event_time,world_version,event_id LIMIT $5::integer`,
+          [inputKey.id, cursor?.time ?? "-infinity", cursor?.tie ?? "-1", cursor?.id ?? "", limit + 1]
+        )
+      : await client.query(
+          `SELECT * FROM gowm_evidence_v1.observation
+           WHERE reference_key=$1::text
+             AND (observed_at,received_at,observation_id) > ($2::timestamptz,$3::timestamptz,$4::text)
+           ORDER BY observed_at,received_at,observation_id LIMIT $5::integer`,
+          [inputKey.id, cursor?.time ?? "-infinity", cursor?.tie ?? "-infinity", cursor?.id ?? "", limit + 1]
+        );
+    const truncated = query.rows.length > limit;
+    const visible = query.rows.slice(0, limit);
+    const items = visible.map((row) => eventTimeline ? mapWorldEvent(row) : mapObservation(row, operationId === "world.get-state-history"));
+    const last = visible.at(-1);
+    const nextCursor = truncated && last ? encodeEvidenceCursor({
+      v: 1,
+      operationId,
+      scopeDigest: snapshot.scopeDigest,
+      snapshotVersion: snapshot.version,
+      time: date(eventTimeline ? last.event_time : last.observed_at, "cursor.time"),
+      tie: eventTimeline ? String(last.world_version) : date(last.received_at, "cursor.tie"),
+      id: requiredString(eventTimeline ? last.event_id : last.observation_id, "cursor.id")
+    }, this.options.cursorSecret) : undefined;
+    const output = { schemaVersion: "1.0", items, truncated, ...(nextCursor ? { nextCursor } : {}) };
+    return { ...result(output, snapshot.context, items.length, query.rows.length), status: items.length === 0 ? "NO_DATA" : "COMPLETED" };
   }
 
   private async dataset(client: CatalogSqlClient, id: string): Promise<Row | undefined> {
@@ -465,6 +602,64 @@ function mapQueryResultReference(row: Row): Row {
     validUntil: finiteDate(row.valid_until),
     artifactRefs: Array.isArray(row.artifact_refs) ? row.artifact_refs : []
   });
+}
+
+function mapObservation(row: Row, stateHistory: boolean): Row {
+  return compact({
+    recordKind: stateHistory ? "HISTORICAL_STATE_OBSERVATION" : "OBSERVATION",
+    referenceKey: referenceKeyValue(row.reference_key_value),
+    observationId: requiredString(row.observation_id, "observation_id"),
+    observer: { type: requiredString(row.observer_type, "observer_type"), id: requiredString(row.observer_id, "observer_id") },
+    subjectType: requiredString(row.subject_type, "subject_type"),
+    observationType: requiredString(row.observation_type, "observation_type"),
+    geometry: isRecord(row.geometry) ? row.geometry : undefined,
+    value: isRecord(row.value) ? row.value : {},
+    confidence: finite(row.confidence, "confidence"),
+    observedAt: date(row.observed_at, "observed_at"),
+    receivedAt: date(row.received_at, "received_at"),
+    source: requiredString(row.source, "source"),
+    correlationId: requiredString(row.correlation_id, "correlation_id"),
+    status: requiredString(row.status, "status"),
+    originKind: optionalString(row.origin_kind),
+    sourceRecordKey: optionalString(row.source_record_key),
+    sourceRevision: row.source_revision_no === null || row.source_revision_no === undefined
+      ? undefined
+      : safeInteger(row.source_revision_no, "source_revision_no"),
+    supersedesObservationId: optionalString(row.supersedes_observation_id),
+    rawReference: optionalString(row.raw_reference),
+    payloadHash: optionalString(row.payload_hash),
+    qualityFlags: Array.isArray(row.quality_flags) ? row.quality_flags : []
+  });
+}
+
+function mapWorldEvent(row: Row): Row {
+  return compact({
+    recordKind: "WORLD_EVENT",
+    referenceKey: referenceKeyValue(row.reference_key_value),
+    eventId: requiredString(row.event_id, "event_id"),
+    eventType: requiredString(row.event_type, "event_type"),
+    subjectType: requiredString(row.subject_type, "subject_type"),
+    eventTime: date(row.event_time, "event_time"),
+    receivedAt: date(row.created_at, "created_at"),
+    geometry: isRecord(row.geometry) ? row.geometry : undefined,
+    worldVersion: safeInteger(row.world_version, "world_version"),
+    correlationId: requiredString(row.correlation_id, "correlation_id"),
+    causationId: requiredString(row.causation_id, "causation_id"),
+    payload: isRecord(row.payload) ? row.payload : {},
+    schemaVersion: requiredString(row.schema_version, "schema_version"),
+    publishedAt: finiteDate(row.published_at)
+  });
+}
+
+function worldNoData(
+  referenceKey: ReferenceKey,
+  snapshot: { context: DataSnapshotContext; worldVersion: number },
+  unknown: string
+): GroundingCatalogExecutionResult {
+  return {
+    ...result({ schemaVersion: "1.0", referenceKey, worldVersion: snapshot.worldVersion, facts: [], evidence: [], unknowns: [unknown] }, snapshot.context, 0, 0),
+    status: "NO_DATA"
+  };
 }
 
 function validateReference(requested: Row, key: ReferenceKey, descriptor: Row, now: Date): Row {

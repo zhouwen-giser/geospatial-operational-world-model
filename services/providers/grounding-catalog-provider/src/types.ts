@@ -1,4 +1,4 @@
-export type GroundingCatalogMode = "reference" | "dataset" | "result";
+export type GroundingCatalogMode = "reference" | "dataset" | "evidence";
 
 export interface CatalogSqlResult<Row extends Record<string, unknown> = Record<string, unknown>> {
   rows: Row[];
@@ -30,6 +30,7 @@ export interface GroundingCatalogRepositoryOptions {
 
 export interface GroundingCatalogExecutionResult {
   output?: unknown;
+  status?: "COMPLETED" | "NO_DATA";
   dataSnapshot: import("../../../../packages/platform/contract-runtime/src/index.js").DataSnapshotContext;
   rows: number;
   candidates: number;

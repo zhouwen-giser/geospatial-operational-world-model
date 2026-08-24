@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { getContractSchemaHash } from "../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError } from "../../packages/platform/provider-sdk/src/index.js";
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "../../services/providers/grounding-catalog-provider/src/cursor.js";
+import { decodeEvidenceCursor, encodeEvidenceCursor } from "../../services/providers/grounding-catalog-provider/src/evidence-cursor.js";
 import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
 import type { CatalogSqlPool } from "../../services/providers/grounding-catalog-provider/src/types.js";
 
@@ -40,10 +41,12 @@ describe("grounding catalog providers", () => {
     }
   });
 
-  it("registers the Result Registry operations as data-scoped", () => {
-    const provider = createGroundingCatalogProvider({ mode: "result", pool, cursorSecret });
-    expect(provider.runtime.manifest.provider.providerId).toBe("gowm.result-registry");
+  it("registers the frozen World Evidence and Result Registry operations as data-scoped", () => {
+    const provider = createGroundingCatalogProvider({ mode: "evidence", pool, cursorSecret });
+    expect(provider.runtime.manifest.provider.providerId).toBe("gowm.world-evidence");
     expect(provider.runtime.manifest.capabilities.map((capability) => capability.operationId)).toEqual([
+      "world.get-current-state", "world.get-geometry", "world.get-provenance",
+      "world.get-observations", "world.get-event-timeline", "world.get-state-history",
       "result.get", "result.validate", "reference-set.get-members"
     ]);
     for (const capability of provider.runtime.manifest.capabilities) {
@@ -77,6 +80,34 @@ describe("grounding catalog providers", () => {
       operationId: "layer.find-features",
       scopeDigest,
       snapshotVersion: "sha256:fixture"
+    }, cursorSecret)).toThrow(ProviderProtocolError);
+  });
+
+  it("binds evidence cursors to timeline kind, scope, and immutable snapshot", () => {
+    const scopeDigest = catalogScopeDigest("default");
+    const cursor = encodeEvidenceCursor({
+      v: 1,
+      operationId: "world.get-event-timeline",
+      scopeDigest,
+      snapshotVersion: "sha256:evidence-snapshot",
+      time: "2026-08-24T09:00:00.000Z",
+      tie: "64",
+      id: "00000000-0000-0000-0000-000000000611"
+    }, cursorSecret);
+    expect(decodeEvidenceCursor(cursor, {
+      operationId: "world.get-event-timeline",
+      scopeDigest,
+      snapshotVersion: "sha256:evidence-snapshot"
+    }, cursorSecret)?.tie).toBe("64");
+    expect(() => decodeEvidenceCursor(cursor, {
+      operationId: "world.get-observations",
+      scopeDigest,
+      snapshotVersion: "sha256:evidence-snapshot"
+    }, cursorSecret)).toThrow(ProviderProtocolError);
+    expect(() => decodeEvidenceCursor(cursor, {
+      operationId: "world.get-event-timeline",
+      scopeDigest,
+      snapshotVersion: "sha256:changed"
     }, cursorSecret)).toThrow(ProviderProtocolError);
   });
 });

@@ -22,7 +22,13 @@ export const DATASET_OPERATION_IDS = [
   "feature.get"
 ] as const;
 
-export const RESULT_OPERATION_IDS = [
+export const EVIDENCE_OPERATION_IDS = [
+  "world.get-current-state",
+  "world.get-geometry",
+  "world.get-provenance",
+  "world.get-observations",
+  "world.get-event-timeline",
+  "world.get-state-history",
   "result.get",
   "result.validate",
   "reference-set.get-members"
@@ -30,8 +36,8 @@ export const RESULT_OPERATION_IDS = [
 
 export type ReferenceOperationId = (typeof REFERENCE_OPERATION_IDS)[number];
 export type DatasetOperationId = (typeof DATASET_OPERATION_IDS)[number];
-export type ResultOperationId = (typeof RESULT_OPERATION_IDS)[number];
-export type GroundingCatalogOperationId = ReferenceOperationId | DatasetOperationId | ResultOperationId;
+export type EvidenceOperationId = (typeof EVIDENCE_OPERATION_IDS)[number];
+export type GroundingCatalogOperationId = ReferenceOperationId | DatasetOperationId | EvidenceOperationId;
 
 const schemaNames: Record<GroundingCatalogOperationId, readonly [string, string]> = {
   "reference.get": ["catalog-query-request", "reference-descriptor"],
@@ -45,8 +51,14 @@ const schemaNames: Record<GroundingCatalogOperationId, readonly [string, string]
   "layer.list": ["catalog-query-request", "catalog-result"],
   "layer.find-features": ["catalog-query-request", "catalog-result"],
   "feature.get": ["catalog-query-request", "spatial-feature-descriptor"],
+  "world.get-current-state": ["catalog-query-request", "world-fact-result"],
+  "world.get-geometry": ["catalog-query-request", "world-fact-result"],
+  "world.get-provenance": ["catalog-query-request", "world-fact-result"],
+  "world.get-observations": ["catalog-query-request", "catalog-result"],
+  "world.get-event-timeline": ["catalog-query-request", "catalog-result"],
+  "world.get-state-history": ["catalog-query-request", "catalog-result"],
   "result.get": ["catalog-query-request", "query-result-reference"],
-  "result.validate": ["reference-validate-request", "reference-validate-result"],
+  "result.validate": ["catalog-query-request", "reference-validate-result"],
   "reference-set.get-members": ["catalog-query-request", "reference-set"]
 };
 
@@ -75,5 +87,5 @@ export const GROUNDING_CATALOG_OPERATION_SCHEMAS = Object.fromEntries(
 ) as Record<GroundingCatalogOperationId, OperationSchemas>;
 
 export function operationsForMode(mode: GroundingCatalogMode): readonly GroundingCatalogOperationId[] {
-  return mode === "reference" ? REFERENCE_OPERATION_IDS : mode === "dataset" ? DATASET_OPERATION_IDS : RESULT_OPERATION_IDS;
+  return mode === "reference" ? REFERENCE_OPERATION_IDS : mode === "dataset" ? DATASET_OPERATION_IDS : EVIDENCE_OPERATION_IDS;
 }

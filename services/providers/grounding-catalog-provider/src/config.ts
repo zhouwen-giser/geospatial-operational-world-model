@@ -55,7 +55,7 @@ export function loadGroundingCatalogConfig(env: NodeJS.ProcessEnv = process.env)
 }
 
 function required(env: NodeJS.ProcessEnv, name: string): string { const value = env[name]?.trim(); if (!value) throw new Error(`${name} is required`); return value; }
-function requiredMode(value: string | undefined): GroundingCatalogMode { if (value !== "reference" && value !== "dataset" && value !== "result") throw new Error("GROUNDING_CATALOG_MODE must be reference, dataset, or result"); return value; }
+function requiredMode(value: string | undefined): GroundingCatalogMode { if (value !== "reference" && value !== "dataset" && value !== "evidence") throw new Error("GROUNDING_CATALOG_MODE must be reference, dataset, or evidence"); return value; }
 function positive(raw: string | undefined, fallback: number, name: string): number { const value = raw === undefined ? fallback : Number(raw); if (!Number.isSafeInteger(value) || value < 1) throw new Error(`${name} must be positive`); return value; }
 function bounded(raw: string | undefined, fallback: number, maximum: number, name: string): number { const value = positive(raw, fallback, name); if (value > maximum) throw new Error(`${name} must not exceed ${maximum}`); return value; }
 function tcpPort(raw: string | undefined, fallback: number, name: string): number { return bounded(raw, fallback, 65_535, name); }

@@ -29,7 +29,7 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
   const repository = new GroundingCatalogRepository(options);
   const operationIds = operationsForMode(options.mode);
   const operations = operationIds.map((operationId) => operation(operationId, repository));
-  const providerId = options.mode === "reference" ? "gowm.reference-catalog" : options.mode === "dataset" ? "gowm.dataset-catalog" : "gowm.result-registry";
+  const providerId = options.mode === "reference" ? "gowm.reference-catalog" : options.mode === "dataset" ? "gowm.dataset-catalog" : "gowm.world-evidence";
   const manifest: CapabilityProviderManifest = {
     providerProtocolVersion: "1.0",
     provider: {
@@ -39,7 +39,7 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
       implementationDigest: sha256({
         providerId,
         version: "1.0.0",
-        readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_result_v1",
+        readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1",
         operations: operationIds.map((operationId) => ({
           operationId,
           inputSchemaHash: GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId].inputSchemaHash,
@@ -59,7 +59,7 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
   };
   const policy = {
     version: `gowm-${options.mode}-catalog-policy/1.0`,
-    readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_result_v1",
+    readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1",
     scopeBeforeQuery: true,
     baseTableAccess: false,
     readOnlyTransaction: true,
@@ -86,7 +86,8 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
   const schemas = GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId];
   const datasetOperation = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.");
   const resultOperation = operationId.startsWith("result.") || operationId.startsWith("reference-set.");
-  const listOperation = operationId.endsWith(".list") || operationId === "layer.find-features" || operationId === "reference.batch-get" || operationId === "reference-set.get-members";
+  const evidenceOperation = operationId.startsWith("world.") || operationId.startsWith("result.") || operationId.startsWith("reference-set.");
+  const listOperation = operationId.endsWith(".list") || operationId === "layer.find-features" || operationId === "reference.batch-get" || operationId === "reference-set.get-members" || operationId === "world.get-observations" || operationId === "world.get-event-timeline" || operationId === "world.get-state-history";
   const descriptor: CapabilityDescriptor = {
     operationId,
     operationVersion: "1.0",
@@ -121,9 +122,13 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
     method: {
       engine: "PostgreSQL",
       engineVersion: "18",
-      methodId: `${datasetOperation ? "gowm-catalog-v1" : resultOperation ? "gowm-result-v1" : "gowm-reference-v1"}/${operationId}`,
+      methodId: `${datasetOperation ? "gowm-catalog-v1" : evidenceOperation ? "gowm-evidence-v1" : "gowm-reference-v1"}/${operationId}`,
       methodVersion: "1.0",
-      artifacts: [{ kind: "DATABASE", name: datasetOperation ? "gowm_catalog_v1" : resultOperation ? "gowm_result_v1" : "gowm_reference_v1", version: resultOperation ? "migration-022" : "migration-020" }]
+      artifacts: [{
+        kind: "DATABASE",
+        name: datasetOperation ? "gowm_catalog_v1" : resultOperation ? "gowm_result_v1" : evidenceOperation ? "gowm_evidence_v1" : "gowm_reference_v1",
+        version: resultOperation ? "migration-022" : evidenceOperation ? "migration-023" : "migration-020"
+      }]
     },
     async handle(input, context) {
       const dataScopeKey = context.security.dataScopeClaim;
@@ -133,7 +138,7 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
         ...(datasetScopeKey === undefined ? {} : { datasetScopeKey })
       }, context.deadline.remainingMs());
       return {
-        status: result.output === undefined ? "NO_DATA" : "COMPLETED",
+        status: result.status ?? (result.output === undefined ? "NO_DATA" : "COMPLETED"),
         ...(result.output === undefined ? {} : { value: result.output }),
         dataSnapshot: result.dataSnapshot,
         consumption: { rows: result.rows, candidates: result.candidates },
