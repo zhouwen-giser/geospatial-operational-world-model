@@ -33,7 +33,8 @@ inspect("services/gateway", [
   ["Gateway imports H3 engine", /(?:from\s+["']h3-js["']|require\(["']h3-js["']\))/],
   ["Gateway imports legacy Geometry engine", /packages[\\/]spatial-engine/],
   ["Gateway contains PROJ or GEOS binding", /(?:proj4|libproj|geos-wasm|@turf\/)/i],
-  ["Gateway contains raw spatial SQL", /\b(?:ST_|h3_)[A-Za-z0-9_]*\s*\(/]
+  ["Gateway contains raw spatial SQL", /\b(?:ST_|h3_)[A-Za-z0-9_]*\s*\(/],
+  ["Gateway imports Operational Reality domain code", /(?:packages[\\/]runtime[\\/]src[\\/]operational-|providers[\\/]operational-reality-provider)/]
 ]);
 
 inspect("services/providers", [

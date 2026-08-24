@@ -22,6 +22,12 @@ describe("operational reality provider",()=>{
       expect(capability.inputSchemaHash).toBe(getContractSchemaHash(capability.inputSchemaUri));
       expect(capability.outputSchemaHash).toBe(getContractSchemaHash(capability.outputSchemaUri));
     }
+    expect(provider.runtime.manifest.capabilities.find((item)=>item.operationId==="correlation.resolve")?.ports.outputs)
+      .toEqual(expect.arrayContaining([expect.objectContaining({name:"operationalTaskReferenceKey",path:"/operationalTaskReferenceKey",valueKind:"REFERENCE_KEY"})]));
+    for(const operationId of ["predicate.evaluate","observability.evaluate"]){
+      expect(provider.runtime.manifest.capabilities.find((item)=>item.operationId===operationId)?.ports.outputs)
+        .toEqual(expect.arrayContaining([expect.objectContaining({name:"status",path:"/status",valueKind:"SCALAR"})]));
+    }
   });
   it("is controlled by the Gateway registry as a fourth provider",async()=>{
     const deployments=await loadControlledProviderDeployments("config/grounding-gateway-registry.json");

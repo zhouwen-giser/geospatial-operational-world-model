@@ -4,7 +4,7 @@
     "providerId": "gowm.operational-reality",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:7015fd72a95688051550da2ab533cfe792d3fe44312e4328035c7b72450bf68b",
+    "implementationDigest": "sha256:df8fc45459ff9437cfa35d08678c2ca616c4506eeb9efb4c17f22e5046fe4f7a",
     "sourceRef": "urn:gowm:source:in-tree:operational-reality:1.0.0"
   },
   "endpoints": {
@@ -335,6 +335,14 @@
             "schemaHash": "sha256:c87e61c78185ea289a47e5b4ec8c3f9b2627d671f90b3c8ab83065e9e95e416c",
             "valueKind": "ANY",
             "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "operationalTaskReferenceKey",
+            "path": "/operationalTaskReferenceKey",
+            "schemaUri": "urn:gowm:v0.4:reference-key",
+            "schemaHash": "sha256:240470501ee453cf97ce536b62b81ce2a32efc6cf01d02accab0a88b7ca2a403",
+            "valueKind": "REFERENCE_KEY",
+            "unitSemantics": "UNSPECIFIED"
           }
         ]
       }
@@ -389,6 +397,14 @@
             "schemaHash": "sha256:618cf9f9e257084cb84e7acc0f8fff37a7a033c2008f3d503f00740ee88833c5",
             "valueKind": "ANY",
             "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "status",
+            "path": "/status",
+            "schemaUri": "urn:gowm:v0.2:value:string",
+            "schemaHash": "sha256:a71d355802de7ff21b9c9d9214a1ba71b3648866bcf1b7c0f4ff3b656485c6d5",
+            "valueKind": "SCALAR",
+            "unitSemantics": "UNSPECIFIED"
           }
         ]
       }
@@ -442,6 +458,14 @@
             "schemaUri": "urn:gowm:v0.4:observability-assessment",
             "schemaHash": "sha256:bd03dcdb3da03d4af635ea591b8e17cacee249bad44e09a26fea9a7b54d6d676",
             "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "status",
+            "path": "/status",
+            "schemaUri": "urn:gowm:v0.2:value:string",
+            "schemaHash": "sha256:a71d355802de7ff21b9c9d9214a1ba71b3648866bcf1b7c0f4ff3b656485c6d5",
+            "valueKind": "SCALAR",
             "unitSemantics": "UNSPECIFIED"
           }
         ]
