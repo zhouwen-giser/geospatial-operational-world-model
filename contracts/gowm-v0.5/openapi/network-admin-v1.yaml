@@ -1,0 +1,51 @@
+openapi: 3.1.0
+info:
+  title: GOWM Network Build Admin API
+  version: 1.0.0
+paths:
+  /v1/admin/network-builds:
+    post:
+      operationId: createNetworkBuild
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../network-build-request.schema.json
+      responses:
+        "202": { description: Build accepted }
+  /v1/admin/network-builds/{requestId}:
+    get:
+      operationId: getNetworkBuild
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Build status
+          content:
+            application/json:
+              schema:
+                $ref: ../network-build-result.schema.json
+  /v1/admin/network-builds/{requestId}:cancel:
+    post:
+      operationId: cancelNetworkBuild
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Cancel result }
+  /v1/admin/network-builds/{requestId}:activate:
+    post:
+      operationId: activateNetworkGraph
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Activation result }

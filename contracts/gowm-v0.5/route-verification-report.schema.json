@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:route-verification-report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "checks",
+    "verifierVersion",
+    "verifiedResultHash"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "VALID",
+        "STALE",
+        "INVALID",
+        "INDETERMINATE"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "status"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "UNKNOWN"
+            ]
+          },
+          "details": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "verifierVersion": {
+      "type": "string"
+    },
+    "verifiedResultHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

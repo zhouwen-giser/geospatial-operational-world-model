@@ -14,7 +14,12 @@ assert.equal(lockDocument.packages[""].version, version);
 assert.ok(changelog.includes(`## ${version} -`));
 assert.equal(contractLock.softwareVersion, "0.4.0");
 
-if (version === "0.4.0") {
+if (version === "0.5.0") {
+  assert.equal(contractLock.softwareVersion, "0.4.0", "the frozen v0.4 contract lock must remain unchanged");
+  assert.ok(status.includes("NETWORK_READY"));
+  assert.ok(status.includes("ROUTING_READY"));
+  assert.ok(status.includes("production-sized SLO"));
+} else if (version === "0.4.0") {
   assert.ok(!status.includes("BLOCKED_EXTERNAL"), "stable 0.4.0 is forbidden while Required gates are externally blocked");
 } else {
   assert.match(version, /^0\.4\.0-rc\.\d+$/u);
@@ -22,4 +27,4 @@ if (version === "0.4.0") {
   assert.ok(status.includes("stable `0.4.0` withheld"));
 }
 
-process.stdout.write(`STABLE_VERSION_GUARD_PASS version=${version} target=${contractLock.softwareVersion}\n`);
+process.stdout.write(`STABLE_VERSION_GUARD_PASS version=${version} frozenV04=${contractLock.softwareVersion}\n`);

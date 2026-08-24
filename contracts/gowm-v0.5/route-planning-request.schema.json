@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:route-planning-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestId",
+    "start",
+    "destination",
+    "travelProfile",
+    "costProfile",
+    "objective",
+    "deadlineMs"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "routingSnapshot": {
+      "$ref": "routing-snapshot.schema.json"
+    },
+    "useActiveGraph": {
+      "type": "boolean"
+    },
+    "start": {
+      "$ref": "network-common.schema.json#/$defs/networkLocation"
+    },
+    "destination": {
+      "$ref": "network-common.schema.json#/$defs/networkLocation"
+    },
+    "waypoints": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "network-common.schema.json#/$defs/networkLocation"
+      }
+    },
+    "travelProfile": {
+      "type": "string"
+    },
+    "costProfile": {
+      "type": "string"
+    },
+    "conditionSnapshotId": {
+      "type": "string"
+    },
+    "viaReferences": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "network-common.schema.json#/$defs/referenceKey"
+      }
+    },
+    "avoidReferences": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "network-common.schema.json#/$defs/referenceKey"
+      }
+    },
+    "avoidAreas": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object"
+      }
+    },
+    "startHeading": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMaximum": 360
+    },
+    "destinationHeading": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMaximum": 360
+    },
+    "snapToleranceM": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 10000
+    },
+    "objective": {
+      "enum": [
+        "SHORTEST_DISTANCE",
+        "FASTEST",
+        "LOWEST_RISK",
+        "LOWEST_ENERGY",
+        "WEIGHTED"
+      ]
+    },
+    "alternativeCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "deadlineMs": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 300000
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "routingSnapshot"
+      ]
+    },
+    {
+      "required": [
+        "useActiveGraph"
+      ],
+      "properties": {
+        "useActiveGraph": {
+          "const": true
+        }
+      }
+    }
+  ]
+}

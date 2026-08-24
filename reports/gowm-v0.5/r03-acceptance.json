@@ -1,0 +1,18 @@
+{
+  "phase": "R03",
+  "status": "PASS",
+  "acceptance": {
+    "AC-R015": "PASS_REAL_DB_QUERY_RESULT_IDENTITY",
+    "AC-R022": "PASS_REAL_DB_IMMUTABLE_CANDIDATE_RESULT",
+    "AC-R023": "PASS_REAL_DB_BYTE_EQUIVALENT_TERMINAL_REPLAY",
+    "AC-R026": "PASS_CONTRACT_ALTERNATIVES_REMAINS_PREVIEW",
+    "AC-R027": "NOT_REQUIRED_OPTIONAL"
+  },
+  "realDatabase": {
+    "runId": "r03-20260825t1040",
+    "database": "gowm_v05_r03_20260825t1040",
+    "assertion031": "PASS",
+    "published": { "requests": 3, "candidates": 3, "segments": 4, "verifications": 3, "registry": 3, "identities": 3 }
+  },
+  "coordinateResultHash": "sha256:330806d8302ccfebfed2029eeb7d294b90a3dbc22d9d2fc9c4ce88afc7962f4b"
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-graph-version",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "networkDatasetReferenceKey",
+    "networkDatasetVersion",
+    "graphVersion",
+    "buildPolicyVersion",
+    "sourceContentHash",
+    "topologyHash",
+    "contentHash",
+    "status",
+    "counts"
+  ],
+  "properties": {
+    "networkDatasetReferenceKey": {
+      "$ref": "network-common.schema.json#/$defs/referenceKey"
+    },
+    "networkDatasetVersion": {
+      "type": "string"
+    },
+    "graphVersion": {
+      "type": "string"
+    },
+    "buildPolicyVersion": {
+      "type": "string"
+    },
+    "sourceContentHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    },
+    "topologyHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    },
+    "contentHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    },
+    "status": {
+      "enum": [
+        "BUILDING",
+        "VALIDATED",
+        "ACTIVE",
+        "RETIRED",
+        "FAILED"
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nodes",
+        "edges",
+        "arcs",
+        "turnRules"
+      ],
+      "properties": {
+        "nodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "edges": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "arcs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turnRules": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "createdAt": {
+      "$ref": "network-common.schema.json#/$defs/dateTime"
+    },
+    "validatedAt": {
+      "$ref": "network-common.schema.json#/$defs/dateTime"
+    },
+    "activatedAt": {
+      "$ref": "network-common.schema.json#/$defs/dateTime"
+    },
+    "buildReceiptId": {
+      "type": "string"
+    }
+  }
+}

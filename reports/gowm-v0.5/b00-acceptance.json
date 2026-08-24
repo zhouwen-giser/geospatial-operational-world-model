@@ -1,0 +1,16 @@
+{
+  "phase": "B00",
+  "status": "PASS",
+  "baselineSha": "db575f79c874a69f65a2043a7e463338524b713d",
+  "acceptance": {
+    "AC-B001": "PASS",
+    "AC-B002": "PASS",
+    "AC-B003": "PASS"
+  },
+  "evidence": [
+    "VERSION=0.4.0",
+    "HEAD=origin/main=db575f79c874a69f65a2043a7e463338524b713d",
+    "migrations 001-032 sha256 lock recorded",
+    "worktree clean before requested task-package extraction"
+  ]
+}

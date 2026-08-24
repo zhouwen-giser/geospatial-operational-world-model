@@ -1,0 +1,157 @@
+{
+  "phase": "R01",
+  "runId": "r01-final-20260825t1700",
+  "database": "gowm_v05_r03_20260825t1040",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3158
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3061
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "postgres",
+        "psql",
+        "<create r01_r01_final_20260825t1700 redacted>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3204
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--name",
+        "gowm-r01-final-20260825t1700-route-proxy",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--publish",
+        "127.0.0.1::5432",
+        "node:22-bookworm",
+        "<fixed proxy>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 790
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}",
+        "gowm-r01-final-20260825t1700-route-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 56
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "--force",
+        "gowm-r01-final-20260825t1700-route-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 916
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "postgres",
+        "--command",
+        "DROP ROLE r01_r01_final_20260825t1700"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3219
+    }
+  ],
+  "summary": {
+    "manifestOperations": 4,
+    "coordinateStatus": "COMPLETED",
+    "coordinateResultHash": "sha256:b4fadfa973fad88ac4e5ddc3cfdadf8fe6237db43f7cb83c923d2d1bfc9b957f",
+    "coordinateVerification": "VALID",
+    "exactTerminalReplay": true,
+    "referenceEndpoints": true,
+    "jointCandidateCombination": true,
+    "waypointSegments": 5,
+    "viaFeatureId": "wrf_2467ecba34ccb13c794c03f803211f53",
+    "avoidFeatureId": "wrf_8b4cb93939e2437ed4d2e7b43e356456",
+    "avoidReferenceSegments": 4,
+    "avoidPolygonSegments": 4,
+    "avoidPolygonExactPostgis": true,
+    "objectives": {
+      "SHORTEST_DISTANCE": {
+        "distanceMm": 453884,
+        "durationMs": 22694,
+        "riskMicroUnits": 5,
+        "energyMwh": 5,
+        "combinedCostUnits": 453884
+      },
+      "FASTEST": {
+        "distanceMm": 453884,
+        "durationMs": 22694,
+        "riskMicroUnits": 5,
+        "energyMwh": 5,
+        "combinedCostUnits": 453884
+      },
+      "LOWEST_RISK": {
+        "distanceMm": 559282,
+        "durationMs": 27964,
+        "riskMicroUnits": 5,
+        "energyMwh": 5,
+        "combinedCostUnits": 559282
+      },
+      "LOWEST_ENERGY": {
+        "distanceMm": 559282,
+        "durationMs": 27964,
+        "riskMicroUnits": 5,
+        "energyMwh": 5,
+        "combinedCostUnits": 559282
+      },
+      "WEIGHTED": {
+        "distanceMm": 453884,
+        "durationMs": 22694,
+        "riskMicroUnits": 5,
+        "energyMwh": 5,
+        "combinedCostUnits": 453884
+      }
+    },
+    "queryResultReferenceKey": {
+      "namespace": "gowm",
+      "kind": "QUERY_RESULT",
+      "id": "wrf_2ebbcd0dca5fa8709c9530039161b2e1",
+      "version": "1"
+    }
+  },
+  "errors": []
+}

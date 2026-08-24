@@ -1,0 +1,25 @@
+{
+  "sourceLock": "research/gowm-v0.5-source-lock.json",
+  "defaultDecision": "REFERENCE_ONLY_SELECTIVE_REIMPLEMENTATION",
+  "licenseGate": "No source copying unless a repository-owner license and ownership attestation is committed later.",
+  "modules": [
+    { "sourceConcept": "osm-ingestion", "target": "NETWORK catalog build adapter", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "directed-arc-builder", "target": "versioned directed graph builder", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "graph-version-registry", "target": "GraphVersion hash and atomic activation", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "turn-restriction-ingestion", "target": "turn restriction adapter", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "pairwise-turn-rule-compiler", "target": "pairwise turn rules", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "sequence-restriction-automaton", "target": "multi-edge restriction automaton", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "turn-aware-product-state-oracle", "target": "turn-aware route core", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "start-snapper", "target": "directed point snapping", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "versioned-matrix-cache", "target": "RoutingSnapshot-keyed matrix cache", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "graph-diagnostics", "target": "network build diagnostics", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "fixed-point-cost-model", "target": "integer network cost core", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "arc-and-turn-verifiers", "target": "independent route verifier", "decision": "CLEAN_ROOM_REIMPLEMENT" },
+    { "sourceConcept": "coverage-query-and-result-contracts", "target": null, "decision": "EXCLUDE_V0_5" },
+    { "sourceConcept": "DCPP-OpenCPP-RPP-CARP", "target": null, "decision": "EXCLUDE_V0_5" },
+    { "sourceConcept": "coverage-obligation-ledger", "target": null, "decision": "EXCLUDE_V0_5" },
+    { "sourceConcept": "planner-api-worker-lifecycle", "target": null, "decision": "EXCLUDE_V0_5" },
+    { "sourceConcept": "OR-Tools-sidecar", "target": null, "decision": "EXCLUDE_V0_5" },
+    { "sourceConcept": "legacy-planner-schema", "target": null, "decision": "EXCLUDE_V0_5" }
+  ]
+}

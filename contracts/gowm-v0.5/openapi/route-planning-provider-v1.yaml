@@ -1,0 +1,54 @@
+openapi: 3.1.0
+info:
+  title: GOWM Basic Route Planning Provider
+  version: 1.0.0
+paths:
+  /v1/provider-operations/route.validate:execute:
+    post:
+      operationId: validateRouteRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../route-planning-request.schema.json
+      responses:
+        "200":
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: ../route-verification-report.schema.json
+  /v1/provider-operations/route.plan:execute:
+    post:
+      operationId: planRoute
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../route-planning-request.schema.json
+      responses:
+        "200":
+          description: Completed route
+          content:
+            application/json:
+              schema:
+                $ref: ../route-planning-result.schema.json
+        "202": { description: Async route job accepted }
+  /v1/provider-operations/route.verify:execute:
+    post:
+      operationId: verifyRoute
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../route-planning-result.schema.json
+      responses:
+        "200":
+          description: Verification report
+          content:
+            application/json:
+              schema:
+                $ref: ../route-verification-report.schema.json

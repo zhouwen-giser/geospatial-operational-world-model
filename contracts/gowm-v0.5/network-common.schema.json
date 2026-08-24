@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-common",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "referenceKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "namespace",
+        "kind",
+        "id",
+        "version"
+      ],
+      "properties": {
+        "namespace": {
+          "const": "gowm"
+        },
+        "kind": {
+          "enum": [
+            "WORLD_OBJECT",
+            "SPATIAL_OBJECT",
+            "DATA_SCOPE",
+            "DATASET",
+            "LAYER",
+            "LAYER_FEATURE",
+            "QUERY_RESULT",
+            "DERIVED_REFERENCE",
+            "REFERENCE_SET",
+            "OPERATIONAL_TASK"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^wrf_[0-9a-f]{32}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      }
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinates",
+        "crs"
+      ],
+      "properties": {
+        "coordinates": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        },
+        "crs": {
+          "const": "EPSG:4326"
+        }
+      }
+    },
+    "directedState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "arcKey",
+        "fractionPpm",
+        "direction"
+      ],
+      "properties": {
+        "arcKey": {
+          "type": "string",
+          "pattern": "^arc_[0-9a-f]{32,64}$"
+        },
+        "fractionPpm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "direction": {
+          "enum": [
+            "FORWARD",
+            "REVERSE"
+          ]
+        },
+        "headingMicrodegrees": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 359999999
+        },
+        "sourceFeatureReferenceKey": {
+          "$ref": "#/$defs/referenceKey"
+        }
+      }
+    },
+    "networkLocation": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/position"
+        },
+        {
+          "$ref": "#/$defs/referenceKey"
+        },
+        {
+          "$ref": "#/$defs/directedState"
+        }
+      ]
+    },
+    "routeSegment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graphVersion",
+        "arcKey",
+        "startFractionPpm",
+        "endFractionPpm",
+        "segmentRole"
+      ],
+      "properties": {
+        "graphVersion": {
+          "type": "string"
+        },
+        "arcKey": {
+          "type": "string"
+        },
+        "startFractionPpm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "endFractionPpm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "segmentRole": {
+          "enum": [
+            "ROUTE",
+            "VIA",
+            "ACCESS",
+            "EXIT"
+          ]
+        },
+        "sourceFeatureReferenceKey": {
+          "$ref": "#/$defs/referenceKey"
+        },
+        "distanceMm": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "riskMicroUnits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "energyMwh": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turnPenaltyUnits": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

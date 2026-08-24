@@ -5,13 +5,14 @@ import { fileURLToPath } from "node:url";
 
 const repositoryRoot = resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const findings = [];
+const ignoredDirectories = new Set([".git", "coverage", "dist", "node_modules"]);
 
 function sourceFiles(directory) {
   const absolute = join(repositoryRoot, directory);
   try {
     return readdirSync(absolute, { withFileTypes: true }).flatMap((entry) => {
       const child = join(absolute, entry.name);
-      if (entry.isDirectory()) return sourceFiles(relative(repositoryRoot, child));
+      if (entry.isDirectory()) return ignoredDirectories.has(entry.name) ? [] : sourceFiles(relative(repositoryRoot, child));
       return [".ts", ".mts", ".js", ".mjs"].includes(extname(entry.name)) ? [child] : [];
     });
   } catch (error) {
@@ -34,6 +35,8 @@ inspect("services/gateway", [
   ["Gateway imports legacy Geometry engine", /packages[\\/]spatial-engine/],
   ["Gateway contains PROJ or GEOS binding", /(?:proj4|libproj|geos-wasm|@turf\/)/i],
   ["Gateway contains raw spatial SQL", /\b(?:ST_|h3_)[A-Za-z0-9_]*\s*\(/],
+  ["Gateway contains pgRouting SQL", /\bpgr_[A-Za-z0-9_]*\s*\(/i],
+  ["Gateway contains routing algorithm", /\b(?:dijkstra|product[-_ ]state|sequence[-_ ]automaton|routing_arc_projection|snap_candidates)\b/i],
   ["Gateway imports Operational Reality domain code", /(?:packages[\\/]runtime[\\/]src[\\/]operational-|providers[\\/]operational-reality-provider)/]
 ]);
 
@@ -41,6 +44,12 @@ inspect("services/providers", [
   ["Provider imports a sibling provider", /services[\\/]providers[\\/](?![^\\/]+[\\/]src[\\/](?:\.\.\/?)*$)/],
   ["Provider imports Gateway implementation", /services[\\/]gateway/]
 ]);
+
+for (const file of sourceFiles("services/providers/route-planning-provider/src")) {
+  if (!file.endsWith(`${sep}verifier.ts`)) continue;
+  const content = readFileSync(file, "utf8");
+  if (/network-provider[\\/]src[\\/]engine/.test(content)) findings.push(`${relative(repositoryRoot, file)}: independent verifier imports solver implementation`);
+}
 
 for (const criticalPath of ["services/observation-ingest", "services/projection-worker"]) {
   inspect(criticalPath, [
@@ -51,7 +60,7 @@ for (const criticalPath of ["services/observation-ingest", "services/projection-
 
 for (const sourceRoot of ["packages", "services", "scripts", "simulator"]) {
   inspect(sourceRoot, [
-    ["Upper-layer WSGS/SACS/SDAR/A2A dependency", /(?:from\s+["'][^"']*(?:wsgs|sacs|sdar|a2a)[^"']*["']|require\(["'][^"']*(?:wsgs|sacs|sdar|a2a)[^"']*["']\))/i]
+    ["Upper-layer WSGS/SACS/SDAR/SMPP/A2A dependency", /(?:from\s+["'][^"']*(?:wsgs|sacs|sdar|smpp|a2a)[^"']*["']|require\(["'][^"']*(?:wsgs|sacs|sdar|smpp|a2a)[^"']*["']\))/i]
   ]);
 }
 

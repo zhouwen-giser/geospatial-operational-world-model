@@ -1,0 +1,11 @@
+# T00 Security, Performance, Migration, and Recovery Completion
+
+All required T00 gates passed against the composite PostgreSQL/PostGIS/MobilityDB/H3/pgRouting runtime. A fresh database applied migrations 001–047 and all 32 SQL assertions; a separate database upgraded from the locked v0.4 boundary at migration 032 without losing the preserved row. Reapplying the same migration set was checksum-safe, and a deliberately failed transaction left no partial relation.
+
+The final Route runtime run `r01-final-20260825t1700` closed the previously unproven stable routing cases: reference endpoints, joint snap candidates, ordered Waypoints, Via Feature, Avoid Feature, exact PostGIS Avoid Area, and all five fixed-point objectives. Every returned candidate passed the independent verifier, and terminal replay was byte-equivalent. Runtime discovery fixed three defects: excessively broad default snapping, cross-leg rounding after a shared-arc merge, and duplicate start-arc history across legs. Migration 047 exposes exact area intersection through one scoped `SECURITY DEFINER` read function granted only to `route_planner_provider`; it does not broaden Public/PostGIS execution privileges.
+
+On the S/M acceptance fixture, 40 Snap samples produced p95 11.437 ms, 40 Shortest Path samples produced p95 11.000 ms, and 20 bounded 2×2 Matrix samples produced p95 11.002 ms. These are acceptance-fixture measurements, not production SLO claims. The N01 graph build gate completed in 1465 ms.
+
+PostgreSQL was restarted and the same provider/gateway runtime was exercised again. Network Snap and Route recovered, the frozen Gateway query replayed, and the persisted idempotency state remained one hash, one request, one result, and one candidate. The security regression explicitly proves provider tokens, locations, geometry coordinates, and route identifiers do not enter public errors or audit events.
+
+Supply-chain artifacts are `database/sbom/gowm-db.spdx.json` for the database image inputs, including pgRouting 4.0.1, and `reports/gowm-v0.5/service-sbom.cdx.json` with 312 locked npm components. Full repository verification passed with 47 migration and 32 assertion SQL ASTs, 163 Vitest tests plus one explicit skip, 39 STAS tests, TypeScript checks, and builds; the focused post-fix regression set passed 8 tests and the capability boundary scan passed.

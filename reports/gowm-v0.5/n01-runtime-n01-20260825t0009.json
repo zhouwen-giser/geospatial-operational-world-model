@@ -1,0 +1,754 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "n01-20260825t0009",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "database": "gowm_v05_n01_20260825t0009",
+  "startedAt": "2026-08-24T16:08:47.843Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3187
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3063
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "gowm_v05_n01_20260825t0009"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3254
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3627
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3222
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3215
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3194
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3209
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3209
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3215
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3319
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3802
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3313
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3257
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3232
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3221
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3209
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3204
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3204
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3239
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3197
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3238
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3194
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3199
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3236
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3216
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3202
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3220
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3220
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3236
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3206
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3224
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3228
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3223
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3198
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3222
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3219
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3231
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3230
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3205
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3236
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n01_20260825t0009",
+        "--set",
+        "ON_ERROR_STOP=on"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3236
+    }
+  ],
+  "summary": null,
+  "errors": [
+    "error: �û� \"gowm\" Password ��֤ʧ��\n    at D:\\Code\\agent-app\\geospatial-operational-world-model\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-topology-runtime-gate.ts:169:18)"
+  ],
+  "finishedAt": "2026-08-24T16:11:04.185Z"
+}

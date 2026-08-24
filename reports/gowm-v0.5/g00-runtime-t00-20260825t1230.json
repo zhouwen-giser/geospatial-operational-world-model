@@ -1,0 +1,119 @@
+{
+  "phase": "G00",
+  "runId": "t00-20260825t1230",
+  "database": "gowm_v05_r03_20260825t1040",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3155
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3054
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "postgres",
+        "psql",
+        "<create g00_t00_20260825t1230 redacted>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3202
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--name",
+        "gowm-t00-20260825t1230-gateway-proxy",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--publish",
+        "127.0.0.1::5432",
+        "node:22-bookworm",
+        "<fixed proxy>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 777
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}",
+        "gowm-t00-20260825t1230-gateway-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 52
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "--force",
+        "gowm-t00-20260825t1230-gateway-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1006
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "postgres",
+        "--command",
+        "DROP ROLE g00_t00_20260825t1230"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3220
+    }
+  ],
+  "summary": {
+    "registeredProviders": [
+      "gowm.network",
+      "gowm.route-planning",
+      "gowm.world-state-route-input"
+    ],
+    "directSnapStatus": "RESOLVED_UNIQUE",
+    "directRouteStatus": "COMPLETED",
+    "typedDagStatus": "COMPLETED",
+    "schemaMismatch": "FAIL_CLOSED",
+    "asyncInitialStatus": "QUEUED",
+    "cancelStatus": "CANCELLED",
+    "restartReplay": true,
+    "resultRegistryReference": {
+      "id": "wrf_74f79181976e9704df27c262ec77f8aa",
+      "kind": "QUERY_RESULT",
+      "version": "1",
+      "namespace": "gowm"
+    }
+  },
+  "errors": []
+}

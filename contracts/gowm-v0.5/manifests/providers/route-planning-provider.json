@@ -1,0 +1,54 @@
+{
+  "providerId": "gowm.route-planning",
+  "providerVersion": "1.0.0",
+  "operations": [
+    {
+      "operationId": "route.validate",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/route-planning-request.schema.json",
+      "inputSchemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+      "outputSchemaFile": "contracts/gowm-v0.5/route-verification-report.schema.json",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    },
+    {
+      "operationId": "route.plan",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/route-planning-request.schema.json",
+      "inputSchemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+      "outputSchemaFile": "contracts/gowm-v0.5/route-planning-result.schema.json",
+      "outputSchemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC_OR_ASYNC"
+    },
+    {
+      "operationId": "route.plan-alternatives",
+      "operationVersion": "1.0",
+      "maturity": "PREVIEW",
+      "inputSchemaFile": "contracts/gowm-v0.5/route-planning-request.schema.json",
+      "inputSchemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+      "outputSchemaFile": "contracts/gowm-v0.5/route-planning-result.schema.json",
+      "outputSchemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC_OR_ASYNC"
+    },
+    {
+      "operationId": "route.verify",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "inputSchemaFile": "contracts/gowm-v0.5/route-planning-result.schema.json",
+      "inputSchemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+      "outputSchemaFile": "contracts/gowm-v0.5/route-verification-report.schema.json",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED",
+      "executionMode": "SYNC"
+    }
+  ]
+}

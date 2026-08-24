@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-build-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestId",
+    "networkDatasetReferenceKey",
+    "networkDatasetVersion",
+    "buildPolicyVersion"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "networkDatasetReferenceKey": {
+      "$ref": "network-common.schema.json#/$defs/referenceKey"
+    },
+    "networkDatasetVersion": {
+      "type": "string"
+    },
+    "buildPolicyVersion": {
+      "type": "string"
+    },
+    "sourceAdapter": {
+      "enum": [
+        "CATALOG_VECTOR_LAYER",
+        "OSM_ARTIFACT"
+      ]
+    },
+    "layerReferenceKeys": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "$ref": "network-common.schema.json#/$defs/referenceKey"
+      }
+    },
+    "activateWhenValidated": {
+      "type": "boolean"
+    },
+    "deadlineMs": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 86400000
+    }
+  }
+}

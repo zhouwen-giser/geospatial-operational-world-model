@@ -1,0 +1,27 @@
+{
+  "phase": "D00",
+  "status": "PASS",
+  "runId": "gowm-v05-d00-20260824t2245-codex",
+  "imageContentDigest": "sha256:a502c7ce9ef773b4e0f4097ade3b88172f901d1e2d17ed246932d38a04026fae",
+  "acceptance": {
+    "AC-D001": "PASS",
+    "AC-D002": "PASS",
+    "AC-D003": "PASS",
+    "AC-D004": "PASS",
+    "AC-D005": "PASS",
+    "AC-D006": "PASS",
+    "AC-D007": "PASS"
+  },
+  "runtime": {
+    "postgres": "18.6",
+    "postgis": "3.6.4",
+    "mobilitydb": "1.3.0",
+    "h3": "4.5.0",
+    "h3Postgis": "4.5.0",
+    "pgrouting": "4.0.1",
+    "withPointsFractionOne": "PASS",
+    "baselineMigrations": "32 PASS",
+    "baselineAssertions": "21 PASS"
+  },
+  "repositoryVerify": "PASS"
+}

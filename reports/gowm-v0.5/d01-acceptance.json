@@ -1,0 +1,26 @@
+{
+  "phase": "D01",
+  "status": "PASS",
+  "runId": "d01-20260824t2359",
+  "database": "gowm_v05_d01_20260824t2359",
+  "acceptance": {
+    "AC-N001": "PASS",
+    "AC-N002": "PASS",
+    "AC-N003": "PASS",
+    "AC-N004": "PASS",
+    "AC-N005": "PASS",
+    "AC-N006": "PASS",
+    "AC-N007": "PASS",
+    "AC-N008": "PASS",
+    "AC-N009": "PASS",
+    "AC-N010": "PASS_SCHEMA_LAYER_D02_READ_LAYER_RECHECK_REQUIRED"
+  },
+  "runtime": {
+    "migrations": "38 PASS",
+    "assertions": "23 PASS",
+    "commands": "65 PASS",
+    "networkTables": 18,
+    "readContractViews": 0
+  },
+  "repositoryVerify": "PASS"
+}

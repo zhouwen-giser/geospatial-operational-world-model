@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "networkAuthority": "GOWM_NETWORK_FOUNDATION",
+  "sourceRoadIdentity": "DATASET_LAYER_FEATURE_REFERENCE_KEY",
+  "graphElementIdentity": "GRAPH_VERSION_INTERNAL",
+  "graphVersionMutationPolicy": "APPEND_ONLY_IMMUTABLE",
+  "conditionPolicy": "VERSIONED_SNAPSHOT",
+  "providerCallPolicy": "NO_PROVIDER_TO_PROVIDER_CALLS",
+  "providerReadContract": "gowm_network_v1",
+  "graphBuildExposure": "PROTECTED_MANAGEMENT_ONLY",
+  "gatewayRoutingSemantics": "FORBIDDEN",
+  "routeResultKind": "QUERY_RESULT",
+  "routeRealitySemantics": "DERIVED_PLAN_NOT_EXECUTION_FACT",
+  "revalidationRequired": true,
+  "fixedPointUnits": [
+    "distance_mm",
+    "duration_ms",
+    "risk_micro_units",
+    "energy_mwh",
+    "combined_cost_units"
+  ],
+  "scopeEnforcement": [
+    "GATEWAY_TRUSTED_CONTEXT",
+    "PROVIDER_TRANSACTION",
+    "SQL_READ_CONTRACT"
+  ],
+  "excludedUpperLayers": ["WSGS", "SACS", "SDAR", "SMPP", "A2A"],
+  "excludedV05": ["DCPP", "OPEN_CPP", "RPP", "CARP", "OR_TOOLS", "DEVICE_DISPATCH"]
+}

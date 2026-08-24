@@ -1,0 +1,61 @@
+{
+  "queryPlanVersion": "2.0",
+  "queryId": "route-dag-001",
+  "nodes": [
+    {
+      "nodeId": "state",
+      "operation": {
+        "id": "world.get-current-state",
+        "version": "1.0"
+      },
+      "inputs": {
+        "referenceKey": {
+          "namespace": "gowm",
+          "kind": "WORLD_OBJECT",
+          "id": "wrf_33333333333333333333333333333333",
+          "version": "21"
+        }
+      },
+      "failurePolicy": "FAIL_FAST"
+    },
+    {
+      "nodeId": "route",
+      "operation": {
+        "id": "route.plan",
+        "version": "1.0"
+      },
+      "inputs": {
+        "start": {
+          "nodeOutput": {
+            "nodeId": "state",
+            "path": "$.geometrySummary.centroid"
+          }
+        },
+        "destination": {
+          "requestPath": "$.destination"
+        }
+      },
+      "failurePolicy": "FAIL_FAST"
+    },
+    {
+      "nodeId": "verify",
+      "operation": {
+        "id": "route.verify",
+        "version": "1.0"
+      },
+      "inputs": {
+        "route": {
+          "nodeOutput": {
+            "nodeId": "route",
+            "path": "$"
+          }
+        }
+      },
+      "failurePolicy": "FAIL_FAST"
+    }
+  ],
+  "outputs": [
+    "route",
+    "verify"
+  ]
+}

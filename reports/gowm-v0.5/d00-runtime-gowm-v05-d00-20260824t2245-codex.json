@@ -1,0 +1,586 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "gowm-v05-d00-20260824t2245-codex",
+  "project": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "startedAt": "2026-08-24T14:56:54.247Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "config",
+        "--quiet"
+      ],
+      "status": "PASS",
+      "elapsedMs": 155
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "build",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1345
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "up",
+        "--detach",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 2466
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3185
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3055
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3058
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "001_initial_schema.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3315
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "002_views_and_functions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3269
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "003_situation_observer.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3229
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "004_geography_indexes.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3222
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "005_situation_rank_indexes.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3235
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "006_observation_altitude.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3202
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "007_active_relation_uniqueness.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3208
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "008_h3_pg.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3239
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "009_gowm_plus_canonical_evidence_and_mobility.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3297
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "010_unified_stas_contracts_roles_and_coverage.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3290
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "011_capability_gateway_persistence.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3245
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "012_gowm_spatial_v1_read_contract.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3222
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "013_world_query_runtime_persistence.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3214
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "014_capability_runtime_service_principals.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3212
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "015_world_query_claim_runtime_fix.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3218
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "016_capability_port_path_contract_fix.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3208
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "017_reference_identity_catalog.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3239
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "018_reference_resolution_candidate_dedup.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3193
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "019_dataset_layer_feature_catalog.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3273
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "020_grounding_catalog_provider_runtime.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3224
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "021_reference_resolution_exact_match_precedence.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3214
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "022_derived_result_registry.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3244
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "023_world_evidence_read_contract.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3259
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "024_grounding_replay_audit.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3226
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "025_external_correlation_claims.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3207
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "026_operational_event_store.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3239
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "027_operational_task_projection.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3227
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "028_operational_correlation_resolver.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3220
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "029_operational_reality_read_contract.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3205
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "030_external_predicate_evaluation.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3209
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "031_operational_observability.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3217
+    },
+    {
+      "command": [
+        "baseline-migration",
+        "032_operational_analysis_findings_replay.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3227
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "001_v12_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3215
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "002_capability_gateway_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3220
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "003_gowm_spatial_v1_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3220
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "004_foundation_processing_receipt_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3208
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "005_world_query_persistence_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3193
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "006_capability_runtime_principal_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3197
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "007_reference_identity_catalog_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3214
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "008_dataset_layer_feature_catalog_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3221
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "009_reference_search_projection_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3238
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "010_grounding_catalog_provider_runtime_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3199
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "011_derived_result_registry_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3274
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "012_world_evidence_read_contract_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3209
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "013_grounding_security_replay_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3223
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "014_external_correlation_claim_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3195
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "015_operational_event_store_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3220
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "016_operational_projection_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3242
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "017_operational_correlation_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3241
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "018_operational_read_contract_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3213
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "019_external_predicate_evaluation_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3301
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "020_operational_observability_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3213
+    },
+    {
+      "command": [
+        "baseline-assertion",
+        "021_operational_analysis_findings_replay_assertions.sql"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3236
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm",
+        "--tuples-only",
+        "--no-align"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3219
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "--format",
+        "{{.Id}}",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 92
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "--format",
+        "{{json .Config.Labels}}",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 96
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--entrypoint",
+        "test",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "-s",
+        "/usr/share/doc/gowm-pgrouting/LICENSE"
+      ],
+      "status": "PASS",
+      "elapsedMs": 883
+    }
+  ],
+  "versions": {
+    "h3": "4.5.0",
+    "postgis": "3.6.4",
+    "postgres": "18.6 (Debian 18.6-1.pgdg13+2)",
+    "pgrouting": "4.0.1",
+    "h3_postgis": "4.5.0",
+    "mobilitydb": "1.3.0",
+    "withPointsFractionOne": "PASS"
+  },
+  "image": {
+    "name": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+    "contentDigest": "sha256:a502c7ce9ef773b4e0f4097ade3b88172f901d1e2d17ed246932d38a04026fae",
+    "labels": {
+      "com.docker.compose.project": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+      "com.docker.compose.service": "postgres",
+      "com.docker.compose.version": "5.2.0",
+      "maintainer": "MobilityDB Project - https://github.com/MobilityDB/MobilityDB",
+      "org.gowm.h3-pg.version": "4.5.0",
+      "org.gowm.mobilitydb.version": "1.3",
+      "org.gowm.pgrouting.source": "https://github.com/pgRouting/pgrouting/releases/tag/v4.0.1",
+      "org.gowm.pgrouting.source-sha256": "21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699",
+      "org.gowm.pgrouting.version": "4.0.1",
+      "org.gowm.postgis.version": "3.6",
+      "org.gowm.postgresql.version": "18",
+      "org.opencontainers.image.base.name": "mobilitydb/mobilitydb:18-3.6-1.3",
+      "org.opencontainers.image.description": "MobilityDB - An open source geospatial trajectory data management & analysis platform",
+      "org.opencontainers.image.source": "https://github.com/zhouwen-giser/geospatial-operational-world-model",
+      "org.opencontainers.image.title": "GOWM PostgreSQL network foundation"
+    },
+    "licensePresent": true
+  },
+  "errors": [],
+  "finishedAt": "2026-08-24T15:00:02.968Z"
+}

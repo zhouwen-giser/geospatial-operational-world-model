@@ -1,0 +1,17 @@
+{
+  "phase": "N02",
+  "status": "PASS",
+  "acceptance": {
+    "AC-N022": "PASS_PAIRWISE_RESTRICTION_RESOLVED_TO_VALID_ARCS",
+    "AC-N023": "PASS_MULTI_EDGE_COMPILED_DETERMINISTICALLY",
+    "AC-N024": "PASS_UNRESOLVED_HARD_RULE_BLOCKS_ACTIVATION",
+    "AC-N025": "PASS_FATAL_AND_WARNING_DIAGNOSTICS_PERSISTED"
+  },
+  "tests": {
+    "focusedUnit": "6 PASS",
+    "typecheck": "PASS",
+    "sqlAst": "PASS_41_MIGRATIONS_26_ASSERTIONS",
+    "realDatabase": "PASS_n02-20260825t0149"
+  },
+  "runtimeEvidence": "reports/gowm-v0.5/n02-runtime-n02-20260825t0149.json"
+}

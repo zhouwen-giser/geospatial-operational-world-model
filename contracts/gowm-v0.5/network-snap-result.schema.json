@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-snap-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "candidates",
+    "routingSnapshot"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "RESOLVED_UNIQUE",
+        "AMBIGUOUS",
+        "UNREACHABLE",
+        "INVALID"
+      ]
+    },
+    "routingSnapshot": {
+      "$ref": "routing-snapshot.schema.json"
+    },
+    "candidates": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "state",
+          "distanceMm",
+          "candidateScore"
+        ],
+        "properties": {
+          "state": {
+            "$ref": "network-common.schema.json#/$defs/directedState"
+          },
+          "distanceMm": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "headingDifferenceMicrodegrees": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "candidateScore": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

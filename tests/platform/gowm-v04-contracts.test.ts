@@ -45,7 +45,11 @@ describe("GOWM v0.3/v0.4 authority contracts", () => {
         ] as const) {
           const name = basename(schemaFile);
           const bytes = await readFile(resolve(contractRoot, name));
-          expect(`sha256:${createHash("sha256").update(bytes).digest("hex")}`).toBe(lockedHash);
+          // Git may materialize JSON as CRLF on Windows even though the locked
+          // repository bytes are LF. Hash the canonical repository form so the
+          // byte lock remains strict without making verification OS-dependent.
+          const canonicalBytes = Buffer.from(bytes.toString("utf8").replaceAll("\r\n", "\n"), "utf8");
+          expect(`sha256:${createHash("sha256").update(canonicalBytes).digest("hex")}`).toBe(lockedHash);
           expect(getContractSchemaHash(name)).toMatch(/^sha256:[0-9a-f]{64}$/u);
         }
       }

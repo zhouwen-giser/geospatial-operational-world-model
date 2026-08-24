@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:travel-profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profileId",
+    "version",
+    "vehicleClass",
+    "contentHash"
+  ],
+  "properties": {
+    "profileId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "vehicleClass": {
+      "enum": [
+        "ROAD_VEHICLE",
+        "UGV"
+      ]
+    },
+    "allowedRoadClasses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowedSurfaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "maximumSlopePpm": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "minimumWidthMm": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "maximumHeightMm": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "maximumWeightKg": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "onewayPolicy": {
+      "enum": [
+        "STRICT",
+        "IGNORE_FOR_EMERGENCY"
+      ]
+    },
+    "contentHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    }
+  }
+}

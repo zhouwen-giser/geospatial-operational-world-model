@@ -1,0 +1,49 @@
+{
+  "requestId": "route-001",
+  "routingSnapshot": {
+    "networkDatasetVersion": "roads-2026.08",
+    "graphVersion": "graph-2026.08-build-1",
+    "travelProfileVersion": "ugv/1.0",
+    "costProfileVersion": "balanced/1.0",
+    "conditionSnapshotId": "condition-12001",
+    "sourceWorldVersion": 12001,
+    "graphContentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "costContentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "conditionContentHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "capturedAt": "2026-08-24T08:00:00Z"
+  },
+  "start": {
+    "namespace": "gowm",
+    "kind": "WORLD_OBJECT",
+    "id": "wrf_33333333333333333333333333333333",
+    "version": "21"
+  },
+  "destination": {
+    "coordinates": [
+      112.993,
+      28.201
+    ],
+    "crs": "EPSG:4326"
+  },
+  "waypoints": [
+    {
+      "coordinates": [
+        112.985,
+        28.195
+      ],
+      "crs": "EPSG:4326"
+    },
+    {
+      "namespace": "gowm",
+      "kind": "LAYER_FEATURE",
+      "id": "wrf_22222222222222222222222222222222",
+      "version": "7"
+    }
+  ],
+  "travelProfile": "ugv/1.0",
+  "costProfile": "balanced/1.0",
+  "conditionSnapshotId": "condition-12001",
+  "snapToleranceM": 50,
+  "objective": "WEIGHTED",
+  "deadlineMs": 30000
+}

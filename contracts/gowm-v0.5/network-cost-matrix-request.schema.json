@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-cost-matrix-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "routingSnapshot",
+    "points",
+    "objective"
+  ],
+  "properties": {
+    "routingSnapshot": {
+      "$ref": "routing-snapshot.schema.json"
+    },
+    "points": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 500,
+      "items": {
+        "$ref": "network-common.schema.json#/$defs/directedState"
+      }
+    },
+    "objective": {
+      "enum": [
+        "SHORTEST_DISTANCE",
+        "FASTEST",
+        "LOWEST_RISK",
+        "LOWEST_ENERGY",
+        "WEIGHTED"
+      ]
+    },
+    "deadlineMs": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

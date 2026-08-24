@@ -953,7 +953,21 @@ export type H3CellSetEnvelope = {
 export type H3AnalyticsAggregateInputV1 = {
   metric?: string;
   operation: "count" | "sum" | "average" | "min" | "max" | "weightedAverage" | "density" | "distinctCount";
-  records: Array<(Record<string, unknown>) | (Record<string, unknown>)>;
+  records: Array<({
+  cell: H3BridgeDefinitionsV1H3Cell;
+  distinct?: (string) | (number);
+  latitude?: number;
+  longitude?: number;
+  value?: number;
+  weight?: number;
+}) | ({
+  cell?: H3BridgeDefinitionsV1H3Cell;
+  distinct?: (string) | (number);
+  latitude: number;
+  longitude: number;
+  value?: number;
+  weight?: number;
+})>;
   resolution: H3BridgeDefinitionsV1Resolution;
 };
 
@@ -1201,7 +1215,16 @@ export type SpatialProviderOperationContractsV1IntersectionsInput = {
   observedTo?: string;
 };
 
-export type SpatialProviderOperationContractsV1JoinInput = (Record<string, unknown>) & (Record<string, unknown>);
+export type SpatialProviderOperationContractsV1JoinInput = ({
+  crs?: "EPSG:4326";
+  distanceM?: number;
+  leftLimit?: number;
+  leftObjectTypes?: SpatialProviderOperationContractsV1ObjectTypes;
+  nearestK?: number;
+  relation: "intersects" | "within" | "covers" | "dwithin" | "nearest";
+  resultLimit?: number;
+  rightObjectTypes?: SpatialProviderOperationContractsV1ObjectTypes;
+}) & ((Record<string, unknown>) & (Record<string, unknown>));
 
 export type SpatialProviderOperationContractsV1JoinOutput = {
   context: SpatialProviderOperationContractsV1QueryContext;
@@ -1741,6 +1764,295 @@ export type GowmV04WorldFactResult = {
   unknowns: Array<string>;
   warnings?: Array<string>;
   worldVersion: number;
+};
+
+export type GowmV05CostProfile = {
+  contentHash: GowmV05NetworkCommonSha256;
+  profileId: string;
+  roundingPolicy?: "HALF_AWAY_FROM_ZERO";
+  version: string;
+  weights: {
+  distance: number;
+  energy: number;
+  risk: number;
+  surface: number;
+  time: number;
+};
+};
+
+export type GowmV05NetworkBuildRequest = {
+  activateWhenValidated?: boolean;
+  buildPolicyVersion: string;
+  deadlineMs?: number;
+  layerReferenceKeys?: Array<GowmV05NetworkCommonReferenceKey>;
+  networkDatasetReferenceKey: GowmV05NetworkCommonReferenceKey;
+  networkDatasetVersion: string;
+  requestId: string;
+  sourceAdapter?: "CATALOG_VECTOR_LAYER" | "OSM_ARTIFACT";
+};
+
+export type GowmV05NetworkBuildResult = {
+  diagnostics: Array<{
+  code: string;
+  count: number;
+  sampleRefs?: Array<string>;
+  severity: "INFO" | "WARNING" | "ERROR" | "FATAL";
+}>;
+  graphVersion?: GowmV05NetworkGraphVersion;
+  requestId: string;
+  status: "ACCEPTED" | "RUNNING" | "VALIDATED" | "ACTIVE" | "FAILED" | "CANCELLED";
+};
+
+export type GowmV05NetworkCommon = Record<string, unknown>;
+
+export type GowmV05NetworkCommonDateTime = string;
+
+export type GowmV05NetworkCommonDirectedState = {
+  arcKey: string;
+  direction: "FORWARD" | "REVERSE";
+  fractionPpm: number;
+  headingMicrodegrees?: number;
+  sourceFeatureReferenceKey?: GowmV05NetworkCommonReferenceKey;
+};
+
+export type GowmV05NetworkCommonNetworkLocation = (GowmV05NetworkCommonPosition) | (GowmV05NetworkCommonReferenceKey) | (GowmV05NetworkCommonDirectedState);
+
+export type GowmV05NetworkCommonPosition = {
+  coordinates: [number, number] | [number, number, number];
+  crs: "EPSG:4326";
+};
+
+export type GowmV05NetworkCommonReferenceKey = {
+  id: string;
+  kind: "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATA_SCOPE" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "QUERY_RESULT" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "OPERATIONAL_TASK";
+  namespace: "gowm";
+  version: string;
+};
+
+export type GowmV05NetworkCommonRouteSegment = {
+  arcKey: string;
+  distanceMm?: number;
+  durationMs?: number;
+  endFractionPpm: number;
+  energyMwh?: number;
+  graphVersion: string;
+  riskMicroUnits?: number;
+  segmentRole: "ROUTE" | "VIA" | "ACCESS" | "EXIT";
+  sourceFeatureReferenceKey?: GowmV05NetworkCommonReferenceKey;
+  startFractionPpm: number;
+  turnPenaltyUnits?: number;
+};
+
+export type GowmV05NetworkCommonSha256 = string;
+
+export type GowmV05NetworkConditionSnapshot = {
+  conditionCount?: number;
+  conditionSnapshotId: string;
+  graphVersion: string;
+  snapshotHash: GowmV05NetworkCommonSha256;
+  sourceWorldVersion?: number;
+  status: "ACTIVE" | "SUPERSEDED" | "EXPIRED";
+  validFrom: GowmV05NetworkCommonDateTime;
+  validTo?: GowmV05NetworkCommonDateTime;
+};
+
+export type GowmV05NetworkCostMatrixRequest = {
+  deadlineMs?: number;
+  objective: "SHORTEST_DISTANCE" | "FASTEST" | "LOWEST_RISK" | "LOWEST_ENERGY" | "WEIGHTED";
+  points: Array<GowmV05NetworkCommonDirectedState>;
+  routingSnapshot: GowmV05RoutingSnapshot;
+};
+
+export type GowmV05NetworkCostMatrixResult = {
+  entries: Array<{
+  costUnits?: number;
+  fromIndex: number;
+  reachable: boolean;
+  toIndex: number;
+}>;
+  pointCount: number;
+  resultHash: GowmV05NetworkCommonSha256;
+  routingSnapshot: GowmV05RoutingSnapshot;
+};
+
+export type GowmV05NetworkGraphVersion = {
+  activatedAt?: GowmV05NetworkCommonDateTime;
+  buildPolicyVersion: string;
+  buildReceiptId?: string;
+  contentHash: GowmV05NetworkCommonSha256;
+  counts: {
+  arcs: number;
+  edges: number;
+  nodes: number;
+  turnRules: number;
+};
+  createdAt?: GowmV05NetworkCommonDateTime;
+  graphVersion: string;
+  networkDatasetReferenceKey: GowmV05NetworkCommonReferenceKey;
+  networkDatasetVersion: string;
+  sourceContentHash: GowmV05NetworkCommonSha256;
+  status: "BUILDING" | "VALIDATED" | "ACTIVE" | "RETIRED" | "FAILED";
+  topologyHash: GowmV05NetworkCommonSha256;
+  validatedAt?: GowmV05NetworkCommonDateTime;
+};
+
+export type GowmV05NetworkProviderManifest = {
+  operations: Array<{
+  dataSnapshot: "REQUIRED";
+  executionMode: "SYNC" | "SYNC_OR_ASYNC";
+  inputSchemaFile: string;
+  inputSchemaHash: string;
+  maturity: "EXPERIMENTAL" | "PREVIEW" | "STABLE" | "DEPRECATED";
+  operationId: string;
+  operationVersion: string;
+  outputSchemaFile: string;
+  outputSchemaHash: string;
+  scopePolicy: "DATA_SCOPE_REQUIRED";
+}>;
+  providerId: string;
+  providerVersion: string;
+};
+
+export type GowmV05NetworkShortestPathRequest = {
+  deadlineMs?: number;
+  destination: GowmV05NetworkCommonDirectedState;
+  maximumSegments?: number;
+  objective: "SHORTEST_DISTANCE" | "FASTEST" | "LOWEST_RISK" | "LOWEST_ENERGY" | "WEIGHTED";
+  routingSnapshot: GowmV05RoutingSnapshot;
+  start: GowmV05NetworkCommonDirectedState;
+  turnLegality?: "STRICT" | "IGNORE_SOFT_PENALTIES";
+};
+
+export type GowmV05NetworkShortestPathResult = {
+  metrics: GowmV05PathMetrics;
+  resultHash: GowmV05NetworkCommonSha256;
+  routingSnapshot: GowmV05RoutingSnapshot;
+  segments: Array<GowmV05NetworkCommonRouteSegment>;
+  status: "COMPLETED" | "NO_PATH" | "INDETERMINATE";
+  warnings?: Array<string>;
+};
+
+export type GowmV05NetworkSnapRequest = {
+  headingDegrees?: number;
+  limit: number;
+  location: GowmV05NetworkCommonNetworkLocation;
+  maxDistanceM: number;
+  routingSnapshot: GowmV05RoutingSnapshot;
+};
+
+export type GowmV05NetworkSnapResult = {
+  candidates: Array<{
+  candidateScore: number;
+  distanceMm: number;
+  headingDifferenceMicrodegrees?: number;
+  state: GowmV05NetworkCommonDirectedState;
+}>;
+  routingSnapshot: GowmV05RoutingSnapshot;
+  status: "RESOLVED_UNIQUE" | "AMBIGUOUS" | "UNREACHABLE" | "INVALID";
+};
+
+export type GowmV05PathMetrics = {
+  combinedCostUnits: number;
+  distanceMm: number;
+  durationMs: number;
+  energyMwh: number;
+  riskMicroUnits: number;
+};
+
+export type GowmV05RoutePlanningRequest = ({
+  alternativeCount?: number;
+  avoidAreas?: Array<Record<string, unknown>>;
+  avoidReferences?: Array<GowmV05NetworkCommonReferenceKey>;
+  conditionSnapshotId?: string;
+  costProfile: string;
+  deadlineMs: number;
+  destination: GowmV05NetworkCommonNetworkLocation;
+  destinationHeading?: number;
+  objective: "SHORTEST_DISTANCE" | "FASTEST" | "LOWEST_RISK" | "LOWEST_ENERGY" | "WEIGHTED";
+  requestId: string;
+  routingSnapshot: GowmV05RoutingSnapshot;
+  snapToleranceM?: number;
+  start: GowmV05NetworkCommonNetworkLocation;
+  startHeading?: number;
+  travelProfile: string;
+  useActiveGraph?: boolean;
+  viaReferences?: Array<GowmV05NetworkCommonReferenceKey>;
+  waypoints?: Array<GowmV05NetworkCommonNetworkLocation>;
+}) | ({
+  alternativeCount?: number;
+  avoidAreas?: Array<Record<string, unknown>>;
+  avoidReferences?: Array<GowmV05NetworkCommonReferenceKey>;
+  conditionSnapshotId?: string;
+  costProfile: string;
+  deadlineMs: number;
+  destination: GowmV05NetworkCommonNetworkLocation;
+  destinationHeading?: number;
+  objective: "SHORTEST_DISTANCE" | "FASTEST" | "LOWEST_RISK" | "LOWEST_ENERGY" | "WEIGHTED";
+  requestId: string;
+  routingSnapshot?: GowmV05RoutingSnapshot;
+  snapToleranceM?: number;
+  start: GowmV05NetworkCommonNetworkLocation;
+  startHeading?: number;
+  travelProfile: string;
+  useActiveGraph: true;
+  viaReferences?: Array<GowmV05NetworkCommonReferenceKey>;
+  waypoints?: Array<GowmV05NetworkCommonNetworkLocation>;
+});
+
+export type GowmV05RoutePlanningResult = {
+  candidates: Array<{
+  metrics: GowmV05PathMetrics;
+  rank: number;
+  routeSignature: GowmV05NetworkCommonSha256;
+  segments: Array<GowmV05NetworkCommonRouteSegment>;
+  verification: GowmV05RouteVerificationReport;
+}>;
+  queryResultReferenceKey: GowmV05NetworkCommonReferenceKey;
+  requestId: string;
+  revalidationRequired: true;
+  routingSnapshot: GowmV05RoutingSnapshot;
+  status: "COMPLETED" | "PARTIAL" | "NO_PATH" | "FAILED" | "CANCELLED";
+  validUntil: GowmV05NetworkCommonDateTime;
+  warnings?: Array<string>;
+};
+
+export type GowmV05RouteVerificationReport = {
+  checks: Array<{
+  code: string;
+  details?: Record<string, unknown>;
+  status: "PASS" | "FAIL" | "UNKNOWN";
+}>;
+  status: "VALID" | "STALE" | "INVALID" | "INDETERMINATE";
+  verifiedResultHash: GowmV05NetworkCommonSha256;
+  verifierVersion: string;
+  warnings?: Array<string>;
+};
+
+export type GowmV05RoutingSnapshot = {
+  capturedAt?: GowmV05NetworkCommonDateTime;
+  conditionContentHash?: GowmV05NetworkCommonSha256;
+  conditionSnapshotId?: string;
+  costContentHash: GowmV05NetworkCommonSha256;
+  costProfileVersion: string;
+  graphContentHash: GowmV05NetworkCommonSha256;
+  graphVersion: string;
+  networkDatasetVersion: string;
+  sourceWorldVersion?: number;
+  travelProfileVersion: string;
+};
+
+export type GowmV05TravelProfile = {
+  allowedRoadClasses?: Array<string>;
+  allowedSurfaces?: Array<string>;
+  contentHash: GowmV05NetworkCommonSha256;
+  maximumHeightMm?: number;
+  maximumSlopePpm?: number;
+  maximumWeightKg?: number;
+  minimumWidthMm?: number;
+  onewayPolicy?: "STRICT" | "IGNORE_FOR_EMERGENCY";
+  profileId: string;
+  vehicleClass: "ROAD_VEHICLE" | "UGV";
+  version: string;
 };
 
 export type CapabilityCatalog = {

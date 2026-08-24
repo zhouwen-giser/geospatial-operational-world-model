@@ -1,0 +1,74 @@
+{
+  "phase": "G00",
+  "runId": "g00-20260825t1140",
+  "database": "gowm_v05_r03_20260825t1040",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3161
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3055
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "postgres",
+        "psql",
+        "<create g00_g00_20260825t1140 redacted>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3193
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--name",
+        "gowm-g00-20260825t1140-gateway-proxy",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--publish",
+        "127.0.0.1::5432",
+        "node:22-bookworm",
+        "<fixed proxy>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 813
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}",
+        "gowm-g00-20260825t1140-gateway-proxy"
+      ],
+      "status": "PASS",
+      "elapsedMs": 52
+    }
+  ],
+  "summary": null,
+  "errors": [
+    "Error: typed route/verify DAG failed: {\"queryPlanVersion\":\"2.0\",\"queryId\":\"g00-query-g00-20260825t1140\",\"jobId\":\"query_job_24c06aa0beb048f09efc016a0a547a61\",\"status\":\"FAILED\",\"nodes\":[{\"nodeId\":\"state\",\"operation\":{\"operationId\":\"world.get-current-state\",\"operationVersion\":\"1.0\",\"inputSchemaHash\":\"sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67\",\"outputSchemaHash\":\"sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67\"},\"providerId\":\"gowm.world-state-route-input\",\"status\":\"FAILED\",\"attempt\":1,\"finishedAt\":\"2026-08-24T18:33:58.149Z\",\"error\":{\"schemaVersion\":\"1.0\",\"requestId\":\"query_node_2fd04e817d544419b8cf0eeec46057c9\",\"error\":{\"code\":\"SCHEMA_MISMATCH\",\"message\":\"Schema validation failed\",\"retryable\":false,\"stage\":\"DAG_EXECUTION\",\"nodeId\":\"state\",\"providerId\":\"gowm.world-state-route-input\",\"details\":{\"stage\":\"DAG_EXECUTION\",\"nodeId\":\"state\",\"schemaUri\":\"urn:gowm:v0.5:route-planning-request\",\"canonicalHash\":\"sha256:384e111093b923f05721bb22b6da4afef00efb7c7989fbc72a3b99341faf1ab9\",\"schemaHash\":\"sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67\"}}}},{\"nodeId\":\"route\",\"operation\":{\"operationId\":\"route.plan\",\"operationVersion\":\"1.0\",\"inputSchemaHash\":\"sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67\",\"outputSchemaHash\":\"sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c\"},\"status\":\"SKIPPED\",\"attempt\":0,\"finishedAt\":\"2026-08-24T18:33:58.150Z\",\"error\":{\"schemaVersion\":\"1.0\",\"requestId\":\"query_node_45afeab075ed447cb56830c7936b71ec\",\"error\":{\"code\":\"NODE_SKIPPED\",\"message\":\"Skipped after an upstream FAIL_FAST error\",\"retryable\":false,\"stage\":\"DAG_EXECUTION\",\"nodeId\":\"route\"}}},{\"nodeId\":\"verify\",\"operation\":{\"operationId\":\"route.verify\",\"operationVersion\":\"1.0\",\"inputSchemaHash\":\"sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c\",\"outputSchemaHash\":\"sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd\"},\"status\":\"SKIPPED\",\"attempt\":0,\"finishedAt\":\"2026-08-24T18:33:58.150Z\",\"error\":{\"schemaVersion\":\"1.0\",\"requestId\":\"query_node_ed12bea4583c43a7af9a229d2045e77e\",\"error\":{\"code\":\"NODE_SKIPPED\",\"message\":\"Skipped after an upstream FAIL_FAST error\",\"retryable\":false,\"stage\":\"DAG_EXECUTION\",\"nodeId\":\"verify\"}}}],\"outputs\":{},\"warnings\":[\"state: SCHEMA_MISMATCH\",\"verification: output unavailable (INVALID_REQUEST)\"],\"startedAt\":\"2026-08-24T18:33:58.144Z\",\"finishedAt\":\"2026-08-24T18:33:58.150Z\",\"outputHash\":\"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a\"}\n    at assert (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-routing-gateway-e2e.ts:47:496)\n    at <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-routing-gateway-e2e.ts:34:289)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+  ]
+}

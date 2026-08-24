@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:routing-snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "networkDatasetVersion",
+    "graphVersion",
+    "travelProfileVersion",
+    "costProfileVersion",
+    "graphContentHash",
+    "costContentHash"
+  ],
+  "properties": {
+    "networkDatasetVersion": {
+      "type": "string"
+    },
+    "graphVersion": {
+      "type": "string"
+    },
+    "travelProfileVersion": {
+      "type": "string"
+    },
+    "costProfileVersion": {
+      "type": "string"
+    },
+    "conditionSnapshotId": {
+      "type": "string"
+    },
+    "sourceWorldVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "graphContentHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    },
+    "costContentHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    },
+    "conditionContentHash": {
+      "$ref": "network-common.schema.json#/$defs/sha256"
+    },
+    "capturedAt": {
+      "$ref": "network-common.schema.json#/$defs/dateTime"
+    }
+  }
+}

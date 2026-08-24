@@ -15,6 +15,7 @@ import { isDeepStrictEqual } from "node:util";
 import {
   getContractSchema,
   getContractSchemaHash,
+  isContractSchemaHash,
   validateAgainstSchema,
   validateContract
 } from "../../../../packages/platform/contract-runtime/src/index.js";
@@ -502,7 +503,7 @@ export class WorldQueryRuntime {
     role: string
   ): void {
     const canonicalHash = getContractSchemaHash(schemaUri);
-    if (canonicalHash !== schemaHash) {
+    if (!isContractSchemaHash(schemaUri, schemaHash)) {
       throw new ProviderProtocolError("SCHEMA_MISMATCH", "DAG value schema attestation is stale", {
         details: { stage: "DAG_EXECUTION", nodeId, role, schemaUri, canonicalHash, schemaHash }
       });

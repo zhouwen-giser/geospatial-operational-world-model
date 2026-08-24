@@ -1,0 +1,21 @@
+{
+  "phase": "R00",
+  "status": "PASS",
+  "runtimeFoundation": {
+    "idempotentSubmission": "PASS",
+    "generationFencedLease": "PASS",
+    "expiredLeaseReclaim": "PASS",
+    "cancelLateCompletionRace": "PASS",
+    "immutableCandidateSegmentVerificationTables": "PASS_SCHEMA_TRIGGER",
+    "directProviderTableMutation": "DENIED"
+  },
+  "realDatabase": {
+    "database": "gowm_v05_r00_20260825t0640",
+    "migration": "045_route_runtime.sql",
+    "assertion": "030_route_runtime_assertions.sql",
+    "result": "PASS"
+  },
+  "acceptance": {
+    "AC-R001..AC-R028": "NOT_RUN_FULL_ROUTE_PROVIDER_PHASES_R01_R03_REQUIRED"
+  }
+}

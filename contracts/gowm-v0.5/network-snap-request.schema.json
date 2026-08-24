@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:network-snap-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "routingSnapshot",
+    "location",
+    "maxDistanceM",
+    "limit"
+  ],
+  "properties": {
+    "routingSnapshot": {
+      "$ref": "routing-snapshot.schema.json"
+    },
+    "location": {
+      "$ref": "network-common.schema.json#/$defs/networkLocation"
+    },
+    "headingDegrees": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMaximum": 360
+    },
+    "maxDistanceM": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 10000
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20
+    }
+  }
+}

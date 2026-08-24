@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.5:route-planning-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestId",
+    "status",
+    "queryResultReferenceKey",
+    "routingSnapshot",
+    "candidates",
+    "validUntil",
+    "revalidationRequired"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "COMPLETED",
+        "PARTIAL",
+        "NO_PATH",
+        "FAILED",
+        "CANCELLED"
+      ]
+    },
+    "queryResultReferenceKey": {
+      "$ref": "network-common.schema.json#/$defs/referenceKey"
+    },
+    "routingSnapshot": {
+      "$ref": "routing-snapshot.schema.json"
+    },
+    "candidates": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "rank",
+          "routeSignature",
+          "segments",
+          "metrics",
+          "verification"
+        ],
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "routeSignature": {
+            "$ref": "network-common.schema.json#/$defs/sha256"
+          },
+          "segments": {
+            "type": "array",
+            "maxItems": 100000,
+            "items": {
+              "$ref": "network-common.schema.json#/$defs/routeSegment"
+            }
+          },
+          "metrics": {
+            "$ref": "path-metrics.schema.json"
+          },
+          "verification": {
+            "$ref": "route-verification-report.schema.json"
+          }
+        }
+      }
+    },
+    "validUntil": {
+      "$ref": "network-common.schema.json#/$defs/dateTime"
+    },
+    "revalidationRequired": {
+      "const": true
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

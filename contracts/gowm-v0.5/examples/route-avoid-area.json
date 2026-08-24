@@ -1,0 +1,52 @@
+{
+  "requestId": "route-avoid-001",
+  "useActiveGraph": true,
+  "start": {
+    "coordinates": [
+      112.98,
+      28.19
+    ],
+    "crs": "EPSG:4326"
+  },
+  "destination": {
+    "coordinates": [
+      112.99,
+      28.2
+    ],
+    "crs": "EPSG:4326"
+  },
+  "travelProfile": "road-vehicle/1.0",
+  "costProfile": "fastest/1.0",
+  "avoidAreas": [
+    {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            112.984,
+            28.194
+          ],
+          [
+            112.986,
+            28.194
+          ],
+          [
+            112.986,
+            28.196
+          ],
+          [
+            112.984,
+            28.196
+          ],
+          [
+            112.984,
+            28.194
+          ]
+        ]
+      ]
+    }
+  ],
+  "snapToleranceM": 100,
+  "objective": "FASTEST",
+  "deadlineMs": 30000
+}

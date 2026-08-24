@@ -1,0 +1,171 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "n03-20260825t0158",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "sourceDatabase": "gowm_v05_n02_20260825t0149",
+  "database": "gowm_v05_n03_20260825t0158",
+  "startedAt": "2026-08-24T16:58:11.478Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3162
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3050
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "--template",
+        "gowm_v05_n02_20260825t0149",
+        "gowm_v05_n03_20260825t0158"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3300
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n03_20260825t0158",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<migration 042_network_profile_condition_contract_alignment.sql>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3216
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n03_20260825t0158",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "CREATE ROLE n03_n03_20260825t0158 LOGIN PASSWORD '<redacted-ephemeral-password>'; GRANT network_builder TO n03_n03_20260825t0158"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3198
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3053
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--volume",
+        "D:\\Code\\agent-app\\geospatial-operational-world-model:/workspace:ro",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "GOWM_N03_RUN_ID",
+        "--env",
+        "GOWM_N03_DATABASE",
+        "--env",
+        "GOWM_N03_DATABASE_HOST",
+        "--env",
+        "GOWM_N03_DATABASE_ROLE",
+        "--env",
+        "GOWM_N03_DATABASE_PASSWORD",
+        "node:22-bookworm",
+        "node",
+        "dist/validation/scripts/network-profile-runtime-client.js"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1539
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "postgres",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "DROP ROLE n03_n03_20260825t0158"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3201
+    }
+  ],
+  "summary": {
+    "roadProfileCount": 1,
+    "ugvProfileCount": 1,
+    "arcCostCount": 3,
+    "distanceExact": true,
+    "durationExact": true,
+    "energyExact": true,
+    "strictOneway": true,
+    "conditionSnapshotCount": 2,
+    "closedArcCount": 1,
+    "riskEvidenceCount": 1,
+    "baseSpeedUnchanged": true,
+    "baselineSnapshotId": "69322d43-44dc-44f0-ba73-3bb7039c3665",
+    "changedSnapshotId": "69768530-d044-4cfb-b80e-32951e7ee50c",
+    "baselineDurationMs": 11132,
+    "changedDurationMs": 22264,
+    "changedRiskMicroUnits": 99,
+    "historicalReplayHashMatch": true,
+    "graphVersionId": "a6cf969c-90cf-4f3d-85ea-040949b0eb74"
+  },
+  "errors": [],
+  "finishedAt": "2026-08-24T16:58:35.199Z"
+}

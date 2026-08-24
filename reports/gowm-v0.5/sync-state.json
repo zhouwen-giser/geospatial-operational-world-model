@@ -1,0 +1,33 @@
+{
+  "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
+  "targetVersion": "0.5.0",
+  "status": "COMPLETE",
+  "phase": "S01",
+  "baseline": {
+    "branch": "main",
+    "version": "0.4.0",
+    "sha": "db575f79c874a69f65a2043a7e463338524b713d",
+    "migrationsLocked": "001-032"
+  },
+  "candidate": {
+    "branch": "codex/gowm-network-routing-v0.5",
+    "baseSha": "db575f79c874a69f65a2043a7e463338524b713d",
+    "localSha": "2ffd012ae421092c0d957877404038ddcf90cdab",
+    "remoteSha": "2ffd012ae421092c0d957877404038ddcf90cdab",
+    "shaRole": "STABLE_CONTENT_BEFORE_EVIDENCE_ONLY_FINAL_REPORT",
+    "draftPr": 3
+  },
+  "milestones": {
+    "networkReady": true,
+    "routingReady": true,
+    "stableCandidate": true
+  },
+  "acceptance": {
+    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N048", "AC-P001..AC-P020", "AC-R001..AC-R026", "AC-R028", "AC-G001..AC-G012", "AC-S001..AC-S022"],
+    "failed": [],
+    "blocked": [],
+    "notRun": ["AC-R027_OPTIONAL"]
+  },
+  "blockers": [],
+  "next": "Review Draft PR #3. Protected publication actions remain user-controlled."
+}

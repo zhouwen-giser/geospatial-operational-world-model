@@ -25,6 +25,7 @@ import {
 
 const SENSITIVE_TOKEN = "p15-super-secret-token";
 const SENSITIVE_COORDINATE = 12.345678901;
+const SENSITIVE_ROUTE = "arc_sensitive_route_identifier";
 
 describe("P15 Snapshot, Receipt, Evidence, and leakage integrity", () => {
   it("binds stateless output and Compute Snapshot hashes without inventing data evidence", async () => {
@@ -174,7 +175,9 @@ describe("P15 Snapshot, Receipt, Evidence, and leakage integrity", () => {
         {
           details: {
             authorization: `Bearer ${SENSITIVE_TOKEN}`,
-            geometry: { type: "Point", coordinates: [SENSITIVE_COORDINATE, 45.678901234] }
+            geometry: { type: "Point", coordinates: [SENSITIVE_COORDINATE, 45.678901234] },
+            location: { coordinates: [SENSITIVE_COORDINATE, 45.678901234] },
+            route: { segments: [{ arcKey: SENSITIVE_ROUTE }] }
           }
         }
       );
@@ -200,8 +203,10 @@ describe("P15 Snapshot, Receipt, Evidence, and leakage integrity", () => {
     expect(response.statusCode).toBe(500);
     expect(serializedResponse).not.toContain(SENSITIVE_TOKEN);
     expect(serializedResponse).not.toContain(String(SENSITIVE_COORDINATE));
+    expect(serializedResponse).not.toContain(SENSITIVE_ROUTE);
     expect(serializedAudit).not.toContain(SENSITIVE_TOKEN);
     expect(serializedAudit).not.toContain(String(SENSITIVE_COORDINATE));
+    expect(serializedAudit).not.toContain(SENSITIVE_ROUTE);
     expect(gateway.audit.events()[0]).toMatchObject({
       outcome: "REJECTED",
       inputHash: expect.stringMatching(/^sha256:[0-9a-f]{64}$/u),
@@ -269,7 +274,9 @@ function sensitiveFailure(): never {
     {
       details: {
         authorization: `Bearer ${SENSITIVE_TOKEN}`,
-        geometry: { type: "Point", coordinates: [SENSITIVE_COORDINATE, 45.678901234] }
+        geometry: { type: "Point", coordinates: [SENSITIVE_COORDINATE, 45.678901234] },
+        location: { coordinates: [SENSITIVE_COORDINATE, 45.678901234] },
+        route: { segments: [{ arcKey: SENSITIVE_ROUTE }] }
       }
     }
   );

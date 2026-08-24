@@ -1,0 +1,24 @@
+{
+  "lockVersion": "1.0",
+  "sourceKey": "area-road-coverage-planner-reference",
+  "sourceKind": "ZIP",
+  "taskPackagePath": "GOWM_Network_Basic_Routing_v0.5_Codex_Goal/inputs/area-road-coverage-planner-reference.zip",
+  "sha256": "a8b04ac9a6d6660d3042f4ba9030b0bb0b99b11a8f301a47dbfd12c8796ce116",
+  "licenseStatus": "UNSPECIFIED",
+  "redistributionAllowed": false,
+  "integrationDecision": "REFERENCE_ONLY_SELECTIVE_REIMPLEMENTATION",
+  "allowedUses": [
+    "architecture review",
+    "behavioral comparison",
+    "test corpus extraction with provenance",
+    "clean-room reimplementation"
+  ],
+  "excludedFromRepository": [
+    "expanded reference source",
+    "node_modules",
+    "dist",
+    "coverage",
+    "legacy planner database schema",
+    "coverage planner public API and lifecycle"
+  ]
+}
