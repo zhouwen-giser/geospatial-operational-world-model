@@ -1,0 +1,42 @@
+{
+  "lockVersion": "1.0",
+  "providerKey": "h3-spatial-toolkit",
+  "providerIds": [
+    "gowm.h3.interactive.bridge",
+    "gowm.h3.analysis.bridge"
+  ],
+  "sourceKind": "GITHUB_COMMIT",
+  "sourceRef": "zhouwen-giser/h3-spatial-toolkit@74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+  "sourceGitCommit": "74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+  "version": "0.3.0",
+  "engine": "h3-js",
+  "engineVersion": "4.5.0",
+  "licenseStatus": "APPROVED",
+  "license": "Apache-2.0",
+  "redistributionAllowed": true,
+  "noticePath": "packages/integrations/h3-toolkit-bridge/THIRD_PARTY_NOTICES.md",
+  "sbomPath": "packages/integrations/h3-toolkit-bridge/sbom.cdx.json",
+  "upstreamHttpRoutes": {
+    "h3.index.points": "POST /v1/h3/index",
+    "h3.geometry.cover": "POST /v1/h3/polygon/cover",
+    "h3.neighborhood.disk": "POST /v1/h3/neighbors",
+    "h3.analytics.aggregate": "POST /v1/h3/aggregate",
+    "h3.analytics.coverage": "POST /v1/h3/coverage",
+    "h3.analytics.flow": "POST /v1/h3/flow"
+  },
+  "lockedPackageOperations": [
+    "h3.cells.to-geojson",
+    "h3.hierarchy.parent",
+    "h3.hierarchy.children",
+    "h3.hierarchy.compact",
+    "h3.hierarchy.uncompact"
+  ],
+  "bindingsArtifactPolicy": {
+    "format": "SELF_CONTAINED_ESM",
+    "maximumBytes": 8388608,
+    "digestAlgorithm": "SHA-256",
+    "approvedArtifactDigests": [],
+    "approvalState": "BLOCKED_PENDING_REPRODUCIBLE_BUILD"
+  },
+  "sourceCopiedIntoGowm": false
+}

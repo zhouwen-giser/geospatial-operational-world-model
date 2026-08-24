@@ -1,0 +1,102 @@
+{
+  "phase": "P05",
+  "scope": "foundation-local-production-integration",
+  "generatedAt": "2026-08-23T02:34:00+08:00",
+  "sliceStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "architecture": {
+    "executionBinding": "EMBEDDED_LOCAL",
+    "remoteDependency": false,
+    "gatewayDependency": false,
+    "providerClientDependency": false,
+    "h3Engine": "h3-pg",
+    "h3Semantics": "CANDIDATE_ONLY",
+    "exactSpatialAuthority": "POSTGIS",
+    "geometryRepairDefault": "REJECT",
+    "crsCriticalPath": "EPSG:4326_IDENTITY_ONLY",
+    "crsTransformationProvenance": "GOWM@0.2.0/foundation-local@0.2.0; strictBestOperation=true; networkEnabled=false; cacheHit=false"
+  },
+  "operationContracts": {
+    "geometry.validate@1.0": {
+      "inputSchemaHash": "sha256:1c6ac9e0f2e5332f1b50f57f48c2c679ac092fb33d4022854fd22ef812043b10",
+      "outputSchemaHash": "sha256:a69b57fc43a7d434ed975c0e0c2435be145cba95568436e4723d3e13ba7135c8"
+    },
+    "crs.normalize.geometry@1.0": {
+      "inputSchemaHash": "sha256:7fc8378d45a22dd722ad59f51b1105d904ad1b9f3c3189f474c2ae2e63632ec0",
+      "outputSchemaHash": "sha256:986d20049d2e5a25e8fa668f0c9ffd43bb01a82183c7703ce1483723a4f5d580"
+    },
+    "h3.index.points@1.0": {
+      "inputSchemaHash": "sha256:60323a543a0aa3008a8d9b30c92aa018911a2cb2be75630634d1f6373698d64f",
+      "outputSchemaHash": "sha256:465764a8efd740dd30b3789ea341a2cac542a5732b8ee72a7ab34512dafac5bd"
+    },
+    "gowm.foundation.h3.project-point@1.0": {
+      "inputSchemaHash": "sha256:27b965fd460ef1c6009add31634a04cee190dcb2ed5bb03ed88e6aa12e9bae40",
+      "outputSchemaHash": "sha256:f3e0e0f6e0d5990f9bc079f3ed3d1025bad66447f86bf7078213736dc15e5893"
+    }
+  },
+  "verification": [
+    {
+      "command": "npx.cmd vitest run --config validation/foundation-ports/vitest.config.ts",
+      "status": "PASS",
+      "testsPassed": 17,
+      "testsFailed": 0
+    },
+    {
+      "command": "npx.cmd tsc -p validation/foundation-ports/tsconfig.json --noEmit",
+      "status": "PASS"
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS",
+      "detail": "Root strict TypeScript and STAS typecheck pass with the production ProjectionProcessor integration."
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    },
+    {
+      "command": "ProjectionProcessor invalid-geometry controlled integration",
+      "status": "PASS",
+      "detail": "The actual ProjectionProcessor and local CRS/Geometry adapters reject invalid geometry after SELECT but before every current-state mutation; the transaction issues ROLLBACK and releases its client."
+    },
+    {
+      "command": "npx.cmd tsx validation/foundation-ports/h3-pg-live.ts postgresql://gowm:<redacted>@localhost:55490/gowm",
+      "status": "BLOCKED_UNAVAILABLE_CREDENTIAL",
+      "detail": "The script reached PostgreSQL but authentication failed with SQLSTATE 28P01. The isolated P00 credential was unavailable; no write was attempted."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC-025",
+      "status": "PASS",
+      "evidence": "Production ProjectionProcessor calls H3PgLocalAdapter through a transaction-local factory for R7-R10; source-boundary tests prove no H3 HTTP, Gateway, or Provider client exists on this path."
+    },
+    {
+      "id": "AC-026",
+      "status": "PASS",
+      "evidence": "A controlled integration invokes the real ProjectionProcessor and local adapters with invalid self-intersecting geometry, observes FOUNDATION_GEOMETRY_INVALID, no state mutation query, and transaction rollback."
+    },
+    {
+      "id": "AC-027",
+      "status": "PASS",
+      "evidence": "The only local policy is REJECT; forced MAKE_VALID policy fails closed and invalid input is not mutated."
+    },
+    {
+      "id": "AC-028",
+      "status": "PARTIAL",
+      "evidence": "ProjectionProcessor atomically inserts Geometry, CRS, and H3 operation/method/input/output hashes and Compute Snapshots through migration 012; live PostgreSQL execution is BLOCKED by unavailable credentials."
+    },
+    {
+      "id": "AC-029",
+      "status": "PARTIAL",
+      "evidence": "A focused outage test proves canonical 4326 processing performs zero remote calls; a full live ingest/projection outage test remains outstanding."
+    }
+  ],
+  "notRun": [
+    "Successful runtime insertion into foundation_processing_receipt on live PostgreSQL",
+    "Successful read-only execution against the live local h3-pg instance (blocked by unavailable isolated-stack credential)",
+    "Real h3-pg versus remote H3 Golden Parity",
+    "Full live remote-outage ingest/projection fault test"
+  ]
+}

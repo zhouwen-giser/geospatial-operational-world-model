@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry.convex-hull:input:1.0",
+  "title": "GeometryConvexHullInputV1",
+  "$ref": "../geometry-provider/definitions.schema.json#/$defs/unaryInput"
+}

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:spatial.find-near-route:input:1.0",
+  "title": "SpatialFindNearRouteInputV1",
+  "$ref": "../spatial-provider/operations.schema.json#/$defs/routeInput"
+}

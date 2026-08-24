@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry.validate:output:1.0",
+  "title": "GeometryValidateOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["valid", "issues", "repairApplied", "policyVersion"],
+  "properties": {
+    "valid": { "type": "boolean" },
+    "issues": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "type": "string", "maxLength": 1024 }
+    },
+    "repairApplied": { "const": false },
+    "policyVersion": { "type": "string", "minLength": 1, "maxLength": 128 }
+  }
+}

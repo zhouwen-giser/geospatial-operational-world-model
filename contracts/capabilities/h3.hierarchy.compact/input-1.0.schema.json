@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.hierarchy.compact:input:1.0",
+  "title": "H3HierarchyCompactInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cells"],
+  "properties": {
+    "cells": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000000,
+      "uniqueItems": true,
+      "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3Cell" }
+    }
+  }
+}

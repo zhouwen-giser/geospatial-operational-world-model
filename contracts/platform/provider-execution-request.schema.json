@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:provider-execution-request",
+  "title": "ProviderExecutionRequest",
+  "description": "Trusted Gateway-to-Provider request. The Gateway constructs and attests the security context.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "providerProtocolVersion",
+    "requestId",
+    "gatewayRequestId",
+    "idempotencyKey",
+    "operation",
+    "input",
+    "securityContext",
+    "gatewayContext",
+    "executionPolicy"
+  ],
+  "properties": {
+    "providerProtocolVersion": { "const": "1.0" },
+    "requestId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "gatewayRequestId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "operation": {
+      "$ref": "common-definitions.schema.json#/$defs/operationRef"
+    },
+    "input": {},
+    "securityContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principalRef",
+        "authenticationMethod",
+        "authenticatedAt",
+        "scopeAttestation"
+      ],
+      "properties": {
+        "principalRef": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "authenticationMethod": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "authenticatedAt": { "type": "string", "format": "date-time" },
+        "dataScopeClaim": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "datasetScopeClaim": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "scopeAttestation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["issuer", "issuedAt", "expiresAt", "claimDigest"],
+          "properties": {
+            "issuer": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "issuedAt": { "type": "string", "format": "date-time" },
+            "expiresAt": { "type": "string", "format": "date-time" },
+            "claimDigest": {
+              "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+            }
+          }
+        }
+      }
+    },
+    "gatewayContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gatewayId", "registryVersion", "policyVersion"],
+      "properties": {
+        "gatewayId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "registryVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "policyVersion": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "executionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deadlineAt",
+        "maximumInputBytes",
+        "maximumResultBytes",
+        "maximumCostClass"
+      ],
+      "properties": {
+        "deadlineAt": { "type": "string", "format": "date-time" },
+        "maximumInputBytes": { "type": "integer", "minimum": 1 },
+        "maximumResultBytes": { "type": "integer", "minimum": 1 },
+        "maximumRows": { "type": "integer", "minimum": 1 },
+        "maximumCandidates": { "type": "integer", "minimum": 1 },
+        "maximumVertices": { "type": "integer", "minimum": 1 },
+        "maximumCells": { "type": "integer", "minimum": 1 },
+        "maximumBatchItems": { "type": "integer", "minimum": 1 },
+        "maximumCostClass": { "enum": ["LOW", "MEDIUM", "HIGH"] }
+      }
+    },
+    "dataSnapshot": { "$ref": "data-snapshot-context.schema.json" }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "goal": "GOWM+ Capability Platform v0.2",
+  "status": "IN_PROGRESS",
+  "phase": "P01",
+  "branch": "codex/gowm-capability-platform-v0.2",
+  "sourceLock": {
+    "gowm": {
+      "branch": "codex/unify-gowm-stas-v0.1.0",
+      "sha": "d1ff3b81b8bf577965b00edc1bd06acaaeda706c",
+      "remoteDefaultVerified": true,
+      "drift": false
+    },
+    "h3": {
+      "branch": "main",
+      "sha": "74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+      "version": "0.3.0",
+      "drift": false
+    },
+    "inputs": {
+      "crs-normalization-service": "3110e7b344d138908d27e759ede70701b8a20dd7bbbd9795b3a57d02b8d70995",
+      "geometry-tool-service": "3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d",
+      "spatial-analysis-service": "15cdaf00f3c5ee911eac1351c2d9a59ff06a5de93a176ce81b644b19ee5de322"
+    }
+  },
+  "candidate": {
+    "localSha": "d9b57249c3410b83d0144cf13c84f4cbc25d360b",
+    "remoteSha": "d9b57249c3410b83d0144cf13c84f4cbc25d360b",
+    "baseSha": "d1ff3b81b8bf577965b00edc1bd06acaaeda706c"
+  },
+  "pullRequest": {
+    "number": 1,
+    "url": "https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/1",
+    "draft": true,
+    "readyForReview": false
+  },
+  "providers": {
+    "crs": "PENDING",
+    "geometry": "PENDING",
+    "h3Interactive": "PENDING",
+    "h3Analysis": "PENDING",
+    "spatial": "PENDING"
+  },
+  "acceptance": {
+    "passed": ["AC-001", "AC-002", "AC-003"],
+    "failed": [],
+    "notRun": ["AC-004..AC-096"]
+  },
+  "environment": {
+    "node": "22.14.0",
+    "dockerClient": "29.6.1",
+    "dockerServer": "29.6.1",
+    "postgresql": "18.4",
+    "postgis": "3.6.4",
+    "mobilitydb": "1.3.0",
+    "h3Pg": "4.5.0",
+    "baselineRuntime": "PASS",
+    "githubCliAuth": "STALE_USING_GITHUB_CONNECTOR"
+  },
+  "blockers": [],
+  "next": "P01: correct and freeze JSON Schema, OpenAPI, operation schemas, manifests, generated types, and ADR."
+}

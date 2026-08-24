@@ -1,0 +1,42 @@
+{
+  "lockVersion": "1.0",
+  "providerKey": "crs-normalization",
+  "providerId": "gowm.crs-normalization.bridge",
+  "sourceKind": "ZIP",
+  "sourceRef": "inputs/crs-normalization-service-v1.0.zip",
+  "version": "1.0.0",
+  "sourceSha256": "3110e7b344d138908d27e759ede70701b8a20dd7bbbd9795b3a57d02b8d70995",
+  "openApiSha256": "cd261d963c074394e01addeff32fad16dcdaef03bd2ae9f44dafae57ab9f6c06",
+  "contractTreeSha256": "9aa3e3415f1de2e4751dc428138f416c3da7057b7f6f7c3df4cad89b7b3b4e93",
+  "licenseStatus": "UNSPECIFIED",
+  "redistributionAllowed": false,
+  "publishableArtifacts": [
+    "GOWM bridge source",
+    "GOWM provider manifest and source lock",
+    "GOWM conformance tests",
+    "GOWM execution evidence"
+  ],
+  "forbiddenReleaseArtifacts": [
+    "expanded POC source",
+    "POC package",
+    "POC container image"
+  ],
+  "upstreamRoutes": {
+    "crs.check-source": "GET /v1/crs/{epsg}",
+    "crs.normalize.point": "POST /v1/normalize/point",
+    "crs.normalize.points": "POST /v1/normalize/points",
+    "crs.normalize.geometry": "POST /v1/normalize/geometry",
+    "crs.normalize.feature": "POST /v1/normalize/feature",
+    "crs.normalize.feature-collection": "POST /v1/normalize/feature-collection"
+  },
+  "excludedUpstreamRoutes": ["POST /v1/normalize"],
+  "deploymentAttestationRequired": [
+    "PROJ version",
+    "gdal-async version",
+    "proj.db version and SHA-256",
+    "offline grid bundle version and SHA-256",
+    "strict best-operation enabled",
+    "PROJ network disabled",
+    "approved Registry endpoint configuration digest"
+  ]
+}

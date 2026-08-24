@@ -1,0 +1,167 @@
+{
+  "phase": "P11",
+  "generatedAt": "2026-08-23T02:06:20.0346039+08:00",
+  "implementationStatus": "PASS",
+  "phaseStatus": "PARTIAL",
+  "provider": {
+    "providerId": "gowm.spatial-analysis.bridge",
+    "providerVersion": "0.2.0",
+    "providerProtocolVersion": "1.0",
+    "operationCount": 10,
+    "previewOperations": [
+      "spatial.find-nearby",
+      "spatial.find-nearest",
+      "spatial.find-in-area",
+      "spatial.find-intersections",
+      "spatial.find-near-route",
+      "spatial.find-containing-area",
+      "spatial.count-in-area",
+      "spatial.summarize-area"
+    ],
+    "experimentalOperations": [
+      "spatial.join",
+      "spatial.aggregate"
+    ],
+    "readContract": "gowm_spatial_v1",
+    "transaction": "REPEATABLE READ READ ONLY",
+    "scopePolicy": "DATA_SCOPE_REQUIRED",
+    "snapshotConsistency": "CONSISTENT_AT_START",
+    "providerToProviderCalls": false
+  },
+  "sourceLock": {
+    "sourceRef": "inputs/spatial-analysis-service-v1.0.zip",
+    "sourceSha256": "15cdaf00f3c5ee911eac1351c2d9a59ff06a5de93a176ce81b644b19ee5de322",
+    "openApiSha256": "ab22b8fd16adf48d91e8c5ed477a88a36268de958e4cd9359e756204c2701882",
+    "contractTreeSha256": "e04d74689caec0fee2bbdb2eb970ca43e2c22bbab3dc97d966c6471d1a711ae4",
+    "canonicalDefinitionsSha256": "dccc85ee342619bbee9ca3decc7c4daf3674f8d9f2d3a7a886b53b825c34124b",
+    "licenseStatus": "APPROVED",
+    "license": "Apache-2.0",
+    "redistributionAllowed": true,
+    "sourceCopiedIntoGowm": false,
+    "notice": "services/providers/spatial-provider-bridge/THIRD_PARTY_NOTICES.md",
+    "sbom": "services/providers/spatial-provider-bridge/sbom.cdx.json"
+  },
+  "operationContractHashes": {
+    "spatial.find-nearby@1.0": { "input": "sha256:17f7d021a954e30721adb28d02aae1803061455da9f153c1af019779d92ae846", "output": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23", "maturity": "PREVIEW" },
+    "spatial.find-nearest@1.0": { "input": "sha256:e4d9469132ed17ee8d12bf7c1cb2e270bce231bda7a8ecb2010209353cd470e3", "output": "sha256:010f52a157540f619a74eb5811b06fdfc0d71d3f87956374d5162c72dbdfb0fc", "maturity": "PREVIEW" },
+    "spatial.find-in-area@1.0": { "input": "sha256:f902acdbe64e91474b7f3d2a94d8cad72a7a2d6182265981a770fb472a8914dd", "output": "sha256:8aa8231c04110a4fcf235e759bcdd4f2e97db20097bbff62f9161b4ce6f4d161", "maturity": "PREVIEW" },
+    "spatial.find-intersections@1.0": { "input": "sha256:8f347f836dd9c299f16cb60d2fc22dcfc5b4addab9c77024f530a9bdd4d7bea0", "output": "sha256:3bbfc710db6a82e02592075ec75bafb648575242794dbfd3ff39c6df9c53979c", "maturity": "PREVIEW" },
+    "spatial.find-near-route@1.0": { "input": "sha256:e098a98156a7c8121065e3dfc5a8c016668d2e9f8a6d5c513f574e0d8b572da7", "output": "sha256:2fe2dc8b8deff99e5341f0853d09a34d9d87ba9bfe700c767ae953ab297048a1", "maturity": "PREVIEW" },
+    "spatial.find-containing-area@1.0": { "input": "sha256:3d7632db31b6fa5194c471ed01d6badad7d100c462998b3245bba7d20da32af9", "output": "sha256:ce7845e97fc32bf00d30d62615783b176ce51c4d7af153025e1aebedbdc314ba", "maturity": "PREVIEW" },
+    "spatial.count-in-area@1.0": { "input": "sha256:568b2b70946034456972e7350d6245d10f7bd287cfcd9340109a418059e69d9a", "output": "sha256:98b710891a57a7cb07072e39aea7ff62824735be33a90e231dc27dc255ca3251", "maturity": "PREVIEW" },
+    "spatial.summarize-area@1.0": { "input": "sha256:64dd5e3b012a4d1cfe2a88537f362af5ea858f69ea76a3a350deb16887532146", "output": "sha256:e2fbd724632974869817a947d52304297a80de3b7782dfee8e83878f8397cf41", "maturity": "PREVIEW" },
+    "spatial.join@1.0": { "input": "sha256:1afa71b0bae0aa9252252f09a93b89db24ef7514b24913ad615f9bdcdec94bb0", "output": "sha256:a2a60c82a15bd9370e3432930c00bec455b238a649bb336058942baa61b06cc9", "maturity": "EXPERIMENTAL" },
+    "spatial.aggregate@1.0": { "input": "sha256:ce8ed683104f823c81e79e72f571390a9d7b75e908e2d3339806a6731c6df0f0", "output": "sha256:0dba68490f13ad807a18b9620068574a35450297f4727ddefaa0aeeb62d12eaa", "maturity": "EXPERIMENTAL" }
+  },
+  "verification": [
+    {
+      "command": "npx.cmd vitest run --config validation/provider-conformance/spatial/vitest.config.ts",
+      "status": "PASS",
+      "testFilesPassed": 1,
+      "testsPassed": 10,
+      "testsFailed": 0,
+      "coverage": [
+        "ten-operation manifest and maturity lock",
+        "strict input schemas and unknown-field denial",
+        "CRS point position-array to Spatial nearby interoperability",
+        "bounded opaque candidate ReferenceKey prefilter plus mandatory exact predicate",
+        "Provider SDK conformance and required DataScope",
+        "Provider Protocol HTTP and readiness routes",
+        "PostGIS engine-version readiness attestation and generic failure",
+        "all ten operation execution paths",
+        "read-only repeatable-read transaction order",
+        "SQL-level scope before every data read",
+        "opaque references, freshness, confidence, provenance, evidence",
+        "CONSISTENT_AT_START snapshot and canonical receipt",
+        "scope/version/operation-bound HMAC keyset cursor",
+        "candidate budget and fail-closed database errors",
+        "ST_DWithin/ST_Distance/KNN/ST_Covers/ST_Intersects semantics"
+      ]
+    },
+    {
+      "command": "node validation/provider-conformance/spatial/validate-spatial-architecture.mjs",
+      "status": "PASS",
+      "result": "SPATIAL_ARCHITECTURE_PASS"
+    },
+    {
+      "command": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "npx.cmd vitest run --config validation/gateway-contract/vitest.config.ts",
+      "status": "PASS",
+      "testsPassed": 15,
+      "testsFailed": 0
+    },
+    {
+      "command": "npm.cmd run check",
+      "status": "PASS"
+    },
+    {
+      "command": "npm.cmd run validate:boundaries",
+      "status": "PASS",
+      "result": "CAPABILITY_BOUNDARIES_PASS"
+    },
+    {
+      "command": "git ls-files -- .intake and git check-ignore -v <expanded Spatial path>",
+      "status": "PASS",
+      "detail": "No expanded POC path is tracked; .gitignore isolates the extracted source."
+    },
+    {
+      "command": "real PostgreSQL conformance, EXPLAIN, and mixed-load harness",
+      "status": "NOT_RUN",
+      "detail": "No database URL was available. A read-only Docker API probe was permission denied; no escalation or alternate privileged launch was attempted."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC-062",
+      "status": "PARTIAL",
+      "evidence": "Static SQL and full Provider execution prove exact metre ST_DWithin/ST_Distance ordering/limit mapping and bounded output; required real-DB result comparison remains NOT_RUN."
+    },
+    {
+      "id": "AC-063",
+      "status": "PARTIAL",
+      "evidence": "Nearest uses geography KNN <-> candidate ordering and returns exact spheroidal ST_Distance metres with deterministic ReferenceKey tie-breaking; required real-DB correctness remains NOT_RUN."
+    },
+    {
+      "id": "AC-064",
+      "status": "PARTIAL",
+      "evidence": "find-in-area and count/summarize SQL use ST_Covers(queryArea, objectGeometry), preserving boundary inclusion by construction; live boundary fixtures remain NOT_RUN."
+    },
+    {
+      "id": "AC-065",
+      "status": "PARTIAL",
+      "evidence": "find-intersections has a distinct strict contract and uses ST_Intersects rather than containment; live crossing/non-containing geometry fixtures remain NOT_RUN."
+    },
+    {
+      "id": "AC-066",
+      "status": "PARTIAL",
+      "evidence": "HMAC keyset cursors bind operation, DataScope digest, snapshot version, sort value, and opaque ID; same-snapshot continuation and rejection tests pass. Live insert/update duplicate/skip testing remains NOT_RUN."
+    },
+    {
+      "id": "AC-067",
+      "status": "NOT_RUN",
+      "evidence": "The SQL contains GiST-compatible KNN/ST_DWithin predicates and the schema has target GiST indexes, but no real EXPLAIN (ANALYZE, BUFFERS) plan was captured."
+    },
+    {
+      "id": "AC-068",
+      "status": "NOT_RUN",
+      "evidence": "No real concurrent ingest/projection/spatial-read mixed-load profile was run, so no SLO claim is made."
+    }
+  ],
+  "notRun": [
+    "Real PostgreSQL operation correctness fixtures",
+    "Live cross-scope role enforcement",
+    "Stable-snapshot cursor mutation scenario",
+    "EXPLAIN ANALYZE/BUFFERS index-plan evidence",
+    "Mixed ingest/projection/spatial-read load and SLO evidence"
+  ],
+  "blocker": {
+    "kind": "POSTGRES_RUNTIME_UNAVAILABLE",
+    "databaseUrlsPresent": false,
+    "dockerApiAccessible": false,
+    "implementationBlocked": false,
+    "requiredToClosePhase": true
+  }
+}

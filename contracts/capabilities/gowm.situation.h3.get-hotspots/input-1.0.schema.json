@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:gowm.situation.h3.get-hotspots:input:1.0",
+  "title": "GowmSituationH3GetHotspotsInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["resolution", "metric"],
+  "properties": {
+    "resolution": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/situationResolution" },
+    "metric": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/metricName" },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 1000 },
+    "parentCell": { "$ref": "../gowm-situation-provider/definitions.schema.json#/$defs/h3Cell" }
+  }
+}

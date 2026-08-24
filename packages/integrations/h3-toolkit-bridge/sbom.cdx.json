@@ -1,0 +1,58 @@
+{
+  "$schema": "https://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:68e75a6f-ce37-54a3-88ab-9430fd374fc8",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-23T00:00:00.000Z",
+    "component": {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40gowm/h3-toolkit-bridge@0.2.0",
+      "group": "@gowm",
+      "name": "h3-toolkit-bridge",
+      "version": "0.2.0",
+      "licenses": [{ "expression": "MIT" }]
+    }
+  },
+  "components": [
+    {
+      "type": "application",
+      "bom-ref": "git+https://github.com/zhouwen-giser/h3-spatial-toolkit@74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+      "name": "h3-spatial-toolkit",
+      "version": "0.3.0",
+      "licenses": [{ "expression": "Apache-2.0" }],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/zhouwen-giser/h3-spatial-toolkit/tree/74fc8657072dd58a2f8e4317c1caef8bfd10e024"
+        },
+        {
+          "type": "bom",
+          "url": "https://github.com/zhouwen-giser/h3-spatial-toolkit/blob/74fc8657072dd58a2f8e4317c1caef8bfd10e024/sbom/cyclonedx-bom.json"
+        }
+      ],
+      "properties": [
+        { "name": "gowm:integration", "value": "external-toolkit-authority" },
+        { "name": "gowm:source-copied", "value": "false" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/h3-js@4.5.0",
+      "name": "h3-js",
+      "version": "4.5.0",
+      "purl": "pkg:npm/h3-js@4.5.0",
+      "licenses": [{ "expression": "Apache-2.0" }]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:npm/%40gowm/h3-toolkit-bridge@0.2.0",
+      "dependsOn": [
+        "git+https://github.com/zhouwen-giser/h3-spatial-toolkit@74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+        "pkg:npm/h3-js@4.5.0"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry-provider:definitions:1.0",
+  "title": "GeometryProviderDefinitions",
+  "$defs": {
+    "position": {
+      "oneOf": [
+        { "type": "array", "maxItems": 0 },
+        {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "items": { "type": "number" }
+        }
+      ]
+    },
+    "geometry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "Point" },
+            "coordinates": { "$ref": "#/$defs/position" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "MultiPoint" },
+            "coordinates": { "type": "array", "items": { "$ref": "#/$defs/position" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "LineString" },
+            "coordinates": { "type": "array", "items": { "$ref": "#/$defs/position" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "MultiLineString" },
+            "coordinates": {
+              "type": "array",
+              "items": { "type": "array", "items": { "$ref": "#/$defs/position" } }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "Polygon" },
+            "coordinates": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/position" }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "MultiPolygon" },
+            "coordinates": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": { "$ref": "#/$defs/position" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "geometries"],
+          "properties": {
+            "type": { "const": "GeometryCollection" },
+            "geometries": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/geometry" }
+            }
+          }
+        }
+      ]
+    },
+    "coordinateSpace": {
+      "type": "string",
+      "pattern": "^(?:EPSG:[1-9][0-9]{0,5}|LOCAL:[A-Za-z0-9][A-Za-z0-9._-]{0,63})$"
+    },
+    "coordinateLayout": { "enum": ["XY", "XYZ"] },
+    "precision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gridSize", "unit"],
+      "properties": {
+        "gridSize": { "type": "number", "exclusiveMinimum": 0 },
+        "unit": { "const": "COORDINATE_SPACE_UNITS" },
+        "keepCollapsed": { "type": "boolean" }
+      }
+    },
+    "operand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry", "coordinateSpace", "coordinateLayout"],
+      "properties": {
+        "geometry": { "$ref": "#/$defs/geometry" },
+        "coordinateSpace": { "$ref": "#/$defs/coordinateSpace" },
+        "coordinateLayout": { "$ref": "#/$defs/coordinateLayout" }
+      }
+    },
+    "unaryInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input"],
+      "properties": {
+        "input": { "$ref": "#/$defs/operand" },
+        "precision": { "$ref": "#/$defs/precision" }
+      }
+    },
+    "binaryInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a", "b"],
+      "properties": {
+        "a": { "$ref": "#/$defs/operand" },
+        "b": { "$ref": "#/$defs/operand" },
+        "precision": { "$ref": "#/$defs/precision" }
+      }
+    },
+    "removeRepeatedInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input"],
+      "properties": {
+        "input": { "$ref": "#/$defs/operand" },
+        "tolerance": { "type": "number", "minimum": 0 },
+        "toleranceUnit": { "const": "COORDINATE_SPACE_UNITS" },
+        "precision": { "$ref": "#/$defs/precision" }
+      }
+    },
+    "bufferInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input", "distance", "distanceUnit", "planarAcknowledged"],
+      "properties": {
+        "input": { "$ref": "#/$defs/operand" },
+        "distance": { "type": "number" },
+        "distanceUnit": { "const": "COORDINATE_SPACE_UNITS" },
+        "planarAcknowledged": { "type": "boolean" },
+        "quadrantSegments": { "type": "integer", "minimum": 1, "maximum": 64 },
+        "endCapStyle": { "enum": ["round", "flat", "square"] },
+        "joinStyle": { "enum": ["round", "mitre", "bevel"] },
+        "mitreLimit": { "type": "number", "exclusiveMinimum": 0 },
+        "singleSided": { "type": "boolean" },
+        "precision": { "$ref": "#/$defs/precision" }
+      }
+    },
+    "simplifyInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input", "tolerance", "toleranceUnit"],
+      "properties": {
+        "input": { "$ref": "#/$defs/operand" },
+        "tolerance": { "type": "number", "minimum": 0 },
+        "toleranceUnit": { "const": "COORDINATE_SPACE_UNITS" },
+        "precision": { "$ref": "#/$defs/precision" }
+      }
+    },
+    "predicateInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a", "b", "predicate"],
+      "properties": {
+        "a": { "$ref": "#/$defs/operand" },
+        "b": { "$ref": "#/$defs/operand" },
+        "predicate": {
+          "enum": [
+            "equals",
+            "disjoint",
+            "intersects",
+            "touches",
+            "crosses",
+            "within",
+            "contains",
+            "overlaps",
+            "covers",
+            "covered_by",
+            "relate"
+          ]
+        },
+        "pattern": { "type": "string", "pattern": "^[012TF*]{9}$" }
+      }
+    },
+    "geometrySummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "empty", "vertexCount", "coordinateDimension"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "empty": { "type": "boolean" },
+        "valid": { "type": "boolean" },
+        "simple": { "type": "boolean" },
+        "vertexCount": { "type": "integer", "minimum": 0 },
+        "coordinateDimension": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "srid": { "type": "integer", "minimum": 0 },
+        "coordinateLayout": { "enum": ["XY", "XYZ"] },
+        "inputType": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "typeChanged": { "type": "boolean" },
+        "normalized": { "type": "boolean" },
+        "precisionGridSize": { "type": "number", "exclusiveMinimum": 0 },
+        "units": {
+          "enum": ["coordinate-space", "coordinate-space-squared", "dimensionless"]
+        },
+        "bbox": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 6,
+          "items": { "type": "number" }
+        },
+        "area": { "type": "number" },
+        "length": { "type": "number" }
+      }
+    },
+    "partialSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "empty": { "type": "boolean" },
+        "valid": { "type": "boolean" },
+        "simple": { "type": "boolean" },
+        "vertexCount": { "type": "integer", "minimum": 0 },
+        "coordinateDimension": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "srid": { "type": "integer", "minimum": 0 },
+        "coordinateLayout": { "enum": ["XY", "XYZ"] },
+        "inputType": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "typeChanged": { "type": "boolean" },
+        "normalized": { "type": "boolean" },
+        "precisionGridSize": { "type": "number", "exclusiveMinimum": 0 },
+        "units": {
+          "enum": ["coordinate-space", "coordinate-space-squared", "dimensionless"]
+        }
+      }
+    },
+    "pocExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "engineVersion", "durationMs", "operation", "deterministicScope"],
+      "properties": {
+        "engine": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "engineVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "durationMs": { "type": "number", "minimum": 0 },
+        "operation": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$" },
+        "deterministicScope": { "const": "engine-version-input-options" }
+      }
+    },
+    "pocGeometryResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result", "summary", "warnings", "execution"],
+      "properties": {
+        "result": { "$ref": "#/$defs/geometry" },
+        "summary": { "$ref": "#/$defs/geometrySummary" },
+        "warnings": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "maxLength": 2048 }
+        },
+        "execution": { "$ref": "#/$defs/pocExecution" }
+      }
+    },
+    "pocScalarResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result", "summary", "warnings", "execution"],
+      "properties": {
+        "result": { "type": ["boolean", "string", "number"] },
+        "summary": { "$ref": "#/$defs/partialSummary" },
+        "warnings": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "maxLength": 2048 }
+        },
+        "execution": { "$ref": "#/$defs/pocExecution" }
+      }
+    },
+    "pocValidationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result", "detail", "summary", "warnings", "execution"],
+      "properties": {
+        "result": { "type": "boolean" },
+        "detail": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["valid", "reason", "location", "simple", "empty", "closed", "ring", "rectangle"],
+          "properties": {
+            "valid": { "type": "boolean" },
+            "reason": { "type": ["string", "null"] },
+            "location": {
+              "oneOf": [{ "$ref": "#/$defs/geometry" }, { "type": "null" }]
+            },
+            "simple": { "type": "boolean" },
+            "empty": { "type": "boolean" },
+            "closed": { "type": ["boolean", "null"] },
+            "ring": { "type": ["boolean", "null"] },
+            "rectangle": { "type": ["boolean", "null"] }
+          }
+        },
+        "summary": { "$ref": "#/$defs/geometrySummary" },
+        "warnings": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "maxLength": 2048 }
+        },
+        "execution": { "$ref": "#/$defs/pocExecution" }
+      }
+    },
+    "geometryOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry", "coordinateSpace", "coordinateLayout", "summary", "warnings"],
+      "properties": {
+        "geometry": { "$ref": "#/$defs/geometry" },
+        "coordinateSpace": { "$ref": "#/$defs/coordinateSpace" },
+        "coordinateLayout": { "$ref": "#/$defs/coordinateLayout" },
+        "summary": { "$ref": "#/$defs/geometrySummary" },
+        "warnings": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "maxLength": 2048 }
+        }
+      }
+    },
+    "predicateOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["predicate", "value", "units", "warnings"],
+      "properties": {
+        "predicate": {
+          "enum": [
+            "equals",
+            "disjoint",
+            "intersects",
+            "touches",
+            "crosses",
+            "within",
+            "contains",
+            "overlaps",
+            "covers",
+            "covered_by",
+            "relate"
+          ]
+        },
+        "value": { "type": ["boolean", "string"] },
+        "units": { "const": "DIMENSIONLESS" },
+        "warnings": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "maxLength": 2048 }
+        }
+      }
+    },
+    "hashOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hash", "coordinateSpace", "deterministicScope", "warnings"],
+      "properties": {
+        "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "coordinateSpace": { "$ref": "#/$defs/coordinateSpace" },
+        "precisionGridSize": { "type": "number", "exclusiveMinimum": 0 },
+        "deterministicScope": { "const": "ENGINE_VERSION_INPUT_OPTIONS" },
+        "warnings": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "maxLength": 2048 }
+        }
+      }
+    }
+  }
+}

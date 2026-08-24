@@ -1,0 +1,330 @@
+name: ${COMPOSE_PROJECT_NAME:?set an isolated COMPOSE_PROJECT_NAME in .env}
+
+x-capability-runtime: &capability-runtime
+  user: node
+  read_only: true
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,size=64m
+  init: true
+  restart: unless-stopped
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: ["ALL"]
+  pids_limit: 256
+
+x-provider-health: &provider-health
+  interval: 5s
+  timeout: 3s
+  retries: 30
+  start_period: 10s
+
+services:
+  postgres:
+    networks: [default, registry_db, gateway_db, spatial_db, situation_db]
+
+  migrate:
+    environment:
+      GATEWAY_DB_PASSWORD: ${GATEWAY_DB_PASSWORD:?set a unique URL-safe 32+ byte Gateway runtime password}
+      GATEWAY_REGISTRY_DB_PASSWORD: ${GATEWAY_REGISTRY_DB_PASSWORD:?set a distinct URL-safe 32+ byte Registry bootstrap password}
+      SPATIAL_DB_PASSWORD: ${SPATIAL_DB_PASSWORD:?set a unique URL-safe 32+ byte Spatial password}
+      SITUATION_DB_PASSWORD: ${SITUATION_DB_PASSWORD:?set a unique URL-safe 32+ byte Situation password}
+
+  crs-upstream:
+    image: ${CRS_UPSTREAM_IMAGE:?supply the locally built, source-locked CRS POC image; it is not redistributed by GOWM}
+    user: node
+    read_only: true
+    tmpfs: [/tmp:rw,noexec,nosuid,size=128m]
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8080
+      PROJ_NETWORK: "OFF"
+      PROJ_ONLY_BEST_DEFAULT: "YES"
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8080/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    pids_limit: 256
+    cpus: "1.00"
+    mem_limit: 1g
+    networks: [crs_upstream]
+
+  geometry-upstream:
+    image: ${GEOMETRY_UPSTREAM_IMAGE:?supply the locally built, source-locked Geometry POC image; it is not redistributed by GOWM}
+    user: node
+    read_only: true
+    tmpfs: [/tmp:rw,noexec,nosuid,size=128m]
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8080
+      GEOMETRY_WORKERS: ${GEOMETRY_WORKERS:-2}
+      GEOMETRY_MAX_IN_FLIGHT: ${GEOMETRY_MAX_IN_FLIGHT:-32}
+      GEOMETRY_MAX_QUEUE_SIZE: ${GEOMETRY_MAX_QUEUE_SIZE:-128}
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8080/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    pids_limit: 256
+    cpus: "2.00"
+    mem_limit: 2g
+    networks: [geometry_upstream]
+
+  h3-toolkit:
+    image: ${H3_TOOLKIT_IMAGE:?supply an immutable image for h3-spatial-toolkit commit 74fc8657072dd58a2f8e4317c1caef8bfd10e024}
+    user: node
+    read_only: true
+    tmpfs: [/tmp:rw,noexec,nosuid,size=128m]
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      AUTH_MODE: local
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    pids_limit: 256
+    cpus: "2.00"
+    mem_limit: 2g
+    networks: [h3_upstream]
+
+  crs-provider-bridge:
+    <<: *capability-runtime
+    build:
+      context: .
+      dockerfile: services/providers/crs-provider-bridge/Dockerfile
+    image: gowm/crs-provider-bridge:0.2.0
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${CRS_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte CRS Provider token}
+      CRS_BRIDGE_HOST: 0.0.0.0
+      CRS_BRIDGE_PORT: 8086
+      CRS_BRIDGE_ENDPOINT_ID: gowm-compose-crs
+      CRS_BRIDGE_UPSTREAM_BASE_URL: http://crs-upstream:8080
+      CRS_BRIDGE_ENDPOINT_APPROVAL_STATUS: APPROVED
+      CRS_BRIDGE_ENDPOINT_CONFIGURATION_DIGEST: sha256:8f59f4bf984722a282286fc40a4fc717274b193a811e04fc24348f91eac84792
+      CRS_BRIDGE_PROJ_VERSION: "9.5.1"
+      CRS_BRIDGE_INTEGRATION_VERSION: "3.12.3"
+      CRS_BRIDGE_PROJ_DB_VERSION: ${CRS_PROJ_DB_VERSION:?attest the deployed proj.db version}
+      CRS_BRIDGE_PROJ_DB_SHA256: ${CRS_PROJ_DB_SHA256:?attest the deployed proj.db SHA-256}
+      CRS_BRIDGE_GRID_BUNDLE_VERSION: ${CRS_GRID_BUNDLE_VERSION:?attest the offline grid bundle version or explicit none version}
+      CRS_BRIDGE_GRID_BUNDLE_SHA256: ${CRS_GRID_BUNDLE_SHA256:?attest the offline grid bundle SHA-256}
+    depends_on:
+      crs-upstream: { condition: service_healthy }
+    networks: [gateway_crs, crs_upstream]
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8086/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    cpus: "1.00"
+    mem_limit: 512m
+
+  geometry-provider-bridge:
+    <<: *capability-runtime
+    build:
+      context: .
+      dockerfile: services/providers/geometry-provider-bridge/Dockerfile
+    image: gowm/geometry-provider-bridge:0.2.0
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${GEOMETRY_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte Geometry Provider token}
+      GEOMETRY_BRIDGE_HOST: 0.0.0.0
+      GEOMETRY_BRIDGE_PORT: 8087
+      GEOMETRY_BRIDGE_ENDPOINT_ID: gowm-compose-geometry
+      GEOMETRY_BRIDGE_UPSTREAM_BASE_URL: http://geometry-upstream:8080
+      GEOMETRY_BRIDGE_ENDPOINT_APPROVAL_STATUS: APPROVED
+      GEOMETRY_BRIDGE_ENDPOINT_CONFIGURATION_DIGEST: sha256:059a032e5727c74c7adf57c1cf7698ecdf5502f7830e9e9a0a4890ca082c2546
+      GEOMETRY_BRIDGE_GEOS_VERSION: 3.13.0-CAPI-1.19.0
+      GEOMETRY_BRIDGE_INTEGRATION_VERSION: 3.1.1
+      GEOMETRY_BRIDGE_MAX_IN_FLIGHT: ${GEOMETRY_MAX_IN_FLIGHT:-32}
+      GEOMETRY_BRIDGE_MAX_QUEUE_SIZE: ${GEOMETRY_MAX_QUEUE_SIZE:-128}
+    depends_on:
+      geometry-upstream: { condition: service_healthy }
+    networks: [gateway_geometry, geometry_upstream]
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8087/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    cpus: "1.00"
+    mem_limit: 512m
+
+  h3-interactive-provider:
+    <<: *capability-runtime
+    build:
+      context: .
+      dockerfile: services/providers/h3-interactive-provider/Dockerfile
+    image: gowm/h3-interactive-provider:0.2.0
+    volumes:
+      - type: bind
+        source: ${H3_TOOLKIT_BINDINGS_MODULE_HOST_PATH:?supply the approved locked Toolkit bindings module artifact}
+        target: /opt/gowm/h3-toolkit-bindings.mjs
+        read_only: true
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte H3 interactive token}
+      H3_INTERACTIVE_PROVIDER_HOST: 0.0.0.0
+      H3_INTERACTIVE_PROVIDER_PORT: 8088
+      H3_TOOLKIT_ENDPOINT_ID: gowm-compose-h3-toolkit
+      H3_TOOLKIT_BASE_URL: http://h3-toolkit:3000
+      H3_TOOLKIT_ENDPOINT_CONFIGURATION_DIGEST: sha256:a837f229e3c1b0baaa47fd8b84cbdf379e03762532701a563d88321edb70ef89
+      H3_TOOLKIT_BINDINGS_MODULE: /opt/gowm/h3-toolkit-bindings.mjs
+      H3_TOOLKIT_BINDINGS_MODULE_SHA256: ${H3_TOOLKIT_BINDINGS_MODULE_SHA256:?set the committed approved bindings artifact SHA-256}
+    depends_on:
+      h3-toolkit: { condition: service_healthy }
+    networks: [gateway_h3_interactive, h3_upstream]
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8088/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    cpus: "1.00"
+    mem_limit: 1g
+
+  h3-analysis-provider:
+    <<: *capability-runtime
+    build:
+      context: .
+      dockerfile: services/providers/h3-analysis-provider/Dockerfile
+    image: gowm/h3-analysis-provider:0.2.0
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${H3_ANALYSIS_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte H3 analysis token}
+      H3_ANALYSIS_PROVIDER_HOST: 0.0.0.0
+      H3_ANALYSIS_PROVIDER_PORT: 8089
+      H3_TOOLKIT_ENDPOINT_ID: gowm-compose-h3-toolkit
+      H3_TOOLKIT_BASE_URL: http://h3-toolkit:3000
+      H3_TOOLKIT_ENDPOINT_CONFIGURATION_DIGEST: sha256:a837f229e3c1b0baaa47fd8b84cbdf379e03762532701a563d88321edb70ef89
+    depends_on:
+      h3-toolkit: { condition: service_healthy }
+    networks: [gateway_h3_analysis, h3_upstream]
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8089/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    cpus: "2.00"
+    mem_limit: 2g
+
+  spatial-provider-bridge:
+    <<: *capability-runtime
+    build:
+      context: .
+      dockerfile: services/providers/spatial-provider-bridge/Dockerfile
+    image: gowm/spatial-provider-bridge:0.2.0
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${SPATIAL_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte Spatial Provider token}
+      SPATIAL_BRIDGE_HOST: 0.0.0.0
+      SPATIAL_BRIDGE_PORT: 8091
+      SPATIAL_DATABASE_URL: postgresql://gowm_spatial_service:${SPATIAL_DB_PASSWORD}@postgres:5432/gowm
+      SPATIAL_CURSOR_HMAC_SECRET: ${SPATIAL_CURSOR_HMAC_SECRET:?set a distinct 32+ byte cursor HMAC secret}
+      SPATIAL_POSTGIS_VERSION: "3.6"
+      SPATIAL_POOL_SIZE: ${SPATIAL_POOL_SIZE:-8}
+      SPATIAL_STATEMENT_TIMEOUT_MS: 5000
+      SPATIAL_LOCK_TIMEOUT_MS: 1000
+      SPATIAL_MAXIMUM_ROWS: 10000
+      SPATIAL_MAXIMUM_CANDIDATES: 50000
+      SPATIAL_MAXIMUM_EVIDENCE_REFERENCES: 1000
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [gateway_spatial, spatial_db]
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8091/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    cpus: "2.00"
+    mem_limit: 1g
+
+  gowm-situation-provider:
+    <<: *capability-runtime
+    build:
+      context: .
+      dockerfile: services/providers/gowm-situation-provider/Dockerfile
+    image: gowm/gowm-situation-provider:0.2.0
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${SITUATION_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte Situation Provider token}
+      DATABASE_URL: postgresql://gowm_situation_service:${SITUATION_DB_PASSWORD}@postgres:5432/gowm
+      GOWM_SITUATION_PROVIDER_HOST: 0.0.0.0
+      GOWM_SITUATION_PROVIDER_PORT: 8092
+      GOWM_SITUATION_ACCEPTED_DATA_SCOPE: ${GOWM_DATA_SCOPE_KEY:-default}
+      ANALYSIS_SRID: ${ANALYSIS_SRID:-32650}
+      ANALYSIS_SPACE_KEY: ${ANALYSIS_SPACE_KEY:-default}
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [gateway_situation, situation_db]
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8092/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    cpus: "1.00"
+    mem_limit: 512m
+
+  capability-registry-sync:
+    <<: *capability-runtime
+    build:
+      context: .
+      dockerfile: services/gateway/world-capability-gateway/Dockerfile
+    image: gowm/world-capability-gateway:0.2.0
+    command: ["node", "dist/services/gateway/world-capability-gateway/src/registry-sync.js"]
+    environment:
+      GATEWAY_REGISTRY_DATABASE_URL: postgresql://gowm_gateway_registry_service:${GATEWAY_REGISTRY_DB_PASSWORD}@postgres:5432/gowm
+      GATEWAY_PROVIDER_REGISTRY_PATH: /app/config/capability-gateway-registry.json
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [registry_db]
+    restart: "no"
+    cpus: "0.50"
+    mem_limit: 256m
+
+  world-capability-gateway:
+    <<: *capability-runtime
+    build:
+      context: .
+      dockerfile: services/gateway/world-capability-gateway/Dockerfile
+    image: gowm/world-capability-gateway:0.2.0
+    environment:
+      CRS_PROVIDER_TRANSPORT_TOKEN: ${CRS_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte CRS Provider token}
+      GEOMETRY_PROVIDER_TRANSPORT_TOKEN: ${GEOMETRY_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte Geometry Provider token}
+      H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN: ${H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte H3 interactive token}
+      H3_ANALYSIS_PROVIDER_TRANSPORT_TOKEN: ${H3_ANALYSIS_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte H3 analysis token}
+      SPATIAL_PROVIDER_TRANSPORT_TOKEN: ${SPATIAL_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte Spatial Provider token}
+      SITUATION_PROVIDER_TRANSPORT_TOKEN: ${SITUATION_PROVIDER_TRANSPORT_TOKEN:?set a unique 32+ byte Situation Provider token}
+      DATABASE_URL: postgresql://gowm_gateway_service:${GATEWAY_DB_PASSWORD}@postgres:5432/gowm
+      GATEWAY_HOST: 0.0.0.0
+      GATEWAY_PORT: 8090
+      GATEWAY_ID: gowm-capability-gateway
+      GATEWAY_POLICY_VERSION: gowm-capability-policy:0.2
+      GATEWAY_ATTESTATION_ISSUER: gowm-capability-gateway
+      GATEWAY_PROVIDER_REGISTRY_PATH: /app/config/capability-gateway-registry.json
+      GATEWAY_AUTH_SHARED_TOKEN: ${GATEWAY_AUTH_SHARED_TOKEN:?set a unique 32+ byte Gateway transport token}
+      GATEWAY_RUNTIME_PRINCIPAL_REF: ${GATEWAY_RUNTIME_PRINCIPAL_REF:-compose-runtime}
+      GATEWAY_DATA_SCOPE_CLAIM: ${GOWM_DATA_SCOPE_KEY:-default}
+      GATEWAY_ALLOW_EXPERIMENTAL: ${GATEWAY_ALLOW_EXPERIMENTAL:-false}
+      GATEWAY_QUERY_WORKER_POLL_MS: ${GATEWAY_QUERY_WORKER_POLL_MS:-1000}
+      GATEWAY_QUERY_WORKER_LEASE_SECONDS: ${GATEWAY_QUERY_WORKER_LEASE_SECONDS:-600}
+      GATEWAY_QUERY_WORKER_MAX_CLAIMS: ${GATEWAY_QUERY_WORKER_MAX_CLAIMS:-8}
+    ports:
+      - "${API_BIND_ADDRESS:-127.0.0.1}:${GATEWAY_PORT:-8090}:8090"
+    depends_on:
+      capability-registry-sync: { condition: service_completed_successfully }
+    networks:
+      - gateway_db
+      - gateway_crs
+      - gateway_geometry
+      - gateway_h3_interactive
+      - gateway_h3_analysis
+      - gateway_spatial
+      - gateway_situation
+    healthcheck:
+      <<: *provider-health
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8090/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+    cpus: "2.00"
+    mem_limit: 1g
+
+networks:
+  registry_db: { internal: true }
+  gateway_db: { internal: true }
+  spatial_db: { internal: true }
+  situation_db: { internal: true }
+  crs_upstream: { internal: true }
+  geometry_upstream: { internal: true }
+  h3_upstream: { internal: true }
+  gateway_crs: { internal: true }
+  gateway_geometry: { internal: true }
+  gateway_h3_interactive: { internal: true }
+  gateway_h3_analysis: { internal: true }
+  gateway_spatial: { internal: true }
+  gateway_situation: { internal: true }

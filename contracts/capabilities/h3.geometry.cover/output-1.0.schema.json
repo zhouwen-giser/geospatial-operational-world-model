@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.geometry.cover:output:1.0",
+  "title": "H3GeometryCoverOutputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "resolution", "cells", "truncated", "semantics", "candidateOnly", "exactVerificationRequired"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "resolution": { "type": "integer", "minimum": 0, "maximum": 15 },
+    "cells": {
+      "type": "array",
+      "maxItems": 1000000,
+      "uniqueItems": true,
+      "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3Cell" }
+    },
+    "truncated": { "const": false },
+    "semantics": { "const": "CENTER_CONTAINMENT_COVER" },
+    "candidateOnly": { "const": true },
+    "exactVerificationRequired": { "const": true }
+  }
+}

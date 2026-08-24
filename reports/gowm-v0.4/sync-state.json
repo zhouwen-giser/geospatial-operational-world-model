@@ -1,0 +1,56 @@
+{
+  "goal": "GOWM+ v0.3 Grounding Foundation + v0.4 Operational Reality",
+  "targetVersion": "0.4.0",
+  "status": "IN_PROGRESS",
+  "phase": "C02",
+  "source": {
+    "v02Branch": "codex/gowm-capability-platform-v0.2",
+    "headAtPackageGeneration": "1887e56a18b77aa9692cca9d86b00413906816f4",
+    "actualLocalHead": "698fc77918a73ae7675b1df34efdc744ea202738",
+    "actualRemoteHead": "698fc77918a73ae7675b1df34efdc744ea202738",
+    "pullRequest": 1,
+    "pullRequestDraft": true
+  },
+  "candidate": {
+    "branch": "codex/gowm-grounding-operational-v0.4-stable",
+    "localSha": null,
+    "remoteSha": null,
+    "baseSha": null
+  },
+  "milestones": {
+    "v02Closed": false,
+    "groundingReady": false,
+    "operationalRealityReady": false,
+    "stableCandidate": false
+  },
+  "acceptance": {
+    "passed": [
+      "AC-C001",
+      "AC-C002",
+      "AC-C003",
+      "AC-C004",
+      "AC-C005",
+      "AC-C006",
+      "AC-C009",
+      "AC-C010",
+      "AC-C012"
+    ],
+    "failed": [],
+    "blocked": [
+      "AC-C007",
+      "AC-C008"
+    ],
+    "notRun": [
+      "AC-C011",
+      "AC-G001..AC-S024"
+    ]
+  },
+  "blockers": [
+    {
+      "code": "V02_LOCKED_PROVIDER_INPUTS_ABSENT",
+      "acceptance": ["AC-C007", "AC-C008"],
+      "detail": "Exact locked prior CRS, Geometry, Spatial archives and H3 Toolkit source revision are unavailable; no substitute was used."
+    }
+  ],
+  "next": "C03: create the stacked v0.4 continuation from the exact pushed v0.2 candidate while retaining the external C02 blocker."
+}

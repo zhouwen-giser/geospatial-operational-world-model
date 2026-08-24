@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry:geojson-geometry:1.0",
+  "title": "GeoJsonGeometry",
+  "oneOf": [
+    { "$ref": "#/$defs/point" },
+    { "$ref": "#/$defs/multiPoint" },
+    { "$ref": "#/$defs/lineString" },
+    { "$ref": "#/$defs/multiLineString" },
+    { "$ref": "#/$defs/polygon" },
+    { "$ref": "#/$defs/multiPolygon" },
+    { "$ref": "#/$defs/geometryCollection" }
+  ],
+  "$defs": {
+    "position": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": { "type": "number" }
+    },
+    "lineCoordinates": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "$ref": "#/$defs/position" }
+    },
+    "linearRing": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/position" }
+    },
+    "polygonCoordinates": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/linearRing" }
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "Point" },
+        "coordinates": { "$ref": "#/$defs/position" }
+      }
+    },
+    "multiPoint": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "MultiPoint" },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/position" }
+        }
+      }
+    },
+    "lineString": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "LineString" },
+        "coordinates": { "$ref": "#/$defs/lineCoordinates" }
+      }
+    },
+    "multiLineString": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "MultiLineString" },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/lineCoordinates" }
+        }
+      }
+    },
+    "polygon": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "Polygon" },
+        "coordinates": { "$ref": "#/$defs/polygonCoordinates" }
+      }
+    },
+    "multiPolygon": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "MultiPolygon" },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/polygonCoordinates" }
+        }
+      }
+    },
+    "geometryCollection": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type", "geometries"],
+      "properties": {
+        "type": { "const": "GeometryCollection" },
+        "geometries": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/point" },
+              { "$ref": "#/$defs/multiPoint" },
+              { "$ref": "#/$defs/lineString" },
+              { "$ref": "#/$defs/multiLineString" },
+              { "$ref": "#/$defs/polygon" },
+              { "$ref": "#/$defs/multiPolygon" }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

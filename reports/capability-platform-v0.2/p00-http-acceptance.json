@@ -1,0 +1,190 @@
+{
+  "startedAt": "2026-08-22T16:55:48.513Z",
+  "finishedAt": "2026-08-22T16:55:50.140Z",
+  "passed": true,
+  "checks": [
+    {
+      "gate": "G1",
+      "check": "world-api health",
+      "ok": true,
+      "evidence": {
+        "status": "ok",
+        "service": "world-api",
+        "database": "ok",
+        "postgisVersion": "3.6.4",
+        "mobilityDbVersion": "1.3.0",
+        "h3PgVersion": "4.5.0",
+        "contractVersion": "1.2.0",
+        "analysisSrid": 32652,
+        "worldVersion": 67,
+        "timestamp": "2026-08-22T16:55:48.551Z"
+      }
+    },
+    {
+      "gate": "G1",
+      "check": "observation-ingest health",
+      "ok": true,
+      "evidence": {
+        "status": "ok",
+        "service": "observation-ingest",
+        "timestamp": "2026-08-22T16:55:48.562Z"
+      }
+    },
+    {
+      "gate": "G1",
+      "check": "mcp health",
+      "ok": true,
+      "evidence": {
+        "status": "ok",
+        "service": "world-model-mcp-server",
+        "transport": "streamable-http"
+      }
+    },
+    {
+      "gate": "G2",
+      "check": "create/update/get/find/relation",
+      "ok": true,
+      "evidence": {
+        "objectId": "acceptance-facility-bd9a26bb",
+        "createdVersion": 68,
+        "patchedVersion": 69,
+        "relationCount": 1
+      }
+    },
+    {
+      "gate": "G2/G3",
+      "check": "nearby available UGV",
+      "ok": true,
+      "evidence": {
+        "count": 5,
+        "nearestDistanceM": 85.51580719,
+        "radiusM": 5000
+      }
+    },
+    {
+      "gate": "G3",
+      "check": "nearest/within/intersection",
+      "ok": true,
+      "evidence": {
+        "nearest": {
+          "count": 3,
+          "nearestDistanceM": 0
+        },
+        "within": {
+          "count": 3,
+          "byType": {
+            "Facility": 3
+          }
+        },
+        "intersections": {
+          "count": 3
+        }
+      }
+    },
+    {
+      "gate": "G5",
+      "check": "Observation → projection → World State",
+      "ok": true,
+      "evidence": {
+        "id": "acceptance-ugv-bd9a26bb",
+        "version": 71,
+        "provenance": {
+          "confidence": 0.99,
+          "source": "operator",
+          "sourceObservationId": "acceptance-in-bd9a26bb",
+          "timeSolutionId": "5a206a7c-d9b7-45ff-bbfb-c61ada0eb744",
+          "positionMeasurementId": "5fb36383-1fe0-416f-aad5-d597e14fd08b",
+          "projectionPolicyVersion": "gowm-projection-v1.2",
+          "uncertainty": {
+            "model": "UNKNOWN",
+            "timeUncertaintySeconds": 0
+          },
+          "observedAt": "2026-08-22T16:55:47.655Z",
+          "receivedAt": "2026-08-22T16:55:49.350Z"
+        }
+      }
+    },
+    {
+      "gate": "G6",
+      "check": "current + historical trajectory",
+      "ok": true,
+      "evidence": {
+        "currentObservationId": "acceptance-in-bd9a26bb",
+        "summary": {
+          "pointCount": 2,
+          "distanceTraveledM": 1706.0998086063646
+        }
+      }
+    },
+    {
+      "gate": "G6-v1.2",
+      "check": "canonical evidence + MobilityDB UNKNOWN gap",
+      "ok": true,
+      "evidence": {
+        "observationId": "acceptance-camera-bd9a26bb:bd9a26bb-a",
+        "trackletVersionId": "a6812611-2b8b-4b27-b97f-40d293284561",
+        "sequenceCount": 2,
+        "gaps": [
+          {
+            "gapNo": 1,
+            "start": "2026-08-22T16:55:49.000Z",
+            "end": "2026-08-22T16:55:53.000Z",
+            "bounds": "()",
+            "reasonCodes": [
+              "CONTINUITY_CHANGED"
+            ],
+            "observabilityState": "UNKNOWN"
+          }
+        ]
+      }
+    },
+    {
+      "gate": "G7",
+      "check": "ObjectEnteredArea(AOI-1)",
+      "ok": true,
+      "evidence": {
+        "eventId": "c94f49dd-adcd-4a92-9139-bc0b070cbac2",
+        "worldVersion": 71,
+        "eventLatencyMs": 283.68,
+        "transport": "SSE database replay + MQTT QoS 1 live topic"
+      }
+    },
+    {
+      "gate": "G4",
+      "check": "point/polygon H3 + hotspot + multi-resolution",
+      "ok": true,
+      "evidence": {
+        "areaCells": 77,
+        "hotspotCount": 10,
+        "hierarchy": {
+          "parent": "8731aa428ffffff"
+        }
+      }
+    },
+    {
+      "gate": "G8",
+      "check": "MCP Agent tools",
+      "ok": true,
+      "evidence": {
+        "exposedTools": [
+          "get_world_state",
+          "find_nearby_objects",
+          "find_objects_in_area",
+          "get_area_situation",
+          "get_h3_situation",
+          "get_h3_hotspots",
+          "get_object_track",
+          "get_mobility_trajectory",
+          "publish_observation",
+          "publish_canonical_observation"
+        ],
+        "called": [
+          "find_nearby_objects",
+          "get_area_situation",
+          "get_object_track",
+          "get_h3_hotspots"
+        ]
+      }
+    }
+  ]
+}

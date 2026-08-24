@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:geometry.symmetric-difference:output:1.0",
+  "title": "GeometrySymmetricDifferenceOutputV1",
+  "$ref": "../geometry-provider/definitions.schema.json#/$defs/geometryOutput"
+}

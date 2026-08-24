@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generatedAt": "2026-08-13T14:01:17.707Z",
+  "generatedAt": "2026-08-22T16:55:06.313Z",
   "runtime": {
     "postgresql": "18.4 (Debian 18.4-1.pgdg13+1)",
     "postgis": "3.6.4",
@@ -25,8 +25,8 @@
     "universe": 10001,
     "cap": 5000,
     "returnedByProbe": 5001,
-    "planningTimeMs": 2.271,
-    "executionTimeMs": 45.179,
+    "planningTimeMs": 4.275,
+    "executionTimeMs": 54.105,
     "scopedIndex": "CREATE INDEX mobility_tracklet_scope_space_idx ON public.mobility_tracklet USING btree (data_scope_key, analysis_space_key, tracklet_id)",
     "nodes": [
       {
@@ -66,6 +66,12 @@
         "loops": 2
       },
       {
+        "nodeType": "Hash Join",
+        "indexName": null,
+        "actualRows": 10001,
+        "loops": 2
+      },
+      {
         "nodeType": "Nested Loop",
         "indexName": null,
         "actualRows": 10001,
@@ -78,105 +84,99 @@
         "loops": 2
       },
       {
-        "nodeType": "Hash Join",
+        "nodeType": "Nested Loop",
         "indexName": null,
-        "actualRows": 10001,
+        "actualRows": 5000.5,
         "loops": 4
       },
       {
-        "nodeType": "Hash Join",
+        "nodeType": "Nested Loop",
         "indexName": null,
-        "actualRows": 10001,
+        "actualRows": 1,
         "loops": 4
       },
       {
-        "nodeType": "Seq Scan",
+        "nodeType": "Nested Loop",
         "indexName": null,
-        "actualRows": 10004,
+        "actualRows": 1,
         "loops": 4
       },
       {
-        "nodeType": "Hash",
+        "nodeType": "Nested Loop",
         "indexName": null,
         "actualRows": 1,
-        "loops": 1
+        "loops": 4
       },
       {
         "nodeType": "Nested Loop",
         "indexName": null,
         "actualRows": 1,
-        "loops": 1
-      },
-      {
-        "nodeType": "Nested Loop",
-        "indexName": null,
-        "actualRows": 1,
-        "loops": 1
-      },
-      {
-        "nodeType": "Nested Loop",
-        "indexName": null,
-        "actualRows": 1,
-        "loops": 1
-      },
-      {
-        "nodeType": "Nested Loop",
-        "indexName": null,
-        "actualRows": 1,
-        "loops": 1
+        "loops": 4
       },
       {
         "nodeType": "Index Scan",
         "indexName": "spatial_object_version_pkey",
         "actualRows": 1,
-        "loops": 1
+        "loops": 4
       },
       {
         "nodeType": "Seq Scan",
         "indexName": null,
         "actualRows": 2,
-        "loops": 1
+        "loops": 4
       },
       {
         "nodeType": "Index Only Scan",
         "indexName": "spatial_object_spatial_object_id_data_scope_key_key",
         "actualRows": 1,
-        "loops": 1
+        "loops": 4
       },
       {
         "nodeType": "Index Scan",
         "indexName": "data_scope_pkey",
         "actualRows": 1,
-        "loops": 1
+        "loops": 4
       },
       {
         "nodeType": "Seq Scan",
         "indexName": null,
         "actualRows": 1,
-        "loops": 1
+        "loops": 4
+      },
+      {
+        "nodeType": "Bitmap Heap Scan",
+        "indexName": null,
+        "actualRows": 5000.5,
+        "loops": 4
+      },
+      {
+        "nodeType": "Bitmap Index Scan",
+        "indexName": "mobility_tracklet_scope_space_idx",
+        "actualRows": 5000.5,
+        "loops": 4
       },
       {
         "nodeType": "Hash",
         "indexName": null,
-        "actualRows": 3,
+        "actualRows": 6,
         "loops": 1
       },
       {
         "nodeType": "Seq Scan",
         "indexName": null,
-        "actualRows": 3,
+        "actualRows": 6,
         "loops": 1
       },
       {
         "nodeType": "Hash",
         "indexName": null,
-        "actualRows": 10004,
+        "actualRows": 10034,
         "loops": 1
       },
       {
         "nodeType": "Seq Scan",
         "indexName": null,
-        "actualRows": 10004,
+        "actualRows": 10034,
         "loops": 1
       },
       {

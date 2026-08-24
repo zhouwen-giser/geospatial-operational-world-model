@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:h3.cells.to-geojson:input:1.0",
+  "title": "H3CellsToGeoJsonInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cells"],
+  "properties": {
+    "cells": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 250000,
+      "uniqueItems": true,
+      "items": { "$ref": "../h3.common/definitions.schema.json#/$defs/h3Cell" }
+    }
+  }
+}

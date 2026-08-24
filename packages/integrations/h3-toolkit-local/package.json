@@ -1,0 +1,13 @@
+{
+  "name": "@gowm/h3-toolkit-local-adapter",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@gowm/h3-kernel-port": "*",
+    "h3-js": "4.5.0"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
