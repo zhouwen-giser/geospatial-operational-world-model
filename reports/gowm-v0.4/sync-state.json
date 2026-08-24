@@ -2,12 +2,12 @@
   "goal": "GOWM+ v0.3 Grounding Foundation + v0.4 Operational Reality",
   "targetVersion": "0.4.0",
   "status": "IN_PROGRESS",
-  "phase": "C00",
+  "phase": "C01",
   "source": {
     "v02Branch": "codex/gowm-capability-platform-v0.2",
     "headAtPackageGeneration": "1887e56a18b77aa9692cca9d86b00413906816f4",
-    "actualLocalHead": "1887e56a18b77aa9692cca9d86b00413906816f4",
-    "actualRemoteHead": "1887e56a18b77aa9692cca9d86b00413906816f4",
+    "actualLocalHead": "80f10718fc2cdeeb9c915bdb49c499d1930eb9a3",
+    "actualRemoteHead": "80f10718fc2cdeeb9c915bdb49c499d1930eb9a3",
     "pullRequest": 1,
     "pullRequestDraft": true
   },
@@ -26,13 +26,17 @@
   "acceptance": {
     "passed": [
       "AC-C001",
-      "AC-C002"
+      "AC-C002",
+      "AC-C003",
+      "AC-C004",
+      "AC-C012"
     ],
     "failed": [],
     "notRun": [
-      "AC-C003..AC-S024"
+      "AC-C005..AC-C011",
+      "AC-G001..AC-S024"
     ]
   },
   "blockers": [],
-  "next": "C01: correct stale v0.2 Git-state reports and close committed/pushed implementation status."
+  "next": "C02: execute the real v0.2 runtime closure matrix and retain exact blockers."
 }

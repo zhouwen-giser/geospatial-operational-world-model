@@ -465,7 +465,7 @@ describe("P07 Geometry provider bridge", () => {
     const bridge = createGeometryProviderBridge(bridgeOptions(successfulFetch()));
     const validRequest = providerRequest(bridge, "geometry.validate", { geometry: POINT }, "conformance");
     const deadlineRequest = providerRequest(bridge, "geometry.validate", { geometry: POINT }, "deadline");
-    deadlineRequest.executionPolicy.deadlineAt = new Date(Date.now() - 1_000).toISOString();
+    deadlineRequest.executionPolicy.deadlineAt = new Date(NOW.getTime() - 1_000).toISOString();
     const report = await runProviderConformance({
       runtime: bridge.runtime,
       validRequest,

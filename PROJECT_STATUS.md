@@ -7,9 +7,10 @@ Last updated: 2026-08-23
 `GOWM+ Capability Platform v0.2: BLOCKED`
 
 The v0.2 framework is implemented and has substantial controlled verification
-in the working tree. It is not a deliverable candidate: required live-runtime
-gates remain `NOT_RUN/BLOCKED`, and the implementation is not represented by a
-committed and pushed SHA.
+in the repository. It is represented by committed and pushed SHA
+`1887e56a18b77aa9692cca9d86b00413906816f4`; C00 reconciliation delivery is at
+`80f10718fc2cdeeb9c915bdb49c499d1930eb9a3`. It is not yet a deliverable
+candidate because required live-runtime gates remain `NOT_RUN/BLOCKED`.
 
 The previous v0.1.0 baseline and evidence remain preserved. Its decision was
 `INTEGRATION_CONDITIONAL_PASS`; it was not a production qualification.
@@ -20,16 +21,16 @@ The previous v0.1.0 baseline and evidence remain preserved. Its decision was
 |---|---|
 | Base | `codex/unify-gowm-stas-v0.1.0` at `d1ff3b81b8bf577965b00edc1bd06acaaeda706c` |
 | Working branch | `codex/gowm-capability-platform-v0.2` |
-| Last committed local SHA | `e100cc0fd0b7b27f8a386232dc2b261de7841547` |
-| Last pushed remote SHA | `e100cc0fd0b7b27f8a386232dc2b261de7841547` |
-| v0.2 implementation state | Uncommitted working-tree changes; no candidate SHA covers the implementation |
+| Last reconciled local SHA | `80f10718fc2cdeeb9c915bdb49c499d1930eb9a3` |
+| Last reconciled remote SHA | `80f10718fc2cdeeb9c915bdb49c499d1930eb9a3` |
+| v0.2 implementation state | Committed and pushed; implementation is covered by `1887e56a18b77aa9692cca9d86b00413906816f4` |
 | Pull request | [Draft PR #1](https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/1); must remain Draft |
 | Merge/tag/release/deploy | `NOT_RUN`; protected user-controlled actions |
 
-The matching committed local/remote SHA does not satisfy AC-095 because it does
-not include the current v0.2 implementation. Semantic phase commits, pushes,
-and PR updates are blocked by the current Git-index/escalation constraint; no
-alternate index or history-rewriting workaround was used.
+The prior Git-delivery blocker is closed. The remaining blocked decision is
+strictly the uncompleted real PostgreSQL, external Provider, container, exact
+DAG, scope, restart, and recovery matrix. See
+`reports/gowm-v0.4/c00-source-reconciliation.md` for the fresh source proof.
 
 ## Phase status
 
@@ -41,7 +42,7 @@ delivery step remains outstanding.
 |---|---|---|
 | P00 Intake/baseline | PASS | Input/source locks and the v0.1 real baseline were verified; Draft PR created |
 | P01 Contracts/ADR | PARTIAL | Generated contracts and policy tests pass; final live OpenAPI/runtime parity is not yet consolidated |
-| P02 Repository framework | PARTIAL | Build/test/boundary checks pass; commit/push delivery is blocked |
+| P02 Repository framework | PARTIAL | Implementation is committed/pushed; live-runtime closure remains outstanding |
 | P03 Provider SDK/conformance | PARTIAL | Controlled conformance passes; PostgreSQL-backed idempotency/restart is not run |
 | P04 Gateway direct execution | PARTIAL | Controlled routing, health isolation, circuit, audit, and error identity pass; real PostgreSQL/restart is not run |
 | P05 Foundation local ports | PARTIAL | Local-only critical path and rollback-before-mutation behavior pass; live receipt/h3-pg outage proof is incomplete |
@@ -56,7 +57,7 @@ delivery step remains outstanding.
 | P14 Compatibility/MCP | PARTIAL | Read-only/command split and controlled compatibility pass; real dual-run is not run and multi-scope Situation is blocked |
 | P15 Security/snapshot/recovery | PARTIAL | Controlled adversarial, redaction, cancellation, and integrity tests pass; real DB scope/idempotency/restart is not run |
 | P16 Real runtime | BLOCKED | Docker/external Provider/PostgreSQL credentials are unavailable for the required integrated run |
-| P17 Final candidate | BLOCKED | Required real matrix and Git delivery are incomplete; PR cannot become Ready |
+| P17 Final candidate | BLOCKED | Required real matrix is incomplete; PR cannot become Ready |
 
 Detailed commands and evidence classifications are recorded in
 `reports/capability-platform-v0.2/pXX-acceptance.json`. Controlled fixtures,
@@ -83,37 +84,31 @@ Provider, database, or container evidence.
 
 ## Active blockers and non-claims
 
-1. The current sandbox cannot create `.git/index.lock`; the authorized
-   escalated Git operation is unavailable under the execution-platform usage
-   limit. The v0.2 work therefore has no semantic phase commits or pushed
-   candidate SHA.
-2. The reachable isolated PostgreSQL endpoint rejected available credentials
+1. The reachable isolated PostgreSQL endpoint rejected available credentials
    with SQLSTATE `28P01`. Creating a replacement Docker environment is also
    unavailable in the current execution session.
-3. The locked CRS and Geometry Provider processes have not run in the required
+2. The locked CRS and Geometry Provider processes have not run in the required
    integrated environment. Their project-level licenses remain unspecified, so
    upstream source, packages, and images are excluded from GOWM+ release
    artifacts regardless of runtime availability.
-4. Real H3 Toolkit HTTP and h3-js/h3-pg parity, Spatial/PostGIS correctness and
+3. Real H3 Toolkit HTTP and h3-js/h3-pg parity, Spatial/PostGIS correctness and
    plan evidence, all required cross-capability DAGs, scope attacks, and
    Provider/Gateway/database restart recovery have not been proven together.
-5. Production IdP/auth, operating-area CRS and grid certification, HA,
+4. Production IdP/auth, operating-area CRS and grid certification, HA,
    backup/PITR rehearsal, and target mixed-load/SLO qualification are outside
    the evidence obtained in this run.
 
 ## Required next actions
 
-1. Restore an authorized Git-index path; review and commit the phase changes
-   without rewriting or discarding unrelated work, then push them.
-2. Provision a clean isolated runtime with distinct database secrets and the
+1. Provision a clean isolated runtime with distinct database secrets and the
    locked external Provider inputs. Do not publish CRS or Geometry upstream
    artifacts.
-3. Apply the full migration chain to fresh and upgraded databases, run database
+2. Apply the full migration chain to fresh and upgraded databases, run database
    assertions, start all Provider/Gateway services, and capture health,
    readiness, non-root, source-lock, and schema-lock evidence.
-4. Run the Required real direct-operation, DAG, exact H3-to-Spatial, scope,
+3. Run the Required real direct-operation, DAG, exact H3-to-Spatial, scope,
    restart/idempotency, and load/plan gates. Keep failures and skips explicit.
-5. Re-run the full repository gates, update phase/final evidence, and verify an
+4. Re-run the full repository gates, update phase/final evidence, and verify an
    exact local/remote SHA. Only with zero undeclared Required failures or skips
    may the PR be marked Ready for Review.
 

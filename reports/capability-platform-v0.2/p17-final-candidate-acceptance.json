@@ -3,14 +3,14 @@
   "phase": "P17",
   "generatedAt": "2026-08-23T02:51:00+08:00",
   "status": "BLOCKED",
-  "statusReason": "Documentation and traceability are current, but no committed and pushed SHA contains the v0.2 implementation and the Required real runtime matrix remains blocked or not run.",
+  "statusReason": "The v0.2 implementation has a committed and pushed SHA, but the Required real runtime matrix remains blocked or not run.",
   "source": {
     "branch": "codex/gowm-capability-platform-v0.2",
     "baseSha": "d1ff3b81b8bf577965b00edc1bd06acaaeda706c",
-    "lastCommittedLocalSha": "e100cc0fd0b7b27f8a386232dc2b261de7841547",
-    "lastPushedRemoteSha": "e100cc0fd0b7b27f8a386232dc2b261de7841547",
-    "implementationCommitted": false,
-    "candidateSha": null
+    "lastCommittedLocalSha": "80f10718fc2cdeeb9c915bdb49c499d1930eb9a3",
+    "lastPushedRemoteSha": "80f10718fc2cdeeb9c915bdb49c499d1930eb9a3",
+    "implementationCommitted": true,
+    "candidateSha": "1887e56a18b77aa9692cca9d86b00413906816f4"
   },
   "acceptance": [
     {
@@ -25,13 +25,13 @@
     },
     {
       "id": "AC-095",
-      "status": "BLOCKED",
-      "evidence": "The last committed local and remote branch SHAs are both e100cc0fd0b7b27f8a386232dc2b261de7841547, but the v0.2 implementation is an uncommitted worktree. There is no candidate SHA containing the implementation, so equality of the old committed SHA is not promoted to PASS."
+      "status": "PASS",
+      "evidence": "C00 reconciliation verified that the v0.2 implementation is committed and pushed at 1887e56a18b77aa9692cca9d86b00413906816f4; local, remote, and PR head matched before reconciliation delivery at 80f10718fc2cdeeb9c915bdb49c499d1930eb9a3."
     },
     {
       "id": "AC-096",
       "status": "BLOCKED",
-      "evidence": "Draft PR #1 remains Draft because Required real Provider/PostgreSQL/Docker/restart/cross-capability gates and semantic commit/push delivery are incomplete."
+      "evidence": "Draft PR #1 remains Draft because Required real Provider/PostgreSQL/Docker/restart/cross-capability gates are incomplete."
     }
   ],
   "documentation": {
@@ -66,8 +66,8 @@
     }
   ],
   "delivery": {
-    "semanticCommit": "BLOCKED",
-    "push": "BLOCKED",
+    "semanticCommit": "PASS",
+    "push": "PASS",
     "draftPrUpdate": "BLOCKED",
     "readyForReview": false,
     "merge": "NOT_RUN",

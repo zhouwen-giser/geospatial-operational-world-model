@@ -143,7 +143,7 @@ describe("P14 GOWM Situation Gateway capability", () => {
     const valid = providerRequest(descriptor, { cells: [h3Index] }, "default");
     const deadline = structuredClone(valid);
     deadline.idempotencyKey = "p14:deadline";
-    deadline.executionPolicy.deadlineAt = new Date(Date.now() - 1_000).toISOString();
+    deadline.executionPolicy.deadlineAt = new Date(fixedNow.getTime() - 1_000).toISOString();
     const report = await runProviderConformance({
       runtime: provider.runtime,
       validRequest: valid,

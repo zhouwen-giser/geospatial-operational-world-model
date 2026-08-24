@@ -4,24 +4,26 @@ Status: **documentation PASS; final candidate BLOCKED**
 
 ## Outcome
 
-The v0.2 README, architecture, changelog, project status, and traceability now
+The v0.2 README, architecture, changelog, project status, and traceability
 describe the implemented Capability Platform, all manifest operations and
 maturity levels, trust/ownership boundaries, evidence classes, source/license
 constraints, and outstanding production/runtime limitations.
 
-This phase does not declare a release candidate. Required real external
+This historical phase did not declare a release candidate. A later C00 source
+reconciliation proved that the complete v0.2 implementation is committed and
+pushed at `1887e56a18b77aa9692cca9d86b00413906816f4`, with reconciliation
+delivery at `80f10718fc2cdeeb9c915bdb49c499d1930eb9a3`. Required real external
 Provider, PostgreSQL, Docker, cross-capability, scope, and restart gates remain
-`NOT_RUN/BLOCKED`. The v0.2 implementation is also an uncommitted working tree,
-so no candidate SHA contains it and Draft PR #1 cannot become Ready for Review.
+`NOT_RUN/BLOCKED`, so Draft PR #1 cannot become Ready for Review.
 
 ## Candidate state
 
 ```text
 branch: codex/gowm-capability-platform-v0.2
 base: d1ff3b81b8bf577965b00edc1bd06acaaeda706c
-last committed local SHA: e100cc0fd0b7b27f8a386232dc2b261de7841547
-last pushed remote SHA: e100cc0fd0b7b27f8a386232dc2b261de7841547
-v0.2 candidate SHA: none (implementation is uncommitted)
+implementation SHA: 1887e56a18b77aa9692cca9d86b00413906816f4
+C00 local/remote SHA: 80f10718fc2cdeeb9c915bdb49c499d1930eb9a3
+v0.2 Git delivery: PASS
 PR: #1, Draft
 ```
 
@@ -50,15 +52,13 @@ working-tree implementation.
   documents all controlled operations and maturity accurately.
 - AC-094: **PASS** — production identity, CRS/grid, HA/PITR/SLO, real runtime,
   license, multi-scope Situation, and delivery limits remain explicit.
-- AC-095: **BLOCKED** — no committed/pushed SHA includes the implementation.
+- AC-095: **PASS** — a committed/pushed SHA includes the implementation.
 - AC-096: **BLOCKED** — Required gates are incomplete and PR #1 remains Draft.
 
 ## Delivery
 
-No semantic commit, push, or PR body update was possible because the sandbox
-cannot write the Git index and the escalated path is unavailable under the
-current platform usage limit. No alternate Git-index mechanism, force-push,
-reset, amend, merge, tag, release, or deployment was used.
+The former semantic commit/push blocker was closed by later delivery. No
+force-push, reset, amend, merge, tag, release, or deployment was used.
 
 ## Final decision
 

@@ -4,9 +4,9 @@
 
 `BLOCKED`
 
-The architecture and controlled implementation evidence are substantial, but
-this working tree is not a final candidate. Required real-runtime acceptance
-and Git delivery are incomplete. No fixture, static SQL parse, controlled
+The architecture and controlled implementation evidence are substantial, and
+the implementation is committed and pushed. Required real-runtime acceptance
+is incomplete, so this is not yet a final candidate. No fixture, static SQL parse, controlled
 in-process Provider runtime, or prior v0.1 database run is presented as the
 missing v0.2 real-runtime proof.
 
@@ -16,13 +16,12 @@ missing v0.2 real-runtime proof.
 |---|---|
 | Base | `d1ff3b81b8bf577965b00edc1bd06acaaeda706c` |
 | Branch | `codex/gowm-capability-platform-v0.2` |
-| Last committed local SHA | `e100cc0fd0b7b27f8a386232dc2b261de7841547` |
-| Last pushed remote SHA | `e100cc0fd0b7b27f8a386232dc2b261de7841547` |
-| SHA containing v0.2 implementation | none; working tree is uncommitted |
+| SHA containing v0.2 implementation | `1887e56a18b77aa9692cca9d86b00413906816f4` |
+| C00 reconciled local/remote SHA | `80f10718fc2cdeeb9c915bdb49c499d1930eb9a3` |
 | Pull request | [Draft PR #1](https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/1) |
 
-AC-095 is `BLOCKED`: equality of the last committed local and remote SHA does
-not prove candidate parity because that SHA does not contain the v0.2 changes.
+AC-095 is now `PASS`: the full implementation is represented by a matching
+committed and pushed SHA. Required live-runtime gates remain independent.
 
 ## Architecture outcome
 
@@ -81,7 +80,8 @@ restart recovery; those remain `NOT_RUN/BLOCKED` for v0.2.
 - Required real database, Provider, container, exact cross-capability, scope,
   restart, and performance evidence: incomplete; see the P16 report.
 - Capability catalog and known-limit documentation (AC-093/094): PASS.
-- Exact candidate SHA and PR Ready-for-Review (AC-095/096): BLOCKED.
+- Exact committed/pushed implementation SHA (AC-095): PASS.
+- PR Ready-for-Review (AC-096): BLOCKED on required live-runtime gates.
 
 No aggregate PASS count is claimed before the root final gates and evidence
 consolidation complete.
@@ -122,7 +122,8 @@ H3 JS/PG parity, exact DAG, cross-scope, restart, and mixed-load gates remain
   model; arbitrary multi-scope serving remains blocked.
 - HA, backup/PITR rehearsal, and target production SLO qualification are not
   complete.
-- The v0.2 work has no committed/pushed candidate SHA.
+- The v0.2 work has a committed/pushed implementation SHA; live qualification
+  remains incomplete.
 
 ## Explicitly not performed
 

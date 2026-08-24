@@ -72,7 +72,7 @@ export function createProviderRuntime(options: ProviderRuntimeOptions): Provider
         const result = await runWithDeadline(request.executionPolicy.deadlineAt, (deadline) => operation.handle(
           request.input,
           { security, deadline, trace: createTraceContext(request.requestId, traceId) }
-        ));
+        ), () => now().getTime());
         return assembleResult(operation, request, result, {
           providerId: provider.providerId,
           providerVersion: provider.providerVersion,
