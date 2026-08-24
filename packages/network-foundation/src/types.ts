@@ -102,3 +102,76 @@ export interface BuiltNetworkTopology {
   readonly contentHash: string;
   readonly diagnostics: readonly string[];
 }
+
+export type TurnRuleType = "FORBIDDEN" | "ALLOWED_ONLY" | "PENALTY";
+
+export interface SourcePairwiseTurnRestriction {
+  readonly restrictionReferenceKey: string;
+  readonly fromFeatureReferenceKey: string;
+  readonly viaNodeKey: string;
+  readonly toFeatureReferenceKey: string;
+  readonly ruleType: TurnRuleType;
+  readonly penaltyUnits?: number;
+  readonly profileFilter?: Readonly<Record<string, unknown>>;
+  readonly evidence?: readonly unknown[];
+}
+
+export interface SourceSequenceTurnRestriction {
+  readonly restrictionReferenceKey: string;
+  readonly featureReferenceKeys: readonly string[];
+  readonly ruleType: "FORBIDDEN" | "PENALTY";
+  readonly penaltyUnits?: number;
+  readonly profileFilter?: Readonly<Record<string, unknown>>;
+  readonly evidence?: readonly unknown[];
+}
+
+export interface BuiltPairwiseTurnRule {
+  readonly ruleKey: string;
+  readonly fromArcKey: string;
+  readonly viaNodeKey: string;
+  readonly toArcKey: string;
+  readonly ruleType: TurnRuleType;
+  readonly penaltyUnits: number;
+  readonly profileFilter: Readonly<Record<string, unknown>>;
+  readonly evidence: readonly unknown[];
+  readonly contentHash: string;
+}
+
+export interface BuiltTurnSequenceRule {
+  readonly ruleKey: string;
+  readonly arcSequence: readonly string[];
+  readonly ruleType: "FORBIDDEN" | "PENALTY";
+  readonly penaltyUnits: number;
+  readonly profileFilter: Readonly<Record<string, unknown>>;
+  readonly evidence: readonly unknown[];
+  readonly automatonHash: string;
+  readonly contentHash: string;
+}
+
+export interface TurnRestrictionDiagnostic {
+  readonly severity: "WARNING" | "FATAL";
+  readonly issueCode: "UNRESOLVED_HARD_TURN_RESTRICTION" | "UNRESOLVED_SOFT_TURN_RESTRICTION";
+  readonly activationBlocking: boolean;
+  readonly restrictionReferenceKey: string;
+  readonly reason: "ZERO_MATCHES" | "AMBIGUOUS_MATCHES";
+  readonly candidateCount: number;
+}
+
+export interface SequenceAutomatonState {
+  readonly stateId: number;
+  readonly prefix: readonly string[];
+}
+
+export interface SequenceRestrictionAutomaton {
+  readonly states: readonly SequenceAutomatonState[];
+  readonly rules: readonly Pick<BuiltTurnSequenceRule, "ruleKey" | "arcSequence" | "ruleType" | "penaltyUnits">[];
+  readonly automatonHash: string;
+}
+
+export interface CompiledTurnRestrictions {
+  readonly pairwiseRules: readonly BuiltPairwiseTurnRule[];
+  readonly sequenceRules: readonly BuiltTurnSequenceRule[];
+  readonly automaton: SequenceRestrictionAutomaton;
+  readonly diagnostics: readonly TurnRestrictionDiagnostic[];
+  readonly contentHash: string;
+}

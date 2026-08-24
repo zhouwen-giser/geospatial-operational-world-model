@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "n02-20260825t0142",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "sourceDatabase": "gowm_v05_n01_20260825t0101",
+  "database": "gowm_v05_n02_20260825t0142",
+  "startedAt": "2026-08-24T16:42:17.834Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3154
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3048
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "--template",
+        "gowm_v05_n01_20260825t0101",
+        "gowm_v05_n02_20260825t0142"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3339
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n02_20260825t0142",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "CREATE ROLE n02_n02_20260825t0142 LOGIN PASSWORD '<redacted-ephemeral-password>'; GRANT network_builder TO n02_n02_20260825t0142"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3198
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3050
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--volume",
+        "D:\\Code\\agent-app\\geospatial-operational-world-model:/workspace:ro",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "GOWM_N02_RUN_ID",
+        "--env",
+        "GOWM_N02_DATABASE",
+        "--env",
+        "GOWM_N02_DATABASE_HOST",
+        "--env",
+        "GOWM_N02_DATABASE_ROLE",
+        "--env",
+        "GOWM_N02_DATABASE_PASSWORD",
+        "node:22-bookworm",
+        "node",
+        "dist/validation/scripts/network-turn-runtime-client.js"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 1607
+    }
+  ],
+  "summary": null,
+  "errors": [
+    "Error: Command failed: docker run --rm --network gowmv05-gowm-v05-d00-20260824t2245-codex_default --volume D:\\Code\\agent-app\\geospatial-operational-world-model:/workspace:ro --workdir /workspace --env GOWM_N02_RUN_ID --env GOWM_N02_DATABASE --env GOWM_N02_DATABASE_HOST --env GOWM_N02_DATABASE_ROLE --env GOWM_N02_DATABASE_PASSWORD node:22-bookworm node dist/validation/scripts/network-turn-runtime-client.js\n/workspace/node_modules/pg/lib/client.js:694\n          Error.captureStackTrace(err)\n                ^\n\nerror: permission denied for table spatial_dataset_version\n    at /workspace/node_modules/pg/lib/client.js:694:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/dist/validation/scripts/network-turn-runtime-client.js:115:27 {\n  length: 551,\n  severity: 'ERROR',\n  code: '42501',\n  detail: undefined,\n  hint: undefined,\n  position: undefined,\n  internalPosition: undefined,\n  internalQuery: undefined,\n  where: 'SQL statement \"SELECT version.dataset_kind, dataset.data_scope_key, dataset.dataset_scope_key\\n' +\n    '                                                         FROM public.spatial_dataset_version version\\n' +\n    '  JOIN public.spatial_dataset dataset USING (dataset_id)\\n' +\n    '  WHERE version.dataset_version_id = NEW.dataset_version_id\\n' +\n    '    AND version.dataset_id = NEW.dataset_id\"\\n' +\n    'PL/pgSQL function validate_network_graph_version_source() line 7 at SQL statement',\n  schema: undefined,\n  table: undefined,\n  column: undefined,\n  dataType: undefined,\n  constraint: undefined,\n  file: 'aclchk.c',\n  line: '2793',\n  routine: 'aclcheck_error'\n}\n\nNode.js v22.23.1\n\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execFileSync (node:child_process:918:15)\n    at run (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-turn-runtime-gate.ts:38:20)\n    at <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-turn-runtime-gate.ts:77:18)\n    at ModuleJob.run (node:internal/modules/esm/module_job:271:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)"
+  ],
+  "finishedAt": "2026-08-24T16:42:35.232Z"
+}

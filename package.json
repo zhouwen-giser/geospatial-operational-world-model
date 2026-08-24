@@ -33,6 +33,7 @@
     "validate:network-db-runtime": "node validation/scripts/network-db-runtime-gate.mjs",
     "validate:network-schema-runtime": "node validation/scripts/network-schema-runtime-gate.mjs",
     "validate:network-topology-runtime": "npm run build && node --import tsx validation/scripts/network-topology-runtime-gate.ts",
+    "validate:network-turn-runtime": "npm run build && node --import tsx validation/scripts/network-turn-runtime-gate.ts",
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",
     "validate:stable-runtime": "node validation/scripts/stable-security-load-recovery.mjs",
