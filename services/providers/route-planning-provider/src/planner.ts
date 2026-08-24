@@ -28,10 +28,11 @@ export class RoutePlanner {
     try {
       const locations = [input.start, ...arrayOrEmpty(input.waypoints), ...arrayOrEmpty(input.viaReferences), input.destination];
       const candidateSets: DirectedState[][] = [];
-      for (let index = 0; index < locations.length; index += 1) candidateSets.push(await this.resolveLocation(locations[index], snapshot, security, deadlineMs, index === 0 ? input.startHeading : index === locations.length - 1 ? input.destinationHeading : undefined));
+      for (let index = 0; index < locations.length; index += 1) candidateSets.push(await this.resolveLocation(locations[index], snapshot, security, deadlineMs, index === 0 ? input.startHeading : index === locations.length - 1 ? input.destinationHeading : undefined, input.snapToleranceM));
       if (candidateSets.some((set) => set.length === 0)) return await this.finishNoPath(input, network, submitted.id, run);
       const combinations = cartesian(candidateSets, 128);
       const excluded = new Set(network.arcs.filter((arc) => arrayOrEmpty(input.avoidReferences).some((reference) => isRow(reference) && reference.id === arc.sourceFeatureReferenceKey?.id)).map((arc) => arc.key));
+      for (const arcKey of await this.network.arcsIntersectingAreas(snapshot, arrayOrEmpty(input.avoidAreas).map(asRow), security, deadlineMs)) excluded.add(arcKey);
       const paths: Row[] = [];
       for (const states of combinations) {
         const path = routeLegs(network, states, objective(input.objective), excluded, deadlineMs);
@@ -41,7 +42,7 @@ export class RoutePlanner {
       for (const path of paths) { const signature = routeSignature(path); if (!distinct.has(signature)) distinct.set(signature, path); }
       const ranked = [...distinct.entries()].sort(([, left], [, right]) => metric(left, objective(input.objective)) - metric(right, objective(input.objective)) || routeSignature(left).localeCompare(routeSignature(right)));
       const wanted = alternatives ? Math.min(integer(input.alternativeCount ?? 1, "alternativeCount"), 5) : 1;
-      const candidates = ranked.slice(0, wanted).map(([signature, path], index) => { const candidate = { rank: index + 1, routeSignature: signature, segments: path.segments, metrics: path.metrics }; return { ...candidate, verification: verifyRouteCandidate(network, candidate) }; });
+      const candidates = ranked.slice(0, wanted).flatMap(([signature, path], index) => { const candidate = { rank: index + 1, routeSignature: signature, segments: path.segments, metrics: path.metrics }; const verification=verifyRouteCandidate(network,candidate); return verification.status==="VALID"?[{...candidate,verification}]:[]; }).map((candidate,index)=>({...candidate,rank:index+1}));
       const status = candidates.length ? "COMPLETED" : "NO_PATH";
       const output = result(input, snapshot, status, candidates, this.ttlMs);
       await this.publish(submitted.id, run.generation, run.owner, output);
@@ -58,9 +59,10 @@ export class RoutePlanner {
   }
 
   private async snapshot(input: Row, _security: Scope, _deadlineMs: number): Promise<RoutingSnapshot> { if (input.routingSnapshot) return routingSnapshot(input.routingSnapshot); throw new ProviderProtocolError("INVALID_REQUEST", "useActiveGraph resolution requires an explicit graph key and is unavailable in v0.5 stable requests"); }
-  private async resolveLocation(value: unknown, snapshot: RoutingSnapshot, security: Scope, deadlineMs: number, heading: unknown): Promise<DirectedState[]> {
+  private async resolveLocation(value: unknown, snapshot: RoutingSnapshot, security: Scope, deadlineMs: number, heading: unknown, snapTolerance: unknown): Promise<DirectedState[]> {
     if (isRow(value) && typeof value.arcKey === "string") return [directedState(value)];
-    const result = await this.network.execute("network.snap.point", { routingSnapshot: snapshot, location: value, ...(heading === undefined ? {} : { headingDegrees: heading }), maxDistanceM: 10_000, limit: 8 }, security, deadlineMs);
+    const maximumDistanceM=typeof snapTolerance==="number"&&Number.isFinite(snapTolerance)&&snapTolerance>0?snapTolerance:100;
+    const result = await this.network.execute("network.snap.point", { routingSnapshot: snapshot, location: value, ...(heading === undefined ? {} : { headingDegrees: heading }), maxDistanceM: maximumDistanceM, limit: 8 }, security, deadlineMs);
     const output = asRow(result.output); return arrayOrEmpty(output.candidates).map((candidate) => directedState(asRow(candidate).state));
   }
   private async submit(input: Row, scope: Scope): Promise<{ id: string; terminal: boolean }> { const client = await this.options.pool.connect(); try { const hash = sha256(input); const reference = queryReference(hash); const query = await client.query("SELECT route_request_id::text,status,replayed FROM route_planner_runtime.submit_route_request($1,$2,$3,$4,$5,$6::jsonb,$7)", [scope.dataScopeKey, scope.datasetScopeKey, string(input.requestId), string(input.requestId), hash, JSON.stringify(input), reference.id]); const row = query.rows[0]; if (!row) throw new Error("route submission unavailable"); return { id: string(row.route_request_id), terminal: ["COMPLETED","NO_PATH","FAILED","CANCELLED"].includes(String(row.status)) }; } finally { client.release(); } }
@@ -72,12 +74,37 @@ export class RoutePlanner {
 }
 
 type Scope = { dataScopeKey?: string; datasetScopeKey?: string };
-function routeLegs(network: LoadedNetwork, states: DirectedState[], objectiveValue: Objective, excluded: Set<string>, deadlineMs: number): Row { const segments: Row[] = []; const totals = { distanceMm: 0, durationMs: 0, riskMicroUnits: 0, energyMwh: 0, combinedCostUnits: 0 }; for (let index=0; index<states.length-1; index+=1) { const leg=shortestPath(network,states[index]!,states[index+1]!,objectiveValue,100_000,false,Date.now,Date.now()+deadlineMs,excluded); if (leg.status!=="COMPLETED") return leg; const legSegments=arrayOrEmpty(leg.segments).map(asRow); segments.push(...legSegments); const metrics=asRow(leg.metrics); for (const key of Object.keys(totals) as Array<keyof typeof totals>) totals[key]+=integer(metrics[key],key); } const core={status:"COMPLETED",routingSnapshot:network.routingSnapshot,segments,metrics:totals,warnings:[] as string[]}; return {...core,resultHash:sha256(core)}; }
+function routeLegs(network: LoadedNetwork, states: DirectedState[], objectiveValue: Objective, excluded: Set<string>, deadlineMs: number): Row {
+  const segments: Row[]=[];
+  for(let index=0;index<states.length-1;index+=1){
+    const history=segments.map(segment=>string(segment.arcKey));
+    const leg=shortestPath(network,states[index]!,states[index+1]!,objectiveValue,100_000,false,Date.now,Date.now()+deadlineMs,excluded,history);
+    if(leg.status!=="COMPLETED")return leg;
+    for(const value of arrayOrEmpty(leg.segments).map(asRow)){
+      const previous=segments.at(-1);
+      if(previous&&previous.arcKey===value.arcKey&&previous.endFractionPpm===value.startFractionPpm){
+        previous.endFractionPpm=value.endFractionPpm;
+        previous.turnPenaltyUnits=integer(previous.turnPenaltyUnits??0,"turnPenaltyUnits")+integer(value.turnPenaltyUnits??0,"turnPenaltyUnits");
+      }else segments.push({...value});
+    }
+  }
+  const byKey=new Map(network.arcs.map(arc=>[arc.key,arc]));
+  const totals={distanceMm:0,durationMs:0,riskMicroUnits:0,energyMwh:0,combinedCostUnits:0};
+  for(const segment of segments){
+    const arc=byKey.get(string(segment.arcKey));if(!arc)throw new ProviderProtocolError("INVALID_REQUEST","route segment arc is unavailable");
+    const span=integer(segment.endFractionPpm,"endFractionPpm")-integer(segment.startFractionPpm,"startFractionPpm");
+    const values={distanceMm:fraction(arc.distanceMm,span),durationMs:fraction(arc.durationMs,span),riskMicroUnits:fraction(arc.riskMicroUnits,span),energyMwh:fraction(arc.energyMwh,span)};
+    Object.assign(segment,values);for(const name of Object.keys(values) as Array<keyof typeof values>)totals[name]+=values[name];
+    totals.combinedCostUnits+=fraction(arc.combinedCostUnits+arc.conditionPenaltyUnits,span)+integer(segment.turnPenaltyUnits??0,"turnPenaltyUnits");
+  }
+  const core={status:"COMPLETED",routingSnapshot:network.routingSnapshot,segments,metrics:totals,warnings:[] as string[]};return{...core,resultHash:sha256(core)};
+}
 function result(input: Row, snapshot: RoutingSnapshot, status: string, candidates: Row[], ttlMs: number): Row { return { requestId:string(input.requestId),status,queryResultReferenceKey:queryReference(sha256(input)),routingSnapshot:snapshot,candidates,validUntil:new Date(Date.now()+ttlMs).toISOString(),revalidationRequired:true,warnings:[] }; }
 function queryReference(hash: string): Row { return { namespace:"gowm",kind:"QUERY_RESULT",id:`wrf_${hash.slice(7,39)}`,version:"1" }; }
 function routeSignature(path: Row): string { return sha256({ segments: arrayOrEmpty(path.segments).map((segment)=>{const row=asRow(segment); return [row.arcKey,row.startFractionPpm,row.endFractionPpm];}) }); }
 function metric(path: Row, objectiveValue: Objective): number { const values=asRow(path.metrics); const key=objectiveValue==="SHORTEST_DISTANCE"?"distanceMm":objectiveValue==="FASTEST"?"durationMs":objectiveValue==="LOWEST_RISK"?"riskMicroUnits":objectiveValue==="LOWEST_ENERGY"?"energyMwh":"combinedCostUnits"; return integer(values[key],key); }
 function cartesian(sets: DirectedState[][], maximum: number): DirectedState[][] { let result:DirectedState[][]=[[]]; for(const set of sets){result=result.flatMap((prefix)=>set.map((item)=>[...prefix,item])).slice(0,maximum);} return result; }
+function fraction(value:number,ppm:number):number{return Number((BigInt(value)*BigInt(ppm)+500_000n)/1_000_000n);}
 function routingSnapshot(value:unknown):RoutingSnapshot{const row=asRow(value);return row as unknown as RoutingSnapshot;}
 function directedState(value:unknown):DirectedState{const row=asRow(value);if(typeof row.arcKey!=="string"||(row.direction!=="FORWARD"&&row.direction!=="REVERSE"))throw new ProviderProtocolError("INVALID_REQUEST","invalid directed state");return row as unknown as DirectedState;}
 function objective(value:unknown):Objective{if(value==="SHORTEST_DISTANCE"||value==="FASTEST"||value==="LOWEST_RISK"||value==="LOWEST_ENERGY"||value==="WEIGHTED")return value;throw new ProviderProtocolError("INVALID_REQUEST","invalid objective");}

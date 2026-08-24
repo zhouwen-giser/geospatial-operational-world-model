@@ -25,7 +25,8 @@ export function shortestPath(
   ignoreSoftPenalties = false,
   nowMs: () => number = Date.now,
   deadlineAtMs = Number.POSITIVE_INFINITY,
-  excludedArcKeys: ReadonlySet<string> = new Set()
+  excludedArcKeys: ReadonlySet<string> = new Set(),
+  priorArcKeys: readonly string[] = []
 ): Row {
   assertState(start);
   assertState(destination);
@@ -50,9 +51,10 @@ export function shortestPath(
   for (const values of outgoing.values()) values.sort((a, b) => a.key.localeCompare(b.key));
 
   const initialFraction = 1_000_000 - start.fractionPpm;
+  const initialHistory=priorArcKeys.at(-1)===startArc.key?[...priorArcKeys]:[...priorArcKeys,startArc.key];
   const initial: Label = {
     node: startArc.target,
-    history: [startArc.key].slice(-maxHistory),
+    history: initialHistory.slice(-maxHistory),
     arcKeys: [startArc.key],
     objectiveCost: fraction(metric(startArc, objective), initialFraction),
     turnPenalty: 0

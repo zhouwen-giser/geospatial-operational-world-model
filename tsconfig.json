@@ -30,6 +30,8 @@
     "validation/scripts/route-planning-runtime-gate.ts",
     "validation/scripts/route-verifier-runtime-gate.ts",
     "validation/scripts/network-routing-gateway-e2e.ts",
+    "validation/scripts/gowm-v05-migration-e2e.ts",
+    "validation/scripts/gowm-v05-routing-performance.ts",
     "tests/**/*.ts",
     "vitest.config.ts"
   ],

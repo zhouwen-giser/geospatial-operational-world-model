@@ -1,0 +1,38 @@
+{
+  "phase": "T00",
+  "status": "PASS",
+  "database": "gowm_v05_r03_20260825t1040",
+  "routeRun": "r01-final-20260825t1700",
+  "recoveryRun": "t00-20260825t1230",
+  "acceptance": {
+    "AC-S001": "PASS_FRESH_001_THROUGH_047",
+    "AC-S002": "PASS_V04_001_032_TO_V05_047_DATA_PRESERVED",
+    "AC-S003": "PASS_CHECKSUM_REPEAT_47_OF_47",
+    "AC-S004": "PASS_FAILED_MIGRATION_ATOMIC_ROLLBACK",
+    "AC-S005": "PASS_N04_GRAPH_REPLAY_HASH_MATCH",
+    "AC-S006": "PASS_R03_AND_R01_FINAL_EXACT_ROUTE_REPLAY",
+    "AC-S007": "PASS_SNAP_P95_11_437_MS_LT_250_MS",
+    "AC-S008": "PASS_SHORTEST_P95_11_000_MS_LT_250_MS",
+    "AC-S009": "PASS_MATRIX_2X2_P95_11_002_MS_LT_500_MS",
+    "AC-S010": "PASS_GRAPH_BUILD_GATE_1465_MS_S_M_FIXTURE",
+    "AC-S011": "PASS_NETWORK_AND_ROUTE_RECOVER_AFTER_POSTGRES_RESTART",
+    "AC-S012": "PASS_ONE_REQUEST_ONE_RESULT_AFTER_RESTART",
+    "AC-S013": "PASS_TOKEN_LOCATION_ROUTE_REDACTION_REGRESSION",
+    "AC-S014": "PASS_DB_SPDX_AND_SERVICE_CYCLONEDX_SBOMS"
+  },
+  "measurements": {
+    "samples": { "snap": 40, "shortest": 40, "matrix": 20 },
+    "snapP95Ms": 11.437,
+    "shortestP95Ms": 11.000,
+    "matrix2x2P95Ms": 11.002,
+    "graphBuildGateElapsedMs": 1465,
+    "datasetClass": "S/M_ACCEPTANCE_FIXTURE"
+  },
+  "migration": { "count": 47, "assertionCount": 32 },
+  "recoveryRows": { "hashes": 1, "results": 1, "requests": 1, "candidates": 1 },
+  "sbom": {
+    "database": "database/sbom/gowm-db.spdx.json",
+    "service": "reports/gowm-v0.5/service-sbom.cdx.json",
+    "serviceComponents": 312
+  }
+}

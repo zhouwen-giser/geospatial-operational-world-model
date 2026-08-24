@@ -81,6 +81,8 @@ describe("gowm.network provider", () => {
     const sequenceForbidden: TurnRule = { sequence: [a.key, b.key, e.key], ruleType: "FORBIDDEN", penaltyUnits: 0 };
     const sequenceDetour = shortestPath(network([a, b, c, d, e], [sequenceForbidden]), { arcKey: a.key, fractionPpm: 0, direction: "FORWARD" }, { arcKey: e.key, fractionPpm: 1_000_000, direction: "FORWARD" }, "SHORTEST_DISTANCE", 10);
     expect((sequenceDetour.segments as Array<Record<string, unknown>>).map((item) => item.arcKey)).toEqual([a.key, c.key, d.key, e.key]);
+    const crossLeg = shortestPath(network([b, e], [sequenceForbidden]), { arcKey: b.key, fractionPpm: 500_000, direction: "FORWARD" }, { arcKey: e.key, fractionPpm: 1_000_000, direction: "FORWARD" }, "SHORTEST_DISTANCE", 10, false, Date.now, Number.POSITIVE_INFINITY, new Set(), [a.key, b.key]);
+    expect(crossLeg.status).toBe("NO_PATH");
 
     const penalty: TurnRule = { sequence: [a.key, b.key], ruleType: "PENALTY", penaltyUnits: 7 };
     const penalized = shortestPath(network([a, b, e], [penalty]), { arcKey: a.key, fractionPpm: 0, direction: "FORWARD" }, { arcKey: e.key, fractionPpm: 1_000_000, direction: "FORWARD" }, "WEIGHTED", 10);

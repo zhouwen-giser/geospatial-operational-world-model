@@ -76,6 +76,12 @@ export class NetworkRepository {
     finally { client.release(); }
   }
 
+  async arcsIntersectingAreas(snapshotValue: unknown, areas: Row[], security: { dataScopeKey?: string; datasetScopeKey?: string }, deadlineRemainingMs: number): Promise<string[]> {
+    if (areas.length === 0) return [];
+    const dataScopeKey=security.dataScopeKey?.trim(),datasetScopeKey=security.datasetScopeKey?.trim();if(!dataScopeKey||!datasetScopeKey)throw new ProviderProtocolError("SCOPE_DENIED","network data and dataset scopes are required");
+    const client=await this.options.pool.connect();let open=false;try{await client.query("BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY");open=true;const timeout=Math.max(1,Math.min(this.statementTimeoutMs,Math.floor(deadlineRemainingMs)));await client.query("SELECT set_config('statement_timeout',$1::text,true)",[`${timeout}ms`]);await client.query("SELECT gowm_network_v1.set_scope($1::text,$2::text)",[dataScopeKey,datasetScopeKey]);const snapshot=routingSnapshot(snapshotValue);const graph=(await client.query("SELECT graph_version_id FROM gowm_network_v1.graph_version WHERE graph_version=$1 AND dataset_version=$2 AND content_hash=$3 ORDER BY created_at DESC LIMIT 1",[snapshot.graphVersion,snapshot.networkDatasetVersion,snapshot.graphContentHash])).rows[0];if(!graph)throw new ProviderProtocolError("VERSION_NOT_FOUND","routing graph snapshot is unavailable in scope");const result=await client.query("SELECT arc_key FROM gowm_network_v1.arcs_intersecting_areas($1::uuid,$2::jsonb)",[requiredString(graph.graph_version_id,"graph_version_id"),JSON.stringify(areas)]);await client.query("COMMIT");open=false;return result.rows.map(item=>externalArcKey(requiredString(item.arc_key,"arc_key")));}catch(error){if(open)await client.query("ROLLBACK").catch(()=>undefined);throw mapDatabaseError(error);}finally{client.release();}
+  }
+
   async execute(operationId: NetworkOperationId, inputValue: unknown, security: { dataScopeKey?: string; datasetScopeKey?: string }, deadlineRemainingMs: number): Promise<NetworkExecutionResult> {
     const dataScopeKey = security.dataScopeKey?.trim();
     const datasetScopeKey = security.datasetScopeKey?.trim();
