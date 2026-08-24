@@ -28,6 +28,7 @@
     "validate:operational-events": "node --import tsx validation/scripts/operational-event-store-e2e.ts",
     "validate:operational-provider": "node --import tsx validation/scripts/operational-provider-gateway-e2e.ts",
     "validate:operational-ready": "node --import tsx validation/scripts/operational-reality-ready-e2e.ts",
+    "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:boundaries": "node validation/architecture/validate-capability-boundaries.mjs",
     "dev:api": "tsx services/world-api/src/index.ts",
     "dev:ingest": "tsx services/observation-ingest/src/index.ts",
