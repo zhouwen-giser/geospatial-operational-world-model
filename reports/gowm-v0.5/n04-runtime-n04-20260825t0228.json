@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "n04-20260825t0228",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "sourceDatabase": "gowm_v05_n03_20260825t0158",
+  "database": "gowm_v05_n04_20260825t0228",
+  "startedAt": "2026-08-24T17:08:13.205Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3150
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3057
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "--template",
+        "gowm_v05_n03_20260825t0158",
+        "gowm_v05_n04_20260825t0228"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3327
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n04_20260825t0228",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<migration 043_network_atomic_activation_management.sql>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3222
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n04_20260825t0228",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<N04 Catalog source fixture>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3205
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n04_20260825t0228",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "CREATE ROLE n04_n04_20260825t0228 LOGIN PASSWORD '<redacted-ephemeral-password>'; GRANT network_builder TO n04_n04_20260825t0228"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3211
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{json .NetworkSettings.Networks}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3053
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex_default",
+        "--volume",
+        "D:\\Code\\agent-app\\geospatial-operational-world-model:/workspace:ro",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "GOWM_N04_RUN_ID",
+        "--env",
+        "GOWM_N04_DATABASE",
+        "--env",
+        "GOWM_N04_DATABASE_HOST",
+        "--env",
+        "GOWM_N04_DATABASE_ROLE",
+        "--env",
+        "GOWM_N04_DATABASE_PASSWORD",
+        "node:22-bookworm",
+        "node",
+        "dist/validation/scripts/network-activation-runtime-client.js"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1758
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "postgres",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "DROP ROLE n04_n04_20260825t0228"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3221
+    }
+  ],
+  "summary": {
+    "activateCount": 2,
+    "retireCount": 1,
+    "retainedVersionCount": 2,
+    "failedBuildCount": 1,
+    "activeVersionId": "36e099c7-4928-4201-8ef9-0e6c81a73bec",
+    "retiredVersionId": "6f906b02-536b-450d-a09b-e6c963084525",
+    "retiredArcCount": 2,
+    "concurrentActivationResults": [
+      {
+        "previous_graph_version_id": null,
+        "active_graph_version_id": "6f906b02-536b-450d-a09b-e6c963084525"
+      },
+      {
+        "previous_graph_version_id": "6f906b02-536b-450d-a09b-e6c963084525",
+        "active_graph_version_id": "36e099c7-4928-4201-8ef9-0e6c81a73bec"
+      }
+    ],
+    "failedBuildActiveHeadUnchanged": true,
+    "replayTopologyHash": "sha256:a712890f56f6cf8a247c46e0ccb605bcec2321edecc9b1c3d68638cf3ed364fa",
+    "replayContentHash": "sha256:d49d48e81129b2885ddd6e8dd26db3f0a1615edec0d550c774a883b38b995921",
+    "replayHashMatch": true
+  },
+  "errors": [],
+  "finishedAt": "2026-08-24T17:08:40.413Z"
+}

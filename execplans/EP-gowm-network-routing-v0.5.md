@@ -49,7 +49,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - [x] N01 Topology/Directed Arc
 - [x] N02 Turn Restrictions
 - [x] N03 Profiles/Costs/Conditions
-- [ ] N04 Validation/Activation
+- [x] N04 Validation/Activation
 - [ ] P00 Network Provider
 - [ ] P01 Network Real Acceptance
 - [ ] R00 Route Runtime
@@ -82,6 +82,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - N01 adds deterministic topology segmentation and least-privilege PostgreSQL persistence. Real execution exposed missing schema visibility for `network_builder`; append-only migration 040 repairs only schema `USAGE` and assertion 025 prevents mutable grant expansion.
 - N02 adds unique directed pairwise resolution, deterministic multi-edge restriction automata, persistent FATAL/WARNING diagnostics, and real activation blocking. Migration 041 lets fixed trigger validators inspect Catalog authority without granting the builder direct base-table reads.
 - N03 adds ROAD_VEHICLE/UGV filtering, BigInt-backed fixed-point cost recomputation, immutable Condition Snapshots, required ODbL attribution, and migration 042 contract-aligned surface/energy/condition fields.
+- N04 adds controlled Catalog Feature bindings and advisory-lock atomic activation. Concurrent real calls serialized into one head, historical versions remained queryable, and failed builds did not change the head.
 
 ## Failed attempts retained
 
@@ -98,7 +99,8 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 - N01 runtime run `n01-20260825t0101`: migrations 001-040 replayed in a fresh database; 25 Nodes, 14 Edges and 27 directed Arcs persisted through the real builder role with reproducible hashes and all orientation checks passing.
 - N02 runtime run `n02-20260825t0149`: 1 pairwise and 2 sequence rules persisted in an isolated clone; FATAL/WARNING diagnostics were recorded and an activation probe was rejected for the activation-blocking hard rule.
 - N03 runtime run `n03-20260825t0158`: ROAD_VEHICLE/UGV profiles produced 3 legal Arc cost rows with exact fixed-point recomputation; two pinned snapshots proved closure, speed/risk override and historical replay without Arc mutation.
+- N04 runtime run `n04-20260825t0228`: two concurrent activation calls produced 2 ACTIVATE/1 RETIRE events, one final head, retained pinned history, failed-build isolation and matching replay hashes.
 
 ## Remaining work
 
-Execute N04 through S01 in order. N03 profiles/costs/conditions are complete; activation and routing runtime gates remain `NOT_RUN` until their phases are implemented.
+Execute P00 through S01 in order. `NETWORK_READY` is proven; Provider and routing runtime gates remain `NOT_RUN` until their phases are implemented.

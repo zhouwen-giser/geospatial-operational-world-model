@@ -5,6 +5,7 @@ export * from "./postgres-catalog-repository.js";
 export * from "./postgres-topology-writer.js";
 export * from "./postgres-turn-writer.js";
 export * from "./postgres-profile-condition-writer.js";
+export * from "./postgres-feature-binding-writer.js";
 export * from "./profile-cost-condition.js";
 export * from "./topology-builder.js";
 export * from "./turn-restrictions.js";

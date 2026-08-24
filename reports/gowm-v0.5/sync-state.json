@@ -2,7 +2,7 @@
   "goal": "GOWM+ Network & Basic Routing Foundation v0.5",
   "targetVersion": "0.5.0",
   "status": "IN_PROGRESS",
-  "phase": "N03",
+  "phase": "N04",
   "baseline": {
     "branch": "main",
     "version": "0.4.0",
@@ -12,21 +12,21 @@
   "candidate": {
     "branch": "codex/gowm-network-routing-v0.5",
     "baseSha": "db575f79c874a69f65a2043a7e463338524b713d",
-    "localSha": "830c431",
-    "remoteSha": "830c431",
+    "localSha": "9ab4052",
+    "remoteSha": "9ab4052",
     "draftPr": 3
   },
   "milestones": {
-    "networkReady": false,
+    "networkReady": true,
     "routingReady": false,
     "stableCandidate": false
   },
   "acceptance": {
-    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N025", "AC-N030..AC-N040"],
+    "passed": ["AC-B001..AC-B008", "AC-A001..AC-A010", "AC-D001..AC-D007", "AC-N001..AC-N040"],
     "failed": [],
     "blocked": [],
-    "notRun": ["AC-N026..AC-N029", "AC-N041..AC-S022"]
+    "notRun": ["AC-N041..AC-S022"]
   },
   "blockers": [],
-  "next": "Execute N04 diagnostics, replay validation, failed-build isolation and atomic activation."
+  "next": "Execute P00 read-only gowm.network Provider operations."
 }

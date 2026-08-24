@@ -1,0 +1,17 @@
+{
+  "phase": "N04",
+  "status": "PASS",
+  "milestone": "NETWORK_READY",
+  "acceptance": {
+    "AC-N026": "PASS_ATOMIC_CONCURRENT_ACTIVATION",
+    "AC-N027": "PASS_RETIRED_VERSION_PINNED_QUERY",
+    "AC-N028": "PASS_FAILED_BUILD_ACTIVE_HEAD_ISOLATION",
+    "AC-N029": "PASS_SOURCE_POLICY_REPLAY_HASH"
+  },
+  "tests": {
+    "typecheck": "PASS",
+    "sqlAst": "PASS_43_MIGRATIONS_28_ASSERTIONS",
+    "realDatabase": "PASS_n04-20260825t0228"
+  },
+  "runtimeEvidence": "reports/gowm-v0.5/n04-runtime-n04-20260825t0228.json"
+}

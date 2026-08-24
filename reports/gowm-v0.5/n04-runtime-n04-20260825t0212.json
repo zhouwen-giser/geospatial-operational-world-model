@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "n04-20260825t0212",
+  "composeProject": "gowmv05-gowm-v05-d00-20260824t2245-codex",
+  "sourceDatabase": "gowm_v05_n03_20260825t0158",
+  "database": "gowm_v05_n04_20260825t0212",
+  "startedAt": "2026-08-24T17:04:52.092Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--quiet",
+        "postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3164
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "82ebb7f2beaee4c3b3126a5a03e228db9c7f618ecc94efbad1877375393d917b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3050
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "createdb",
+        "--username",
+        "gowm",
+        "--template",
+        "gowm_v05_n03_20260825t0158",
+        "gowm_v05_n04_20260825t0212"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3320
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n04_20260825t0212",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<migration 043_network_atomic_activation_management.sql>"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3226
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "--no-TTY",
+        "postgres",
+        "psql",
+        "--username",
+        "gowm",
+        "--dbname",
+        "gowm_v05_n04_20260825t0212",
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--command",
+        "<N04 Catalog source fixture>"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 3212
+    }
+  ],
+  "summary": null,
+  "errors": [
+    "Error: Command failed: docker compose exec --no-TTY postgres psql --username gowm --dbname gowm_v05_n04_20260825t0212 --set ON_ERROR_STOP=on --command DO $seed$ DECLARE d uuid; dv uuid; l uuid; lv uuid; f7 uuid; f8 uuid; BEGIN\n    SELECT dataset_id,dataset_version_id INTO STRICT d,dv FROM spatial_dataset_version WHERE version='1' AND dataset_kind='NETWORK' ORDER BY created_at LIMIT 1;\n    INSERT INTO spatial_layer(dataset_id,data_scope_key,dataset_scope_key,layer_key,name)\n      SELECT d,data_scope_key,dataset_scope_key,'n04-road-centerline','N04 Road Centerline' FROM spatial_dataset WHERE dataset_id=d RETURNING layer_id INTO l;\n    INSERT INTO spatial_layer_version(layer_id,dataset_id,dataset_version_id,version,layer_type,geometry_type,schema_version,crs,content_hash,published_at)\n      VALUES(l,d,dv,'1','VECTOR_FEATURE','LineString','1.0','EPSG:4326','sha256:'||repeat('9',64),clock_timestamp()) RETURNING layer_version_id INTO lv;\n    INSERT INTO spatial_feature_identity(reference_key,layer_id,data_scope_key,dataset_scope_key,feature_key,feature_type)\n      SELECT 'wrf_'||repeat('7',32),l,data_scope_key,dataset_scope_key,'n04-road-7','ROAD' FROM spatial_dataset WHERE dataset_id=d RETURNING feature_id INTO f7;\n    INSERT INTO spatial_feature_identity(reference_key,layer_id,data_scope_key,dataset_scope_key,feature_key,feature_type)\n      SELECT 'wrf_'||repeat('8',32),l,data_scope_key,dataset_scope_key,'n04-road-8','ROAD' FROM spatial_dataset WHERE dataset_id=d RETURNING feature_id INTO f8;\n    INSERT INTO spatial_feature_version(feature_id,layer_id,layer_version_id,version,geometry,properties,content_hash,published_at) VALUES\n      (f7,l,lv,'1',ST_GeomFromText('LINESTRING Z (0 0 0,0.001 0 0)',4326),'{}','sha256:'||repeat('7',64),clock_timestamp()),\n      (f8,l,lv,'1',ST_GeomFromText('LINESTRING Z (0.001 0 0,0.002 0 0)',4326),'{}','sha256:'||repeat('8',64),clock_timestamp());\n  END $seed$;\nERROR:  Geometry has Z dimension but column does not\nCONTEXT:  SQL statement \"INSERT INTO spatial_feature_version(feature_id,layer_id,layer_version_id,version,geometry,properties,content_hash,published_at) VALUES\n      (f7,l,lv,'1',ST_GeomFromText('LINESTRING Z (0 0 0,0.001 0 0)',4326),'{}','sha256:'||repeat('7',64),clock_timestamp()),\n      (f8,l,lv,'1',ST_GeomFromText('LINESTRING Z (0.001 0 0,0.002 0 0)',4326),'{}','sha256:'||repeat('8',64),clock_timestamp())\"\nPL/pgSQL function inline_code_block line 11 at SQL statement\n\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execFileSync (node:child_process:918:15)\n    at run (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-activation-runtime-gate.ts:32:20)\n    at <anonymous> (D:\\Code\\agent-app\\geospatial-operational-world-model\\validation\\scripts\\network-activation-runtime-gate.ts:72:3)"
+  ],
+  "finishedAt": "2026-08-24T17:05:08.068Z"
+}
