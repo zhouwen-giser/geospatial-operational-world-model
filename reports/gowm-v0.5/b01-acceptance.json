@@ -1,0 +1,14 @@
+{
+  "phase": "B01",
+  "status": "PASS",
+  "sourceSha256": "a8b04ac9a6d6660d3042f4ba9030b0bb0b99b11a8f301a47dbfd12c8796ce116",
+  "licenseStatus": "UNSPECIFIED",
+  "integrationDecision": "REFERENCE_ONLY_SELECTIVE_REIMPLEMENTATION",
+  "acceptance": {
+    "AC-B004": "PASS",
+    "AC-B005": "PASS",
+    "AC-B006": "PASS",
+    "AC-B007": "PASS",
+    "AC-B008": "PASS"
+  }
+}

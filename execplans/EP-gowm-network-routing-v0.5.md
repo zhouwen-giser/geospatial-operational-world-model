@@ -39,7 +39,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 ## Progress
 
 - [x] B00 Baseline Reconciliation
-- [ ] B01 Source Lock
+- [x] B01 Source Lock
 - [ ] A00 Architecture ADR
 - [ ] A01 Contracts
 - [ ] D00 Database Image
@@ -72,6 +72,7 @@ Extend the GOWM+ 0.4 data foundation with one authoritative, immutable network g
 
 - The repository starts with migrations 001-032 and the v0.4 stable contract/runtime.
 - The existing migration lock covers only 001-014, so v0.5 records an additional immutable 001-032 lock without changing the older lock.
+- The supplied reference archive has no redistributable license declaration; every permitted concept is mapped to a clean-room implementation target and all coverage-planning lifecycle/solver artifacts are excluded.
 
 ## Failed attempts retained
 
