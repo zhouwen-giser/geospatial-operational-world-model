@@ -38,8 +38,10 @@ BEGIN
   WHERE n.nspname = 'gowm_capability'
     AND NOT t.tgisinternal
     AND t.tgname LIKE '%_immutable';
-  IF append_only_triggers <> 6 THEN
-    RAISE EXCEPTION 'expected six gateway append-only guards, found %', append_only_triggers;
+  -- Migration 013 adds the immutable World Query node transition guard to the
+  -- six Gateway persistence guards introduced by migration 011.
+  IF append_only_triggers <> 7 THEN
+    RAISE EXCEPTION 'expected seven gateway append-only guards, found %', append_only_triggers;
   END IF;
 
   -- Gateway persistence must never own or mutate Foundation facts through an
@@ -83,6 +85,14 @@ BEGIN
        'gowm_gateway_registry_admin', 'gowm_capability.execution_receipt', 'INSERT'
      ) THEN
     RAISE EXCEPTION 'controlled registry administration boundary is incorrect';
+  END IF;
+
+  IF NOT gowm_capability.valid_capability_ports(
+    '{"inputs":[],"outputs":[{"name":"references","path":"/references/0","schemaUri":"urn:test:reference","schemaHash":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","valueKind":"REFERENCE_KEY","unitSemantics":"DISCRETE"}]}'::jsonb
+  ) OR gowm_capability.valid_capability_ports(
+    '{"inputs":[],"outputs":[{"name":"references","path":"references/0","schemaUri":"urn:test:reference","schemaHash":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","valueKind":"REFERENCE_KEY","unitSemantics":"DISCRETE"}]}'::jsonb
+  ) THEN
+    RAISE EXCEPTION 'capability port JSON Pointer contract is not enforced';
   END IF;
 END
 $assert_catalog$;
@@ -146,7 +156,7 @@ BEGIN
       'urn:test:other-output', 'sha256:' || repeat('5', 64),
       'PREVIEW', 'REQUEST_CONTEXT', 'SYNC', ARRAY['SYNC_HTTP'],
       'REMOTE_ALLOWED', 100, 100, 'LOW', '{"maximumInputBytes":1}'::jsonb,
-      '{"inputs":[],"outputs":[{"name":"result"}]}'::jsonb,
+      '{"inputs":[],"outputs":[{"name":"result","schemaUri":"urn:test:other-output","schemaHash":"sha256:5555555555555555555555555555555555555555555555555555555555555555","valueKind":"ANY","unitSemantics":"UNSPECIFIED"}]}'::jsonb,
       'NONE', 'test-policy-v1'
     );
     RAISE EXCEPTION 'duplicate operation/version was accepted';

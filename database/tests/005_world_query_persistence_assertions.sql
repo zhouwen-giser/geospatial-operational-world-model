@@ -47,3 +47,15 @@ BEGIN
   END IF;
 END
 $assert$;
+
+DO $claim_runtime$
+DECLARE
+  claimed_count integer;
+BEGIN
+  SELECT count(*) INTO claimed_count
+  FROM gowm_capability.claim_world_query_job('database-assertion-worker', 60);
+  IF claimed_count <> 0 THEN
+    RAISE EXCEPTION 'fresh World Query queue unexpectedly returned % claim(s)', claimed_count;
+  END IF;
+END
+$claim_runtime$;

@@ -436,12 +436,19 @@ describe("P16 failure isolation, authorization identity, and restart worker", ()
 
   it("locks service principals, PUBLIC function ACL, safe lease horizon, non-root/resource/isolated-network Compose contracts", async () => {
     const migration = await readFile("database/migrations/014_capability_runtime_service_principals.sql", "utf8");
+    const claimRuntimeFix = await readFile("database/migrations/015_world_query_claim_runtime_fix.sql", "utf8");
+    const portPathFix = await readFile("database/migrations/016_capability_port_path_contract_fix.sql", "utf8");
     expect(migration).toContain("REVOKE ALL ON FUNCTION gowm_capability.claim_world_query_job(text, integer) FROM PUBLIC");
     expect(migration).toContain("deadline_at + interval '30 seconds'");
     expect(migration).toContain("g.state = 'QUEUED' AND g.deadline_at > clock_timestamp()");
     expect(migration).toContain("QUEUE_DEADLINE_EXPIRED");
     expect(migration).toContain("GRANT gowm_gateway_runtime TO gowm_gateway_service");
     expect(migration).toContain("GRANT gowm_gateway_registry_admin TO gowm_gateway_registry_service");
+    expect(claimRuntimeFix).toContain("RETURNING inserted_transition.job_id AS transitioned_job_id");
+    expect(claimRuntimeFix).toContain("JOIN transition ON transition.transitioned_job_id = updated.job_id");
+    expect(claimRuntimeFix).toContain("REVOKE ALL ON FUNCTION gowm_capability.claim_world_query_job(text, integer) FROM PUBLIC");
+    expect(portPathFix).toContain("port - ARRAY['name','path','schemaUri','schemaHash','valueKind','unitSemantics']");
+    expect(portPathFix).toContain("port->>'path' ~ '^/(?:[^~/]|~[01])+");
     const assertions = await readFile("database/tests/006_capability_runtime_principal_assertions.sql", "utf8");
     expect(assertions).toContain("world-query claim function must be executable only through the gateway runtime role");
 
