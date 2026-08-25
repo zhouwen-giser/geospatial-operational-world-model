@@ -48,6 +48,18 @@
       "approvedBy": "gowm-release-operator",
       "transportTokenEnv": "OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN",
       "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.platform-validation",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:8fbcde2e96f9b084b75ecc9f88e06a4502c56d2e8f9e6f0be72a3212bfafeed8",
+      "manifestHash": "sha256:3d025f42daaea995915935433ec6c6a00b5f10ca366986338df6596a489506ac",
+      "manifestPath": "contracts/manifests/providers/platform-validation-provider.json",
+      "endpoint": "http://platform-validation-provider:8095",
+      "approvalId": "platform-validation-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
     }
   ]
 }

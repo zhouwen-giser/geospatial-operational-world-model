@@ -1,0 +1,6 @@
+{
+  "name": "@gowm/platform-validation-provider",
+  "version": "0.6.1",
+  "private": true,
+  "type": "module"
+}

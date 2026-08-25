@@ -13,6 +13,7 @@ export interface ReferenceRecord {
   available: boolean;
   retired?: boolean;
   validUntil?: string;
+  lastUpdatedAt?: string;
   snapshotStatus?: "CURRENT" | "STALE" | "UNKNOWN" | "NOT_APPLICABLE";
   validationEvidenceRefs?: string[];
 }
@@ -32,13 +33,15 @@ export function validateReferenceRecord(
     snapshot: "UNKNOWN", usable: "NO", reasons: ["Reference is unavailable in the authorized scope"]
   };
   const expired = record.validUntil !== undefined && Date.parse(record.validUntil) <= now.getTime();
+  const maximumAgeExceeded = request.maximumAgeMs !== undefined && (record.lastUpdatedAt === undefined || now.getTime() - Date.parse(record.lastUpdatedAt) > request.maximumAgeMs);
   const snapshot = record.snapshotStatus ?? "NOT_APPLICABLE";
   const existence = record.retired ? "RETIRED" : record.available ? "AVAILABLE" : "NOT_FOUND";
-  const freshness = expired ? "EXPIRED" : snapshot === "STALE" ? "STALE" : "CURRENT";
-  const usable = existence !== "AVAILABLE" || expired ? "NO" : request.requireCurrentSnapshot === true && snapshot !== "CURRENT" ? "REVALIDATE" : snapshot === "STALE" || snapshot === "UNKNOWN" ? "REVALIDATE" : "YES";
+  const freshness = expired ? "EXPIRED" : maximumAgeExceeded || snapshot === "STALE" ? "STALE" : "CURRENT";
+  const usable = existence !== "AVAILABLE" || expired ? "NO" : maximumAgeExceeded || request.requireCurrentSnapshot === true && snapshot !== "CURRENT" ? "REVALIDATE" : snapshot === "STALE" || snapshot === "UNKNOWN" ? "REVALIDATE" : "YES";
   const reasons = [
     ...(record.retired ? ["Reference is retired"] : []),
     ...(expired ? ["Reference TTL expired"] : []),
+    ...(maximumAgeExceeded ? ["Reference exceeds requested maximum age"] : []),
     ...(snapshot === "STALE" ? ["Pinned data snapshot is stale"] : []),
     ...(snapshot === "UNKNOWN" ? ["Snapshot currentness is unknown"] : [])
   ];

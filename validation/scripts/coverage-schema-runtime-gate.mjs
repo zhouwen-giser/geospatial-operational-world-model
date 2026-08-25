@@ -185,11 +185,11 @@ try {
   const assertions = (await readdir(resolve(repositoryRoot, "database/tests")))
     .filter((name) => /^\d{3}_.+_assertions\.sql$/u.test(name))
     .sort();
-  if (migrations.length !== 56 || migrations.at(-1)?.slice(0, 3) !== "056") {
-    throw new Error(`expected the current v0.6.1 migration set 001-056, received ${migrations.length}`);
+  if (migrations.length !== 57 || migrations.at(-1)?.slice(0, 3) !== "057") {
+    throw new Error(`expected the current v0.6.1 migration set 001-057, received ${migrations.length}`);
   }
-  if (assertions.length !== 41 || assertions.at(-1)?.slice(0, 3) !== "041") {
-    throw new Error(`expected the current v0.6.1 assertion set 001-041, received ${assertions.length}`);
+  if (assertions.length !== 42 || assertions.at(-1)?.slice(0, 3) !== "042") {
+    throw new Error(`expected the current v0.6.1 assertion set 001-042, received ${assertions.length}`);
   }
 
   createDatabase(freshDatabase);

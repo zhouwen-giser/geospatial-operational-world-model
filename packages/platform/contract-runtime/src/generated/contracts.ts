@@ -2320,6 +2320,16 @@ export type GowmV061RoutingSnapshotCurrentness = {
   schemaVersion: "1.0";
 };
 
+export type GowmV061SnapshotGetRequest = {
+  schemaVersion: "1.0";
+  snapshotId: string;
+};
+
+export type GowmV061SnapshotValidationRequest = {
+  schemaVersion: "1.0";
+  snapshot: GowmV061DataSnapshotManifest;
+};
+
 export type GowmV061SnapshotValidationResult = {
   evaluatedAt: string;
   resourceResults: Array<{

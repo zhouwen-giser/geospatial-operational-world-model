@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:snapshot-get-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "snapshotId"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "snapshotId": { "type": "string", "minLength": 1, "maxLength": 256 }
+  }
+}

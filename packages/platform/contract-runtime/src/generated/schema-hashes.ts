@@ -180,6 +180,8 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "gowm-v0.6.1/result-validation-result.schema.json": "sha256:e5f544f8d40c72dc1dc8039c4f5c83ed94b5d16624e05a68d47c65207941c75c",
   "gowm-v0.6.1/route-boundary-analysis.schema.json": "sha256:9e7e7d6b2cf8e68c4f6797cfbf7b80ab5f5893179917198d449d2e9c9e1c56e0",
   "gowm-v0.6.1/routing-snapshot-currentness.schema.json": "sha256:cf334baaaec715c4b1e22d6cfdab8f3ce053d11244ab6165b1f6ca8947306b5c",
+  "gowm-v0.6.1/snapshot-get-request.schema.json": "sha256:dd9fe8b28257290a74123631f89e671e868092d2bc664216f95c092b90bfa3fa",
+  "gowm-v0.6.1/snapshot-validation-request.schema.json": "sha256:32ae7b617df7623765471633d9aef335fb69379f850ba4ed4452739f21f145da",
   "gowm-v0.6.1/snapshot-validation-result.schema.json": "sha256:16ff7adb2f69a4022cb540835037de73093f9412146c07d918c715bef6c1a72b",
   "gowm-v0.6.1/world-result-semantics.schema.json": "sha256:29e0342ceab43c1d3cefc4f0e10441a2492252432b89c5fcddb36a1463ed93ca",
   "gowm-v0.6/coverage-alternative-policy.schema.json": "sha256:70248bfb7986217e477940a71faf9a5b691ad25f3723c6f0f8f4805ba6083dd8",
