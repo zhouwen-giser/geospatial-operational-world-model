@@ -1,0 +1,11 @@
+{
+  "planValidity": "VALID",
+  "currentness": "STALE",
+  "usable": "REVALIDATE",
+  "staleDimensions": [
+    "CONDITION"
+  ],
+  "reasons": [
+    "Condition snapshot changed from C1 to C2"
+  ]
+}

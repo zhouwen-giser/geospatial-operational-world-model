@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:data-quality-summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "validationStatus",
+    "knownLimitations"
+  ],
+  "properties": {
+    "completeness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "positionalAccuracyM": {
+      "type": "number",
+      "minimum": 0
+    },
+    "temporalAccuracyMs": {
+      "type": "number",
+      "minimum": 0
+    },
+    "sourceReliability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "validationStatus": {
+      "enum": [
+        "CERTIFIED",
+        "VALIDATED",
+        "UNCHECKED",
+        "FAILED"
+      ]
+    },
+    "knownLimitations": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

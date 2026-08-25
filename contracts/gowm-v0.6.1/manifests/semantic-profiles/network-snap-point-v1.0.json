@@ -1,0 +1,23 @@
+{
+  "operationId": "network.snap.point",
+  "operationVersion": "1.0",
+  "domain": "NETWORK",
+  "acceptedReferenceKinds": [
+    "LAYER_FEATURE"
+  ],
+  "producedReferenceKinds": [],
+  "relationSemantics": [
+    "SNAPPED_TO_NETWORK"
+  ],
+  "spatialSemantics": "EXACT",
+  "timeSemantics": "SNAPSHOT",
+  "resultNature": "DERIVED",
+  "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+  "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+  "domainStatusPath": "/status",
+  "domainStatusMapping": {
+    "RESOLVED_UNIQUE": "COMPLETED",
+    "AMBIGUOUS": "AMBIGUOUS",
+    "UNREACHABLE": "NO_FEASIBLE_RESULT"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "operationId": "catalog.search",
+  "operationVersion": "1.0",
+  "domain": "CATALOG",
+  "acceptedReferenceKinds": [],
+  "producedReferenceKinds": [
+    "DATASET",
+    "LAYER"
+  ],
+  "relationSemantics": [
+    "DISCOVERS_DATA_PRODUCT"
+  ],
+  "spatialSemantics": "EXACT",
+  "timeSemantics": "INTERVAL",
+  "resultNature": "CATALOG",
+  "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+  "freshnessSemantics": "WORLD_VERSION"
+}

@@ -1,0 +1,15 @@
+openapi: 3.1.0
+info:
+  title: GOWM Road Coverage Correctness Additions
+  version: 1.1.0
+paths:
+  /v1/provider-operations/coverage.road.verify:execute:
+    post:
+      operationId: verifyCoveragePlan
+      responses:
+        "200":
+          description: Frozen validity plus currentness
+          content:
+            application/json:
+              schema:
+                $ref: ../contracts/plan-validation-result.schema.json

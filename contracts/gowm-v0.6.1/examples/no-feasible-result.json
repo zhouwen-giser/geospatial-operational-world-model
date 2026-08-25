@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "status": "NO_FEASIBLE_RESULT",
+  "reasons": [
+    "TURN_CONSTRAINT_BLOCKED"
+  ],
+  "diagnostics": {
+    "blockedSequence": [
+      "arc_a",
+      "arc_b",
+      "arc_c"
+    ]
+  },
+  "dataSnapshotHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "computeSnapshotHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "problemHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "revalidationRequired": true
+}

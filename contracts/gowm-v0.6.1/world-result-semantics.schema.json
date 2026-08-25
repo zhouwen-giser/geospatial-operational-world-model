@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:world-result-semantics",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "normalizedStatus",
+    "sourceStatus",
+    "sourceAuthority"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "normalizedStatus": {
+      "enum": [
+        "COMPLETED",
+        "PARTIAL",
+        "NO_DATA",
+        "AMBIGUOUS",
+        "INDETERMINATE",
+        "NO_FEASIBLE_RESULT",
+        "STALE",
+        "FAILED"
+      ]
+    },
+    "sourceStatus": {
+      "type": "string"
+    },
+    "sourceAuthority": {
+      "type": "string"
+    },
+    "reasons": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

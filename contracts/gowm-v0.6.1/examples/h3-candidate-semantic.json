@@ -1,0 +1,22 @@
+{
+  "operationId": "h3.geometry.cover",
+  "operationVersion": "1.0",
+  "domain": "H3",
+  "acceptedReferenceKinds": [
+    "LAYER_FEATURE",
+    "DERIVED_REFERENCE"
+  ],
+  "producedReferenceKinds": [],
+  "relationSemantics": [
+    "CANDIDATE_COVER"
+  ],
+  "spatialSemantics": "CANDIDATE",
+  "timeSemantics": "NONE",
+  "resultNature": "DERIVED",
+  "negativeEvidencePolicy": "NOT_APPLICABLE",
+  "freshnessSemantics": "NONE",
+  "exactVerificationOperation": "spatial.find-intersections",
+  "notes": [
+    "H3 cover is candidate-only and cannot prove exact containment."
+  ]
+}

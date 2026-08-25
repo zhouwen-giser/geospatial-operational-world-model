@@ -1,0 +1,27 @@
+{
+  "operationId": "reference.resolve",
+  "operationVersion": "1.0",
+  "domain": "REFERENCE",
+  "acceptedReferenceKinds": [],
+  "producedReferenceKinds": [
+    "WORLD_OBJECT",
+    "LAYER_FEATURE",
+    "DATASET",
+    "LAYER",
+    "OPERATIONAL_TASK"
+  ],
+  "relationSemantics": [],
+  "spatialSemantics": "NONE",
+  "timeSemantics": "CURRENT",
+  "resultNature": "VALIDATION",
+  "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+  "freshnessSemantics": "WORLD_VERSION",
+  "domainStatusPath": "/resolutions/*/status",
+  "domainStatusMapping": {
+    "RESOLVED_EXACT": "COMPLETED",
+    "SUGGESTED_UNIQUE": "COMPLETED",
+    "AMBIGUOUS": "AMBIGUOUS",
+    "UNRESOLVED": "NO_DATA",
+    "INVALID": "FAILED"
+  }
+}

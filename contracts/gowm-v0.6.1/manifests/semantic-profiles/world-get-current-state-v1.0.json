@@ -1,0 +1,16 @@
+{
+  "operationId": "world.get-current-state",
+  "operationVersion": "1.0",
+  "domain": "WORLD_STATE",
+  "acceptedReferenceKinds": [
+    "WORLD_OBJECT",
+    "OPERATIONAL_TASK"
+  ],
+  "producedReferenceKinds": [],
+  "relationSemantics": [],
+  "spatialSemantics": "EXACT",
+  "timeSemantics": "CURRENT",
+  "resultNature": "FACT",
+  "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+  "freshnessSemantics": "WORLD_VERSION"
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:data-snapshot-manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "snapshotId",
+    "consistency",
+    "resources",
+    "snapshotHash"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "snapshotId": {
+      "type": "string"
+    },
+    "consistency": {
+      "enum": [
+        "PINNED",
+        "CONSISTENT_AT_START",
+        "BEST_EFFORT"
+      ]
+    },
+    "resources": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resourceKind",
+          "resourceId",
+          "version"
+        ],
+        "properties": {
+          "referenceKey": {
+            "$ref": "common.schema.json#/$defs/referenceKey"
+          },
+          "resourceKind": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "contentHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "worldVersion": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "snapshotHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

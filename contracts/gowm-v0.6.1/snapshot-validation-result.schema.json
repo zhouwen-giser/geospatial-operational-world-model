@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:snapshot-validation-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "snapshotId",
+    "status",
+    "resourceResults",
+    "evaluatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "snapshotId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "CURRENT",
+        "STALE",
+        "UNKNOWN",
+        "UNAVAILABLE"
+      ]
+    },
+    "resourceResults": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resourceKind",
+          "resourceId",
+          "status"
+        ],
+        "properties": {
+          "resourceKind": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "CURRENT",
+              "STALE",
+              "UNKNOWN",
+              "UNAVAILABLE",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "currentVersion": {
+            "type": "string"
+          },
+          "currentContentHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evaluatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

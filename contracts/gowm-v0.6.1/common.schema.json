@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:common",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "referenceKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "namespace",
+        "kind",
+        "id",
+        "version"
+      ],
+      "properties": {
+        "namespace": {
+          "const": "gowm"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^wrf_[0-9a-f]{32}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      }
+    },
+    "routingSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "networkDatasetVersion",
+        "graphVersion",
+        "travelProfileVersion",
+        "costProfileVersion",
+        "graphContentHash",
+        "costContentHash"
+      ],
+      "properties": {
+        "networkDatasetVersion": {
+          "type": "string"
+        },
+        "graphVersion": {
+          "type": "string"
+        },
+        "travelProfileVersion": {
+          "type": "string"
+        },
+        "costProfileVersion": {
+          "type": "string"
+        },
+        "conditionSnapshotId": {
+          "type": "string"
+        },
+        "sourceWorldVersion": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "graphContentHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "costContentHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "conditionContentHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "capturedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "timeRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "to": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

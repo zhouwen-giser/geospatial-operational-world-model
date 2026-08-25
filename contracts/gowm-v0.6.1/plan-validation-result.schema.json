@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:plan-validation-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "planValidity",
+    "currentness",
+    "usable",
+    "reasons"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "planValidity": {
+      "enum": [
+        "VALID",
+        "INVALID",
+        "UNKNOWN"
+      ]
+    },
+    "currentness": {
+      "enum": [
+        "CURRENT",
+        "STALE",
+        "UNKNOWN",
+        "UNAVAILABLE"
+      ]
+    },
+    "usable": {
+      "enum": [
+        "YES",
+        "REVALIDATE",
+        "NO"
+      ]
+    },
+    "staleDimensions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "GRAPH",
+          "TRAVEL_PROFILE",
+          "COST_PROFILE",
+          "CONDITION",
+          "SOURCE_WORLD"
+        ]
+      }
+    },
+    "reasons": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "verificationRef": {
+      "type": "string"
+    },
+    "currentnessResult": {
+      "$ref": "routing-snapshot-currentness.schema.json"
+    }
+  }
+}

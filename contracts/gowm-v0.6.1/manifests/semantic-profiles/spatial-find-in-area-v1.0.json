@@ -1,0 +1,21 @@
+{
+  "operationId": "spatial.find-in-area",
+  "operationVersion": "1.0",
+  "domain": "SPATIAL",
+  "acceptedReferenceKinds": [
+    "WORLD_OBJECT",
+    "LAYER_FEATURE",
+    "DERIVED_REFERENCE"
+  ],
+  "producedReferenceKinds": [
+    "REFERENCE_SET"
+  ],
+  "relationSemantics": [
+    "INSIDE"
+  ],
+  "spatialSemantics": "EXACT",
+  "timeSemantics": "SNAPSHOT",
+  "resultNature": "DERIVED",
+  "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+  "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+}

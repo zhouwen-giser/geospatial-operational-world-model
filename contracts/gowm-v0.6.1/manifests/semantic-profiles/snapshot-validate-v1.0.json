@@ -1,0 +1,15 @@
+{
+  "operationId": "snapshot.validate",
+  "operationVersion": "1.0",
+  "domain": "PLATFORM",
+  "acceptedReferenceKinds": [],
+  "producedReferenceKinds": [],
+  "relationSemantics": [
+    "VALIDATES_SNAPSHOT"
+  ],
+  "spatialSemantics": "NONE",
+  "timeSemantics": "CURRENT",
+  "resultNature": "VALIDATION",
+  "negativeEvidencePolicy": "NOT_APPLICABLE",
+  "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+}

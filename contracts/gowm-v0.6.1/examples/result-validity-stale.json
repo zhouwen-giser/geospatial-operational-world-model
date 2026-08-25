@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "referenceKey": {
+    "namespace": "gowm",
+    "kind": "QUERY_RESULT",
+    "id": "wrf_33333333333333333333333333333333",
+    "version": "1"
+  },
+  "existence": "AVAILABLE",
+  "freshness": "CURRENT",
+  "snapshot": "STALE",
+  "usable": "REVALIDATE",
+  "reasons": [
+    "Routing condition snapshot changed"
+  ],
+  "resultSemantics": {
+    "schemaVersion": "1.0",
+    "normalizedStatus": "STALE",
+    "sourceStatus": "SUCCEEDED",
+    "sourceAuthority": "gowm.road-coverage-planning"
+  }
+}

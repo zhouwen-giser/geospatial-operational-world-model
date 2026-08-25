@@ -2055,6 +2055,287 @@ export type GowmV05TravelProfile = {
   version: string;
 };
 
+export type GowmV061BoundaryCrossing = {
+  arcKey: string;
+  classification?: "CROSSING" | "TOUCH" | "OVERLAP_START" | "OVERLAP_END";
+  direction: "FORWARD" | "REVERSE";
+  evidenceHash?: string;
+  fractionPpm: number;
+  kind: "ENTRY" | "EXIT";
+  point: {
+  coordinates: [number, number] | [number, number, number];
+  type: "Point";
+};
+  sequence: number;
+};
+
+export type GowmV061CapabilitySemanticCatalog = {
+  catalogHash: string;
+  profiles: Array<GowmV061CapabilitySemanticProfile>;
+  registryRevision: string;
+  schemaVersion: "1.0";
+};
+
+export type GowmV061CapabilitySemanticProfile = {
+  acceptedReferenceKinds?: Array<string>;
+  domain: "REFERENCE" | "CATALOG" | "WORLD_STATE" | "SPATIAL" | "TEMPORAL" | "H3" | "NETWORK" | "ROUTING" | "COVERAGE" | "ANALYSIS" | "PLATFORM";
+  domainStatusMapping?: Record<string, "COMPLETED" | "PARTIAL" | "NO_DATA" | "AMBIGUOUS" | "INDETERMINATE" | "NO_FEASIBLE_RESULT" | "STALE" | "FAILED">;
+  domainStatusPath?: string;
+  exactVerificationOperation?: string;
+  freshnessSemantics: "NONE" | "TTL" | "WORLD_VERSION" | "SNAPSHOT_CURRENTNESS";
+  negativeEvidencePolicy: "SUPPORTED" | "NOT_SUPPORTED" | "NO_DATA_IS_UNKNOWN" | "NOT_APPLICABLE";
+  notes?: Array<string>;
+  operationId: string;
+  operationVersion: string;
+  producedReferenceKinds?: Array<string>;
+  relationSemantics?: Array<string>;
+  resultNature: "FACT" | "PROJECTION" | "DERIVED" | "PLAN" | "VALIDATION" | "CATALOG";
+  spatialSemantics: "EXACT" | "CANDIDATE" | "AGGREGATED" | "NONE";
+  timeSemantics: "CURRENT" | "HISTORICAL" | "INTERVAL" | "SNAPSHOT" | "NONE";
+};
+
+export type GowmV061CatalogSearchRequest = {
+  crs?: Array<string>;
+  currentOnly?: boolean;
+  cursor?: string;
+  dataKinds?: Array<string>;
+  limit: number;
+  minimumValidationStatus?: "CERTIFIED" | "VALIDATED" | "UNCHECKED";
+  requiredCapabilities?: Array<string>;
+  schemaVersion: "1.0";
+  spatialFilter?: Record<string, unknown>;
+  timeFilter?: GowmV061CommonTimeRange;
+};
+
+export type GowmV061CatalogSearchResult = {
+  items: Array<GowmV061DataProductDescriptor>;
+  nextCursor?: string;
+  schemaVersion: "1.0";
+  truncated: boolean;
+};
+
+export type GowmV061Common = Record<string, unknown>;
+
+export type GowmV061CommonDateTime = string;
+
+export type GowmV061CommonReferenceKey = {
+  id: string;
+  kind: string;
+  namespace: "gowm";
+  version: string;
+};
+
+export type GowmV061CommonRoutingSnapshot = {
+  capturedAt?: string;
+  conditionContentHash?: string;
+  conditionSnapshotId?: string;
+  costContentHash: string;
+  costProfileVersion: string;
+  graphContentHash: string;
+  graphVersion: string;
+  networkDatasetVersion: string;
+  sourceWorldVersion?: number;
+  travelProfileVersion: string;
+};
+
+export type GowmV061CommonSha256 = string;
+
+export type GowmV061CommonTimeRange = {
+  from?: string;
+  to?: string;
+};
+
+export type GowmV061ComputeSnapshotManifest = {
+  contractHashes: Array<string>;
+  engines: Array<{
+  digest?: string;
+  name: string;
+  version: string;
+}>;
+  operationId: string;
+  operationVersion: string;
+  policies: Array<{
+  digest: string;
+  id: string;
+  version: string;
+}>;
+  providerVersion: string;
+  schemaVersion: "1.0";
+  snapshotHash: string;
+};
+
+export type GowmV061CoverageObjective = ({
+  normalizationPolicyVersion?: string;
+  profile: "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED";
+  weights?: {
+  deadhead: number;
+  distance: number;
+  duration: number;
+  energy?: number;
+  risk: number;
+};
+}) & ((Record<string, unknown>));
+
+export type GowmV061DataProductDescriptor = {
+  access: {
+  dataScopeRequired: boolean;
+  datasetScopeRequired: boolean;
+};
+  crs?: string;
+  currentVersion: string;
+  dataKind: "VECTOR" | "RASTER" | "ELEVATION" | "NETWORK" | "TRAJECTORY" | "OBSERVATION" | "EVENT" | "POINT_CLOUD" | "TILESET" | "CURRENT_PROJECTION";
+  displayName?: string;
+  freshnessPolicy: Record<string, unknown>;
+  lineage: Array<string>;
+  quality: GowmV061DataQualitySummary;
+  referenceKey: GowmV061CommonReferenceKey;
+  schemaHash: string;
+  schemaRef: string;
+  schemaVersion: "1.0";
+  source: Record<string, unknown>;
+  spatialExtent?: Record<string, unknown>;
+  supportedCapabilities: Array<string>;
+  temporalExtent?: GowmV061CommonTimeRange;
+};
+
+export type GowmV061DataQualitySummary = {
+  completeness?: number;
+  knownLimitations: Array<string>;
+  positionalAccuracyM?: number;
+  sourceReliability?: number;
+  temporalAccuracyMs?: number;
+  validationStatus: "CERTIFIED" | "VALIDATED" | "UNCHECKED" | "FAILED";
+};
+
+export type GowmV061DataSnapshotManifest = {
+  capturedAt?: string;
+  consistency: "PINNED" | "CONSISTENT_AT_START" | "BEST_EFFORT";
+  resources: Array<{
+  contentHash?: string;
+  referenceKey?: GowmV061CommonReferenceKey;
+  resourceId: string;
+  resourceKind: string;
+  version: string;
+  worldVersion?: number;
+}>;
+  schemaVersion: "1.0";
+  snapshotHash: string;
+  snapshotId: string;
+};
+
+export type GowmV061NoFeasibleResult = {
+  computeSnapshotHash?: string;
+  dataSnapshotHash?: string;
+  diagnostics: Record<string, unknown>;
+  problemHash?: string;
+  reasons: Array<"DISCONNECTED_REQUIRED_COMPONENT" | "TURN_CONSTRAINT_BLOCKED" | "PROFILE_EXCLUDES_REQUIRED_ARC" | "CONDITION_CLOSES_REQUIRED_ARC" | "ENDPOINT_UNREACHABLE" | "RESOURCE_LIMIT_PREVENTS_PROOF" | "UNKNOWN">;
+  revalidationRequired: true;
+  schemaVersion: "1.0";
+  status: "NO_FEASIBLE_RESULT";
+};
+
+export type GowmV061PlanValidationResult = {
+  currentness: "CURRENT" | "STALE" | "UNKNOWN" | "UNAVAILABLE";
+  currentnessResult?: GowmV061RoutingSnapshotCurrentness;
+  planValidity: "VALID" | "INVALID" | "UNKNOWN";
+  reasons: Array<string>;
+  schemaVersion: "1.0";
+  staleDimensions?: Array<"GRAPH" | "TRAVEL_PROFILE" | "COST_PROFILE" | "CONDITION" | "SOURCE_WORLD">;
+  usable: "YES" | "REVALIDATE" | "NO";
+  verificationRef?: string;
+};
+
+export type GowmV061ProviderConformanceReport = {
+  checks: Array<{
+  evidenceRefs?: Array<string>;
+  id: string;
+  message: string;
+  status: "PASS" | "FAIL" | "BLOCKED";
+}>;
+  generatedAt: string;
+  providerId: string;
+  providerVersion: string;
+  reportHash: string;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL" | "BLOCKED";
+};
+
+export type GowmV061ReferenceValidity = {
+  existence: "AVAILABLE" | "RETIRED" | "NOT_FOUND" | "SCOPE_DENIED";
+  freshness: "CURRENT" | "STALE" | "EXPIRED" | "NOT_APPLICABLE" | "UNKNOWN";
+  reasons: Array<string>;
+  referenceKey: GowmV061CommonReferenceKey;
+  resultSemantics?: GowmV061WorldResultSemantics;
+  schemaVersion: "1.0";
+  snapshot: "CURRENT" | "STALE" | "UNKNOWN" | "NOT_APPLICABLE";
+  usable: "YES" | "REVALIDATE" | "NO";
+  validationEvidenceRefs?: Array<string>;
+};
+
+export type GowmV061ResultValidationRequest = {
+  references: Array<{
+  maximumAgeMs?: number;
+  referenceKey: GowmV061CommonReferenceKey;
+  requireCurrentSnapshot?: boolean;
+}>;
+  schemaVersion: "1.0";
+};
+
+export type GowmV061ResultValidationResult = {
+  results: Array<GowmV061ReferenceValidity>;
+  schemaVersion: "1.0";
+};
+
+export type GowmV061RouteBoundaryAnalysis = {
+  analysisHash: string;
+  analysisPolicyVersion?: string;
+  areaHash: string;
+  crossings: Array<GowmV061BoundaryCrossing>;
+  endInside: boolean;
+  routeHash: string;
+  schemaVersion: "1.0";
+  startInside: boolean;
+};
+
+export type GowmV061RoutingSnapshotCurrentness = {
+  currentSnapshot?: GowmV061CommonRoutingSnapshot;
+  currentness: "CURRENT" | "STALE" | "UNKNOWN" | "UNAVAILABLE";
+  dimensions: {
+  condition: "CURRENT" | "STALE" | "UNKNOWN" | "NOT_APPLICABLE";
+  costProfile: "CURRENT" | "STALE" | "UNKNOWN" | "NOT_APPLICABLE";
+  graph: "CURRENT" | "STALE" | "UNKNOWN" | "NOT_APPLICABLE";
+  sourceWorld: "CURRENT" | "STALE" | "UNKNOWN" | "NOT_APPLICABLE";
+  travelProfile: "CURRENT" | "STALE" | "UNKNOWN" | "NOT_APPLICABLE";
+};
+  evaluatedAt: string;
+  reasons?: Array<string>;
+  requestedSnapshot: GowmV061CommonRoutingSnapshot;
+  schemaVersion: "1.0";
+};
+
+export type GowmV061SnapshotValidationResult = {
+  evaluatedAt: string;
+  resourceResults: Array<{
+  currentContentHash?: string;
+  currentVersion?: string;
+  reason?: string;
+  resourceId: string;
+  resourceKind: string;
+  status: "CURRENT" | "STALE" | "UNKNOWN" | "UNAVAILABLE" | "NOT_APPLICABLE";
+}>;
+  schemaVersion: "1.0";
+  snapshotId: string;
+  status: "CURRENT" | "STALE" | "UNKNOWN" | "UNAVAILABLE";
+};
+
+export type GowmV061WorldResultSemantics = {
+  normalizedStatus: "COMPLETED" | "PARTIAL" | "NO_DATA" | "AMBIGUOUS" | "INDETERMINATE" | "NO_FEASIBLE_RESULT" | "STALE" | "FAILED";
+  reasons?: Array<string>;
+  schemaVersion: "1.0";
+  sourceAuthority: string;
+  sourceStatus: string;
+};
+
 export type GowmV06CoverageAlternativePolicy = {
   maximumGenerationCandidates?: number;
   maximumWeightedArcOverlapPpm: number;
