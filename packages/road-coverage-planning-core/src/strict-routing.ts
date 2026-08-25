@@ -61,15 +61,12 @@ export function solveStrictCoverageRoute(
   if (options.serviceMode === "EITHER_DIRECTION") {
     throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "EITHER_DIRECTION is not a Stable v0.6 service mode");
   }
-  if (problem.endpointMode === "LAST_AREA_EXIT") {
-    throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "LAST_AREA_EXIT requires boundary-event integration");
-  }
   const arcs = effectiveArcs(problem, traversableArcs, options);
   const byArc = new Map(arcs.map((arc) => [arc.arcKey, arc]));
   for (const obligation of problem.obligationSet.obligations) if (!byArc.has(obligation.arcKey)) {
     throw new CoveragePlanningError("NO_FEASIBLE_PLAN", `required Arc is closed or excluded by the travel profile: ${obligation.arcKey}`);
   }
-  const endState = problem.endpointMode === "FIXED_END" ? problem.fixedEndState : problem.startState;
+  const endState = problem.endpointMode === "FIXED_END" ? problem.fixedEndState : problem.endpointMode === "LAST_AREA_EXIT" ? problem.exitStates?.[0] : problem.startState;
   if (endState === undefined) throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "FIXED_END requires fixedEndState");
   validateDirectedState(problem.startState.arcKey, problem.startState.direction, problem.startState.fractionPpm, byArc, "start");
   validateDirectedState(endState.arcKey, endState.direction, endState.fractionPpm, byArc, "end");

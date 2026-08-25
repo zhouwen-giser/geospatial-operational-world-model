@@ -53,6 +53,12 @@ export interface VerifyCoverageRouteInput {
   objective: VerifierObjective;
   travelPolicy: VerifierTravelPolicy;
   turnRules?: VerifierTurnRule[];
+  authoritativeBoundaryEvents?: Array<{
+    sequence: number;
+    kind: "ENTRY" | "EXIT";
+    state: { arcKey: string; fractionPpm: number; direction: "FORWARD" | "REVERSE" };
+  }>;
+  boundaryStartInside?: boolean;
 }
 
 export interface AdmittedVerifiedRoute {

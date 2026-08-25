@@ -143,7 +143,7 @@ export function admitVerifiedCoverageRoute(route: CoverageRoute, verification: C
 
 function verifyEndpoints(input: VerifyCoverageRouteInput, byArc: ReadonlyMap<string, VerifierNetworkArc>, violations: Violation[]): { start: boolean; end: boolean } {
   let start = canonicalSha256(input.candidate.startState) === canonicalSha256(input.problem.startState);
-  const expectedEnd = input.problem.endpointMode === "FIXED_END" ? input.problem.fixedEndState : input.problem.startState;
+  const expectedEnd = input.problem.endpointMode === "FIXED_END" ? input.problem.fixedEndState : input.problem.endpointMode === "LAST_AREA_EXIT" ? input.candidate.endState : input.problem.startState;
   let end = expectedEnd !== undefined && canonicalSha256(input.candidate.endState) === canonicalSha256(expectedEnd);
   const first = input.candidate.segments[0], last = input.candidate.segments.at(-1);
   const startArc = byArc.get(input.problem.startState.arcKey), endArc = expectedEnd === undefined ? undefined : byArc.get(expectedEnd.arcKey);
@@ -155,11 +155,22 @@ function verifyEndpoints(input: VerifyCoverageRouteInput, byArc: ReadonlyMap<str
 }
 
 function verifyBoundaryPolicy(input: VerifyCoverageRouteInput, violations: Violation[]): boolean {
-  const events = (input.candidate.boundaryEvents ?? []) as Array<Record<string, unknown>>;
+  const events = input.authoritativeBoundaryEvents as Array<Record<string, unknown>> | undefined;
+  if (events === undefined) {
+    if (input.problem.boundaryCrossingPolicy === "FREE" && input.problem.endpointMode !== "LAST_AREA_EXIT") return true;
+    violations.push({ code: "BOUNDARY_AUTHORITY_UNAVAILABLE", message: "independent versioned boundary reconstruction is required for this policy" });
+    return false;
+  }
   const validShape = events.every((event, index) => event.sequence === index + 1 && (event.kind === "ENTRY" || event.kind === "EXIT") && typeof event.state === "object" && event.state !== null);
   let valid = validShape;
   const entries = events.filter((event) => event.kind === "ENTRY");
-  if (input.problem.boundaryCrossingPolicy === "FIRST_ENTRY_ONLY") valid = valid && entries.length <= 1;
+  if (input.problem.boundaryCrossingPolicy === "FIRST_ENTRY_ONLY") {
+    if (input.boundaryStartInside === undefined) valid = false;
+    else if (input.boundaryStartInside) {
+      let exited = false;
+      for (const event of events) { if (event.kind === "EXIT") exited = true; if (event.kind === "ENTRY" && exited) valid = false; }
+    } else valid = valid && entries.length === 1;
+  }
   if (input.problem.boundaryCrossingPolicy === "ENTRY_SET_ONLY") {
     const allowed = new Set((input.problem.entryStates ?? []).map((state) => canonicalSha256(state)));
     valid = valid && entries.every((event) => allowed.has(canonicalSha256(event.state)));

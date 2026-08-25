@@ -4,12 +4,14 @@ import { matrix, shortestPath, verifyPath, type Objective } from "./engine.js";
 import { RoutingSnapshotCurrentnessEvaluator, type RoutingSnapshotCurrentnessResult } from "./currentness.js";
 import type {
   DirectedState,
+  BoundaryCrossing,
   LoadedNetwork,
   NetworkArc,
   NetworkExecutionResult,
   NetworkProviderOptions,
   NetworkSqlClient,
   Row,
+  RouteBoundaryAnalysis,
   RoutingSnapshot,
   TurnRule
 } from "./types.js";
@@ -95,6 +97,38 @@ export class NetworkRepository {
     if (areas.length === 0) return [];
     const dataScopeKey=security.dataScopeKey?.trim(),datasetScopeKey=security.datasetScopeKey?.trim();if(!dataScopeKey||!datasetScopeKey)throw new ProviderProtocolError("SCOPE_DENIED","network data and dataset scopes are required");
     const client=await this.options.pool.connect();let open=false;try{await client.query("BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY");open=true;const timeout=Math.max(1,Math.min(this.statementTimeoutMs,Math.floor(deadlineRemainingMs)));await client.query("SELECT set_config('statement_timeout',$1::text,true)",[`${timeout}ms`]);await client.query("SELECT gowm_network_v1.set_scope($1::text,$2::text)",[dataScopeKey,datasetScopeKey]);const snapshot=routingSnapshot(snapshotValue);const graph=(await client.query("SELECT graph_version_id FROM gowm_network_v1.graph_version WHERE graph_version=$1 AND dataset_version=$2 AND content_hash=$3 ORDER BY created_at DESC LIMIT 1",[snapshot.graphVersion,snapshot.networkDatasetVersion,snapshot.graphContentHash])).rows[0];if(!graph)throw new ProviderProtocolError("VERSION_NOT_FOUND","routing graph snapshot is unavailable in scope");const result=await client.query("SELECT arc_key FROM gowm_network_v1.arcs_intersecting_areas($1::uuid,$2::jsonb)",[requiredString(graph.graph_version_id,"graph_version_id"),JSON.stringify(areas)]);await client.query("COMMIT");open=false;return result.rows.map(item=>externalArcKey(requiredString(item.arc_key,"arc_key")));}catch(error){if(open)await client.query("ROLLBACK").catch(()=>undefined);throw mapDatabaseError(error);}finally{client.release();}
+  }
+
+  async routeBoundaryCrossings(snapshotValue: unknown, area: Row, segments: readonly Row[], security: { dataScopeKey?: string; datasetScopeKey?: string }, deadlineRemainingMs: number): Promise<RouteBoundaryAnalysis> {
+    const dataScopeKey = security.dataScopeKey?.trim(), datasetScopeKey = security.datasetScopeKey?.trim();
+    if (!dataScopeKey || !datasetScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "network data and dataset scopes are required");
+    if (segments.length > this.maximumSegments) throw new ProviderProtocolError("BUDGET_EXCEEDED", "boundary analysis segment budget exceeded");
+    const client = await this.options.pool.connect(); let open = false;
+    try {
+      await client.query("BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY"); open = true;
+      const timeout = Math.max(1, Math.min(this.statementTimeoutMs, Math.floor(deadlineRemainingMs)));
+      await client.query("SELECT set_config('statement_timeout',$1::text,true)", [`${timeout}ms`]);
+      await client.query("SELECT gowm_network_v1.set_scope($1::text,$2::text)", [dataScopeKey, datasetScopeKey]);
+      const snapshot = routingSnapshot(snapshotValue);
+      const graph = (await client.query("SELECT graph_version_id FROM gowm_network_v1.graph_version WHERE graph_version=$1 AND dataset_version=$2 AND content_hash=$3 ORDER BY created_at DESC LIMIT 1", [snapshot.graphVersion, snapshot.networkDatasetVersion, snapshot.graphContentHash])).rows[0];
+      if (!graph) throw new ProviderProtocolError("VERSION_NOT_FOUND", "routing graph snapshot is unavailable in scope");
+      const graphVersionId = requiredString(graph.graph_version_id, "graph_version_id");
+      const result = await client.query("SELECT * FROM gowm_network_v1.route_boundary_crossings($1::uuid,$2::jsonb,$3::jsonb)", [graphVersionId, JSON.stringify(area), JSON.stringify(segments)]);
+      const endpoints = await client.query(`WITH endpoints AS (
+        SELECT (segment->>'arcKey') AS arc_key,(segment->>'fractionPpm')::integer AS fraction_ppm,ordinal
+        FROM (VALUES ($2::jsonb,1),($3::jsonb,2)) source(segment,ordinal)
+      ), area AS (
+        SELECT public.ST_SetSRID(public.ST_GeomFromGeoJSON(COALESCE($4::jsonb->'geometry',$4::jsonb)::text),4326) AS geometry
+      )
+      SELECT endpoints.ordinal,public.ST_Covers(public.ST_Transform(area.geometry,public.ST_SRID(arc.oriented_geometry)),public.ST_LineInterpolatePoint(arc.oriented_geometry,endpoints.fraction_ppm/1000000.0)) AS inside
+      FROM endpoints CROSS JOIN area JOIN gowm_network_v1.arc arc ON arc.graph_version_id=$1::uuid AND arc.arc_key='ar_'||substr(endpoints.arc_key,5)
+      ORDER BY endpoints.ordinal`, [graphVersionId,
+        JSON.stringify({ arcKey: segments[0]?.arcKey, fractionPpm: segments[0]?.startFractionPpm }),
+        JSON.stringify({ arcKey: segments.at(-1)?.arcKey, fractionPpm: segments.at(-1)?.endFractionPpm }), JSON.stringify(area)]);
+      await client.query("COMMIT"); open = false;
+      return { crossings: result.rows.map(boundaryCrossing), startInside: endpoints.rows[0]?.inside === true, endInside: endpoints.rows[1]?.inside === true };
+    } catch (error) { if (open) await client.query("ROLLBACK").catch(() => undefined); throw mapDatabaseError(error); }
+    finally { client.release(); }
   }
 
   async execute(operationId: NetworkOperationId, inputValue: unknown, security: { dataScopeKey?: string; datasetScopeKey?: string }, deadlineRemainingMs: number): Promise<NetworkExecutionResult> {
@@ -325,6 +359,20 @@ function direction(value: unknown): "FORWARD" | "REVERSE" { if (value === "FORWA
 function referenceKey(kind: "DATASET" | "LAYER_FEATURE", id: string, version: string): PlatformCommonDefinitionsReferenceKey { return { namespace: "gowm", kind, id, version }; }
 function circularDifference(a: number, b: number): number { const raw = Math.abs(a - b) % 360_000_000; return Math.min(raw, 360_000_000 - raw); }
 function externalArcKey(value: string): string { if (!/^ar_[0-9a-f]{64}$/u.test(value)) throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "internal Arc key is invalid"); return `arc_${value.slice(3)}`; }
+function boundaryCrossing(value: Row): BoundaryCrossing {
+  const arcKey = requiredString(value.arc_key, "arc_key");
+  if (!/^arc_[0-9a-f]{32,64}$/u.test(arcKey)) throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "boundary Arc key is invalid");
+  const kind = value.kind === "ENTRY" || value.kind === "EXIT" ? value.kind : undefined;
+  const classification = value.classification === "CROSSING" || value.classification === "TOUCH" || value.classification === "OVERLAP_START" || value.classification === "OVERLAP_END" ? value.classification : undefined;
+  const point = asRow(value.point); const coordinates = array(point.coordinates).map((coordinate) => finite(coordinate, "point coordinate"));
+  if (kind === undefined || classification === undefined || point.type !== "Point" || coordinates.length < 2 || coordinates.length > 3) throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "boundary crossing row is invalid");
+  const crossing: Omit<BoundaryCrossing, "state"> = {
+    sequence: safeInteger(value.sequence, "sequence"), routeSequence: safeInteger(value.route_sequence, "route_sequence"), kind, arcKey,
+    fractionPpm: safeInteger(value.fraction_ppm, "fraction_ppm"), direction: direction(value.direction), point: { type: "Point" as const, coordinates }, classification,
+    evidenceHash: digest(value.evidence_hash, "evidence_hash")
+  };
+  return { ...crossing, state: { arcKey, fractionPpm: crossing.fractionPpm, direction: crossing.direction } };
+}
 function multiplyPpm(value: number, ppm: number): number { return Number((BigInt(value) * BigInt(ppm) + 500_000n) / 1_000_000n); }
 function bigint(value: unknown, name: string): bigint { try { const parsed = BigInt(String(value)); if (parsed < 0n) throw new Error(); return parsed; } catch { throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", `${name} must be a non-negative integer`); } }
 function digest(value: unknown, name: string): `sha256:${string}` { const text = requiredString(value, name); if (!/^sha256:[0-9a-f]{64}$/u.test(text)) throw new ProviderProtocolError("INVALID_REQUEST", `${name} must be sha256`); return text as `sha256:${string}`; }

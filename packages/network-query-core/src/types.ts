@@ -49,6 +49,25 @@ export interface RoutingSnapshot {
   capturedAt?: string;
 }
 
+export interface BoundaryCrossing {
+  sequence: number;
+  routeSequence: number;
+  kind: "ENTRY" | "EXIT";
+  arcKey: string;
+  fractionPpm: number;
+  direction: "FORWARD" | "REVERSE";
+  point: { type: "Point"; coordinates: number[] };
+  classification: "CROSSING" | "TOUCH" | "OVERLAP_START" | "OVERLAP_END";
+  evidenceHash: `sha256:${string}`;
+  state: DirectedState;
+}
+
+export interface RouteBoundaryAnalysis {
+  crossings: BoundaryCrossing[];
+  startInside: boolean;
+  endInside: boolean;
+}
+
 export interface NetworkArc {
   id: string;
   key: string;

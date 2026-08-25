@@ -104,8 +104,15 @@ describe("independent coverage verifier", () => {
       { sequence: 3, kind: "ENTRY", state: input.problem.startState }
     ];
     const boundaryProblem = { ...input.problem, boundaryCrossingPolicy: "NO_REENTRY" as const };
-    const boundaryReport = verifyCoverageRoute({ ...input, problem: boundaryProblem, candidate: rehash(boundaryCandidate) });
+    const boundaryReport = verifyCoverageRoute({ ...input, problem: boundaryProblem, candidate: rehash(boundaryCandidate), authoritativeBoundaryEvents: [
+      { sequence: 1, kind: "ENTRY", state: input.problem.startState },
+      { sequence: 2, kind: "EXIT", state: input.problem.startState },
+      { sequence: 3, kind: "ENTRY", state: input.problem.startState }
+    ] });
     expect(boundaryReport.violations.map((item) => item.code)).toContain("BOUNDARY_POLICY_VIOLATION");
+
+    const ignoredHint = verifyCoverageRoute({ ...input, problem: boundaryProblem, candidate: rehash(boundaryCandidate), authoritativeBoundaryEvents: [] });
+    expect(ignoredHint.violations.map((item) => item.code)).not.toContain("BOUNDARY_POLICY_VIOLATION");
   });
 
   it("detects profile, condition, metric, and result hash mutations", () => {

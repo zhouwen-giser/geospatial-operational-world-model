@@ -34,7 +34,7 @@ import {
 import { buildVerifiedCoverageResultSet, type VerifiedAlternativeCandidate } from "../../../../packages/road-coverage-alternatives-core/src/index.js";
 import { admitVerifiedCoverageRoute, verifyCoverageRoute } from "../../../../packages/road-coverage-verifier-core/src/index.js";
 import { PostgresCoverageAsyncRepository } from "../../../../packages/road-coverage-runtime-core/src/index.js";
-import { NetworkRepository, type LoadedNetwork, type NetworkSqlPool } from "../../../../packages/network-query-core/src/index.js";
+import { NetworkRepository, type BoundaryCrossing, type LoadedNetwork, type NetworkSqlPool } from "../../../../packages/network-query-core/src/index.js";
 import type { RoadCoverageEngine } from "./engine.js";
 
 type JsonObject = Record<string, unknown>;
@@ -110,9 +110,6 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     const violations: Array<{ code: string; message: string; path: string }> = [];
     if (request.selectionPolicy.mode !== "MANUAL_OBLIGATIONS" && !isArea(request.area)) {
       violations.push({ code: "AREA_NOT_RESOLVED", message: "area ReferenceKey must be resolved to Polygon or MultiPolygon before planning", path: "/area" });
-    }
-    if (request.endpointPolicy.endpointMode === "LAST_AREA_EXIT") {
-      violations.push({ code: "CAPABILITY_NOT_AVAILABLE", message: "LAST_AREA_EXIT is not Stable in v0.6", path: "/endpointPolicy/endpointMode" });
     }
     return completed({
       schemaVersion: "1.0",
@@ -231,23 +228,27 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       });
       this.#observeStage({ stage: "SOLVER_TOTAL", elapsedMs: solverElapsedMs, units: solved.diagnostics.candidatesGenerated });
       startedAt = performance.now();
+      const boundaryAnalysis = await this.#network.routeBoundaryCrossings(request.routingSnapshot, area as JsonObject, solved.route.segments as JsonObject[], scope, context.deadline.remainingMs());
+      const authoritativeRoute = withBoundaryEvents(solved.route, boundaryAnalysis.crossings);
       const verification = verifyCoverageRoute({
         problem,
-        candidate: solved.route,
+        candidate: authoritativeRoute,
         currentRoutingSnapshot: network.routingSnapshot,
         networkArcs,
         objective: verifierObjective(profile),
         travelPolicy,
-        turnRules
+        turnRules,
+        authoritativeBoundaryEvents: boundaryAnalysis.crossings,
+        boundaryStartInside: boundaryAnalysis.startInside
       });
       this.#measure("INDEPENDENT_VERIFIER", startedAt, solved.route.segments.length);
-      const admitted = admitVerifiedCoverageRoute(solved.route, verification);
+      const admitted = admitVerifiedCoverageRoute(authoritativeRoute, verification);
       startedAt = performance.now();
       await this.#async.persistCandidate(claim, leaseOwner, {
         problemHash: digest(problem.problemHash),
         objectiveProfile: profile,
-        candidateHash: digest(solved.route.routeSignature),
-        route: json(solved.route),
+        candidateHash: digest(authoritativeRoute.routeSignature),
+        route: json(authoritativeRoute),
         solverDiagnostics: json({ ...solved.diagnostics, candidatesVerified: 1 }),
         verification: json(verification)
       });
@@ -415,6 +416,17 @@ function objectiveWeights(request: GowmV06RoadCoverageRequest): CoverageObjectiv
 function coverageObjectiveProfile(value: string): CoverageObjectiveProfile {
   if (value === "FASTEST_COMPLETION" || value === "SHORTEST_TOTAL_DISTANCE" || value === "LEAST_DEADHEAD" || value === "LOWEST_RISK" || value === "WEIGHTED") return value;
   throw new ProviderProtocolError("INVALID_REQUEST", "coverage candidate has an unsupported objective profile");
+}
+
+function withBoundaryEvents(route: GowmV06CoverageRoute, crossings: readonly BoundaryCrossing[]): GowmV06CoverageRoute {
+  const { routeSignature: _routeSignature, ...body } = route;
+  const boundaryEvents = crossings.map((crossing) => ({
+    sequence: crossing.sequence, kind: crossing.kind, state: crossing.state, arcKey: crossing.arcKey,
+    fractionPpm: crossing.fractionPpm, direction: crossing.direction, point: crossing.point,
+    classification: crossing.classification, evidenceHash: crossing.evidenceHash
+  }));
+  const authoritative = { ...body, boundaryEvents };
+  return { ...authoritative, routeSignature: canonicalSha256(authoritative) };
 }
 
 function resolvedArea(area: GowmV06RoadCoverageRequest["area"]): GeoJsonArea {
