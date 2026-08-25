@@ -18,4 +18,11 @@ describe("normalized result and snapshot validation", () => {
     expect(validateDataSnapshot(manifest, new Map([["GRAPH\u0000roads", { ...resource, version: "2" }]]), "2026-08-25T01:00:00.000Z")).toMatchObject({ status: "STALE", resourceResults: [{ status: "STALE" }] });
     expect(validateDataSnapshot(manifest, new Map(), "2026-08-25T01:00:00.000Z")).toMatchObject({ status: "UNKNOWN" });
   });
+
+  it("fails closed when a snapshot manifest is changed without rehashing", () => {
+    const resource = { resourceKind: "GRAPH", resourceId: "roads", version: "1", contentHash: `sha256:${"a".repeat(64)}` };
+    const manifest = createDataSnapshot("PINNED", [resource], "2026-08-25T00:00:00.000Z");
+    const changed = { ...manifest, resources: [{ ...resource, version: "2" }] };
+    expect(validateDataSnapshot(changed, new Map(), "2026-08-25T01:00:00.000Z")).toMatchObject({ status: "STALE", resourceResults: [{ status: "STALE", reason: expect.stringContaining("hash") }] });
+  });
 });

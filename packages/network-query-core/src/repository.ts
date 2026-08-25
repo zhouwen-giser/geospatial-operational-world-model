@@ -114,17 +114,14 @@ export class NetworkRepository {
       if (!graph) throw new ProviderProtocolError("VERSION_NOT_FOUND", "routing graph snapshot is unavailable in scope");
       const graphVersionId = requiredString(graph.graph_version_id, "graph_version_id");
       const result = await client.query("SELECT * FROM gowm_network_v1.route_boundary_crossings($1::uuid,$2::jsonb,$3::jsonb)", [graphVersionId, JSON.stringify(area), JSON.stringify(segments)]);
-      const endpoints = await client.query(`WITH endpoints AS (
-        SELECT (segment->>'arcKey') AS arc_key,(segment->>'fractionPpm')::integer AS fraction_ppm,ordinal
-        FROM (VALUES ($2::jsonb,1),($3::jsonb,2)) source(segment,ordinal)
-      ), area AS (
-        SELECT public.ST_SetSRID(public.ST_GeomFromGeoJSON(COALESCE($4::jsonb->'geometry',$4::jsonb)::text),4326) AS geometry
-      )
-      SELECT endpoints.ordinal,public.ST_Covers(public.ST_Transform(area.geometry,public.ST_SRID(arc.oriented_geometry)),public.ST_LineInterpolatePoint(arc.oriented_geometry,endpoints.fraction_ppm/1000000.0)) AS inside
-      FROM endpoints CROSS JOIN area JOIN gowm_network_v1.arc arc ON arc.graph_version_id=$1::uuid AND arc.arc_key='ar_'||substr(endpoints.arc_key,5)
-      ORDER BY endpoints.ordinal`, [graphVersionId,
-        JSON.stringify({ arcKey: segments[0]?.arcKey, fractionPpm: segments[0]?.startFractionPpm }),
-        JSON.stringify({ arcKey: segments.at(-1)?.arcKey, fractionPpm: segments.at(-1)?.endFractionPpm }), JSON.stringify(area)]);
+      const endpointStates = [
+        { arcKey: segments[0]?.arcKey, fractionPpm: segments[0]?.startFractionPpm },
+        { arcKey: segments.at(-1)?.arcKey, fractionPpm: segments.at(-1)?.endFractionPpm }
+      ];
+      const endpoints = await client.query(
+        "SELECT * FROM gowm_network_v1.route_boundary_membership($1::uuid,$2::jsonb,$3::jsonb)",
+        [graphVersionId, JSON.stringify(area), JSON.stringify(endpointStates)]
+      );
       await client.query("COMMIT"); open = false;
       return { crossings: result.rows.map(boundaryCrossing), startInside: endpoints.rows[0]?.inside === true, endInside: endpoints.rows[1]?.inside === true };
     } catch (error) { if (open) await client.query("ROLLBACK").catch(() => undefined); throw mapDatabaseError(error); }

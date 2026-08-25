@@ -67,6 +67,14 @@ export function validateDataSnapshot(
   current: ReadonlyMap<string, SnapshotResource | "UNAVAILABLE">,
   evaluatedAt = new Date().toISOString()
 ): Record<string, unknown> {
+  const expected = createDataSnapshot(manifest.consistency, manifest.resources, manifest.capturedAt ?? evaluatedAt);
+  if (manifest.snapshotHash !== expected.snapshotHash || manifest.snapshotId !== expected.snapshotId) {
+    return {
+      schemaVersion: "1.0", snapshotId: manifest.snapshotId, status: "STALE",
+      resourceResults: manifest.resources.map((resource) => ({ resourceKind: resource.resourceKind, resourceId: resource.resourceId, status: "STALE", reason: "Snapshot identity or manifest hash is invalid" })),
+      evaluatedAt
+    };
+  }
   const resourceResults = manifest.resources.map((requested) => {
     const key = `${requested.resourceKind}\u0000${requested.resourceId}`;
     const actual = current.get(key);

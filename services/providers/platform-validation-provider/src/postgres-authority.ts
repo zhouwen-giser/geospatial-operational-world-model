@@ -12,6 +12,19 @@ type ValidationRequest = { referenceKey: ReferenceRecord["referenceKey"] };
 export class PostgresPlatformValidationAuthority implements PlatformValidationAuthority {
   constructor(readonly pool: Pick<pg.Pool, "connect">, readonly statementTimeoutMs = 5_000) {}
 
+  async readiness(): Promise<{ ready: boolean; reasons: string[] }> {
+    const client = await this.pool.connect();
+    try {
+      const result = await client.query<{ contract_ready: boolean }>("SELECT to_regclass('gowm_platform_validation_v1.snapshot') IS NOT NULL AS contract_ready");
+      const ready = result.rows[0]?.contract_ready === true;
+      return { ready, reasons: ready ? [] : ["versioned platform validation read contract is unavailable"] };
+    } catch {
+      return { ready: false, reasons: ["PostgreSQL validation authority is unavailable"] };
+    } finally {
+      client.release();
+    }
+  }
+
   async resolveReferences(requests: readonly ValidationRequest[], scope: Scope): Promise<Array<ReferenceRecord | undefined>> {
     return this.read(scope, async (client) => {
       const records: Array<ReferenceRecord | undefined> = [];
@@ -32,13 +45,15 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
           continue;
         }
         const result = await this.resultState(client, key.kind, key.id);
+        const validUntil = asIso(result?.validUntil ?? found.valid_to);
+        const lastUpdatedAt = asIso(result?.createdAt ?? found.created_at);
         records.push({
           referenceKey: key,
           sourceStatus: result?.status ?? "COMPLETED",
           sourceAuthority: result?.authority ?? "gowm.reference-catalog",
           available: true,
-          validUntil: (result?.validUntil ?? found.valid_to).toISOString(),
-          lastUpdatedAt: (result?.createdAt ?? found.created_at).toISOString(),
+          ...(validUntil === undefined ? {} : { validUntil }),
+          ...(lastUpdatedAt === undefined ? {} : { lastUpdatedAt }),
           snapshotStatus: result?.snapshotStatus ?? (found.stale === true || found.revalidation_required ? "STALE" : "CURRENT"),
           validationEvidenceRefs: result?.evidence ?? []
         });
@@ -151,4 +166,9 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
 
 function resourceMapKey(resource: SnapshotResource): string {
   return `${resource.resourceKind}\u0000${resource.resourceId}`;
+}
+
+function asIso(value: Date | string | number): string | undefined {
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isFinite(date.getTime()) ? date.toISOString() : undefined;
 }

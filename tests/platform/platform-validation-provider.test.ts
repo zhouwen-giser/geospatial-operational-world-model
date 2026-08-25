@@ -3,6 +3,7 @@ import { validateContract, type ProviderExecutionRequest } from "../../packages/
 import { createDataSnapshot, type DataSnapshotManifest, type ReferenceRecord, type SnapshotResource } from "../../packages/platform/result-validation-core/src/index.js";
 import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 import { createPlatformValidationProvider, type PlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
+import { buildPlatformValidationApp } from "../../services/providers/platform-validation-provider/src/app.js";
 
 const now = new Date("2026-08-25T00:00:00.000Z");
 const referenceKey = { namespace: "gowm" as const, kind: "QUERY_RESULT", id: `wrf_${"1".repeat(32)}`, version: "1" };
@@ -36,9 +37,28 @@ describe("platform validation Provider", () => {
     expect(currentness.output?.value).toMatchObject({ snapshotId: snapshot.snapshotId, status: "STALE", resourceResults: [{ status: "STALE", currentVersion: "2" }] });
     expect(snapshot.resources[0]?.version).toBe("1");
   });
+
+  it("serves the controlled Provider protocol over authenticated HTTP", async () => {
+    const provider = createPlatformValidationProvider(new Authority(), () => now);
+    const app = buildPlatformValidationApp(provider, "platform-validation-test-token-32-bytes");
+    const manifest = await app.inject({ method: "GET", url: "/v1/manifest" });
+    expect(manifest.statusCode).toBe(200);
+    expect(manifest.json()).toMatchObject({ provider: { providerId: "gowm.platform-validation" } });
+    const request = executionRequest(provider.runtime, "result.validate", { schemaVersion: "1.0", references: [{ referenceKey }] }, "http");
+    const denied = await app.inject({ method: "POST", url: "/v1/operations/result.validate:execute", payload: request });
+    expect(denied.statusCode).toBe(403);
+    const response = await app.inject({ method: "POST", url: "/v1/operations/result.validate:execute", headers: { authorization: "Bearer platform-validation-test-token-32-bytes" }, payload: request });
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({ output: { value: { results: [{ usable: "REVALIDATE" }] } } });
+    await app.close();
+  });
 });
 
 async function execute(runtime: ReturnType<typeof createPlatformValidationProvider>["runtime"], operationId: string, input: unknown, suffix: string) {
+  return runtime.execute(executionRequest(runtime, operationId, input, suffix));
+}
+
+function executionRequest(runtime: ReturnType<typeof createPlatformValidationProvider>["runtime"], operationId: string, input: unknown, suffix: string): ProviderExecutionRequest {
   const descriptor = runtime.manifest.capabilities.find((value) => value.operationId === operationId);
   if (descriptor === undefined) throw new Error(`missing ${operationId}`);
   const deadlineAt = "2026-08-25T00:01:00.000Z";
@@ -49,5 +69,5 @@ async function execute(runtime: ReturnType<typeof createPlatformValidationProvid
     gatewayContext: { gatewayId: "gateway", registryVersion: "v0.6.1", policyVersion: "v0.6.1" },
     executionPolicy: { deadlineAt, maximumInputBytes: 1_048_576, maximumResultBytes: 4_194_304, maximumCostClass: "LOW" }
   };
-  return runtime.execute(request);
+  return request;
 }

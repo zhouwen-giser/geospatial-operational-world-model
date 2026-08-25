@@ -6,7 +6,10 @@ BEGIN
   END IF;
   IF NOT has_schema_privilege('platform_validation_provider','gowm_platform_validation_v1','USAGE')
      OR NOT has_table_privilege('platform_validation_provider','gowm_platform_validation_v1.snapshot','SELECT')
-     OR has_table_privilege('platform_validation_provider','public.platform_data_snapshot','SELECT,INSERT,UPDATE,DELETE') THEN
+     OR has_table_privilege('platform_validation_provider','public.platform_data_snapshot','SELECT')
+     OR has_table_privilege('platform_validation_provider','public.platform_data_snapshot','INSERT')
+     OR has_table_privilege('platform_validation_provider','public.platform_data_snapshot','UPDATE')
+     OR has_table_privilege('platform_validation_provider','public.platform_data_snapshot','DELETE') THEN
     RAISE EXCEPTION 'platform snapshot read-contract privilege invariant failed';
   END IF;
   SELECT count(*) INTO public_privileges

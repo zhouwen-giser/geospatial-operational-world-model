@@ -33,6 +33,8 @@ export interface PlatformValidationAuthority {
 export interface PlatformValidationProvider { runtime: ProviderRuntime; authority: PlatformValidationAuthority }
 
 export { PostgresPlatformValidationAuthority } from "./postgres-authority.js";
+export { buildPlatformValidationApp } from "./app.js";
+export { loadPlatformValidationConfig } from "./config.js";
 
 const operations = ["result.validate", "snapshot.get", "snapshot.validate"] as const;
 type OperationId = (typeof operations)[number];

@@ -126,9 +126,9 @@ describe("grounding catalog providers", () => {
   it("loads the controlled Grounding Gateway registry with frozen full manifests", async () => {
     const deployments = await loadControlledProviderDeployments(resolve("config/grounding-gateway-registry.json"));
     expect(deployments.map((deployment) => deployment.providerId)).toEqual([
-      "gowm.reference-catalog", "gowm.dataset-catalog", "gowm.world-evidence", "gowm.operational-reality"
+      "gowm.reference-catalog", "gowm.dataset-catalog", "gowm.world-evidence", "gowm.operational-reality", "gowm.platform-validation"
     ]);
-    expect(deployments.flatMap((deployment) => deployment.approvedManifest.capabilities)).toHaveLength(35);
+    expect(deployments.flatMap((deployment) => deployment.approvedManifest.capabilities)).toHaveLength(38);
     expect(deployments.every((deployment) =>
       deployment.approvedManifest.provider.implementationDigest === deployment.implementationDigest
     )).toBe(true);

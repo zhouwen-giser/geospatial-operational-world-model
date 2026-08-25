@@ -12,6 +12,7 @@ import {
   type WorldQuerySubmission
 } from "../../packages/platform/contract-runtime/src/index.js";
 import { createProviderRuntime, sha256, type ProviderOperation, type ProviderRuntime } from "../../packages/platform/provider-sdk/src/index.js";
+import { createDataSnapshot } from "../../packages/platform/result-validation-core/src/index.js";
 import {
   buildGatewayApp,
   CapabilityRegistry,
@@ -30,11 +31,13 @@ import {
   PostgresRoadCoverageEngine,
   ROAD_COVERAGE_OPERATION_LOCKS
 } from "../../services/providers/road-coverage-provider/src/provider.js";
+import { createPlatformValidationProvider, PostgresPlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
 
 type Row = Record<string, unknown>;
 const providerUrl = required("COVERAGE_PROVIDER_DATABASE_URL");
 const gatewayUrl = required("COVERAGE_GATEWAY_DATABASE_URL");
 const adminUrl = required("COVERAGE_ADMIN_DATABASE_URL");
+const validationUrl = required("PLATFORM_VALIDATION_DATABASE_URL");
 const runId = required("GOWM_V06_RUN_ID");
 const DATA_SCOPE = "coverage-gateway-runtime";
 const DATASET_SCOPE = "tenant-a";
@@ -44,6 +47,7 @@ const checks: Record<string, boolean> = {};
 const providerPool = new Pool({ connectionString: providerUrl, max: 8 });
 const gatewayPool = new Pool({ connectionString: gatewayUrl, max: 8 });
 const adminPool = new Pool({ connectionString: adminUrl, max: 2 });
+const validationPool = new Pool({ connectionString: validationUrl, max: 4 });
 const snapshot = {
   networkDatasetVersion: "dataset-v1",
   graphVersion: "graph-v1",
@@ -100,10 +104,12 @@ const coverage = createRoadCoverageProvider(new PostgresRoadCoverageEngine({
   leaseSeconds: 30,
   workerId: `coverage-${runId}`
 }));
+const platformValidation = createPlatformValidationProvider(new PostgresPlatformValidationAuthority(validationPool));
 const geometry = createGeometryProvider();
 const registry = new CapabilityRegistry();
 register(registry, geometry, "geometry", 36100);
 register(registry, coverage.runtime, "coverage", 36101);
+register(registry, platformValidation.runtime, "platform-validation", 36102);
 const direct = new DirectExecutionService({
   registry,
   circuits: new ProviderCircuitBreaker(),
@@ -125,6 +131,7 @@ const app = buildGatewayApp({ registry, directExecution: direct, worldQueries, a
 try {
   await persistRuntimeRegistry(adminPool, geometry, "http://geometry.coverage-g00.invalid");
   await persistRuntimeRegistry(adminPool, coverage.runtime, "http://coverage.coverage-g00.invalid");
+  await persistRuntimeRegistry(adminPool, platformValidation.runtime, "http://platform-validation.coverage-g00.invalid");
   const validate = await execute("coverage.road.validate", coverageRequest, `${runId}-validate`);
   const validation = envelopeValue(validate);
   check("validateDirect", validation.valid === true, validation);
@@ -202,6 +209,28 @@ try {
   check("atomicArtifacts", persisted.candidates === 2 && Number(persisted.segments) > 0 && persisted.verifications === 2, persisted);
   check("pairwiseSimilarity", persisted.similarities === 1, persisted);
 
+  const validationEvidence = await adminPool.query<{ data_snapshot_hash: string }>(
+    "SELECT data_snapshot_hash FROM public.world_query_result_reference WHERE reference_key=$1",
+    [row(resultSet.referenceKey).id]
+  );
+  const dataSnapshotHash = validationEvidence.rows[0]?.data_snapshot_hash;
+  if (dataSnapshotHash === undefined) throw new Error("coverage result data snapshot hash is unavailable");
+  const resultReferenceKey = row(resultSet.referenceKey) as { namespace: "gowm"; kind: string; id: string; version: string };
+  const platformSnapshot = createDataSnapshot("PINNED", [{ referenceKey: resultReferenceKey, resourceKind: "QUERY_RESULT", resourceId: resultReferenceKey.id, version: resultReferenceKey.version, contentHash: dataSnapshotHash }]);
+  await adminPool.query("SELECT public.register_platform_data_snapshot($1,$2,$3::jsonb)", [DATA_SCOPE, DATASET_SCOPE, JSON.stringify(platformSnapshot)]);
+  const resultValidation = envelopeValue(await execute("result.validate", { schemaVersion: "1.0", references: [{ referenceKey: resultReferenceKey, requireCurrentSnapshot: true }] }, `${runId}-result-validation`));
+  check("platformResultValidation", row(array(resultValidation.results)[0]).usable === "YES", resultValidation);
+  const snapshotGet = envelopeValue(await execute("snapshot.get", { schemaVersion: "1.0", snapshotId: platformSnapshot.snapshotId }, `${runId}-snapshot-get`));
+  check("platformSnapshotGet", snapshotGet.snapshotHash === platformSnapshot.snapshotHash && snapshotGet.consistency === "PINNED", snapshotGet);
+  const snapshotCurrent = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: platformSnapshot }, `${runId}-snapshot-current`));
+  check("platformSnapshotCurrent", snapshotCurrent.status === "CURRENT", snapshotCurrent);
+  const staleSnapshot = createDataSnapshot("PINNED", [{ ...platformSnapshot.resources[0]!, contentHash: `sha256:${"f".repeat(64)}` }]);
+  const snapshotStale = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: staleSnapshot }, `${runId}-snapshot-stale`));
+  check("platformSnapshotStale", snapshotStale.status === "STALE", snapshotStale);
+  const unknownSnapshot = createDataSnapshot("PINNED", [{ resourceKind: "UNKNOWN_RESOURCE", resourceId: "missing", version: "1" }]);
+  const snapshotUnknown = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: unknownSnapshot }, `${runId}-snapshot-unknown`));
+  check("platformSnapshotUnknown", snapshotUnknown.status === "UNKNOWN", snapshotUnknown);
+
   await new Promise((resolve) => setTimeout(resolve, 2800));
   const stale = await execute("coverage.road.verify", {
     schemaVersion: "1.0",
@@ -237,7 +266,7 @@ try {
   })}\n`);
 } finally {
   await app.close();
-  await Promise.all([providerPool.end(), gatewayPool.end(), adminPool.end()]);
+  await Promise.all([providerPool.end(), gatewayPool.end(), adminPool.end(), validationPool.end()]);
 }
 
 async function execute(operationId: string, input: Row, idempotencyKey: string) {

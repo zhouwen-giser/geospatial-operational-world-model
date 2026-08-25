@@ -18,6 +18,9 @@ BEGIN
   IF definition !~ '''request''' OR definition !~ 'request_json' THEN
     RAISE EXCEPTION 'coverage artifact does not retain the authoritative request';
   END IF;
+  IF definition ~ 'USING \(coverage_(problem|request)_id' THEN
+    RAISE EXCEPTION 'coverage artifact contains an ambiguous multi-relation USING join';
+  END IF;
 END
 $assert$;
 

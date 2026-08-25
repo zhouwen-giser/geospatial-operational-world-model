@@ -1,10 +1,11 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, realpath, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const nodeModules = await realpath(resolve(root, "node_modules"));
 const runId = process.env.GOWM_V06_RUN_ID;
 if (process.env.ALLOW_GOWM_COVERAGE_T00_GATE !== "YES") throw new Error("Set ALLOW_GOWM_COVERAGE_T00_GATE=YES");
 if (!runId || !/^[a-z0-9][a-z0-9-]{2,31}$/u.test(runId)) throw new Error("GOWM_V06_RUN_ID is invalid");
@@ -33,7 +34,7 @@ function psql(sql, label) {
 
 async function applyMigrations() {
   const files = (await readdir(resolve(root, "database/migrations"))).filter((name) => /^\d{3}_.+\.sql$/u.test(name)).sort();
-  if (files.length !== 53 || files.at(-1)?.slice(0, 3) !== "053") throw new Error("T00 expects migrations 001-053");
+  if (files.length !== 57 || files.at(-1)?.slice(0, 3) !== "057") throw new Error("T00 expects migrations 001-057");
   const batch = [];
   for (const file of files) {
     const source = (await readFile(resolve(root, "database/migrations", file), "utf8"))
@@ -42,7 +43,7 @@ async function applyMigrations() {
     const checksum = createHash("sha256").update(source).digest("hex");
     batch.push(`\\echo APPLY_MIGRATION ${file}\n${source}\nINSERT INTO schema_migration(version,checksum) VALUES ('${file}','${checksum}');`);
   }
-  psql(batch.join("\n"), "migration-batch-001-053");
+  psql(batch.join("\n"), "migration-batch-001-057");
 }
 
 async function waitHealthy(label) {
@@ -75,7 +76,7 @@ function postgresReady() {
 function client(phase) {
   const encoded = encodeURIComponent(password);
   const base = `postgresql://gowm:${encoded}@127.0.0.1:5432/gowm`;
-  const output = run("docker", ["run", "--rm", "--network", `container:${container}`, "--volume", `${root}:/workspace`, "--workdir", "/workspace",
+  const output = run("docker", ["run", "--rm", "--network", `container:${container}`, "--volume", `${root}:/workspace`, "--volume", `${nodeModules}:/workspace/node_modules:ro`, "--workdir", "/workspace",
     "--env", "GOWM_V06_RUN_ID", "--env", "GOWM_V06_T00_PHASE", "--env", "COVERAGE_PROVIDER_DATABASE_URL",
     "--env", "COVERAGE_GATEWAY_DATABASE_URL", "--env", "COVERAGE_ADMIN_DATABASE_URL", "--env", "NETWORK_PROVIDER_DATABASE_URL", "--env", "ROUTE_PROVIDER_DATABASE_URL",
     "node:22-bookworm", "node", "dist/validation/scripts/coverage-security-performance-recovery-client.js"], {
@@ -97,8 +98,8 @@ function client(phase) {
 
 async function save() {
   evidence.finishedAt = new Date().toISOString();
-  await mkdir(resolve(root, "reports/gowm-v0.6"), { recursive: true });
-  await writeFile(resolve(root, `reports/gowm-v0.6/t00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
+  await mkdir(resolve(root, "reports/gowm-v0.6.1"), { recursive: true });
+  await writeFile(resolve(root, `reports/gowm-v0.6.1/t00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
 }
 
 let failure;

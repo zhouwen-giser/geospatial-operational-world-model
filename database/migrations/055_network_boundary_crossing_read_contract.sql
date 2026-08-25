@@ -60,8 +60,11 @@ BEGIN
 
   v_segment := public.ST_LineSubstring(v_geometry, p_start_fraction_ppm / 1000000.0, p_end_fraction_ppm / 1000000.0);
   v_boundary_intersection := public.ST_Intersection(v_segment, public.ST_Boundary(v_area));
-  IF public.ST_Dimension(v_boundary_intersection) = 1 THEN
-    RAISE EXCEPTION 'route overlaps the area boundary and cannot be classified deterministically' USING ERRCODE = '22023';
+  -- PostGIS preserves the declared dimension of a typed EMPTY LineString.
+  -- Only a non-empty linear intersection is a real boundary overlap.
+  IF NOT public.ST_IsEmpty(v_boundary_intersection) AND public.ST_Dimension(v_boundary_intersection) = 1 THEN
+    RAISE EXCEPTION 'route Arc % fraction %..% overlaps the area boundary and cannot be classified deterministically',
+      p_arc_key, p_start_fraction_ppm, p_end_fraction_ppm USING ERRCODE = '22023';
   END IF;
 
   RETURN QUERY
@@ -96,6 +99,66 @@ BEGIN
     ORDER BY value.arc_id LIMIT 1
   ) arc
   ORDER BY crossings.fraction_value, kind;
+END
+$fn$;
+
+CREATE FUNCTION gowm_network_v1.route_boundary_membership(
+  p_graph_version_id uuid,
+  p_area jsonb,
+  p_states jsonb
+)
+RETURNS TABLE(sequence integer, inside boolean)
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public, gowm_network_v1
+AS $fn$
+DECLARE
+  v_area geometry;
+  v_count integer;
+BEGIN
+  IF p_area IS NULL OR jsonb_typeof(p_area) <> 'object' OR
+     p_states IS NULL OR jsonb_typeof(p_states) <> 'array' OR
+     jsonb_array_length(p_states) NOT BETWEEN 1 AND 100 THEN
+    RAISE EXCEPTION 'invalid boundary membership request' USING ERRCODE = '22023';
+  END IF;
+  BEGIN
+    v_area := public.ST_SetSRID(
+      public.ST_GeomFromGeoJSON(COALESCE(p_area->'geometry', p_area)::text),
+      4326
+    );
+  EXCEPTION WHEN OTHERS THEN
+    RAISE EXCEPTION 'boundary membership area is invalid GeoJSON' USING ERRCODE = '22023';
+  END;
+  IF public.ST_IsEmpty(v_area) OR NOT public.ST_IsValid(v_area) OR GeometryType(v_area) NOT IN ('POLYGON','MULTIPOLYGON') THEN
+    RAISE EXCEPTION 'boundary membership area must be a valid non-empty Polygon or MultiPolygon' USING ERRCODE = '22023';
+  END IF;
+  RETURN QUERY
+  WITH states AS (
+    SELECT value, ordinality::integer AS state_sequence
+    FROM jsonb_array_elements(p_states) WITH ORDINALITY item(value, ordinality)
+  )
+  SELECT states.state_sequence,
+         public.ST_Covers(
+           public.ST_Transform(v_area, public.ST_SRID(arc.oriented_geometry)),
+           public.ST_LineInterpolatePoint(
+             arc.oriented_geometry,
+             (states.value->>'fractionPpm')::integer / 1000000.0
+           )
+         )
+  FROM states
+  JOIN gowm_network_v1.arc arc
+    ON arc.graph_version_id = p_graph_version_id
+   AND arc.arc_key = CASE
+     WHEN states.value->>'arcKey' ~ '^arc_[0-9a-f]{32,64}$' THEN 'ar_' || substr(states.value->>'arcKey', 5)
+     ELSE states.value->>'arcKey'
+   END
+  WHERE (states.value->>'fractionPpm')::integer BETWEEN 0 AND 1000000
+  ORDER BY states.state_sequence;
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  IF v_count <> jsonb_array_length(p_states) THEN
+    RAISE EXCEPTION 'boundary membership state is unavailable or invalid' USING ERRCODE = '22023';
+  END IF;
 END
 $fn$;
 
@@ -149,7 +212,9 @@ $fn$;
 
 REVOKE ALL ON FUNCTION gowm_network_v1.segment_boundary_crossings(uuid,jsonb,text,integer,integer) FROM PUBLIC;
 REVOKE ALL ON FUNCTION gowm_network_v1.route_boundary_crossings(uuid,jsonb,jsonb) FROM PUBLIC;
+REVOKE ALL ON FUNCTION gowm_network_v1.route_boundary_membership(uuid,jsonb,jsonb) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION gowm_network_v1.segment_boundary_crossings(uuid,jsonb,text,integer,integer) TO network_provider, route_planner_provider, coverage_planner_provider;
 GRANT EXECUTE ON FUNCTION gowm_network_v1.route_boundary_crossings(uuid,jsonb,jsonb) TO network_provider, route_planner_provider, coverage_planner_provider;
+GRANT EXECUTE ON FUNCTION gowm_network_v1.route_boundary_membership(uuid,jsonb,jsonb) TO network_provider, route_planner_provider, coverage_planner_provider;
 
 COMMIT;

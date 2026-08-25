@@ -1,10 +1,11 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, realpath, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const nodeModules = await realpath(resolve(repositoryRoot, "node_modules"));
 const runId = process.env.GOWM_V06_RUN_ID;
 const container = process.env.GOWM_V06_POSTGRES_CONTAINER;
 const password = process.env.GOWM_V06_POSTGRES_PASSWORD;
@@ -67,7 +68,7 @@ function psql(sql, label, targetDatabase = database, extraArgs = []) {
 async function migrationBatch() {
   const files = (await readdir(resolve(repositoryRoot, "database/migrations")))
     .filter((name) => /^\d{3}_.+\.sql$/u.test(name)).sort();
-  if (files.length !== 53 || files.at(-1)?.slice(0, 3) !== "053") throw new Error("B00 expects migrations 001-053");
+  if (files.length !== 57 || files.at(-1)?.slice(0, 3) !== "057") throw new Error("B00 expects migrations 001-057");
   const parts = [];
   for (const file of files) {
     const template = await readFile(resolve(repositoryRoot, "database/migrations", file), "utf8");
@@ -78,12 +79,12 @@ async function migrationBatch() {
     const checksum = createHash("sha256").update(sql).digest("hex");
     parts.push(`\\echo APPLY_MIGRATION ${file}\n${sql}\nINSERT INTO schema_migration(version,checksum) VALUES ('${file}','${checksum}');`);
   }
-  psql(parts.join("\n"), "migration-batch-001-053");
+  psql(parts.join("\n"), "migration-batch-001-057");
 }
 
 async function persist() {
   evidence.finishedAt = new Date().toISOString();
-  const directory = resolve(repositoryRoot, "reports/gowm-v0.6");
+  const directory = resolve(repositoryRoot, "reports/gowm-v0.6.1");
   await mkdir(directory, { recursive: true });
   await writeFile(resolve(directory, `${phase}-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
 }
@@ -106,7 +107,7 @@ try {
   const databaseUrl = `postgresql://gowm:${encodedPassword}@127.0.0.1:5432/${database}?options=-c%20role%3Dcoverage_planner_provider`;
   const clientName = runtimeKind === "endpoint" ? "coverage-endpoint-runtime-client" : runtimeKind === "async" ? "coverage-async-runtime-client" : "coverage-selection-runtime-client";
   const output = run("docker", ["run", "--rm", "--network", `container:${container}`,
-    "--volume", `${repositoryRoot}:/workspace`, "--workdir", "/workspace",
+    "--volume", `${repositoryRoot}:/workspace`, "--volume", `${nodeModules}:/workspace/node_modules:ro`, "--workdir", "/workspace",
     "--env", "DATABASE_URL", "node:22-bookworm",
     "node", `dist/validation/scripts/${clientName}.js`], {
     evidenceCommand: ["node-container", clientName, database],

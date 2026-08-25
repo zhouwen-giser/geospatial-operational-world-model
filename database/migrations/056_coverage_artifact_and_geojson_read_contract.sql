@@ -19,8 +19,14 @@ AS $fn$
     'expired',result.valid_until<=clock_timestamp()
   )
   FROM coverage_planner.coverage_result_set result
-  JOIN coverage_planner.coverage_problem problem USING(coverage_problem_id,data_scope_key,dataset_scope_key)
-  JOIN coverage_planner.coverage_request request USING(coverage_request_id,data_scope_key,dataset_scope_key)
+  JOIN coverage_planner.coverage_problem problem
+    ON problem.coverage_problem_id=result.coverage_problem_id
+   AND problem.data_scope_key=result.data_scope_key
+   AND problem.dataset_scope_key=result.dataset_scope_key
+  JOIN coverage_planner.coverage_request request
+    ON request.coverage_request_id=result.coverage_request_id
+   AND request.data_scope_key=result.data_scope_key
+   AND request.dataset_scope_key=result.dataset_scope_key
   WHERE result.reference_key=p_reference_key AND result.data_scope_key=p_data_scope_key
     AND result.dataset_scope_key=p_dataset_scope_key
 $fn$;

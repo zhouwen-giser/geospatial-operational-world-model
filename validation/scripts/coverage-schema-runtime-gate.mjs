@@ -168,7 +168,7 @@ function parseJsonOutput(output, label) {
 
 async function persist() {
   evidence.finishedAt = new Date().toISOString();
-  const directory = resolve(repositoryRoot, "reports/gowm-v0.6");
+  const directory = resolve(repositoryRoot, "reports/gowm-v0.6.1");
   await mkdir(directory, { recursive: true });
   await writeFile(resolve(directory, `d00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
 }
@@ -267,7 +267,7 @@ try {
     "v0.4 upgrade summary"
   );
   for (const [kind, summary] of [["fresh", freshSummary], ["v0.5-upgrade", upgradeSummary], ["v0.4-upgrade", v04UpgradeSummary]]) {
-    if (summary.migrationCount !== 56 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
+    if (summary.migrationCount !== 57 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
         summary.providerExecutableFunctions !== 14 ||
         summary.providerDirectMutation !== false || summary.providerNetworkMutation !== false) {
       throw new Error(`${kind} database summary failed the D00 invariant set: ${JSON.stringify(summary)}`);
@@ -310,4 +310,4 @@ try {
 }
 
 if (failure) throw failure;
-process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=56 assertions=41\n`);
+process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=${evidence.summary.migrations} assertions=${evidence.summary.assertions}\n`);
