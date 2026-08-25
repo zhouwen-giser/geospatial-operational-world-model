@@ -24,6 +24,7 @@ import {
   selectRoadServiceObligations,
   solveStrictCoverageRoute,
   type CoverageRoutingObjective,
+  type CoverageObjectiveWeights,
   type CoverageSqlPool,
   type CoverageTraversalArc,
   type CoverageTurnRule,
@@ -37,6 +38,7 @@ import { NetworkRepository, type LoadedNetwork, type NetworkSqlPool } from "../.
 import type { RoadCoverageEngine } from "./engine.js";
 
 type JsonObject = Record<string, unknown>;
+type CoverageObjectiveProfile = GowmV06RoadCoverageRequest["objective"]["profile"];
 
 export interface PostgresRoadCoverageEngineOptions {
   pool: Pick<Pool, "connect" | "query">;
@@ -209,10 +211,12 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     const turnRules = coverageTurnRules(network);
     const travelPolicy: CoverageTravelPolicy = { profileKey: request.routingSnapshot.travelProfileVersion, requiredAccessMask: 0 };
     const candidates: VerifiedAlternativeCandidate[] = [];
-    for (const profile of request.alternativePolicy.profiles) {
+    const profiles = generationProfiles(request);
+    for (const profile of profiles) {
       startedAt = performance.now();
       const solved = solveStrictCoverageRoute(problem, networkArcs, {
         objective: objective(profile),
+        ...(profile === "WEIGHTED" ? { objectiveWeights: objectiveWeights(request) } : {}),
         travelPolicy,
         turnRules,
         routeCount: 1,
@@ -232,7 +236,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
         candidate: solved.route,
         currentRoutingSnapshot: network.routingSnapshot,
         networkArcs,
-        objective: objective(profile),
+        objective: verifierObjective(profile),
         travelPolicy,
         turnRules
       });
@@ -256,7 +260,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       requestId: request.requestId,
       problemHash: digest(problem.problemHash),
       routingSnapshot: request.routingSnapshot,
-      policy: request.alternativePolicy,
+      policy: { ...request.alternativePolicy, profiles: profiles as typeof request.alternativePolicy.profiles },
       candidates,
       searchTerminatedBy: "PROFILES_COMPLETE",
       createdAt: createdAt.toISOString(),
@@ -283,14 +287,14 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     if (artifact === null) throw new ProviderProtocolError("VERSION_NOT_FOUND", "coverage result/problem artifact is unavailable in scope");
     const problem = artifact.problem as GowmV06CoverageProblem;
     const network = await this.#network.loadPinned(request.routingSnapshot, scope, context.deadline.remainingMs());
-    const profile = request.candidate.objectiveProfile;
+    const profile = coverageObjectiveProfile(request.candidate.objectiveProfile);
     const travelPolicy: CoverageTravelPolicy = { profileKey: request.routingSnapshot.travelProfileVersion, requiredAccessMask: 0 };
     let report = verifyCoverageRoute({
       problem,
       candidate: request.candidate.route,
       currentRoutingSnapshot: network.routingSnapshot,
       networkArcs: traversalArcs(network),
-      objective: objective(profile),
+      objective: verifierObjective(profile),
       travelPolicy,
       turnRules: coverageTurnRules(network)
     });
@@ -381,11 +385,36 @@ function coverageTurnRules(network: LoadedNetwork): CoverageTurnRule[] {
   }));
 }
 
-function objective(profile: GowmV06CoverageAlternative["objectiveProfile"]): CoverageRoutingObjective {
+function objective(profile: CoverageObjectiveProfile): CoverageRoutingObjective {
   if (profile === "FASTEST_COMPLETION") return "FASTEST";
-  if (profile === "SHORTEST_TOTAL_DISTANCE" || profile === "LEAST_DEADHEAD") return "SHORTEST_DISTANCE";
+  if (profile === "SHORTEST_TOTAL_DISTANCE") return "SHORTEST_DISTANCE";
+  if (profile === "LEAST_DEADHEAD") return "LEAST_DEADHEAD";
   if (profile === "LOWEST_RISK") return "LOWEST_RISK";
-  return "BALANCED";
+  return profile === "WEIGHTED" ? "WEIGHTED" : "BALANCED";
+}
+
+function generationProfiles(request: GowmV06RoadCoverageRequest): CoverageObjectiveProfile[] {
+  const profiles: CoverageObjectiveProfile[] = [request.objective.profile];
+  for (const profile of request.alternativePolicy.profiles) if (!profiles.includes(profile)) profiles.push(profile);
+  return profiles;
+}
+
+function verifierObjective(profile: CoverageObjectiveProfile): "SHORTEST_DISTANCE" | "FASTEST" | "LOWEST_RISK" | "LOWEST_ENERGY" | "BALANCED" {
+  const value = objective(profile);
+  return value === "WEIGHTED" || value === "LEAST_DEADHEAD" ? "BALANCED" : value;
+}
+
+function objectiveWeights(request: GowmV06RoadCoverageRequest): CoverageObjectiveWeights {
+  const value = request.objective.weights;
+  if (value === undefined || value.distance === undefined || value.duration === undefined || value.risk === undefined || value.deadhead === undefined) {
+    throw new ProviderProtocolError("INVALID_REQUEST", "WEIGHTED coverage objective requires distance, duration, risk, and deadhead PPM weights");
+  }
+  return { distance: value.distance, duration: value.duration, risk: value.risk, deadhead: value.deadhead };
+}
+
+function coverageObjectiveProfile(value: string): CoverageObjectiveProfile {
+  if (value === "FASTEST_COMPLETION" || value === "SHORTEST_TOTAL_DISTANCE" || value === "LEAST_DEADHEAD" || value === "LOWEST_RISK" || value === "WEIGHTED") return value;
+  throw new ProviderProtocolError("INVALID_REQUEST", "coverage candidate has an unsupported objective profile");
 }
 
 function resolvedArea(area: GowmV06RoadCoverageRequest["area"]): GeoJsonArea {
