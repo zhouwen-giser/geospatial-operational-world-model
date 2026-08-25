@@ -1,0 +1,74 @@
+{
+  "lockVersion": "1.0",
+  "sourceArchive": {
+    "name": "area-road-coverage-planner-reference.zip",
+    "sha256": "a8b04ac9a6d6660d3042f4ba9030b0bb0b99b11a8f301a47dbfd12c8796ce116",
+    "entries": 1337,
+    "uncompressedBytes": 39214103,
+    "unsafePaths": 0,
+    "licenseStatus": "UNSPECIFIED",
+    "integrationDecision": "REFERENCE_ONLY_SELECTIVE_REIMPLEMENTATION",
+    "redistributionAllowed": false
+  },
+  "licenseInspection": {
+    "rootLicenseFound": false,
+    "rootNoticeFound": false,
+    "nestedNotices": [
+      "docs/baselines/feasibility-v1.1/NOTICE.md"
+    ],
+    "conclusion": "A nested baseline notice does not license the root reference implementation."
+  },
+  "referenceReimplementationFiles": {
+    "packages/graph/src/required-transit-selector.ts": "5d414057e4fe4c4d396c4ba202831e0cb934c60b4077abe16ed1aa4efca43e74",
+    "packages/graph/src/boundary-state-generator.ts": "dd8821882178d57ebbd6763381af768197bbd19283f6ba57a1973f9dbd7e5cd6",
+    "packages/graph/src/portal-policy-engine.ts": "93296d9f8a56beaaf261e1e955d25f08de303fcbb1bf66a3df3dae284c05fc61",
+    "packages/domain/src/problem-builder.ts": "bbf368a97dcdd4e4cc6939c665201777cc0eef363250893fece6ef2e38000d3a",
+    "packages/domain/src/service-obligation-ledger.ts": "183d14417335d620f831080641c4e4e55bf9f4c41ce63c0f6eb6414a95097bcf",
+    "packages/domain/src/objective-profiles.ts": "11d0f24247af50aa2cf4cb7964059ec1d5df6a20dc60fed65e7c6c43a337e821",
+    "packages/domain/src/route-signature.ts": "3fd89c0277d248fca2ff1782cb761bd1fd9eb12323b469dcf9226ad0f5eb88b3",
+    "packages/domain/src/diversity-matrix.ts": "53a047f4d7fe1419a83e952029b1e5ac23fb29c33635776155c798e0a60d68db",
+    "packages/domain/src/result-ranking.ts": "f37df168946cb5a71cb0fef85a173f45bd0b16452a9a72ddab3c3dc1444d550b",
+    "packages/domain/src/pareto-selector.ts": "9657f34e4b3bb234fe30408730d231ae3c2a8dc80249991ffc3127f4245b8c30",
+    "packages/domain/src/alternative-explanations.ts": "a8598e07bfb79d4106c49b93bc5832a95986a817052bcde9ec61e4367f973c99",
+    "packages/solver-sdk/src/closed-directed-postman.ts": "1f634297af517c8b157c57c9d65ef7877accf7ba49d25a7173ff144dd656d636",
+    "packages/solver-sdk/src/closed-rpp-connector.ts": "696493fef074c8a25f3a95b99cc1f6ce1996bec793c2919a0e5407bb86788d48",
+    "packages/solver-sdk/src/exact-arc-routing-oracle.ts": "d5006b4843ed042486d943a137bd5ad84f2fcb201d3c2c9d4d80a95aadfbafe5",
+    "packages/solver-sdk/src/candidate-pool-orchestrator.ts": "a90c1b3e597347617fbdafaf8a8f790baf20c38a0e146b9f40341d30bbe48b96",
+    "packages/solver-sdk/src/solver-resource-guard.ts": "36cf6a598a4afb3faeec5c313fbb342547e64e13fcd31a0511ba59a36a1d8bd3",
+    "packages/verifier/src/arc-continuity-verifier.ts": "45529ab4f3c66002cddffe24cc5f10f84b2105d7f1eb623d88fbe2deecbb1528",
+    "packages/verifier/src/coverage-terminal-verifier.ts": "6e8f307013cfcfac0f432874f1ead1790c20c72371aa2e5cb24482d9ff6c5ac3",
+    "packages/verifier/src/turn-restriction-verifier.ts": "da7721efae338a78be680c99973e1a0b2686cd21b4292b8fe4eeed9aefa1a6d7",
+    "packages/verifier/src/metric-plan-verifier.ts": "345b682e7329f3d011f4680d8c82fc7354d3a6999c904ea3fd58bdc46fe2b9e9",
+    "apps/planner-worker/src/alternative-pipeline.ts": "394acfaecc43c2ddc319de74c5cff85222fea79ee5ef00710ba11705e8fe5468",
+    "apps/planner-worker/src/runtime.ts": "2cc8652d7161bbd8782ce516470d0131f0d74dbbe0c14d62d355e8bdd150e023"
+  },
+  "excluded": [
+    "services/optimizer-sidecar/**",
+    "packages/solver-sdk/src/graph-aware-clustering.ts",
+    "packages/solver-sdk/src/depot-assignment.ts",
+    "packages/solver-sdk/src/multi-route-rpp-repair.ts",
+    "packages/verifier/src/fleet-constraint-verifier.ts",
+    "database/**",
+    "contracts/**",
+    "apps/planner-api/src/auth.ts",
+    "**/node_modules/**",
+    "**/dist/**",
+    "coverage/**",
+    ".env",
+    "legacy gate and validation conclusions"
+  ],
+  "mandatoryReuse": [
+    "v0.5 Node/Edge/Directed Arc and GraphVersion authority",
+    "gowm_network_v1 read contract",
+    "v0.5 snap, shortest-path, matrix, turn, profile, and condition semantics",
+    "v0.5 RoutingSnapshot and ConditionSnapshot",
+    "Gateway identity, scope, job, and derived-result authorities"
+  ],
+  "policyMarkers": [
+    "NO_SOURCE_COPY",
+    "NO_REDISTRIBUTION",
+    "V0_5_NETWORK_AUTHORITY",
+    "NO_SECOND_GRAPH",
+    "NO_PROVIDER_TO_PROVIDER_HTTP"
+  ]
+}

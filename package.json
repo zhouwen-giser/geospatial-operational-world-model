@@ -44,6 +44,7 @@
     "validate:gowm-v05-performance": "npm run build && node --import tsx validation/scripts/gowm-v05-routing-performance.ts",
     "validate:gowm-v05-final": "node validation/scripts/gowm-v05-final-candidate.mjs",
     "validate:gowm-v06-predecessor": "node validation/scripts/gowm-v06-predecessor-guard.mjs",
+    "validate:gowm-v06-source-policy": "node validation/scripts/gowm-v06-source-policy-guard.mjs",
     "sbom:service": "node scripts/generate-service-sbom.mjs",
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",

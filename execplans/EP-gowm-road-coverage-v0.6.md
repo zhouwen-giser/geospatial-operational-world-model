@@ -30,7 +30,7 @@ This is a living execution plan. It records only evidence produced from the actu
 ## Phase checklist
 
 - [x] R00 Predecessor Reconciliation
-- [ ] R01 Source Lock / License / Clean-room Map
+- [x] R01 Source Lock / License / Clean-room Map
 - [ ] A00 ADR / Authority / Non-goal
 - [ ] A01 Contracts / OpenAPI / Manifest / Generated Types
 - [ ] D00 Coverage Schema / Roles / Immutability / Assertions
@@ -56,6 +56,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - Preserve the unmerged v0.5 candidate and use a stacked Draft PR rather than rebasing v0.6 onto an older `main`.
 - Keep the extracted task package ignored as user-supplied execution input.
 - Treat the supplied reference archive as reference-only until R01 completes license and clean-room reconciliation.
+- Keep the reference-only decision for all implementation phases because no root license grants redistribution or source integration.
 - Keep all 226 Required acceptance rows mandatory; no predecessor gate may be weakened.
 
 ## Discoveries
@@ -63,6 +64,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - The v0.5 local HEAD, remote branch, and Draft PR head all resolve to the same SHA.
 - The seven frozen v0.5 network/routing schemas match the task dependency snapshots byte-for-byte. The two task Provider manifests are explicitly design snapshots: their operation/schema hashes match, while their `*SchemaFile` paths omit the authoritative repository's `gowm-v0.5/` prefix.
 - The package preflight passes under explicit Git Bash on Windows; an unqualified `bash` command resolves through WSL and cannot access the Windows task path.
+- The reference archive has 1,337 entries and no unsafe paths, but includes a root `.env` plus nested generated dependency/build/coverage output. All are excluded and the archive remains unexpanded.
 
 ## Failed attempts retained
 
