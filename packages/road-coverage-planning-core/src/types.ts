@@ -3,14 +3,17 @@ import type {
   GowmV06CoverageCommonDirectedState as DirectedState,
   GowmV06CoverageCommonNetworkLocation as NetworkLocation,
   GowmV06CoverageCommonRoutingSnapshot as RoutingSnapshot,
+  GowmV06CoverageCommonFixedMetrics as FixedMetrics,
   GowmV06CoverageObligationSet as CoverageObligationSet,
+  GowmV06CoverageRoute as CoverageRoute,
+  GowmV06CoverageSolverDiagnostics as CoverageSolverDiagnostics,
   GowmV06CoverageProblem as CoverageProblem,
   GowmV06CoverageEndpointPolicy as CoverageEndpointPolicy,
   GowmV06RoadSelectionPolicy as RoadSelectionPolicy,
   GowmV06RoadServiceObligation as RoadServiceObligation
 } from "../../platform/contract-runtime/src/index.js";
 
-export type { CoverageEndpointPolicy, CoverageObligationSet, CoverageProblem, DirectedState, NetworkLocation, ReferenceKey, RoadSelectionPolicy, RoadServiceObligation, RoutingSnapshot };
+export type { CoverageEndpointPolicy, CoverageObligationSet, CoverageProblem, CoverageRoute, CoverageSolverDiagnostics, DirectedState, FixedMetrics, NetworkLocation, ReferenceKey, RoadSelectionPolicy, RoadServiceObligation, RoutingSnapshot };
 
 export type GeoJsonArea = {
   type: "Polygon" | "MultiPolygon";
@@ -79,4 +82,28 @@ export interface CoverageSqlClient {
 
 export interface CoverageSqlPool {
   connect(): Promise<CoverageSqlClient>;
+}
+
+export interface CoverageTraversalArc {
+  graphVersion: string;
+  arcKey: string;
+  fromNodeKey: string;
+  toNodeKey: string;
+  direction: "FORWARD" | "REVERSE";
+  metrics: FixedMetrics;
+  sourceFeatureReferenceKey?: ReferenceKey;
+}
+
+export interface ClosedDcppAugmentation {
+  fromNodeKey: string;
+  toNodeKey: string;
+  quantity: number;
+  unitCost: number;
+  arcKeys: string[];
+}
+
+export interface ClosedDcppSolution {
+  route: CoverageRoute;
+  diagnostics: CoverageSolverDiagnostics;
+  augmentation: ClosedDcppAugmentation[];
 }

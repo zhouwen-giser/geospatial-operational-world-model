@@ -1,0 +1,12 @@
+{
+  "phase": "S00",
+  "status": "PASS",
+  "runtimeEvidence": "reports/gowm-v0.6/s00-closed-dcpp-s00-20260825t1055.json",
+  "acceptance": {
+    "AC-S001": "PASS_BALANCED_REQUIRED_DIRECTED_GRAPH_RETURNS_EXACT_EULER_COVERAGE_CIRCUIT",
+    "AC-S002": "PASS_EXACT_MINIMUM_COST_TRANSPORT_AUGMENTATION_BALANCES_IMBALANCE",
+    "AC-S003": "PASS_ROUTE_CLOSES_AT_EXACT_PARTIAL_DIRECTED_START_STATE"
+  },
+  "failed": [],
+  "blocked": []
+}

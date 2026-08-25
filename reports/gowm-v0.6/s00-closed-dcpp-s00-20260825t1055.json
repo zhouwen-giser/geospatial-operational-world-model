@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "s00-20260825t1055",
+  "status": "PASS",
+  "checks": {
+    "closedAtExactDirectedState": true,
+    "minimumCostAugmentation": true,
+    "balancedEulerTraversal": true,
+    "deterministicReplay": true,
+    "routeContract": true,
+    "diagnosticsContract": true
+  },
+  "problemHash": "sha256:c9f56f6e0946f18892e99d0eae39c9913481c6ab86764885d955a42f74a04e46",
+  "routeSignature": "sha256:4d8fb55805ae4b7fe0f38b7da0fea5aed8726417d251850259e580a2c2d0e79d",
+  "augmentation": [
+    {
+      "fromNodeKey": "B",
+      "toNodeKey": "A",
+      "quantity": 1,
+      "unitCost": 2,
+      "arcKeys": [
+        "arc_33333333333333333333333333333333",
+        "arc_44444444444444444444444444444444"
+      ]
+    }
+  ],
+  "requiredTraversalCount": 6,
+  "augmentedTraversalCount": 2,
+  "segmentCount": 9
+}
