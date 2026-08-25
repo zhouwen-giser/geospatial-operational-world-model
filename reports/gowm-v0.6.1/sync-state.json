@@ -1,0 +1,36 @@
+{
+  "goal": "GOWM+ v0.6.1 Platform Hardening",
+  "targetVersion": "0.6.1",
+  "status": "IN_PROGRESS",
+  "phase": "R01",
+  "source": {
+    "branch": "main",
+    "sha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+    "version": "0.6.0",
+    "latestMigration": 53
+  },
+  "candidate": {
+    "branch": "codex/gowm-platform-hardening-v0.6.1",
+    "baseSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+    "localSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+    "remoteSha": null
+  },
+  "markers": {
+    "roadCoverageCorrect": false,
+    "capabilityContractsHardened": false,
+    "publicDataFoundationHardened": false,
+    "stableCandidate": false
+  },
+  "cancelledGates": {
+    "wsgsReadinessBlackBox": true,
+    "dataPlatformReadiness": true,
+    "mockElevationOnboarding": true
+  },
+  "acceptance": {
+    "passed": ["AC-R001", "AC-R002", "AC-R003", "AC-R005", "AC-R006", "AC-R007", "AC-R010"],
+    "failed": [],
+    "notRun": ["AC-R004", "AC-R008", "AC-R009", "AC-R011", "AC-R012"]
+  },
+  "blockers": [],
+  "next": "Freeze v0.6.1 contracts and architecture decisions."
+}
