@@ -24,6 +24,8 @@ export interface BuildCoverageResultSetInput {
   searchTerminatedBy: NonNullable<CoverageResultSet["searchTerminatedBy"]>;
   createdAt: string;
   validUntil: string;
+  integrity?: { dataSnapshotHash: `sha256:${string}`; computeSnapshotHash: `sha256:${string}`; contractHash: `sha256:${string}` };
+  noFeasibleReasons?: string[];
 }
 
 interface CandidateFacts extends Record<string, number> {
@@ -96,7 +98,8 @@ export function buildVerifiedCoverageResultSet(input: BuildCoverageResultSetInpu
       deduplicatedCandidateCount: ordered.length,
       selectedCount: alternatives.length,
       terminationReason: input.searchTerminatedBy
-    }]
+    }, ...(input.integrity === undefined ? [] : [{ kind: "SNAPSHOT_INTEGRITY", problemHash: input.problemHash, ...input.integrity }]),
+    ...(input.noFeasibleReasons === undefined || input.noFeasibleReasons.length === 0 ? [] : [{ kind: "NO_FEASIBLE_RESULT", normalizedStatus: "NO_FEASIBLE_RESULT", reasons: [...input.noFeasibleReasons] }])]
   };
   return deepFreeze({ ...body, resultHash: canonicalSha256(body) });
 }

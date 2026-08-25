@@ -2,6 +2,7 @@ import type { Pool } from "pg";
 
 import {
   canonicalSha256,
+  getContractSchemaHash,
   type GowmV06CoverageAlternative,
   type GowmV06CoverageExpandRequest,
   type GowmV06CoverageProblem,
@@ -18,6 +19,7 @@ import {
 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import {
   buildCanonicalCoverageProblem,
+  CoveragePlanningError,
   PostgresCoverageEndpointRepository,
   PostgresCoverageSelectionRepository,
   resolveCoverageEndpoints,
@@ -208,18 +210,27 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     const turnRules = coverageTurnRules(network);
     const travelPolicy: CoverageTravelPolicy = { profileKey: request.routingSnapshot.travelProfileVersion, requiredAccessMask: 0 };
     const candidates: VerifiedAlternativeCandidate[] = [];
+    const noFeasibleReasons = new Set<string>();
     const profiles = generationProfiles(request);
     for (const profile of profiles) {
       startedAt = performance.now();
-      const solved = solveStrictCoverageRoute(problem, networkArcs, {
-        objective: objective(profile),
-        ...(profile === "WEIGHTED" ? { objectiveWeights: objectiveWeights(request) } : {}),
-        travelPolicy,
-        turnRules,
-        routeCount: 1,
-        serviceMode: request.selectionPolicy.serviceMode,
-        seed: candidates.length
-      });
+      let solved;
+      try {
+        solved = solveStrictCoverageRoute(problem, networkArcs, {
+          objective: objective(profile),
+          ...(profile === "WEIGHTED" ? { objectiveWeights: objectiveWeights(request) } : {}),
+          travelPolicy,
+          turnRules,
+          routeCount: 1,
+          serviceMode: request.selectionPolicy.serviceMode,
+          seed: candidates.length
+        });
+      } catch (error) {
+        const reason = noFeasibleReason(error);
+        if (reason === undefined) throw error;
+        noFeasibleReasons.add(reason);
+        continue;
+      }
       const solverElapsedMs = performance.now() - startedAt;
       this.#observeStage({
         stage: "CONNECTOR_MATRIX_SEARCH",
@@ -263,9 +274,11 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       routingSnapshot: request.routingSnapshot,
       policy: { ...request.alternativePolicy, profiles: profiles as typeof request.alternativePolicy.profiles },
       candidates,
-      searchTerminatedBy: "PROFILES_COMPLETE",
+      searchTerminatedBy: candidates.length === 0 ? "NO_FEASIBLE_PLAN" : "PROFILES_COMPLETE",
       createdAt: createdAt.toISOString(),
-      validUntil: new Date(createdAt.getTime() + this.#resultTtlMs).toISOString()
+      validUntil: new Date(createdAt.getTime() + this.#resultTtlMs).toISOString(),
+      integrity: coverageIntegrity(network),
+      ...(noFeasibleReasons.size === 0 ? {} : { noFeasibleReasons: [...noFeasibleReasons].sort() })
     });
     await accepted(this.#async.heartbeat(claim, leaseOwner, this.#leaseSeconds, "PUBLISHING", 950_000, { selectedAlternativeCount: result.alternatives.length }), "publication heartbeat");
     startedAt = performance.now();
@@ -416,6 +429,31 @@ function objectiveWeights(request: GowmV06RoadCoverageRequest): CoverageObjectiv
 function coverageObjectiveProfile(value: string): CoverageObjectiveProfile {
   if (value === "FASTEST_COMPLETION" || value === "SHORTEST_TOTAL_DISTANCE" || value === "LEAST_DEADHEAD" || value === "LOWEST_RISK" || value === "WEIGHTED") return value;
   throw new ProviderProtocolError("INVALID_REQUEST", "coverage candidate has an unsupported objective profile");
+}
+
+function noFeasibleReason(error: unknown): string | undefined {
+  if (!(error instanceof CoveragePlanningError)) return undefined;
+  if (error.code === "RESOURCE_EXHAUSTED") return "RESOURCE_LIMIT_PREVENTS_PROOF";
+  if (error.code !== "NO_FEASIBLE_PLAN" && error.code !== "UNREACHABLE") return undefined;
+  const message = error.message.toLowerCase();
+  if (message.includes("turn")) return "TURN_CONSTRAINT_BLOCKED";
+  if (message.includes("profile") || message.includes("excluded")) return "PROFILE_EXCLUDES_REQUIRED_ARC";
+  if (message.includes("closed") || message.includes("condition")) return "CONDITION_CLOSES_REQUIRED_ARC";
+  if (message.includes("endpoint") || message.includes("terminal") || message.includes("unreachable")) return "ENDPOINT_UNREACHABLE";
+  return "DISCONNECTED_REQUIRED_COMPONENT";
+}
+
+function coverageIntegrity(network: LoadedNetwork): { dataSnapshotHash: `sha256:${string}`; computeSnapshotHash: `sha256:${string}`; contractHash: `sha256:${string}` } {
+  const contractHash = getContractSchemaHash("urn:gowm:v0.6:coverage-result-set");
+  return {
+    dataSnapshotHash: canonicalSha256(network.dataSnapshot),
+    computeSnapshotHash: canonicalSha256({
+      provider: "gowm.road-coverage-planning/1.0.0", solver: "coverage-strict-routing/1.1.0",
+      verifier: "coverage-verifier/1.1.0", networkQueryCore: "network-query-core/1.0.0",
+      policy: "gowm-road-coverage-policy/1.1", contractHash, buildPackageDigest: "workspace:gowm-v0.6.1"
+    }),
+    contractHash
+  };
 }
 
 function withBoundaryEvents(route: GowmV06CoverageRoute, crossings: readonly BoundaryCrossing[]): GowmV06CoverageRoute {

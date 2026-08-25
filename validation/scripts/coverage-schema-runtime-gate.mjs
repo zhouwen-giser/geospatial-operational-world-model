@@ -185,11 +185,11 @@ try {
   const assertions = (await readdir(resolve(repositoryRoot, "database/tests")))
     .filter((name) => /^\d{3}_.+_assertions\.sql$/u.test(name))
     .sort();
-  if (migrations.length !== 55 || migrations.at(-1)?.slice(0, 3) !== "055") {
-    throw new Error(`expected the current v0.6.1 migration set 001-055, received ${migrations.length}`);
+  if (migrations.length !== 56 || migrations.at(-1)?.slice(0, 3) !== "056") {
+    throw new Error(`expected the current v0.6.1 migration set 001-056, received ${migrations.length}`);
   }
-  if (assertions.length !== 40 || assertions.at(-1)?.slice(0, 3) !== "040") {
-    throw new Error(`expected the current v0.6.1 assertion set 001-040, received ${assertions.length}`);
+  if (assertions.length !== 41 || assertions.at(-1)?.slice(0, 3) !== "041") {
+    throw new Error(`expected the current v0.6.1 assertion set 001-041, received ${assertions.length}`);
   }
 
   createDatabase(freshDatabase);
@@ -267,7 +267,7 @@ try {
     "v0.4 upgrade summary"
   );
   for (const [kind, summary] of [["fresh", freshSummary], ["v0.5-upgrade", upgradeSummary], ["v0.4-upgrade", v04UpgradeSummary]]) {
-    if (summary.migrationCount !== 55 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
+    if (summary.migrationCount !== 56 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
         summary.providerExecutableFunctions !== 14 ||
         summary.providerDirectMutation !== false || summary.providerNetworkMutation !== false) {
       throw new Error(`${kind} database summary failed the D00 invariant set: ${JSON.stringify(summary)}`);
@@ -310,4 +310,4 @@ try {
 }
 
 if (failure) throw failure;
-process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=55 assertions=40\n`);
+process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=56 assertions=41\n`);

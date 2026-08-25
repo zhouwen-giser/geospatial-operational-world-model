@@ -104,4 +104,19 @@ describe("verified coverage alternatives", () => {
     expect(Object.isFrozen(result.pairwiseSimilarity)).toBe(true);
     expect(() => (result.alternatives as unknown as unknown[]).push({})).toThrow();
   });
+
+  it("publishes domain no-feasible outcomes with independent snapshot hashes", () => {
+    const fixture = candidates();
+    const request = input([], fixture.problemHash, { requestedCount: 1, minimumVerifiedCount: 1, profiles: ["SHORTEST_TOTAL_DISTANCE"] });
+    const result = buildVerifiedCoverageResultSet({
+      ...request, searchTerminatedBy: "NO_FEASIBLE_PLAN", noFeasibleReasons: ["ENDPOINT_UNREACHABLE"],
+      integrity: { dataSnapshotHash: `sha256:${"4".repeat(64)}`, computeSnapshotHash: `sha256:${"5".repeat(64)}`, contractHash: `sha256:${"6".repeat(64)}` }
+    });
+    expect(result.status).toBe("NO_FEASIBLE_PLAN");
+    expect(result.receipts).toEqual(expect.arrayContaining([
+      expect.objectContaining({ kind: "NO_FEASIBLE_RESULT", normalizedStatus: "NO_FEASIBLE_RESULT", reasons: ["ENDPOINT_UNREACHABLE"] }),
+      expect.objectContaining({ kind: "SNAPSHOT_INTEGRITY", problemHash: fixture.problemHash })
+    ]));
+    expect(validateContract("urn:gowm:v0.6:coverage-result-set", result).valid).toBe(true);
+  });
 });
