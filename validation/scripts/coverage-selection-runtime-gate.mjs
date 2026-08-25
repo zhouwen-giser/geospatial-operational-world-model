@@ -8,19 +8,22 @@ const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
 const runId = process.env.GOWM_V06_RUN_ID;
 const container = process.env.GOWM_V06_POSTGRES_CONTAINER;
 const password = process.env.GOWM_V06_POSTGRES_PASSWORD;
-const runtimeKind = process.env.GOWM_V06_RUNTIME_KIND === "endpoint" ? "endpoint" : "selection";
+const runtimeKind = ["endpoint", "async"].includes(process.env.GOWM_V06_RUNTIME_KIND) ? process.env.GOWM_V06_RUNTIME_KIND : "selection";
 if (runtimeKind === "selection" && process.env.ALLOW_GOWM_COVERAGE_SELECTION_GATE !== "YES") {
   throw new Error("Set ALLOW_GOWM_COVERAGE_SELECTION_GATE=YES to run the isolated B00 gate");
 }
 if (runtimeKind === "endpoint" && process.env.ALLOW_GOWM_COVERAGE_ENDPOINT_GATE !== "YES") {
   throw new Error("Set ALLOW_GOWM_COVERAGE_ENDPOINT_GATE=YES to run the isolated E00 gate");
 }
+if (runtimeKind === "async" && process.env.ALLOW_GOWM_COVERAGE_ASYNC_GATE !== "YES") {
+  throw new Error("Set ALLOW_GOWM_COVERAGE_ASYNC_GATE=YES to run the isolated J00 gate");
+}
 if (!runId || !/^[a-z0-9][a-z0-9-]{2,31}$/u.test(runId)) throw new Error("GOWM_V06_RUN_ID is invalid");
 if (!container || !/^[A-Za-z0-9][A-Za-z0-9_.-]{2,127}$/u.test(container)) throw new Error("GOWM_V06_POSTGRES_CONTAINER is invalid");
 if (!password || password.length < 16) throw new Error("GOWM_V06_POSTGRES_PASSWORD must be provided without recording it in evidence");
-const phase = runtimeKind === "endpoint" ? "e00" : "b00";
+const phase = runtimeKind === "endpoint" ? "e00" : runtimeKind === "async" ? "j00" : "b00";
 const database = `gowm_v06_${phase}_${runId.replaceAll("-", "_")}`;
-if (!/^gowm_v06_(b00|e00)_[a-z0-9_]{3,32}$/u.test(database)) throw new Error("isolated database name escaped the runtime namespace");
+if (!/^gowm_v06_(b00|e00|j00)_[a-z0-9_]{3,32}$/u.test(database)) throw new Error("isolated database name escaped the runtime namespace");
 
 const evidence = {
   schemaVersion: "1.0",
@@ -64,7 +67,7 @@ function psql(sql, label, targetDatabase = database, extraArgs = []) {
 async function migrationBatch() {
   const files = (await readdir(resolve(repositoryRoot, "database/migrations")))
     .filter((name) => /^\d{3}_.+\.sql$/u.test(name)).sort();
-  if (files.length !== 50 || files.at(-1)?.slice(0, 3) !== "050") throw new Error("B00 expects migrations 001-050");
+  if (files.length !== 51 || files.at(-1)?.slice(0, 3) !== "051") throw new Error("B00 expects migrations 001-051");
   const parts = [];
   for (const file of files) {
     const template = await readFile(resolve(repositoryRoot, "database/migrations", file), "utf8");
@@ -75,7 +78,7 @@ async function migrationBatch() {
     const checksum = createHash("sha256").update(sql).digest("hex");
     parts.push(`\\echo APPLY_MIGRATION ${file}\n${sql}\nINSERT INTO schema_migration(version,checksum) VALUES ('${file}','${checksum}');`);
   }
-  psql(parts.join("\n"), "migration-batch-001-050");
+  psql(parts.join("\n"), "migration-batch-001-051");
 }
 
 async function persist() {
@@ -95,12 +98,13 @@ try {
   run("docker", ["exec", container, "createdb", "--username", "gowm", "--owner", "gowm", database], { evidenceCommand: ["create-isolated-database", database] });
   created = true;
   await migrationBatch();
-  const fixture = await readFile(resolve(repositoryRoot, "validation/fixtures/coverage-selection-runtime.sql"), "utf8");
-  psql(fixture, "coverage-selection-fixture");
+  const fixtureName = runtimeKind === "async" ? "coverage-async-runtime.sql" : "coverage-selection-runtime.sql";
+  const fixture = await readFile(resolve(repositoryRoot, `validation/fixtures/${fixtureName}`), "utf8");
+  psql(fixture, `${runtimeKind}-fixture`);
 
   const encodedPassword = encodeURIComponent(password);
   const databaseUrl = `postgresql://gowm:${encodedPassword}@127.0.0.1:5432/${database}?options=-c%20role%3Dcoverage_planner_provider`;
-  const clientName = runtimeKind === "endpoint" ? "coverage-endpoint-runtime-client" : "coverage-selection-runtime-client";
+  const clientName = runtimeKind === "endpoint" ? "coverage-endpoint-runtime-client" : runtimeKind === "async" ? "coverage-async-runtime-client" : "coverage-selection-runtime-client";
   const output = run("docker", ["run", "--rm", "--network", `container:${container}`,
     "--volume", `${repositoryRoot}:/workspace`, "--workdir", "/workspace",
     "--env", "DATABASE_URL", "node:22-bookworm",
@@ -133,7 +137,7 @@ try {
   await persist();
 }
 if (failure) throw failure;
-process.stdout.write(`GOWM_COVERAGE_${runtimeKind === "endpoint" ? "ENDPOINT" : "SELECTION"}_RUNTIME_PASS ${runId} checks=${Object.keys(evidence.summary.checks).length}\n`);
+process.stdout.write(`GOWM_COVERAGE_${runtimeKind === "endpoint" ? "ENDPOINT" : runtimeKind === "async" ? "ASYNC" : "SELECTION"}_RUNTIME_PASS ${runId} checks=${Object.keys(evidence.summary.checks).length}\n`);
 
 function redact(value) {
   return password ? value.replaceAll(password, "[REDACTED]") : value;

@@ -34,6 +34,7 @@
     "validation/scripts/gowm-v05-routing-performance.ts",
     "validation/scripts/coverage-selection-runtime-client.ts",
     "validation/scripts/coverage-endpoint-runtime-client.ts",
+    "validation/scripts/coverage-async-runtime-client.ts",
     "tests/**/*.ts",
     "vitest.config.ts"
   ],

@@ -43,7 +43,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] S03 Strict Turn-aware Routing
 - [x] V00 Independent Verifier / Mutation
 - [x] L00 Alternatives / Diversity / Ranking
-- [ ] J00 Async Run / Lease / Cancel / Progress
+- [x] J00 Async Run / Lease / Cancel / Progress
 - [ ] P00 Provider Protocol
 - [ ] G00 Gateway / DAG / Result Registry / Expand
 - [ ] T00 Scope / Security / Performance / Recovery
@@ -81,6 +81,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - B00's first controlled-function run returned the correct four symmetric-hole obligations, while the test incorrectly expected four distinct numeric fraction intervals. The assertion now keys by Arc plus fractions, proving two fragments on each of two directions.
 - The first 050 database regression passed all migrations/assertions but retained a historical summary expectation of 49 migrations. The current gate now asserts 50 migrations and 35 assertions.
 - B01's first snapshot-sensitivity test replaced the problem snapshot but intentionally left obligations hashed against the old snapshot, so the tamper guard rejected it before hashing. The legal variant now regenerates its obligation identities against the new snapshot and proves a changed problem hash.
+- J00's first 051 database regression correctly rejected a progress timeline that moved from 500000 ppm to 0 on lease requeue. The reaper now inherits the prior generation's maximum progress; the failed evidence is retained and the fresh/upgrade rerun passed.
 
 ## Validation
 
@@ -102,3 +103,6 @@ This is a living execution plan. It records only evidence produced from the actu
 - S03 strict solver gate: `GOWM_COVERAGE_STRICT_ROUTING_PASS s03-20260825t1140 checks=23 objectives=3`; pairwise/allowed-only/multi-edge rules, cross-boundary history, no primitive downgrade, conditions/profiles, safe fixed metrics, three distinct objectives, replay/version fencing, resource budgets, and Stable negative guards PASS.
 - V00 independent verifier gate: `GOWM_COVERAGE_INDEPENDENT_VERIFIER_PASS v00-20260825t1210 checks=22 mutations=12`; isolated imports, independent topology/turn/coverage/endpoint/boundary/profile/condition/metric/hash replay, mutation corpus, admission boundary, and frozen receipt contract PASS. Real-e2e stale row `AC-V018` remains deferred.
 - L00 alternatives gate: `GOWM_COVERAGE_ALTERNATIVES_PASS l00-20260825t1235 checks=13 selected=2`; verified-only admission, signature/display dedup, weighted overlap, deadhead Jaccard, deterministic ranking, truthful facts, deep freeze, explicit termination, and frozen result contract PASS. Real E2E and DB rows remain deferred.
+- J00 database regression: `GOWM_COVERAGE_SCHEMA_RUNTIME_PASS j00-db-20260825t1305 migrations=51 assertions=36`; fresh and exact-v0.5 upgrade paths, controlled-function grants, failure rollback, lease/reaper/generation assertions, and isolated database cleanup PASS.
+- J00 real async runtime gate: `GOWM_COVERAGE_ASYNC_RUNTIME_PASS j00-20260825t1110 checks=15`; replay/conflict, ordered SKIP LOCKED claim, per-scope admission, bounded heartbeat, monotonic progress, Gateway connection-pool restarts, lease reaping, generation retry, cancel/late-result fencing, completed-result replay, and simultaneous cancel/publish terminal coherence PASS.
+- Post-J00 selection regression: `GOWM_COVERAGE_SELECTION_RUNTIME_PASS j00-b00-20260825t1055 checks=14`; migration 051 preserves all B00 PostGIS selection behavior.
