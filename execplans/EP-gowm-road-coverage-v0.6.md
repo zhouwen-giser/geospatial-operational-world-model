@@ -38,7 +38,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] B01 Canonical Problem / Ledger / Hash
 - [x] E00 Start / Boundary / Endpoint Policy
 - [x] S00 Closed DCPP
-- [ ] S01 Open CPP / Terminal
+- [x] S01 Open CPP / Terminal
 - [ ] S02 Fixed / Both-direction RPP
 - [ ] S03 Strict Turn-aware Routing
 - [ ] V00 Independent Verifier / Mutation
@@ -97,3 +97,4 @@ This is a living execution plan. It records only evidence produced from the actu
 - B01 canonical gate: `GOWM_COVERAGE_CANONICAL_PROBLEM_PASS b01-20260825t1010 combinations=36`; all 6 obligation-order × 6 endpoint-candidate-order combinations produced one contract-valid obligation-set hash and one problem hash.
 - E00 real endpoint gate: `GOWM_COVERAGE_ENDPOINT_RUNTIME_PASS e00-20260825t1020 checks=13`; parallel-road ambiguity, directed partial state, AUTO boundaries, ReferenceKey resolution, fixed entry/end, last exit, crossing policies, scope-first denial, and unknown-state rejection PASS.
 - S00 exact solver gate: `GOWM_COVERAGE_CLOSED_DCPP_PASS s00-20260825t1055 checks=6 segments=9`; balanced Euler coverage, exact minimum-cost directed augmentation, deterministic replay, contract-valid output, and exact 345678 ppm terminal closure PASS.
+- S01 exact solver gate: `GOWM_COVERAGE_OPEN_DCPP_PASS s01-20260825t1105 checks=7 segments=5`; distinct exact fixed terminal, requested open degree vector, partial ACCESS/RETURN continuity, deterministic replay, and contract-valid output PASS.

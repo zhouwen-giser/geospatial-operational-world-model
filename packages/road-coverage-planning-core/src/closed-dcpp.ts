@@ -58,6 +58,10 @@ export function solveClosedDcpp(problem: CoverageProblem, traversableArcs: reado
   }
 
   const arcs = validateGraphAndObligations(problem, traversableArcs);
+  const startArc = arcs.find((arc) => arc.arcKey === problem.startState.arcKey);
+  if (startArc === undefined || startArc.direction !== problem.startState.direction) {
+    throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "closed DCPP start state is not on a required directed Arc");
+  }
   const obligationsByArc = new Map<string, RoadServiceObligation>();
   for (const obligation of problem.obligationSet.obligations) obligationsByArc.set(obligation.arcKey, obligation);
 
@@ -117,7 +121,7 @@ export function solveClosedDcpp(problem: CoverageProblem, traversableArcs: reado
     throw new CoveragePlanningError("RESOURCE_EXHAUSTED", `closed DCPP route requires ${instances.length} traversals`);
   }
   const preferred = baseInstances.find((instance) => instance.arc.arcKey === problem.startState.arcKey)!;
-  const circuit = eulerCircuit(instances, preferred, deadline);
+  const circuit = eulerTrail(instances, preferred.arc.fromNodeKey, preferred.arc.fromNodeKey, preferred, deadline);
   const segments = materializeExactTerminalCircuit(problem, circuit);
   const metrics = segments.reduce<FixedMetrics>((total, segment) => addMetrics(total, segment.metrics), ZERO_METRICS);
   const routeBody = {
@@ -147,6 +151,115 @@ export function solveClosedDcpp(problem: CoverageProblem, traversableArcs: reado
         requiredTraversalCount: baseInstances.length,
         augmentedTraversalCount: augmentedInstances.length,
         matrixCellCount
+      }
+    },
+    augmentation
+  };
+}
+
+/** Solves exact Open DCPP with a distinct fixed directed terminal state. */
+export function solveOpenDcpp(problem: CoverageProblem, traversableArcs: readonly CoverageTraversalArc[]): ClosedDcppSolution {
+  const startedAt = Date.now();
+  const deadline = startedAt + problem.budgets.timeLimitMs;
+  if (problem.endpointMode !== "FIXED_END" || problem.fixedEndState === undefined) {
+    throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "open DCPP requires FIXED_END and an exact fixedEndState");
+  }
+  const arcs = validateGraphAndObligations(problem, traversableArcs);
+  const byArc = new Map(arcs.map((arc) => [arc.arcKey, arc]));
+  const startArc = byArc.get(problem.startState.arcKey);
+  const endArc = byArc.get(problem.fixedEndState.arcKey);
+  if (startArc === undefined || startArc.direction !== problem.startState.direction || endArc === undefined || endArc.direction !== problem.fixedEndState.direction) {
+    throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "open DCPP endpoints are not on required directed Arcs");
+  }
+  const startNode = problem.startState.fractionPpm === 0 ? startArc.fromNodeKey : startArc.toNodeKey;
+  const endNode = problem.fixedEndState.fractionPpm === WHOLE_ARC_PPM ? endArc.toNodeKey : endArc.fromNodeKey;
+  const obligationsByArc = new Map<string, RoadServiceObligation>();
+  for (const obligation of problem.obligationSet.obligations) obligationsByArc.set(obligation.arcKey, obligation);
+
+  const baseInstances: TraversalInstance[] = [];
+  const residualBalance = new Map<string, number>();
+  for (const arc of arcs) {
+    const obligation = obligationsByArc.get(arc.arcKey)!;
+    for (let pass = 1; pass <= obligation.requiredPasses; pass += 1) {
+      baseInstances.push({
+        id: `required:${arc.arcKey}:${pass.toString().padStart(2, "0")}`,
+        arc,
+        serviceRole: "SERVICE",
+        obligationIds: [obligation.obligationId]
+      });
+      addBalance(residualBalance, arc.fromNodeKey, 1);
+      addBalance(residualBalance, arc.toNodeKey, -1);
+    }
+  }
+  if (startNode !== endNode) {
+    addBalance(residualBalance, startNode, -1);
+    addBalance(residualBalance, endNode, 1);
+  }
+  const supplies = sortedImbalances(residualBalance, (value) => value < 0, (value) => -value);
+  const demands = sortedImbalances(residualBalance, (value) => value > 0, (value) => value);
+  const matrixCellCount = supplies.length * demands.length;
+  if (matrixCellCount > problem.budgets.maximumMatrixCells) {
+    throw new CoveragePlanningError("RESOURCE_EXHAUSTED", `open DCPP matrix requires ${matrixCellCount} cells`);
+  }
+  const shortestPaths = new Map<string, ShortestPath>();
+  for (const supply of supplies) {
+    for (const demand of demands) {
+      checkDeadline(deadline);
+      shortestPaths.set(pairKey(supply.nodeKey, demand.nodeKey), shortestPath(arcs, supply.nodeKey, demand.nodeKey, deadline));
+    }
+  }
+  const augmentation = minimumCostTransportation(supplies, demands, shortestPaths, deadline);
+  const augmentedInstances: TraversalInstance[] = [];
+  let duplicateSequence = 0;
+  for (const item of augmentation) {
+    const path = shortestPaths.get(pairKey(item.fromNodeKey, item.toNodeKey))!;
+    for (let copy = 0; copy < item.quantity; copy += 1) {
+      for (const arc of path.arcs) {
+        duplicateSequence += 1;
+        augmentedInstances.push({
+          id: `duplicate:${duplicateSequence.toString().padStart(9, "0")}:${arc.arcKey}`,
+          arc,
+          serviceRole: "DUPLICATE_SERVICE",
+          obligationIds: [obligationsByArc.get(arc.arcKey)!.obligationId]
+        });
+      }
+    }
+  }
+  const instances = [...baseInstances, ...augmentedInstances];
+  if (instances.length + 2 > MAX_ROUTE_SEGMENTS) {
+    throw new CoveragePlanningError("RESOURCE_EXHAUSTED", `open DCPP route requires more than ${MAX_ROUTE_SEGMENTS} segments`);
+  }
+  const trail = eulerTrail(instances, startNode, endNode, undefined, deadline);
+  const segments = materializeExactOpenTrail(problem, trail, startArc, endArc);
+  const metrics = segments.reduce<FixedMetrics>((total, segment) => addMetrics(total, segment.metrics), ZERO_METRICS);
+  const routeBody = {
+    routeIndex: 1 as const,
+    startState: structuredClone(problem.startState),
+    endState: structuredClone(problem.fixedEndState),
+    segments,
+    boundaryEvents: [],
+    metrics
+  };
+  return {
+    route: { ...routeBody, routeSignature: canonicalSha256(routeBody) },
+    diagnostics: {
+      solverVersion: "coverage-open-dcpp/1.0",
+      algorithmFamily: "OPEN_DCPP",
+      exactness: "EXACT",
+      requiredComponentCount: weakComponentCount(arcs),
+      imbalanceCount: supplies.length + demands.length,
+      connectorPathCount: augmentation.reduce((total, item) => safeAdd(total, item.quantity), 0),
+      candidatesGenerated: 1,
+      candidatesVerified: 0,
+      terminatedBy: "PROFILES_COMPLETE",
+      elapsedMs: Math.max(0, Date.now() - startedAt),
+      resourceMetrics: {
+        traversableArcCount: arcs.length,
+        requiredTraversalCount: baseInstances.length,
+        augmentedTraversalCount: augmentedInstances.length,
+        matrixCellCount,
+        internalStartNodeKey: startNode,
+        internalEndNodeKey: endNode
       }
     },
     augmentation
@@ -184,12 +297,11 @@ function validateGraphAndObligations(problem: CoverageProblem, input: readonly C
   if (obligationArcs.size !== arcs.length || arcs.some((arc) => !obligationArcs.has(arc.arcKey))) {
     throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "closed DCPP requires R to contain every Arc in E");
   }
-  const startArc = byArc.get(problem.startState.arcKey);
-  if (startArc === undefined || startArc.direction !== problem.startState.direction) {
-    throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "closed DCPP start state is not on a required directed Arc");
-  }
   if (!Number.isSafeInteger(problem.startState.fractionPpm) || problem.startState.fractionPpm < 0 || problem.startState.fractionPpm > WHOLE_ARC_PPM) {
     throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "closed DCPP start fraction is invalid");
+  }
+  if (problem.fixedEndState !== undefined && (!Number.isSafeInteger(problem.fixedEndState.fractionPpm) || problem.fixedEndState.fractionPpm < 0 || problem.fixedEndState.fractionPpm > WHOLE_ARC_PPM)) {
+    throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "open DCPP end fraction is invalid");
   }
   return arcs;
 }
@@ -339,7 +451,13 @@ function minimumCostTransportation(
   return result;
 }
 
-function eulerCircuit(instances: readonly TraversalInstance[], preferred: TraversalInstance, deadline: number): TraversalInstance[] {
+function eulerTrail(
+  instances: readonly TraversalInstance[],
+  startNodeKey: string,
+  endNodeKey: string,
+  preferred: TraversalInstance | undefined,
+  deadline: number
+): TraversalInstance[] {
   const outgoing = new Map<string, TraversalInstance[]>();
   for (const instance of instances) {
     const list = outgoing.get(instance.arc.fromNodeKey) ?? [];
@@ -348,7 +466,7 @@ function eulerCircuit(instances: readonly TraversalInstance[], preferred: Traver
   }
   for (const [node, list] of outgoing) {
     list.sort((left, right) => {
-      if (node === preferred.arc.fromNodeKey) {
+      if (preferred !== undefined && node === preferred.arc.fromNodeKey) {
         if (left.id === preferred.id) return -1;
         if (right.id === preferred.id) return 1;
       }
@@ -357,7 +475,7 @@ function eulerCircuit(instances: readonly TraversalInstance[], preferred: Traver
   }
   const cursors = new Map<string, number>();
   const used = new Set<string>();
-  const nodeStack = [preferred.arc.fromNodeKey];
+  const nodeStack = [startNodeKey];
   const edgeStack: TraversalInstance[] = [];
   const reverseCircuit: TraversalInstance[] = [];
   while (nodeStack.length > 0) {
@@ -380,8 +498,9 @@ function eulerCircuit(instances: readonly TraversalInstance[], preferred: Traver
     }
   }
   const circuit = reverseCircuit.reverse();
-  if (used.size !== instances.length || circuit.length !== instances.length || circuit[0]?.id !== preferred.id || circuit.at(-1)?.arc.toNodeKey !== preferred.arc.fromNodeKey) {
-    throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "required directed graph does not admit one closed Euler traversal");
+  if (used.size !== instances.length || circuit.length !== instances.length ||
+      (preferred !== undefined && circuit[0]?.id !== preferred.id) || circuit.at(-1)?.arc.toNodeKey !== endNodeKey) {
+    throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "required directed graph does not admit the requested Euler traversal");
   }
   for (let index = 1; index < circuit.length; index += 1) {
     if (circuit[index - 1]!.arc.toNodeKey !== circuit[index]!.arc.fromNodeKey) {
@@ -423,6 +542,56 @@ function materializeExactTerminalCircuit(problem: CoverageProblem, circuit: read
   for (const instance of circuit.slice(1)) append(instance, 0, WHOLE_ARC_PPM);
   append(first, 0, fraction);
   return materialized.map((segment, index) => ({ sequence: index + 1, ...segment }));
+}
+
+function materializeExactOpenTrail(
+  problem: CoverageProblem,
+  trail: readonly TraversalInstance[],
+  startArc: CoverageTraversalArc,
+  endArc: CoverageTraversalArc
+) {
+  type Segment = {
+    graphVersion: string;
+    arcKey: string;
+    startFractionPpm: number;
+    endFractionPpm: number;
+    phase: "ACCESS" | "INSIDE" | "RETURN";
+    serviceRole: "SERVICE" | "DUPLICATE_SERVICE" | "ACCESS" | "RETURN";
+    obligationIds?: string[];
+    sourceFeatureReferenceKey?: NonNullable<CoverageTraversalArc["sourceFeatureReferenceKey"]>;
+    metrics: FixedMetrics;
+  };
+  const segments: Segment[] = [];
+  const append = (
+    arc: CoverageTraversalArc,
+    startFractionPpm: number,
+    endFractionPpm: number,
+    phase: Segment["phase"],
+    serviceRole: Segment["serviceRole"],
+    obligationIds: string[] = []
+  ): void => {
+    if (startFractionPpm === endFractionPpm) return;
+    segments.push({
+      graphVersion: arc.graphVersion,
+      arcKey: arc.arcKey,
+      startFractionPpm,
+      endFractionPpm,
+      phase,
+      serviceRole,
+      ...(obligationIds.length === 0 ? {} : { obligationIds }),
+      ...(arc.sourceFeatureReferenceKey === undefined ? {} : { sourceFeatureReferenceKey: arc.sourceFeatureReferenceKey }),
+      metrics: sliceMetrics(arc.metrics, startFractionPpm, endFractionPpm)
+    });
+  };
+  if (problem.startState.fractionPpm > 0 && problem.startState.fractionPpm < WHOLE_ARC_PPM) {
+    append(startArc, problem.startState.fractionPpm, WHOLE_ARC_PPM, "ACCESS", "ACCESS");
+  }
+  for (const instance of trail) append(instance.arc, 0, WHOLE_ARC_PPM, "INSIDE", instance.serviceRole, instance.obligationIds);
+  const endFractionPpm = problem.fixedEndState!.fractionPpm;
+  if (endFractionPpm > 0 && endFractionPpm < WHOLE_ARC_PPM) {
+    append(endArc, 0, endFractionPpm, "RETURN", "RETURN");
+  }
+  return segments.map((segment, index) => ({ sequence: index + 1, ...segment }));
 }
 
 function sliceMetrics(metrics: FixedMetrics, startFractionPpm: number, endFractionPpm: number): FixedMetrics {

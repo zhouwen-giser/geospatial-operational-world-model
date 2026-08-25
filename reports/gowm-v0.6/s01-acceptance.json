@@ -1,0 +1,11 @@
+{
+  "phase": "S01",
+  "status": "PASS",
+  "runtimeEvidence": "reports/gowm-v0.6/s01-open-dcpp-s01-20260825t1105.json",
+  "acceptance": {
+    "AC-S004": "PASS_OPEN_ROUTE_PRESERVES_DISTINCT_EXACT_DIRECTED_START_AND_FIXED_END",
+    "AC-S005": "PASS_OPEN_TARGET_IMBALANCE_IS_REPAIRED_BY_EXACT_MINIMUM_COST_AUGMENTATION"
+  },
+  "failed": [],
+  "blocked": []
+}
