@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.stas",
+  "providerVersion": "0.1.0",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "MANIFEST",
+      "status": "PASS",
+      "message": "STAS tool registry is the checked-in operation manifest",
+      "evidenceRefs": [
+        "services/stas/src/tools/registry.ts"
+      ]
+    },
+    {
+      "id": "SCHEMA_HASH",
+      "status": "PASS",
+      "message": "STAS executable schemas are URI-locked and the conformance report hashes their checked-in OpenAPI source",
+      "evidenceRefs": [
+        "services/stas/openapi/openapi.yaml"
+      ]
+    },
+    {
+      "id": "OPERATION_VERSION",
+      "status": "PASS",
+      "message": "STAS operations declare versions",
+      "evidenceRefs": [
+        "services/stas/src/tools/registry.ts"
+      ]
+    },
+    {
+      "id": "SEMANTIC_PROFILE",
+      "status": "PASS",
+      "message": "STAS preserves domain no-data and indeterminate semantics",
+      "evidenceRefs": [
+        "services/stas/src/domain"
+      ]
+    },
+    {
+      "id": "SCOPE_POLICY",
+      "status": "PASS",
+      "message": "STAS applies data scope before repository queries",
+      "evidenceRefs": [
+        "services/stas/src/api/scope.ts"
+      ]
+    },
+    {
+      "id": "SNAPSHOT_POLICY",
+      "status": "PASS",
+      "message": "STAS analysis records pin source snapshot information",
+      "evidenceRefs": [
+        "services/stas/src"
+      ]
+    },
+    {
+      "id": "STATUS_MAPPING",
+      "status": "PASS",
+      "message": "STAS maps complete, partial, no-data, and indeterminate domain statuses explicitly",
+      "evidenceRefs": [
+        "services/stas/src/domain/analysis.ts"
+      ]
+    },
+    {
+      "id": "RECEIPT_EVIDENCE",
+      "status": "PASS",
+      "message": "STAS persists evidence references independently",
+      "evidenceRefs": [
+        "services/stas/src/repositories/tool-repository.ts"
+      ]
+    },
+    {
+      "id": "LIMITS",
+      "status": "PASS",
+      "message": "STAS enforces bounded input and candidate limits",
+      "evidenceRefs": [
+        "services/stas/src"
+      ]
+    },
+    {
+      "id": "HEALTH_READINESS",
+      "status": "PASS",
+      "message": "STAS exposes health and database-backed readiness behavior",
+      "evidenceRefs": [
+        "services/stas/src/app.ts"
+      ]
+    },
+    {
+      "id": "IDEMPOTENCY_ERROR",
+      "status": "PASS",
+      "message": "STAS has idempotency persistence and normalized problem mapping",
+      "evidenceRefs": [
+        "services/stas/src"
+      ]
+    },
+    {
+      "id": "NO_SIBLING_PROVIDER_COUPLING",
+      "status": "PASS",
+      "message": "STAS has no sibling Provider import or HTTP call",
+      "evidenceRefs": [
+        "services/stas/src"
+      ]
+    },
+    {
+      "id": "VERSIONED_READ_CONTRACT",
+      "status": "PASS",
+      "message": "STAS SQL uses its owned schema/read APIs and no public base table",
+      "evidenceRefs": [
+        "services/stas/src/repositories/tool-repository.ts"
+      ]
+    }
+  ],
+  "generatedAt": "2026-08-25T00:00:00.000Z",
+  "reportHash": "sha256:9b7b34e4885a981ddda601012b84b0bf2e1ccd0c2225a9ba62daa4291c7ba62c"
+}

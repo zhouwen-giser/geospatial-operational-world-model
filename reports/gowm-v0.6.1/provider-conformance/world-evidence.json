@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.world-evidence",
+  "providerVersion": "1.0.0",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "MANIFEST",
+      "status": "PASS",
+      "message": "Provider Protocol 1.0 manifest and non-empty capability set",
+      "evidenceRefs": [
+        "contracts/manifests/providers/world-evidence-provider.json"
+      ]
+    },
+    {
+      "id": "SCHEMA_HASH",
+      "status": "PASS",
+      "message": "Every operation schema hash matches the checked-in canonical schema",
+      "evidenceRefs": [
+        "packages/platform/contract-runtime/src/generated/schema-hashes.ts"
+      ]
+    },
+    {
+      "id": "OPERATION_VERSION",
+      "status": "PASS",
+      "message": "Operation identity and version are explicit and unique",
+      "evidenceRefs": [
+        "contracts/manifests/providers/world-evidence-provider.json"
+      ]
+    },
+    {
+      "id": "SEMANTIC_PROFILE",
+      "status": "PASS",
+      "message": "Semantic projection is defined for world.get-current-state and all capabilities carry base semantics",
+      "evidenceRefs": [
+        "contracts/gowm-v0.6.1/manifests/semantic-profiles"
+      ]
+    },
+    {
+      "id": "SCOPE_POLICY",
+      "status": "PASS",
+      "message": "Every capability declares an authorization scope policy",
+      "evidenceRefs": [
+        "contracts/manifests/providers/world-evidence-provider.json"
+      ]
+    },
+    {
+      "id": "SNAPSHOT_POLICY",
+      "status": "PASS",
+      "message": "Every capability declares data and compute snapshot policy",
+      "evidenceRefs": [
+        "contracts/manifests/providers/world-evidence-provider.json"
+      ]
+    },
+    {
+      "id": "STATUS_MAPPING",
+      "status": "PASS",
+      "message": "Every capability declares result semantics for normalized status projection",
+      "evidenceRefs": [
+        "contracts/manifests/providers/world-evidence-provider.json"
+      ]
+    },
+    {
+      "id": "RECEIPT_EVIDENCE",
+      "status": "PASS",
+      "message": "Every capability exposes a result port; runtime envelopes supply receipts and evidence separately",
+      "evidenceRefs": [
+        "packages/platform/provider-sdk/src/runtime.ts"
+      ]
+    },
+    {
+      "id": "LIMITS",
+      "status": "PASS",
+      "message": "Every capability has positive bounded execution and result limits",
+      "evidenceRefs": [
+        "contracts/manifests/providers/world-evidence-provider.json"
+      ]
+    },
+    {
+      "id": "HEALTH_READINESS",
+      "status": "PASS",
+      "message": "Manifest exposes liveness, readiness, and execution endpoints",
+      "evidenceRefs": [
+        "contracts/manifests/providers/world-evidence-provider.json"
+      ]
+    },
+    {
+      "id": "IDEMPOTENCY_ERROR",
+      "status": "PASS",
+      "message": "Provider uses the common runtime idempotency and protocol error mapping layer",
+      "evidenceRefs": [
+        "services/providers/grounding-catalog-provider/src"
+      ]
+    },
+    {
+      "id": "NO_SIBLING_PROVIDER_COUPLING",
+      "status": "PASS",
+      "message": "Source has no sibling Provider import or sibling HTTP call",
+      "evidenceRefs": [
+        "services/providers/grounding-catalog-provider/src"
+      ]
+    },
+    {
+      "id": "VERSIONED_READ_CONTRACT",
+      "status": "PASS",
+      "message": "SQL does not read public base tables; versioned read contracts remain the data boundary",
+      "evidenceRefs": [
+        "services/providers/grounding-catalog-provider/src"
+      ]
+    }
+  ],
+  "generatedAt": "2026-08-25T00:00:00.000Z",
+  "reportHash": "sha256:f42b0ac12431b0b169230ab167a1f239cdbc80ca941e23a1fdaba2ab66e06992"
+}
