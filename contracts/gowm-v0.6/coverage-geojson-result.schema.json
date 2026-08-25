@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-geojson-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "features",
+    "crs",
+    "resultSetReferenceKey",
+    "alternativeId"
+  ],
+  "properties": {
+    "type": {
+      "const": "FeatureCollection"
+    },
+    "features": {
+      "type": "array",
+      "maxItems": 1000000,
+      "items": {
+        "type": "object"
+      }
+    },
+    "crs": {
+      "const": "EPSG:4326"
+    },
+    "resultSetReferenceKey": {
+      "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+    },
+    "alternativeId": {
+      "type": "string"
+    },
+    "truncated": {
+      "type": "boolean"
+    },
+    "nextCursor": {
+      "type": "string"
+    }
+  }
+}

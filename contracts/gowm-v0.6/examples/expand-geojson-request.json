@@ -1,0 +1,22 @@
+{
+  "schemaFile": "contracts/coverage-expand-request.schema.json",
+  "value": {
+    "schemaVersion": "1.0",
+    "resultSetReferenceKey": {
+      "namespace": "gowm",
+      "kind": "QUERY_RESULT",
+      "id": "wrf_77777777777777777777777777777777",
+      "version": "1"
+    },
+    "alternativeId": "alt-1",
+    "include": [
+      "AREA",
+      "TERMINALS",
+      "OBLIGATIONS",
+      "TRANSIT",
+      "SEGMENTS"
+    ],
+    "simplificationToleranceM": 0
+  },
+  "notes": ""
+}

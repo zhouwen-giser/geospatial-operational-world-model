@@ -1,0 +1,66 @@
+{
+  "providerId": "gowm.road-coverage-planning",
+  "providerVersion": "1.0.0",
+  "operations": [
+    {
+      "operationId": "coverage.road.validate",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "SYNC",
+      "inputSchemaFile": "contracts/gowm-v0.6/road-coverage-request.schema.json",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaFile": "contracts/gowm-v0.6/coverage-validation-result.schema.json",
+      "outputSchemaHash": "sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "coverage.road.select-obligations",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "SYNC",
+      "inputSchemaFile": "contracts/gowm-v0.6/road-coverage-request.schema.json",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaFile": "contracts/gowm-v0.6/coverage-obligation-set.schema.json",
+      "outputSchemaHash": "sha256:f453949199ebdf7eea944c5eac3fbff95bfc52cdb0f8a33abecb38fe6448cbbe",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "coverage.road.plan",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "ASYNC",
+      "inputSchemaFile": "contracts/gowm-v0.6/road-coverage-request.schema.json",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaFile": "contracts/gowm-v0.6/coverage-result-set.schema.json",
+      "outputSchemaHash": "sha256:6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "coverage.road.verify",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "SYNC_OR_ASYNC",
+      "inputSchemaFile": "contracts/gowm-v0.6/coverage-verification-request.schema.json",
+      "inputSchemaHash": "sha256:f8f242440dbb82ea5790ae163455a838d53da451e0481fa36c2b111c423dfcfa",
+      "outputSchemaFile": "contracts/gowm-v0.6/coverage-verification-report.schema.json",
+      "outputSchemaHash": "sha256:56063206dc0164bd273a69784a4cc91a9211130f7f71aa2dbbf776cbe20f9584",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    },
+    {
+      "operationId": "coverage.road.expand-geojson",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "SYNC",
+      "inputSchemaFile": "contracts/gowm-v0.6/coverage-expand-request.schema.json",
+      "inputSchemaHash": "sha256:64f0a1a67d9802a0d41f087f3482158ba7bafa5722dd94cda5314786beb24f37",
+      "outputSchemaFile": "contracts/gowm-v0.6/coverage-geojson-result.schema.json",
+      "outputSchemaHash": "sha256:e5c8b4845f9f0717750adb2b5f1b0303f00fd302c1cb962a0336af37474c1b0b",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "dataSnapshot": "REQUIRED"
+    }
+  ]
+}

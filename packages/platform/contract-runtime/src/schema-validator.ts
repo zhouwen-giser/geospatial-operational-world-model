@@ -121,7 +121,15 @@ export function getContractSchemaHash(nameOrId: string): `sha256:${string}` {
 const sourceByteSchemaHashes: Readonly<Record<string, `sha256:${string}`>> = {
   "urn:gowm:v0.5:route-planning-request": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
   "urn:gowm:v0.5:route-planning-result": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
-  "urn:gowm:v0.5:route-verification-report": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd"
+  "urn:gowm:v0.5:route-verification-report": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+  "urn:gowm:v0.6:road-coverage-request": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+  "urn:gowm:v0.6:coverage-validation-result": "sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a",
+  "urn:gowm:v0.6:coverage-obligation-set": "sha256:f453949199ebdf7eea944c5eac3fbff95bfc52cdb0f8a33abecb38fe6448cbbe",
+  "urn:gowm:v0.6:coverage-result-set": "sha256:6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50",
+  "urn:gowm:v0.6:coverage-verification-request": "sha256:f8f242440dbb82ea5790ae163455a838d53da451e0481fa36c2b111c423dfcfa",
+  "urn:gowm:v0.6:coverage-verification-report": "sha256:56063206dc0164bd273a69784a4cc91a9211130f7f71aa2dbbf776cbe20f9584",
+  "urn:gowm:v0.6:coverage-expand-request": "sha256:64f0a1a67d9802a0d41f087f3482158ba7bafa5722dd94cda5314786beb24f37",
+  "urn:gowm:v0.6:coverage-geojson-result": "sha256:e5c8b4845f9f0717750adb2b5f1b0303f00fd302c1cb962a0336af37474c1b0b"
 };
 
 /** Accepts the canonical schema digest or an explicitly frozen source-byte digest. */

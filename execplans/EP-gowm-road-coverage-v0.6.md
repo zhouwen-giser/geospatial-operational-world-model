@@ -32,7 +32,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] R00 Predecessor Reconciliation
 - [x] R01 Source Lock / License / Clean-room Map
 - [x] A00 ADR / Authority / Non-goal
-- [ ] A01 Contracts / OpenAPI / Manifest / Generated Types
+- [x] A01 Contracts / OpenAPI / Manifest / Generated Types
 - [ ] D00 Coverage Schema / Roles / Immutability / Assertions
 - [ ] B00 Area Selection / Fraction Obligations
 - [ ] B01 Canonical Problem / Ledger / Hash
@@ -71,6 +71,8 @@ This is a living execution plan. It records only evidence produced from the actu
 - An initial unqualified `bash` preflight resolved to WSL and could not access the Windows workspace. The successful evidence uses `C:\Program Files\Git\bin\bash.exe` with the repository's installed Python, Node, npm, Docker, unzip, and SHA tools.
 - The first permanent predecessor-guard run expected a generic `status`/acceptance-map shape, but the committed v0.5 report uses `decision` plus explicit Required counters. The guard was corrected to assert that actual frozen report structure and then rerun.
 - A test invocation with Jest's `--runInBand` flag was rejected by Vitest before collection. The repository's actual `npm test` command then passed 163 tests in 34 files with one pre-existing optional skip.
+- A01's first wildcard copy used PowerShell `-LiteralPath`, which correctly treated the wildcard literally and copied no schemas/examples. The mechanical copy was rerun with `-Path`; all 19 schemas and 10 examples were then counted and hashed.
+- A01's first full typecheck exposed an imprecise last-position narrowing in new Polygon semantics. Explicit first/last locals fixed the type without weakening validation.
 
 ## Validation
 

@@ -1,0 +1,30 @@
+{
+  "lockVersion": "1.0",
+  "algorithm": "sha256",
+  "schemaCount": 19,
+  "schemas": {
+    "coverage-alternative-policy.schema.json": "342a3c99d9e91b3e855930d38e72a54aa4e5221dbf10dd3ac3fcf38241efade2",
+    "coverage-alternative.schema.json": "6bf291185900f5e2bcff5e012ae42f7561adb8b5fddac7b62b234e422aaf27c2",
+    "coverage-common.schema.json": "30f95650ccffd29300645919b180a03cf3403d7c2ea95cedf504dd4fdb18a67e",
+    "coverage-endpoint-policy.schema.json": "2aa6392a76959b5c91ed5da6558bbbf266b2a182e25a8687b1ff59ff54bc7686",
+    "coverage-expand-request.schema.json": "64f0a1a67d9802a0d41f087f3482158ba7bafa5722dd94cda5314786beb24f37",
+    "coverage-geojson-result.schema.json": "e5c8b4845f9f0717750adb2b5f1b0303f00fd302c1cb962a0336af37474c1b0b",
+    "coverage-obligation-set.schema.json": "f453949199ebdf7eea944c5eac3fbff95bfc52cdb0f8a33abecb38fe6448cbbe",
+    "coverage-problem.schema.json": "bb4e484484b7d0c89c90ec8f2f8b06d7afd9c3a0e61de62e6c794c9d49615c02",
+    "coverage-provider-manifest.schema.json": "f51a0693c6f8ac9028b015ebdc9a6399c891cc4cff87188c3f142e504461cab0",
+    "coverage-result-set.schema.json": "6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50",
+    "coverage-route.schema.json": "4c5915105d7385b1a968ba4006461e094ca8a5ac9f17c393c7060cf781ee16bf",
+    "coverage-segment.schema.json": "767c16ed53130e83e61e446ea80dc7a862f464e3cd711c2e24621a68b16c6ebd",
+    "coverage-solver-diagnostics.schema.json": "f5bd10b30acbe63957878a798acce062be971739248a679540ea4c666d9a6d4f",
+    "coverage-validation-result.schema.json": "f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a",
+    "coverage-verification-report.schema.json": "56063206dc0164bd273a69784a4cc91a9211130f7f71aa2dbbf776cbe20f9584",
+    "coverage-verification-request.schema.json": "f8f242440dbb82ea5790ae163455a838d53da451e0481fa36c2b111c423dfcfa",
+    "road-coverage-request.schema.json": "01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+    "road-selection-policy.schema.json": "0704970069c0732b5d31a1351645038db3a7cf218c483b03d7f544a3ef412b54",
+    "road-service-obligation.schema.json": "3a61e4a2e390acfefd3acd01e43523fb892eca09890d5b07499e0a38a2da08dd"
+  },
+  "providerManifestSha256": "601aa3ff9b9b0345fbf2c38cde5dfc50b91daa362544fd0f2aeb6ec8a361275f",
+  "openApiSha256": "0b56fa6b2df8552412e7cdf008c3788c17e57e8cb978a88743553ae4bad697c3",
+  "operationCount": 5,
+  "exampleCount": 10
+}

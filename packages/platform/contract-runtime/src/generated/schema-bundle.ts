@@ -9495,6 +9495,1589 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     }
   },
+  "gowm-v0.6/coverage-alternative-policy.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-alternative-policy",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "requestedCount",
+      "minimumVerifiedCount",
+      "profiles",
+      "maximumWeightedArcOverlapPpm",
+      "minimumDeadheadJaccardDistancePpm"
+    ],
+    "properties": {
+      "requestedCount": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "minimumVerifiedCount": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "profiles": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 5,
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "FASTEST_COMPLETION",
+            "SHORTEST_TOTAL_DISTANCE",
+            "LEAST_DEADHEAD",
+            "LOWEST_RISK",
+            "WEIGHTED"
+          ]
+        }
+      },
+      "maximumWeightedArcOverlapPpm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000
+      },
+      "minimumDeadheadJaccardDistancePpm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000
+      },
+      "maximumGenerationCandidates": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 64
+      }
+    }
+  },
+  "gowm-v0.6/coverage-alternative.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-alternative",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "alternativeId",
+      "rank",
+      "objectiveProfile",
+      "route",
+      "verification",
+      "solverDiagnostics",
+      "objectiveVector",
+      "pros",
+      "cons",
+      "contentHash"
+    ],
+    "properties": {
+      "alternativeId": {
+        "type": "string"
+      },
+      "referenceKey": {
+        "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+      },
+      "rank": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "objectiveProfile": {
+        "type": "string"
+      },
+      "route": {
+        "$ref": "coverage-route.schema.json"
+      },
+      "verification": {
+        "$ref": "coverage-verification-report.schema.json"
+      },
+      "solverDiagnostics": {
+        "$ref": "coverage-solver-diagnostics.schema.json"
+      },
+      "objectiveVector": {
+        "type": "object"
+      },
+      "pros": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "type": "string"
+        }
+      },
+      "cons": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "type": "string"
+        }
+      },
+      "contentHash": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      }
+    }
+  },
+  "gowm-v0.6/coverage-common.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-common",
+    "$defs": {
+      "sha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "dateTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "referenceKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "namespace",
+          "kind",
+          "id",
+          "version"
+        ],
+        "properties": {
+          "namespace": {
+            "const": "gowm"
+          },
+          "kind": {
+            "enum": [
+              "WORLD_OBJECT",
+              "SPATIAL_OBJECT",
+              "DATA_SCOPE",
+              "DATASET",
+              "LAYER",
+              "LAYER_FEATURE",
+              "QUERY_RESULT",
+              "DERIVED_REFERENCE",
+              "REFERENCE_SET",
+              "OPERATIONAL_TASK"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^wrf_[0-9a-f]{32}$"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "position": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "coordinates",
+          "crs"
+        ],
+        "properties": {
+          "coordinates": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 3,
+            "items": {
+              "type": "number"
+            }
+          },
+          "crs": {
+            "const": "EPSG:4326"
+          }
+        }
+      },
+      "directedState": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "arcKey",
+          "fractionPpm",
+          "direction"
+        ],
+        "properties": {
+          "arcKey": {
+            "type": "string",
+            "pattern": "^arc_[0-9a-f]{32,64}$"
+          },
+          "fractionPpm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "direction": {
+            "enum": [
+              "FORWARD",
+              "REVERSE"
+            ]
+          },
+          "headingMicrodegrees": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 359999999
+          },
+          "sourceFeatureReferenceKey": {
+            "$ref": "#/$defs/referenceKey"
+          }
+        }
+      },
+      "networkLocation": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/position"
+          },
+          {
+            "$ref": "#/$defs/referenceKey"
+          },
+          {
+            "$ref": "#/$defs/directedState"
+          }
+        ]
+      },
+      "routingSnapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "networkDatasetVersion",
+          "graphVersion",
+          "travelProfileVersion",
+          "costProfileVersion",
+          "graphContentHash",
+          "costContentHash"
+        ],
+        "properties": {
+          "networkDatasetVersion": {
+            "type": "string"
+          },
+          "graphVersion": {
+            "type": "string"
+          },
+          "travelProfileVersion": {
+            "type": "string"
+          },
+          "costProfileVersion": {
+            "type": "string"
+          },
+          "conditionSnapshotId": {
+            "type": "string"
+          },
+          "sourceWorldVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "graphContentHash": {
+            "$ref": "#/$defs/sha256"
+          },
+          "costContentHash": {
+            "$ref": "#/$defs/sha256"
+          },
+          "conditionContentHash": {
+            "$ref": "#/$defs/sha256"
+          },
+          "capturedAt": {
+            "$ref": "#/$defs/dateTime"
+          }
+        }
+      },
+      "polygon": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "properties": {
+          "type": {
+            "const": "Polygon"
+          },
+          "coordinates": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      },
+      "multiPolygon": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "properties": {
+          "type": {
+            "const": "MultiPolygon"
+          },
+          "coordinates": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      },
+      "area": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/referenceKey"
+          },
+          {
+            "$ref": "#/$defs/polygon"
+          },
+          {
+            "$ref": "#/$defs/multiPolygon"
+          }
+        ]
+      },
+      "fixedMetrics": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "distanceMm",
+          "durationMs",
+          "riskMicroUnits",
+          "energyMwh",
+          "combinedCostUnits"
+        ],
+        "properties": {
+          "distanceMm": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "riskMicroUnits": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "energyMwh": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "combinedCostUnits": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "turnPenaltyUnits": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.6/coverage-endpoint-policy.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-endpoint-policy",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "entry",
+      "exit",
+      "endpointMode",
+      "boundaryCrossingPolicy",
+      "start",
+      "snapToleranceMm"
+    ],
+    "properties": {
+      "start": {
+        "$ref": "coverage-common.schema.json#/$defs/networkLocation"
+      },
+      "fixedEnd": {
+        "$ref": "coverage-common.schema.json#/$defs/networkLocation"
+      },
+      "entry": {
+        "$ref": "#/$defs/boundaryPolicy"
+      },
+      "exit": {
+        "$ref": "#/$defs/boundaryPolicy"
+      },
+      "endpointMode": {
+        "enum": [
+          "RETURN_TO_START",
+          "FIXED_END",
+          "LAST_AREA_EXIT"
+        ]
+      },
+      "boundaryCrossingPolicy": {
+        "enum": [
+          "FREE",
+          "FIRST_ENTRY_ONLY",
+          "ENTRY_SET_ONLY",
+          "NO_REENTRY"
+        ]
+      },
+      "snapToleranceMm": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      }
+    },
+    "$defs": {
+      "boundaryPolicy": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "enum": [
+              "AUTO",
+              "CANDIDATE_SET",
+              "FIXED"
+            ]
+          },
+          "maximumCandidates": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "states": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "$ref": "coverage-common.schema.json#/$defs/directedState"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "enum": [
+                    "CANDIDATE_SET",
+                    "FIXED"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "states"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "endpointMode": {
+              "const": "FIXED_END"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "fixedEnd"
+          ]
+        }
+      }
+    ]
+  },
+  "gowm-v0.6/coverage-expand-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-expand-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "resultSetReferenceKey",
+      "alternativeId",
+      "include"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "resultSetReferenceKey": {
+        "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+      },
+      "alternativeId": {
+        "type": "string"
+      },
+      "include": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "AREA",
+            "TERMINALS",
+            "OBLIGATIONS",
+            "TRANSIT",
+            "SEGMENTS"
+          ]
+        }
+      },
+      "simplificationToleranceM": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1000
+      }
+    }
+  },
+  "gowm-v0.6/coverage-geojson-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-geojson-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "type",
+      "features",
+      "crs",
+      "resultSetReferenceKey",
+      "alternativeId"
+    ],
+    "properties": {
+      "type": {
+        "const": "FeatureCollection"
+      },
+      "features": {
+        "type": "array",
+        "maxItems": 1000000,
+        "items": {
+          "type": "object"
+        }
+      },
+      "crs": {
+        "const": "EPSG:4326"
+      },
+      "resultSetReferenceKey": {
+        "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+      },
+      "alternativeId": {
+        "type": "string"
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "nextCursor": {
+        "type": "string"
+      }
+    }
+  },
+  "gowm-v0.6/coverage-obligation-set.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-obligation-set",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "obligationSetId",
+      "routingSnapshot",
+      "selectionMode",
+      "obligations",
+      "obligationCount",
+      "totalRequiredLengthMm",
+      "selectionReceiptHash"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "obligationSetId": {
+        "type": "string"
+      },
+      "routingSnapshot": {
+        "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+      },
+      "selectionMode": {
+        "type": "string"
+      },
+      "obligations": {
+        "type": "array",
+        "maxItems": 100000,
+        "items": {
+          "$ref": "road-service-obligation.schema.json"
+        }
+      },
+      "obligationCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "totalRequiredLengthMm": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "selectionReceiptHash": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.6/coverage-problem.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-problem",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "contractVersion",
+      "problemId",
+      "problemHash",
+      "routingSnapshot",
+      "startState",
+      "endpointMode",
+      "boundaryCrossingPolicy",
+      "obligationSet",
+      "objective",
+      "budgets"
+    ],
+    "properties": {
+      "contractVersion": {
+        "const": "1.0"
+      },
+      "problemId": {
+        "type": "string"
+      },
+      "problemHash": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      },
+      "routingSnapshot": {
+        "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+      },
+      "startState": {
+        "$ref": "coverage-common.schema.json#/$defs/directedState"
+      },
+      "fixedEndState": {
+        "$ref": "coverage-common.schema.json#/$defs/directedState"
+      },
+      "entryStates": {
+        "type": "array",
+        "maxItems": 64,
+        "items": {
+          "$ref": "coverage-common.schema.json#/$defs/directedState"
+        }
+      },
+      "exitStates": {
+        "type": "array",
+        "maxItems": 64,
+        "items": {
+          "$ref": "coverage-common.schema.json#/$defs/directedState"
+        }
+      },
+      "endpointMode": {
+        "enum": [
+          "RETURN_TO_START",
+          "FIXED_END",
+          "LAST_AREA_EXIT"
+        ]
+      },
+      "boundaryCrossingPolicy": {
+        "enum": [
+          "FREE",
+          "FIRST_ENTRY_ONLY",
+          "ENTRY_SET_ONLY",
+          "NO_REENTRY"
+        ]
+      },
+      "obligationSet": {
+        "$ref": "coverage-obligation-set.schema.json"
+      },
+      "objective": {
+        "type": "object"
+      },
+      "budgets": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "timeLimitMs",
+          "maximumCandidates",
+          "maximumMatrixCells"
+        ],
+        "properties": {
+          "timeLimitMs": {
+            "type": "integer",
+            "minimum": 100
+          },
+          "maximumCandidates": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "maximumMatrixCells": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.6/coverage-provider-manifest.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-provider-manifest",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "providerId",
+      "providerVersion",
+      "operations"
+    ],
+    "properties": {
+      "providerId": {
+        "const": "gowm.road-coverage-planning"
+      },
+      "providerVersion": {
+        "type": "string"
+      },
+      "operations": {
+        "type": "array",
+        "minItems": 5,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operationId",
+            "operationVersion",
+            "maturity",
+            "executionMode",
+            "inputSchemaFile",
+            "inputSchemaHash",
+            "outputSchemaFile",
+            "outputSchemaHash",
+            "scopePolicy",
+            "dataSnapshot"
+          ],
+          "properties": {
+            "operationId": {
+              "type": "string"
+            },
+            "operationVersion": {
+              "const": "1.0"
+            },
+            "maturity": {
+              "enum": [
+                "PREVIEW",
+                "STABLE"
+              ]
+            },
+            "executionMode": {
+              "enum": [
+                "SYNC",
+                "ASYNC",
+                "SYNC_OR_ASYNC"
+              ]
+            },
+            "inputSchemaFile": {
+              "type": "string"
+            },
+            "inputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "outputSchemaFile": {
+              "type": "string"
+            },
+            "outputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "scopePolicy": {
+              "const": "DATA_SCOPE_REQUIRED"
+            },
+            "dataSnapshot": {
+              "const": "REQUIRED"
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.6/coverage-result-set.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-result-set",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "referenceKey",
+      "resultSetId",
+      "requestId",
+      "problemHash",
+      "status",
+      "routingSnapshot",
+      "createdAt",
+      "validUntil",
+      "revalidationRequired",
+      "alternatives",
+      "pairwiseSimilarity",
+      "resultHash"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "referenceKey": {
+        "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+      },
+      "resultSetId": {
+        "type": "string"
+      },
+      "requestId": {
+        "type": "string"
+      },
+      "problemHash": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      },
+      "status": {
+        "enum": [
+          "SUCCEEDED",
+          "PARTIAL",
+          "NO_FEASIBLE_PLAN",
+          "CANCELLED",
+          "FAILED"
+        ]
+      },
+      "routingSnapshot": {
+        "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+      },
+      "createdAt": {
+        "$ref": "coverage-common.schema.json#/$defs/dateTime"
+      },
+      "validUntil": {
+        "$ref": "coverage-common.schema.json#/$defs/dateTime"
+      },
+      "revalidationRequired": {
+        "const": true
+      },
+      "searchTerminatedBy": {
+        "enum": [
+          "PROFILES_COMPLETE",
+          "TIME_LIMIT",
+          "CANDIDATE_LIMIT",
+          "NO_FEASIBLE_PLAN",
+          "CANCELLED"
+        ]
+      },
+      "alternatives": {
+        "type": "array",
+        "minItems": 0,
+        "maxItems": 5,
+        "items": {
+          "$ref": "coverage-alternative.schema.json"
+        }
+      },
+      "pairwiseSimilarity": {
+        "type": "array",
+        "maxItems": 20,
+        "items": {
+          "type": "object",
+          "required": [
+            "leftAlternativeId",
+            "rightAlternativeId",
+            "weightedArcOverlapPpm",
+            "deadheadJaccardDistancePpm"
+          ],
+          "properties": {
+            "leftAlternativeId": {
+              "type": "string"
+            },
+            "rightAlternativeId": {
+              "type": "string"
+            },
+            "weightedArcOverlapPpm": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "deadheadJaccardDistancePpm": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          }
+        }
+      },
+      "resultHash": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      },
+      "receipts": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "evidenceReferences": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "gowm-v0.6/coverage-route.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-route",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "routeIndex",
+      "startState",
+      "endState",
+      "segments",
+      "metrics",
+      "routeSignature"
+    ],
+    "properties": {
+      "routeIndex": {
+        "const": 1
+      },
+      "startState": {
+        "$ref": "coverage-common.schema.json#/$defs/directedState"
+      },
+      "endState": {
+        "$ref": "coverage-common.schema.json#/$defs/directedState"
+      },
+      "segments": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 1000000,
+        "items": {
+          "$ref": "coverage-segment.schema.json"
+        }
+      },
+      "boundaryEvents": {
+        "type": "array",
+        "maxItems": 10000,
+        "items": {
+          "type": "object"
+        }
+      },
+      "metrics": {
+        "$ref": "coverage-common.schema.json#/$defs/fixedMetrics"
+      },
+      "routeSignature": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      }
+    }
+  },
+  "gowm-v0.6/coverage-segment.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-segment",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "sequence",
+      "graphVersion",
+      "arcKey",
+      "startFractionPpm",
+      "endFractionPpm",
+      "phase",
+      "serviceRole",
+      "metrics"
+    ],
+    "properties": {
+      "sequence": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "graphVersion": {
+        "type": "string"
+      },
+      "arcKey": {
+        "type": "string"
+      },
+      "startFractionPpm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000
+      },
+      "endFractionPpm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000
+      },
+      "phase": {
+        "enum": [
+          "ACCESS",
+          "INSIDE",
+          "EXIT",
+          "RETURN"
+        ]
+      },
+      "serviceRole": {
+        "enum": [
+          "SERVICE",
+          "DUPLICATE_SERVICE",
+          "TRANSIT",
+          "DEADHEAD",
+          "ACCESS",
+          "BOUNDARY_EXIT",
+          "RETURN"
+        ]
+      },
+      "obligationIds": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "type": "string"
+        }
+      },
+      "sourceFeatureReferenceKey": {
+        "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+      },
+      "metrics": {
+        "$ref": "coverage-common.schema.json#/$defs/fixedMetrics"
+      }
+    }
+  },
+  "gowm-v0.6/coverage-solver-diagnostics.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-solver-diagnostics",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "solverVersion",
+      "algorithmFamily",
+      "exactness",
+      "requiredComponentCount",
+      "candidatesGenerated",
+      "candidatesVerified",
+      "terminatedBy",
+      "elapsedMs"
+    ],
+    "properties": {
+      "solverVersion": {
+        "type": "string"
+      },
+      "algorithmFamily": {
+        "enum": [
+          "CLOSED_DCPP",
+          "OPEN_DCPP",
+          "FIXED_RPP",
+          "BOTH_DIRECTIONS_RPP"
+        ]
+      },
+      "exactness": {
+        "enum": [
+          "EXACT",
+          "BOUNDED_HEURISTIC"
+        ]
+      },
+      "requiredComponentCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "imbalanceCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "connectorPathCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "candidatesGenerated": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "candidatesVerified": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "terminatedBy": {
+        "enum": [
+          "PROFILES_COMPLETE",
+          "TIME_LIMIT",
+          "CANDIDATE_LIMIT",
+          "NO_FEASIBLE_PLAN",
+          "CANCELLED"
+        ]
+      },
+      "elapsedMs": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "resourceMetrics": {
+        "type": "object"
+      }
+    }
+  },
+  "gowm-v0.6/coverage-validation-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-validation-result",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "valid",
+      "violations",
+      "warnings",
+      "normalizedSummary"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "valid": {
+        "type": "boolean"
+      },
+      "violations": {
+        "type": "array",
+        "maxItems": 256,
+        "items": {
+          "$ref": "#/$defs/issue"
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "maxItems": 256,
+        "items": {
+          "$ref": "#/$defs/issue"
+        }
+      },
+      "normalizedSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "routeCount",
+          "selectionMode",
+          "serviceMode",
+          "endpointMode",
+          "requestedAlternativeCount"
+        ],
+        "properties": {
+          "routeCount": {
+            "const": 1
+          },
+          "selectionMode": {
+            "type": "string"
+          },
+          "serviceMode": {
+            "type": "string"
+          },
+          "endpointMode": {
+            "type": "string"
+          },
+          "requestedAlternativeCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "estimatedObligationCount": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "$defs": {
+      "issue": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "path",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.6/coverage-verification-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-verification-report",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "verificationId",
+      "status",
+      "verifierVersion",
+      "routingSnapshotHash",
+      "checks",
+      "coverageRatioPpm",
+      "lengthWeightedCoverageRatioPpm",
+      "recomputedMetrics",
+      "violations",
+      "reportHash"
+    ],
+    "properties": {
+      "verificationId": {
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "VALID",
+          "STALE",
+          "INVALID",
+          "INDETERMINATE"
+        ]
+      },
+      "verifierVersion": {
+        "type": "string"
+      },
+      "routingSnapshotHash": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      },
+      "checks": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "boolean"
+        }
+      },
+      "coverageRatioPpm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000
+      },
+      "lengthWeightedCoverageRatioPpm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000
+      },
+      "requiredLengthMm": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "coveredRequiredLengthMm": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "recomputedMetrics": {
+        "$ref": "coverage-common.schema.json#/$defs/fixedMetrics"
+      },
+      "violations": {
+        "type": "array",
+        "maxItems": 10000,
+        "items": {
+          "type": "object",
+          "required": [
+            "code",
+            "message"
+          ],
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            },
+            "segmentSequence": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "reportHash": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      }
+    }
+  },
+  "gowm-v0.6/coverage-verification-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:coverage-verification-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "problemReference",
+      "candidate",
+      "routingSnapshot"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "problemReference": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+          }
+        ]
+      },
+      "candidate": {
+        "$ref": "coverage-alternative.schema.json"
+      },
+      "routingSnapshot": {
+        "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+      },
+      "revalidateAgainstCurrentCondition": {
+        "type": "boolean"
+      }
+    }
+  },
+  "gowm-v0.6/road-coverage-request.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:road-coverage-request",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "requestId",
+      "routingSnapshot",
+      "area",
+      "routeCount",
+      "selectionPolicy",
+      "endpointPolicy",
+      "objective",
+      "alternativePolicy",
+      "timeLimitMs"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "requestId": {
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 256
+      },
+      "routingSnapshot": {
+        "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+      },
+      "area": {
+        "$ref": "coverage-common.schema.json#/$defs/area"
+      },
+      "routeCount": {
+        "const": 1
+      },
+      "selectionPolicy": {
+        "$ref": "road-selection-policy.schema.json"
+      },
+      "endpointPolicy": {
+        "$ref": "coverage-endpoint-policy.schema.json"
+      },
+      "objective": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profile"
+        ],
+        "properties": {
+          "profile": {
+            "enum": [
+              "FASTEST_COMPLETION",
+              "SHORTEST_TOTAL_DISTANCE",
+              "LEAST_DEADHEAD",
+              "LOWEST_RISK",
+              "WEIGHTED"
+            ]
+          },
+          "weights": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "distance": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "duration": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "risk": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "deadhead": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              }
+            }
+          }
+        }
+      },
+      "alternativePolicy": {
+        "$ref": "coverage-alternative-policy.schema.json"
+      },
+      "timeLimitMs": {
+        "type": "integer",
+        "minimum": 100,
+        "maximum": 3600000
+      },
+      "metadata": {
+        "type": "object",
+        "maxProperties": 64,
+        "additionalProperties": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "gowm-v0.6/road-selection-policy.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:road-selection-policy",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "mode",
+      "roadClasses",
+      "serviceMode",
+      "requiredPasses",
+      "minimumSegmentLengthMm"
+    ],
+    "properties": {
+      "mode": {
+        "enum": [
+          "FULLY_COVERED_EDGE",
+          "INTERSECTING_COMPLETE_EDGE",
+          "CLIPPED_INSIDE_AREA",
+          "MANUAL_OBLIGATIONS"
+        ]
+      },
+      "roadClasses": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 64,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "serviceMode": {
+        "enum": [
+          "FIXED_DIRECTION",
+          "BOTH_DIRECTIONS"
+        ]
+      },
+      "fixedDirectionSource": {
+        "enum": [
+          "MANUAL",
+          "SOURCE_FEATURE_ATTRIBUTE",
+          "APPROVED_POLICY"
+        ]
+      },
+      "requiredPasses": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10
+      },
+      "minimumSegmentLengthMm": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "boundaryToleranceMm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000
+      },
+      "manualObligations": {
+        "type": "array",
+        "maxItems": 100000,
+        "items": {
+          "$ref": "road-service-obligation.schema.json"
+        }
+      },
+      "selectionPolicyVersion": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "mode": {
+              "const": "MANUAL_OBLIGATIONS"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "manualObligations"
+          ]
+        }
+      }
+    ]
+  },
+  "gowm-v0.6/road-service-obligation.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6:road-service-obligation",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "obligationId",
+      "graphVersion",
+      "arcKey",
+      "startFractionPpm",
+      "endFractionPpm",
+      "serviceMode",
+      "requiredPasses",
+      "sourceFeatureReferenceKey",
+      "contentHash"
+    ],
+    "properties": {
+      "obligationId": {
+        "type": "string",
+        "pattern": "^obl_[0-9a-f]{32,64}$"
+      },
+      "graphVersion": {
+        "type": "string"
+      },
+      "edgeKey": {
+        "type": "string"
+      },
+      "arcKey": {
+        "type": "string",
+        "pattern": "^arc_[0-9a-f]{32,64}$"
+      },
+      "startFractionPpm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000
+      },
+      "endFractionPpm": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000
+      },
+      "serviceMode": {
+        "const": "FIXED_DIRECTION"
+      },
+      "requiredPasses": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10
+      },
+      "serviceCostUnits": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "sourceAreaReferenceKey": {
+        "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+      },
+      "sourceFeatureReferenceKey": {
+        "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+      },
+      "selectionPolicyVersion": {
+        "type": "string"
+      },
+      "contentHash": {
+        "$ref": "coverage-common.schema.json#/$defs/sha256"
+      }
+    }
+  },
   "platform/capability-catalog.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.2:capability-catalog",

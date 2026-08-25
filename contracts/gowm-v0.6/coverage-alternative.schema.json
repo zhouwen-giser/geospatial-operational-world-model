@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-alternative",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "alternativeId",
+    "rank",
+    "objectiveProfile",
+    "route",
+    "verification",
+    "solverDiagnostics",
+    "objectiveVector",
+    "pros",
+    "cons",
+    "contentHash"
+  ],
+  "properties": {
+    "alternativeId": {
+      "type": "string"
+    },
+    "referenceKey": {
+      "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+    },
+    "rank": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "objectiveProfile": {
+      "type": "string"
+    },
+    "route": {
+      "$ref": "coverage-route.schema.json"
+    },
+    "verification": {
+      "$ref": "coverage-verification-report.schema.json"
+    },
+    "solverDiagnostics": {
+      "$ref": "coverage-solver-diagnostics.schema.json"
+    },
+    "objectiveVector": {
+      "type": "object"
+    },
+    "pros": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "string"
+      }
+    },
+    "cons": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "string"
+      }
+    },
+    "contentHash": {
+      "$ref": "coverage-common.schema.json#/$defs/sha256"
+    }
+  }
+}

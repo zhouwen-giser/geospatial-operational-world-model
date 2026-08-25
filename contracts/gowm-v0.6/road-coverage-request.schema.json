@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:road-coverage-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "requestId",
+    "routingSnapshot",
+    "area",
+    "routeCount",
+    "selectionPolicy",
+    "endpointPolicy",
+    "objective",
+    "alternativePolicy",
+    "timeLimitMs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "requestId": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 256
+    },
+    "routingSnapshot": {
+      "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+    },
+    "area": {
+      "$ref": "coverage-common.schema.json#/$defs/area"
+    },
+    "routeCount": {
+      "const": 1
+    },
+    "selectionPolicy": {
+      "$ref": "road-selection-policy.schema.json"
+    },
+    "endpointPolicy": {
+      "$ref": "coverage-endpoint-policy.schema.json"
+    },
+    "objective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile"
+      ],
+      "properties": {
+        "profile": {
+          "enum": [
+            "FASTEST_COMPLETION",
+            "SHORTEST_TOTAL_DISTANCE",
+            "LEAST_DEADHEAD",
+            "LOWEST_RISK",
+            "WEIGHTED"
+          ]
+        },
+        "weights": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "distance": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "duration": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "risk": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "deadhead": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          }
+        }
+      }
+    },
+    "alternativePolicy": {
+      "$ref": "coverage-alternative-policy.schema.json"
+    },
+    "timeLimitMs": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 3600000
+    },
+    "metadata": {
+      "type": "object",
+      "maxProperties": 64,
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean",
+          "null"
+        ]
+      }
+    }
+  }
+}

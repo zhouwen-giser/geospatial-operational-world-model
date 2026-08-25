@@ -1,0 +1,62 @@
+{
+  "schemaFile": null,
+  "value": {
+    "queryPlanVersion": "2.0",
+    "queryId": "coverage-dag-1",
+    "nodes": [
+      {
+        "nodeId": "geometry",
+        "operation": {
+          "id": "world.get-geometry",
+          "version": "1.0"
+        },
+        "inputs": {
+          "referenceKey": {
+            "requestPath": "$.areaReference"
+          }
+        }
+      },
+      {
+        "nodeId": "validate",
+        "operation": {
+          "id": "coverage.road.validate",
+          "version": "1.0"
+        },
+        "inputs": {
+          "area": {
+            "nodeOutput": {
+              "nodeId": "geometry",
+              "path": "$.geometry"
+            }
+          },
+          "request": {
+            "requestPath": "$.coverageRequest"
+          }
+        }
+      },
+      {
+        "nodeId": "plan",
+        "operation": {
+          "id": "coverage.road.plan",
+          "version": "1.0"
+        },
+        "inputs": {
+          "request": {
+            "requestPath": "$.coverageRequest"
+          }
+        },
+        "preconditions": [
+          {
+            "nodeId": "validate",
+            "path": "$.valid",
+            "equals": true
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      "plan"
+    ]
+  },
+  "notes": "Gateway typed DAG; actual execution uses platform WorldQueryPlan contract."
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-obligation-set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "obligationSetId",
+    "routingSnapshot",
+    "selectionMode",
+    "obligations",
+    "obligationCount",
+    "totalRequiredLengthMm",
+    "selectionReceiptHash"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "obligationSetId": {
+      "type": "string"
+    },
+    "routingSnapshot": {
+      "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+    },
+    "selectionMode": {
+      "type": "string"
+    },
+    "obligations": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "$ref": "road-service-obligation.schema.json"
+      }
+    },
+    "obligationCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "totalRequiredLengthMm": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "selectionReceiptHash": {
+      "$ref": "coverage-common.schema.json#/$defs/sha256"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

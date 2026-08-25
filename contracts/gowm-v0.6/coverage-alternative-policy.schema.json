@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-alternative-policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestedCount",
+    "minimumVerifiedCount",
+    "profiles",
+    "maximumWeightedArcOverlapPpm",
+    "minimumDeadheadJaccardDistancePpm"
+  ],
+  "properties": {
+    "requestedCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "minimumVerifiedCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "FASTEST_COMPLETION",
+          "SHORTEST_TOTAL_DISTANCE",
+          "LEAST_DEADHEAD",
+          "LOWEST_RISK",
+          "WEIGHTED"
+        ]
+      }
+    },
+    "maximumWeightedArcOverlapPpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "minimumDeadheadJaccardDistancePpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "maximumGenerationCandidates": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64
+    }
+  }
+}
