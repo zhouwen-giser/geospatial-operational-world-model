@@ -46,6 +46,7 @@
     "validate:gowm-v06-predecessor": "node validation/scripts/gowm-v06-predecessor-guard.mjs",
     "validate:gowm-v06-source-policy": "node validation/scripts/gowm-v06-source-policy-guard.mjs",
     "validate:gowm-v06-boundaries": "node validation/architecture/validate-road-coverage-boundaries.mjs",
+    "validate:gowm-v06-database": "node validation/scripts/coverage-schema-runtime-gate.mjs",
     "sbom:service": "node scripts/generate-service-sbom.mjs",
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",

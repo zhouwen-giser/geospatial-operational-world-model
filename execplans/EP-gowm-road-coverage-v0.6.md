@@ -33,7 +33,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] R01 Source Lock / License / Clean-room Map
 - [x] A00 ADR / Authority / Non-goal
 - [x] A01 Contracts / OpenAPI / Manifest / Generated Types
-- [ ] D00 Coverage Schema / Roles / Immutability / Assertions
+- [x] D00 Coverage Schema / Roles / Immutability / Assertions
 - [ ] B00 Area Selection / Fraction Obligations
 - [ ] B01 Canonical Problem / Ledger / Hash
 - [ ] E00 Start / Boundary / Endpoint Policy
@@ -73,6 +73,9 @@ This is a living execution plan. It records only evidence produced from the actu
 - A test invocation with Jest's `--runInBand` flag was rejected by Vitest before collection. The repository's actual `npm test` command then passed 163 tests in 34 files with one pre-existing optional skip.
 - A01's first wildcard copy used PowerShell `-LiteralPath`, which correctly treated the wildcard literally and copied no schemas/examples. The mechanical copy was rerun with `-Path`; all 19 schemas and 10 examples were then counted and hashed.
 - A01's first full typecheck exposed an imprecise last-position narrowing in new Polygon semantics. Explicit first/last locals fixed the type without weakening validation.
+- D00's first real runtime script issued one Docker `exec` per migration registration and was stopped after proving the approach would spend most of its time in Windows Docker startup overhead. The exact temporary fresh database was confirmed and removed, then migration/assertion input was safely batched.
+- D00's first completed batch run exposed a test-only reference to the nonexistent `network_foundation` schema. The authority tables are actually in `public`; all three permission probes were corrected without changing grants.
+- D00's next run passed both full database paths but the final summary expected eight private functions. The actual schema intentionally has two trigger functions plus seven controlled APIs; the gate now proves nine total and exactly seven Provider-executable functions.
 
 ## Validation
 
@@ -82,3 +85,5 @@ This is a living execution plan. It records only evidence produced from the actu
 - Frozen generated contract check: PASS.
 - Repository typecheck: PASS; Vitest: 163 passed, one optional skip.
 - Exact branch base and merge-base: `d6a90ddcd00db946018892c34a327caa631785b0`.
+- D00 static SQL AST: 49 migrations and 34 assertion files PASS; boundary guard PASS.
+- D00 real PostgreSQL gate: `GOWM_COVERAGE_SCHEMA_RUNTIME_PASS d00-20260825t0850 migrations=49 assertions=34`; fresh and v0.5-upgrade paths PASS, both deliberate failure probes rolled back, and both isolated databases were removed.

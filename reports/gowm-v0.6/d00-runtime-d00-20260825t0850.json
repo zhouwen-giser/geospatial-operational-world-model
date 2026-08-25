@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "d00-20260825t0850",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "databases": {
+    "fresh": "gowm_v06_fresh_d00_20260825t0850",
+    "upgrade": "gowm_v06_upgrade_d00_20260825t0850"
+  },
+  "startedAt": "2026-08-25T00:37:35.658Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3053
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_fresh_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3111
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_fresh_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3153
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..049_coverage_planner_controlled_runtime.sql",
+        "gowm_v06_fresh_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4718
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..034_coverage_planner_runtime_assertions.sql",
+        "gowm_v06_fresh_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3639
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3110
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3153
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..047_network_avoid_area_read_contract.sql",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4615
+    },
+    {
+      "command": [
+        "create-upgrade-preservation-probe",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3126
+    },
+    {
+      "command": [
+        "migration-batch:048_coverage_planner_schema.sql..049_coverage_planner_controlled_runtime.sql",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3172
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..034_coverage_planner_runtime_assertions.sql",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3652
+    },
+    {
+      "command": [
+        "deliberate-migration-failure",
+        "gowm_v06_fresh_d00_20260825t0850"
+      ],
+      "status": "EXPECTED_FAIL",
+      "elapsedMs": 3106,
+      "exitCode": 3
+    },
+    {
+      "command": [
+        "verify-failed-migration-rollback",
+        "gowm_v06_fresh_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3112
+    },
+    {
+      "command": [
+        "deliberate-migration-failure",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "EXPECTED_FAIL",
+      "elapsedMs": 3114,
+      "exitCode": 3
+    },
+    {
+      "command": [
+        "verify-failed-migration-rollback",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3112
+    },
+    {
+      "command": [
+        "fresh-summary",
+        "gowm_v06_fresh_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3135
+    },
+    {
+      "command": [
+        "upgrade-summary",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3138
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_upgrade_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3550
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_fresh_d00_20260825t0850"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3187
+    }
+  ],
+  "summary": {
+    "migrations": 49,
+    "assertions": 34,
+    "fresh": {
+      "upgradeMarker": null,
+      "coverageTables": 16,
+      "migrationCount": 49,
+      "coverageFunctions": 9,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 7
+    },
+    "upgrade": {
+      "upgradeMarker": "v0.5-preserved",
+      "coverageTables": 16,
+      "migrationCount": 49,
+      "coverageFunctions": 9,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 7
+    },
+    "deliberateFailureRollback": true
+  },
+  "cleanup": [
+    {
+      "database": "gowm_v06_upgrade_d00_20260825t0850",
+      "status": "PASS"
+    },
+    {
+      "database": "gowm_v06_fresh_d00_20260825t0850",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-08-25T00:38:39.660Z"
+}
