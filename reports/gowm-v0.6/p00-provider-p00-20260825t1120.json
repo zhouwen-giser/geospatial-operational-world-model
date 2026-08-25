@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "p00-20260825t1120",
+  "status": "PASS",
+  "providerId": "gowm.road-coverage-planning",
+  "providerVersion": "1.0.0",
+  "implementationDigest": "sha256:bd44b6c87857d394f05d3b9ba2fafb4926cf094df34694d1beb409fd27bc276c",
+  "operations": [
+    {
+      "operationId": "coverage.road.validate",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "SYNC",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaHash": "sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a"
+    },
+    {
+      "operationId": "coverage.road.select-obligations",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "SYNC",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaHash": "sha256:f453949199ebdf7eea944c5eac3fbff95bfc52cdb0f8a33abecb38fe6448cbbe"
+    },
+    {
+      "operationId": "coverage.road.plan",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "ASYNC",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaHash": "sha256:6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50"
+    },
+    {
+      "operationId": "coverage.road.verify",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "SYNC_OR_ASYNC",
+      "inputSchemaHash": "sha256:f8f242440dbb82ea5790ae163455a838d53da451e0481fa36c2b111c423dfcfa",
+      "outputSchemaHash": "sha256:56063206dc0164bd273a69784a4cc91a9211130f7f71aa2dbbf776cbe20f9584"
+    },
+    {
+      "operationId": "coverage.road.expand-geojson",
+      "operationVersion": "1.0",
+      "maturity": "STABLE",
+      "executionMode": "SYNC",
+      "inputSchemaHash": "sha256:64f0a1a67d9802a0d41f087f3482158ba7bafa5722dd94cda5314786beb24f37",
+      "outputSchemaHash": "sha256:e5c8b4845f9f0717750adb2b5f1b0303f00fd302c1cb962a0336af37474c1b0b"
+    }
+  ],
+  "checks": {
+    "platformManifestContract": true,
+    "exactFiveOperations": true,
+    "frozenSchemaByteHashes": true,
+    "stableMaturity": true,
+    "executionModes": true,
+    "planUsesGatewayAsyncJob": true,
+    "scopeAndSnapshotRequired": true,
+    "providerEnvelopeContract": true,
+    "computeAndDataSnapshots": true,
+    "receiptsEvidenceSeparated": true,
+    "geometryOnDemand": true,
+    "noProviderHttpDependency": true,
+    "noUpperLayerDependency": true
+  },
+  "validateExecution": {
+    "status": "COMPLETED",
+    "resultHash": "sha256:30d15ca79e6ae8e38432f062fc556b1002d06523bf9e6c4b905da74394c1ecdc",
+    "receiptId": "receipt_ad061db4e6f8428783f61475a95528b8",
+    "dataSnapshot": {
+      "consistency": "PINNED",
+      "capturedAt": "2026-08-25T03:00:00.000Z",
+      "scopeDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "resources": [
+        {
+          "authority": "gowm_network_v1",
+          "pinning": "PINNED",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "DATASET",
+            "id": "wrf_11111111111111111111111111111111",
+            "version": "graph-v1"
+          }
+        }
+      ]
+    },
+    "computeSnapshotHash": "sha256:f8a1c4c6b1e91444e23d8263914ff0382db19a749ad0a1f494d90297740bf4de"
+  }
+}

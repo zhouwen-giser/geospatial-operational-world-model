@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1630",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1630",
+  "startedAt": "2026-08-25T04:18:35.883Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3064
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1630"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3119
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1630"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3141
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1630"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4769
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1630"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3139
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1630"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 3571
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1630"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3183
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1630",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/packages/platform/contract-runtime/src/schema-validator.js:474\n        throw new ContractValidationError(nameOrId, result.issues);\n              ^\n\nContractValidationError: capability-provider-manifest.schema.json failed validation: /capabilities/0/ports/outputs/0/path named output subports require a controlled JSON Pointer path\n    at assertContract (file:///workspace/dist/packages/platform/contract-runtime/src/schema-validator.js:474:15)\n    at assertManifestMatchesOperations (file:///workspace/dist/packages/platform/provider-sdk/src/manifest.js:5:5)\n    at createProviderRuntime (file:///workspace/dist/packages/platform/provider-sdk/src/runtime.js:21:5)\n    at createGeometryProvider (file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:328:12)\n    at file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:72:18\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  issues: [\n    {\n      path: '/capabilities/0/ports/outputs/0/path',\n      schemaPath: 'semantic',\n      keyword: 'outputSelector',\n      message: 'named output subports require a controlled JSON Pointer path'\n    }\n  ]\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T04:18:59.885Z"
+}

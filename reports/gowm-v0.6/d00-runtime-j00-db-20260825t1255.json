@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "j00-db-20260825t1255",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "databases": {
+    "fresh": "gowm_v06_fresh_j00_db_20260825t1255",
+    "upgrade": "gowm_v06_upgrade_j00_db_20260825t1255"
+  },
+  "startedAt": "2026-08-25T02:44:28.049Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3059
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_fresh_j00_db_20260825t1255"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3115
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_fresh_j00_db_20260825t1255"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3179
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..051_coverage_async_job_lifecycle.sql",
+        "gowm_v06_fresh_j00_db_20260825t1255"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4729
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..036_coverage_async_job_assertions.sql",
+        "gowm_v06_fresh_j00_db_20260825t1255"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 3664
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_fresh_j00_db_20260825t1255"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3171
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_fresh_j00_db_20260825t1255",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "NOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  progress timeline regressed\nCONTEXT:  PL/pgSQL function inline_code_block line 74 at RAISE\n",
+    "Command failed: docker exec --interactive gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1 psql --username gowm --dbname gowm_v06_fresh_j00_db_20260825t1255 --set ON_ERROR_STOP=on\nNOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  progress timeline regressed\nCONTEXT:  PL/pgSQL function inline_code_block line 74 at RAISE\n"
+  ],
+  "finishedAt": "2026-08-25T02:44:48.993Z"
+}

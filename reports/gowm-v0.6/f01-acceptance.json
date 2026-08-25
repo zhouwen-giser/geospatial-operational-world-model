@@ -1,0 +1,16 @@
+{
+  "phase": "F01",
+  "status": "PASS",
+  "runtimeEvidence": "reports/gowm-v0.6/f01-runtime-f01-final-20260826t0145.json",
+  "acceptance": {
+    "AC-F007": "PASS_ALL_226_REQUIRED_ROWS_HAVE_PASS_EVIDENCE",
+    "AC-F012": "PASS_EXACT_LOCAL_TRACKING_LS_REMOTE_AND_DRAFT_PR_CONTENT_SHA_5D0A07811F96B974C10C18BEC606B0B2E5924127",
+    "AC-F013": "PASS_ZERO_REQUIRED_FAILURES_OR_BLOCKS_BEFORE_REVIEW_READINESS_DRAFT_RETAINED_BY_DELIVERY_INSTRUCTION",
+    "AC-F014": "PASS_NO_MERGE_TAG_RELEASE_OR_DEPLOY_PERFORMED"
+  },
+  "requiredCases": 226,
+  "passedCases": 226,
+  "failedCases": 0,
+  "blockedCases": 0,
+  "notRunCases": 0
+}

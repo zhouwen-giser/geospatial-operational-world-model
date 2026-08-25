@@ -1,0 +1,293 @@
+{
+  "schemaFile": "contracts/coverage-result-set.schema.json",
+  "value": {
+    "schemaVersion": "1.0",
+    "referenceKey": {
+      "namespace": "gowm",
+      "kind": "QUERY_RESULT",
+      "id": "wrf_77777777777777777777777777777777",
+      "version": "1"
+    },
+    "resultSetId": "result-set-1",
+    "requestId": "coverage-request-manual",
+    "problemHash": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "status": "SUCCEEDED",
+    "routingSnapshot": {
+      "networkDatasetVersion": "roads-2026.08",
+      "graphVersion": "graph-v1",
+      "travelProfileVersion": "UGV/1.0",
+      "costProfileVersion": "balanced/1.0",
+      "conditionSnapshotId": "condition-1",
+      "graphContentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "costContentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "conditionContentHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "capturedAt": "2026-08-24T08:00:00Z"
+    },
+    "createdAt": "2026-08-24T08:00:00Z",
+    "validUntil": "2026-08-24T08:05:00Z",
+    "revalidationRequired": true,
+    "searchTerminatedBy": "PROFILES_COMPLETE",
+    "alternatives": [
+      {
+        "alternativeId": "alt-1",
+        "referenceKey": {
+          "namespace": "gowm",
+          "kind": "DERIVED_REFERENCE",
+          "id": "wrf_55555555555555555555555555555555",
+          "version": "1"
+        },
+        "rank": 1,
+        "objectiveProfile": "LEAST_DEADHEAD",
+        "route": {
+          "routeIndex": 1,
+          "startState": {
+            "arcKey": "arc_11111111111111111111111111111111",
+            "fractionPpm": 100000,
+            "direction": "FORWARD",
+            "headingMicrodegrees": 90000000,
+            "sourceFeatureReferenceKey": {
+              "namespace": "gowm",
+              "kind": "LAYER_FEATURE",
+              "id": "wrf_11111111111111111111111111111111",
+              "version": "1"
+            }
+          },
+          "endState": {
+            "arcKey": "arc_11111111111111111111111111111111",
+            "fractionPpm": 100000,
+            "direction": "FORWARD",
+            "headingMicrodegrees": 90000000,
+            "sourceFeatureReferenceKey": {
+              "namespace": "gowm",
+              "kind": "LAYER_FEATURE",
+              "id": "wrf_11111111111111111111111111111111",
+              "version": "1"
+            }
+          },
+          "segments": [
+            {
+              "sequence": 1,
+              "graphVersion": "graph-v1",
+              "arcKey": "arc_44444444444444444444444444444444",
+              "startFractionPpm": 250000,
+              "endFractionPpm": 750000,
+              "phase": "INSIDE",
+              "serviceRole": "SERVICE",
+              "obligationIds": [
+                "obl_dddddddddddddddddddddddddddddddd"
+              ],
+              "sourceFeatureReferenceKey": {
+                "namespace": "gowm",
+                "kind": "LAYER_FEATURE",
+                "id": "wrf_44444444444444444444444444444444",
+                "version": "1"
+              },
+              "metrics": {
+                "distanceMm": 1000000,
+                "durationMs": 600000,
+                "riskMicroUnits": 100,
+                "energyMwh": 250,
+                "combinedCostUnits": 1000250,
+                "turnPenaltyUnits": 0
+              }
+            }
+          ],
+          "boundaryEvents": [],
+          "metrics": {
+            "distanceMm": 1000000,
+            "durationMs": 600000,
+            "riskMicroUnits": 100,
+            "energyMwh": 250,
+            "combinedCostUnits": 1000250,
+            "turnPenaltyUnits": 0
+          },
+          "routeSignature": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        },
+        "verification": {
+          "verificationId": "verify-1",
+          "status": "VALID",
+          "verifierVersion": "coverage-verifier/1.0",
+          "routingSnapshotHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "checks": {
+            "continuity": true,
+            "turns": true,
+            "coverage": true,
+            "endpoints": true,
+            "metrics": true
+          },
+          "coverageRatioPpm": 1000000,
+          "lengthWeightedCoverageRatioPpm": 1000000,
+          "requiredLengthMm": 100000,
+          "coveredRequiredLengthMm": 100000,
+          "recomputedMetrics": {
+            "distanceMm": 1000000,
+            "durationMs": 600000,
+            "riskMicroUnits": 100,
+            "energyMwh": 250,
+            "combinedCostUnits": 1000250,
+            "turnPenaltyUnits": 0
+          },
+          "violations": [],
+          "reportHash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "solverDiagnostics": {
+          "solverVersion": "coverage-solver/1.0",
+          "algorithmFamily": "FIXED_RPP",
+          "exactness": "EXACT",
+          "requiredComponentCount": 1,
+          "imbalanceCount": 0,
+          "connectorPathCount": 0,
+          "candidatesGenerated": 2,
+          "candidatesVerified": 2,
+          "terminatedBy": "PROFILES_COMPLETE",
+          "elapsedMs": 120,
+          "resourceMetrics": {}
+        },
+        "objectiveVector": {
+          "deadhead": 0
+        },
+        "pros": [
+          "No deadhead"
+        ],
+        "cons": [],
+        "contentHash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      {
+        "alternativeId": "alt-2",
+        "referenceKey": {
+          "namespace": "gowm",
+          "kind": "DERIVED_REFERENCE",
+          "id": "wrf_66666666666666666666666666666666",
+          "version": "1"
+        },
+        "rank": 2,
+        "objectiveProfile": "SHORTEST_TOTAL_DISTANCE",
+        "route": {
+          "routeIndex": 1,
+          "startState": {
+            "arcKey": "arc_11111111111111111111111111111111",
+            "fractionPpm": 100000,
+            "direction": "FORWARD",
+            "headingMicrodegrees": 90000000,
+            "sourceFeatureReferenceKey": {
+              "namespace": "gowm",
+              "kind": "LAYER_FEATURE",
+              "id": "wrf_11111111111111111111111111111111",
+              "version": "1"
+            }
+          },
+          "endState": {
+            "arcKey": "arc_11111111111111111111111111111111",
+            "fractionPpm": 100000,
+            "direction": "FORWARD",
+            "headingMicrodegrees": 90000000,
+            "sourceFeatureReferenceKey": {
+              "namespace": "gowm",
+              "kind": "LAYER_FEATURE",
+              "id": "wrf_11111111111111111111111111111111",
+              "version": "1"
+            }
+          },
+          "segments": [
+            {
+              "sequence": 1,
+              "graphVersion": "graph-v1",
+              "arcKey": "arc_44444444444444444444444444444444",
+              "startFractionPpm": 250000,
+              "endFractionPpm": 750000,
+              "phase": "INSIDE",
+              "serviceRole": "SERVICE",
+              "obligationIds": [
+                "obl_dddddddddddddddddddddddddddddddd"
+              ],
+              "sourceFeatureReferenceKey": {
+                "namespace": "gowm",
+                "kind": "LAYER_FEATURE",
+                "id": "wrf_44444444444444444444444444444444",
+                "version": "1"
+              },
+              "metrics": {
+                "distanceMm": 1000000,
+                "durationMs": 600000,
+                "riskMicroUnits": 100,
+                "energyMwh": 250,
+                "combinedCostUnits": 1000250,
+                "turnPenaltyUnits": 0
+              }
+            }
+          ],
+          "boundaryEvents": [],
+          "metrics": {
+            "distanceMm": 1000000,
+            "durationMs": 600000,
+            "riskMicroUnits": 100,
+            "energyMwh": 250,
+            "combinedCostUnits": 1000250,
+            "turnPenaltyUnits": 0
+          },
+          "routeSignature": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        },
+        "verification": {
+          "verificationId": "verify-1",
+          "status": "VALID",
+          "verifierVersion": "coverage-verifier/1.0",
+          "routingSnapshotHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "checks": {
+            "continuity": true,
+            "turns": true,
+            "coverage": true,
+            "endpoints": true,
+            "metrics": true
+          },
+          "coverageRatioPpm": 1000000,
+          "lengthWeightedCoverageRatioPpm": 1000000,
+          "requiredLengthMm": 100000,
+          "coveredRequiredLengthMm": 100000,
+          "recomputedMetrics": {
+            "distanceMm": 1000000,
+            "durationMs": 600000,
+            "riskMicroUnits": 100,
+            "energyMwh": 250,
+            "combinedCostUnits": 1000250,
+            "turnPenaltyUnits": 0
+          },
+          "violations": [],
+          "reportHash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "solverDiagnostics": {
+          "solverVersion": "coverage-solver/1.0",
+          "algorithmFamily": "FIXED_RPP",
+          "exactness": "EXACT",
+          "requiredComponentCount": 1,
+          "imbalanceCount": 0,
+          "connectorPathCount": 0,
+          "candidatesGenerated": 2,
+          "candidatesVerified": 2,
+          "terminatedBy": "PROFILES_COMPLETE",
+          "elapsedMs": 120,
+          "resourceMetrics": {}
+        },
+        "objectiveVector": {
+          "deadhead": 0
+        },
+        "pros": [
+          "No deadhead"
+        ],
+        "cons": [],
+        "contentHash": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+      }
+    ],
+    "pairwiseSimilarity": [
+      {
+        "leftAlternativeId": "alt-1",
+        "rightAlternativeId": "alt-2",
+        "weightedArcOverlapPpm": 800000,
+        "deadheadJaccardDistancePpm": 200000
+      }
+    ],
+    "resultHash": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "receipts": [],
+    "evidenceReferences": []
+  },
+  "notes": ""
+}

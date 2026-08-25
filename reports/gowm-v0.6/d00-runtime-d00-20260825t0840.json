@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "d00-20260825t0840",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "databases": {
+    "fresh": "gowm_v06_fresh_d00_20260825t0840",
+    "upgrade": "gowm_v06_upgrade_d00_20260825t0840"
+  },
+  "startedAt": "2026-08-25T00:34:37.342Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3050
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_fresh_d00_20260825t0840"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3110
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_fresh_d00_20260825t0840"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3164
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..049_coverage_planner_controlled_runtime.sql",
+        "gowm_v06_fresh_d00_20260825t0840"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4804
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..034_coverage_planner_runtime_assertions.sql",
+        "gowm_v06_fresh_d00_20260825t0840"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 3670
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_fresh_d00_20260825t0840"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3168
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_fresh_d00_20260825t0840",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "NOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  schema \"network_foundation\" does not exist\nCONTEXT:  PL/pgSQL function inline_code_block line 50 at IF\n",
+    "Command failed: docker exec --interactive gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1 psql --username gowm --dbname gowm_v06_fresh_d00_20260825t0840 --set ON_ERROR_STOP=on\nNOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  schema \"network_foundation\" does not exist\nCONTEXT:  PL/pgSQL function inline_code_block line 50 at IF\n"
+  ],
+  "finishedAt": "2026-08-25T00:34:58.334Z"
+}

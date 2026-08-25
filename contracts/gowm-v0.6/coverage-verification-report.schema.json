@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-verification-report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verificationId",
+    "status",
+    "verifierVersion",
+    "routingSnapshotHash",
+    "checks",
+    "coverageRatioPpm",
+    "lengthWeightedCoverageRatioPpm",
+    "recomputedMetrics",
+    "violations",
+    "reportHash"
+  ],
+  "properties": {
+    "verificationId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "VALID",
+        "STALE",
+        "INVALID",
+        "INDETERMINATE"
+      ]
+    },
+    "verifierVersion": {
+      "type": "string"
+    },
+    "routingSnapshotHash": {
+      "$ref": "coverage-common.schema.json#/$defs/sha256"
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "coverageRatioPpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "lengthWeightedCoverageRatioPpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "requiredLengthMm": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "coveredRequiredLengthMm": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "recomputedMetrics": {
+      "$ref": "coverage-common.schema.json#/$defs/fixedMetrics"
+    },
+    "violations": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "segmentSequence": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "reportHash": {
+      "$ref": "coverage-common.schema.json#/$defs/sha256"
+    }
+  }
+}

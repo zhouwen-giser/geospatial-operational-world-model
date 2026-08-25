@@ -2055,6 +2055,334 @@ export type GowmV05TravelProfile = {
   version: string;
 };
 
+export type GowmV06CoverageAlternativePolicy = {
+  maximumGenerationCandidates?: number;
+  maximumWeightedArcOverlapPpm: number;
+  minimumDeadheadJaccardDistancePpm: number;
+  minimumVerifiedCount: number;
+  profiles: ["FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED"] | ["FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED"] | ["FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED"] | ["FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED"] | ["FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED", "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED"];
+  requestedCount: number;
+};
+
+export type GowmV06CoverageAlternative = {
+  alternativeId: string;
+  cons: Array<string>;
+  contentHash: GowmV06CoverageCommonSha256;
+  objectiveProfile: string;
+  objectiveVector: Record<string, unknown>;
+  pros: Array<string>;
+  rank: number;
+  referenceKey?: GowmV06CoverageCommonReferenceKey;
+  route: GowmV06CoverageRoute;
+  solverDiagnostics: GowmV06CoverageSolverDiagnostics;
+  verification: GowmV06CoverageVerificationReport;
+};
+
+export type GowmV06CoverageCommon = Record<string, unknown>;
+
+export type GowmV06CoverageCommonArea = (GowmV06CoverageCommonReferenceKey) | (GowmV06CoverageCommonPolygon) | (GowmV06CoverageCommonMultiPolygon);
+
+export type GowmV06CoverageCommonDateTime = string;
+
+export type GowmV06CoverageCommonDirectedState = {
+  arcKey: string;
+  direction: "FORWARD" | "REVERSE";
+  fractionPpm: number;
+  headingMicrodegrees?: number;
+  sourceFeatureReferenceKey?: GowmV06CoverageCommonReferenceKey;
+};
+
+export type GowmV06CoverageCommonFixedMetrics = {
+  combinedCostUnits: number;
+  distanceMm: number;
+  durationMs: number;
+  energyMwh: number;
+  riskMicroUnits: number;
+  turnPenaltyUnits?: number;
+};
+
+export type GowmV06CoverageCommonMultiPolygon = {
+  coordinates: Array<unknown>;
+  type: "MultiPolygon";
+};
+
+export type GowmV06CoverageCommonNetworkLocation = (GowmV06CoverageCommonPosition) | (GowmV06CoverageCommonReferenceKey) | (GowmV06CoverageCommonDirectedState);
+
+export type GowmV06CoverageCommonPolygon = {
+  coordinates: Array<unknown>;
+  type: "Polygon";
+};
+
+export type GowmV06CoverageCommonPosition = {
+  coordinates: [number, number] | [number, number, number];
+  crs: "EPSG:4326";
+};
+
+export type GowmV06CoverageCommonReferenceKey = {
+  id: string;
+  kind: "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATA_SCOPE" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "QUERY_RESULT" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "OPERATIONAL_TASK";
+  namespace: "gowm";
+  version: string;
+};
+
+export type GowmV06CoverageCommonRoutingSnapshot = {
+  capturedAt?: GowmV06CoverageCommonDateTime;
+  conditionContentHash?: GowmV06CoverageCommonSha256;
+  conditionSnapshotId?: string;
+  costContentHash: GowmV06CoverageCommonSha256;
+  costProfileVersion: string;
+  graphContentHash: GowmV06CoverageCommonSha256;
+  graphVersion: string;
+  networkDatasetVersion: string;
+  sourceWorldVersion?: number;
+  travelProfileVersion: string;
+};
+
+export type GowmV06CoverageCommonSha256 = string;
+
+export type GowmV06CoverageEndpointPolicy = ({
+  boundaryCrossingPolicy: "FREE" | "FIRST_ENTRY_ONLY" | "ENTRY_SET_ONLY" | "NO_REENTRY";
+  endpointMode: "RETURN_TO_START" | "FIXED_END" | "LAST_AREA_EXIT";
+  entry: GowmV06CoverageEndpointPolicyBoundaryPolicy;
+  exit: GowmV06CoverageEndpointPolicyBoundaryPolicy;
+  fixedEnd?: GowmV06CoverageCommonNetworkLocation;
+  snapToleranceMm: number;
+  start: GowmV06CoverageCommonNetworkLocation;
+}) & ((Record<string, unknown>));
+
+export type GowmV06CoverageEndpointPolicyBoundaryPolicy = ({
+  maximumCandidates?: number;
+  mode: "AUTO" | "CANDIDATE_SET" | "FIXED";
+  states?: Array<GowmV06CoverageCommonDirectedState>;
+}) & ((Record<string, unknown>));
+
+export type GowmV06CoverageExpandRequest = {
+  alternativeId: string;
+  include: Array<"AREA" | "TERMINALS" | "OBLIGATIONS" | "TRANSIT" | "SEGMENTS">;
+  resultSetReferenceKey: GowmV06CoverageCommonReferenceKey;
+  schemaVersion: "1.0";
+  simplificationToleranceM?: number;
+};
+
+export type GowmV06CoverageGeojsonResult = {
+  alternativeId: string;
+  crs: "EPSG:4326";
+  features: Array<Record<string, unknown>>;
+  nextCursor?: string;
+  resultSetReferenceKey: GowmV06CoverageCommonReferenceKey;
+  truncated?: boolean;
+  type: "FeatureCollection";
+};
+
+export type GowmV06CoverageObligationSet = {
+  obligationCount: number;
+  obligationSetId: string;
+  obligations: Array<GowmV06RoadServiceObligation>;
+  routingSnapshot: GowmV06CoverageCommonRoutingSnapshot;
+  schemaVersion: "1.0";
+  selectionMode: string;
+  selectionReceiptHash: GowmV06CoverageCommonSha256;
+  totalRequiredLengthMm: number;
+  warnings?: Array<string>;
+};
+
+export type GowmV06CoverageProblem = {
+  boundaryCrossingPolicy: "FREE" | "FIRST_ENTRY_ONLY" | "ENTRY_SET_ONLY" | "NO_REENTRY";
+  budgets: {
+  maximumCandidates: number;
+  maximumMatrixCells: number;
+  timeLimitMs: number;
+};
+  contractVersion: "1.0";
+  endpointMode: "RETURN_TO_START" | "FIXED_END" | "LAST_AREA_EXIT";
+  entryStates?: Array<GowmV06CoverageCommonDirectedState>;
+  exitStates?: Array<GowmV06CoverageCommonDirectedState>;
+  fixedEndState?: GowmV06CoverageCommonDirectedState;
+  objective: Record<string, unknown>;
+  obligationSet: GowmV06CoverageObligationSet;
+  problemHash: GowmV06CoverageCommonSha256;
+  problemId: string;
+  routingSnapshot: GowmV06CoverageCommonRoutingSnapshot;
+  startState: GowmV06CoverageCommonDirectedState;
+};
+
+export type GowmV06CoverageProviderManifest = {
+  operations: Array<{
+  dataSnapshot: "REQUIRED";
+  executionMode: "SYNC" | "ASYNC" | "SYNC_OR_ASYNC";
+  inputSchemaFile: string;
+  inputSchemaHash: string;
+  maturity: "PREVIEW" | "STABLE";
+  operationId: string;
+  operationVersion: "1.0";
+  outputSchemaFile: string;
+  outputSchemaHash: string;
+  scopePolicy: "DATA_SCOPE_REQUIRED";
+}>;
+  providerId: "gowm.road-coverage-planning";
+  providerVersion: string;
+};
+
+export type GowmV06CoverageResultSet = {
+  alternatives: [] | [GowmV06CoverageAlternative] | [GowmV06CoverageAlternative, GowmV06CoverageAlternative] | [GowmV06CoverageAlternative, GowmV06CoverageAlternative, GowmV06CoverageAlternative] | [GowmV06CoverageAlternative, GowmV06CoverageAlternative, GowmV06CoverageAlternative, GowmV06CoverageAlternative] | [GowmV06CoverageAlternative, GowmV06CoverageAlternative, GowmV06CoverageAlternative, GowmV06CoverageAlternative, GowmV06CoverageAlternative];
+  createdAt: GowmV06CoverageCommonDateTime;
+  evidenceReferences?: Array<Record<string, unknown>>;
+  pairwiseSimilarity: Array<{
+  deadheadJaccardDistancePpm: number;
+  leftAlternativeId: string;
+  rightAlternativeId: string;
+  weightedArcOverlapPpm: number;
+}>;
+  problemHash: GowmV06CoverageCommonSha256;
+  receipts?: Array<Record<string, unknown>>;
+  referenceKey: GowmV06CoverageCommonReferenceKey;
+  requestId: string;
+  resultHash: GowmV06CoverageCommonSha256;
+  resultSetId: string;
+  revalidationRequired: true;
+  routingSnapshot: GowmV06CoverageCommonRoutingSnapshot;
+  schemaVersion: "1.0";
+  searchTerminatedBy?: "PROFILES_COMPLETE" | "TIME_LIMIT" | "CANDIDATE_LIMIT" | "NO_FEASIBLE_PLAN" | "CANCELLED";
+  status: "SUCCEEDED" | "PARTIAL" | "NO_FEASIBLE_PLAN" | "CANCELLED" | "FAILED";
+  validUntil: GowmV06CoverageCommonDateTime;
+};
+
+export type GowmV06CoverageRoute = {
+  boundaryEvents?: Array<Record<string, unknown>>;
+  endState: GowmV06CoverageCommonDirectedState;
+  metrics: GowmV06CoverageCommonFixedMetrics;
+  routeIndex: 1;
+  routeSignature: GowmV06CoverageCommonSha256;
+  segments: Array<GowmV06CoverageSegment>;
+  startState: GowmV06CoverageCommonDirectedState;
+};
+
+export type GowmV06CoverageSegment = {
+  arcKey: string;
+  endFractionPpm: number;
+  graphVersion: string;
+  metrics: GowmV06CoverageCommonFixedMetrics;
+  obligationIds?: Array<string>;
+  phase: "ACCESS" | "INSIDE" | "EXIT" | "RETURN";
+  sequence: number;
+  serviceRole: "SERVICE" | "DUPLICATE_SERVICE" | "TRANSIT" | "DEADHEAD" | "ACCESS" | "BOUNDARY_EXIT" | "RETURN";
+  sourceFeatureReferenceKey?: GowmV06CoverageCommonReferenceKey;
+  startFractionPpm: number;
+};
+
+export type GowmV06CoverageSolverDiagnostics = {
+  algorithmFamily: "CLOSED_DCPP" | "OPEN_DCPP" | "FIXED_RPP" | "BOTH_DIRECTIONS_RPP";
+  candidatesGenerated: number;
+  candidatesVerified: number;
+  connectorPathCount?: number;
+  elapsedMs: number;
+  exactness: "EXACT" | "BOUNDED_HEURISTIC";
+  imbalanceCount?: number;
+  requiredComponentCount: number;
+  resourceMetrics?: Record<string, unknown>;
+  solverVersion: string;
+  terminatedBy: "PROFILES_COMPLETE" | "TIME_LIMIT" | "CANDIDATE_LIMIT" | "NO_FEASIBLE_PLAN" | "CANCELLED";
+};
+
+export type GowmV06CoverageValidationResult = {
+  normalizedSummary: {
+  endpointMode: string;
+  estimatedObligationCount?: number;
+  requestedAlternativeCount: number;
+  routeCount: 1;
+  selectionMode: string;
+  serviceMode: string;
+};
+  schemaVersion: "1.0";
+  valid: boolean;
+  violations: Array<GowmV06CoverageValidationResultIssue>;
+  warnings: Array<GowmV06CoverageValidationResultIssue>;
+};
+
+export type GowmV06CoverageValidationResultIssue = {
+  code: string;
+  details?: Record<string, unknown>;
+  message: string;
+  path: string;
+};
+
+export type GowmV06CoverageVerificationReport = {
+  checks: Record<string, boolean>;
+  coverageRatioPpm: number;
+  coveredRequiredLengthMm?: number;
+  lengthWeightedCoverageRatioPpm: number;
+  recomputedMetrics: GowmV06CoverageCommonFixedMetrics;
+  reportHash: GowmV06CoverageCommonSha256;
+  requiredLengthMm?: number;
+  routingSnapshotHash: GowmV06CoverageCommonSha256;
+  status: "VALID" | "STALE" | "INVALID" | "INDETERMINATE";
+  verificationId: string;
+  verifierVersion: string;
+  violations: Array<{
+  code: string;
+  message: string;
+  segmentSequence?: number;
+}>;
+};
+
+export type GowmV06CoverageVerificationRequest = {
+  candidate: GowmV06CoverageAlternative;
+  problemReference: (string) | (GowmV06CoverageCommonReferenceKey);
+  revalidateAgainstCurrentCondition?: boolean;
+  routingSnapshot: GowmV06CoverageCommonRoutingSnapshot;
+  schemaVersion: "1.0";
+};
+
+export type GowmV06RoadCoverageRequest = {
+  alternativePolicy: GowmV06CoverageAlternativePolicy;
+  area: GowmV06CoverageCommonArea;
+  endpointPolicy: GowmV06CoverageEndpointPolicy;
+  metadata?: Record<string, string | number | boolean | null>;
+  objective: {
+  profile: "FASTEST_COMPLETION" | "SHORTEST_TOTAL_DISTANCE" | "LEAST_DEADHEAD" | "LOWEST_RISK" | "WEIGHTED";
+  weights?: {
+  deadhead?: number;
+  distance?: number;
+  duration?: number;
+  risk?: number;
+};
+};
+  requestId: string;
+  routeCount: 1;
+  routingSnapshot: GowmV06CoverageCommonRoutingSnapshot;
+  schemaVersion: "1.0";
+  selectionPolicy: GowmV06RoadSelectionPolicy;
+  timeLimitMs: number;
+};
+
+export type GowmV06RoadSelectionPolicy = ({
+  boundaryToleranceMm?: number;
+  fixedDirectionSource?: "MANUAL" | "SOURCE_FEATURE_ATTRIBUTE" | "APPROVED_POLICY";
+  manualObligations?: Array<GowmV06RoadServiceObligation>;
+  minimumSegmentLengthMm: number;
+  mode: "FULLY_COVERED_EDGE" | "INTERSECTING_COMPLETE_EDGE" | "CLIPPED_INSIDE_AREA" | "MANUAL_OBLIGATIONS";
+  requiredPasses: number;
+  roadClasses: Array<string>;
+  selectionPolicyVersion?: string;
+  serviceMode: "FIXED_DIRECTION" | "BOTH_DIRECTIONS";
+}) & ((Record<string, unknown>));
+
+export type GowmV06RoadServiceObligation = {
+  arcKey: string;
+  contentHash: GowmV06CoverageCommonSha256;
+  edgeKey?: string;
+  endFractionPpm: number;
+  graphVersion: string;
+  obligationId: string;
+  requiredPasses: number;
+  selectionPolicyVersion?: string;
+  serviceCostUnits?: number;
+  serviceMode: "FIXED_DIRECTION";
+  sourceAreaReferenceKey?: GowmV06CoverageCommonReferenceKey;
+  sourceFeatureReferenceKey: GowmV06CoverageCommonReferenceKey;
+  startFractionPpm: number;
+};
+
 export type CapabilityCatalog = {
   catalogVersion: string;
   endpoints: Array<{
@@ -2384,6 +2712,9 @@ export type ProviderExecutionRequest = {
 };
   gatewayContext: {
   gatewayId: string;
+  gatewayJobId?: string;
+  gatewayNodeId?: PlatformCommonDefinitionsIdentifier;
+  gatewayQueryId?: PlatformCommonDefinitionsIdentifier;
   policyVersion: string;
   registryVersion: string;
 };

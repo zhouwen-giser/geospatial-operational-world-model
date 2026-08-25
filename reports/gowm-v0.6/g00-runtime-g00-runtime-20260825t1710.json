@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1710",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1710",
+  "startedAt": "2026-08-25T04:24:31.444Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3064
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1710"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3123
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1710"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3148
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1710"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4631
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1710"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3142
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1710"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 6622
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1710"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3172
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1710",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:112\n        throw new Error(`local DAG validation failed: ${JSON.stringify(details)}`);\n              ^\n\nError: local DAG validation failed: {\"stage\":\"DAG_VALIDATION\",\"issues\":[{\"path\":\"/budgets/maximumExecutionMs\",\"schemaPath\":\"semantic\",\"keyword\":\"aggregateBudget\",\"message\":\"is 180000, below the node aggregate 270000\"}]}\n    at file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:112:15\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T04:24:58.362Z"
+}

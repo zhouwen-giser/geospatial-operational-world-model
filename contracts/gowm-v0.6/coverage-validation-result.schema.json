@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-validation-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "valid",
+    "violations",
+    "warnings",
+    "normalizedSummary"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "violations": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/issue"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/issue"
+      }
+    },
+    "normalizedSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "routeCount",
+        "selectionMode",
+        "serviceMode",
+        "endpointMode",
+        "requestedAlternativeCount"
+      ],
+      "properties": {
+        "routeCount": {
+          "const": 1
+        },
+        "selectionMode": {
+          "type": "string"
+        },
+        "serviceMode": {
+          "type": "string"
+        },
+        "endpointMode": {
+          "type": "string"
+        },
+        "requestedAlternativeCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "estimatedObligationCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "path",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-provider-manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "providerId",
+    "providerVersion",
+    "operations"
+  ],
+  "properties": {
+    "providerId": {
+      "const": "gowm.road-coverage-planning"
+    },
+    "providerVersion": {
+      "type": "string"
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "operationVersion",
+          "maturity",
+          "executionMode",
+          "inputSchemaFile",
+          "inputSchemaHash",
+          "outputSchemaFile",
+          "outputSchemaHash",
+          "scopePolicy",
+          "dataSnapshot"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string"
+          },
+          "operationVersion": {
+            "const": "1.0"
+          },
+          "maturity": {
+            "enum": [
+              "PREVIEW",
+              "STABLE"
+            ]
+          },
+          "executionMode": {
+            "enum": [
+              "SYNC",
+              "ASYNC",
+              "SYNC_OR_ASYNC"
+            ]
+          },
+          "inputSchemaFile": {
+            "type": "string"
+          },
+          "inputSchemaHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "outputSchemaFile": {
+            "type": "string"
+          },
+          "outputSchemaHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "scopePolicy": {
+            "const": "DATA_SCOPE_REQUIRED"
+          },
+          "dataSnapshot": {
+            "const": "REQUIRED"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:road-service-obligation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "obligationId",
+    "graphVersion",
+    "arcKey",
+    "startFractionPpm",
+    "endFractionPpm",
+    "serviceMode",
+    "requiredPasses",
+    "sourceFeatureReferenceKey",
+    "contentHash"
+  ],
+  "properties": {
+    "obligationId": {
+      "type": "string",
+      "pattern": "^obl_[0-9a-f]{32,64}$"
+    },
+    "graphVersion": {
+      "type": "string"
+    },
+    "edgeKey": {
+      "type": "string"
+    },
+    "arcKey": {
+      "type": "string",
+      "pattern": "^arc_[0-9a-f]{32,64}$"
+    },
+    "startFractionPpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "endFractionPpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "serviceMode": {
+      "const": "FIXED_DIRECTION"
+    },
+    "requiredPasses": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "serviceCostUnits": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sourceAreaReferenceKey": {
+      "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+    },
+    "sourceFeatureReferenceKey": {
+      "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+    },
+    "selectionPolicyVersion": {
+      "type": "string"
+    },
+    "contentHash": {
+      "$ref": "coverage-common.schema.json#/$defs/sha256"
+    }
+  }
+}

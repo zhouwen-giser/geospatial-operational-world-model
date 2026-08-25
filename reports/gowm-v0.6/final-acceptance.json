@@ -1,0 +1,1428 @@
+{
+  "schemaVersion": "1.0",
+  "goal": "GOWM+ Road Coverage Planning v0.6",
+  "phase": "F01",
+  "runId": "f01-final-20260826t0145",
+  "decision": "PASS",
+  "requiredCases": 226,
+  "passedCases": 226,
+  "blockedCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "candidateContentSha": "5d0a07811f96b974c10c18bec606b0b2e5924127",
+  "candidateContentShaEvidence": {
+    "local": "5d0a07811f96b974c10c18bec606b0b2e5924127",
+    "originTracking": "5d0a07811f96b974c10c18bec606b0b2e5924127",
+    "lsRemote": "5d0a07811f96b974c10c18bec606b0b2e5924127",
+    "draftPrHead": "5d0a07811f96b974c10c18bec606b0b2e5924127"
+  },
+  "pullRequest": {
+    "baseRefName": "codex/gowm-network-routing-v0.5",
+    "headRefName": "codex/gowm-road-coverage-v0.6",
+    "headRefOid": "5d0a07811f96b974c10c18bec606b0b2e5924127",
+    "isDraft": true,
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "number": 4,
+    "state": "OPEN",
+    "statusCheckRollup": [],
+    "title": "feat: add GOWM road coverage planning v0.6",
+    "url": "https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/4"
+  },
+  "protectedActions": {
+    "merge": "NOT_RUN",
+    "tag": "NOT_RUN",
+    "release": "NOT_RUN",
+    "deploy": "NOT_RUN"
+  },
+  "markers": [
+    "NETWORK_READY",
+    "ROUTING_READY",
+    "ROAD_COVERAGE_READY",
+    "GOWM_ROAD_COVERAGE_V0_6_STABLE_CANDIDATE_COMPLETE"
+  ],
+  "cases": {
+    "AC-B001": {
+      "status": "PASS_COMMITTED_PUSHED_CANDIDATE_IDENTIFIED",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B002": {
+      "status": "PASS_VERSION_0_5_0",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B003": {
+      "status": "PASS_MACHINE_EVIDENCED_MARKERS",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B004": {
+      "status": "PASS_MIGRATIONS_001_047_LOCKED",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B005": {
+      "status": "PASS_EXACT_COMMIT_REAL_DB_EVIDENCE_AND_GOWM_NETWORK_V1_ASSERTIONS",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B006": {
+      "status": "PASS_EXACT_COMMIT_REAL_GATEWAY_PROVIDER_EVIDENCE",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B007": {
+      "status": "PASS_FROZEN_ROUTING_CONTRACT_HASHES",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B008": {
+      "status": "PASS_INDEPENDENT_V0_5_VERIFIER_EVIDENCE",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B009": {
+      "status": "PASS_REFERENCE_ARCHIVE_HASH_MATCHES_LOCK",
+      "evidence": [
+        "r01-acceptance.json"
+      ]
+    },
+    "AC-B010": {
+      "status": "PASS_USER_INPUT_IGNORED_AND_EXISTING_WORK_PRESERVED",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B011": {
+      "status": "PASS_EXACT_V0_5_BASE",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-B012": {
+      "status": "PASS_NO_PREDECESSOR_REWRITE_OR_GATE_WEAKENING",
+      "evidence": [
+        "r00-acceptance.json"
+      ]
+    },
+    "AC-A001": {
+      "status": "PASS_SINGLE_V0_5_NETWORK_AUTHORITY",
+      "evidence": [
+        "a00-acceptance.json"
+      ]
+    },
+    "AC-A002": {
+      "status": "PASS_GOWM_NETWORK_V1_OR_PURE_CORE_ONLY",
+      "evidence": [
+        "a00-acceptance.json"
+      ]
+    },
+    "AC-A003": {
+      "status": "PASS_NO_PROVIDER_TO_PROVIDER_HTTP",
+      "evidence": [
+        "a00-acceptance.json"
+      ]
+    },
+    "AC-A004": {
+      "status": "PASS_GATEWAY_ALGORITHM_BOUNDARY_GUARD",
+      "evidence": [
+        "a00-acceptance.json"
+      ]
+    },
+    "AC-A005": {
+      "status": "PASS_OBLIGATION_SET_SEPARATE_FROM_NETWORK_TRAVERSAL_AUTHORITY",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-A006": {
+      "status": "PASS_QUERY_RESULT_AND_DERIVED_REFERENCE_SEMANTICS",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-A007": {
+      "status": "PASS_COMPUTATIONAL_PLAN_NOT_PHYSICAL_FACT",
+      "evidence": [
+        "a00-acceptance.json"
+      ]
+    },
+    "AC-A008": {
+      "status": "PASS_ROUTE_COUNT_CONST_ONE",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-A009": {
+      "status": "PASS_EITHER_DIRECTION_REJECTED",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-A010": {
+      "status": "PASS_V0_7_FLEET_SCOPE_EXCLUDED",
+      "evidence": [
+        "a00-acceptance.json"
+      ]
+    },
+    "AC-A011": {
+      "status": "PASS_INTEGER_FRACTION_METRIC_AND_BUDGET_FIELDS",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-A012": {
+      "status": "PASS_INDEPENDENT_VERIFIER_IMPORT_BOUNDARY",
+      "evidence": [
+        "a00-acceptance.json"
+      ]
+    },
+    "AC-C001": {
+      "status": "PASS_GENERATED_TYPES_FROM_19_JSON_SCHEMAS",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C002": {
+      "status": "PASS_FIVE_OPERATION_RAW_SCHEMA_HASH_ATTESTATION",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C003": {
+      "status": "PASS_UNKNOWN_FIELDS_FAIL_CLOSED",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C004": {
+      "status": "PASS_CANONICAL_EPSG4326_POLYGON_MULTIPOLYGON_SEMANTICS",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C005": {
+      "status": "PASS_AREA_REFERENCE_KEY",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C006": {
+      "status": "PASS_FOUR_SELECTION_MODES",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C007": {
+      "status": "PASS_TWO_SERVICE_MODES_ONLY",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C008": {
+      "status": "PASS_THREE_CONDITIONAL_ENDPOINT_MODES",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C009": {
+      "status": "PASS_FOUR_BOUNDARY_MODES",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C010": {
+      "status": "PASS_ALTERNATIVE_COUNT_1_TO_5",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C011": {
+      "status": "PASS_REVALIDATION_REQUIRED_CONST_TRUE",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C012": {
+      "status": "PASS_NO_DISPATCHABLE_PROPERTY",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-C013": {
+      "status": "PASS_36_PERMUTATION_CANONICAL_PROBLEM_HASH",
+      "evidence": [
+        "b01-acceptance.json"
+      ]
+    },
+    "AC-C014": {
+      "status": "PASS_ORDER_INDEPENDENT_SNAPSHOT_BOUND_OBLIGATION_IDENTITY",
+      "evidence": [
+        "b01-acceptance.json"
+      ]
+    },
+    "AC-C015": {
+      "status": "PASS_TYPED_CAPABILITY_NO_FEASIBLE_RESOURCE_AND_STALE_VOCABULARY",
+      "evidence": [
+        "s03-acceptance.json",
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-C016": {
+      "status": "PASS_OPERATION_ID_VERSION_KEYS_PRESERVE_FUTURE_VERSION_COEXISTENCE",
+      "evidence": [
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-D001": {
+      "status": "PASS_APPEND_ONLY_MIGRATIONS_048_049_PREDECESSOR_001_047_LOCKED",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D002": {
+      "status": "PASS_16_COVERAGE_PLANNER_TABLES_REAL_DB",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D003": {
+      "status": "PASS_NO_PRIVATE_GRAPH_AUTHORITY_TABLES",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D004": {
+      "status": "PASS_SCOPE_COLUMNS_ON_ALL_16_TABLES",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D005": {
+      "status": "PASS_READ_NETWORK_CONTRACT_SEVEN_CONTROLLED_WRITE_APIS",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D006": {
+      "status": "PASS_PROVIDER_NO_PUBLIC_NETWORK_ARC_MUTATION",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D007": {
+      "status": "PASS_CANONICAL_PROBLEM_IMMUTABLE",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D008": {
+      "status": "PASS_SERVICE_OBLIGATION_IMMUTABLE",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D009": {
+      "status": "PASS_VERIFICATION_REPORT_IMMUTABLE",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D010": {
+      "status": "PASS_RESULT_ALTERNATIVE_SEGMENT_IMMUTABLE",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D011": {
+      "status": "PASS_FRACTION_PPM_CHECKS_0_TO_1000000",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D012": {
+      "status": "PASS_ROUTE_INDEX_CONST_ONE",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D013": {
+      "status": "PASS_GENERATION_FENCE_REJECTS_LATE_PUBLICATION",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D014": {
+      "status": "PASS_INJECTED_OUTBOX_FAILURE_NO_GHOST_STATE",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D015": {
+      "status": "PASS_SCOPE_JOB_PROBLEM_RESULT_TIMELINE_INDEX_ASSERTIONS",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D016": {
+      "status": "PASS_FRESH_001_049_AND_001_034_REAL_POSTGRESQL",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D017": {
+      "status": "PASS_V05_001_047_THEN_048_049_WITH_PRESERVED_MARKER",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-D018": {
+      "status": "PASS_DELIBERATE_FAILURE_ROLLBACK_FRESH_AND_UPGRADE",
+      "evidence": [
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-O001": {
+      "status": "PASS_REAL_POSTGIS_INVALID_POLYGON_REJECTED",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O002": {
+      "status": "PASS_POLYGON_HOLE_EXCLUDES_FULL_AND_CLIPPED_INTERIOR",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O003": {
+      "status": "PASS_MULTIPOLYGON_ORDER_INDEPENDENT_OBLIGATION_IDENTITY",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O004": {
+      "status": "PASS_BOUNDARY_INCLUSIVE_ST_COVERS",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O005": {
+      "status": "PASS_INTERSECTING_EDGE_WHOLE_ARC_FRACTIONS",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O006": {
+      "status": "PASS_POSTGIS_LINE_LOCATE_INTEGER_PPM",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O007": {
+      "status": "PASS_TWO_DISJOINT_FRAGMENTS_PER_DIRECTED_ARC",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O008": {
+      "status": "PASS_MINIMUM_LENGTH_DETERMINISTIC_DENY",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O009": {
+      "status": "PASS_MANUAL_GRAPH_ARC_FRACTION_SCOPE_VALIDATION",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O010": {
+      "status": "PASS_ROAD_CLASS_FILTER_INSIDE_CONTROLLED_READ_FUNCTION",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O011": {
+      "status": "PASS_SERVICE_ELIGIBLE_FILTER",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O012": {
+      "status": "PASS_ONEWAY_FORWARD_ONLY_NO_REVERSE_OBLIGATION",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O013": {
+      "status": "PASS_BIDIRECTIONAL_EDGE_EXPANDS_TWO_FIXED_OBLIGATIONS",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O014": {
+      "status": "PASS_MISSING_OR_AMBIGUOUS_DIRECTION_AUTHORITY_REJECTED",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O015": {
+      "status": "PASS_EITHER_DIRECTION_CAPABILITY_NOT_AVAILABLE_AND_PUBLIC_SCHEMA_FAIL_CLOSED",
+      "evidence": [
+        "s03-acceptance.json",
+        "a01-acceptance.json"
+      ]
+    },
+    "AC-O016": {
+      "status": "PASS_INDEPENDENT_VERIFIER_CREDITS_ONLY_REQUIRED_SERVICE_INTERVALS",
+      "evidence": [
+        "v00-acceptance.json",
+        "s02-acceptance.json"
+      ]
+    },
+    "AC-O017": {
+      "status": "PASS_TRANSIT_ARCS_CONNECT_REQUIRED_COMPONENTS_WITHOUT_BECOMING_R",
+      "evidence": [
+        "s02-acceptance.json",
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-O018": {
+      "status": "PASS_UNCONNECTABLE_OR_PROFILE_CLOSED_REQUIRED_ARCS_RETURN_NO_FEASIBLE_PLAN",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-O019": {
+      "status": "PASS_AREA_AND_FEATURE_REFERENCE_KEYS_RETAINED",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O020": {
+      "status": "PASS_CANONICAL_SORT_AND_ORDER_INDEPENDENT_LEDGER_HASH",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O021": {
+      "status": "PASS_SCOPE_SET_BEFORE_CANDIDATE_QUERY",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O022": {
+      "status": "PASS_METHOD_MODE_SNAPSHOT_POLICY_RECEIPT_HASH",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O023": {
+      "status": "PASS_REAL_DATABASE_CANDIDATE_BUDGET",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-O024": {
+      "status": "PASS_EXPLICIT_EMPTY_SELECTION_DENY_POLICY",
+      "evidence": [
+        "b00-acceptance.json"
+      ]
+    },
+    "AC-E001": {
+      "status": "PASS_EQUAL_SCORE_PARALLEL_ARCS_RETURN_AMBIGUOUS_LOCATION",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E002": {
+      "status": "PASS_DIRECTED_STATE_PRESERVED_EXACTLY",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E003": {
+      "status": "PASS_AUTO_BOUNDARY_BOUNDED_DEDUPED_SORTED",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E004": {
+      "status": "PASS_CANDIDATE_SET_RESTRICTS_TO_VALIDATED_SUPPLIED_STATES",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E005": {
+      "status": "PASS_FIXED_BOUNDARY_REQUIRES_EXACTLY_ONE_VALID_STATE",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E006": {
+      "status": "PASS_RETURN_TO_START_EXACT_DIRECTED_TERMINAL",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E007": {
+      "status": "PASS_FIXED_END_EXACT_DIRECTED_TERMINAL",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E008": {
+      "status": "PASS_LAST_AREA_EXIT_FINAL_OUTBOUND_EVENT",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E009": {
+      "status": "PASS_FREE_REENTRY_ALLOWED",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E010": {
+      "status": "PASS_FIRST_ENTRY_ONLY_CARDINALITY",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E011": {
+      "status": "PASS_ENTRY_SET_ONLY_MEMBERSHIP",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E012": {
+      "status": "PASS_NO_REENTRY_AFTER_FIRST_EXIT",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E013": {
+      "status": "PASS_PARTIAL_START_END_FRACTIONS_RETAINED",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-E014": {
+      "status": "PASS_NO_SYNTHETIC_OR_GLOBAL_ARC_CREATION",
+      "evidence": [
+        "e00-acceptance.json"
+      ]
+    },
+    "AC-S001": {
+      "status": "PASS_BALANCED_REQUIRED_DIRECTED_GRAPH_RETURNS_EXACT_EULER_COVERAGE_CIRCUIT",
+      "evidence": [
+        "s00-acceptance.json"
+      ]
+    },
+    "AC-S002": {
+      "status": "PASS_EXACT_MINIMUM_COST_TRANSPORT_AUGMENTATION_BALANCES_IMBALANCE",
+      "evidence": [
+        "s00-acceptance.json"
+      ]
+    },
+    "AC-S003": {
+      "status": "PASS_ROUTE_CLOSES_AT_EXACT_PARTIAL_DIRECTED_START_STATE",
+      "evidence": [
+        "s00-acceptance.json"
+      ]
+    },
+    "AC-S004": {
+      "status": "PASS_OPEN_ROUTE_PRESERVES_DISTINCT_EXACT_DIRECTED_START_AND_FIXED_END",
+      "evidence": [
+        "s01-acceptance.json"
+      ]
+    },
+    "AC-S005": {
+      "status": "PASS_OPEN_TARGET_IMBALANCE_IS_REPAIRED_BY_EXACT_MINIMUM_COST_AUGMENTATION",
+      "evidence": [
+        "s01-acceptance.json"
+      ]
+    },
+    "AC-S006": {
+      "status": "PASS_REQUIRED_SUBSET_USES_OPTIONAL_TRANSIT_ARCS_WITHOUT_PROMOTING_THEM_TO_SERVICE",
+      "evidence": [
+        "s02-acceptance.json"
+      ]
+    },
+    "AC-S007": {
+      "status": "PASS_DISCONNECTED_REQUIRED_COMPONENTS_ARE_CONNECTED_BY_LEGAL_DIRECTED_PATHS",
+      "evidence": [
+        "s02-acceptance.json"
+      ]
+    },
+    "AC-S008": {
+      "status": "PASS_CONNECTOR_SEARCH_USES_COMPLETE_TRAVERSABLE_E_NOT_ONLY_REQUIRED_R",
+      "evidence": [
+        "s02-acceptance.json"
+      ]
+    },
+    "AC-S009": {
+      "status": "PASS_PAIRWISE_FORBIDDEN_TURN_IS_EXCLUDED_FROM_STATE_SPACE",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S010": {
+      "status": "PASS_ALLOWED_ONLY_RULE_REJECTS_ALL_NON_LISTED_SUCCESSORS",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S011": {
+      "status": "PASS_MULTI_EDGE_FORBIDDEN_SEQUENCE_IS_EXCLUDED",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S012": {
+      "status": "PASS_TURN_HISTORY_SURVIVES_CONNECTOR_TO_SERVICE_BOUNDARY",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S013": {
+      "status": "PASS_STRICT_SEQUENCE_SEARCH_HAS_NO_PGR_TRSP_DOWNGRADE",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S014": {
+      "status": "PASS_PARTIAL_ARC_OBLIGATION_IS_SERVICED_AT_EXACT_REQUIRED_FRACTIONS",
+      "evidence": [
+        "s02-acceptance.json"
+      ]
+    },
+    "AC-S015": {
+      "status": "PASS_REQUIRED_PASS_MULTIPLICITY_CREATES_EXACT_SERVICE_TRAVERSALS",
+      "evidence": [
+        "s02-acceptance.json"
+      ]
+    },
+    "AC-S016": {
+      "status": "PASS_AUGMENTATION_OVER_REQUIRED_INTERVAL_IS_DUPLICATE_SERVICE",
+      "evidence": [
+        "s02-acceptance.json"
+      ]
+    },
+    "AC-S017": {
+      "status": "PASS_NON_REQUIRED_CONNECTOR_INTERVALS_ARE_TRANSIT",
+      "evidence": [
+        "s02-acceptance.json"
+      ]
+    },
+    "AC-S018": {
+      "status": "PASS_ALL_FIXED_METRICS_EQUAL_OVERFLOW_CHECKED_SEGMENT_SUMS",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S019": {
+      "status": "PASS_UNSAFE_INTEGER_SUM_FAILS_RESOURCE_EXHAUSTED",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S020": {
+      "status": "PASS_CLOSED_REQUIRED_ARC_RETURNS_NO_FEASIBLE_PLAN",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S021": {
+      "status": "PASS_SPEED_OVERRIDE_CHANGES_DURATION_WITHOUT_CHANGING_DISTANCE",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S022": {
+      "status": "PASS_TRAVEL_PROFILE_EXCLUDES_ILLEGAL_REQUIRED_ARC",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S023": {
+      "status": "PASS_SHORTEST_DISTANCE_SELECTS_MINIMUM_DISTANCE_CONNECTOR",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S024": {
+      "status": "PASS_FASTEST_SELECTS_MINIMUM_DURATION_CONNECTOR",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S025": {
+      "status": "PASS_LOWEST_RISK_SELECTS_MINIMUM_RISK_CONNECTOR",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S026": {
+      "status": "PASS_SAME_PROBLEM_VERSION_SEED_REPLAYS_ROUTE_SIGNATURE",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S027": {
+      "status": "PASS_FROZEN_PROBLEM_REPLAY_STABLE_AND_GRAPH_VERSION_DIFFERENCE_REJECTED",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S028": {
+      "status": "PASS_TIME_MATRIX_AND_CANDIDATE_BUDGETS_STOP_OR_BOUND_SEARCH_SAFELY",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S029": {
+      "status": "PASS_ROUTE_COUNT_GREATER_THAN_ONE_REJECTED_BEFORE_SEARCH",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-S030": {
+      "status": "PASS_EITHER_DIRECTION_REJECTED_BEFORE_SEARCH",
+      "evidence": [
+        "s03-acceptance.json"
+      ]
+    },
+    "AC-V001": {
+      "status": "PASS_VERIFIER_PACKAGE_IMPORTS_NO_SOLVER_IMPLEMENTATION_OR_HELPER",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V002": {
+      "status": "PASS_UNKNOWN_OR_WRONG_VERSION_ARC_INVALIDATES_CANDIDATE",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V003": {
+      "status": "PASS_DISCONTINUOUS_SEGMENT_INVALIDATES_CANDIDATE",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V004": {
+      "status": "PASS_REVERSED_DIRECTED_INTERVAL_INVALIDATES_CANDIDATE",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V005": {
+      "status": "PASS_EMPTY_REVERSED_OR_OUT_OF_RANGE_FRACTION_INVALIDATES_CANDIDATE",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V006": {
+      "status": "PASS_PAIRWISE_TURN_VIOLATION_INDEPENDENTLY_REPLAYED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V007": {
+      "status": "PASS_MULTI_EDGE_SEQUENCE_VIOLATION_INDEPENDENTLY_REPLAYED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V008": {
+      "status": "PASS_SERVICE_INTERVAL_MULTIPLICITY_RECOMPUTES_EACH_REQUIRED_PASS",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V009": {
+      "status": "PASS_VALID_COVERAGE_RATIO_EQUALS_1000000",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V010": {
+      "status": "PASS_LENGTH_WEIGHTED_RATIO_INDEPENDENTLY_RECOMPUTED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V011": {
+      "status": "PASS_EXACT_START_STATE_AND_FIRST_SEGMENT_REPLAYED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V012": {
+      "status": "PASS_ENDPOINT_MODE_TERMINAL_AND_LAST_SEGMENT_REPLAYED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V013": {
+      "status": "PASS_BOUNDARY_EVENT_POLICY_REPLAYED_INDEPENDENTLY",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V014": {
+      "status": "PASS_TRAVEL_PROFILE_LEGALITY_REPLAYED_INDEPENDENTLY",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V015": {
+      "status": "PASS_CLOSED_CONDITION_ARC_INVALIDATES_CANDIDATE",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V016": {
+      "status": "PASS_SEGMENT_AND_ROUTE_FIXED_METRICS_RECOMPUTED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V017": {
+      "status": "PASS_CANONICAL_ROUTE_SIGNATURE_MISMATCH_DETECTED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V018": {
+      "status": "PASS_CHANGED_SNAPSHOT_STALE_AND_EXPIRED_REAL_PROVIDER_RESULT_STALE",
+      "evidence": [
+        "v00-acceptance.json",
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-V019": {
+      "status": "PASS_TWELVE_MUTATED_SOLVER_OUTPUTS_ALL_INVALIDATED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V020": {
+      "status": "PASS_KNOWN_PAIR_SEQUENCE_COVERAGE_AND_METRIC_BUG_CORPUS_REJECTED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V021": {
+      "status": "PASS_ONLY_VALID_HASHED_VERIFICATION_RECEIPT_CAN_BE_ADMITTED",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-V022": {
+      "status": "PASS_REPORT_CONTAINS_VERSION_SNAPSHOT_HASH_CHECKS_VIOLATIONS_AND_HASH",
+      "evidence": [
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-L001": {
+      "status": "PASS_REAL_GATEWAY_ONE_REQUESTED_ONE_VERIFIED_ALTERNATIVE",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-L002": {
+      "status": "PASS_REAL_GATEWAY_GOLD_CASE_TWO_VERIFIED_DISTINCT_ALTERNATIVES",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-L003": {
+      "status": "PASS_BELOW_MINIMUM_VERIFIED_COUNT_RETURNS_EXPLICIT_PARTIAL",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-L004": {
+      "status": "PASS_IDENTICAL_ORDERED_ROUTE_SIGNATURES_DEDUPLICATE",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-L005": {
+      "status": "PASS_DISPLAY_ONLY_METADATA_DOES_NOT_CREATE_ALTERNATIVE",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-L006": {
+      "status": "PASS_WEIGHTED_ARC_OVERLAP_THRESHOLD_ENFORCED",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-L007": {
+      "status": "PASS_DEADHEAD_JACCARD_DISTANCE_THRESHOLD_ENFORCED",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-L008": {
+      "status": "PASS_ONLY_INDEPENDENTLY_ADMITTED_VALID_ROUTES_ENTER_RANKING",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-L009": {
+      "status": "PASS_INPUT_ORDER_INDEPENDENT_DETERMINISTIC_RANK_AND_RESULT_HASH",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-L010": {
+      "status": "PASS_OBJECTIVE_EXPLANATIONS_DERIVED_FROM_VERIFIED_FIXED_METRICS",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-L011": {
+      "status": "PASS_RESULT_SET_AND_PAIRWISE_MATRIX_PERSISTED_IMMUTABLY",
+      "evidence": [
+        "g00-acceptance.json",
+        "d00-acceptance.json"
+      ]
+    },
+    "AC-L012": {
+      "status": "PASS_PROFILE_TIME_AND_CANDIDATE_TERMINATION_REASON_IS_EXPLICIT",
+      "evidence": [
+        "l00-acceptance.json"
+      ]
+    },
+    "AC-J001": {
+      "status": "PASS_VALIDATE_EXECUTES_SYNCHRONOUSLY_THROUGH_REAL_GATEWAY_AND_PROVIDER",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-J002": {
+      "status": "PASS_SELECTION_EXECUTES_SYNCHRONOUSLY_THROUGH_REAL_GATEWAY_PROVIDER_AND_POSTGIS",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-J003": {
+      "status": "PASS_PLAN_USES_THE_GATEWAY_ASYNC_JOB_AND_TRUSTED_JOB_CONTEXT",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-J004": {
+      "status": "PASS_GATEWAY_JOB_REMAINS_THE_ONLY_PUBLIC_LIFECYCLE",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J005": {
+      "status": "PASS_SAME_KEY_AND_HASH_REUSE_COMPLETED_JOB_AND_RESULT",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J006": {
+      "status": "PASS_SAME_KEY_DIFFERENT_HASH_RETURNS_CONFLICT",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J007": {
+      "status": "PASS_SHORT_SKIP_LOCKED_CLAIM_WITH_SCOPE_ADVISORY_LOCK",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J008": {
+      "status": "PASS_BOUNDED_LEASE_HEARTBEAT",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J009": {
+      "status": "PASS_EXPIRED_LEASE_REAP_AND_REQUEUE",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J010": {
+      "status": "PASS_CANCEL_INCREMENTS_GENERATION_AND_FENCES_COMMIT",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J011": {
+      "status": "PASS_LATE_AND_SIMULTANEOUS_WORKER_RESULTS_CANNOT_OVERWRITE_CANCEL",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J012": {
+      "status": "PASS_EXPIRED_RUNNING_JOB_RETRIES_WITH_NEW_GENERATION",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J013": {
+      "status": "PASS_JOB_STATUS_AND_RESULT_SURVIVE_GATEWAY_POOL_RESTART",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J014": {
+      "status": "PASS_MONOTONIC_BOUNDED_PROGRESS_EVENTS",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J015": {
+      "status": "PASS_COMPUTE_OCCURS_BETWEEN_SINGLE_STATEMENT_REPOSITORY_CALLS",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-J016": {
+      "status": "PASS_SCOPE_CONCURRENCY_AND_LEASE_RESOURCES_ARE_BOUNDED",
+      "evidence": [
+        "j00-acceptance.json"
+      ]
+    },
+    "AC-P001": {
+      "status": "PASS_EXACT_FIVE_OPERATIONS_AND_FROZEN_SCHEMA_BYTE_HASHES",
+      "evidence": [
+        "p00-acceptance.json"
+      ]
+    },
+    "AC-P002": {
+      "status": "PASS_ALL_FIVE_V1_OPERATIONS_HAVE_ACCURATE_STABLE_MATURITY",
+      "evidence": [
+        "p00-acceptance.json"
+      ]
+    },
+    "AC-P003": {
+      "status": "PASS_VALIDATE_THROUGH_REAL_GATEWAY",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P004": {
+      "status": "PASS_SELECTION_THROUGH_REAL_GATEWAY",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P005": {
+      "status": "PASS_PLAN_THROUGH_GATEWAY_PROVIDER_COVERAGE_WORKER_AND_POSTGRESQL",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P006": {
+      "status": "PASS_INDEPENDENT_VERIFICATION_THROUGH_REAL_GATEWAY",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P007": {
+      "status": "PASS_ON_DEMAND_GEOJSON_EXPANSION_PRESERVES_ROUTE_SEQUENCE",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P008": {
+      "status": "PASS_TYPED_GEOMETRY_VALIDATE_PLAN_DAG",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P009": {
+      "status": "PASS_RESULT_SET_REGISTERED_AS_QUERY_RESULT",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P010": {
+      "status": "PASS_ALTERNATIVES_REGISTERED_AS_DERIVED_REFERENCES",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P011": {
+      "status": "PASS_EXPIRED_RESULT_REVALIDATES_STALE_AND_EXPANSION_IS_DENIED",
+      "evidence": [
+        "g00-acceptance.json"
+      ]
+    },
+    "AC-P012": {
+      "status": "PASS_RESULT_SET_SCHEMA_EXCLUDES_FULL_GEOMETRY_AND_EXPAND_IS_SEPARATE",
+      "evidence": [
+        "p00-acceptance.json"
+      ]
+    },
+    "AC-P013": {
+      "status": "PASS_DATA_COMPUTE_AND_ROUTING_SNAPSHOT_LOCKS_ARE_REQUIRED",
+      "evidence": [
+        "p00-acceptance.json"
+      ]
+    },
+    "AC-P014": {
+      "status": "PASS_COMPUTATION_RECEIPTS_AND_SOURCE_EVIDENCE_ARE_SEPARATE",
+      "evidence": [
+        "p00-acceptance.json"
+      ]
+    },
+    "AC-P015": {
+      "status": "PASS_NODE_ERROR_RETAINS_NODE_PROVIDER_AND_TYPED_CODE_IDENTITY",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-P016": {
+      "status": "PASS_COVERAGE_OUTAGE_DOES_NOT_BREAK_NETWORK_OR_ROUTE_PROVIDER",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-P017": {
+      "status": "PASS_NO_NETWORK_OR_ROUTE_PROVIDER_HTTP_CLIENT_DEPENDENCY",
+      "evidence": [
+        "p00-acceptance.json"
+      ]
+    },
+    "AC-P018": {
+      "status": "PASS_NO_UPPER_LAYER_DEPENDENCY",
+      "evidence": [
+        "p00-acceptance.json"
+      ]
+    },
+    "AC-T001": {
+      "status": "PASS_FOREIGN_SCOPE_REQUEST_DENIED_WITH_TYPED_NODE_ERROR",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T002": {
+      "status": "PASS_FOREIGN_RESULT_AND_ALTERNATIVE_EXPANSION_DENIED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T003": {
+      "status": "PASS_TAMPERED_CURSOR_REJECTED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T004": {
+      "status": "PASS_PARAMETERIZED_SQL_AND_RELATION_SURVIVES_INJECTION",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T005": {
+      "status": "PASS_REQUEST_PROVIDER_AND_DATABASE_URL_FIELDS_REJECTED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T006": {
+      "status": "PASS_AREA_VERTEX_LIMIT_ENFORCED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T007": {
+      "status": "PASS_100000_OBLIGATION_CONTRACT_AND_RUNTIME_LIMIT_ENFORCED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T008": {
+      "status": "PASS_100000_MATRIX_CELL_BUDGET_ENFORCED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T009": {
+      "status": "PASS_64_GENERATION_CANDIDATE_LIMIT_ENFORCED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T010": {
+      "status": "PASS_GATEWAY_OUTPUT_BYTE_LIMIT_ENFORCED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T011": {
+      "status": "PASS_AUDIT_REDACTS_GEOMETRY_TOKEN_AND_METADATA",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T012": {
+      "status": "PASS_SMALL_REAL_POSTGIS_GATEWAY_WORKER_PROFILE_MEASURED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T013": {
+      "status": "PASS_MEDIUM_20_OBLIGATION_PROFILE_LATENCY_AND_MEMORY_MEASURED",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T014": {
+      "status": "PASS_NO_MATERIAL_V05_NETWORK_ROUTE_S_M_REGRESSION",
+      "evidence": [
+        "c00-acceptance.json"
+      ]
+    },
+    "AC-T015": {
+      "status": "PASS_DATABASE_RESTART_GATEWAY_WORKER_RESULT_RECOVERY",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T016": {
+      "status": "PASS_CONCURRENT_DUPLICATES_ONE_JOB_ONE_REQUEST_ONE_RESULT",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T017": {
+      "status": "PASS_MEDIUM_HEAP_DELTA_21503184_AND_ROUTE_SEGMENT_BOUND",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-T018": {
+      "status": "PASS_SOLVE_VERIFY_PUBLISH_CANCEL_LATE_WRITER_FENCING",
+      "evidence": [
+        "t00-acceptance.json"
+      ]
+    },
+    "AC-F001": {
+      "status": "PASS_README_ADR_RUNBOOK_DESCRIBE_EXACT_STABLE_SCOPE",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F002": {
+      "status": "PASS_MULTI_ROUTE_EITHER_OR_TOOLS_DISPATCH_NONCLAIMS_EXPLICIT",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F003": {
+      "status": "PASS_REFERENCE_ONLY_UNSPECIFIED_LICENSE_BOUNDARY_RETAINED",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F004": {
+      "status": "PASS_REFERENCE_SOURCE_DEPENDENCIES_DIST_COVERAGE_EXCLUDED",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F005": {
+      "status": "PASS_19_PUBLIC_SCHEMAS_MANIFEST_OPENAPI_EXACT_A01_BYTES",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F006": {
+      "status": "PASS_FRESH_V04_AND_EXACT_V05_TO_V06_MIGRATION_MATRIX",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F008": {
+      "status": "PASS_VERSION_PACKAGE_LOCK_CHANGELOG_AGREE_0_6_0",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F009": {
+      "status": "PASS_NETWORK_READY_RETAINED",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F010": {
+      "status": "PASS_ROUTING_READY_RETAINED",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F011": {
+      "status": "PASS_ROAD_COVERAGE_READY_EMITTED",
+      "evidence": [
+        "f00-acceptance.json"
+      ]
+    },
+    "AC-F007": {
+      "status": "PASS_ALL_226_REQUIRED_ROWS_HAVE_PASS_EVIDENCE",
+      "evidence": [
+        "a00-acceptance.json",
+        "a01-acceptance.json",
+        "b00-acceptance.json",
+        "b01-acceptance.json",
+        "c00-acceptance.json",
+        "d00-acceptance.json",
+        "e00-acceptance.json",
+        "f00-acceptance.json",
+        "g00-acceptance.json",
+        "j00-acceptance.json",
+        "l00-acceptance.json",
+        "p00-acceptance.json",
+        "r00-acceptance.json",
+        "r01-acceptance.json",
+        "s00-acceptance.json",
+        "s01-acceptance.json",
+        "s02-acceptance.json",
+        "s03-acceptance.json",
+        "t00-acceptance.json",
+        "v00-acceptance.json"
+      ]
+    },
+    "AC-F012": {
+      "status": "PASS_EXACT_LOCAL_TRACKING_LS_REMOTE_AND_DRAFT_PR_CONTENT_SHA",
+      "evidence": [
+        "5d0a07811f96b974c10c18bec606b0b2e5924127"
+      ]
+    },
+    "AC-F013": {
+      "status": "PASS_ZERO_REQUIRED_FAILURES_OR_BLOCKS_BEFORE_REVIEW_READINESS_DRAFT_RETAINED_BY_DELIVERY_INSTRUCTION",
+      "evidence": [
+        "https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/4"
+      ]
+    },
+    "AC-F014": {
+      "status": "PASS_NO_MERGE_TAG_RELEASE_OR_DEPLOY_PERFORMED",
+      "evidence": [
+        "PROJECT_STATUS.md",
+        "reports/gowm-v0.6/f00-runtime-f00-docs-20260826t0130.json"
+      ]
+    }
+  }
+}

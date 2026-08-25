@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-solver-diagnostics",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "solverVersion",
+    "algorithmFamily",
+    "exactness",
+    "requiredComponentCount",
+    "candidatesGenerated",
+    "candidatesVerified",
+    "terminatedBy",
+    "elapsedMs"
+  ],
+  "properties": {
+    "solverVersion": {
+      "type": "string"
+    },
+    "algorithmFamily": {
+      "enum": [
+        "CLOSED_DCPP",
+        "OPEN_DCPP",
+        "FIXED_RPP",
+        "BOTH_DIRECTIONS_RPP"
+      ]
+    },
+    "exactness": {
+      "enum": [
+        "EXACT",
+        "BOUNDED_HEURISTIC"
+      ]
+    },
+    "requiredComponentCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "imbalanceCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "connectorPathCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "candidatesGenerated": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "candidatesVerified": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "terminatedBy": {
+      "enum": [
+        "PROFILES_COMPLETE",
+        "TIME_LIMIT",
+        "CANDIDATE_LIMIT",
+        "NO_FEASIBLE_PLAN",
+        "CANCELLED"
+      ]
+    },
+    "elapsedMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "resourceMetrics": {
+      "type": "object"
+    }
+  }
+}

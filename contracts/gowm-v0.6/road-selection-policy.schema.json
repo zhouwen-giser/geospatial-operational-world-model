@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:road-selection-policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mode",
+    "roadClasses",
+    "serviceMode",
+    "requiredPasses",
+    "minimumSegmentLengthMm"
+  ],
+  "properties": {
+    "mode": {
+      "enum": [
+        "FULLY_COVERED_EDGE",
+        "INTERSECTING_COMPLETE_EDGE",
+        "CLIPPED_INSIDE_AREA",
+        "MANUAL_OBLIGATIONS"
+      ]
+    },
+    "roadClasses": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 64
+      }
+    },
+    "serviceMode": {
+      "enum": [
+        "FIXED_DIRECTION",
+        "BOTH_DIRECTIONS"
+      ]
+    },
+    "fixedDirectionSource": {
+      "enum": [
+        "MANUAL",
+        "SOURCE_FEATURE_ATTRIBUTE",
+        "APPROVED_POLICY"
+      ]
+    },
+    "requiredPasses": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "minimumSegmentLengthMm": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "boundaryToleranceMm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100000
+    },
+    "manualObligations": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "$ref": "road-service-obligation.schema.json"
+      }
+    },
+    "selectionPolicyVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "MANUAL_OBLIGATIONS"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "manualObligations"
+        ]
+      }
+    }
+  ]
+}
