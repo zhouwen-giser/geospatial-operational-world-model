@@ -48,6 +48,8 @@
     "validate:gowm-v06-boundaries": "node validation/architecture/validate-road-coverage-boundaries.mjs",
     "validate:gowm-v06-database": "node validation/scripts/coverage-schema-runtime-gate.mjs",
     "validate:gowm-v06-gateway": "npm run build && node validation/scripts/coverage-gateway-runtime-gate.mjs",
+    "validate:gowm-v06-security-recovery": "npm run build && node validation/scripts/coverage-security-performance-recovery-gate.mjs",
+    "validate:gowm-v06-compatibility": "npm run build && node validation/scripts/coverage-compatibility-runtime-gate.mjs",
     "validate:gowm-v06-selection": "npm run build && node validation/scripts/coverage-selection-runtime-gate.mjs",
     "validate:gowm-v06-canonical-problem": "npm run build && node validation/scripts/coverage-canonical-problem-gate.mjs",
     "validate:gowm-v06-endpoints": "npm run build && node validation/scripts/coverage-endpoint-runtime-gate.mjs",

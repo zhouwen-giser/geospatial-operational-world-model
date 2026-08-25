@@ -1,6 +1,7 @@
 import { getContractSchema, getContractSchemaHash, type CapabilityDescriptor, type CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { createProviderRuntime, sha256, type ProviderOperation, type ProviderRuntime } from "../../../../packages/platform/provider-sdk/src/index.js";
 import type { RoadCoverageEngine } from "./engine.js";
+import { ROAD_COVERAGE_RESOURCE_LIMITS } from "./postgres-engine.js";
 
 export type RoadCoverageOperationId =
   | "coverage.road.validate"
@@ -148,6 +149,7 @@ function operation(lock: OperationLock, engine: RoadCoverageEngine): ProviderOpe
       maximumOutputBytes: 16_777_216,
       maximumRows: 1_000_000,
       maximumCandidates: 100_000,
+      maximumVertices: ROAD_COVERAGE_RESOURCE_LIMITS.maximumAreaVertices,
       maximumBatchItems: 1_000
     },
     snapshotPolicy: { dataSnapshot: "REQUIRED", computeSnapshot: "REQUIRED" },
@@ -178,7 +180,7 @@ function operation(lock: OperationLock, engine: RoadCoverageEngine): ProviderOpe
       methodId: `gowm-road-coverage/${lock.operationId}`,
       methodVersion: "1.0",
       artifacts: [
-        { kind: "DATABASE", name: "gowm_network_v1+coverage_planner", version: "migration-052" },
+        { kind: "DATABASE", name: "gowm_network_v1+coverage_planner", version: "migration-053" },
         { kind: "PACKAGE", name: "road-coverage-planning-core+road-coverage-verifier-core", version: "0.6.0" }
       ]
     },
@@ -189,4 +191,10 @@ function operation(lock: OperationLock, engine: RoadCoverageEngine): ProviderOpe
 }
 
 export type { RoadCoverageEngine } from "./engine.js";
-export { PostgresRoadCoverageEngine, type PostgresRoadCoverageEngineOptions } from "./postgres-engine.js";
+export {
+  PostgresRoadCoverageEngine,
+  ROAD_COVERAGE_RESOURCE_LIMITS,
+  type CoverageRuntimeStage,
+  type CoverageRuntimeStageMeasurement,
+  type PostgresRoadCoverageEngineOptions
+} from "./postgres-engine.js";

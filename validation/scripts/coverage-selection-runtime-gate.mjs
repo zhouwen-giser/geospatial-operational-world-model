@@ -67,7 +67,7 @@ function psql(sql, label, targetDatabase = database, extraArgs = []) {
 async function migrationBatch() {
   const files = (await readdir(resolve(repositoryRoot, "database/migrations")))
     .filter((name) => /^\d{3}_.+\.sql$/u.test(name)).sort();
-  if (files.length !== 52 || files.at(-1)?.slice(0, 3) !== "052") throw new Error("B00 expects migrations 001-052");
+  if (files.length !== 53 || files.at(-1)?.slice(0, 3) !== "053") throw new Error("B00 expects migrations 001-053");
   const parts = [];
   for (const file of files) {
     const template = await readFile(resolve(repositoryRoot, "database/migrations", file), "utf8");
@@ -78,7 +78,7 @@ async function migrationBatch() {
     const checksum = createHash("sha256").update(sql).digest("hex");
     parts.push(`\\echo APPLY_MIGRATION ${file}\n${sql}\nINSERT INTO schema_migration(version,checksum) VALUES ('${file}','${checksum}');`);
   }
-  psql(parts.join("\n"), "migration-batch-001-052");
+  psql(parts.join("\n"), "migration-batch-001-053");
 }
 
 async function persist() {

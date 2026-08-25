@@ -21,8 +21,9 @@ if (!container || !/^[A-Za-z0-9][A-Za-z0-9_.-]{2,127}$/u.test(container)) {
 const databaseSuffix = runId.replaceAll("-", "_");
 const freshDatabase = `gowm_v06_fresh_${databaseSuffix}`;
 const upgradeDatabase = `gowm_v06_upgrade_${databaseSuffix}`;
-const databases = [freshDatabase, upgradeDatabase];
-if (databases.some((database) => !/^gowm_v06_(fresh|upgrade)_[a-z0-9_]{3,32}$/u.test(database))) {
+const v04UpgradeDatabase = `gowm_v06_v04_${databaseSuffix}`;
+const databases = [freshDatabase, upgradeDatabase, v04UpgradeDatabase];
+if (databases.some((database) => !/^gowm_v06_(fresh|upgrade|v04)_[a-z0-9_]{3,32}$/u.test(database))) {
   throw new Error("derived database names escaped the isolated gowm_v06 namespace");
 }
 
@@ -30,7 +31,7 @@ const evidence = {
   schemaVersion: "1.0",
   runId,
   container,
-  databases: { fresh: freshDatabase, upgrade: upgradeDatabase },
+  databases: { fresh: freshDatabase, v05Upgrade: upgradeDatabase, v04Upgrade: v04UpgradeDatabase },
   startedAt: new Date().toISOString(),
   status: "RUNNING",
   commands: [],
@@ -112,6 +113,23 @@ async function applyMigrations(database, migrations) {
     `migration-batch:${migrations.at(0)}..${migrations.at(-1)}`);
 }
 
+async function verifyChecksumReplay(database, migrations) {
+  const expected = [];
+  for (const file of migrations) {
+    const source = await readFile(resolve(repositoryRoot, "database/migrations", file), "utf8");
+    expected.push([file, createHash("sha256").update(substituteMigration(source)).digest("hex")]);
+  }
+  const values = expected.map(([file, checksum]) => `('${file}','${checksum}')`).join(",");
+  const skipped = runPsql(database, `WITH expected(version,checksum) AS (VALUES ${values})
+    SELECT count(*) FROM expected
+    JOIN schema_migration applied USING(version)
+    WHERE applied.checksum=expected.checksum;`, "checksum-replay-skip", ["--tuples-only", "--no-align"]);
+  if (skipped !== String(migrations.length)) {
+    throw new Error(`checksum replay did not skip all ${migrations.length} migrations in ${database}: ${skipped}`);
+  }
+  return Number(skipped);
+}
+
 async function runAssertions(database, assertions) {
   const batch = [];
   for (const file of assertions) {
@@ -167,11 +185,11 @@ try {
   const assertions = (await readdir(resolve(repositoryRoot, "database/tests")))
     .filter((name) => /^\d{3}_.+_assertions\.sql$/u.test(name))
     .sort();
-  if (migrations.length !== 52 || migrations.at(-1)?.slice(0, 3) !== "052") {
-    throw new Error(`expected the current v0.6 migration set 001-052, received ${migrations.length}`);
+  if (migrations.length !== 53 || migrations.at(-1)?.slice(0, 3) !== "053") {
+    throw new Error(`expected the current v0.6 migration set 001-053, received ${migrations.length}`);
   }
-  if (assertions.length !== 37 || assertions.at(-1)?.slice(0, 3) !== "037") {
-    throw new Error(`expected the current v0.6 assertion set 001-037, received ${assertions.length}`);
+  if (assertions.length !== 38 || assertions.at(-1)?.slice(0, 3) !== "038") {
+    throw new Error(`expected the current v0.6 assertion set 001-038, received ${assertions.length}`);
   }
 
   createDatabase(freshDatabase);
@@ -191,6 +209,24 @@ try {
   await applyMigrations(upgradeDatabase, coverageMigrations);
   await runAssertions(upgradeDatabase, assertions);
 
+  createDatabase(v04UpgradeDatabase);
+  const v04Migrations = migrations.filter((name) => Number(name.slice(0, 3)) <= 32);
+  const postV04Migrations = migrations.filter((name) => Number(name.slice(0, 3)) >= 33);
+  await applyMigrations(v04UpgradeDatabase, v04Migrations);
+  runPsql(
+    v04UpgradeDatabase,
+    "CREATE TABLE gowm_v06_v04_preservation_probe(id integer PRIMARY KEY, marker text NOT NULL); " +
+      "INSERT INTO gowm_v06_v04_preservation_probe VALUES (1,'v0.4-preserved');",
+    "create-v04-preservation-probe"
+  );
+  await applyMigrations(v04UpgradeDatabase, postV04Migrations);
+  await runAssertions(v04UpgradeDatabase, assertions);
+
+  const checksumReplaySkips = {};
+  for (const database of databases) {
+    checksumReplaySkips[database] = await verifyChecksumReplay(database, migrations);
+  }
+
   for (const database of databases) {
     expectPsqlFailure(
       database,
@@ -208,7 +244,7 @@ try {
     if (residue !== "0") throw new Error(`failed migration left residue in ${database}`);
   }
 
-  const summarySql = (upgrade) => `SELECT jsonb_build_object(
+  const summarySql = (markerExpression) => `SELECT jsonb_build_object(
     'migrationCount',(SELECT count(*) FROM schema_migration),
     'coverageTables',(SELECT count(*) FROM information_schema.tables WHERE table_schema='coverage_planner'),
     'coverageFunctions',(SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='coverage_planner'),
@@ -216,18 +252,22 @@ try {
       WHERE n.nspname='coverage_planner' AND has_function_privilege('coverage_planner_provider',p.oid,'EXECUTE')),
     'providerDirectMutation',has_table_privilege('coverage_planner_provider','coverage_planner.coverage_request','INSERT,UPDATE,DELETE'),
     'providerNetworkMutation',has_table_privilege('coverage_planner_provider','public.network_arc','INSERT,UPDATE,DELETE'),
-    'upgradeMarker',${upgrade ? "(SELECT marker FROM gowm_v06_upgrade_preservation_probe WHERE id=1)" : "NULL"}
+    'upgradeMarker',${markerExpression}
   );`;
   const freshSummary = parseJsonOutput(
-    runPsql(freshDatabase, summarySql(false), "fresh-summary", ["--tuples-only", "--no-align"]),
+    runPsql(freshDatabase, summarySql("NULL"), "fresh-summary", ["--tuples-only", "--no-align"]),
     "fresh summary"
   );
   const upgradeSummary = parseJsonOutput(
-    runPsql(upgradeDatabase, summarySql(true), "upgrade-summary", ["--tuples-only", "--no-align"]),
+    runPsql(upgradeDatabase, summarySql("(SELECT marker FROM gowm_v06_upgrade_preservation_probe WHERE id=1)"), "v0.5-upgrade-summary", ["--tuples-only", "--no-align"]),
     "upgrade summary"
   );
-  for (const [kind, summary] of [["fresh", freshSummary], ["upgrade", upgradeSummary]]) {
-    if (summary.migrationCount !== 52 || summary.coverageTables !== 16 || summary.coverageFunctions !== 15 ||
+  const v04UpgradeSummary = parseJsonOutput(
+    runPsql(v04UpgradeDatabase, summarySql("(SELECT marker FROM gowm_v06_v04_preservation_probe WHERE id=1)"), "v0.4-upgrade-summary", ["--tuples-only", "--no-align"]),
+    "v0.4 upgrade summary"
+  );
+  for (const [kind, summary] of [["fresh", freshSummary], ["v0.5-upgrade", upgradeSummary], ["v0.4-upgrade", v04UpgradeSummary]]) {
+    if (summary.migrationCount !== 53 || summary.coverageTables !== 16 || summary.coverageFunctions !== 15 ||
         summary.providerExecutableFunctions !== 12 ||
         summary.providerDirectMutation !== false || summary.providerNetworkMutation !== false) {
       throw new Error(`${kind} database summary failed the D00 invariant set: ${JSON.stringify(summary)}`);
@@ -236,11 +276,16 @@ try {
   if (upgradeSummary.upgradeMarker !== "v0.5-preserved") {
     throw new Error("upgrade database did not preserve the v0.5 marker");
   }
+  if (v04UpgradeSummary.upgradeMarker !== "v0.4-preserved") {
+    throw new Error("upgrade database did not preserve the v0.4 marker");
+  }
   evidence.summary = {
     migrations: migrations.length,
     assertions: assertions.length,
     fresh: freshSummary,
-    upgrade: upgradeSummary,
+    v05Upgrade: upgradeSummary,
+    v04Upgrade: v04UpgradeSummary,
+    checksumReplaySkips,
     deliberateFailureRollback: true
   };
   evidence.status = "PASS";
@@ -265,4 +310,4 @@ try {
 }
 
 if (failure) throw failure;
-process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=52 assertions=37\n`);
+process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=53 assertions=38\n`);

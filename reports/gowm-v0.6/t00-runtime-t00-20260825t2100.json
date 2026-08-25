@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-20260825t2100",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-20260825t2100-postgres",
+  "startedAt": "2026-08-25T05:21:23.931Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-20260825t2100-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 58
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-20260825t2100-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 376
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-20260825t2100-postgres"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 60085
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-20260825t2100-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 517
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-20260825t2100-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "Error: gowm-v06-t00-20260825t2100-postgres did not become healthy: running\n    at waitHealthy (file:///D:/Code/agent-app/geospatial-operational-world-model/validation/scripts/coverage-security-performance-recovery-gate.mjs:62:9)\n    at async file:///D:/Code/agent-app/geospatial-operational-world-model/validation/scripts/coverage-security-performance-recovery-gate.mjs:102:3"
+  ],
+  "finishedAt": "2026-08-25T05:22:24.968Z"
+}

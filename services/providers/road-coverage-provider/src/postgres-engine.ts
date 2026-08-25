@@ -45,7 +45,31 @@ export interface PostgresRoadCoverageEngineOptions {
   resultTtlMs?: number;
   leaseSeconds?: number;
   workerId?: string;
+  observeStage?: (measurement: CoverageRuntimeStageMeasurement) => void;
 }
+
+export type CoverageRuntimeStage =
+  | "OBLIGATION_SELECTION"
+  | "ENDPOINT_RESOLUTION"
+  | "CONNECTOR_MATRIX_SEARCH"
+  | "SOLVER_TOTAL"
+  | "INDEPENDENT_VERIFIER"
+  | "RESULT_PERSIST"
+  | "GEOJSON_EXPAND";
+
+export interface CoverageRuntimeStageMeasurement {
+  stage: CoverageRuntimeStage;
+  elapsedMs: number;
+  units: number;
+}
+
+export const ROAD_COVERAGE_RESOURCE_LIMITS = {
+  maximumAreaVertices: 50_000,
+  maximumObligations: 100_000,
+  maximumMatrixCells: 100_000,
+  maximumGenerationCandidates: 64,
+  maximumRouteSegments: 1_000_000
+} as const;
 
 /**
  * The production road-coverage engine composes the versioned network read contract,
@@ -58,6 +82,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
   readonly #resultTtlMs: number;
   readonly #leaseSeconds: number;
   readonly #workerId: string;
+  readonly #observeStage: (measurement: CoverageRuntimeStageMeasurement) => void;
   readonly #network: NetworkRepository;
   readonly #selection: PostgresCoverageSelectionRepository;
   readonly #endpoint: PostgresCoverageEndpointRepository;
@@ -68,6 +93,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     this.#resultTtlMs = positive(options.resultTtlMs ?? 300_000, "resultTtlMs");
     this.#leaseSeconds = positive(options.leaseSeconds ?? 300, "leaseSeconds");
     this.#workerId = options.workerId?.trim() || "road-coverage-provider";
+    this.#observeStage = options.observeStage ?? (() => undefined);
     const pool = sqlPool(options.pool);
     this.#network = new NetworkRepository({ pool: pool as NetworkSqlPool, now: this.#now });
     this.#selection = new PostgresCoverageSelectionRepository({ pool });
@@ -77,6 +103,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
 
   async validate(input: unknown, context: ProviderHandlerContext): Promise<ProviderOperationResult<unknown>> {
     const request = input as GowmV06RoadCoverageRequest;
+    assertRequestResources(request);
     const scope = trustedScope(context);
     const network = await this.#network.loadPinned(request.routingSnapshot, scope, context.deadline.remainingMs());
     const violations: Array<{ code: string; message: string; path: string }> = [];
@@ -106,14 +133,18 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
 
   async selectObligations(input: unknown, context: ProviderHandlerContext): Promise<ProviderOperationResult<unknown>> {
     const request = input as GowmV06RoadCoverageRequest;
+    assertRequestResources(request);
     const scope = trustedScope(context);
     const network = await this.#network.loadPinned(request.routingSnapshot, scope, context.deadline.remainingMs());
+    const startedAt = performance.now();
     const selection = await this.#select(request, scope);
+    this.#measure("OBLIGATION_SELECTION", startedAt, selection.obligationSet.obligationCount);
     return completed(selection.obligationSet, network, selection.receipt.candidateCount, selection.obligationSet.obligationCount);
   }
 
   async plan(input: unknown, context: ProviderHandlerContext): Promise<ProviderOperationResult<unknown>> {
     const request = input as GowmV06RoadCoverageRequest;
+    assertRequestResources(request);
     const scope = trustedScope(context);
     const gatewayJobId = context.gateway?.gatewayJobId;
     const gatewayQueryId = context.gateway?.gatewayQueryId;
@@ -143,8 +174,11 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     if (claim === null) throw new ProviderProtocolError("OVERLOADED", "coverage request is already leased", { retryable: true });
     await accepted(this.#async.heartbeat(claim, leaseOwner, this.#leaseSeconds, "SELECTING", 100_000, { graphArcCount: network.arcs.length }), "selection heartbeat");
 
+    let startedAt = performance.now();
     const selection = await this.#select(request, scope);
+    this.#measure("OBLIGATION_SELECTION", startedAt, selection.obligationSet.obligationCount);
     const area = resolvedArea(request.area);
+    startedAt = performance.now();
     const endpoints = await resolveCoverageEndpoints(this.#endpoint, {
       dataScopeKey: scope.dataScopeKey,
       datasetScopeKey: scope.datasetScopeKey,
@@ -152,6 +186,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       area,
       policy: request.endpointPolicy
     });
+    this.#measure("ENDPOINT_RESOLUTION", startedAt, endpoints.entryStates.length + endpoints.exitStates.length);
     const problem = buildCanonicalCoverageProblem({
       routingSnapshot: request.routingSnapshot,
       startState: endpoints.startState,
@@ -164,8 +199,8 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       objective: request.objective,
       budgets: {
         timeLimitMs: Math.min(request.timeLimitMs, Math.max(100, context.deadline.remainingMs())),
-        maximumCandidates: 64,
-        maximumMatrixCells: 100_000
+        maximumCandidates: request.alternativePolicy.maximumGenerationCandidates ?? ROAD_COVERAGE_RESOURCE_LIMITS.maximumGenerationCandidates,
+        maximumMatrixCells: ROAD_COVERAGE_RESOURCE_LIMITS.maximumMatrixCells
       }
     });
     await this.#async.persistProblem(claim, leaseOwner, digest(problem.problemHash), json(problem));
@@ -176,6 +211,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     const travelPolicy: CoverageTravelPolicy = { profileKey: request.routingSnapshot.travelProfileVersion, requiredAccessMask: 0 };
     const candidates: VerifiedAlternativeCandidate[] = [];
     for (const profile of request.alternativePolicy.profiles) {
+      startedAt = performance.now();
       const solved = solveStrictCoverageRoute(problem, networkArcs, {
         objective: objective(profile),
         travelPolicy,
@@ -184,6 +220,14 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
         serviceMode: request.selectionPolicy.serviceMode,
         seed: candidates.length
       });
+      const solverElapsedMs = performance.now() - startedAt;
+      this.#observeStage({
+        stage: "CONNECTOR_MATRIX_SEARCH",
+        elapsedMs: solved.diagnostics.elapsedMs,
+        units: metric(solved.diagnostics.resourceMetrics?.matrixCellCount)
+      });
+      this.#observeStage({ stage: "SOLVER_TOTAL", elapsedMs: solverElapsedMs, units: solved.diagnostics.candidatesGenerated });
+      startedAt = performance.now();
       const verification = verifyCoverageRoute({
         problem,
         candidate: solved.route,
@@ -193,7 +237,9 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
         travelPolicy,
         turnRules
       });
+      this.#measure("INDEPENDENT_VERIFIER", startedAt, solved.route.segments.length);
       const admitted = admitVerifiedCoverageRoute(solved.route, verification);
+      startedAt = performance.now();
       await this.#async.persistCandidate(claim, leaseOwner, {
         problemHash: digest(problem.problemHash),
         objectiveProfile: profile,
@@ -202,6 +248,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
         solverDiagnostics: json({ ...solved.diagnostics, candidatesVerified: 1 }),
         verification: json(verification)
       });
+      this.#measure("RESULT_PERSIST", startedAt, solved.route.segments.length);
       candidates.push({ admitted, objectiveProfile: profile, solverDiagnostics: { ...solved.diagnostics, candidatesVerified: 1 } });
     }
     await accepted(this.#async.heartbeat(claim, leaseOwner, this.#leaseSeconds, "VERIFYING", 800_000, { admittedCandidateCount: candidates.length }), "verification heartbeat");
@@ -217,6 +264,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       validUntil: new Date(createdAt.getTime() + this.#resultTtlMs).toISOString()
     });
     await accepted(this.#async.heartbeat(claim, leaseOwner, this.#leaseSeconds, "PUBLISHING", 950_000, { selectedAlternativeCount: result.alternatives.length }), "publication heartbeat");
+    startedAt = performance.now();
     await accepted(this.#async.publishResult(claim, leaseOwner, {
       referenceKey: result.referenceKey.id,
       status: result.status as "SUCCEEDED" | "PARTIAL" | "NO_FEASIBLE_PLAN",
@@ -224,6 +272,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       validUntil: result.validUntil,
       result: json(result)
     }), "result publication");
+    this.#measure("RESULT_PERSIST", startedAt, result.alternatives.length);
     return completed(result, network, network.arcs.length, result.alternatives.length);
   }
 
@@ -253,11 +302,13 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
   async expandGeoJson(input: unknown, context: ProviderHandlerContext): Promise<ProviderOperationResult<unknown>> {
     const request = input as GowmV06CoverageExpandRequest;
     const scope = trustedScope(context);
+    const startedAt = performance.now();
     const artifact = await this.#async.getArtifact(request.resultSetReferenceKey.id, scope.dataScopeKey, scope.datasetScopeKey);
     if (artifact === null) throw new ProviderProtocolError("VERSION_NOT_FOUND", "coverage result artifact is unavailable in scope");
     const result = artifact.result as GowmV06CoverageResultSet;
     const network = await this.#network.loadPinned(result.routingSnapshot, scope, context.deadline.remainingMs());
     const value = await this.#async.expandGeoJson(request.resultSetReferenceKey.id, request.alternativeId, scope.dataScopeKey, scope.datasetScopeKey);
+    this.#measure("GEOJSON_EXPAND", startedAt, Array.isArray(value.features) ? value.features.length : 0);
     return completed(value, network, Array.isArray(value.features) ? value.features.length : 0, 1);
   }
 
@@ -270,6 +321,10 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       policy: request.selectionPolicy,
       maximumSelectionCandidates: 100_000
     });
+  }
+
+  #measure(stage: CoverageRuntimeStage, startedAt: number, units: number): void {
+    this.#observeStage({ stage, elapsedMs: Math.max(0, performance.now() - startedAt), units });
   }
 }
 
@@ -343,6 +398,36 @@ function isArea(value: GowmV06RoadCoverageRequest["area"]): value is GeoJsonArea
   return "type" in value && (value.type === "Polygon" || value.type === "MultiPolygon");
 }
 
+function assertRequestResources(request: GowmV06RoadCoverageRequest): void {
+  if (isArea(request.area)) {
+    const vertices = coordinateCount(request.area.coordinates);
+    if (vertices > ROAD_COVERAGE_RESOURCE_LIMITS.maximumAreaVertices) {
+      throw new ProviderProtocolError("BUDGET_EXCEEDED", "coverage area exceeds the registered vertex limit", {
+        details: { metric: "vertices", consumed: vertices, limit: ROAD_COVERAGE_RESOURCE_LIMITS.maximumAreaVertices }
+      });
+    }
+  }
+  const obligations = request.selectionPolicy.manualObligations?.length ?? 0;
+  if (obligations > ROAD_COVERAGE_RESOURCE_LIMITS.maximumObligations) {
+    throw new ProviderProtocolError("BUDGET_EXCEEDED", "manual obligations exceed the registered limit");
+  }
+  const candidates = request.alternativePolicy.maximumGenerationCandidates ?? ROAD_COVERAGE_RESOURCE_LIMITS.maximumGenerationCandidates;
+  if (candidates > ROAD_COVERAGE_RESOURCE_LIMITS.maximumGenerationCandidates) {
+    throw new ProviderProtocolError("BUDGET_EXCEEDED", "alternative candidate budget exceeds the registered limit");
+  }
+}
+
+function coordinateCount(value: unknown): number {
+  if (!Array.isArray(value)) return 0;
+  if (value.length >= 2 && value.every((item) => typeof item === "number")) return 1;
+  let count = 0;
+  for (const item of value) {
+    count += coordinateCount(item);
+    if (count > ROAD_COVERAGE_RESOURCE_LIMITS.maximumAreaVertices) return count;
+  }
+  return count;
+}
+
 function completed(value: unknown, network: LoadedNetwork, rows: number, candidates: number): ProviderOperationResult<unknown> {
   return { status: "COMPLETED", value, dataSnapshot: network.dataSnapshot, consumption: { rows, candidates } };
 }
@@ -351,6 +436,7 @@ function alternatives(value: JsonObject): unknown[] { return Array.isArray(value
 function json(value: unknown): JsonObject { return value as JsonObject; }
 function digest(value: string): `sha256:${string}` { return value as `sha256:${string}`; }
 function positive(value: number, name: string): number { if (!Number.isSafeInteger(value) || value < 1) throw new Error(`${name} must be a positive integer`); return value; }
+function metric(value: unknown): number { return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : 0; }
 async function accepted(value: Promise<boolean>, stage: string): Promise<void> { if (!await value) throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", `${stage} was rejected by the coverage authority`); }
 
 function expiredReport(report: GowmV06CoverageVerificationReport): GowmV06CoverageVerificationReport {

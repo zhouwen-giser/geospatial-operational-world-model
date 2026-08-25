@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-20260825t2200",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-20260825t2200-postgres",
+  "startedAt": "2026-08-25T05:39:31.961Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-20260825t2200-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 56
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-20260825t2200-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 415
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-20260825t2200-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 5470
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1150
+    },
+    {
+      "command": [
+        "coverage-small-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 144
+    },
+    {
+      "command": [
+        "coverage-medium-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 139
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-before",
+        "gowm-v06-t00-20260825t2200-postgres"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 5074
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-20260825t2200-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 507
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-20260825t2200-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:437\n    throw new Error(`${name} failed: ${JSON.stringify(details)}`); checks[name] = true; }\n          ^\n\nError: networkUnaffected failed: {\"status\":\"AMBIGUOUS\",\"routingSnapshot\":{\"networkDatasetVersion\":\"dataset-v1\",\"graphVersion\":\"graph-v1\",\"travelProfileVersion\":\"travel-v1\",\"costProfileVersion\":\"cost-v1\",\"graphContentHash\":\"sha256:1111111111111111111111111111111111111111111111111111111111111111\",\"costContentHash\":\"sha256:2222222222222222222222222222222222222222222222222222222222222222\"},\"candidates\":[{\"state\":{\"arcKey\":\"arc_1111111111111111111111111111111111111111111111111111111111111111\",\"fractionPpm\":1000000,\"direction\":\"FORWARD\",\"headingMicrodegrees\":90000000,\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"}},\"distanceMm\":0,\"candidateScore\":0},{\"state\":{\"arcKey\":\"arc_2222222222222222222222222222222222222222222222222222222222222222\",\"fractionPpm\":0,\"direction\":\"FORWARD\",\"headingMicrodegrees\":90000000,\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_22222222222222222222222222222222\",\"version\":\"dataset-v1\"}},\"distanceMm\":0,\"candidateScore\":0},{\"state\":{\"arcKey\":\"arc_3333333333333333333333333333333333333333333333333333333333333333\",\"fractionPpm\":0,\"direction\":\"FORWARD\",\"headingMicrodegrees\":45000000,\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_33333333333333333333333333333333\",\"version\":\"dataset-v1\"}},\"distanceMm\":0,\"candidateScore\":0},{\"state\":{\"arcKey\":\"arc_6666666666666666666666666666666666666666666666666666666666666666\",\"fractionPpm\":1000000,\"direction\":\"FORWARD\",\"headingMicrodegrees\":270000000,\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_66666666666666666666666666666666\",\"version\":\"dataset-v1\"}},\"distanceMm\":0,\"candidateScore\":0},{\"state\":{\"arcKey\":\"arc_4444444444444444444444444444444444444444444444444444444444444444\",\"fractionPpm\":0,\"direction\":\"FORWARD\",\"headingMicrodegrees\":116565051,\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_44444444444444444444444444444444\",\"version\":\"dataset-v1\"}},\"distanceMm\":156903,\"candidateScore\":156903},{\"state\":{\"arcKey\":\"arc_5555555555555555555555555555555555555555555555555555555555555555\",\"fractionPpm\":0,\"direction\":\"FORWARD\",\"headingMicrodegrees\":90000000,\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_55555555555555555555555555555555\",\"version\":\"dataset-v1\"}},\"distanceMm\":333958,\"candidateScore\":333958}]}\n    at check (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:437:11)\n    at providerOutageIsolation (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:281:5)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async beforeRestart (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:137:5)\n    at async file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:51:9\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T05:39:44.931Z"
+}

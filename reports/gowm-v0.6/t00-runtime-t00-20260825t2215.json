@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-20260825t2215",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-20260825t2215-postgres",
+  "startedAt": "2026-08-25T05:40:28.490Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-20260825t2215-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 59
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-20260825t2215-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 380
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-20260825t2215-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 5418
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1068
+    },
+    {
+      "command": [
+        "coverage-small-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 137
+    },
+    {
+      "command": [
+        "coverage-medium-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 143
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-before",
+        "gowm-v06-t00-20260825t2215-postgres"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 4780
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-20260825t2215-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 559
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-20260825t2215-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:437\n    throw new Error(`${name} failed: ${JSON.stringify(details)}`); checks[name] = true; }\n          ^\n\nError: concurrentDuplicateResult failed: {\"queryPlanVersion\":\"2.0\",\"queryId\":\"query-plan-duplicate-t00-20260825t2215\",\"jobId\":\"query_job_c0be2c7fcce445e4806a4afad634a136\",\"status\":\"FAILED\",\"nodes\":[{\"nodeId\":\"plan\",\"operation\":{\"operationId\":\"coverage.road.plan\",\"inputSchemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\",\"operationVersion\":\"1.0\",\"outputSchemaHash\":\"sha256:6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50\"},\"providerId\":\"gowm.road-coverage-planning\",\"status\":\"FAILED\",\"attempt\":1,\"startedAt\":\"2026-08-25T05:40:40.338Z\",\"finishedAt\":\"2026-08-25T05:40:40.375Z\",\"inputHash\":\"sha256:889b766df71fefb51151c3ac49348d51061d94d6782c91681c11de317628c6ca\",\"error\":{\"schemaVersion\":\"1.0\",\"requestId\":\"query_node_c321e4761c8a44769d2adb13065ff93e\",\"error\":{\"code\":\"INTERNAL_PROVIDER_ERROR\",\"message\":\"Gateway request failed\",\"retryable\":false,\"stage\":\"DAG_EXECUTION\",\"nodeId\":\"plan\",\"providerId\":\"gowm.road-coverage-planning\"}}}],\"outputs\":{},\"warnings\":[\"plan: INTERNAL_PROVIDER_ERROR\",\"plan: output unavailable (INVALID_REQUEST)\"],\"startedAt\":\"2026-08-25T05:40:40.330Z\",\"finishedAt\":\"2026-08-25T05:40:40.378Z\",\"outputHash\":\"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a\"}\n    at check (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:437:11)\n    at concurrentDuplicate (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:215:5)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async beforeRestart (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:138:23)\n    at async file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:51:9\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T05:40:41.052Z"
+}

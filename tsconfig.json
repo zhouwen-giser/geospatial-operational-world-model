@@ -36,6 +36,7 @@
     "validation/scripts/coverage-endpoint-runtime-client.ts",
     "validation/scripts/coverage-async-runtime-client.ts",
     "validation/scripts/coverage-gateway-runtime-client.ts",
+    "validation/scripts/coverage-security-performance-recovery-client.ts",
     "tests/**/*.ts",
     "vitest.config.ts"
   ],

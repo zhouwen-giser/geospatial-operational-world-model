@@ -30,12 +30,6 @@ export async function selectRoadServiceObligations(
     obligations = normalizeManualObligations(request, manual, candidates, policyVersion, areaReferenceKey);
   } else {
     candidates = await repository.select(request);
-    if (candidates.length > request.maximumSelectionCandidates) {
-      throw new CoveragePlanningError(
-        "RESOURCE_EXHAUSTED",
-        `area selection exceeded ${request.maximumSelectionCandidates} candidates`
-      );
-    }
     const selected = chooseDirections(candidates, request.policy.serviceMode, request.policy.fixedDirectionSource);
     obligations = selected.map((candidate) => buildRoadServiceObligation({
       routingSnapshot: request.routingSnapshot,
@@ -49,6 +43,12 @@ export async function selectRoadServiceObligations(
       ...(areaReferenceKey === undefined ? {} : { sourceAreaReferenceKey: areaReferenceKey }),
       sourceFeatureReferenceKey: featureReference(candidate.sourceFeatureReferenceId, request.routingSnapshot.networkDatasetVersion)
     }));
+  }
+  if (candidates.length > request.maximumSelectionCandidates) {
+    throw new CoveragePlanningError(
+      "RESOURCE_EXHAUSTED",
+      `road selection exceeded ${request.maximumSelectionCandidates} candidates`
+    );
   }
 
   const ledger = canonicalObligationLedger(dedupe(obligations));

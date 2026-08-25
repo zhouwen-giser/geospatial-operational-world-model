@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-20260825t2130",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-20260825t2130-postgres",
+  "startedAt": "2026-08-25T05:30:26.904Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-20260825t2130-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 65
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-20260825t2130-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 381
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-20260825t2130-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 5445
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1122
+    },
+    {
+      "command": [
+        "coverage-small-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 149
+    },
+    {
+      "command": [
+        "coverage-medium-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 153
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-before",
+        "gowm-v06-t00-20260825t2130-postgres"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 3747
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-20260825t2130-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 497
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-20260825t2130-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/packages/platform/provider-sdk/src/transport-auth.js:5\n        throw new Error(\"PROVIDER_TRANSPORT_SHARED_TOKEN must contain at least 32 bytes\");\n              ^\n\nError: PROVIDER_TRANSPORT_SHARED_TOKEN must contain at least 32 bytes\n    at validateProviderTransportToken (file:///workspace/dist/packages/platform/provider-sdk/src/transport-auth.js:5:15)\n    at loadNetworkProviderConfig (file:///workspace/dist/services/providers/network-provider/src/config.js:9:25)\n    at file:///workspace/dist/services/providers/network-provider/src/index.js:4:16\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T05:30:38.482Z"
+}
