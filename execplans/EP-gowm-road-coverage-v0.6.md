@@ -49,7 +49,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] T00 Scope / Security / Performance / Recovery
 - [x] C00 Fresh / Upgrade / Replay / Compatibility
 - [x] F00 Docs / VERSION / PROJECT_STATUS
-- [ ] F01 Final Candidate / Exact SHA / PR Ready
+- [x] F01 Final Candidate / Exact SHA / PR Ready
 
 ## Decisions
 
@@ -111,3 +111,4 @@ This is a living execution plan. It records only evidence produced from the actu
 - T00 security/performance/recovery gate: `GOWM_COVERAGE_T00_RUNTIME_PASS t00-runtime-20260826t0030 before=57 after=4`; scope adversarial cases, resource bounds, two measured profiles, concurrent duplicate, three-stage cancel fencing, Provider outage isolation, database restart, result replay, and cleanup PASS.
 - C00 compatibility gate: `GOWM_COVERAGE_COMPATIBILITY_PASS c00-runtime-20260826t0115 migrations=53 assertions=38`; fresh, v0.4 upgrade, v0.5 upgrade, checksum replay, rollback, exact Coverage v1 bytes, predecessor locks, result replay, and current-code v0.5 S/M performance regression PASS.
 - F00 documentation guard: `GOWM_V06_FINAL_DOCS_PASS f00-docs-20260826t0130 checks=31 version=0.6.0`; README/ADR/runbook/status scope and non-claims, reference-source exclusion, 19 public schemas, protected-action status, and VERSION/package/lock convergence PASS.
+- F01 final candidate gate: `GOWM_ROAD_COVERAGE_V0_6_STABLE_CANDIDATE_COMPLETE cases=226 passed=226 blocked=0 failed=0 notRun=0 sha=5d0a07811f96b974c10c18bec606b0b2e5924127`; local, tracking, ls-remote, and Draft PR content SHA matched; PR was OPEN/MERGEABLE/CLEAN with no failing checks.
