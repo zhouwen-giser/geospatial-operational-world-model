@@ -1,0 +1,44 @@
+{
+  "schemaFile": "contracts/coverage-obligation-set.schema.json",
+  "value": {
+    "schemaVersion": "1.0",
+    "obligationSetId": "obset-1",
+    "routingSnapshot": {
+      "networkDatasetVersion": "roads-2026.08",
+      "graphVersion": "graph-v1",
+      "travelProfileVersion": "UGV/1.0",
+      "costProfileVersion": "balanced/1.0",
+      "conditionSnapshotId": "condition-1",
+      "graphContentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "costContentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "conditionContentHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "capturedAt": "2026-08-24T08:00:00Z"
+    },
+    "selectionMode": "CLIPPED_INSIDE_AREA",
+    "obligations": [
+      {
+        "obligationId": "obl_dddddddddddddddddddddddddddddddd",
+        "graphVersion": "graph-v1",
+        "edgeKey": "edge-1",
+        "arcKey": "arc_44444444444444444444444444444444",
+        "startFractionPpm": 250000,
+        "endFractionPpm": 750000,
+        "serviceMode": "FIXED_DIRECTION",
+        "requiredPasses": 1,
+        "sourceFeatureReferenceKey": {
+          "namespace": "gowm",
+          "kind": "LAYER_FEATURE",
+          "id": "wrf_44444444444444444444444444444444",
+          "version": "1"
+        },
+        "selectionPolicyVersion": "manual/1.0",
+        "contentHash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      }
+    ],
+    "obligationCount": 1,
+    "totalRequiredLengthMm": 100000,
+    "selectionReceiptHash": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "warnings": []
+  },
+  "notes": ""
+}

@@ -1,0 +1,100 @@
+{
+  "schemaFile": "contracts/road-coverage-request.schema.json",
+  "value": {
+    "schemaVersion": "1.0",
+    "requestId": "coverage-request-invalid",
+    "routingSnapshot": {
+      "networkDatasetVersion": "roads-2026.08",
+      "graphVersion": "graph-v1",
+      "travelProfileVersion": "UGV/1.0",
+      "costProfileVersion": "balanced/1.0",
+      "conditionSnapshotId": "condition-1",
+      "graphContentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "costContentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "conditionContentHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "capturedAt": "2026-08-24T08:00:00Z"
+    },
+    "area": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            112.0,
+            28.0
+          ],
+          [
+            112.01,
+            28.0
+          ],
+          [
+            112.01,
+            28.01
+          ],
+          [
+            112.0,
+            28.01
+          ],
+          [
+            112.0,
+            28.0
+          ]
+        ]
+      ]
+    },
+    "routeCount": 2,
+    "selectionPolicy": {
+      "mode": "CLIPPED_INSIDE_AREA",
+      "roadClasses": [
+        "residential",
+        "service"
+      ],
+      "serviceMode": "BOTH_DIRECTIONS",
+      "requiredPasses": 1,
+      "minimumSegmentLengthMm": 1000,
+      "boundaryToleranceMm": 100,
+      "selectionPolicyVersion": "coverage-selection/1.0"
+    },
+    "endpointPolicy": {
+      "start": {
+        "arcKey": "arc_11111111111111111111111111111111",
+        "fractionPpm": 100000,
+        "direction": "FORWARD",
+        "headingMicrodegrees": 90000000,
+        "sourceFeatureReferenceKey": {
+          "namespace": "gowm",
+          "kind": "LAYER_FEATURE",
+          "id": "wrf_11111111111111111111111111111111",
+          "version": "1"
+        }
+      },
+      "entry": {
+        "mode": "AUTO",
+        "maximumCandidates": 8
+      },
+      "exit": {
+        "mode": "AUTO",
+        "maximumCandidates": 8
+      },
+      "endpointMode": "RETURN_TO_START",
+      "boundaryCrossingPolicy": "FREE",
+      "snapToleranceMm": 50000
+    },
+    "objective": {
+      "profile": "LEAST_DEADHEAD"
+    },
+    "alternativePolicy": {
+      "requestedCount": 2,
+      "minimumVerifiedCount": 2,
+      "profiles": [
+        "LEAST_DEADHEAD",
+        "SHORTEST_TOTAL_DISTANCE"
+      ],
+      "maximumWeightedArcOverlapPpm": 950000,
+      "minimumDeadheadJaccardDistancePpm": 50000,
+      "maximumGenerationCandidates": 16
+    },
+    "timeLimitMs": 30000
+  },
+  "notes": "Schema and runtime must reject routeCount > 1.",
+  "expectedInvalid": true
+}

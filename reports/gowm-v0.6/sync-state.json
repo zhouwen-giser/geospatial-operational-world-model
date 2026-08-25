@@ -1,0 +1,44 @@
+{
+  "goal": "GOWM+ Road Coverage Planning v0.6",
+  "targetVersion": "0.6.0",
+  "status": "COMPLETE",
+  "phase": "F01",
+  "predecessor": {
+    "branch": "codex/gowm-network-routing-v0.5",
+    "version": "0.5.0",
+    "sha": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "markers": ["NETWORK_READY", "ROUTING_READY"],
+    "migrationsLocked": "001-047"
+  },
+  "candidate": {
+    "branch": "codex/gowm-road-coverage-v0.6",
+    "base": "codex/gowm-network-routing-v0.5",
+    "baseSha": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "stableContentSha": "5d0a07811f96b974c10c18bec606b0b2e5924127",
+    "shaRole": "STABLE_CONTENT_BEFORE_EVIDENCE_ONLY_FINAL_REPORT",
+    "draftPr": 4,
+    "prState": "OPEN_DRAFT_MERGEABLE_CLEAN"
+  },
+  "milestones": {
+    "networkReady": true,
+    "routingReady": true,
+    "roadCoverageReady": true,
+    "stableCandidate": true
+  },
+  "acceptance": {
+    "required": 226,
+    "passed": 226,
+    "failed": 0,
+    "blocked": 0,
+    "notRun": 0,
+    "evidence": "reports/gowm-v0.6/final-acceptance.json"
+  },
+  "protectedActions": {
+    "merge": "NOT_RUN",
+    "tag": "NOT_RUN",
+    "release": "NOT_RUN",
+    "deploy": "NOT_RUN"
+  },
+  "blockers": [],
+  "next": "Review stacked Draft PR #4; protected publication actions remain user-controlled."
+}

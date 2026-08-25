@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../../..",
+    "outDir": "../../../dist/services/providers/road-coverage-provider"
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../../packages/platform/contract-runtime/src/**/*.ts",
+    "../../../packages/platform/provider-sdk/src/**/*.ts"
+  ]
+}

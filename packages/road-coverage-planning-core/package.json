@@ -1,0 +1,7 @@
+{
+  "name": "@gowm/road-coverage-planning-core",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts"
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "s01-20260825t1105",
+  "status": "PASS",
+  "checks": {
+    "distinctExactTerminals": true,
+    "partialAccessPreserved": true,
+    "partialReturnPreserved": true,
+    "openTerminalBalance": true,
+    "deterministicReplay": true,
+    "routeContract": true,
+    "diagnosticsContract": true
+  },
+  "problemHash": "sha256:76a1399ae67f3e70b39954ec45c73061e4bffe09fca73af6810b9d6cfaaa9fe6",
+  "routeSignature": "sha256:fef40e41e994470dfc426a0588d6a025f70dfd81e089d7a7ea9f86490e96259d",
+  "startState": {
+    "arcKey": "arc_11111111111111111111111111111111",
+    "fractionPpm": 250000,
+    "direction": "FORWARD"
+  },
+  "endState": {
+    "arcKey": "arc_22222222222222222222222222222222",
+    "fractionPpm": 500000,
+    "direction": "FORWARD"
+  },
+  "augmentation": [],
+  "terminalAugmentation": [
+    {
+      "fromNodeKey": "A",
+      "toNodeKey": "B",
+      "quantity": 1,
+      "unitCost": 3,
+      "arcKeys": [
+        "arc_11111111111111111111111111111111"
+      ]
+    }
+  ],
+  "segmentCount": 5
+}

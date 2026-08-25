@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-endpoint-policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "entry",
+    "exit",
+    "endpointMode",
+    "boundaryCrossingPolicy",
+    "start",
+    "snapToleranceMm"
+  ],
+  "properties": {
+    "start": {
+      "$ref": "coverage-common.schema.json#/$defs/networkLocation"
+    },
+    "fixedEnd": {
+      "$ref": "coverage-common.schema.json#/$defs/networkLocation"
+    },
+    "entry": {
+      "$ref": "#/$defs/boundaryPolicy"
+    },
+    "exit": {
+      "$ref": "#/$defs/boundaryPolicy"
+    },
+    "endpointMode": {
+      "enum": [
+        "RETURN_TO_START",
+        "FIXED_END",
+        "LAST_AREA_EXIT"
+      ]
+    },
+    "boundaryCrossingPolicy": {
+      "enum": [
+        "FREE",
+        "FIRST_ENTRY_ONLY",
+        "ENTRY_SET_ONLY",
+        "NO_REENTRY"
+      ]
+    },
+    "snapToleranceMm": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    }
+  },
+  "$defs": {
+    "boundaryPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "AUTO",
+            "CANDIDATE_SET",
+            "FIXED"
+          ]
+        },
+        "maximumCandidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "states": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "coverage-common.schema.json#/$defs/directedState"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "enum": [
+                  "CANDIDATE_SET",
+                  "FIXED"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "states"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "endpointMode": {
+            "const": "FIXED_END"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "fixedEnd"
+        ]
+      }
+    }
+  ]
+}

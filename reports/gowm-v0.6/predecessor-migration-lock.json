@@ -1,0 +1,30 @@
+{
+  "lockVersion": "1.0",
+  "predecessorVersion": "0.5.0",
+  "predecessorSha": "d6a90ddcd00db946018892c34a327caa631785b0",
+  "algorithm": "sha256",
+  "migrationCount": 47,
+  "migrations001To032": {
+    "enumeratedLock": "reports/gowm-v0.5/baseline-migration-lock.json",
+    "enumeratedLockSha256": "62a4985c3bdb569adc0fde6038d4eee3611004585ee6ee30a9e8d4bdc680563c",
+    "verification": "MATCH_32_OF_32"
+  },
+  "migrations033To047": {
+    "033_network_graph_catalog.sql": "b8dcbb56e701691ab82e9913a0ac107d0ff420c2876a2fc5d6f515ec4a37da37",
+    "034_network_topology.sql": "69431212196940a83aec825f59e2d6961ef2971a4c4848b71afa85769fbc0478",
+    "035_network_turns_and_bindings.sql": "d4f1affff70ddb2b3d6749a516df299589cc090e80ba084a47cf73779bd2d0b9",
+    "036_network_profiles_and_costs.sql": "25c7fadc38d48b97b79911e419cf51711c08b6128425a77f7cb631941c7c0c03",
+    "037_network_conditions.sql": "f2c749a845422650ca6b5dea8078773bd38dd3f7cf2f14ad3433ea0cf47dd186",
+    "038_network_build_and_activation.sql": "faf42140f701d134fb7a3f54637ee2565513116f515fde5b9c79dd414fd3fc14",
+    "039_gowm_network_v1_read_contract.sql": "06fc9e64e9ba0909d71ad8e5d0c636bb163d39484a01b350036c13eb0098b0f7",
+    "040_network_builder_schema_usage.sql": "5f2eef142e58a23d94d02bfcd1dfda72d5ba42a916ec6df801d565d54df1d84a",
+    "041_network_builder_catalog_validation_security.sql": "666611f8c5f3ef8df40fb49b8d6c72e91b564caa0e2ac88e80209a496953452f",
+    "042_network_profile_condition_contract_alignment.sql": "52efb401b53f9dc4a1f3524d63438e81d10d18a997072d510f03aaf43ea4b2fd",
+    "043_network_atomic_activation_management.sql": "5720d93ad16452fde584483cd1f2a1107576ab7423e1ea95b3483ee523826079",
+    "044_network_arc_heading_read_contract.sql": "c2acdee71ea3f94aa70e85090a7da05d72cb6177b31e5f403da5241199566c09",
+    "045_route_runtime.sql": "78d928165514f5a3c7de4a2fbb2fca3b2310b70887182dcb44da78ae3ad8ce73",
+    "046_route_result_publication.sql": "904903c48dede62dc88fc12dd114e0edf5778b8185a3093dbea6962ff8eecec1",
+    "047_network_avoid_area_read_contract.sql": "3fac38b9a459c5cf5c0fb3d4d5646b29c091557b593d4867b0d22e0f85e71b16"
+  },
+  "verification": "MATCH_47_OF_47_AT_V0_6_BRANCH_POINT"
+}

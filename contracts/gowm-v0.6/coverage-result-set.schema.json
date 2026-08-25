@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-result-set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "referenceKey",
+    "resultSetId",
+    "requestId",
+    "problemHash",
+    "status",
+    "routingSnapshot",
+    "createdAt",
+    "validUntil",
+    "revalidationRequired",
+    "alternatives",
+    "pairwiseSimilarity",
+    "resultHash"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "referenceKey": {
+      "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+    },
+    "resultSetId": {
+      "type": "string"
+    },
+    "requestId": {
+      "type": "string"
+    },
+    "problemHash": {
+      "$ref": "coverage-common.schema.json#/$defs/sha256"
+    },
+    "status": {
+      "enum": [
+        "SUCCEEDED",
+        "PARTIAL",
+        "NO_FEASIBLE_PLAN",
+        "CANCELLED",
+        "FAILED"
+      ]
+    },
+    "routingSnapshot": {
+      "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+    },
+    "createdAt": {
+      "$ref": "coverage-common.schema.json#/$defs/dateTime"
+    },
+    "validUntil": {
+      "$ref": "coverage-common.schema.json#/$defs/dateTime"
+    },
+    "revalidationRequired": {
+      "const": true
+    },
+    "searchTerminatedBy": {
+      "enum": [
+        "PROFILES_COMPLETE",
+        "TIME_LIMIT",
+        "CANDIDATE_LIMIT",
+        "NO_FEASIBLE_PLAN",
+        "CANCELLED"
+      ]
+    },
+    "alternatives": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 5,
+      "items": {
+        "$ref": "coverage-alternative.schema.json"
+      }
+    },
+    "pairwiseSimilarity": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "leftAlternativeId",
+          "rightAlternativeId",
+          "weightedArcOverlapPpm",
+          "deadheadJaccardDistancePpm"
+        ],
+        "properties": {
+          "leftAlternativeId": {
+            "type": "string"
+          },
+          "rightAlternativeId": {
+            "type": "string"
+          },
+          "weightedArcOverlapPpm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "deadheadJaccardDistancePpm": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          }
+        }
+      }
+    },
+    "resultHash": {
+      "$ref": "coverage-common.schema.json#/$defs/sha256"
+    },
+    "receipts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "evidenceReferences": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

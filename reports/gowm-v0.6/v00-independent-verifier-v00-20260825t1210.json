@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "v00-20260825t1210",
+  "status": "PASS",
+  "checks": {
+    "importIndependence": true,
+    "arcIdentity": true,
+    "continuity": true,
+    "direction": true,
+    "fractions": true,
+    "pairwiseTurns": true,
+    "sequenceTurns": true,
+    "coverageCount": true,
+    "coverageRatio": true,
+    "lengthWeightedRatio": true,
+    "startTerminal": true,
+    "endTerminal": true,
+    "boundaryPolicy": true,
+    "profile": true,
+    "condition": true,
+    "metrics": true,
+    "resultHash": true,
+    "staleLogic": true,
+    "mutationSuite": true,
+    "knownBugCorpus": true,
+    "cannotBypass": true,
+    "verificationReceipt": true
+  },
+  "valid": {
+    "verificationId": "verify_30989c063fe0fa06aa7c0f81d7b783a181a916f345579c4d8c0a09e55023250f",
+    "reportHash": "sha256:44fd1923f9f721ae9a2f8a78fcdd142d4602ff946c83c09c3ef65e383a4b2552",
+    "routeSignature": "sha256:18bac5392845b5abb04df61632f0d668b9330a406eccb843e2cc997763528d8f",
+    "coverageRatioPpm": 1000000,
+    "lengthWeightedCoverageRatioPpm": 1000000,
+    "recomputedMetrics": {
+      "distanceMm": 23,
+      "durationMs": 46,
+      "riskMicroUnits": 69,
+      "energyMwh": 92,
+      "combinedCostUnits": 23,
+      "turnPenaltyUnits": 0
+    },
+    "admissionHash": "sha256:ae776e3c73cabfc7fe66d1ae9093e62af793c4c5dc6ad8e97ce71fe89987d0ff"
+  },
+  "mutations": {
+    "unknown": {
+      "status": "INVALID",
+      "codes": [
+        "UNKNOWN_OR_WRONG_VERSION_ARC",
+        "ROUTE_METRIC_MISMATCH",
+        "START_STATE_MISMATCH"
+      ]
+    },
+    "discontinuous": {
+      "status": "INVALID",
+      "codes": [
+        "METRIC_MISMATCH",
+        "DISCONTINUOUS_SEGMENT",
+        "ROUTE_METRIC_MISMATCH"
+      ]
+    },
+    "reversed": {
+      "status": "INVALID",
+      "codes": [
+        "INVALID_FRACTION",
+        "ILLEGAL_DIRECTION",
+        "DISCONTINUOUS_SEGMENT",
+        "ROUTE_METRIC_MISMATCH",
+        "OBLIGATION_PASS_DEFICIT"
+      ]
+    },
+    "pairwise": {
+      "status": "INVALID",
+      "codes": [
+        "TURN_RESTRICTION_VIOLATION"
+      ]
+    },
+    "sequence": {
+      "status": "INVALID",
+      "codes": [
+        "TURN_RESTRICTION_VIOLATION"
+      ]
+    },
+    "missing": {
+      "status": "INVALID",
+      "codes": [
+        "DISCONTINUOUS_SEGMENT",
+        "ROUTE_METRIC_MISMATCH",
+        "OBLIGATION_PASS_DEFICIT"
+      ]
+    },
+    "endpoint": {
+      "status": "INVALID",
+      "codes": [
+        "START_STATE_MISMATCH",
+        "END_STATE_MISMATCH"
+      ]
+    },
+    "boundary": {
+      "status": "INVALID",
+      "codes": [
+        "BOUNDARY_POLICY_VIOLATION"
+      ]
+    },
+    "profile": {
+      "status": "INVALID",
+      "codes": [
+        "PROFILE_ILLEGAL_ARC",
+        "PROFILE_ILLEGAL_ARC",
+        "PROFILE_ILLEGAL_ARC",
+        "ROUTE_METRIC_MISMATCH"
+      ]
+    },
+    "condition": {
+      "status": "INVALID",
+      "codes": [
+        "CONDITION_CLOSED_ARC",
+        "ROUTE_METRIC_MISMATCH"
+      ]
+    },
+    "metric": {
+      "status": "INVALID",
+      "codes": [
+        "METRIC_MISMATCH"
+      ]
+    },
+    "hash": {
+      "status": "INVALID",
+      "codes": [
+        "ROUTE_METRIC_MISMATCH",
+        "CANDIDATE_HASH_MISMATCH"
+      ]
+    },
+    "stale": {
+      "status": "STALE",
+      "codes": [
+        "STALE_ROUTING_SNAPSHOT"
+      ]
+    }
+  }
+}

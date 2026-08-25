@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-20260825t2145",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-20260825t2145-postgres",
+  "startedAt": "2026-08-25T05:32:03.969Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-20260825t2145-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 81
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-20260825t2145-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 437
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-20260825t2145-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 6901
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1511
+    },
+    {
+      "command": [
+        "coverage-small-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 195
+    },
+    {
+      "command": [
+        "coverage-medium-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 197
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-before",
+        "gowm-v06-t00-20260825t2145-postgres"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 7159
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-20260825t2145-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 684
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-20260825t2145-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/services/gateway/world-capability-gateway/src/direct-execution.js:106\n            throw new ProviderProtocolError(\"BUDGET_EXCEEDED\", \"requested deadline exceeds registered maximum timeout\");\n                  ^\n\nProviderProtocolError: requested deadline exceeds registered maximum timeout\n    at #assertPolicy (file:///workspace/dist/services/gateway/world-capability-gateway/src/direct-execution.js:106:19)\n    at DirectExecutionService.execute (file:///workspace/dist/services/gateway/world-capability-gateway/src/direct-execution.js:31:31)\n    at directCall (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:338:26)\n    at providerOutageIsolation (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:278:39)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async beforeRestart (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:137:5)\n    at async file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:51:9 {\n  code: 'BUDGET_EXCEEDED',\n  httpStatus: 413,\n  retryable: false,\n  details: undefined\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T05:32:21.162Z"
+}

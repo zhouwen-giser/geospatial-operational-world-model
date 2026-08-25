@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-runtime-20260825t2345",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-runtime-20260825t2345-postgres",
+  "startedAt": "2026-08-25T06:44:22.043Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-runtime-20260825t2345-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 74
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-runtime-20260825t2345-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 420
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-runtime-20260825t2345-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4899
+    },
+    {
+      "command": [
+        "migration-batch-001-053",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1087
+    },
+    {
+      "command": [
+        "coverage-small-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 148
+    },
+    {
+      "command": [
+        "coverage-medium-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 159
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-before",
+        "gowm-v06-t00-runtime-20260825t2345-postgres"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 7261
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-runtime-20260825t2345-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 518
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-runtime-20260825t2345-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "/workspace/node_modules/pg-pool/index.js:45\n    Error.captureStackTrace(err)\n          ^\n\nerror: relation \"world_query_job\" does not exist\n    at /workspace/node_modules/pg-pool/index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async concurrentDuplicate (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:224:25)\n    at async beforeRestart (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:138:23)\n    at async file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:51:9 {\n  length: 114,\n  severity: 'ERROR',\n  code: '42P01',\n  detail: undefined,\n  hint: undefined,\n  position: '43',\n  internalPosition: undefined,\n  internalQuery: undefined,\n  where: undefined,\n  schema: undefined,\n  table: undefined,\n  column: undefined,\n  dataType: undefined,\n  constraint: undefined,\n  file: 'parse_relation.c',\n  line: '1498',\n  routine: 'parserOpenTable'\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T06:44:36.629Z"
+}

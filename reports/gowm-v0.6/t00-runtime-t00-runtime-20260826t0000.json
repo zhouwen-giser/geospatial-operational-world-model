@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-runtime-20260826t0000",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-runtime-20260826t0000-postgres",
+  "startedAt": "2026-08-25T06:45:19.244Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-runtime-20260826t0000-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 82
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-runtime-20260826t0000-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 459
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-runtime-20260826t0000-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 6013
+    },
+    {
+      "command": [
+        "migration-batch-001-053",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1286
+    },
+    {
+      "command": [
+        "coverage-small-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 180
+    },
+    {
+      "command": [
+        "coverage-medium-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 224
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-before",
+        "gowm-v06-t00-runtime-20260826t0000-postgres"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 6024
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-runtime-20260826t0000-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 528
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-runtime-20260826t0000-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "/workspace/node_modules/pg-pool/index.js:45\n    Error.captureStackTrace(err)\n          ^\n\nerror: invalid coverage result publication\n    at /workspace/node_modules/pg-pool/index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async PostgresCoverageAsyncRepository.publishResult (file:///workspace/dist/packages/road-coverage-runtime-core/src/async-repository.js:44:24)\n    at async chaosCancellation (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:265:31)\n    at async beforeRestart (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:139:5)\n    at async file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:51:9 {\n  length: 221,\n  severity: 'ERROR',\n  code: '22023',\n  detail: undefined,\n  hint: undefined,\n  position: undefined,\n  internalPosition: undefined,\n  internalQuery: undefined,\n  where: 'PL/pgSQL function publish_coverage_result(uuid,bigint,text,text,text,text,timestamp with time zone,jsonb) line 14 at RAISE',\n  schema: undefined,\n  table: undefined,\n  column: undefined,\n  dataType: undefined,\n  constraint: undefined,\n  file: 'pl_exec.c',\n  line: '3909',\n  routine: 'exec_stmt_raise'\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T06:45:34.067Z"
+}

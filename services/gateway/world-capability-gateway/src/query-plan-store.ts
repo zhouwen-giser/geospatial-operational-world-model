@@ -13,6 +13,8 @@ export interface QueryJobContext {
   principal: GatewayPrincipal;
   requestHash: `sha256:${string}`;
   cancellationRequested: boolean;
+  /** Internal PostgreSQL Gateway Job identity; never accepted from a public request. */
+  gatewayJobId?: string;
   executionFence?: QueryExecutionFence;
 }
 

@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-20260825t2240",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-20260825t2240-postgres",
+  "startedAt": "2026-08-25T05:42:06.850Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-20260825t2240-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 60
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-20260825t2240-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 406
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-20260825t2240-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 5487
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1181
+    },
+    {
+      "command": [
+        "coverage-small-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 157
+    },
+    {
+      "command": [
+        "coverage-medium-fixture",
+        "gowm"
+      ],
+      "status": "PASS",
+      "elapsedMs": 150
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-before",
+        "gowm-v06-t00-20260825t2240-postgres"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 4863
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-20260825t2240-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 529
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-20260825t2240-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "/workspace/node_modules/pg-pool/index.js:45\n    Error.captureStackTrace(err)\n          ^\n\nerror: duplicate key value violates unique constraint \"coverage_problem_data_scope_key_dataset_scope_key_problem_h_key\"\n    at /workspace/node_modules/pg-pool/index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async PostgresCoverageAsyncRepository.persistProblem (file:///workspace/dist/packages/road-coverage-runtime-core/src/async-repository.js:29:24)\n    at async PostgresRoadCoverageEngine.plan (file:///workspace/dist/services/providers/road-coverage-provider/src/postgres-engine.js:144:9)\n    at async concurrentDuplicate (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:214:5)\n    at async beforeRestart (file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:138:23)\n    at async file:///workspace/dist/validation/scripts/coverage-security-performance-recovery-client.js:51:9 {\n  length: 920,\n  severity: 'ERROR',\n  code: '23505',\n  detail: 'Key (data_scope_key, dataset_scope_key, problem_hash)=(coverage-gateway-runtime, tenant-a, sha256:36383c137aaa2b6e231730d1891434cf7c7424b23f553704bf52e3063d3ded71) already exists.',\n  hint: undefined,\n  position: undefined,\n  internalPosition: undefined,\n  internalQuery: undefined,\n  where: 'SQL statement \"INSERT INTO coverage_planner.coverage_problem(\\n' +\n    '    coverage_request_id, data_scope_key, dataset_scope_key, generation, problem_hash, canonical_problem\\n' +\n    '  ) VALUES (\\n' +\n    '    request_row.coverage_request_id, request_row.data_scope_key, request_row.dataset_scope_key,\\n' +\n    '    p_generation, p_problem_hash, p_canonical_problem\\n' +\n    '  ) RETURNING coverage_problem_id\"\\n' +\n    'PL/pgSQL function persist_coverage_problem(uuid,bigint,text,text,jsonb) line 31 at SQL statement',\n  schema: 'coverage_planner',\n  table: 'coverage_problem',\n  column: undefined,\n  dataType: undefined,\n  constraint: 'coverage_problem_data_scope_key_dataset_scope_key_problem_h_key',\n  file: 'nbtinsert.c',\n  line: '666',\n  routine: '_bt_check_unique'\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T05:42:19.698Z"
+}

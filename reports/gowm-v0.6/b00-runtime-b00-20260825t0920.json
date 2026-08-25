@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "b00-20260825t0920",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_b00_b00_20260825t0920",
+  "startedAt": "2026-08-25T00:59:17.605Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3060
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_b00_b00_20260825t0920"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3113
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_b00_b00_20260825t0920"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3144
+    },
+    {
+      "command": [
+        "migration-batch-001-050",
+        "gowm_v06_b00_b00_20260825t0920"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4724
+    },
+    {
+      "command": [
+        "coverage-selection-fixture",
+        "gowm_v06_b00_b00_20260825t0920"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3132
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-selection-runtime-client",
+        "gowm_v06_b00_b00_20260825t0920"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 1437
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_b00_b00_20260825t0920"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3193
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_b00_b00_20260825t0920",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:48\n        throw new Error(`${name} failed${details === undefined ? \"\" : `: ${JSON.stringify(details)}`}`);\n              ^\n\nError: polygonHoleAndMultipleClips failed: [{\"obligationId\":\"obl_2d0f94dcbc43ca5df46666eaaa66ab74e503bc576adb179d1b281fe2727cabe8\",\"graphVersion\":\"graph-v1\",\"edgeKey\":\"ed_1111111111111111111111111111111111111111111111111111111111111111\",\"arcKey\":\"arc_1111111111111111111111111111111111111111111111111111111111111111\",\"startFractionPpm\":0,\"endFractionPpm\":400000,\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\",\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"},\"contentHash\":\"sha256:2d0f94dcbc43ca5df46666eaaa66ab74e503bc576adb179d1b281fe2727cabe8\"},{\"obligationId\":\"obl_28729e5b8c8896185f35a59d1a649c7465878bf7c29e0f9ffd27b966a17f6798\",\"graphVersion\":\"graph-v1\",\"edgeKey\":\"ed_1111111111111111111111111111111111111111111111111111111111111111\",\"arcKey\":\"arc_1111111111111111111111111111111111111111111111111111111111111111\",\"startFractionPpm\":600000,\"endFractionPpm\":1000000,\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\",\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"},\"contentHash\":\"sha256:28729e5b8c8896185f35a59d1a649c7465878bf7c29e0f9ffd27b966a17f6798\"},{\"obligationId\":\"obl_c95a80649b729099b2a1ec8a04c4e35a0bf4a0a6be760b873152b27712538a64\",\"graphVersion\":\"graph-v1\",\"edgeKey\":\"ed_1111111111111111111111111111111111111111111111111111111111111111\",\"arcKey\":\"arc_2222222222222222222222222222222222222222222222222222222222222222\",\"startFractionPpm\":0,\"endFractionPpm\":400000,\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\",\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"},\"contentHash\":\"sha256:c95a80649b729099b2a1ec8a04c4e35a0bf4a0a6be760b873152b27712538a64\"},{\"obligationId\":\"obl_88bd5680067de93835d2a4f602fefb44684677100c33ae2aa60ba7ca2ef34a81\",\"graphVersion\":\"graph-v1\",\"edgeKey\":\"ed_1111111111111111111111111111111111111111111111111111111111111111\",\"arcKey\":\"arc_2222222222222222222222222222222222222222222222222222222222222222\",\"startFractionPpm\":600000,\"endFractionPpm\":1000000,\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\",\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"},\"contentHash\":\"sha256:88bd5680067de93835d2a4f602fefb44684677100c33ae2aa60ba7ca2ef34a81\"}]\n    at check (file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:48:15)\n    at file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:68:5\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n\nNode.js v22.23.1\n",
+    "Command failed: docker run --rm --network container:gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1 --volume D:\\Code\\agent-app\\geospatial-operational-world-model:/workspace --workdir /workspace --env DATABASE_URL node:22-bookworm node dist/validation/scripts/coverage-selection-runtime-client.js\nfile:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:48\n        throw new Error(`${name} failed${details === undefined ? \"\" : `: ${JSON.stringify(details)}`}`);\n              ^\n\nError: polygonHoleAndMultipleClips failed: [{\"obligationId\":\"obl_2d0f94dcbc43ca5df46666eaaa66ab74e503bc576adb179d1b281fe2727cabe8\",\"graphVersion\":\"graph-v1\",\"edgeKey\":\"ed_1111111111111111111111111111111111111111111111111111111111111111\",\"arcKey\":\"arc_1111111111111111111111111111111111111111111111111111111111111111\",\"startFractionPpm\":0,\"endFractionPpm\":400000,\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\",\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"},\"contentHash\":\"sha256:2d0f94dcbc43ca5df46666eaaa66ab74e503bc576adb179d1b281fe2727cabe8\"},{\"obligationId\":\"obl_28729e5b8c8896185f35a59d1a649c7465878bf7c29e0f9ffd27b966a17f6798\",\"graphVersion\":\"graph-v1\",\"edgeKey\":\"ed_1111111111111111111111111111111111111111111111111111111111111111\",\"arcKey\":\"arc_1111111111111111111111111111111111111111111111111111111111111111\",\"startFractionPpm\":600000,\"endFractionPpm\":1000000,\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\",\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"},\"contentHash\":\"sha256:28729e5b8c8896185f35a59d1a649c7465878bf7c29e0f9ffd27b966a17f6798\"},{\"obligationId\":\"obl_c95a80649b729099b2a1ec8a04c4e35a0bf4a0a6be760b873152b27712538a64\",\"graphVersion\":\"graph-v1\",\"edgeKey\":\"ed_1111111111111111111111111111111111111111111111111111111111111111\",\"arcKey\":\"arc_2222222222222222222222222222222222222222222222222222222222222222\",\"startFractionPpm\":0,\"endFractionPpm\":400000,\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\",\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"},\"contentHash\":\"sha256:c95a80649b729099b2a1ec8a04c4e35a0bf4a0a6be760b873152b27712538a64\"},{\"obligationId\":\"obl_88bd5680067de93835d2a4f602fefb44684677100c33ae2aa60ba7ca2ef34a81\",\"graphVersion\":\"graph-v1\",\"edgeKey\":\"ed_1111111111111111111111111111111111111111111111111111111111111111\",\"arcKey\":\"arc_2222222222222222222222222222222222222222222222222222222222222222\",\"startFractionPpm\":600000,\"endFractionPpm\":1000000,\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\",\"sourceFeatureReferenceKey\":{\"namespace\":\"gowm\",\"kind\":\"LAYER_FEATURE\",\"id\":\"wrf_11111111111111111111111111111111\",\"version\":\"dataset-v1\"},\"contentHash\":\"sha256:88bd5680067de93835d2a4f602fefb44684677100c33ae2aa60ba7ca2ef34a81\"}]\n    at check (file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:48:15)\n    at file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:68:5\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T00:59:39.426Z"
+}

@@ -263,7 +263,12 @@ export class WorldQueryRuntime {
         const executed = await this.options.directExecution.execute(
           node.operation.operationId,
           request,
-          context.principal
+          context.principal,
+          context.gatewayJobId === undefined ? undefined : {
+            gatewayJobId: context.gatewayJobId,
+            gatewayQueryId: context.submission.plan.queryId,
+            gatewayNodeId: node.nodeId
+          }
         );
         if (await this.options.store.cancellationRequested(jobId)) {
           const cancelled = cancelledNode(node, this.#now().toISOString(), running.attempt);

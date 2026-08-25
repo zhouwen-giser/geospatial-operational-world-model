@@ -1,0 +1,72 @@
+openapi: 3.1.0
+info:
+  title: GOWM Road Coverage Planning Provider
+  version: 1.0.0
+paths:
+  /v1/provider-operations/coverage.road.validate:execute:
+    post:
+      operationId: validateRoadCoverage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: ../road-coverage-request.schema.json }
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema: { $ref: ../coverage-validation-result.schema.json }
+  /v1/provider-operations/coverage.road.select-obligations:execute:
+    post:
+      operationId: selectRoadCoverageObligations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: ../road-coverage-request.schema.json }
+      responses:
+        '200':
+          description: Canonical obligation set
+          content:
+            application/json:
+              schema: { $ref: ../coverage-obligation-set.schema.json }
+  /v1/provider-operations/coverage.road.plan:execute:
+    post:
+      operationId: planRoadCoverage
+      description: Accepted through the Gateway async Job lifecycle.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: ../road-coverage-request.schema.json }
+      responses:
+        '202': { description: Gateway job accepted }
+  /v1/provider-operations/coverage.road.verify:execute:
+    post:
+      operationId: verifyRoadCoverage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: ../coverage-verification-request.schema.json }
+      responses:
+        '200':
+          description: Independent verification report
+          content:
+            application/json:
+              schema: { $ref: ../coverage-verification-report.schema.json }
+  /v1/provider-operations/coverage.road.expand-geojson:execute:
+    post:
+      operationId: expandRoadCoverageGeoJson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: ../coverage-expand-request.schema.json }
+      responses:
+        '200':
+          description: Ordered GeoJSON
+          content:
+            application/geo+json:
+              schema: { $ref: ../coverage-geojson-result.schema.json }

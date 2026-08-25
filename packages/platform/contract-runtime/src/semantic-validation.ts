@@ -438,8 +438,101 @@ export function validateH3CellSetSemantics(envelope: H3CellSetEnvelope): Validat
   return result(issues);
 }
 
+function isCanonicalPosition(value: unknown): value is number[] {
+  if (!Array.isArray(value) || value.length < 2 || value.length > 3) return false;
+  if (!value.every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate))) return false;
+  return value[0]! >= -180 && value[0]! <= 180 && value[1]! >= -90 && value[1]! <= 90;
+}
+
+function samePosition(left: number[], right: number[]): boolean {
+  return left.length === right.length && left.every((coordinate, index) => coordinate === right[index]);
+}
+
+function validatePolygonCoordinates(value: unknown, path: string): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  if (!Array.isArray(value) || value.length === 0) return [issue(path, "canonicalPolygon", "requires at least one linear ring")];
+  value.forEach((ring, ringIndex) => {
+    const ringPath = `${path}/${ringIndex}`;
+    if (!Array.isArray(ring) || ring.length < 4) {
+      issues.push(issue(ringPath, "canonicalLinearRing", "requires at least four positions"));
+      return;
+    }
+    const positions = ring as unknown[];
+    positions.forEach((position, positionIndex) => {
+      if (!isCanonicalPosition(position)) {
+        issues.push(issue(`${ringPath}/${positionIndex}`, "epsg4326Position", "must be a finite EPSG:4326 position within longitude/latitude bounds"));
+      }
+    });
+    const first = positions[0];
+    const last = positions.at(-1);
+    if (isCanonicalPosition(first) && isCanonicalPosition(last) && !samePosition(first, last)) {
+      issues.push(issue(ringPath, "closedLinearRing", "first and last positions must be identical"));
+    }
+  });
+  return issues;
+}
+
+export function validateRoadCoverageRequestSemantics(value: unknown): ValidationResult {
+  const issues: ValidationIssue[] = [];
+  if (!value || typeof value !== "object" || Array.isArray(value)) return result(issues);
+  const request = value as Record<string, unknown>;
+  const area = request.area;
+  if (area && typeof area === "object" && !Array.isArray(area)) {
+    const geometry = area as Record<string, unknown>;
+    if (geometry.type === "Polygon") {
+      issues.push(...validatePolygonCoordinates(geometry.coordinates, "/area/coordinates"));
+    } else if (geometry.type === "MultiPolygon") {
+      if (!Array.isArray(geometry.coordinates) || geometry.coordinates.length === 0) {
+        issues.push(issue("/area/coordinates", "canonicalMultiPolygon", "requires at least one polygon"));
+      } else {
+        geometry.coordinates.forEach((polygon, index) => {
+          issues.push(...validatePolygonCoordinates(polygon, `/area/coordinates/${index}`));
+        });
+      }
+    }
+  }
+  const selection = request.selectionPolicy as Record<string, unknown> | undefined;
+  if (selection?.serviceMode === "FIXED_DIRECTION" && selection.fixedDirectionSource === undefined) {
+    issues.push(issue("/selectionPolicy/fixedDirectionSource", "fixedDirectionSource", "FIXED_DIRECTION requires an explicit direction source"));
+  }
+  if (selection?.mode !== "MANUAL_OBLIGATIONS" && selection?.manualObligations !== undefined) {
+    issues.push(issue("/selectionPolicy/manualObligations", "manualObligations", "manual obligations are valid only in MANUAL_OBLIGATIONS mode"));
+  }
+  const alternatives = request.alternativePolicy as Record<string, unknown> | undefined;
+  if (typeof alternatives?.minimumVerifiedCount === "number" && typeof alternatives.requestedCount === "number" &&
+      alternatives.minimumVerifiedCount > alternatives.requestedCount) {
+    issues.push(issue("/alternativePolicy/minimumVerifiedCount", "alternativeCount", "must not exceed requestedCount"));
+  }
+  return result(issues);
+}
+
+export function validateCoverageResultSetSemantics(value: unknown): ValidationResult {
+  const issues: ValidationIssue[] = [];
+  if (!value || typeof value !== "object" || Array.isArray(value)) return result(issues);
+  const resultSet = value as Record<string, unknown>;
+  const referenceKey = resultSet.referenceKey as Record<string, unknown> | undefined;
+  if (referenceKey?.kind !== "QUERY_RESULT") {
+    issues.push(issue("/referenceKey/kind", "resultReferenceKind", "Coverage plan sets must use QUERY_RESULT"));
+  }
+  const alternatives = Array.isArray(resultSet.alternatives) ? resultSet.alternatives : [];
+  alternatives.forEach((alternative, index) => {
+    if (!alternative || typeof alternative !== "object" || Array.isArray(alternative)) return;
+    const alternativeReference = (alternative as Record<string, unknown>).referenceKey as Record<string, unknown> | undefined;
+    if (alternativeReference?.kind !== "DERIVED_REFERENCE") {
+      issues.push(issue(`/alternatives/${index}/referenceKey/kind`, "alternativeReferenceKind", "Coverage alternatives must use DERIVED_REFERENCE"));
+    }
+  });
+  return result(issues);
+}
+
 export function validateNamedContractSemantics(nameOrId: string, value: unknown): ValidationIssue[] {
   const normalized = nameOrId.toLowerCase();
+  if (normalized.includes("road-coverage-request") || normalized === "roadcoveragerequest") {
+    return validateRoadCoverageRequestSemantics(value).issues;
+  }
+  if (normalized.includes("coverage-result-set") || normalized === "coverageresultset") {
+    return validateCoverageResultSetSemantics(value).issues;
+  }
   if (normalized.includes("capability-provider-manifest") || normalized === "capabilityprovidermanifest") {
     return validateProviderManifestSemantics(value as CapabilityProviderManifest).issues;
   }

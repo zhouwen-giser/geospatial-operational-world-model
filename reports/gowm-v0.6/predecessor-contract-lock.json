@@ -1,0 +1,34 @@
+{
+  "lockVersion": "1.0",
+  "predecessorVersion": "0.5.0",
+  "predecessorSha": "d6a90ddcd00db946018892c34a327caa631785b0",
+  "algorithm": "sha256",
+  "authoritativeRepositoryFiles": {
+    "contracts/gowm-v0.5/network-common.schema.json": "1f35b48d91d8138e3a52762e9fdfb9ee21a97980b43fb6bf15126cd8faae149c",
+    "contracts/gowm-v0.5/network-shortest-path-result.schema.json": "c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+    "contracts/gowm-v0.5/network-snap-result.schema.json": "e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+    "contracts/gowm-v0.5/route-planning-request.schema.json": "0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+    "contracts/gowm-v0.5/route-planning-result.schema.json": "e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+    "contracts/gowm-v0.5/route-verification-report.schema.json": "76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+    "contracts/gowm-v0.5/routing-snapshot.schema.json": "f96a8e1b6973f5e4f610de6701de1804e4054d353c9d5e08fd872e5bec03ee4a",
+    "contracts/gowm-v0.5/manifests/providers/network-provider.json": "82481d8b7c5a60255e8fb82d44ca9403aeb2e367eebe740a98faf23c8a7e4142",
+    "contracts/gowm-v0.5/manifests/providers/route-planning-provider.json": "852c8811516ab2f78a2a188f485eb7e1731cc0841e5acf0aa1e99daea8ecec71"
+  },
+  "taskDesignSnapshots": {
+    "network-common.schema.json": "1f35b48d91d8138e3a52762e9fdfb9ee21a97980b43fb6bf15126cd8faae149c",
+    "network-provider.json": "70defeed43deac9fdb9fce68b786fd0a84acdd015f88a075c10cad34da131409",
+    "network-shortest-path-result.schema.json": "c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+    "network-snap-result.schema.json": "e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+    "route-planning-provider.json": "8067e7f56fde3d958a977d34921f9e720157a09f337e903ee9d8a4c3359bb5c7",
+    "route-planning-request.schema.json": "0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+    "route-planning-result.schema.json": "e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+    "route-verification-report.schema.json": "76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+    "routing-snapshot.schema.json": "f96a8e1b6973f5e4f610de6701de1804e4054d353c9d5e08fd872e5bec03ee4a"
+  },
+  "comparison": {
+    "schemaBytes": "MATCH_7_OF_7",
+    "providerOperationAndSchemaHashes": "MATCH",
+    "providerManifestBytes": "DESIGN_SNAPSHOT_PATH_PREFIX_DIFF",
+    "authority": "ACTUAL_REPOSITORY_CONTRACTS"
+  }
+}

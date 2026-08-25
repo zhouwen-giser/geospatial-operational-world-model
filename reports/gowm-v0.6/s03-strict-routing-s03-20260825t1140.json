@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "s03-20260825t1140",
+  "status": "PASS",
+  "checks": {
+    "pairwiseForbidden": true,
+    "allowedOnly": true,
+    "multiEdgeForbidden": true,
+    "contextAcrossConnectorService": true,
+    "noPgrTrspDowngrade": true,
+    "fixedMetricSums": true,
+    "overflowFailsClosed": true,
+    "closureCondition": true,
+    "speedOverrideDurationOnly": true,
+    "profileLegality": true,
+    "shortestDistance": true,
+    "fastest": true,
+    "lowestRisk": true,
+    "deterministicSeed": true,
+    "frozenReplay": true,
+    "versionDifferenceRejected": true,
+    "matrixBudget": true,
+    "candidateBudgetBounded": true,
+    "timeBudget": true,
+    "routeCountRejected": true,
+    "eitherDirectionRejected": true,
+    "routeContract": true,
+    "diagnosticsContract": true
+  },
+  "turnScenarios": {
+    "pairwiseSignature": "sha256:5478aaf98415048fb5f759ac8c2544e35f4e57afca5d9ccbc111cd09d19a7ad9",
+    "allowedOnlySignature": "sha256:5478aaf98415048fb5f759ac8c2544e35f4e57afca5d9ccbc111cd09d19a7ad9",
+    "sequenceSignature": "sha256:2a5b038c9686266a27839164d238e53d9dfd9217d8be901a02462b7f57168e22",
+    "sequenceArcKeys": [
+      "arc_22222222222222222222222222222222",
+      "arc_55555555555555555555555555555555",
+      "arc_66666666666666666666666666666666"
+    ]
+  },
+  "objectives": {
+    "distanceArcKeys": [
+      "arc_88888888888888888888888888888888"
+    ],
+    "timeArcKeys": [
+      "arc_99999999999999999999999999999999",
+      "arc_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "riskArcKeys": [
+      "arc_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "arc_cccccccccccccccccccccccccccccccc"
+    ]
+  },
+  "conditions": {
+    "normalServiceMetrics": {
+      "distanceMm": 10000,
+      "durationMs": 10000,
+      "riskMicroUnits": 4,
+      "energyMwh": 5,
+      "combinedCostUnits": 10000,
+      "turnPenaltyUnits": 0
+    },
+    "slowedServiceMetrics": {
+      "distanceMm": 10000,
+      "durationMs": 20000,
+      "riskMicroUnits": 4,
+      "energyMwh": 5,
+      "combinedCostUnits": 20000,
+      "turnPenaltyUnits": 0
+    },
+    "closedCode": "NO_FEASIBLE_PLAN",
+    "profileCode": "NO_FEASIBLE_PLAN"
+  },
+  "resources": {
+    "matrixCode": "RESOURCE_EXHAUSTED",
+    "candidateBeamWidth": 1,
+    "timeCode": "RESOURCE_EXHAUSTED",
+    "overflowCode": "RESOURCE_EXHAUSTED"
+  },
+  "replay": {
+    "problemHash": "sha256:020d8ca8ea5f7a7e463ec00663c6adfb0d5a3c1cd41ca01d1ec8cc031ef27f61",
+    "routeSignature": "sha256:5478aaf98415048fb5f759ac8c2544e35f4e57afca5d9ccbc111cd09d19a7ad9",
+    "versionCode": "VERSION_NOT_FOUND"
+  }
+}

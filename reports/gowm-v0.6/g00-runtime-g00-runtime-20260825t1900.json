@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1900",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1900",
+  "startedAt": "2026-08-25T04:51:35.299Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3064
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3124
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3150
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4823
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3158
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1900"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 6356
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3170
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1900",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/packages/platform/provider-sdk/src/runtime.js:96\n        throw new ProviderProtocolError(\"INTERNAL_PROVIDER_ERROR\", \"data-bound result requires a data snapshot\");\n              ^\n\nProviderProtocolError: data-bound result requires a data snapshot\n    at assembleResult (file:///workspace/dist/packages/platform/provider-sdk/src/runtime.js:96:15)\n    at file:///workspace/dist/packages/platform/provider-sdk/src/runtime.js:56:24\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.execute (file:///workspace/dist/packages/platform/provider-sdk/src/runtime.js:47:20)\n    at async file:///workspace/dist/services/gateway/world-capability-gateway/src/direct-execution.js:47:36\n    at async #withinDeadline (file:///workspace/dist/services/gateway/world-capability-gateway/src/direct-execution.js:194:20)\n    at async ProviderCircuitBreaker.execute (file:///workspace/dist/services/gateway/world-capability-gateway/src/circuit-breaker.js:30:28)\n    at async MemoryGatewayIdempotencyStore.execute (file:///workspace/dist/services/gateway/world-capability-gateway/src/idempotency.js:20:25)\n    at async DirectExecutionService.execute (file:///workspace/dist/services/gateway/world-capability-gateway/src/direct-execution.js:41:32)\n    at async file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:137:5 {\n  code: 'INTERNAL_PROVIDER_ERROR',\n  httpStatus: 500,\n  retryable: false,\n  details: undefined\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T04:52:02.161Z"
+}

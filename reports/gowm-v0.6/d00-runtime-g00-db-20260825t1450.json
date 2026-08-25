@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "g00-db-20260825t1450",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "databases": {
+    "fresh": "gowm_v06_fresh_g00_db_20260825t1450",
+    "upgrade": "gowm_v06_upgrade_g00_db_20260825t1450"
+  },
+  "startedAt": "2026-08-25T03:48:36.275Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3052
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_fresh_g00_db_20260825t1450"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3117
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_fresh_g00_db_20260825t1450"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3157
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..052_coverage_gateway_result_integration.sql",
+        "gowm_v06_fresh_g00_db_20260825t1450"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4794
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..037_coverage_gateway_result_assertions.sql",
+        "gowm_v06_fresh_g00_db_20260825t1450"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 3654
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_fresh_g00_db_20260825t1450"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3176
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_fresh_g00_db_20260825t1450",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "NOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  role \"PUBLIC\" does not exist\nCONTEXT:  PL/pgSQL function inline_code_block line 21 at IF\n",
+    "Command failed: docker exec --interactive gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1 psql --username gowm --dbname gowm_v06_fresh_g00_db_20260825t1450 --set ON_ERROR_STOP=on\nNOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  role \"PUBLIC\" does not exist\nCONTEXT:  PL/pgSQL function inline_code_block line 21 at IF\n"
+  ],
+  "finishedAt": "2026-08-25T03:48:57.256Z"
+}

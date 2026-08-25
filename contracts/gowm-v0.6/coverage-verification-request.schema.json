@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-verification-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "problemReference",
+    "candidate",
+    "routingSnapshot"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "problemReference": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+        }
+      ]
+    },
+    "candidate": {
+      "$ref": "coverage-alternative.schema.json"
+    },
+    "routingSnapshot": {
+      "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+    },
+    "revalidateAgainstCurrentCondition": {
+      "type": "boolean"
+    }
+  }
+}

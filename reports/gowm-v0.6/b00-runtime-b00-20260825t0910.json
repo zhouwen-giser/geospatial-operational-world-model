@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "b00-20260825t0910",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_b00_b00_20260825t0910",
+  "startedAt": "2026-08-25T00:56:22.286Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3059
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_b00_b00_20260825t0910"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3108
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_b00_b00_20260825t0910"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3152
+    },
+    {
+      "command": [
+        "migration-batch-001-049",
+        "gowm_v06_b00_b00_20260825t0910"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4687
+    },
+    {
+      "command": [
+        "coverage-selection-fixture",
+        "gowm_v06_b00_b00_20260825t0910"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3145
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-selection-runtime-client",
+        "gowm_v06_b00_b00_20260825t0910"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 1143
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_b00_b00_20260825t0910"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3184
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_b00_b00_20260825t0910",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:48\n        throw new Error(`${name} failed${details === undefined ? \"\" : `: ${JSON.stringify(details)}`}`);\n              ^\n\nError: invalidPolygonRejected failed: {\"code\":\"DATABASE_UNAVAILABLE\",\"retryable\":true,\"name\":\"CoveragePlanningError\"}\n    at check (file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:48:15)\n    at expectCode (file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:56:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:62:5\n\nNode.js v22.23.1\n",
+    "Command failed: docker run --rm --network container:gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1 --volume D:\\Code\\agent-app\\geospatial-operational-world-model:/workspace --workdir /workspace --env DATABASE_URL node:22-bookworm node dist/validation/scripts/coverage-selection-runtime-client.js\nfile:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:48\n        throw new Error(`${name} failed${details === undefined ? \"\" : `: ${JSON.stringify(details)}`}`);\n              ^\n\nError: invalidPolygonRejected failed: {\"code\":\"DATABASE_UNAVAILABLE\",\"retryable\":true,\"name\":\"CoveragePlanningError\"}\n    at check (file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:48:15)\n    at expectCode (file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:56:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/dist/validation/scripts/coverage-selection-runtime-client.js:62:5\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T00:56:43.781Z"
+}

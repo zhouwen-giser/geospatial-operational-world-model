@@ -36,6 +36,12 @@ export interface DirectExecutionOptions {
   now?: () => Date;
 }
 
+export interface TrustedGatewayJobContext {
+  gatewayJobId: string;
+  gatewayQueryId: string;
+  gatewayNodeId: string;
+}
+
 export class DirectExecutionService {
   readonly #now: () => Date;
 
@@ -46,7 +52,8 @@ export class DirectExecutionService {
   async execute(
     operationId: string,
     publicRequest: GatewayExecuteRequest,
-    principal: GatewayPrincipal
+    principal: GatewayPrincipal,
+    trustedJobContext?: TrustedGatewayJobContext
   ): Promise<{ result: CapabilityResultEnvelope; replayed: boolean }> {
     const started = performance.now();
     const requestHash = sha256(publicRequest);
@@ -67,6 +74,9 @@ export class DirectExecutionService {
         throw new ProviderProtocolError("SCHEMA_MISMATCH", "public request schema lock differs from the approved registry");
       }
       this.#assertPolicy(publicRequest, descriptor);
+      if (descriptor.execution.mode === "ASYNC" && trustedJobContext === undefined) {
+        throw new ProviderProtocolError("INVALID_REQUEST", "operation requires the Gateway async Job lifecycle");
+      }
       this.#assertScope(descriptor.scopePolicy, principal);
 
       const scope = {
@@ -79,7 +89,7 @@ export class DirectExecutionService {
           this.#withinDeadline(publicRequest.executionPolicy.deadlineAt, async () => {
           const health = await route.client.health(publicRequest.executionPolicy.deadlineAt);
           if (!health.ready) throw new ProviderProtocolError("PROVIDER_NOT_READY", `provider ${route.manifest.provider.providerId} is not ready`, { retryable: true });
-          const providerRequest = this.#providerRequest(operationId, publicRequest, principal, descriptor.limits);
+          const providerRequest = this.#providerRequest(operationId, publicRequest, principal, descriptor.limits, trustedJobContext);
           const result = await route.client.execute(operationId, providerRequest);
           if (result.requestId !== providerRequest.requestId) {
             throw new ProviderProtocolError("SCHEMA_MISMATCH", "provider result request identity differs from the controlled request");
@@ -202,7 +212,8 @@ export class DirectExecutionService {
       maximumVertices?: number;
       maximumCells?: number;
       maximumBatchItems?: number;
-    }
+    },
+    trustedJobContext?: TrustedGatewayJobContext
   ): ProviderExecutionRequest {
     const issuedAt = this.#now();
     const expiresAt = new Date(Math.min(Date.parse(request.executionPolicy.deadlineAt), issuedAt.getTime() + 300_000));
@@ -241,7 +252,8 @@ export class DirectExecutionService {
       gatewayContext: {
         gatewayId: this.options.gatewayId,
         registryVersion: this.options.registry.revision,
-        policyVersion: this.options.policyVersion
+        policyVersion: this.options.policyVersion,
+        ...(trustedJobContext === undefined ? {} : trustedJobContext)
       },
       executionPolicy: {
         deadlineAt: request.executionPolicy.deadlineAt,

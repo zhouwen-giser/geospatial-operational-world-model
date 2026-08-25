@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-segment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sequence",
+    "graphVersion",
+    "arcKey",
+    "startFractionPpm",
+    "endFractionPpm",
+    "phase",
+    "serviceRole",
+    "metrics"
+  ],
+  "properties": {
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "graphVersion": {
+      "type": "string"
+    },
+    "arcKey": {
+      "type": "string"
+    },
+    "startFractionPpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "endFractionPpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "phase": {
+      "enum": [
+        "ACCESS",
+        "INSIDE",
+        "EXIT",
+        "RETURN"
+      ]
+    },
+    "serviceRole": {
+      "enum": [
+        "SERVICE",
+        "DUPLICATE_SERVICE",
+        "TRANSIT",
+        "DEADHEAD",
+        "ACCESS",
+        "BOUNDARY_EXIT",
+        "RETURN"
+      ]
+    },
+    "obligationIds": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "string"
+      }
+    },
+    "sourceFeatureReferenceKey": {
+      "$ref": "coverage-common.schema.json#/$defs/referenceKey"
+    },
+    "metrics": {
+      "$ref": "coverage-common.schema.json#/$defs/fixedMetrics"
+    }
+  }
+}

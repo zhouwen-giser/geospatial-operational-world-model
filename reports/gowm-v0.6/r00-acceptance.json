@@ -1,0 +1,56 @@
+{
+  "phase": "R00",
+  "status": "PASS",
+  "predecessor": {
+    "branch": "codex/gowm-network-routing-v0.5",
+    "version": "0.5.0",
+    "localSha": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "remoteSha": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "draftPr": {
+      "number": 3,
+      "state": "OPEN",
+      "draft": true,
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "CLEAN",
+      "base": "main"
+    },
+    "markers": [
+      "NETWORK_READY",
+      "ROUTING_READY"
+    ],
+    "migrationLock": "reports/gowm-v0.6/predecessor-migration-lock.json",
+    "contractLock": "reports/gowm-v0.6/predecessor-contract-lock.json"
+  },
+  "candidate": {
+    "branch": "codex/gowm-road-coverage-v0.6",
+    "initialHead": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "mergeBase": "d6a90ddcd00db946018892c34a327caa631785b0",
+    "exactBase": true,
+    "intendedPrBase": "codex/gowm-network-routing-v0.5"
+  },
+  "commands": {
+    "packageValidator": "PASS schemas=19 operations=5 examples=10 acceptance=226",
+    "preflight": "PASS reference archive hash matched",
+    "predecessorGuard": "PASS version=0.5.0 sha=d6a90ddcd00db946018892c34a327caa631785b0",
+    "v05FinalGuard": "PASS cases=154 passed=154 blocked=0 failed=0 notRun=0",
+    "generatedContractCheck": "PASS",
+    "repositoryCheck": "PASS_TYPESCRIPT_STAS_TYPECHECK",
+    "unitAndScenarioTests": "PASS_163_TESTS_34_FILES_1_OPTIONAL_SKIP"
+  },
+  "acceptance": {
+    "AC-B001": "PASS_COMMITTED_PUSHED_CANDIDATE_IDENTIFIED",
+    "AC-B002": "PASS_VERSION_0_5_0",
+    "AC-B003": "PASS_MACHINE_EVIDENCED_MARKERS",
+    "AC-B004": "PASS_MIGRATIONS_001_047_LOCKED",
+    "AC-B005": "PASS_EXACT_COMMIT_REAL_DB_EVIDENCE_AND_GOWM_NETWORK_V1_ASSERTIONS",
+    "AC-B006": "PASS_EXACT_COMMIT_REAL_GATEWAY_PROVIDER_EVIDENCE",
+    "AC-B007": "PASS_FROZEN_ROUTING_CONTRACT_HASHES",
+    "AC-B008": "PASS_INDEPENDENT_V0_5_VERIFIER_EVIDENCE",
+    "AC-B009": "NOT_RUN_R01_SOURCE_LOCK_PHASE",
+    "AC-B010": "PASS_USER_INPUT_IGNORED_AND_EXISTING_WORK_PRESERVED",
+    "AC-B011": "PASS_EXACT_V0_5_BASE",
+    "AC-B012": "PASS_NO_PREDECESSOR_REWRITE_OR_GATE_WEAKENING"
+  },
+  "failed": [],
+  "blocked": []
+}

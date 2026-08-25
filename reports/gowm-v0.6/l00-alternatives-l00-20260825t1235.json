@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "l00-20260825t1235",
+  "status": "PASS",
+  "checks": {
+    "oneAlternativeLogic": true,
+    "twoAlternativeLogic": true,
+    "minimumCountExplicit": true,
+    "signatureDeduplication": true,
+    "displayOnlyIgnored": true,
+    "weightedOverlap": true,
+    "deadheadJaccard": true,
+    "verifyFirst": true,
+    "deterministicRank": true,
+    "truthfulExplanations": true,
+    "immutableInMemory": true,
+    "terminationReason": true,
+    "resultContract": true
+  },
+  "resultSetId": "result_a3cd9632731f0a50195951e2110ecb153a82bd7b31deb56223276c272b91db3f",
+  "resultHash": "sha256:a65292b0d000d6e442e6ff70b3534b6316670f16b9fde1139a96b5328ef984bd",
+  "routeSignatures": [
+    "sha256:4ac3c5372ce06d6b639695ce866c24e2c6c467cea9ecf49ec86b259183047408",
+    "sha256:dc566673b66171ae5e585377a1bd6e3cb1431fd1e55069328730fcac788a5347"
+  ],
+  "pairwiseSimilarity": [
+    {
+      "leftAlternativeId": "alt_324bd23fb31e4063228443c2d91f09ac8ded275220ff50bc7bfb96f223171378",
+      "rightAlternativeId": "alt_67726c7c89f7c73aa55f000d294785d44f7ddee4ed52ee9a26793aa48e3a30a8",
+      "weightedArcOverlapPpm": 62500,
+      "deadheadJaccardDistancePpm": 750000
+    }
+  ],
+  "strictDiversityStatus": "PARTIAL",
+  "strictDiversityCount": 1,
+  "terminationReason": "PROFILES_COMPLETE"
+}

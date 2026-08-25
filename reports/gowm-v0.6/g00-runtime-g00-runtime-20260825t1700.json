@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1700",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1700",
+  "startedAt": "2026-08-25T04:23:18.431Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3059
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1700"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3110
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1700"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3157
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1700"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4753
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1700"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3145
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1700"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 6618
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1700"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3181
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1700",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:352\n    throw new Error(`${name} failed: ${JSON.stringify(details)}`); checks[name] = true; }\n          ^\n\nError: gatewayQueued failed: {\"schemaVersion\":\"1.0\",\"requestId\":\"req-4\",\"error\":{\"code\":\"INVALID_REQUEST\",\"message\":\"Request validation failed\",\"retryable\":false,\"stage\":\"DAG_VALIDATION\",\"details\":{\"stage\":\"DAG_VALIDATION\",\"issues\":[{\"path\":\"[REDACTED]\",\"keyword\":\"aggregateBudget\"}]}}}\n    at check (file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:352:11)\n    at file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:108:5\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T04:23:45.470Z"
+}

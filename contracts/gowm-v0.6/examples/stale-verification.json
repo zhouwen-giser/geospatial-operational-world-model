@@ -1,0 +1,36 @@
+{
+  "schemaFile": "contracts/coverage-verification-report.schema.json",
+  "value": {
+    "verificationId": "verify-stale",
+    "status": "STALE",
+    "verifierVersion": "coverage-verifier/1.0",
+    "routingSnapshotHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "checks": {
+      "continuity": true,
+      "turns": true,
+      "coverage": true,
+      "endpoints": true,
+      "metrics": true
+    },
+    "coverageRatioPpm": 1000000,
+    "lengthWeightedCoverageRatioPpm": 1000000,
+    "requiredLengthMm": 100000,
+    "coveredRequiredLengthMm": 100000,
+    "recomputedMetrics": {
+      "distanceMm": 1000000,
+      "durationMs": 600000,
+      "riskMicroUnits": 100,
+      "energyMwh": 250,
+      "combinedCostUnits": 1000250,
+      "turnPenaltyUnits": 0
+    },
+    "violations": [
+      {
+        "code": "CONDITION_SNAPSHOT_STALE",
+        "message": "A newer condition snapshot exists"
+      }
+    ],
+    "reportHash": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+  },
+  "notes": ""
+}

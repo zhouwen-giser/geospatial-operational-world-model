@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "t00-runtime-20260825t2330",
+  "image": "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+  "container": "gowm-v06-t00-runtime-20260825t2330-postgres",
+  "startedAt": "2026-08-25T06:43:34.402Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v06-t00-runtime-20260825t2330-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 67
+    },
+    {
+      "command": [
+        "create-dedicated-postgres",
+        "gowm-v06-t00-runtime-20260825t2330-postgres",
+        "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1",
+        "POSTGRES_PASSWORD=[REDACTED]"
+      ],
+      "status": "PASS",
+      "elapsedMs": 400
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v06-t00-runtime-20260825t2330-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4830
+    },
+    {
+      "command": [
+        "migration-batch-001-053",
+        "gowm"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 1270
+    },
+    {
+      "command": [
+        "remove-dedicated-postgres",
+        "gowm-v06-t00-runtime-20260825t2330-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 566
+    }
+  ],
+  "before": null,
+  "after": null,
+  "restart": null,
+  "cleanup": [
+    {
+      "container": "gowm-v06-t00-runtime-20260825t2330-postgres",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "NOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nERROR:  relation \"coverage_problem_scope_hash_idx\" already exists\n"
+  ],
+  "finishedAt": "2026-08-25T06:43:41.899Z"
+}

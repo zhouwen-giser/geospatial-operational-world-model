@@ -1,0 +1,29 @@
+{
+  "phase": "R01",
+  "status": "PASS",
+  "source": {
+    "archiveSha256": "a8b04ac9a6d6660d3042f4ba9030b0bb0b99b11a8f301a47dbfd12c8796ce116",
+    "entries": 1337,
+    "unsafePaths": 0,
+    "licenseStatus": "UNSPECIFIED",
+    "decision": "REFERENCE_ONLY_SELECTIVE_REIMPLEMENTATION",
+    "redistributionAllowed": false,
+    "referenceReimplementationFiles": 22
+  },
+  "acceptance": {
+    "AC-B001": "PASS_R00",
+    "AC-B002": "PASS_R00",
+    "AC-B003": "PASS_R00",
+    "AC-B004": "PASS_R00",
+    "AC-B005": "PASS_R00",
+    "AC-B006": "PASS_R00",
+    "AC-B007": "PASS_R00",
+    "AC-B008": "PASS_R00",
+    "AC-B009": "PASS_REFERENCE_ARCHIVE_HASH_MATCHES_LOCK",
+    "AC-B010": "PASS_ARCHIVE_AND_EXPANSION_IGNORED",
+    "AC-B011": "PASS_R00",
+    "AC-B012": "PASS_CLEAN_ROOM_MAP_PRESERVES_PREDECESSOR_GATES"
+  },
+  "failed": [],
+  "blocked": []
+}

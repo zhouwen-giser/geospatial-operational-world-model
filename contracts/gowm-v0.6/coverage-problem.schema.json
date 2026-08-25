@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6:coverage-problem",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "problemId",
+    "problemHash",
+    "routingSnapshot",
+    "startState",
+    "endpointMode",
+    "boundaryCrossingPolicy",
+    "obligationSet",
+    "objective",
+    "budgets"
+  ],
+  "properties": {
+    "contractVersion": {
+      "const": "1.0"
+    },
+    "problemId": {
+      "type": "string"
+    },
+    "problemHash": {
+      "$ref": "coverage-common.schema.json#/$defs/sha256"
+    },
+    "routingSnapshot": {
+      "$ref": "coverage-common.schema.json#/$defs/routingSnapshot"
+    },
+    "startState": {
+      "$ref": "coverage-common.schema.json#/$defs/directedState"
+    },
+    "fixedEndState": {
+      "$ref": "coverage-common.schema.json#/$defs/directedState"
+    },
+    "entryStates": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "coverage-common.schema.json#/$defs/directedState"
+      }
+    },
+    "exitStates": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "coverage-common.schema.json#/$defs/directedState"
+      }
+    },
+    "endpointMode": {
+      "enum": [
+        "RETURN_TO_START",
+        "FIXED_END",
+        "LAST_AREA_EXIT"
+      ]
+    },
+    "boundaryCrossingPolicy": {
+      "enum": [
+        "FREE",
+        "FIRST_ENTRY_ONLY",
+        "ENTRY_SET_ONLY",
+        "NO_REENTRY"
+      ]
+    },
+    "obligationSet": {
+      "$ref": "coverage-obligation-set.schema.json"
+    },
+    "objective": {
+      "type": "object"
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timeLimitMs",
+        "maximumCandidates",
+        "maximumMatrixCells"
+      ],
+      "properties": {
+        "timeLimitMs": {
+          "type": "integer",
+          "minimum": 100
+        },
+        "maximumCandidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "maximumMatrixCells": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}
