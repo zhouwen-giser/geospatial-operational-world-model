@@ -1,7 +1,5 @@
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
-import { shortestPath, type Objective } from "../../network-provider/src/engine.js";
-import { NetworkRepository } from "../../network-provider/src/repository.js";
-import type { DirectedState, LoadedNetwork, NetworkProviderOptions, NetworkSqlPool, Row, RoutingSnapshot } from "../../network-provider/src/types.js";
+import { NetworkRepository, shortestPath, type DirectedState, type LoadedNetwork, type NetworkProviderOptions, type NetworkSqlPool, type Objective, type Row, type RoutingSnapshot } from "../../../../packages/network-query-core/src/index.js";
 import { verifyRouteCandidate } from "./verifier.js";
 
 export interface RoutePlannerOptions extends NetworkProviderOptions { resultTtlMs?: number; }

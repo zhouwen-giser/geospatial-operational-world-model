@@ -33,8 +33,7 @@ import {
 import { buildVerifiedCoverageResultSet, type VerifiedAlternativeCandidate } from "../../../../packages/road-coverage-alternatives-core/src/index.js";
 import { admitVerifiedCoverageRoute, verifyCoverageRoute } from "../../../../packages/road-coverage-verifier-core/src/index.js";
 import { PostgresCoverageAsyncRepository } from "../../../../packages/road-coverage-runtime-core/src/index.js";
-import { NetworkRepository } from "../../network-provider/src/repository.js";
-import type { LoadedNetwork, NetworkSqlPool } from "../../network-provider/src/types.js";
+import { NetworkRepository, type LoadedNetwork, type NetworkSqlPool } from "../../../../packages/network-query-core/src/index.js";
 import type { RoadCoverageEngine } from "./engine.js";
 
 type JsonObject = Record<string, unknown>;
@@ -170,7 +169,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       return completed(replay, network, network.arcs.length, alternatives(replay).length);
     }
     const leaseOwner = `${this.#workerId}:${gatewayNodeId}`.slice(0, 256);
-    const claim = await this.#async.claim(submission.coverageRequestId, 1, leaseOwner, this.#leaseSeconds);
+    const claim = await this.#async.claim(submission.coverageRequestId, leaseOwner, this.#leaseSeconds);
     if (claim === null) throw new ProviderProtocolError("OVERLOADED", "coverage request is already leased", { retryable: true });
     await accepted(this.#async.heartbeat(claim, leaseOwner, this.#leaseSeconds, "SELECTING", 100_000, { graphArcCount: network.arcs.length }), "selection heartbeat");
 

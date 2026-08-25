@@ -1,5 +1,5 @@
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
-import type { LoadedNetwork, NetworkArc, Row, TurnRule } from "../../network-provider/src/types.js";
+import type { LoadedNetwork, NetworkArc, Row, TurnRule } from "../../../../packages/network-query-core/src/index.js";
 
 export interface RouteFreshness { graphCurrent: boolean; profileCurrent: boolean; conditionCurrent: boolean; }
 
