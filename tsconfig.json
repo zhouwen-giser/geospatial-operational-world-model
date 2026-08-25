@@ -33,6 +33,7 @@
     "validation/scripts/gowm-v05-migration-e2e.ts",
     "validation/scripts/gowm-v05-routing-performance.ts",
     "validation/scripts/coverage-selection-runtime-client.ts",
+    "validation/scripts/coverage-endpoint-runtime-client.ts",
     "tests/**/*.ts",
     "vitest.config.ts"
   ],

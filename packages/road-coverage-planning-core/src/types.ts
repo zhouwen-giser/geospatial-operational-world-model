@@ -1,14 +1,16 @@
 import type {
   GowmV06CoverageCommonReferenceKey as ReferenceKey,
   GowmV06CoverageCommonDirectedState as DirectedState,
+  GowmV06CoverageCommonNetworkLocation as NetworkLocation,
   GowmV06CoverageCommonRoutingSnapshot as RoutingSnapshot,
   GowmV06CoverageObligationSet as CoverageObligationSet,
   GowmV06CoverageProblem as CoverageProblem,
+  GowmV06CoverageEndpointPolicy as CoverageEndpointPolicy,
   GowmV06RoadSelectionPolicy as RoadSelectionPolicy,
   GowmV06RoadServiceObligation as RoadServiceObligation
 } from "../../platform/contract-runtime/src/index.js";
 
-export type { CoverageObligationSet, CoverageProblem, DirectedState, ReferenceKey, RoadSelectionPolicy, RoadServiceObligation, RoutingSnapshot };
+export type { CoverageEndpointPolicy, CoverageObligationSet, CoverageProblem, DirectedState, NetworkLocation, ReferenceKey, RoadSelectionPolicy, RoadServiceObligation, RoutingSnapshot };
 
 export type GeoJsonArea = {
   type: "Polygon" | "MultiPolygon";

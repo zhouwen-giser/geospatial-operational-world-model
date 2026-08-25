@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "e00-b00-20260825t1030",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_b00_e00_b00_20260825t1030",
+  "startedAt": "2026-08-25T01:22:59.065Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3057
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_b00_e00_b00_20260825t1030"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3110
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_b00_e00_b00_20260825t1030"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3165
+    },
+    {
+      "command": [
+        "migration-batch-001-050",
+        "gowm_v06_b00_e00_b00_20260825t1030"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4667
+    },
+    {
+      "command": [
+        "coverage-selection-fixture",
+        "gowm_v06_b00_e00_b00_20260825t1030"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3141
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-selection-runtime-client",
+        "gowm_v06_b00_e00_b00_20260825t1030"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1218
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_b00_e00_b00_20260825t1030"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3184
+    }
+  ],
+  "summary": {
+    "status": "PASS",
+    "checks": {
+      "invalidPolygonRejected": true,
+      "polygonHoleAndMultipleClips": true,
+      "roadClassFilter": true,
+      "serviceEligibility": true,
+      "boundaryInclusiveCovers": true,
+      "holeExcludesFullEdge": true,
+      "intersectingCompleteEdge": true,
+      "oneWayNoIllegalReverse": true,
+      "bothDirectionsExpanded": true,
+      "multipolygonDeterministic": true,
+      "minimumSegmentLengthDeny": true,
+      "candidateBudget": true,
+      "scopeFirst": true,
+      "manualPinnedValidation": true
+    },
+    "obligationCounts": {
+      "clipped": 7,
+      "fullyCovered": 3,
+      "intersectingComplete": 5,
+      "multipolygon": 4,
+      "manual": 1
+    }
+  },
+  "cleanup": [
+    {
+      "database": "gowm_v06_b00_e00_b00_20260825t1030",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-08-25T01:23:20.632Z"
+}

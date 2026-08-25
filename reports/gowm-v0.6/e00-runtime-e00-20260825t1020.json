@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "e00-20260825t1020",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_e00_e00_20260825t1020",
+  "startedAt": "2026-08-25T01:21:15.448Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3058
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_e00_e00_20260825t1020"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3115
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_e00_e00_20260825t1020"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3154
+    },
+    {
+      "command": [
+        "migration-batch-001-050",
+        "gowm_v06_e00_e00_20260825t1020"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4726
+    },
+    {
+      "command": [
+        "coverage-selection-fixture",
+        "gowm_v06_e00_e00_20260825t1020"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3125
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-endpoint-runtime-client",
+        "gowm_v06_e00_e00_20260825t1020"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1149
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_e00_e00_20260825t1020"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3194
+    }
+  ],
+  "summary": {
+    "status": "PASS",
+    "checks": {
+      "parallelRoadAmbiguity": true,
+      "directedPartialPreserved": true,
+      "autoEntryBounded": true,
+      "autoExitBounded": true,
+      "deterministicBoundaryOrder": true,
+      "referenceUniqueOneWay": true,
+      "fixedEntryMandatory": true,
+      "fixedEndExact": true,
+      "lastExitExact": true,
+      "noReentry": true,
+      "entrySetOnly": true,
+      "scopeFirst": true,
+      "unknownDirectedState": true
+    },
+    "entryCount": 2,
+    "exitCount": 2
+  },
+  "cleanup": [
+    {
+      "database": "gowm_v06_e00_e00_20260825t1020",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-08-25T01:21:36.985Z"
+}

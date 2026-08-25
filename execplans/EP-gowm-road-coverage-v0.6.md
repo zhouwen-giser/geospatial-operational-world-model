@@ -36,7 +36,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] D00 Coverage Schema / Roles / Immutability / Assertions
 - [x] B00 Area Selection / Fraction Obligations
 - [x] B01 Canonical Problem / Ledger / Hash
-- [ ] E00 Start / Boundary / Endpoint Policy
+- [x] E00 Start / Boundary / Endpoint Policy
 - [ ] S00 Closed DCPP
 - [ ] S01 Open CPP / Terminal
 - [ ] S02 Fixed / Both-direction RPP
@@ -95,3 +95,4 @@ This is a living execution plan. It records only evidence produced from the actu
 - B00 real PostGIS gate: `GOWM_COVERAGE_SELECTION_RUNTIME_PASS b00-20260825t0930 checks=14`; Polygon holes, MultiPolygon ordering, covers/intersects/clips, road/service filters, one-way/both-direction expansion, manual validation, scope-first denial, budgets, and empty selection PASS.
 - Post-B00 database regression: `GOWM_COVERAGE_SCHEMA_RUNTIME_PASS b00-db-20260825t0950 migrations=50 assertions=35`; fresh/upgrade/rollback paths PASS and isolated databases were removed.
 - B01 canonical gate: `GOWM_COVERAGE_CANONICAL_PROBLEM_PASS b01-20260825t1010 combinations=36`; all 6 obligation-order × 6 endpoint-candidate-order combinations produced one contract-valid obligation-set hash and one problem hash.
+- E00 real endpoint gate: `GOWM_COVERAGE_ENDPOINT_RUNTIME_PASS e00-20260825t1020 checks=13`; parallel-road ambiguity, directed partial state, AUTO boundaries, ReferenceKey resolution, fixed entry/end, last exit, crossing policies, scope-first denial, and unknown-state rejection PASS.

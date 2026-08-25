@@ -6,7 +6,10 @@ export type CoveragePlanningErrorCode =
   | "RESOURCE_EXHAUSTED"
   | "NO_OBLIGATIONS"
   | "CAPABILITY_NOT_AVAILABLE"
-  | "DATABASE_UNAVAILABLE";
+  | "DATABASE_UNAVAILABLE"
+  | "AMBIGUOUS_LOCATION"
+  | "UNREACHABLE"
+  | "NO_FEASIBLE_PLAN";
 
 export class CoveragePlanningError extends Error {
   readonly code: CoveragePlanningErrorCode;

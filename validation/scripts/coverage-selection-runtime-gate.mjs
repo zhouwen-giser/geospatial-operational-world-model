@@ -8,14 +8,19 @@ const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
 const runId = process.env.GOWM_V06_RUN_ID;
 const container = process.env.GOWM_V06_POSTGRES_CONTAINER;
 const password = process.env.GOWM_V06_POSTGRES_PASSWORD;
-if (process.env.ALLOW_GOWM_COVERAGE_SELECTION_GATE !== "YES") {
+const runtimeKind = process.env.GOWM_V06_RUNTIME_KIND === "endpoint" ? "endpoint" : "selection";
+if (runtimeKind === "selection" && process.env.ALLOW_GOWM_COVERAGE_SELECTION_GATE !== "YES") {
   throw new Error("Set ALLOW_GOWM_COVERAGE_SELECTION_GATE=YES to run the isolated B00 gate");
+}
+if (runtimeKind === "endpoint" && process.env.ALLOW_GOWM_COVERAGE_ENDPOINT_GATE !== "YES") {
+  throw new Error("Set ALLOW_GOWM_COVERAGE_ENDPOINT_GATE=YES to run the isolated E00 gate");
 }
 if (!runId || !/^[a-z0-9][a-z0-9-]{2,31}$/u.test(runId)) throw new Error("GOWM_V06_RUN_ID is invalid");
 if (!container || !/^[A-Za-z0-9][A-Za-z0-9_.-]{2,127}$/u.test(container)) throw new Error("GOWM_V06_POSTGRES_CONTAINER is invalid");
 if (!password || password.length < 16) throw new Error("GOWM_V06_POSTGRES_PASSWORD must be provided without recording it in evidence");
-const database = `gowm_v06_b00_${runId.replaceAll("-", "_")}`;
-if (!/^gowm_v06_b00_[a-z0-9_]{3,32}$/u.test(database)) throw new Error("isolated database name escaped the B00 namespace");
+const phase = runtimeKind === "endpoint" ? "e00" : "b00";
+const database = `gowm_v06_${phase}_${runId.replaceAll("-", "_")}`;
+if (!/^gowm_v06_(b00|e00)_[a-z0-9_]{3,32}$/u.test(database)) throw new Error("isolated database name escaped the runtime namespace");
 
 const evidence = {
   schemaVersion: "1.0",
@@ -77,7 +82,7 @@ async function persist() {
   evidence.finishedAt = new Date().toISOString();
   const directory = resolve(repositoryRoot, "reports/gowm-v0.6");
   await mkdir(directory, { recursive: true });
-  await writeFile(resolve(directory, `b00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
+  await writeFile(resolve(directory, `${phase}-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
 }
 
 let failure;
@@ -95,18 +100,19 @@ try {
 
   const encodedPassword = encodeURIComponent(password);
   const databaseUrl = `postgresql://gowm:${encodedPassword}@127.0.0.1:5432/${database}?options=-c%20role%3Dcoverage_planner_provider`;
+  const clientName = runtimeKind === "endpoint" ? "coverage-endpoint-runtime-client" : "coverage-selection-runtime-client";
   const output = run("docker", ["run", "--rm", "--network", `container:${container}`,
     "--volume", `${repositoryRoot}:/workspace`, "--workdir", "/workspace",
     "--env", "DATABASE_URL", "node:22-bookworm",
-    "node", "dist/validation/scripts/coverage-selection-runtime-client.js"], {
-    evidenceCommand: ["node-container", "coverage-selection-runtime-client", database],
+    "node", `dist/validation/scripts/${clientName}.js`], {
+    evidenceCommand: ["node-container", clientName, database],
     env: { ...process.env, DATABASE_URL: databaseUrl }
   });
   const line = output.split(/\r?\n/u).map((value) => value.trim()).find((value) => value.startsWith("{"));
-  if (!line) throw new Error(`B00 client summary missing: ${output}`);
+  if (!line) throw new Error(`${phase.toUpperCase()} client summary missing: ${output}`);
   evidence.summary = JSON.parse(line);
   if (evidence.summary.status !== "PASS" || Object.values(evidence.summary.checks ?? {}).some((value) => value !== true)) {
-    throw new Error(`B00 client did not pass all checks: ${line}`);
+    throw new Error(`${phase.toUpperCase()} client did not pass all checks: ${line}`);
   }
   evidence.status = "PASS";
 } catch (error) {
@@ -127,7 +133,7 @@ try {
   await persist();
 }
 if (failure) throw failure;
-process.stdout.write(`GOWM_COVERAGE_SELECTION_RUNTIME_PASS ${runId} checks=${Object.keys(evidence.summary.checks).length}\n`);
+process.stdout.write(`GOWM_COVERAGE_${runtimeKind === "endpoint" ? "ENDPOINT" : "SELECTION"}_RUNTIME_PASS ${runId} checks=${Object.keys(evidence.summary.checks).length}\n`);
 
 function redact(value) {
   return password ? value.replaceAll(password, "[REDACTED]") : value;
