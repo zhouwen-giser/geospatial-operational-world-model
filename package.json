@@ -48,6 +48,7 @@
     "validate:gowm-v06-boundaries": "node validation/architecture/validate-road-coverage-boundaries.mjs",
     "validate:gowm-v06-database": "node validation/scripts/coverage-schema-runtime-gate.mjs",
     "validate:gowm-v06-selection": "npm run build && node validation/scripts/coverage-selection-runtime-gate.mjs",
+    "validate:gowm-v06-canonical-problem": "npm run build && node validation/scripts/coverage-canonical-problem-gate.mjs",
     "sbom:service": "node scripts/generate-service-sbom.mjs",
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",

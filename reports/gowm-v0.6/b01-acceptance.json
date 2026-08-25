@@ -1,0 +1,39 @@
+{
+  "phase": "B01",
+  "status": "PASS",
+  "runtimeEvidence": "reports/gowm-v0.6/b01-canonical-b01-20260825t1010.json",
+  "acceptance": {
+    "AC-C013": "PASS_36_PERMUTATION_CANONICAL_PROBLEM_HASH",
+    "AC-C014": "PASS_ORDER_INDEPENDENT_SNAPSHOT_BOUND_OBLIGATION_IDENTITY",
+    "AC-O020": "PASS_CANONICAL_LEDGER_SORT_AND_HASH_RECONFIRMED"
+  },
+  "invariants": {
+    "problemHashExcludes": ["problemId", "problemHash"],
+    "problemHashIncludes": [
+      "routingSnapshot",
+      "startState",
+      "fixedEndState",
+      "entryStates",
+      "exitStates",
+      "endpointMode",
+      "boundaryCrossingPolicy",
+      "obligationSet",
+      "objective",
+      "budgets"
+    ],
+    "obligationIdentityIncludes": [
+      "routingSnapshot",
+      "graphVersion",
+      "edgeKey",
+      "arcKey",
+      "startFractionPpm",
+      "endFractionPpm",
+      "requiredPasses",
+      "selectionPolicyVersion",
+      "sourceAreaReferenceKey",
+      "sourceFeatureReferenceKey"
+    ]
+  },
+  "failed": [],
+  "blocked": []
+}

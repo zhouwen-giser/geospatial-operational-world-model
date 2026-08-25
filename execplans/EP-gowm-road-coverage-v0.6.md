@@ -35,7 +35,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] A01 Contracts / OpenAPI / Manifest / Generated Types
 - [x] D00 Coverage Schema / Roles / Immutability / Assertions
 - [x] B00 Area Selection / Fraction Obligations
-- [ ] B01 Canonical Problem / Ledger / Hash
+- [x] B01 Canonical Problem / Ledger / Hash
 - [ ] E00 Start / Boundary / Endpoint Policy
 - [ ] S00 Closed DCPP
 - [ ] S01 Open CPP / Terminal
@@ -80,6 +80,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - B00's next run proved the Coverage role correctly lacked `public` schema/PostGIS access. Migration 050 therefore adds one narrow `gowm_network_v1` security-definer read function instead of granting broad public or base-table rights.
 - B00's first controlled-function run returned the correct four symmetric-hole obligations, while the test incorrectly expected four distinct numeric fraction intervals. The assertion now keys by Arc plus fractions, proving two fragments on each of two directions.
 - The first 050 database regression passed all migrations/assertions but retained a historical summary expectation of 49 migrations. The current gate now asserts 50 migrations and 35 assertions.
+- B01's first snapshot-sensitivity test replaced the problem snapshot but intentionally left obligations hashed against the old snapshot, so the tamper guard rejected it before hashing. The legal variant now regenerates its obligation identities against the new snapshot and proves a changed problem hash.
 
 ## Validation
 
@@ -93,3 +94,4 @@ This is a living execution plan. It records only evidence produced from the actu
 - D00 real PostgreSQL gate: `GOWM_COVERAGE_SCHEMA_RUNTIME_PASS d00-20260825t0850 migrations=49 assertions=34`; fresh and v0.5-upgrade paths PASS, both deliberate failure probes rolled back, and both isolated databases were removed.
 - B00 real PostGIS gate: `GOWM_COVERAGE_SELECTION_RUNTIME_PASS b00-20260825t0930 checks=14`; Polygon holes, MultiPolygon ordering, covers/intersects/clips, road/service filters, one-way/both-direction expansion, manual validation, scope-first denial, budgets, and empty selection PASS.
 - Post-B00 database regression: `GOWM_COVERAGE_SCHEMA_RUNTIME_PASS b00-db-20260825t0950 migrations=50 assertions=35`; fresh/upgrade/rollback paths PASS and isolated databases were removed.
+- B01 canonical gate: `GOWM_COVERAGE_CANONICAL_PROBLEM_PASS b01-20260825t1010 combinations=36`; all 6 obligation-order × 6 endpoint-candidate-order combinations produced one contract-valid obligation-set hash and one problem hash.
