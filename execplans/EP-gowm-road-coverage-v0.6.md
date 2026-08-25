@@ -42,7 +42,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] S02 Fixed / Both-direction RPP
 - [x] S03 Strict Turn-aware Routing
 - [x] V00 Independent Verifier / Mutation
-- [ ] L00 Alternatives / Diversity / Ranking
+- [x] L00 Alternatives / Diversity / Ranking
 - [ ] J00 Async Run / Lease / Cancel / Progress
 - [ ] P00 Provider Protocol
 - [ ] G00 Gateway / DAG / Result Registry / Expand
@@ -101,3 +101,4 @@ This is a living execution plan. It records only evidence produced from the actu
 - S02 RPP gate: `GOWM_COVERAGE_FIXED_RPP_PASS s02-20260825t1120 checks=11 scenarios=3`; required-subset/full-network separation, disconnected component connection, exact partial service, repeated and both-direction obligations, duplicate/transit roles, deterministic replay, and frozen contracts PASS.
 - S03 strict solver gate: `GOWM_COVERAGE_STRICT_ROUTING_PASS s03-20260825t1140 checks=23 objectives=3`; pairwise/allowed-only/multi-edge rules, cross-boundary history, no primitive downgrade, conditions/profiles, safe fixed metrics, three distinct objectives, replay/version fencing, resource budgets, and Stable negative guards PASS.
 - V00 independent verifier gate: `GOWM_COVERAGE_INDEPENDENT_VERIFIER_PASS v00-20260825t1210 checks=22 mutations=12`; isolated imports, independent topology/turn/coverage/endpoint/boundary/profile/condition/metric/hash replay, mutation corpus, admission boundary, and frozen receipt contract PASS. Real-e2e stale row `AC-V018` remains deferred.
+- L00 alternatives gate: `GOWM_COVERAGE_ALTERNATIVES_PASS l00-20260825t1235 checks=13 selected=2`; verified-only admission, signature/display dedup, weighted overlap, deadhead Jaccard, deterministic ranking, truthful facts, deep freeze, explicit termination, and frozen result contract PASS. Real E2E and DB rows remain deferred.

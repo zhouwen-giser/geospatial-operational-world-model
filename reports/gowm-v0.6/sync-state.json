@@ -2,7 +2,7 @@
   "goal": "GOWM+ Road Coverage Planning v0.6",
   "targetVersion": "0.6.0",
   "status": "IN_PROGRESS",
-  "phase": "V00",
+  "phase": "L00",
   "predecessor": {
     "branch": "codex/gowm-network-routing-v0.5",
     "version": "0.5.0",
@@ -20,8 +20,8 @@
     "branch": "codex/gowm-road-coverage-v0.6",
     "base": "codex/gowm-network-routing-v0.5",
     "baseSha": "d6a90ddcd00db946018892c34a327caa631785b0",
-    "localSha": "0a8b33b9dfb0e1c1570f671f6e5224aa9876d8b7",
-    "remoteSha": "0a8b33b9dfb0e1c1570f671f6e5224aa9876d8b7",
+    "localSha": "3cff58b3230a4f1d33aeeed0972722c873056f52",
+    "remoteSha": "3cff58b3230a4f1d33aeeed0972722c873056f52",
     "draftPr": 4
   },
   "milestones": {
@@ -95,12 +95,24 @@
       "AC-V019",
       "AC-V020",
       "AC-V021",
-      "AC-V022"
+      "AC-V022",
+      "AC-L004",
+      "AC-L005",
+      "AC-L006",
+      "AC-L007",
+      "AC-L008",
+      "AC-L009",
+      "AC-L010",
+      "AC-L012"
     ],
     "failed": [],
     "blocked": [],
     "notRun": [
-      "AC-V018"
+      "AC-V018",
+      "AC-L001",
+      "AC-L002",
+      "AC-L003",
+      "AC-L011"
     ]
   },
   "blockers": []
