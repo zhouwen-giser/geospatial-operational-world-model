@@ -2712,6 +2712,9 @@ export type ProviderExecutionRequest = {
 };
   gatewayContext: {
   gatewayId: string;
+  gatewayJobId?: string;
+  gatewayNodeId?: PlatformCommonDefinitionsIdentifier;
+  gatewayQueryId?: PlatformCommonDefinitionsIdentifier;
   policyVersion: string;
   registryVersion: string;
 };

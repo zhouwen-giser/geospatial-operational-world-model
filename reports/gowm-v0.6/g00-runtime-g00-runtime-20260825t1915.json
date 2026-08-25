@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1915",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1915",
+  "startedAt": "2026-08-25T04:53:36.213Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3062
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1915"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3107
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1915"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3150
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1915"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4699
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1915"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3143
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1915"
+      ],
+      "status": "PASS",
+      "elapsedMs": 9105
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1915"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3190
+    }
+  ],
+  "summary": {
+    "status": "PASS",
+    "checks": {
+      "validateDirect": true,
+      "selectDirect": true,
+      "planRequiresGatewayJob": true,
+      "gatewayQueued": true,
+      "gatewayClaimed": true,
+      "typedDagCompleted": true,
+      "typedDagOrder": true,
+      "planAlternatives": true,
+      "queryResultIdentity": true,
+      "derivedAlternativeIdentity": true,
+      "geometryOnDemand": true,
+      "verifyDirect": true,
+      "expandDirect": true,
+      "expandOrder": true,
+      "restartReplay": true,
+      "resultRegistry": true,
+      "atomicArtifacts": true,
+      "pairwiseSimilarity": true,
+      "expiredIsStale": true,
+      "expiredExpansionDenied": true,
+      "gatewayJobAuthority": true
+    },
+    "queryId": "coverage-query-g00-runtime-20260825t1915",
+    "gatewayJobId": "b089ef75-6ca6-4c27-8ffd-5dffcec423f9",
+    "publicJobId": "query_job_7f4954ffc1584afa8aafb809a30b62eb",
+    "resultReferenceKey": "wrf_0592043f1ba5ddb1de963f9c5e2314ce",
+    "alternativeIds": [
+      "alt_60134c7196c6e6c6dd0427401d20a9156ab9701b2c44440f2b302d4a37857886",
+      "alt_e4f68f2391cb1322841210ad299b8522841b8dc2712ad4f9aa880d4680354507"
+    ],
+    "persisted": {
+      "query_results": 1,
+      "derived_results": 2,
+      "candidates": 2,
+      "segments": 7,
+      "verifications": 2,
+      "similarities": 1
+    }
+  },
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1915",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-08-25T04:54:05.686Z"
+}

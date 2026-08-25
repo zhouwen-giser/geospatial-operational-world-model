@@ -46,6 +46,7 @@ export interface ProviderHandlerContext {
   security: TrustedSecurityContext;
   deadline: DeadlineContext;
   trace: TraceContext;
+  gateway: ProviderExecutionRequest["gatewayContext"];
 }
 
 export interface ProviderOperation<Input = unknown, Output = unknown> {

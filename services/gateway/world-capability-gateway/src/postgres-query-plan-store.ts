@@ -483,6 +483,7 @@ function fromRow(row: QueryRow): QueryJobContext {
   };
   return {
     job,
+    gatewayJobId: row.internal_job_id,
     submission: structuredClone(row.submission),
     principal: {
       principalRef: row.principal_ref,

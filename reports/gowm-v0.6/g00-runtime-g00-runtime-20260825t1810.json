@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1810",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1810",
+  "startedAt": "2026-08-25T04:33:49.053Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3060
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1810"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3119
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1810"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3149
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1810"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4695
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1810"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3142
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1810"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 6646
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1810"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3190
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1810",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "/workspace/node_modules/pg-pool/index.js:45\n    Error.captureStackTrace(err)\n          ^\n\nerror: invalid input syntax for type json\n    at /workspace/node_modules/pg-pool/index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async PostgresCoverageAsyncRepository.publishResult (file:///workspace/dist/packages/road-coverage-runtime-core/src/async-repository.js:44:24)\n    at async accepted (file:///workspace/dist/services/providers/road-coverage-provider/src/postgres-engine.js:298:46)\n    at async PostgresRoadCoverageEngine.plan (file:///workspace/dist/services/providers/road-coverage-provider/src/postgres-engine.js:174:9)\n    at async file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:120:5 {\n  length: 1195,\n  severity: 'ERROR',\n  code: '22P02',\n  detail: 'Token \"Road\" is invalid.',\n  hint: undefined,\n  position: undefined,\n  internalPosition: '158',\n  internalQuery: 'SELECT public.register_result_registry_identity(\\n' +\n    \"        alternative_reference,'DERIVED_REFERENCE',alternative->>'alternativeId',NEW.data_scope_key,\\n\" +\n    \"        'Road coverage alternative ' || alternative->>'alternativeId'\\n\" +\n    '      )',\n  where: 'JSON data, line 1: Road...\\n' +\n    'PL/pgSQL function register_coverage_result_references() line 62 at PERFORM\\n' +\n    'SQL statement \"INSERT INTO coverage_planner.coverage_result_set(\\n' +\n    '    coverage_request_id, coverage_problem_id, data_scope_key, dataset_scope_key, generation,\\n' +\n    '    reference_key, problem_hash, routing_snapshot_hash, status, result_hash, result_record, valid_until\\n' +\n    '  ) VALUES (\\n' +\n    '    request_row.coverage_request_id, problem_row.coverage_problem_id,\\n' +\n    '    request_row.data_scope_key, request_row.dataset_scope_key, p_generation,\\n' +\n    '    p_reference_key, problem_row.problem_hash, request_row.routing_snapshot_hash,\\n' +\n    '    p_status, p_result_hash, p_result_record, p_valid_until\\n' +\n    '  ) RETURNING coverage_result_set_id\"\\n' +\n    'PL/pgSQL function publish_coverage_result(uuid,bigint,text,text,text,text,timestamp with time zone,jsonb) line 32 at SQL statement',\n  schema: undefined,\n  table: undefined,\n  column: undefined,\n  dataType: undefined,\n  constraint: undefined,\n  file: 'jsonfuncs.c',\n  line: '659',\n  routine: 'json_errsave_error'\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T04:34:16.073Z"
+}

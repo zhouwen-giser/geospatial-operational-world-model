@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "g00-db-20260825t1440",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "databases": {
+    "fresh": "gowm_v06_fresh_g00_db_20260825t1440",
+    "upgrade": "gowm_v06_upgrade_g00_db_20260825t1440"
+  },
+  "startedAt": "2026-08-25T03:46:24.294Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3055
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_fresh_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3122
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_fresh_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3151
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..052_coverage_gateway_result_integration.sql",
+        "gowm_v06_fresh_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4717
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..037_coverage_gateway_result_assertions.sql",
+        "gowm_v06_fresh_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3653
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3113
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3159
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..047_network_avoid_area_read_contract.sql",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4660
+    },
+    {
+      "command": [
+        "create-upgrade-preservation-probe",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3129
+    },
+    {
+      "command": [
+        "migration-batch:048_coverage_planner_schema.sql..052_coverage_gateway_result_integration.sql",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3192
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..037_coverage_gateway_result_assertions.sql",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3673
+    },
+    {
+      "command": [
+        "deliberate-migration-failure",
+        "gowm_v06_fresh_g00_db_20260825t1440"
+      ],
+      "status": "EXPECTED_FAIL",
+      "elapsedMs": 3111,
+      "exitCode": 3
+    },
+    {
+      "command": [
+        "verify-failed-migration-rollback",
+        "gowm_v06_fresh_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3106
+    },
+    {
+      "command": [
+        "deliberate-migration-failure",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "EXPECTED_FAIL",
+      "elapsedMs": 3111,
+      "exitCode": 3
+    },
+    {
+      "command": [
+        "verify-failed-migration-rollback",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3116
+    },
+    {
+      "command": [
+        "fresh-summary",
+        "gowm_v06_fresh_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3133
+    },
+    {
+      "command": [
+        "upgrade-summary",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3135
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_upgrade_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3425
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_fresh_g00_db_20260825t1440"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3167
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_upgrade_g00_db_20260825t1440",
+      "status": "PASS"
+    },
+    {
+      "database": "gowm_v06_fresh_g00_db_20260825t1440",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "fresh database summary failed the D00 invariant set: {\"upgradeMarker\":null,\"coverageTables\":16,\"migrationCount\":52,\"coverageFunctions\":15,\"providerDirectMutation\":false,\"providerNetworkMutation\":false,\"providerExecutableFunctions\":13}"
+  ],
+  "finishedAt": "2026-08-25T03:47:28.271Z"
+}

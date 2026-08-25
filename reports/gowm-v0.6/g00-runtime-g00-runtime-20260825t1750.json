@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1750",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1750",
+  "startedAt": "2026-08-25T04:30:33.158Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3060
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1750"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3109
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1750"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3159
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1750"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4989
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1750"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3145
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1750"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 6552
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1750"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3190
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1750",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:385\n    throw new Error(`${name} failed: ${JSON.stringify(details)}`); checks[name] = true; }\n          ^\n\nError: typedDagCompleted failed: {\"queryPlanVersion\":\"2.0\",\"queryId\":\"coverage-query-g00-runtime-20260825t1750\",\"jobId\":\"query_job_48f2195f499b4ea3aec93506a3ed87ae\",\"status\":\"FAILED\",\"nodes\":[{\"nodeId\":\"geometry\",\"operation\":{\"operationId\":\"world.get-geometry\",\"inputSchemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\",\"operationVersion\":\"1.0\",\"outputSchemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\"},\"providerId\":\"gowm.coverage-geometry-fixture\",\"status\":\"COMPLETED\",\"attempt\":1,\"startedAt\":\"2026-08-25T04:30:56.958Z\",\"finishedAt\":\"2026-08-25T04:30:56.969Z\",\"inputHash\":\"sha256:6612858823930a4da23160371e6a5c2b2fc0c91f8e3ce237ff74daff0e7b2bb9\",\"outputHash\":\"sha256:479abc0d20f26164c5880947c311cc76c927dfd8dab4792fd9768dd43f96477c\",\"result\":{\"providerProtocolVersion\":\"1.0\",\"requestId\":\"provider_request_0312e4b7dcc141758d919785222d3653\",\"operation\":{\"operationId\":\"world.get-geometry\",\"operationVersion\":\"1.0\"},\"status\":\"COMPLETED\",\"output\":{\"schemaUri\":\"urn:gowm:v0.6:road-coverage-request\",\"schemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\",\"value\":{\"area\":{\"type\":\"Polygon\",\"coordinates\":[[[0.0029,-0.0001],[0.0041,-0.0001],[0.0041,0.0001],[0.0029,0.0001],[0.0029,-0.0001]]]},\"objective\":{\"profile\":\"FASTEST_COMPLETION\"},\"requestId\":\"g00-runtime-20260825t1750-coverage-request\",\"routeCount\":1,\"timeLimitMs\":60000,\"schemaVersion\":\"1.0\",\"endpointPolicy\":{\"exit\":{\"mode\":\"AUTO\",\"maximumCandidates\":8},\"entry\":{\"mode\":\"AUTO\",\"maximumCandidates\":8},\"start\":{\"arcKey\":\"arc_1111111111111111111111111111111111111111111111111111111111111111\",\"direction\":\"FORWARD\",\"fractionPpm\":1000000},\"endpointMode\":\"RETURN_TO_START\",\"snapToleranceMm\":1000,\"boundaryCrossingPolicy\":\"FREE\"},\"routingSnapshot\":{\"graphVersion\":\"graph-v1\",\"costContentHash\":\"sha256:2222222222222222222222222222222222222222222222222222222222222222\",\"graphContentHash\":\"sha256:1111111111111111111111111111111111111111111111111111111111111111\",\"costProfileVersion\":\"cost-v1\",\"travelProfileVersion\":\"travel-v1\",\"networkDatasetVersion\":\"dataset-v1\"},\"selectionPolicy\":{\"mode\":\"FULLY_COVERED_EDGE\",\"roadClasses\":[\"LOCAL\"],\"serviceMode\":\"FIXED_DIRECTION\",\"requiredPasses\":1,\"fixedDirectionSource\":\"SOURCE_FEATURE_ATTRIBUTE\",\"minimumSegmentLengthMm\":1,\"selectionPolicyVersion\":\"coverage-selection/1.0\"},\"alternativePolicy\":{\"profiles\":[\"SHORTEST_TOTAL_DISTANCE\",\"FASTEST_COMPLETION\"],\"requestedCount\":2,\"minimumVerifiedCount\":2,\"maximumWeightedArcOverlapPpm\":800000,\"minimumDeadheadJaccardDistancePpm\":100000}}},\"dataSnapshot\":{\"consistency\":\"PINNED\",\"capturedAt\":\"2026-08-25T04:30:56.964Z\",\"scopeDigest\":\"sha256:2becd18414924d9137ab8393f3304669931de3e667234a309727ab22cb364588\",\"resources\":[{\"referenceKey\":{\"namespace\":\"gowm\",\"kind\":\"DATASET\",\"id\":\"wrf_60000000000000000000000000000001\",\"version\":\"dataset-v1\"},\"authority\":\"GOWM Grounding Geometry\",\"pinning\":\"PINNED\",\"digest\":\"sha256:1111111111111111111111111111111111111111111111111111111111111111\"}]},\"computeSnapshot\":{\"provider\":{\"providerId\":\"gowm.coverage-geometry-fixture\",\"providerVersion\":\"1.0.0\",\"implementationDigest\":\"sha256:9a95e36e8cb45b5becffdba38b950f50dbf919e2482d339c6f367c030e65be50\"},\"operation\":{\"operationId\":\"world.get-geometry\",\"operationVersion\":\"1.0\"},\"engine\":{\"name\":\"GOWM Grounding Geometry\",\"version\":\"1.0\"},\"policy\":{\"version\":\"coverage-g00-geometry/1\",\"digest\":\"sha256:01e0986316dc9963580571aa247502ff4c8857bb72880ab23012ac7cb751c359\"},\"schemas\":{\"inputSchemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\",\"outputSchemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\"}},\"receipts\":[{\"receiptId\":\"receipt_f3005ddf62424b32a6fb2b0a971b033e\",\"operationId\":\"world.get-geometry\",\"operationVersion\":\"1.0\",\"providerId\":\"gowm.coverage-geometry-fixture\",\"providerVersion\":\"1.0.0\",\"inputHash\":\"sha256:6612858823930a4da23160371e6a5c2b2fc0c91f8e3ce237ff74daff0e7b2bb9\",\"outputHash\":\"sha256:6612858823930a4da23160371e6a5c2b2fc0c91f8e3ce237ff74daff0e7b2bb9\",\"computeSnapshotHash\":\"sha256:e9e56eeeb2975e888c17e57fa9dc6278be130febf8478f5e065f1b95b83832a5\",\"generatedAt\":\"2026-08-25T04:30:56.964Z\",\"durationMs\":0.1751430000003893,\"method\":{\"engine\":\"GOWM Grounding Geometry\",\"engineVersion\":\"1.0\",\"methodId\":\"world.get-geometry/coverage-fixture\",\"methodVersion\":\"1.0\"},\"changes\":{\"repairApplied\":false,\"typeChanged\":false},\"warnings\":[]}],\"evidenceReferences\":[],\"warnings\":[],\"consumption\":{\"inputBytes\":1410,\"rows\":1,\"candidates\":1,\"outputBytes\":1410},\"execution\":{\"providerId\":\"gowm.coverage-geometry-fixture\",\"providerVersion\":\"1.0.0\",\"elapsedMs\":0.1751430000003893,\"resultHash\":\"sha256:6612858823930a4da23160371e6a5c2b2fc0c91f8e3ce237ff74daff0e7b2bb9\"}}},{\"nodeId\":\"validate\",\"operation\":{\"operationId\":\"coverage.road.validate\",\"inputSchemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\",\"operationVersion\":\"1.0\",\"outputSchemaHash\":\"sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a\"},\"providerId\":\"gowm.road-coverage-planning\",\"status\":\"COMPLETED\",\"attempt\":1,\"startedAt\":\"2026-08-25T04:30:56.974Z\",\"finishedAt\":\"2026-08-25T04:30:56.985Z\",\"inputHash\":\"sha256:6612858823930a4da23160371e6a5c2b2fc0c91f8e3ce237ff74daff0e7b2bb9\",\"outputHash\":\"sha256:79d4f519e74ede7cd68e1a849bfedd304a5482b1a437766e914ac7c16be8e2b7\",\"result\":{\"providerProtocolVersion\":\"1.0\",\"requestId\":\"provider_request_1ceb200e6e4344eeb5da3fa0cb142ea1\",\"operation\":{\"operationId\":\"coverage.road.validate\",\"operationVersion\":\"1.0\"},\"status\":\"COMPLETED\",\"output\":{\"schemaUri\":\"urn:gowm:v0.6:coverage-validation-result\",\"schemaHash\":\"sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a\",\"value\":{\"schemaVersion\":\"1.0\",\"valid\":true,\"violations\":[],\"warnings\":[],\"normalizedSummary\":{\"routeCount\":1,\"selectionMode\":\"FULLY_COVERED_EDGE\",\"serviceMode\":\"FIXED_DIRECTION\",\"endpointMode\":\"RETURN_TO_START\",\"requestedAlternativeCount\":2}}},\"dataSnapshot\":{\"consistency\":\"PINNED\",\"capturedAt\":\"2026-08-25T04:30:56.983Z\",\"scopeDigest\":\"sha256:84c181aff006b46fed0deff6585d4afef08ddc61b2a2879336d334f57dfe21d4\",\"resources\":[{\"referenceKey\":{\"namespace\":\"gowm\",\"kind\":\"DATASET\",\"id\":\"wrf_60000000000000000000000000000001\",\"version\":\"dataset-v1\"},\"authority\":\"GOWM Network Foundation\",\"pinning\":\"PINNED\",\"digest\":\"sha256:1111111111111111111111111111111111111111111111111111111111111111\"}]},\"computeSnapshot\":{\"provider\":{\"providerId\":\"gowm.road-coverage-planning\",\"providerVersion\":\"1.0.0\",\"implementationDigest\":\"sha256:bd44b6c87857d394f05d3b9ba2fafb4926cf094df34694d1beb409fd27bc276c\"},\"operation\":{\"operationId\":\"coverage.road.validate\",\"operationVersion\":\"1.0\"},\"engine\":{\"name\":\"GOWM Road Coverage Planning\",\"version\":\"0.6.0\"},\"policy\":{\"version\":\"gowm-road-coverage-policy/1.0\",\"digest\":\"sha256:08e8a4b26c97ed0b2f5eb64fa8d1c859ba14681576952d361ec08b6a24b157f7\"},\"schemas\":{\"inputSchemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\",\"outputSchemaHash\":\"sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a\"},\"artifacts\":[{\"kind\":\"DATABASE\",\"name\":\"gowm_network_v1+coverage_planner\",\"version\":\"migration-052\"},{\"kind\":\"PACKAGE\",\"name\":\"road-coverage-planning-core+road-coverage-verifier-core\",\"version\":\"0.6.0\"}]},\"receipts\":[{\"receiptId\":\"receipt_79bdae624ece4b95a35f19bbe907e922\",\"operationId\":\"coverage.road.validate\",\"operationVersion\":\"1.0\",\"providerId\":\"gowm.road-coverage-planning\",\"providerVersion\":\"1.0.0\",\"inputHash\":\"sha256:6612858823930a4da23160371e6a5c2b2fc0c91f8e3ce237ff74daff0e7b2bb9\",\"outputHash\":\"sha256:63bb96961cd6da5289882727e955c8e0c403629e7efef058e4fa8b72de1c635e\",\"computeSnapshotHash\":\"sha256:444fb1aebd9d872e0618d18bd08b2a85cfe5a01be7f70641d609d5101d08696d\",\"generatedAt\":\"2026-08-25T04:30:56.983Z\",\"durationMs\":5.486700999999812,\"method\":{\"engine\":\"GOWM Road Coverage Planning\",\"engineVersion\":\"0.6.0\",\"methodId\":\"gowm-road-coverage/coverage.road.validate\",\"methodVersion\":\"1.0\"},\"changes\":{\"repairApplied\":false,\"typeChanged\":false},\"warnings\":[]}],\"evidenceReferences\":[],\"warnings\":[],\"consumption\":{\"inputBytes\":1410,\"rows\":1,\"candidates\":0,\"outputBytes\":235},\"execution\":{\"providerId\":\"gowm.road-coverage-planning\",\"providerVersion\":\"1.0.0\",\"elapsedMs\":5.486700999999812,\"resultHash\":\"sha256:63bb96961cd6da5289882727e955c8e0c403629e7efef058e4fa8b72de1c635e\"}}},{\"nodeId\":\"plan\",\"operation\":{\"operationId\":\"coverage.road.plan\",\"inputSchemaHash\":\"sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e\",\"operationVersion\":\"1.0\",\"outputSchemaHash\":\"sha256:6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50\"},\"providerId\":\"gowm.road-coverage-planning\",\"status\":\"FAILED\",\"attempt\":1,\"startedAt\":\"2026-08-25T04:30:56.990Z\",\"finishedAt\":\"2026-08-25T04:30:57.071Z\",\"inputHash\":\"sha256:6612858823930a4da23160371e6a5c2b2fc0c91f8e3ce237ff74daff0e7b2bb9\",\"error\":{\"schemaVersion\":\"1.0\",\"requestId\":\"query_node_c0fadbbef48d4cb79744f5cabe9ab956\",\"error\":{\"code\":\"INTERNAL_PROVIDER_ERROR\",\"message\":\"Gateway request failed\",\"retryable\":false,\"stage\":\"DAG_EXECUTION\",\"nodeId\":\"plan\",\"providerId\":\"gowm.road-coverage-planning\"}}}],\"outputs\":{},\"warnings\":[\"plan: INTERNAL_PROVIDER_ERROR\",\"plan: output unavailable (INVALID_REQUEST)\"],\"startedAt\":\"2026-08-25T04:30:56.949Z\",\"finishedAt\":\"2026-08-25T04:30:57.076Z\",\"outputHash\":\"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a\"}\n    at check (file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:385:11)\n    at file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:121:5\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T04:31:00.379Z"
+}

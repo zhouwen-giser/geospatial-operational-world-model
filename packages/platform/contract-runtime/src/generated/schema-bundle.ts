@@ -12709,6 +12709,16 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "gatewayJobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "gatewayQueryId": {
+            "$ref": "common-definitions.schema.json#/$defs/identifier"
+          },
+          "gatewayNodeId": {
+            "$ref": "common-definitions.schema.json#/$defs/identifier"
           }
         }
       },

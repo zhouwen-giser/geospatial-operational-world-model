@@ -12,6 +12,7 @@ const claim: CoverageClaim = {
 
 function repository(events: string[], claimed: CoverageClaim | null = claim): CoverageAsyncRepository {
   return {
+    claim: vi.fn(async () => claimed),
     claimNext: vi.fn(async () => {
       events.push("claim");
       return claimed;
@@ -24,6 +25,7 @@ function repository(events: string[], claimed: CoverageClaim | null = claim): Co
       events.push("persist-problem");
       return "30000000-0000-0000-0000-000000000001";
     }),
+    persistCandidate: vi.fn(async () => "40000000-0000-0000-0000-000000000001"),
     publishResult: vi.fn(async () => {
       events.push("publish-result");
       return true;

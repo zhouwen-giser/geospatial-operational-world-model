@@ -1,4 +1,4 @@
-import { getContractSchema, type CapabilityDescriptor, type CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
+import { getContractSchema, getContractSchemaHash, type CapabilityDescriptor, type CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { createProviderRuntime, sha256, type ProviderOperation, type ProviderRuntime } from "../../../../packages/platform/provider-sdk/src/index.js";
 import type { RoadCoverageEngine } from "./engine.js";
 
@@ -153,7 +153,17 @@ function operation(lock: OperationLock, engine: RoadCoverageEngine): ProviderOpe
     snapshotPolicy: { dataSnapshot: "REQUIRED", computeSnapshot: "REQUIRED" },
     ports: {
       inputs: [{ name: "request", schemaUri: lock.inputSchemaUri, schemaHash: lock.inputSchemaHash, valueKind: "ANY", unitSemantics: "UNSPECIFIED" }],
-      outputs: [{ name: "result", schemaUri: lock.outputSchemaUri, schemaHash: lock.outputSchemaHash, valueKind: "ANY", unitSemantics: "UNSPECIFIED" }]
+      outputs: [
+        { name: "result", schemaUri: lock.outputSchemaUri, schemaHash: lock.outputSchemaHash, valueKind: "ANY", unitSemantics: "UNSPECIFIED" },
+        ...(lock.operationId === "coverage.road.validate" ? [{
+          name: "valid",
+          schemaUri: "urn:gowm:v0.2:value:boolean",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.2:value:boolean"),
+          valueKind: "SCALAR" as const,
+          unitSemantics: "UNSPECIFIED" as const,
+          path: "/valid"
+        }] : [])
+      ]
     }
   };
   return {
@@ -168,7 +178,7 @@ function operation(lock: OperationLock, engine: RoadCoverageEngine): ProviderOpe
       methodId: `gowm-road-coverage/${lock.operationId}`,
       methodVersion: "1.0",
       artifacts: [
-        { kind: "DATABASE", name: "gowm_network_v1+coverage_planner", version: "migration-051" },
+        { kind: "DATABASE", name: "gowm_network_v1+coverage_planner", version: "migration-052" },
         { kind: "PACKAGE", name: "road-coverage-planning-core+road-coverage-verifier-core", version: "0.6.0" }
       ]
     },
@@ -179,3 +189,4 @@ function operation(lock: OperationLock, engine: RoadCoverageEngine): ProviderOpe
 }
 
 export type { RoadCoverageEngine } from "./engine.js";
+export { PostgresRoadCoverageEngine, type PostgresRoadCoverageEngineOptions } from "./postgres-engine.js";

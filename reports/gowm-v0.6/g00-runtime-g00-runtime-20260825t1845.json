@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1845",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1845",
+  "startedAt": "2026-08-25T04:49:08.068Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3062
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1845"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3114
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1845"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3152
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1845"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4826
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1845"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3148
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1845"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 6576
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1845"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3172
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1845",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:207\n        throw new Error(`${operationId} failed: ${response.statusCode} ${response.body}`);\n              ^\n\nError: coverage.road.expand-geojson failed: 500 {\"schemaVersion\":\"1.0\",\"requestId\":\"req-6\",\"error\":{\"code\":\"INTERNAL_PROVIDER_ERROR\",\"message\":\"Gateway request failed\",\"retryable\":false,\"stage\":\"PROVIDER_EXECUTION\"}}\n    at execute (file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:207:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:138:22\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T04:49:35.134Z"
+}

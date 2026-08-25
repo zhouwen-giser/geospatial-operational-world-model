@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "g00-runtime-20260825t1740",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_g00_g00_runtime_20260825t1740",
+  "startedAt": "2026-08-25T04:28:21.200Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3063
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_g00_runtime_20260825t1740"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3122
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1740"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3145
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_g00_g00_runtime_20260825t1740"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4671
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_g00_runtime_20260825t1740"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3142
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_g00_runtime_20260825t1740"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 6640
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_g00_runtime_20260825t1740"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3172
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_g00_runtime_20260825t1740",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "/workspace/node_modules/pg/lib/client.js:694\n          Error.captureStackTrace(err)\n                ^\n\nerror: insert or update on table \"world_query_node_execution\" violates foreign key constraint \"world_query_node_execution_operation_id_operation_version_fkey\"\n    at /workspace/node_modules/pg/lib/client.js:694:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async PostgresQueryPlanStore.create (file:///workspace/dist/services/gateway/world-capability-gateway/src/postgres-query-plan-store.js:101:13)\n    at async WorldQueryRuntime.submit (file:///workspace/dist/services/gateway/world-capability-gateway/src/query-plan-runtime.js:30:25)\n    at async file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:114:20 {\n  length: 440,\n  severity: 'ERROR',\n  code: '23503',\n  detail: 'Key (operation_id, operation_version)=(world.get-geometry, 1.0) is not present in table \"provider_operation\".',\n  hint: undefined,\n  position: undefined,\n  internalPosition: undefined,\n  internalQuery: undefined,\n  where: undefined,\n  schema: 'gowm_capability',\n  table: 'world_query_node_execution',\n  column: undefined,\n  dataType: undefined,\n  constraint: 'world_query_node_execution_operation_id_operation_version_fkey',\n  file: 'ri_triggers.c',\n  line: '2772',\n  routine: 'ri_ReportViolation'\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T04:28:48.172Z"
+}

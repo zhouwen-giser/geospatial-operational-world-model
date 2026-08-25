@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "g00-async-20260825t2000",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_j00_g00_async_20260825t2000",
+  "startedAt": "2026-08-25T04:57:12.621Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3059
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_j00_g00_async_20260825t2000"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3110
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_j00_g00_async_20260825t2000"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3145
+    },
+    {
+      "command": [
+        "migration-batch-001-052",
+        "gowm_v06_j00_g00_async_20260825t2000"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4713
+    },
+    {
+      "command": [
+        "async-fixture",
+        "gowm_v06_j00_g00_async_20260825t2000"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3122
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-async-runtime-client",
+        "gowm_v06_j00_g00_async_20260825t2000"
+      ],
+      "status": "PASS",
+      "elapsedMs": 2068
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_j00_g00_async_20260825t2000"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3178
+    }
+  ],
+  "summary": {
+    "status": "PASS",
+    "checks": {
+      "idempotentReplay": true,
+      "idempotencyConflict": true,
+      "orderedClaim": true,
+      "boundedAdmission": true,
+      "heartbeatAccepted": true,
+      "monotonicProgress": true,
+      "gatewayRestartPersistence": true,
+      "expiredLeaseReaped": true,
+      "workerRestartGeneration": true,
+      "cancelGenerationFence": true,
+      "lateResultRejected": true,
+      "noGhostResult": true,
+      "nextQueuedJobPreserved": true,
+      "completedReplayReusesJobAndResult": true,
+      "simultaneousCancelPublishHasOneCoherentWinner": true
+    },
+    "firstRequestId": "bc49036a-203d-4e82-8819-878e79c22ec5",
+    "secondRequestId": "21e7211e-126e-493c-a383-81faaf2fb61a",
+    "firstGeneration": 1,
+    "restartedGeneration": 2
+  },
+  "cleanup": [
+    {
+      "database": "gowm_v06_j00_g00_async_20260825t2000",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-08-25T04:57:35.033Z"
+}

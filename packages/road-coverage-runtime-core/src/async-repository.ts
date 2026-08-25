@@ -20,9 +20,18 @@ export interface CoverageClaim {
 }
 
 export interface CoverageAsyncRepository {
+  claim(coverageRequestId: string, attempt: number, leaseOwner: string, leaseSeconds: number): Promise<CoverageClaim | null>;
   claimNext(attempt: number, leaseOwner: string, leaseSeconds: number, maximumScopeConcurrency: number): Promise<CoverageClaim | null>;
   heartbeat(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, leaseSeconds: number, stage: string, progressPpm: number, resourceMetrics: Record<string, unknown>): Promise<boolean>;
   persistProblem(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, problemHash: `sha256:${string}`, canonicalProblem: Record<string, unknown>): Promise<string>;
+  persistCandidate(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, input: {
+    problemHash: `sha256:${string}`;
+    objectiveProfile: string;
+    candidateHash: `sha256:${string}`;
+    route: Record<string, unknown>;
+    solverDiagnostics: Record<string, unknown>;
+    verification: Record<string, unknown>;
+  }): Promise<string>;
   publishResult(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, input: {
     referenceKey: string;
     status: "SUCCEEDED" | "PARTIAL" | "NO_FEASIBLE_PLAN";
@@ -44,6 +53,15 @@ export class PostgresCoverageAsyncRepository implements CoverageAsyncRepository 
     const row = result.rows[0];
     if (row === undefined) throw new Error("coverage submission returned no row");
     return { coverageRequestId: row.coverage_request_id, status: row.status, replayed: row.replayed };
+  }
+
+  async claim(coverageRequestId: string, attempt: number, leaseOwner: string, leaseSeconds: number): Promise<CoverageClaim | null> {
+    const result = await this.pool.query<{ coverage_request_id: string; coverage_run_id: string; generation: string; lease_until: Date }>(
+      "SELECT $1::uuid AS coverage_request_id, claimed.coverage_run_id, claimed.generation, claimed.lease_until FROM coverage_planner.claim_coverage_request($1::uuid,$2,$3,$4) claimed",
+      [coverageRequestId, attempt, leaseOwner, leaseSeconds]
+    );
+    const row = result.rows[0];
+    return row === undefined ? null : { coverageRequestId: row.coverage_request_id, coverageRunId: row.coverage_run_id, generation: Number(row.generation), leaseUntil: row.lease_until.toISOString() };
   }
 
   async claimNext(attempt: number, leaseOwner: string, leaseSeconds: number, maximumScopeConcurrency: number): Promise<CoverageClaim | null> {
@@ -70,6 +88,24 @@ export class PostgresCoverageAsyncRepository implements CoverageAsyncRepository 
     );
     const id = result.rows[0]?.problem_id;
     if (id === undefined) throw new Error("coverage problem persistence returned no identity");
+    return id;
+  }
+
+  async persistCandidate(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, input: {
+    problemHash: `sha256:${string}`;
+    objectiveProfile: string;
+    candidateHash: `sha256:${string}`;
+    route: Record<string, unknown>;
+    solverDiagnostics: Record<string, unknown>;
+    verification: Record<string, unknown>;
+  }): Promise<string> {
+    const result = await this.pool.query<{ candidate_id: string }>(
+      "SELECT coverage_planner.persist_coverage_candidate($1::uuid,$2::bigint,$3,$4,$5,$6,$7::jsonb,$8::jsonb,$9::jsonb) AS candidate_id",
+      [claim.coverageRequestId, claim.generation, leaseOwner, input.problemHash, input.objectiveProfile,
+        input.candidateHash, JSON.stringify(input.route), JSON.stringify(input.solverDiagnostics), JSON.stringify(input.verification)]
+    );
+    const id = result.rows[0]?.candidate_id;
+    if (id === undefined) throw new Error("coverage candidate persistence returned no identity");
     return id;
   }
 
@@ -104,5 +140,22 @@ export class PostgresCoverageAsyncRepository implements CoverageAsyncRepository 
       "SELECT coverage_planner.get_coverage_result($1::uuid,$2,$3) AS result", [coverageRequestId, dataScopeKey, datasetScopeKey]
     );
     return result.rows[0]?.result ?? null;
+  }
+
+  async getArtifact(referenceKey: string, dataScopeKey: string, datasetScopeKey: string): Promise<Record<string, unknown> | null> {
+    const result = await this.pool.query<{ artifact: Record<string, unknown> | null }>(
+      "SELECT coverage_planner.get_coverage_artifact($1,$2,$3) AS artifact", [referenceKey, dataScopeKey, datasetScopeKey]
+    );
+    return result.rows[0]?.artifact ?? null;
+  }
+
+  async expandGeoJson(referenceKey: string, alternativeId: string, dataScopeKey: string, datasetScopeKey: string): Promise<Record<string, unknown>> {
+    const result = await this.pool.query<{ geojson: Record<string, unknown> }>(
+      "SELECT coverage_planner.expand_coverage_alternative_geojson($1,$2,$3,$4) AS geojson",
+      [referenceKey, alternativeId, dataScopeKey, datasetScopeKey]
+    );
+    const value = result.rows[0]?.geojson;
+    if (value === undefined) throw new Error("coverage GeoJSON expansion returned no result");
+    return value;
   }
 }

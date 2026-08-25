@@ -193,7 +193,7 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "platform/gateway-execute-request.schema.json": "sha256:72646dfb429ea47d0d5392c51465b8b8e6817c23befacd6ce80b52ea64991c5e",
   "platform/job-record.schema.json": "sha256:8ab5d9879463a07183b1edd902873014acd297c9d5140e1e793a635bde866c34",
   "platform/platform-error.schema.json": "sha256:5db2f8ca7362ceca80edca7de32d4dd1c7a21f71061c60858fb9e42ff5576253",
-  "platform/provider-execution-request.schema.json": "sha256:5d412de7e1e73813e89864564fc70eeba029bbf242e147909b024d674354f9ad",
+  "platform/provider-execution-request.schema.json": "sha256:4e12c74ee8fc73986177b9e269e90d905dfec9822b749dc9af224da5d1549a59",
   "platform/provider-lock.schema.json": "sha256:e3cf8ce2fb72e662680e3f2db86b64f116aa74b438e115f4d5a051fed85845ee",
   "platform/value-array.schema.json": "sha256:8e1e4dd66e9483d8341c51dc5ec424d8e6510ae35cdbc53040d0bab497459945",
   "platform/value-boolean.schema.json": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
