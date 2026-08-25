@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "b00-20260825t0900",
+  "container": "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+  "database": "gowm_v06_b00_b00_20260825t0900",
+  "startedAt": "2026-08-25T00:54:23.389Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3057
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_b00_b00_20260825t0900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3109
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_b00_b00_20260825t0900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3153
+    },
+    {
+      "command": [
+        "migration-batch-001-049",
+        "gowm_v06_b00_b00_20260825t0900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4732
+    },
+    {
+      "command": [
+        "coverage-selection-fixture",
+        "gowm_v06_b00_b00_20260825t0900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3137
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-selection-runtime-client",
+        "gowm_v06_b00_b00_20260825t0900"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 568
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_b00_b00_20260825t0900"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3185
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_b00_b00_20260825t0900",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "node:internal/modules/cjs/loader:1433\n  throw err;\n  ^\n\nError: Cannot find module '/workspace/dist/validation/scripts/coverage-selection-runtime-client.js'\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)\n    at Function._load (node:internal/modules/cjs/loader:1216:25)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: []\n}\n\nNode.js v22.23.1\n",
+    "Command failed: docker run --rm --network container:gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1 --volume D:\\Code\\agent-app\\geospatial-operational-world-model:/workspace --workdir /workspace --env DATABASE_URL=postgresql://gowm:[REDACTED]@127.0.0.1:5432/gowm_v06_b00_b00_20260825t0900?options=-c%20role%3Dcoverage_planner_provider node:22-bookworm node dist/validation/scripts/coverage-selection-runtime-client.js\nnode:internal/modules/cjs/loader:1433\n  throw err;\n  ^\n\nError: Cannot find module '/workspace/dist/validation/scripts/coverage-selection-runtime-client.js'\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)\n    at Function._load (node:internal/modules/cjs/loader:1216:25)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\n    at node:internal/main/run_main_module:36:49 {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: []\n}\n\nNode.js v22.23.1\n"
+  ],
+  "finishedAt": "2026-08-25T00:54:44.346Z"
+}

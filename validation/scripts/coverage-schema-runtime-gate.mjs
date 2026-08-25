@@ -167,11 +167,11 @@ try {
   const assertions = (await readdir(resolve(repositoryRoot, "database/tests")))
     .filter((name) => /^\d{3}_.+_assertions\.sql$/u.test(name))
     .sort();
-  if (migrations.length !== 49 || migrations.at(-1)?.slice(0, 3) !== "049") {
-    throw new Error(`expected the frozen D00 migration set 001-049, received ${migrations.length}`);
+  if (migrations.length !== 50 || migrations.at(-1)?.slice(0, 3) !== "050") {
+    throw new Error(`expected the current v0.6 migration set 001-050, received ${migrations.length}`);
   }
-  if (assertions.length !== 34 || assertions.at(-1)?.slice(0, 3) !== "034") {
-    throw new Error(`expected the frozen D00 assertion set 001-034, received ${assertions.length}`);
+  if (assertions.length !== 35 || assertions.at(-1)?.slice(0, 3) !== "035") {
+    throw new Error(`expected the current v0.6 assertion set 001-035, received ${assertions.length}`);
   }
 
   createDatabase(freshDatabase);
@@ -227,7 +227,7 @@ try {
     "upgrade summary"
   );
   for (const [kind, summary] of [["fresh", freshSummary], ["upgrade", upgradeSummary]]) {
-    if (summary.migrationCount !== 49 || summary.coverageTables !== 16 || summary.coverageFunctions !== 9 ||
+    if (summary.migrationCount !== 50 || summary.coverageTables !== 16 || summary.coverageFunctions !== 9 ||
         summary.providerExecutableFunctions !== 7 ||
         summary.providerDirectMutation !== false || summary.providerNetworkMutation !== false) {
       throw new Error(`${kind} database summary failed the D00 invariant set: ${JSON.stringify(summary)}`);
@@ -265,4 +265,4 @@ try {
 }
 
 if (failure) throw failure;
-process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=49 assertions=34\n`);
+process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=50 assertions=35\n`);

@@ -34,7 +34,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] A00 ADR / Authority / Non-goal
 - [x] A01 Contracts / OpenAPI / Manifest / Generated Types
 - [x] D00 Coverage Schema / Roles / Immutability / Assertions
-- [ ] B00 Area Selection / Fraction Obligations
+- [x] B00 Area Selection / Fraction Obligations
 - [ ] B01 Canonical Problem / Ledger / Hash
 - [ ] E00 Start / Boundary / Endpoint Policy
 - [ ] S00 Closed DCPP
@@ -76,6 +76,10 @@ This is a living execution plan. It records only evidence produced from the actu
 - D00's first real runtime script issued one Docker `exec` per migration registration and was stopped after proving the approach would spend most of its time in Windows Docker startup overhead. The exact temporary fresh database was confirmed and removed, then migration/assertion input was safely batched.
 - D00's first completed batch run exposed a test-only reference to the nonexistent `network_foundation` schema. The authority tables are actually in `public`; all three permission probes were corrected without changing grants.
 - D00's next run passed both full database paths but the final summary expected eight private functions. The actual schema intentionally has two trigger functions plus seven controlled APIs; the gate now proves nine total and exactly seven Provider-executable functions.
+- B00's first real application-container run found that the new runtime client was not in the root TypeScript compile allowlist; the client was added explicitly and the isolated database was cleaned.
+- B00's next run proved the Coverage role correctly lacked `public` schema/PostGIS access. Migration 050 therefore adds one narrow `gowm_network_v1` security-definer read function instead of granting broad public or base-table rights.
+- B00's first controlled-function run returned the correct four symmetric-hole obligations, while the test incorrectly expected four distinct numeric fraction intervals. The assertion now keys by Arc plus fractions, proving two fragments on each of two directions.
+- The first 050 database regression passed all migrations/assertions but retained a historical summary expectation of 49 migrations. The current gate now asserts 50 migrations and 35 assertions.
 
 ## Validation
 
@@ -87,3 +91,5 @@ This is a living execution plan. It records only evidence produced from the actu
 - Exact branch base and merge-base: `d6a90ddcd00db946018892c34a327caa631785b0`.
 - D00 static SQL AST: 49 migrations and 34 assertion files PASS; boundary guard PASS.
 - D00 real PostgreSQL gate: `GOWM_COVERAGE_SCHEMA_RUNTIME_PASS d00-20260825t0850 migrations=49 assertions=34`; fresh and v0.5-upgrade paths PASS, both deliberate failure probes rolled back, and both isolated databases were removed.
+- B00 real PostGIS gate: `GOWM_COVERAGE_SELECTION_RUNTIME_PASS b00-20260825t0930 checks=14`; Polygon holes, MultiPolygon ordering, covers/intersects/clips, road/service filters, one-way/both-direction expansion, manual validation, scope-first denial, budgets, and empty selection PASS.
+- Post-B00 database regression: `GOWM_COVERAGE_SCHEMA_RUNTIME_PASS b00-db-20260825t0950 migrations=50 assertions=35`; fresh/upgrade/rollback paths PASS and isolated databases were removed.
