@@ -2198,6 +2198,13 @@ export type GowmV061DataProductDescriptor = {
   temporalExtent?: GowmV061CommonTimeRange;
 };
 
+export type GowmV061DataProductDetailResult = {
+  operationId: "catalog.list-versions" | "catalog.describe-schema" | "catalog.get-lineage" | "catalog.get-quality" | "catalog.get-capabilities";
+  referenceKey: GowmV061CommonReferenceKey;
+  schemaVersion: "1.0";
+  value: unknown;
+};
+
 export type GowmV061DataQualitySummary = {
   completeness?: number;
   knownLimitations: Array<string>;

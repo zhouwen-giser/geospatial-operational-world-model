@@ -16,8 +16,8 @@
     {
       "providerId": "gowm.dataset-catalog",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:cdb47b50ae8ddf25feb6b616bfa3aef5f1791549064befd6de55d2b0ee8b048b",
-      "manifestHash": "sha256:609785cfcf7073ab129fe66b54ced9cdb9c1a943203d48098c418470874f8598",
+      "implementationDigest": "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",
+      "manifestHash": "sha256:b79435a8a2ef45415c705f08ace96f868808621f818ce01ea7affa41502571af",
       "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
       "endpoint": "http://dataset-catalog-provider:8091",
       "approvalId": "grounding-dataset-catalog-v1.0",

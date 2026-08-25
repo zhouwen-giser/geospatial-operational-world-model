@@ -23,8 +23,10 @@ const targets: Array<[GroundingCatalogMode, string]> = [
 ];
 
 let stale = false;
+const catalogProviders = new Map<string, ReturnType<typeof createGroundingCatalogProvider>>();
 for (const [mode, filename] of targets) {
   const provider = createGroundingCatalogProvider({ mode, pool, cursorSecret });
+  catalogProviders.set(provider.runtime.manifest.provider.providerId, provider);
   const path = resolve(repositoryRoot, "contracts", "manifests", "providers", filename);
   const expected = `${JSON.stringify(provider.runtime.manifest, null, 2)}\n`;
   if (check) {
@@ -50,6 +52,15 @@ if (check) {
 
 const registryPath=resolve(repositoryRoot,"config","grounding-gateway-registry.json");
 const registry=JSON.parse(await readFile(registryPath,"utf8")) as {configVersion:string;providers:Array<Record<string,unknown>>};
+registry.providers=registry.providers.map((entry) => {
+  const provider = catalogProviders.get(String(entry.providerId));
+  return provider === undefined ? entry : {
+    ...entry,
+    providerVersion: provider.runtime.manifest.provider.providerVersion,
+    implementationDigest: provider.runtime.manifest.provider.implementationDigest,
+    manifestHash: sha256(provider.runtime.manifest)
+  };
+});
 const operationalEntry={
   providerId:"gowm.operational-reality",providerVersion:"1.0.0",
   implementationDigest:operationalProvider.runtime.manifest.provider.implementationDigest,

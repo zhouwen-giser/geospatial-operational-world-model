@@ -169,6 +169,7 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "gowm-v0.6.1/compute-snapshot-manifest.schema.json": "sha256:77f14a3a4f789e78c95e469f7e3deb1399b6dbabdf26b76a0edef7b0829ad127",
   "gowm-v0.6.1/coverage-objective.schema.json": "sha256:122ebf59ae7da39542c860860f47fe15ce551c0313081c5e0710d5aea67d540c",
   "gowm-v0.6.1/data-product-descriptor.schema.json": "sha256:d3ed28efd4b24c21ed91fda200e656a9b492bac88e1fe8d8dd2488ee78c76cf4",
+  "gowm-v0.6.1/data-product-detail-result.schema.json": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
   "gowm-v0.6.1/data-quality-summary.schema.json": "sha256:b8566a2d1176aac0e54587375b06faa154e69d3b541fb3c5562e213c160764a3",
   "gowm-v0.6.1/data-snapshot-manifest.schema.json": "sha256:bb38e8c7c322bc549723a72af957795d6e5314117ff3502dd7d5048ec28af9a0",
   "gowm-v0.6.1/no-feasible-result.schema.json": "sha256:416aed75383e20730881ddc9e92a07e87775d27c0a18518f4dd4ce5ca54b503b",

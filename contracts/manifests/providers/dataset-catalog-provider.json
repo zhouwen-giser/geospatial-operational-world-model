@@ -4,7 +4,7 @@
     "providerId": "gowm.dataset-catalog",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:cdb47b50ae8ddf25feb6b616bfa3aef5f1791549064befd6de55d2b0ee8b048b",
+    "implementationDigest": "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",
     "sourceRef": "urn:gowm:source:in-tree:grounding-catalog:1.0.0"
   },
   "endpoints": {
@@ -333,6 +333,384 @@
             "name": "result",
             "schemaUri": "urn:gowm:v0.4:spatial-feature-descriptor",
             "schemaHash": "sha256:ccda8313d375c41438d7525170af922f97d3eb97028d2aa2c96a53b01b0df1dd",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "catalog.get",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "DATASET_VERSION_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaUri": "urn:gowm:v0.6.1:data-product-descriptor",
+      "outputSchemaHash": "sha256:d3ed28efd4b24c21ed91fda200e656a9b492bac88e1fe8d8dd2488ee78c76cf4",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:catalog-query-request",
+            "schemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6.1:data-product-descriptor",
+            "schemaHash": "sha256:d3ed28efd4b24c21ed91fda200e656a9b492bac88e1fe8d8dd2488ee78c76cf4",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "catalog.search",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "DATASET_VERSION_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.6.1:catalog-search-request",
+      "inputSchemaHash": "sha256:d15fc90c9641712ef22d536c931bedf0a6f8e7af46a93172a48aec8f373e51aa",
+      "outputSchemaUri": "urn:gowm:v0.6.1:catalog-search-result",
+      "outputSchemaHash": "sha256:85c9b79082dca6abba93becc6ffca0bcb5a86934c61685a6e0a05863bd6430fc",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.6.1:catalog-search-request",
+            "schemaHash": "sha256:d15fc90c9641712ef22d536c931bedf0a6f8e7af46a93172a48aec8f373e51aa",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6.1:catalog-search-result",
+            "schemaHash": "sha256:85c9b79082dca6abba93becc6ffca0bcb5a86934c61685a6e0a05863bd6430fc",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "catalog.list-versions",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "DATASET_VERSION_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+      "outputSchemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:catalog-query-request",
+            "schemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+            "schemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "catalog.describe-schema",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "DATASET_VERSION_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+      "outputSchemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:catalog-query-request",
+            "schemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+            "schemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "catalog.get-lineage",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "DATASET_VERSION_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+      "outputSchemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:catalog-query-request",
+            "schemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+            "schemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "catalog.get-quality",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "DATASET_VERSION_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+      "outputSchemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:catalog-query-request",
+            "schemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+            "schemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "catalog.get-capabilities",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "DATASET_VERSION_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+      "outputSchemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
+      "scopePolicy": "DATASET_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.4:catalog-query-request",
+            "schemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6.1:data-product-detail-result",
+            "schemaHash": "sha256:4d1d6b4aa7bd3bc6784e7082a46a5f174a2abe3c6d350b90249589f02baa46c9",
             "valueKind": "ANY",
             "unitSemantics": "UNSPECIFIED"
           }

@@ -19,7 +19,14 @@ export const DATASET_OPERATION_IDS = [
   "layer.get",
   "layer.list",
   "layer.find-features",
-  "feature.get"
+  "feature.get",
+  "catalog.get",
+  "catalog.search",
+  "catalog.list-versions",
+  "catalog.describe-schema",
+  "catalog.get-lineage",
+  "catalog.get-quality",
+  "catalog.get-capabilities"
 ] as const;
 
 export const EVIDENCE_OPERATION_IDS = [
@@ -51,6 +58,13 @@ const schemaNames: Record<GroundingCatalogOperationId, readonly [string, string]
   "layer.list": ["catalog-query-request", "catalog-result"],
   "layer.find-features": ["catalog-query-request", "catalog-result"],
   "feature.get": ["catalog-query-request", "spatial-feature-descriptor"],
+  "catalog.get": ["catalog-query-request", "data-product-descriptor"],
+  "catalog.search": ["catalog-search-request", "catalog-search-result"],
+  "catalog.list-versions": ["catalog-query-request", "data-product-detail-result"],
+  "catalog.describe-schema": ["catalog-query-request", "data-product-detail-result"],
+  "catalog.get-lineage": ["catalog-query-request", "data-product-detail-result"],
+  "catalog.get-quality": ["catalog-query-request", "data-product-detail-result"],
+  "catalog.get-capabilities": ["catalog-query-request", "data-product-detail-result"],
   "world.get-current-state": ["catalog-query-request", "world-fact-result"],
   "world.get-geometry": ["catalog-query-request", "world-fact-result"],
   "world.get-provenance": ["catalog-query-request", "world-fact-result"],
@@ -73,8 +87,10 @@ export interface OperationSchemas {
 
 export const GROUNDING_CATALOG_OPERATION_SCHEMAS = Object.fromEntries(
   Object.entries(schemaNames).map(([operationId, [inputName, outputName]]) => {
-    const inputSchemaUri = `urn:gowm:v0.4:${inputName}`;
-    const outputSchemaUri = `urn:gowm:v0.4:${outputName}`;
+    const inputVersion = inputName.startsWith("catalog-search-") ? "v0.6.1" : "v0.4";
+    const outputVersion = ["data-product-descriptor", "catalog-search-result", "data-product-detail-result"].includes(outputName) ? "v0.6.1" : "v0.4";
+    const inputSchemaUri = `urn:gowm:${inputVersion}:${inputName}`;
+    const outputSchemaUri = `urn:gowm:${outputVersion}:${outputName}`;
     return [operationId, {
       input: getContractSchema(inputSchemaUri),
       output: getContractSchema(outputSchemaUri),

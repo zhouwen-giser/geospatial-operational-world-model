@@ -42,7 +42,9 @@ describe("grounding catalog providers", () => {
     const provider = createGroundingCatalogProvider({ mode: "dataset", pool, cursorSecret });
     expect(provider.runtime.manifest.provider.providerId).toBe("gowm.dataset-catalog");
     expect(provider.runtime.manifest.capabilities.map((capability) => capability.operationId)).toEqual([
-      "dataset.get", "dataset.list", "layer.get", "layer.list", "layer.find-features", "feature.get"
+      "dataset.get", "dataset.list", "layer.get", "layer.list", "layer.find-features", "feature.get",
+      "catalog.get", "catalog.search", "catalog.list-versions", "catalog.describe-schema",
+      "catalog.get-lineage", "catalog.get-quality", "catalog.get-capabilities"
     ]);
     for (const capability of provider.runtime.manifest.capabilities) {
       expect(capability.scopePolicy).toBe("DATASET_SCOPE_REQUIRED");
@@ -126,7 +128,7 @@ describe("grounding catalog providers", () => {
     expect(deployments.map((deployment) => deployment.providerId)).toEqual([
       "gowm.reference-catalog", "gowm.dataset-catalog", "gowm.world-evidence", "gowm.operational-reality"
     ]);
-    expect(deployments.flatMap((deployment) => deployment.approvedManifest.capabilities)).toHaveLength(28);
+    expect(deployments.flatMap((deployment) => deployment.approvedManifest.capabilities)).toHaveLength(35);
     expect(deployments.every((deployment) =>
       deployment.approvedManifest.provider.implementationDigest === deployment.implementationDigest
     )).toBe(true);
