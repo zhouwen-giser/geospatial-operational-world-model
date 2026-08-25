@@ -2,7 +2,7 @@
   "goal": "GOWM+ Road Coverage Planning v0.6",
   "targetVersion": "0.6.0",
   "status": "IN_PROGRESS",
-  "phase": "J00",
+  "phase": "P00",
   "predecessor": {
     "branch": "codex/gowm-network-routing-v0.5",
     "version": "0.5.0",
@@ -20,8 +20,8 @@
     "branch": "codex/gowm-road-coverage-v0.6",
     "base": "codex/gowm-network-routing-v0.5",
     "baseSha": "d6a90ddcd00db946018892c34a327caa631785b0",
-    "localSha": "8dfa1a34ded58198c42250d1cbca67d4217fc13f",
-    "remoteSha": "8dfa1a34ded58198c42250d1cbca67d4217fc13f",
+    "localSha": "cbc0dbf2c756c9c989547705783cef1e91b3e13e",
+    "remoteSha": "cbc0dbf2c756c9c989547705783cef1e91b3e13e",
     "draftPr": 4
   },
   "milestones": {
@@ -116,7 +116,14 @@
       "AC-J013",
       "AC-J014",
       "AC-J015",
-      "AC-J016"
+      "AC-J016",
+      "AC-P001",
+      "AC-P002",
+      "AC-P012",
+      "AC-P013",
+      "AC-P014",
+      "AC-P017",
+      "AC-P018"
     ],
     "failed": [],
     "blocked": [],
@@ -128,7 +135,18 @@
       "AC-L011",
       "AC-J001",
       "AC-J002",
-      "AC-J003"
+      "AC-J003",
+      "AC-P003",
+      "AC-P004",
+      "AC-P005",
+      "AC-P006",
+      "AC-P007",
+      "AC-P008",
+      "AC-P009",
+      "AC-P010",
+      "AC-P011",
+      "AC-P015",
+      "AC-P016"
     ]
   },
   "blockers": []

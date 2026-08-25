@@ -44,7 +44,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] V00 Independent Verifier / Mutation
 - [x] L00 Alternatives / Diversity / Ranking
 - [x] J00 Async Run / Lease / Cancel / Progress
-- [ ] P00 Provider Protocol
+- [x] P00 Provider Protocol
 - [ ] G00 Gateway / DAG / Result Registry / Expand
 - [ ] T00 Scope / Security / Performance / Recovery
 - [ ] C00 Fresh / Upgrade / Replay / Compatibility
@@ -106,3 +106,4 @@ This is a living execution plan. It records only evidence produced from the actu
 - J00 database regression: `GOWM_COVERAGE_SCHEMA_RUNTIME_PASS j00-db-20260825t1305 migrations=51 assertions=36`; fresh and exact-v0.5 upgrade paths, controlled-function grants, failure rollback, lease/reaper/generation assertions, and isolated database cleanup PASS.
 - J00 real async runtime gate: `GOWM_COVERAGE_ASYNC_RUNTIME_PASS j00-20260825t1110 checks=15`; replay/conflict, ordered SKIP LOCKED claim, per-scope admission, bounded heartbeat, monotonic progress, Gateway connection-pool restarts, lease reaping, generation retry, cancel/late-result fencing, completed-result replay, and simultaneous cancel/publish terminal coherence PASS.
 - Post-J00 selection regression: `GOWM_COVERAGE_SELECTION_RUNTIME_PASS j00-b00-20260825t1055 checks=14`; migration 051 preserves all B00 PostGIS selection behavior.
+- P00 Provider protocol gate: `GOWM_COVERAGE_PROVIDER_PROTOCOL_PASS p00-20260825t1120 checks=13 operations=5`; exact schema byte locks, Stable maturity, sync/async modes, Gateway Job binding, scope/snapshots, Provider envelope, receipt/evidence separation, geometry-on-demand, and dependency boundaries PASS. Real Gateway/DB/recovery rows remain deferred to G00/T00.
