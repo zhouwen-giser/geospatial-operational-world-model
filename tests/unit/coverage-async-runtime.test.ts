@@ -6,6 +6,7 @@ import type { CoverageAsyncRepository, CoverageClaim } from "../../packages/road
 const claim: CoverageClaim = {
   coverageRequestId: "10000000-0000-0000-0000-000000000001",
   coverageRunId: "20000000-0000-0000-0000-000000000001",
+  attempt: 1,
   generation: 1,
   leaseUntil: "2026-08-25T06:00:00.000Z"
 };
@@ -38,7 +39,7 @@ describe("coverage async worker", () => {
     const events: string[] = [];
     const result = await executeCoverageWorkerOnce(
       repository(events),
-      { attempt: 1, leaseOwner: "worker-a", leaseSeconds: 30, maximumScopeConcurrency: 2 },
+      { leaseOwner: "worker-a", leaseSeconds: 30, maximumScopeConcurrency: 2 },
       async () => {
         events.push("compute");
         return {
@@ -71,7 +72,7 @@ describe("coverage async worker", () => {
     const compute = vi.fn();
     await expect(executeCoverageWorkerOnce(
       repository(events, null),
-      { attempt: 1, leaseOwner: "worker-idle", leaseSeconds: 30, maximumScopeConcurrency: 1 },
+      { leaseOwner: "worker-idle", leaseSeconds: 30, maximumScopeConcurrency: 1 },
       compute
     )).resolves.toBe("IDLE");
     expect(compute).not.toHaveBeenCalled();
@@ -84,7 +85,7 @@ describe("coverage async worker", () => {
     runtime.heartbeat = vi.fn(async () => false);
     await expect(executeCoverageWorkerOnce(
       runtime,
-      { attempt: 1, leaseOwner: "worker-stale", leaseSeconds: 30, maximumScopeConcurrency: 1 },
+      { leaseOwner: "worker-stale", leaseSeconds: 30, maximumScopeConcurrency: 1 },
       vi.fn()
     )).rejects.toThrow(/lost its lease before compute/u);
     expect(runtime.persistProblem).not.toHaveBeenCalled();

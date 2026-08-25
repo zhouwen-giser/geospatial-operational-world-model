@@ -297,7 +297,7 @@ async function chaosCancellation(): Promise<void> {
       requestHash: sha256({ externalRequestId }), routingSnapshotHash: sha256(smallSnapshot), routingSnapshot: smallSnapshot, request: smallRequest
     });
     const owner = `chaos-${stage.toLowerCase()}-${runId}`;
-    const claim = await repository.claim(submission.coverageRequestId, 1, owner, 30);
+    const claim = await repository.claim(submission.coverageRequestId, owner, 30);
     if (!claim) throw new Error(`${stage} chaos request was not claimed`);
     check(`${stage}Heartbeat`, await repository.heartbeat(claim, owner, 30, stage, 500_000 + index, { bounded: true }));
     check(`${stage}Cancelled`, await repository.cancel(submission.coverageRequestId, `T00_${stage}_CANCEL`));

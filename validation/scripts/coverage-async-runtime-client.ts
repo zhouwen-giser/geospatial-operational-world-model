@@ -23,9 +23,9 @@ const second = await repository.submit(submission("2", "2"));
 const replay = await repository.submit(submission("1", "1"));
 let conflict = false;
 try { await repository.submit({ ...submission("1", "1"), requestHash: `sha256:${"9".repeat(64)}` }); } catch (error) { conflict = (error as { code?: string }).code === "23505"; }
-const claim = await repository.claimNext(1, "worker-first", 1, 1);
+const claim = await repository.claimNext("worker-first", 1, 1);
 if (claim === null) throw new Error("first async claim returned no job");
-const admissionBlocked = await repository.claimNext(1, "worker-blocked", 30, 1) === null;
+const admissionBlocked = await repository.claimNext("worker-blocked", 30, 1) === null;
 const heartbeat = await repository.heartbeat(claim, "worker-first", 1, "SOLVING", 500_000, { cpuMs: 10 });
 const regressed = await repository.heartbeat(claim, "worker-first", 1, "REGRESSED", 400_000, {});
 
@@ -35,7 +35,7 @@ repository = new PostgresCoverageAsyncRepository(pool);
 const survivesRestart = await repository.heartbeat(claim, "worker-first", 1, "VERIFYING", 600_000, { restart: true });
 await new Promise((resolvePromise) => setTimeout(resolvePromise, 1_200));
 const reaped = await repository.reapExpired(10);
-const restarted = await repository.claimNext(2, "worker-restarted", 30, 1);
+const restarted = await repository.claimNext("worker-restarted", 30, 1);
 if (restarted === null) throw new Error("requeued job was not reclaimed");
 const canonicalProblem = {
   startState: { arcKey: `arc_${"1".repeat(32)}`, fractionPpm: 0, direction: "FORWARD" },
@@ -57,7 +57,7 @@ try {
     validUntil: new Date(Date.now() + 60_000).toISOString(), result: { revalidationRequired: true }
   });
 } catch { lateResultRejected = true; }
-const secondClaim = await repository.claimNext(1, "worker-second", 30, 1);
+const secondClaim = await repository.claimNext("worker-second", 30, 1);
 const noGhostResult = await repository.getResult(restarted.coverageRequestId, "coverage-async-runtime", "dataset-a") === null;
 if (secondClaim === null) throw new Error("next queued job was not preserved");
 await repository.persistProblem(secondClaim, "worker-second", `sha256:${"d".repeat(64)}`, {
@@ -81,7 +81,7 @@ repository = new PostgresCoverageAsyncRepository(pool);
 const completedResult = await repository.getResult(secondClaim.coverageRequestId, "coverage-async-runtime", "dataset-a");
 const completedReplay = await repository.submit(submission("2", "2"));
 const raced = await repository.submit(submission("3", "3"));
-const raceClaim = await repository.claimNext(1, "worker-race", 30, 1);
+const raceClaim = await repository.claimNext("worker-race", 30, 1);
 if (raceClaim === null || raceClaim.coverageRequestId !== raced.coverageRequestId) throw new Error("race fixture was not claimed");
 await repository.persistProblem(raceClaim, "worker-race", `sha256:${"f".repeat(64)}`, {
   ...canonicalProblem,
@@ -110,12 +110,14 @@ const checks = {
   idempotentReplay: replay.coverageRequestId === first.coverageRequestId && replay.replayed,
   idempotencyConflict: conflict,
   orderedClaim: claim.coverageRequestId === first.coverageRequestId && first.status === "QUEUED" && second.status === "QUEUED",
+  databaseAllocatedInitialAttempt: claim.attempt === 1,
   boundedAdmission: admissionBlocked,
   heartbeatAccepted: heartbeat,
   monotonicProgress: regressed === false,
   gatewayRestartPersistence: survivesRestart,
   expiredLeaseReaped: reaped === 1,
   workerRestartGeneration: restarted.coverageRequestId === first.coverageRequestId && restarted.generation === claim.generation + 1,
+  databaseAllocatedReclaimAttempt: restarted.attempt === claim.attempt + 1,
   cancelGenerationFence: cancelled && lateHeartbeat === false,
   lateResultRejected,
   noGhostResult,

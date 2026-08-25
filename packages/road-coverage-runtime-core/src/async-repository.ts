@@ -15,13 +15,14 @@ export interface CoverageSubmission {
 export interface CoverageClaim {
   coverageRequestId: string;
   coverageRunId: string;
+  attempt: number;
   generation: number;
   leaseUntil: string;
 }
 
 export interface CoverageAsyncRepository {
-  claim(coverageRequestId: string, attempt: number, leaseOwner: string, leaseSeconds: number): Promise<CoverageClaim | null>;
-  claimNext(attempt: number, leaseOwner: string, leaseSeconds: number, maximumScopeConcurrency: number): Promise<CoverageClaim | null>;
+  claim(coverageRequestId: string, leaseOwner: string, leaseSeconds: number): Promise<CoverageClaim | null>;
+  claimNext(leaseOwner: string, leaseSeconds: number, maximumScopeConcurrency: number): Promise<CoverageClaim | null>;
   heartbeat(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, leaseSeconds: number, stage: string, progressPpm: number, resourceMetrics: Record<string, unknown>): Promise<boolean>;
   persistProblem(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, problemHash: `sha256:${string}`, canonicalProblem: Record<string, unknown>): Promise<string>;
   persistCandidate(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, input: {
@@ -55,22 +56,22 @@ export class PostgresCoverageAsyncRepository implements CoverageAsyncRepository 
     return { coverageRequestId: row.coverage_request_id, status: row.status, replayed: row.replayed };
   }
 
-  async claim(coverageRequestId: string, attempt: number, leaseOwner: string, leaseSeconds: number): Promise<CoverageClaim | null> {
-    const result = await this.pool.query<{ coverage_request_id: string; coverage_run_id: string; generation: string; lease_until: Date }>(
-      "SELECT $1::uuid AS coverage_request_id, claimed.coverage_run_id, claimed.generation, claimed.lease_until FROM coverage_planner.claim_coverage_request($1::uuid,$2,$3,$4) claimed",
-      [coverageRequestId, attempt, leaseOwner, leaseSeconds]
+  async claim(coverageRequestId: string, leaseOwner: string, leaseSeconds: number): Promise<CoverageClaim | null> {
+    const result = await this.pool.query<{ coverage_request_id: string; coverage_run_id: string; attempt: number; generation: string; lease_until: Date }>(
+      "SELECT $1::uuid AS coverage_request_id, claimed.coverage_run_id, claimed.attempt, claimed.generation, claimed.lease_until FROM coverage_planner.claim_coverage_request($1::uuid,$2,$3) claimed",
+      [coverageRequestId, leaseOwner, leaseSeconds]
     );
     const row = result.rows[0];
-    return row === undefined ? null : { coverageRequestId: row.coverage_request_id, coverageRunId: row.coverage_run_id, generation: Number(row.generation), leaseUntil: row.lease_until.toISOString() };
+    return row === undefined ? null : { coverageRequestId: row.coverage_request_id, coverageRunId: row.coverage_run_id, attempt: Number(row.attempt), generation: Number(row.generation), leaseUntil: row.lease_until.toISOString() };
   }
 
-  async claimNext(attempt: number, leaseOwner: string, leaseSeconds: number, maximumScopeConcurrency: number): Promise<CoverageClaim | null> {
-    const result = await this.pool.query<{ coverage_request_id: string; coverage_run_id: string; generation: string; lease_until: Date }>(
-      "SELECT * FROM coverage_planner.claim_next_coverage_request($1,$2,$3,$4)",
-      [attempt, leaseOwner, leaseSeconds, maximumScopeConcurrency]
+  async claimNext(leaseOwner: string, leaseSeconds: number, maximumScopeConcurrency: number): Promise<CoverageClaim | null> {
+    const result = await this.pool.query<{ coverage_request_id: string; coverage_run_id: string; attempt: number; generation: string; lease_until: Date }>(
+      "SELECT * FROM coverage_planner.claim_next_coverage_request($1,$2,$3)",
+      [leaseOwner, leaseSeconds, maximumScopeConcurrency]
     );
     const row = result.rows[0];
-    return row === undefined ? null : { coverageRequestId: row.coverage_request_id, coverageRunId: row.coverage_run_id, generation: Number(row.generation), leaseUntil: row.lease_until.toISOString() };
+    return row === undefined ? null : { coverageRequestId: row.coverage_request_id, coverageRunId: row.coverage_run_id, attempt: Number(row.attempt), generation: Number(row.generation), leaseUntil: row.lease_until.toISOString() };
   }
 
   async heartbeat(claim: Pick<CoverageClaim, "coverageRequestId" | "generation">, leaseOwner: string, leaseSeconds: number, stage: string, progressPpm: number, resourceMetrics: Record<string, unknown>): Promise<boolean> {
