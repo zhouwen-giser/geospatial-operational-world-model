@@ -92,6 +92,41 @@ export interface CoverageTraversalArc {
   direction: "FORWARD" | "REVERSE";
   metrics: FixedMetrics;
   sourceFeatureReferenceKey?: ReferenceKey;
+  roadClass?: string;
+  surface?: string;
+  accessMask?: number;
+  traversalAllowed?: boolean;
+  speedMmPerS?: number;
+  speedOverrideMmPerS?: number;
+  riskOverrideMicroUnits?: number;
+  conditionPenaltyUnits?: number;
+}
+
+export type CoverageRoutingObjective = "SHORTEST_DISTANCE" | "FASTEST" | "LOWEST_RISK" | "LOWEST_ENERGY" | "BALANCED";
+
+export interface CoverageTurnRule {
+  ruleKey: string;
+  arcSequence: string[];
+  ruleType: "FORBIDDEN" | "ALLOWED_ONLY" | "PENALTY";
+  penaltyUnits?: number;
+  travelProfileKeys?: string[];
+}
+
+export interface CoverageTravelPolicy {
+  profileKey: string;
+  allowedRoadClasses?: string[];
+  allowedSurfaces?: string[];
+  requiredAccessMask?: number;
+  maximumSpeedMmPerS?: number;
+}
+
+export interface StrictCoverageSolverOptions {
+  objective: CoverageRoutingObjective;
+  travelPolicy: CoverageTravelPolicy;
+  turnRules?: CoverageTurnRule[];
+  routeCount?: number;
+  serviceMode?: "FIXED_DIRECTION" | "BOTH_DIRECTIONS" | "EITHER_DIRECTION";
+  seed?: number;
 }
 
 export interface ClosedDcppAugmentation {

@@ -40,7 +40,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] S00 Closed DCPP
 - [x] S01 Open CPP / Terminal
 - [x] S02 Fixed / Both-direction RPP
-- [ ] S03 Strict Turn-aware Routing
+- [x] S03 Strict Turn-aware Routing
 - [ ] V00 Independent Verifier / Mutation
 - [ ] L00 Alternatives / Diversity / Ranking
 - [ ] J00 Async Run / Lease / Cancel / Progress
@@ -99,3 +99,4 @@ This is a living execution plan. It records only evidence produced from the actu
 - S00 exact solver gate: `GOWM_COVERAGE_CLOSED_DCPP_PASS s00-20260825t1055 checks=6 segments=9`; balanced Euler coverage, exact minimum-cost directed augmentation, deterministic replay, contract-valid output, and exact 345678 ppm terminal closure PASS.
 - S01 exact solver gate: `GOWM_COVERAGE_OPEN_DCPP_PASS s01-20260825t1105 checks=7 segments=5`; distinct exact fixed terminal, requested open degree vector, partial ACCESS/RETURN continuity, deterministic replay, and contract-valid output PASS.
 - S02 RPP gate: `GOWM_COVERAGE_FIXED_RPP_PASS s02-20260825t1120 checks=11 scenarios=3`; required-subset/full-network separation, disconnected component connection, exact partial service, repeated and both-direction obligations, duplicate/transit roles, deterministic replay, and frozen contracts PASS.
+- S03 strict solver gate: `GOWM_COVERAGE_STRICT_ROUTING_PASS s03-20260825t1140 checks=23 objectives=3`; pairwise/allowed-only/multi-edge rules, cross-boundary history, no primitive downgrade, conditions/profiles, safe fixed metrics, three distinct objectives, replay/version fencing, resource budgets, and Stable negative guards PASS.

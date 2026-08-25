@@ -7,4 +7,5 @@ export * from "./postgres-selection.js";
 export * from "./postgres-endpoint.js";
 export * from "./problem.js";
 export * from "./selection.js";
+export * from "./strict-routing.js";
 export * from "./types.js";
