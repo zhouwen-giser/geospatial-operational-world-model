@@ -45,9 +45,9 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] L00 Alternatives / Diversity / Ranking
 - [x] J00 Async Run / Lease / Cancel / Progress
 - [x] P00 Provider Protocol
-- [ ] G00 Gateway / DAG / Result Registry / Expand
-- [ ] T00 Scope / Security / Performance / Recovery
-- [ ] C00 Fresh / Upgrade / Replay / Compatibility
+- [x] G00 Gateway / DAG / Result Registry / Expand
+- [x] T00 Scope / Security / Performance / Recovery
+- [x] C00 Fresh / Upgrade / Replay / Compatibility
 - [ ] F00 Docs / VERSION / PROJECT_STATUS
 - [ ] F01 Final Candidate / Exact SHA / PR Ready
 
@@ -107,3 +107,6 @@ This is a living execution plan. It records only evidence produced from the actu
 - J00 real async runtime gate: `GOWM_COVERAGE_ASYNC_RUNTIME_PASS j00-20260825t1110 checks=15`; replay/conflict, ordered SKIP LOCKED claim, per-scope admission, bounded heartbeat, monotonic progress, Gateway connection-pool restarts, lease reaping, generation retry, cancel/late-result fencing, completed-result replay, and simultaneous cancel/publish terminal coherence PASS.
 - Post-J00 selection regression: `GOWM_COVERAGE_SELECTION_RUNTIME_PASS j00-b00-20260825t1055 checks=14`; migration 051 preserves all B00 PostGIS selection behavior.
 - P00 Provider protocol gate: `GOWM_COVERAGE_PROVIDER_PROTOCOL_PASS p00-20260825t1120 checks=13 operations=5`; exact schema byte locks, Stable maturity, sync/async modes, Gateway Job binding, scope/snapshots, Provider envelope, receipt/evidence separation, geometry-on-demand, and dependency boundaries PASS. Real Gateway/DB/recovery rows remain deferred to G00/T00.
+- G00 Gateway runtime gate: `GOWM_COVERAGE_GATEWAY_RUNTIME_PASS g00-runtime-20260825t1915 checks=21`; the real typed DAG, trusted Gateway job context, Provider worker, PostgreSQL result registry, derived alternatives, replay, expiry, and ordered GeoJSON expansion PASS.
+- T00 security/performance/recovery gate: `GOWM_COVERAGE_T00_RUNTIME_PASS t00-runtime-20260826t0030 before=57 after=4`; scope adversarial cases, resource bounds, two measured profiles, concurrent duplicate, three-stage cancel fencing, Provider outage isolation, database restart, result replay, and cleanup PASS.
+- C00 compatibility gate: `GOWM_COVERAGE_COMPATIBILITY_PASS c00-runtime-20260826t0115 migrations=53 assertions=38`; fresh, v0.4 upgrade, v0.5 upgrade, checksum replay, rollback, exact Coverage v1 bytes, predecessor locks, result replay, and current-code v0.5 S/M performance regression PASS.

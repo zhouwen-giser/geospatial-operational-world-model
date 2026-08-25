@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C00",
+  "runId": "c00-runtime-20260826t0115",
+  "startedAt": "2026-08-25T06:56:34.901Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "validation/scripts/gowm-v06-predecessor-guard.mjs"
+      ],
+      "status": "PASS",
+      "elapsedMs": 227
+    },
+    {
+      "command": [
+        "node",
+        "validation/scripts/gowm-v06-source-policy-guard.mjs"
+      ],
+      "status": "PASS",
+      "elapsedMs": 67
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "container:gowmv05-gowm-v05-d00-20260824t2245-codex-postgres-1",
+        "node:22-bookworm",
+        "gowm-v05-routing-performance"
+      ],
+      "status": "PASS",
+      "elapsedMs": 2449
+    }
+  ],
+  "migrationMatrix": {
+    "evidence": "reports/gowm-v0.6/d00-runtime-c00-matrix-20260826t0100.json",
+    "migrations": 53,
+    "assertions": 38,
+    "fresh": {
+      "upgradeMarker": null,
+      "coverageTables": 16,
+      "migrationCount": 53,
+      "coverageFunctions": 15,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 12
+    },
+    "v05Upgrade": {
+      "upgradeMarker": "v0.5-preserved",
+      "coverageTables": 16,
+      "migrationCount": 53,
+      "coverageFunctions": 15,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 12
+    },
+    "v04Upgrade": {
+      "upgradeMarker": "v0.4-preserved",
+      "coverageTables": 16,
+      "migrationCount": 53,
+      "coverageFunctions": 15,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 12
+    },
+    "checksumReplaySkips": {
+      "gowm_v06_fresh_c00_matrix_20260826t0100": 53,
+      "gowm_v06_upgrade_c00_matrix_20260826t0100": 53,
+      "gowm_v06_v04_c00_matrix_20260826t0100": 53
+    },
+    "deliberateFailureRollback": true,
+    "cleanup": "PASS"
+  },
+  "resultReplay": {
+    "evidence": "reports/gowm-v0.6/t00-runtime-t00-runtime-20260826t0030.json",
+    "restart": {
+      "status": "PASS",
+      "elapsedMs": 1348,
+      "healthyElapsedMs": 265
+    },
+    "checks": {
+      "deterministicQuery": true,
+      "gatewayWorkerReplay": true,
+      "resultReadAfterRestart": true,
+      "postgresRestartPersistence": true
+    }
+  },
+  "contractFreeze": {
+    "schemaCount": 19,
+    "providerManifestSha256": "601aa3ff9b9b0345fbf2c38cde5dfc50b91daa362544fd0f2aeb6ec8a361275f",
+    "openApiSha256": "0b56fa6b2df8552412e7cdf008c3788c17e57e8cb978a88743553ae4bad697c3",
+    "status": "PASS_EXACT_A01_BYTES"
+  },
+  "predecessorLocks": {
+    "migrationAndContract": "GOWM_V06_PREDECESSOR_READY sha=d6a90ddcd00db946018892c34a327caa631785b0 migrations=47 contracts=9",
+    "sourcePolicy": "GOWM_V06_SOURCE_POLICY_READY referenceFiles=22 license=UNSPECIFIED redistribution=false"
+  },
+  "networkRoutePerformance": {
+    "current": {
+      "result": "GOWM_V05_ROUTING_PERFORMANCE_PASS",
+      "samples": {
+        "snap": 40,
+        "shortest": 40,
+        "matrix": 20
+      },
+      "snapP95Ms": 10.33,
+      "shortestP95Ms": 9.745,
+      "matrix2x2P95Ms": 10.002,
+      "targetsMs": {
+        "snap": 250,
+        "shortest": 250,
+        "matrix": 500
+      },
+      "boundedMatrixEntries": 4,
+      "graphBuildGateElapsedMs": 1465,
+      "graphBuildEvidence": "n01-runtime-n01-20260825t0101.json",
+      "datasetClass": "S/M_ACCEPTANCE_FIXTURE"
+    },
+    "baseline": {
+      "samples": {
+        "snap": 40,
+        "shortest": 40,
+        "matrix": 20
+      },
+      "snapP95Ms": 11.437,
+      "shortestP95Ms": 11,
+      "matrix2x2P95Ms": 11.002,
+      "graphBuildGateElapsedMs": 1465,
+      "datasetClass": "S/M_ACCEPTANCE_FIXTURE"
+    },
+    "ratioToBaseline": {
+      "snap": 0.9032088834484568,
+      "shortest": 0.8859090909090909,
+      "matrix": 0.909107435011816
+    },
+    "interpretation": "S/M acceptance fixture; not a production SLO"
+  },
+  "errors": [],
+  "finishedAt": "2026-08-25T06:56:40.738Z"
+}

@@ -1,0 +1,30 @@
+{
+  "phase": "C00",
+  "status": "PASS",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6/d00-runtime-c00-matrix-20260826t0100.json",
+    "reports/gowm-v0.6/c00-runtime-c00-runtime-20260826t0115.json",
+    "reports/gowm-v0.6/t00-runtime-t00-runtime-20260826t0030.json"
+  ],
+  "compatibility": {
+    "fresh001To053": "PASS_53_MIGRATIONS_38_ASSERTIONS",
+    "v04ToV06": "PASS_001_032_TO_053_MARKER_PRESERVED",
+    "v05ToV06": "PASS_001_047_TO_053_MARKER_PRESERVED",
+    "checksumReplay": "PASS_53_OF_53_SKIPPED_ON_ALL_THREE_PATHS",
+    "failedMigrationRollback": "PASS_ZERO_SCHEMA_RESIDUE_ON_ALL_THREE_PATHS",
+    "coverageResultReplay": "PASS_AFTER_POSTGRES_RESTART",
+    "predecessorMigrationAndContractLocks": "PASS_47_MIGRATIONS_9_CONTRACTS",
+    "coverageV1ContractFreeze": "PASS_19_SCHEMAS_MANIFEST_OPENAPI_EXACT_A01_BYTES",
+    "networkRouteRegression": "PASS_CURRENT_CODE_ON_EXACT_V05_S_M_FIXTURE"
+  },
+  "acceptance": {
+    "AC-T014": "PASS_NO_MATERIAL_V05_NETWORK_ROUTE_S_M_REGRESSION"
+  },
+  "finalEvidenceReady": {
+    "AC-F005": "READY_COVERAGE_V1_BYTES_FROZEN",
+    "AC-F006": "READY_FRESH_AND_V05_UPGRADE_MATRIX_PASS"
+  },
+  "failed": [],
+  "blocked": [],
+  "notRun": []
+}
