@@ -11,6 +11,7 @@ import type { GatewayRecordStore } from "./records.js";
 import type { GatewayPrincipal } from "./types.js";
 import type { WorldQueryRuntime } from "./query-plan-runtime.js";
 import { publicErrorMessage, redactPublicDetails } from "./redaction.js";
+import { projectCapabilitySemantics } from "./capability-semantics.js";
 
 export interface GatewayAppOptions {
   registry: CapabilityRegistry;
@@ -82,6 +83,17 @@ export function buildGatewayApp(options: GatewayAppOptions): FastifyInstance {
     return versions.length
       ? { registryVersion: options.registry.revision, operationId, versions }
       : reply.code(404).send(platformError(normalizeRequestId(request.id), "OPERATION_NOT_FOUND", "operation is not registered", "REGISTRY_RESOLUTION"));
+  });
+
+  app.get("/v1/capability-semantics", async () =>
+    projectCapabilitySemantics(options.registry.catalog(), options.registry.revision)
+  );
+
+  app.get("/v1/capability-semantics/:operationId/:operationVersion", async (request, reply) => {
+    const { operationId, operationVersion } = request.params as { operationId: string; operationVersion: string };
+    const profile = projectCapabilitySemantics(options.registry.catalog(), options.registry.revision).profiles
+      .find((candidate) => candidate.operationId === operationId && candidate.operationVersion === operationVersion);
+    return profile ?? reply.code(404).send(platformError(normalizeRequestId(request.id), "VERSION_NOT_FOUND", "semantic profile is not registered", "REGISTRY_RESOLUTION"));
   });
 
   app.post("/v1/operations/*", async (request, reply) => {
