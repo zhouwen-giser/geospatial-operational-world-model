@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.6.0 - 2026-08-25
+
+- Added stable single-route road coverage planning over the authoritative v0.5
+  Network Foundation, with four area/manual selection modes, exact partial-Arc
+  service obligations, explicit endpoint/boundary policies, and strict
+  separation of required obligations R from traversable network E.
+- Added Closed/Open Directed CPP and fixed/both-direction RPP solving with
+  pairwise and multi-edge turn restrictions, fixed-point objectives, bounded
+  candidate generation, deterministic alternatives, and an independently
+  implemented verifier with mutation evidence.
+- Added the five-operation `gowm.road-coverage-planning` Provider, trusted
+  Gateway Job/DAG integration, generation-fenced async execution, immutable
+  QUERY_RESULT/DERIVED_REFERENCE publication, TTL/revalidation, and ordered
+  on-demand GeoJSON expansion.
+- Added migrations through 053 and 38 SQL assertion suites; fresh, v0.4→v0.6,
+  exact v0.5→v0.6, checksum replay, rollback, scope adversarial, Small/Medium
+  performance, concurrent duplicate, cancellation-race, and PostgreSQL restart
+  gates pass on real PostgreSQL/PostGIS/pgRouting.
+- Retained `NETWORK_READY` and `ROUTING_READY` and declared
+  `ROAD_COVERAGE_READY`. Stable v0.6 does not claim either-direction service,
+  multiple routes, fleet/capacity/time-window optimization, CARP/OR-Tools,
+  dispatchability, physical execution, or production SLO/HA qualification.
+
 ## 0.5.0 - 2026-08-25
 
 - Added the authoritative immutable Network Dataset→GraphVersion foundation,

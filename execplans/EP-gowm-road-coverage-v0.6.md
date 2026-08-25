@@ -48,7 +48,7 @@ This is a living execution plan. It records only evidence produced from the actu
 - [x] G00 Gateway / DAG / Result Registry / Expand
 - [x] T00 Scope / Security / Performance / Recovery
 - [x] C00 Fresh / Upgrade / Replay / Compatibility
-- [ ] F00 Docs / VERSION / PROJECT_STATUS
+- [x] F00 Docs / VERSION / PROJECT_STATUS
 - [ ] F01 Final Candidate / Exact SHA / PR Ready
 
 ## Decisions
@@ -110,3 +110,4 @@ This is a living execution plan. It records only evidence produced from the actu
 - G00 Gateway runtime gate: `GOWM_COVERAGE_GATEWAY_RUNTIME_PASS g00-runtime-20260825t1915 checks=21`; the real typed DAG, trusted Gateway job context, Provider worker, PostgreSQL result registry, derived alternatives, replay, expiry, and ordered GeoJSON expansion PASS.
 - T00 security/performance/recovery gate: `GOWM_COVERAGE_T00_RUNTIME_PASS t00-runtime-20260826t0030 before=57 after=4`; scope adversarial cases, resource bounds, two measured profiles, concurrent duplicate, three-stage cancel fencing, Provider outage isolation, database restart, result replay, and cleanup PASS.
 - C00 compatibility gate: `GOWM_COVERAGE_COMPATIBILITY_PASS c00-runtime-20260826t0115 migrations=53 assertions=38`; fresh, v0.4 upgrade, v0.5 upgrade, checksum replay, rollback, exact Coverage v1 bytes, predecessor locks, result replay, and current-code v0.5 S/M performance regression PASS.
+- F00 documentation guard: `GOWM_V06_FINAL_DOCS_PASS f00-docs-20260826t0130 checks=31 version=0.6.0`; README/ADR/runbook/status scope and non-claims, reference-source exclusion, 19 public schemas, protected-action status, and VERSION/package/lock convergence PASS.

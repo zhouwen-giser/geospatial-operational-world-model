@@ -2,15 +2,16 @@
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
 Capability Service Plane and a controlled World Capability Gateway. The
-Version `0.5.0` adds an authoritative immutable Network Graph foundation,
-read-only Network and basic Route Planning Providers, independent route
-verification, immutable QUERY_RESULT publication, and Gateway/DAG integration
-without moving topology or routing algorithms into the Gateway.
+Version `0.6.0` adds stable single-route road coverage planning over the
+authoritative immutable v0.5 Network Graph, with exact service obligations,
+Directed CPP/RPP solving, independent coverage verification, immutable result
+publication, and Gateway/DAG integration without copying network authority or
+moving planning algorithms into the Gateway.
 
-> **v0.5 candidate status (2026-08-25): NETWORK_READY / ROUTING_READY.** The
-> required Network, Route, verifier, Gateway, migration, security, performance,
-> replay, cancellation, and restart gates pass on real PostgreSQL/PostGIS with
-> pgRouting 4.0.1. Final publication actions remain separately controlled.
+> **v0.6 candidate status (2026-08-25): NETWORK_READY / ROUTING_READY /
+> ROAD_COVERAGE_READY.** All 226 required cases have runtime or contract
+> evidence. Final exact-SHA and Draft PR reconciliation remain in F01; protected
+> publication actions remain separately controlled.
 
 See [PROJECT_STATUS.md](PROJECT_STATUS.md) for the exact delivery boundary and
 [the v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md) for the
@@ -78,6 +79,14 @@ Provider adds stable validation/planning/verification plus PREVIEW alternatives.
 Routes pin dataset, graph, profile, cost, and condition identity; candidate
 metrics use fixed-point integers and are replayed by an independent verifier.
 
+The v0.6 Road Coverage Provider adds five stable operations:
+`coverage.road.validate`, `coverage.road.select-obligations`,
+`coverage.road.plan`, `coverage.road.verify`, and
+`coverage.road.expand-geojson`. It plans one route over a pinned RoutingSnapshot,
+keeps required service obligations R separate from the full traversable network
+E, verifies every admitted candidate independently, and expands geometry only
+on demand. The Gateway remains the only public asynchronous Job authority.
+
 ## Contracts and execution
 
 JSON Schemas under `contracts/platform` and `contracts/capabilities` are the
@@ -108,9 +117,10 @@ Only data-bound operations may return a Data Snapshot and Evidence References.
 
 The PostgreSQL 18 baseline includes PostGIS 3.6, MobilityDB 1.3, h3-pg /
 h3_postgis 4.5, and pgRouting 4.0.1. Migrations `001`-`032` remain the locked
-v0.4 baseline; append-only migrations through `047` add Network authority,
-scoped reads, profiles/conditions, route runtime/result publication, and the
-least-privilege exact Avoid Area read function.
+v0.4 baseline; append-only migrations through `047` add Network/Route authority
+and migrations `048`-`053` add the private, derived `coverage_planner` runtime.
+Coverage tables pin Network identities and hashes but do not copy Node, Edge,
+Arc, Turn, Profile, or Condition authority.
 
 The Spatial Provider uses its own read-only connection and may read only
 `gowm_spatial_v1`. SQL-level scope filtering returns opaque `ReferenceKey`
@@ -134,6 +144,8 @@ npm test
 npm run validate:boundaries
 npm run validate:gowm-v05-migrations
 npm run validate:gowm-v05-performance
+npm run validate:gowm-v06-security-recovery
+npm run validate:gowm-v06-compatibility
 node validation/scripts/stable-contract-compatibility.mjs
 node validation/architecture/validate-release-boundaries.mjs
 ```
@@ -154,6 +166,9 @@ URL and exact disposable database container name; see the operations runbook.
   `gowm_spatial_v1` implementation and retains its Notice/SBOM.
 - `.intake` and the uploaded Provider ZIPs are excluded from tracked and release
   artifacts.
+- The uploaded road-coverage reference has `licenseStatus=UNSPECIFIED` and is
+  reference-only. Its source, dependencies, builds, coverage output, and local
+  environment files are not copied into or distributed with this repository.
 
 ## Known qualifications and non-claims
 
@@ -169,12 +184,16 @@ URL and exact disposable database container name; see the operations runbook.
 - Basic Route results are plans over pinned inputs. They are not device
   dispatch, execution authorization, physical completion, observed reality,
   regional road coverage, or multi-vehicle optimization.
+- Road Coverage results are single-route computational plans. Stable v0.6
+  rejects either-direction service, `routeCount > 1`, fleet/capacity/time-window
+  fields, CARP/OR-Tools behavior, and dispatchable semantics. A verified plan is
+  not proof of dispatch, execution, completion, safety, or Operational Reality.
 - The recorded Snap/Shortest/Matrix timings use the S/M acceptance fixture;
   they are regression budgets, not production SLO or capacity claims.
 - The legacy H3 Situation projection is safe only for its configured single
   scope; arbitrary multi-scope serving remains blocked until the underlying
   projection is scope-aware.
-- PR #3 remains Draft until final exact-SHA reconciliation; merge, tag, release,
+- Stacked PR #4 remains Draft until final exact-SHA reconciliation; merge, tag, release,
   image publication, and deployment remain user-controlled actions.
 
 ## Documentation and evidence
@@ -182,6 +201,9 @@ URL and exact disposable database container name; see the operations runbook.
 - [v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md)
 - [Capability contract ADR](docs/adr/002-capability-platform-contract-boundaries.md)
 - [Network and routing authority ADR](docs/adr/005-network-routing-authority.md)
+- [Road coverage authority ADR](docs/adr/006-road-coverage-planning-authority.md)
+- [Road coverage architecture](docs/architecture/ROAD_COVERAGE_PLANNING_V0.6.md)
+- [Road coverage operations runbook](docs/19_ROAD_COVERAGE_OPERATIONS_RUNBOOK.md)
 - [Project status](PROJECT_STATUS.md)
 - [Traceability](validation/TRACEABILITY.md)
 - [Phase evidence](reports/capability-platform-v0.2/)
