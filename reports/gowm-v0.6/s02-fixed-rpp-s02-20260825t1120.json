@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "s02-20260825t1120",
+  "status": "PASS",
+  "checks": {
+    "requiredSubsetSeparated": true,
+    "disconnectedComponentsConnected": true,
+    "fullNetworkConnectorUsed": true,
+    "partialServiceExact": true,
+    "transitClassified": true,
+    "repeatedPassesSatisfied": true,
+    "duplicateServiceClassified": true,
+    "bothDirectionFamily": true,
+    "deterministicReplay": true,
+    "routeContracts": true,
+    "diagnosticsContracts": true
+  },
+  "disconnected": {
+    "problemHash": "sha256:1bf6e821ec640bd260894ba40bf81d8c9fdd1c225123d7da9c5396e606032716",
+    "routeSignature": "sha256:a12a2633b6004e15a19759ab84206146e3519acef207abd52323fe55e987145b",
+    "requiredComponentCount": 2,
+    "segmentRoles": [
+      {
+        "arcKey": "arc_11111111111111111111111111111111",
+        "role": "SERVICE"
+      },
+      {
+        "arcKey": "arc_22222222222222222222222222222222",
+        "role": "TRANSIT"
+      },
+      {
+        "arcKey": "arc_33333333333333333333333333333333",
+        "role": "SERVICE"
+      },
+      {
+        "arcKey": "arc_44444444444444444444444444444444",
+        "role": "TRANSIT"
+      }
+    ]
+  },
+  "partial": {
+    "problemHash": "sha256:4f1b3c0ff8f9015b6a6f2cf9214596d57ec1e067edddaa4da22f20b262223e92",
+    "routeSignature": "sha256:1194e5d2c542098af73ad2df61efe487fd12e9ce204d1400470190b4d5fa70a0",
+    "segments": [
+      {
+        "arcKey": "arc_55555555555555555555555555555555",
+        "startFractionPpm": 250000,
+        "endFractionPpm": 750000,
+        "role": "SERVICE"
+      },
+      {
+        "arcKey": "arc_55555555555555555555555555555555",
+        "startFractionPpm": 750000,
+        "endFractionPpm": 1000000,
+        "role": "TRANSIT"
+      },
+      {
+        "arcKey": "arc_66666666666666666666666666666666",
+        "startFractionPpm": 0,
+        "endFractionPpm": 1000000,
+        "role": "TRANSIT"
+      },
+      {
+        "arcKey": "arc_55555555555555555555555555555555",
+        "startFractionPpm": 0,
+        "endFractionPpm": 250000,
+        "role": "TRANSIT"
+      }
+    ]
+  },
+  "bothDirections": {
+    "routeSignature": "sha256:115133da48a93303aa450fd00e9786a1a4d275c4bfe1805453fda70b0176a14a",
+    "algorithmFamily": "BOTH_DIRECTIONS_RPP",
+    "roles": [
+      {
+        "arcKey": "arc_77777777777777777777777777777777",
+        "role": "SERVICE"
+      },
+      {
+        "arcKey": "arc_88888888888888888888888888888888",
+        "role": "DUPLICATE_SERVICE"
+      },
+      {
+        "arcKey": "arc_77777777777777777777777777777777",
+        "role": "SERVICE"
+      },
+      {
+        "arcKey": "arc_88888888888888888888888888888888",
+        "role": "SERVICE"
+      }
+    ]
+  }
+}

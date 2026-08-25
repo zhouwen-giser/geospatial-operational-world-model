@@ -52,6 +52,7 @@
     "validate:gowm-v06-endpoints": "npm run build && node validation/scripts/coverage-endpoint-runtime-gate.mjs",
     "validate:gowm-v06-closed-dcpp": "npm run build && node validation/scripts/coverage-closed-dcpp-gate.mjs",
     "validate:gowm-v06-open-dcpp": "npm run build && node validation/scripts/coverage-open-dcpp-gate.mjs",
+    "validate:gowm-v06-fixed-rpp": "npm run build && node validation/scripts/coverage-fixed-rpp-gate.mjs",
     "sbom:service": "node scripts/generate-service-sbom.mjs",
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",

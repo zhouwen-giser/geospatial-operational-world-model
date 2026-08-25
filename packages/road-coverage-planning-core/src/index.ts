@@ -2,6 +2,7 @@ export * from "./canonical.js";
 export * from "./closed-dcpp.js";
 export * from "./endpoint.js";
 export * from "./errors.js";
+export * from "./fixed-rpp.js";
 export * from "./postgres-selection.js";
 export * from "./postgres-endpoint.js";
 export * from "./problem.js";
