@@ -2,7 +2,7 @@
   "goal": "GOWM+ Road Coverage Planning v0.6",
   "targetVersion": "0.6.0",
   "status": "IN_PROGRESS",
-  "phase": "R01",
+  "phase": "A00",
   "predecessor": {
     "branch": "codex/gowm-network-routing-v0.5",
     "version": "0.5.0",
@@ -20,8 +20,8 @@
     "branch": "codex/gowm-road-coverage-v0.6",
     "base": "codex/gowm-network-routing-v0.5",
     "baseSha": "d6a90ddcd00db946018892c34a327caa631785b0",
-    "localSha": "7a576d2fae7954df3d7e2b93ea5da75e66ad5b46",
-    "remoteSha": "7a576d2fae7954df3d7e2b93ea5da75e66ad5b46",
+    "localSha": "079b081f53ca38bc67084406eb210cbbdc289283",
+    "remoteSha": "079b081f53ca38bc67084406eb210cbbdc289283",
     "draftPr": 4
   },
   "milestones": {

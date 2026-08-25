@@ -31,7 +31,7 @@ This is a living execution plan. It records only evidence produced from the actu
 
 - [x] R00 Predecessor Reconciliation
 - [x] R01 Source Lock / License / Clean-room Map
-- [ ] A00 ADR / Authority / Non-goal
+- [x] A00 ADR / Authority / Non-goal
 - [ ] A01 Contracts / OpenAPI / Manifest / Generated Types
 - [ ] D00 Coverage Schema / Roles / Immutability / Assertions
 - [ ] B00 Area Selection / Fraction Obligations
