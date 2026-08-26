@@ -7,6 +7,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.check-source:input:1.0"
@@ -23,6 +24,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.check-source:output:1.0"
@@ -135,6 +137,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/featureCollection/features/*/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.feature-collection:input:1.0"
@@ -172,6 +184,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/featureCollection/features/*/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.feature-collection:output:1.0"
@@ -303,6 +325,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/feature/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.feature:input:1.0"
@@ -338,6 +370,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/feature/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.feature:output:1.0"
@@ -465,6 +507,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.geometry:input:1.0",
@@ -501,6 +561,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.geometry:output:1.0",
@@ -624,6 +702,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.point:input:1.0"
@@ -652,6 +731,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.point:output:1.0"
@@ -767,6 +847,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.points:input:1.0"
@@ -795,6 +876,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.points:output:1.0"
@@ -930,6 +1012,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -950,6 +1033,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -1305,6 +1389,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -1325,6 +1410,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -1680,6 +1766,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -1700,6 +1787,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -2055,6 +2143,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -2075,6 +2164,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -2430,6 +2520,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -2472,6 +2563,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-descriptor",
@@ -2850,6 +2942,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -2870,6 +2963,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -3215,6 +3309,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:catalog-search-request"
@@ -3261,6 +3356,7 @@
       "referencePaths": [
         "/items/*/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:catalog-search-result",
@@ -3644,6 +3740,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -3683,6 +3780,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:dataset-descriptor"
@@ -4047,6 +4145,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -4061,6 +4160,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -4412,6 +4512,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -4458,6 +4559,7 @@
         "/layerReferenceKey",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:spatial-feature-descriptor"
@@ -4828,6 +4930,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -4842,6 +4945,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -5193,6 +5297,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -5234,6 +5339,7 @@
         "/datasetReferenceKey",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:layer-descriptor"
@@ -5599,6 +5705,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -5613,6 +5720,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -5953,6 +6061,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.bounding-box:input:1.0"
@@ -5987,6 +6105,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.bounding-box:output:1.0"
@@ -6147,6 +6275,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.buffer:input:1.0"
@@ -6181,6 +6319,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.buffer:output:1.0"
@@ -6333,6 +6481,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.centroid:input:1.0"
@@ -6367,6 +6525,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.centroid:output:1.0"
@@ -6526,6 +6694,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/a/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/b/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.closest-point:input:1.0"
@@ -6560,6 +6746,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.closest-point:output:1.0"
@@ -6712,6 +6908,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.convex-hull:input:1.0"
@@ -6746,6 +6952,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.convex-hull:output:1.0"
@@ -6905,6 +7121,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/a/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/b/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.difference:input:1.0"
@@ -6939,6 +7173,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.difference:output:1.0"
@@ -7091,6 +7335,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.force-2d:input:1.0"
@@ -7125,6 +7379,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.force-2d:output:1.0"
@@ -7277,6 +7541,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.geometry-hash:input:1.0"
@@ -7292,6 +7566,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.geometry-hash:output:1.0"
@@ -7432,6 +7707,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/a/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/b/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.intersection:input:1.0"
@@ -7466,6 +7759,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.intersection:output:1.0"
@@ -7618,6 +7921,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.make-valid:input:1.0"
@@ -7652,6 +7965,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.make-valid:output:1.0"
@@ -7804,6 +8127,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.normalize:input:1.0"
@@ -7838,6 +8171,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.normalize:output:1.0"
@@ -7995,6 +8338,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/a/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/b/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.predicate:input:1.0"
@@ -8009,6 +8370,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.predicate:output:1.0"
@@ -8143,6 +8505,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.remove-repeated-points:input:1.0"
@@ -8177,6 +8549,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.remove-repeated-points:output:1.0"
@@ -8336,6 +8718,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/a/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/b/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.shortest-line:input:1.0"
@@ -8370,6 +8770,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.shortest-line:output:1.0"
@@ -8524,6 +8934,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.simplify-preserve-topology:input:1.0"
@@ -8558,6 +8978,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.simplify-preserve-topology:output:1.0"
@@ -8712,6 +9142,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/input/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.simplify:input:1.0"
@@ -8746,6 +9186,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.simplify:output:1.0"
@@ -8905,6 +9355,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/a/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/b/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.symmetric-difference:input:1.0"
@@ -8939,6 +9407,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.symmetric-difference:output:1.0"
@@ -9098,6 +9576,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/a/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/b/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.union:input:1.0"
@@ -9132,6 +9628,16 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.union:output:1.0"
@@ -9279,6 +9785,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.validate:input:1.0",
@@ -9294,6 +9818,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.validate:output:1.0"
@@ -9425,6 +9950,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.aggregate:input:1.0"
@@ -9441,6 +9967,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.aggregate:output:1.0"
@@ -9619,6 +10146,12 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/area": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.coverage:input:1.0"
@@ -9643,6 +10176,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.coverage:output:1.0"
@@ -9830,6 +10364,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.flow:input:1.0"
@@ -9848,6 +10383,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.flow:output:1.0"
@@ -10021,6 +10557,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.cells.to-geojson:input:1.0"
@@ -10039,6 +10576,11 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/features/*/geometry": [
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.cells.to-geojson:output:1.0"
@@ -10215,6 +10757,12 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.geometry.cover:input:1.0"
@@ -10232,6 +10780,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.geometry.cover:output:1.0"
@@ -10405,6 +10954,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.children:input:1.0"
@@ -10417,6 +10967,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.children:output:1.0"
@@ -10584,6 +11135,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.compact:input:1.0"
@@ -10595,6 +11147,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.compact:output:1.0"
@@ -10762,6 +11315,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.parent:input:1.0"
@@ -10774,6 +11328,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.parent:output:1.0"
@@ -10942,6 +11497,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.uncompact:input:1.0"
@@ -10954,6 +11510,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.uncompact:output:1.0"
@@ -11124,6 +11681,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.index.points:input:1.0"
@@ -11136,6 +11694,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.index.points:output:1.0"
@@ -11304,6 +11863,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.neighborhood.disk:input:1.0"
@@ -11317,6 +11877,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.neighborhood.disk:output:1.0"
@@ -11527,6 +12088,7 @@
         "/location",
         "/location/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -11579,6 +12141,7 @@
       "referencePaths": [
         "/graphVersion/networkDatasetReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "ACCEPTED",
@@ -11747,6 +12310,7 @@
         "/location",
         "/location/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -11799,6 +12363,7 @@
       "referencePaths": [
         "/graphVersion/networkDatasetReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "ACCEPTED",
@@ -11967,6 +12532,7 @@
         "/location",
         "/location/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -12011,6 +12577,7 @@
       "referencePaths": [
         "/networkDatasetReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "ACTIVE",
@@ -12161,6 +12728,7 @@
         "/location",
         "/location/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -12213,6 +12781,7 @@
       "referencePaths": [
         "/graphVersion/networkDatasetReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "ACCEPTED",
@@ -12373,6 +12942,7 @@
       "referencePaths": [
         "/points/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-cost-matrix-request",
@@ -12402,6 +12972,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-cost-matrix-result",
@@ -12541,6 +13112,7 @@
       "referencePaths": [
         "/segments/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETED",
@@ -12607,6 +13179,7 @@
       "referencePaths": [
         "/segments/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETED",
@@ -12775,6 +13348,7 @@
         "/destination/sourceFeatureReferenceKey",
         "/start/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-shortest-path-request",
@@ -12834,6 +13408,7 @@
       "referencePaths": [
         "/segments/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETED",
@@ -13002,6 +13577,7 @@
       "referencePaths": [
         "/segments/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETED",
@@ -13028,6 +13604,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "INDETERMINATE",
@@ -13168,6 +13745,7 @@
         "/location",
         "/location/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -13220,6 +13798,7 @@
       "referencePaths": [
         "/graphVersion/networkDatasetReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "ACCEPTED",
@@ -13388,6 +13967,7 @@
         "/location",
         "/location/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -13437,6 +14017,7 @@
       "referencePaths": [
         "/candidates/*/state/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "AMBIGUOUS",
@@ -13591,6 +14172,7 @@
         "/location",
         "/location/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -13640,6 +14222,7 @@
       "referencePaths": [
         "/candidates/*/state/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "AMBIGUOUS",
@@ -13791,6 +14374,7 @@
         "/actorReferenceKeys/*",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -13830,6 +14414,7 @@
       "referencePaths": [
         "/operationalTaskReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:correlation-finding"
@@ -13995,6 +14580,7 @@
         "/actorReferenceKeys/*",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -14017,6 +14603,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "FRESH",
@@ -14193,6 +14780,7 @@
         "/actorReferenceKeys/*",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -14267,6 +14855,7 @@
         "/tasks/*/referenceKey",
         "/tasks/*/targetReferenceKeys/*"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:correlation-finding",
@@ -14466,6 +15055,7 @@
         "/actorReferenceKeys/*",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -14540,6 +15130,7 @@
         "/tasks/*/referenceKey",
         "/tasks/*/targetReferenceKeys/*"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:correlation-finding",
@@ -14739,6 +15330,7 @@
         "/actorReferenceKeys/*",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -14815,6 +15407,7 @@
         "/events/*/targetReferenceKeys/*",
         "/operationalTaskReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -15016,6 +15609,7 @@
         "/actorReferenceKeys/*",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -15068,6 +15662,7 @@
         "/referenceKey",
         "/targetReferenceKeys/*"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:operational-task-snapshot"
@@ -15231,6 +15826,7 @@
       "referencePaths": [
         "/subject"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-predicate"
@@ -15262,6 +15858,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "CONFLICTING",
@@ -15457,6 +16054,7 @@
         "/actorReferenceKeys/*",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -15533,6 +16131,7 @@
         "/events/*/targetReferenceKeys/*",
         "/operationalTaskReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -15705,6 +16304,7 @@
       "referencePaths": [
         "/references/*/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:result-validation-request"
@@ -15737,6 +16337,7 @@
       "referencePaths": [
         "/results/*/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:reference-validity",
@@ -15856,6 +16457,7 @@
       "referencePaths": [
         "/references/*/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:result-validation-request"
@@ -15888,6 +16490,7 @@
       "referencePaths": [
         "/results/*/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:reference-validity",
@@ -15998,6 +16601,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:snapshot-get-request"
@@ -16026,6 +16630,7 @@
       "referencePaths": [
         "/resources/*/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-snapshot-manifest"
@@ -16148,6 +16753,7 @@
       "referencePaths": [
         "/snapshot/resources/*/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-snapshot-manifest",
@@ -16170,6 +16776,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "CURRENT",
@@ -16308,6 +16915,7 @@
       "referencePaths": [
         "/references/*/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:reference-validate-request"
@@ -16322,6 +16930,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -16673,6 +17282,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -16725,6 +17335,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:reference-descriptor"
@@ -17107,6 +17718,7 @@
       "referencePaths": [
         "/context/anchorReferenceKeys/*"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:reference-resolve-request"
@@ -17169,6 +17781,7 @@
       "referencePaths": [
         "/resolutions/*/candidates/*/candidate/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/resolutions/*/status": [
           "AMBIGUOUS",
@@ -17576,6 +18189,7 @@
       "referencePaths": [
         "/context/anchorReferenceKeys/*"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:reference-resolve-request"
@@ -17638,6 +18252,7 @@
       "referencePaths": [
         "/resolutions/*/candidates/*/candidate/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/resolutions/*/status": [
           "AMBIGUOUS",
@@ -18039,6 +18654,7 @@
       "referencePaths": [
         "/resultSetReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-expand-request"
@@ -18072,6 +18688,7 @@
       "referencePaths": [
         "/resultSetReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-geojson-result"
@@ -18289,6 +18906,12 @@
         "/selectionPolicy/manualObligations/*/sourceAreaReferenceKey",
         "/selectionPolicy/manualObligations/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {
+        "/area": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-alternative-policy",
@@ -18451,6 +19074,7 @@
         "/alternatives/*/route/startState/sourceFeatureReferenceKey",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "CANCELLED",
@@ -18814,6 +19438,12 @@
         "/selectionPolicy/manualObligations/*/sourceAreaReferenceKey",
         "/selectionPolicy/manualObligations/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {
+        "/area": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-alternative-policy",
@@ -18881,6 +19511,7 @@
         "/obligations/*/sourceAreaReferenceKey",
         "/obligations/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-obligation-set",
@@ -19128,6 +19759,12 @@
         "/selectionPolicy/manualObligations/*/sourceAreaReferenceKey",
         "/selectionPolicy/manualObligations/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {
+        "/area": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-alternative-policy",
@@ -19161,6 +19798,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-validation-result"
@@ -19369,6 +20007,7 @@
         "/candidate/route/startState/sourceFeatureReferenceKey",
         "/problemReference"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/candidate/verification/status": [
           "INDETERMINATE",
@@ -19412,6 +20051,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "INDETERMINATE",
@@ -19601,6 +20241,7 @@
         "/waypoints/*",
         "/waypoints/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:route-planning-request",
@@ -19680,6 +20321,7 @@
         "/candidates/*/segments/*/sourceFeatureReferenceKey",
         "/queryResultReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "CANCELLED",
@@ -19936,6 +20578,7 @@
         "/waypoints/*",
         "/waypoints/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:route-planning-request",
@@ -20015,6 +20658,7 @@
         "/candidates/*/segments/*/sourceFeatureReferenceKey",
         "/queryResultReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "CANCELLED",
@@ -20271,6 +20915,7 @@
         "/waypoints/*",
         "/waypoints/*/sourceFeatureReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:route-planning-request",
@@ -20290,6 +20935,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "INDETERMINATE",
@@ -20456,6 +21102,7 @@
         "/candidates/*/segments/*/sourceFeatureReferenceKey",
         "/queryResultReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "CANCELLED",
@@ -20496,6 +21143,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "INDETERMINATE",
@@ -20598,6 +21246,12 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/area": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-area:input:1.0"
@@ -20646,6 +21300,11 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/cells/*/boundary": [
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-area:output:1.0"
@@ -20796,6 +21455,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-cell:input:1.0"
@@ -20841,6 +21501,11 @@
       "referencePaths": [
         "/references/*"
       ],
+      "geometryTypes": {
+        "/cells/*/boundary": [
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-cell:output:1.0"
@@ -20987,6 +21652,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:input:1.0"
@@ -21025,6 +21691,11 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/cells/*/boundary": [
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:output:1.0"
@@ -21167,6 +21838,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-hotspots:input:1.0"
@@ -21205,6 +21877,11 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/cells/*/boundary": [
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-hotspots:output:1.0"
@@ -21352,6 +22029,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.aggregate:input:1.0"
@@ -21379,6 +22057,7 @@
       "referencePaths": [
         "/areas/*/areaReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.aggregate:output:1.0"
@@ -21652,6 +22331,12 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.count-in-area:input:1.0"
@@ -21678,6 +22363,7 @@
       "referencePaths": [
         "/sourceReferences/*"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.count-in-area:output:1.0"
@@ -21976,6 +22662,24 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -22029,6 +22733,24 @@
       "referencePaths": [
         "/objects/*/referenceKey"
       ],
+      "geometryTypes": {
+        "/objects/*/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/objects/*/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -22364,6 +23086,12 @@
       "referencePaths": [
         "/candidateReferences/*"
       ],
+      "geometryTypes": {
+        "/geometry": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.find-in-area:input:1.0"
@@ -22416,6 +23144,24 @@
       "referencePaths": [
         "/objects/*/referenceKey"
       ],
+      "geometryTypes": {
+        "/objects/*/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/objects/*/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -22749,6 +23495,24 @@
       "referencePaths": [
         "/candidateReferences/*"
       ],
+      "geometryTypes": {
+        "/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -22802,6 +23566,24 @@
       "referencePaths": [
         "/objects/*/referenceKey"
       ],
+      "geometryTypes": {
+        "/objects/*/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/objects/*/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -23126,6 +23908,12 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/route": [
+          "LineString",
+          "MultiLineString"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.find-near-route:input:1.0"
@@ -23178,6 +23966,24 @@
       "referencePaths": [
         "/objects/*/referenceKey"
       ],
+      "geometryTypes": {
+        "/objects/*/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/objects/*/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -23503,6 +24309,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.find-nearby:input:1.0"
@@ -23555,6 +24362,24 @@
       "referencePaths": [
         "/objects/*/referenceKey"
       ],
+      "geometryTypes": {
+        "/objects/*/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/objects/*/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -23880,6 +24705,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.find-nearest:input:1.0"
@@ -23932,6 +24758,24 @@
       "referencePaths": [
         "/objects/*/referenceKey"
       ],
+      "geometryTypes": {
+        "/objects/*/geometry": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ],
+        "/objects/*/geometry/geometries/*": [
+          "LineString",
+          "MultiLineString",
+          "MultiPoint",
+          "MultiPolygon",
+          "Point",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -24255,6 +25099,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.join:input:1.0"
@@ -24292,6 +25137,7 @@
         "/pairs/*/leftReferenceKey",
         "/pairs/*/rightReferenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.join:output:1.0"
@@ -24575,6 +25421,12 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {
+        "/geometry": [
+          "MultiPolygon",
+          "Polygon"
+        ]
+      },
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.summarize-area:input:1.0"
@@ -24604,6 +25456,7 @@
       "referencePaths": [
         "/sourceReferences/*"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.summarize-area:output:1.0"
@@ -24914,6 +25767,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.compare-pair-features:input:1.0"
@@ -25030,6 +25884,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -25488,6 +26343,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-nearby-tracklets:input:1.0"
@@ -25604,6 +26460,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -26066,6 +26923,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-proximity-intervals:input:1.0"
@@ -26182,6 +27040,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -26642,6 +27501,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-region-interactions:input:1.0"
@@ -26758,6 +27618,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -27216,6 +28077,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-sensor-coverage:input:1.0"
@@ -27332,6 +28194,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -27788,6 +28651,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-stop-intervals:input:1.0"
@@ -27904,6 +28768,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -28361,6 +29226,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-successor-candidates:input:1.0"
@@ -28477,6 +29343,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -28932,6 +29799,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-tracklets-in-region:input:1.0"
@@ -29048,6 +29916,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -29503,6 +30372,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-motion-summary:input:1.0"
@@ -29619,6 +30489,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -30070,6 +30941,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-position-at:input:1.0"
@@ -30186,6 +31058,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -30641,6 +31514,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-tracklet-gaps:input:1.0"
@@ -30757,6 +31631,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -31211,6 +32086,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-tracklet-quality:input:1.0"
@@ -31327,6 +32203,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -31778,6 +32655,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-tracklet:input:1.0"
@@ -31894,6 +32772,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -32353,6 +33232,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.nearest-approach:input:1.0"
@@ -32469,6 +33349,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -32927,6 +33808,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.slice-tracklet:input:1.0"
@@ -33043,6 +33925,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -33506,6 +34389,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -33545,6 +34429,7 @@
         "/members/*",
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:reference-set"
@@ -33908,6 +34793,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -33939,6 +34825,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {
         "/status": [
           "AMBIGUOUS",
@@ -34326,6 +35213,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -34364,6 +35252,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:world-fact-result"
@@ -34727,6 +35616,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -34741,6 +35631,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -35092,6 +35983,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -35130,6 +36022,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:world-fact-result"
@@ -35493,6 +36386,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -35507,6 +36401,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -35858,6 +36753,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -35896,6 +36792,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:world-fact-result"
@@ -36259,6 +37156,7 @@
       "referencePaths": [
         "/referenceKey"
       ],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -36273,6 +37171,7 @@
       ],
       "referenceKinds": [],
       "referencePaths": [],
+      "geometryTypes": {},
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"

@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "providerCount": 15,
   "operationCount": 122,
-  "contractCatalogRevision": "sha256:daed96e71a19718756c9cf3e08ec9bd1e2e14266b9387fb42bf2ff1c81d82d9f",
+  "contractCatalogRevision": "sha256:c1e0c1652a566ef4dbedec58002850aff24ea255816bbc2a197d051d2b6318c6",
   "bindingRevision": "sha256:deda4537f21d15a1c3c65f1e1aa197fb316a2980afbaeab55e8912731e1eb302",
   "missingRequiredProviders": [],
   "operationCollisions": [],

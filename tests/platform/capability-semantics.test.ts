@@ -5,6 +5,7 @@ import { buildGatewayApp } from "../../services/gateway/world-capability-gateway
 import { projectCapabilitySemantics } from "../../services/gateway/world-capability-gateway/src/capability-semantics.js";
 import { CapabilityRegistry } from "../../services/gateway/world-capability-gateway/src/registry.js";
 import type { ProviderClient } from "../../services/gateway/world-capability-gateway/src/types.js";
+import { createSouthboundOperationLock } from "../../scripts/generate-wsgs-operation-lock.js";
 
 const sourceSlugs = ["reference-catalog", "world-evidence", "spatial", "h3-interactive", "network", "route", "road-coverage", "platform-validation", "dataset-catalog"];
 const officialDescriptors: CapabilityDescriptor[] = sourceSlugs.flatMap((slug) => JSON.parse(readFileSync(new URL(`../../contracts/manifests/providers/${slug}-provider.json`, import.meta.url), "utf8")).capabilities);
@@ -16,6 +17,17 @@ function descriptor(operationId: string): CapabilityDescriptor {
 const revision = `sha256:${"7".repeat(64)}`;
 
 describe("capability semantic projection", () => {
+  it("admits Stable consumer operations only after all gates and segregates Preview from Experimental", () => {
+    const pending = createSouthboundOperationLock(officialDescriptors,revision,false);
+    expect(pending.defaultOperations).toEqual([]);
+    const admitted = createSouthboundOperationLock(officialDescriptors,revision,true);
+    expect(admitted.defaultOperations.map((c)=>c.operationId)).toEqual(officialDescriptors.filter((c)=>c.maturity==="STABLE").map((c)=>c.operationId).sort());
+    expect(admitted.previewOperations.every((c)=>c.maturity==="PREVIEW")).toBe(true);
+    expect([...admitted.defaultOperations,...admitted.previewOperations].some((c)=>c.operationId==="spatial.join")).toBe(false);
+    expect(JSON.stringify(admitted)).not.toMatch(/providerId|https?:|transportToken|containerName|SELECT\s.+FROM/iu);
+    expect(createSouthboundOperationLock([...officialDescriptors].reverse(),revision,true)).toEqual(admitted);
+    expect(() => createSouthboundOperationLock([{...descriptor("route.plan"),semanticProfile:undefined} as never],revision,true)).toThrow("missing explicit semantics");
+  });
   it("projects only current registry entries with deterministic candidate/exact semantics", () => {
     const descriptors = [descriptor("h3.geometry.cover"), descriptor("spatial.find-in-area"), descriptor("coverage.road.plan")];
     const first = projectCapabilitySemantics(descriptors, revision);

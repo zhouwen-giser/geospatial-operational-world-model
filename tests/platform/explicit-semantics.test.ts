@@ -107,6 +107,9 @@ describe("offline semantic rules and implementation evidence", () => {
     expect(inspected.referenceKinds).toEqual([]);
     const { c,e } = base(); e.referenceOutput = inspected.referencePaths.length > 0;
     expect(checkSemanticRules(c,e).some((i) => i.rule === "S002")).toBe(true);
+    const geometry = inspectSchema({type:"object",properties:{geometry:{oneOf:["Polygon","MultiPolygon"].map((type)=>({type:"object",required:["type","coordinates"],properties:{type:{const:type},coordinates:{type:"array"}}}))}}},()=>{throw new Error("unexpected ref");});
+    expect(geometry.geometryTypes["/geometry"]).toEqual(["MultiPolygon","Polygon"]);
+    expect(geometry.geometryTypes["/missing"]).toBeUndefined();
   });
   it("rejects duplicate operations, missing validators and cyclic or retired exact verification targets", () => {
     const { c, e } = base(), target = structuredClone(c);

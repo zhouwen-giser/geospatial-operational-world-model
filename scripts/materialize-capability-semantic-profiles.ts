@@ -156,7 +156,9 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
         const target = catalog.find((c) => operationKey(c) === operationKey(declaration.profile.exactVerification!));
         if (target) {
           const targetShape = inspectSchema(resolveSchema(target.inputSchemaUri), resolveSchema);
-          evidence.verificationPorts = inputShape.paths.includes(declaration.verificationMapping.retainedInput) && targetShape.paths.includes(declaration.verificationMapping.targetInput);
+          const retained=inputShape.geometryTypes[declaration.verificationMapping.retainedInput]??[];
+          const accepted=targetShape.geometryTypes[declaration.verificationMapping.targetInput]??[];
+          evidence.verificationPorts = retained.length>0 && retained.every((type)=>accepted.includes(type));
         }
       }
       implementationReport[op] = { contractHash, inputShape, outputShape, evidence, ...(sql ? { sql } : {}), inspections: inspections.map(({ path, inspection }) => ({ path, symbols: inspection.symbols, calls: inspection.calls, siblingImports: inspection.siblingImports, diagnostics: inspection.diagnostics })) };

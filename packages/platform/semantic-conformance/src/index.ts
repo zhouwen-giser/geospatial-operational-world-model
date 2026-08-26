@@ -29,12 +29,15 @@ export const EMPTY_EVIDENCE: ImplementationEvidence = {
   implementation: false, blackBox: false, verificationPorts: false
 };
 export const operationKey = (c: Pick<CapabilityDescriptor, "operationId" | "operationVersion">): string => `${c.operationId}@${c.operationVersion}`;
-export function validateVocabularyExtension(baseline: {vocabularyId:string;terms:{id:string;definition:string}[]}, candidate: typeof baseline): string[] {
+type Vocabulary = {vocabularyId:string;terms:({id:string;definition:string}|string)[];definitions?:Record<string,string>;semanticConstraints?:Record<string,string>};
+export function validateVocabularyExtension(baseline: Vocabulary, candidate: Vocabulary): string[] {
   const failures:string[]=[];
   if (baseline.vocabularyId !== candidate.vocabularyId) failures.push("vocabulary identity changed");
-  const terms = new Map(candidate.terms.map((t)=>[t.id,t.definition]));
-  if (terms.size !== candidate.terms.length || candidate.terms.some((t)=>!t.id || !t.definition.trim())) failures.push("terms require unique identities and nonempty definitions");
-  for (const term of baseline.terms) if (terms.get(term.id) !== term.definition) failures.push(`frozen meaning changed or removed: ${term.id}`);
+  const meaning=(v:Vocabulary,t:Vocabulary["terms"][number]):[string,string|undefined]=>typeof t==="string"?[t,v.definitions?.[t]??v.semanticConstraints?.[t]]:[t.id,t.definition];
+  const terms = new Map(candidate.terms.map((t)=>meaning(candidate,t)));
+  if (terms.size !== candidate.terms.length || [...terms].some(([id,definition])=>!id || !definition?.trim())) failures.push("terms require unique identities and nonempty definitions");
+  for (const term of baseline.terms) { const [id,definition]=meaning(baseline,term); if (!terms.has(id) || definition!==undefined && terms.get(id)!==definition) failures.push(`frozen meaning changed or removed: ${id}`); }
+  for (const [id,constraint] of Object.entries(baseline.semanticConstraints??{})) if (candidate.semanticConstraints?.[id]!==constraint) failures.push(`frozen constraint changed or removed: ${id}`);
   return failures.sort();
 }
 const key = operationKey;
@@ -156,15 +159,21 @@ export async function inspectSql(sql: string): Promise<SqlInspection> {
   return { hash: canonicalSha256(tree), functions: [...functions].sort(), operators: [...operators].sort(), relations: [...relations].sort(), exact, bboxOnly: operators.has("&&") && !exact, geographyDistance: geography && [...functions].some((f) => ["st_dwithin", "st_distance"].includes(f)) };
 }
 
-export interface SchemaInspection { paths: string[]; referenceKinds: string[]; referencePaths: string[]; statusPaths: Record<string, string[]>; sourceUris: string[] }
+export interface SchemaInspection { paths: string[]; referenceKinds: string[]; referencePaths: string[]; geometryTypes: Record<string,string[]>; statusPaths: Record<string, string[]>; sourceUris: string[] }
 /** Follows local/URN schema references with a cycle guard and records exact status paths. */
 export function inspectSchema(schema: unknown, resolveReference: (ref: string, parent: unknown) => unknown): SchemaInspection {
   const paths = new Set<string>(), kinds = new Set<string>(), uris = new Set<string>(), referencePaths = new Set<string>();
   const statusPaths: Record<string, string[]> = {};
+  const geometryTypes: Record<string,string[]> = {};
   const visit = (value: unknown, path: string, stack: Set<unknown>, property?: string) => {
     if (!value || typeof value !== "object" || stack.has(value)) return;
     const next = new Set(stack).add(value), node = value as Record<string, any>;
     if (["namespace", "kind", "id", "version"].every((name) => node.properties?.[name] && node.required?.includes(name))) referencePaths.add(path);
+    if (node.properties?.coordinates && node.required?.includes("coordinates") && node.required?.includes("type")) {
+      const types=node.properties.type?.enum??(node.properties.type?.const?[node.properties.type.const]:[]);
+      const known=types.filter((t:unknown)=>["Point","MultiPoint","LineString","MultiLineString","Polygon","MultiPolygon"].includes(String(t)));
+      if (known.length) geometryTypes[path]=[...new Set([...(geometryTypes[path]??[]),...known as string[]])].sort();
+    }
     if (typeof node.$id === "string") uris.add(node.$id);
     if (node.$ref) visit(resolveReference(node.$ref, value), path, next, property);
     if (property === "kind") {
@@ -179,7 +188,7 @@ export function inspectSchema(schema: unknown, resolveReference: (ref: string, p
     for (const branch of [...(node.oneOf ?? []), ...(node.anyOf ?? []), ...(node.allOf ?? [])]) visit(branch, path, next, property);
   };
   visit(schema, "", new Set());
-  return { paths: [...paths].sort(), referenceKinds: [...kinds].sort(), referencePaths: [...referencePaths].sort(), statusPaths, sourceUris: [...uris].sort() };
+  return { paths: [...paths].sort(), referenceKinds: [...kinds].sort(), referencePaths: [...referencePaths].sort(), geometryTypes, statusPaths, sourceUris: [...uris].sort() };
 }
 
 export function byteHash(value: string | Uint8Array): string { return createHash("sha256").update(value).digest("hex"); }
