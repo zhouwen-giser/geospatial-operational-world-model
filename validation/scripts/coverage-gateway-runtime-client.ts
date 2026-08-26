@@ -3,16 +3,21 @@ import { Pool } from "pg";
 import {
   getContractSchema,
   getContractSchemaHash,
+  validateContract,
   type CapabilityDescriptor,
   type CapabilityResultEnvelope,
   type GatewayExecuteRequest,
   type WorldQueryPlanV2Node,
   type WorldQueryPlanV2SchemaPort,
   type WorldQueryResult,
-  type WorldQuerySubmission
+  type WorldQuerySubmission,
+  type GowmV06CoverageProblem,
+  type GowmV06CoverageRoute
 } from "../../packages/platform/contract-runtime/src/index.js";
 import { createProviderRuntime, sha256, type ProviderOperation, type ProviderRuntime } from "../../packages/platform/provider-sdk/src/index.js";
 import { createDataSnapshot } from "../../packages/platform/result-validation-core/src/index.js";
+import { NetworkRepository, RoutingSnapshotCurrentnessEvaluator } from "../../packages/network-query-core/src/index.js";
+import { coverageHardeningCases } from "./coverage-hardening-runtime-checks.js";
 import {
   buildGatewayApp,
   CapabilityRegistry,
@@ -31,23 +36,27 @@ import {
   PostgresRoadCoverageEngine,
   ROAD_COVERAGE_OPERATION_LOCKS
 } from "../../services/providers/road-coverage-provider/src/provider.js";
-import { createPlatformValidationProvider, PostgresPlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
+import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
+import { createPlatformValidationProvider, PostgresPlatformValidationAuthority, type PlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
 
 type Row = Record<string, unknown>;
 const providerUrl = required("COVERAGE_PROVIDER_DATABASE_URL");
 const gatewayUrl = required("COVERAGE_GATEWAY_DATABASE_URL");
 const adminUrl = required("COVERAGE_ADMIN_DATABASE_URL");
 const validationUrl = required("PLATFORM_VALIDATION_DATABASE_URL");
+const catalogUrl = required("CATALOG_PROVIDER_DATABASE_URL");
 const runId = required("GOWM_V06_RUN_ID");
 const DATA_SCOPE = "coverage-gateway-runtime";
 const DATASET_SCOPE = "tenant-a";
 const requestSchemaUri = "urn:gowm:v0.6:road-coverage-request";
 const requestSchemaHash = ROAD_COVERAGE_OPERATION_LOCKS[0].inputSchemaHash;
 const checks: Record<string, boolean> = {};
+const performanceEvidence: Record<string, { elapsedMs: number; maximumMs: number }> = {};
 const providerPool = new Pool({ connectionString: providerUrl, max: 8 });
 const gatewayPool = new Pool({ connectionString: gatewayUrl, max: 8 });
 const adminPool = new Pool({ connectionString: adminUrl, max: 2 });
 const validationPool = new Pool({ connectionString: validationUrl, max: 4 });
+const catalogPool = new Pool({ connectionString: catalogUrl, max: 4 });
 const snapshot = {
   networkDatasetVersion: "dataset-v1",
   graphVersion: "graph-v1",
@@ -98,18 +107,74 @@ const principal: GatewayPrincipal = {
   datasetScopeClaim: DATASET_SCOPE
 };
 
-const coverage = createRoadCoverageProvider(new PostgresRoadCoverageEngine({
+const coverageEngine = new PostgresRoadCoverageEngine({
   pool: providerPool,
   resultTtlMs: 2500,
   leaseSeconds: 30,
   workerId: `coverage-${runId}`
-}));
-const platformValidation = createPlatformValidationProvider(new PostgresPlatformValidationAuthority(validationPool));
+});
+const planWithDiagnostics = coverageEngine.plan.bind(coverageEngine);
+coverageEngine.plan = async (input, context) => {
+  try { return await planWithDiagnostics(input, context); }
+  catch (error) { process.stderr.write(`CoveragePlanDiagnostic: ${error instanceof Error ? error.stack : String(error)}\n`); throw error; }
+};
+const coverage = createRoadCoverageProvider(coverageEngine);
+const postgresValidationAuthority = new PostgresPlatformValidationAuthority(validationPool);
+const semanticStatuses = new Map([
+  ["wrf_70000000000000000000000000000001", "SUCCEEDED"],
+  ["wrf_70000000000000000000000000000002", "PARTIAL"],
+  ["wrf_70000000000000000000000000000003", "NO_DATA"],
+  ["wrf_70000000000000000000000000000004", "AMBIGUOUS"],
+  ["wrf_70000000000000000000000000000005", "INDETERMINATE"],
+  ["wrf_70000000000000000000000000000006", "NO_PATH"],
+  ["wrf_70000000000000000000000000000007", "STALE"],
+  ["wrf_70000000000000000000000000000008", "FAILED"]
+]);
+const semanticValidationAuthority: PlatformValidationAuthority = {
+  async resolveReferences(requests, scope) {
+    return await Promise.all(requests.map(async (request) => {
+      const sourceStatus = semanticStatuses.get(request.referenceKey.id);
+      if (sourceStatus !== undefined) return {
+        referenceKey: request.referenceKey,
+        sourceStatus,
+        sourceAuthority: "gowm.g00-semantic-status-fixture",
+        available: true,
+        snapshotStatus: sourceStatus === "STALE" ? "STALE" as const : "CURRENT" as const,
+        validationEvidenceRefs: [`urn:gowm:g00:status:${sourceStatus}`]
+      };
+      if (request.referenceKey.id === "wrf_70000000000000000000000000000009") return {
+        referenceKey: request.referenceKey,
+        sourceStatus: "COMPLETED",
+        sourceAuthority: "gowm.g00-semantic-status-fixture",
+        available: true,
+        retired: true,
+        snapshotStatus: "CURRENT" as const,
+        validationEvidenceRefs: ["urn:gowm:g00:retired"]
+      };
+      return (await postgresValidationAuthority.resolveReferences([request], scope))[0];
+    }));
+  },
+  getSnapshot: (snapshotId, scope) => postgresValidationAuthority.getSnapshot(snapshotId, scope),
+  async currentResources(resources, scope) {
+    const current = new Map(await postgresValidationAuthority.currentResources(resources, scope));
+    for (const resource of resources) {
+      if (resource.resourceKind === "FORCED_UNAVAILABLE") current.set(`${resource.resourceKind}\u0000${resource.resourceId}`, "UNAVAILABLE");
+    }
+    return current;
+  }
+};
+const platformValidation = createPlatformValidationProvider(semanticValidationAuthority);
+const catalog = createGroundingCatalogProvider({
+  mode: "dataset",
+  pool: catalogPool,
+  cursorSecret: "GowmCatalogG00CursorSecret_2026_Alpha_Bravo"
+});
 const geometry = createGeometryProvider();
 const registry = new CapabilityRegistry();
 register(registry, geometry, "geometry", 36100);
 register(registry, coverage.runtime, "coverage", 36101);
 register(registry, platformValidation.runtime, "platform-validation", 36102);
+register(registry, catalog.runtime, "dataset-catalog", 36103);
 const direct = new DirectExecutionService({
   registry,
   circuits: new ProviderCircuitBreaker(),
@@ -132,6 +197,129 @@ try {
   await persistRuntimeRegistry(adminPool, geometry, "http://geometry.coverage-g00.invalid");
   await persistRuntimeRegistry(adminPool, coverage.runtime, "http://coverage.coverage-g00.invalid");
   await persistRuntimeRegistry(adminPool, platformValidation.runtime, "http://platform-validation.coverage-g00.invalid");
+  await persistRuntimeRegistry(adminPool, catalog.runtime, "http://dataset-catalog.coverage-g00.invalid");
+
+  const semanticStartedAt = performance.now();
+  const semanticCatalogResponse = await app.inject({ method: "GET", url: "/v1/capability-semantics" });
+  const semanticCatalog = row(semanticCatalogResponse.json());
+  const semanticProfiles = array(semanticCatalog.profiles).map(row);
+  const semanticReplay = row((await app.inject({ method: "GET", url: "/v1/capability-semantics" })).json());
+  check("capabilitySemanticsFromRegistry", semanticCatalogResponse.statusCode === 200 && semanticProfiles.length === registry.catalog().length, semanticCatalog);
+  check("capabilitySemanticsUnique", new Set(semanticProfiles.map((profile) => `${profile.operationId}@${profile.operationVersion}`)).size === semanticProfiles.length, semanticProfiles);
+  check("capabilitySemanticsDeterministic", semanticCatalog.catalogHash === semanticReplay.catalogHash, { semanticCatalog, semanticReplay });
+  check("capabilitySemanticsCoverage", semanticProfiles.some((profile) => profile.operationId === "coverage.road.plan" && profile.resultNature === "PLAN" && profile.freshnessSemantics === "SNAPSHOT_CURRENTNESS"), semanticProfiles);
+  check("capabilitySemanticsValidation", semanticProfiles.some((profile) => profile.operationId === "result.validate" && profile.resultNature === "VALIDATION") && semanticProfiles.some((profile) => profile.operationId === "snapshot.validate" && profile.resultNature === "VALIDATION"), semanticProfiles);
+  check("capabilitySemanticsCatalog", semanticProfiles.some((profile) => profile.operationId === "catalog.search" && profile.resultNature === "CATALOG"), semanticProfiles);
+  const coverageSemanticDetail = await app.inject({ method: "GET", url: "/v1/capability-semantics/coverage.road.plan/1.0" });
+  check("capabilitySemanticsDetail", coverageSemanticDetail.statusCode === 200 && coverageSemanticDetail.json().operationId === "coverage.road.plan", coverageSemanticDetail.json());
+  measured("semanticProjectionBounded", semanticStartedAt, 5000);
+
+  const networkAuthority = new NetworkRepository({ pool: providerPool });
+  const boundaryScope = { dataScopeKey: DATA_SCOPE, datasetScopeKey: DATASET_SCOPE };
+  const loadedNetwork = await networkAuthority.loadPinned(snapshot, boundaryScope, 10_000);
+  const currentRouting = await networkAuthority.inspectFreshness(loadedNetwork, boundaryScope, 10_000);
+  check("routingCurrentnessCurrent", currentRouting.currentness.currentness === "CURRENT" && currentRouting.graphCurrent && currentRouting.profileCurrent && currentRouting.conditionCurrent, currentRouting);
+  const graphStaleRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...loadedNetwork.routingSnapshot, graphVersion: "graph-old" } }, boundaryScope, 10_000);
+  check("routingCurrentnessGraphStale", graphStaleRouting.currentness.currentness === "STALE" && graphStaleRouting.currentness.staleDimensions.join(",") === "GRAPH", graphStaleRouting);
+  const unavailableRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, graph: { ...loadedNetwork.graph, graph_key: "missing-g00-graph" } }, boundaryScope, 10_000);
+  check("routingCurrentnessUnavailable", unavailableRouting.currentness.currentness === "UNAVAILABLE", unavailableRouting);
+  const unknownWorldRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...loadedNetwork.routingSnapshot, sourceWorldVersion: 1 } }, boundaryScope, 10_000);
+  check("routingCurrentnessWorldUnknown", unknownWorldRouting.currentness.currentness === "UNKNOWN" && unknownWorldRouting.currentness.dimensions.sourceWorld === "UNKNOWN", unknownWorldRouting);
+  const unknownConditionRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...loadedNetwork.routingSnapshot, conditionSnapshotId: "unknown-prior-condition" } }, boundaryScope, 10_000);
+  check("routingCurrentnessConditionUnknown", unknownConditionRouting.currentness.currentness === "UNKNOWN" && unknownConditionRouting.currentness.dimensions.condition === "UNKNOWN", unknownConditionRouting);
+  const stalePlanValidation = new RoutingSnapshotCurrentnessEvaluator().planValidation("VALID", graphStaleRouting.currentness);
+  check("routingValiditySeparate", stalePlanValidation.planValidity === "VALID" && stalePlanValidation.currentness === "STALE" && stalePlanValidation.usable === "REVALIDATE", stalePlanValidation);
+  const stripArea = { type: "Polygon", coordinates: [[[0.001,-0.0001],[0.002,-0.0001],[0.002,0.0001],[0.001,0.0001],[0.001,-0.0001]]] };
+  const forwardBoundary = await networkAuthority.routeBoundaryCrossings(snapshot, stripArea, [{ arcKey: `arc_${"2".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  check("boundaryForwardPolygon", forwardBoundary.crossings.map((item) => `${item.kind}:${item.fractionPpm}:${item.direction}`).join(",") === "ENTRY:333333:FORWARD,EXIT:666667:FORWARD" && forwardBoundary.startInside === false && forwardBoundary.endInside === false, forwardBoundary);
+  const reverseBoundary = await networkAuthority.routeBoundaryCrossings(snapshot, stripArea, [{ arcKey: `arc_${"a".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  check("boundaryReversePolygon", reverseBoundary.crossings.map((item) => `${item.kind}:${item.fractionPpm}:${item.direction}`).join(",") === "ENTRY:333333:REVERSE,EXIT:666667:REVERSE", reverseBoundary);
+  const partialBoundary = await networkAuthority.routeBoundaryCrossings(snapshot, stripArea, [{ arcKey: `arc_${"2".repeat(64)}`, startFractionPpm: 500000, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  check("boundaryPartialArcMembership", partialBoundary.startInside === true && partialBoundary.endInside === false && partialBoundary.crossings.length === 1 && partialBoundary.crossings[0]?.kind === "EXIT" && partialBoundary.crossings[0]?.fractionPpm === 666667, partialBoundary);
+  const multiArea = { type: "MultiPolygon", coordinates: [
+    [[[0.0005,-0.0001],[0.001,-0.0001],[0.001,0.0001],[0.0005,0.0001],[0.0005,-0.0001]]],
+    [[[0.002,-0.0001],[0.0025,-0.0001],[0.0025,0.0001],[0.002,0.0001],[0.002,-0.0001]]]
+  ] };
+  const boundaryStartedAt = performance.now();
+  const multiBoundary = await networkAuthority.routeBoundaryCrossings(snapshot, multiArea, [{ arcKey: `arc_${"2".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  measured("boundaryQueryBounded", boundaryStartedAt, 10_000);
+  check("boundaryMultiPolygon", multiBoundary.crossings.map((item) => item.kind).join(",") === "ENTRY,EXIT,ENTRY,EXIT" && multiBoundary.crossings.every((item, index) => item.sequence === index + 1), multiBoundary);
+  const insideArea = { type: "Polygon", coordinates: [[[0.0029,-0.0001],[0.0041,-0.0001],[0.0041,0.0001],[0.0029,0.0001],[0.0029,-0.0001]]] };
+  const insideBoundary = await networkAuthority.routeBoundaryCrossings(snapshot, insideArea, [{ arcKey: `arc_${"5".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  check("boundaryStartEndInside", insideBoundary.startInside === true && insideBoundary.endInside === true && insideBoundary.crossings.length === 0, insideBoundary);
+  const touchArea = { type: "Polygon", coordinates: [[[0.001,0],[0.0015,0.0002],[0.0005,0.0002],[0.001,0]]] };
+  const touchBoundary = await networkAuthority.routeBoundaryCrossings(snapshot, touchArea, [{ arcKey: `arc_${"2".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  check("boundaryTouchDeterministic", touchBoundary.crossings.length === 0 && touchBoundary.startInside === false && touchBoundary.endInside === false, touchBoundary);
+  const boundaryReplay = await networkAuthority.routeBoundaryCrossings(snapshot, multiArea, [{ arcKey: `arc_${"2".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  check("boundaryEvidenceReplay", boundaryReplay.crossings.map((item) => item.evidenceHash).join(",") === multiBoundary.crossings.map((item) => item.evidenceHash).join(","), { multiBoundary, boundaryReplay });
+  let overlapRejected = false;
+  try {
+    await networkAuthority.routeBoundaryCrossings(snapshot, { type: "Polygon", coordinates: [[[0.001,0],[0.002,0],[0.002,0.0002],[0.001,0.0002],[0.001,0]]] }, [{ arcKey: `arc_${"2".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  } catch (error) { overlapRejected = row(error).code === "INVALID_REQUEST"; }
+  check("boundaryOverlapFailClosed", overlapRejected);
+  let invalidAreaRejected = false;
+  try {
+    await networkAuthority.routeBoundaryCrossings(snapshot, { type: "Point", coordinates: [0, 0] }, [{ arcKey: `arc_${"2".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
+  } catch (error) { invalidAreaRejected = row(error).code === "INVALID_REQUEST"; }
+  check("boundaryInvalidAreaFailClosed", invalidAreaRejected);
+
+  const productReference = (id: string, version: string) => ({ namespace: "gowm" as const, kind: "DATASET", id, version });
+  const networkProductKey = productReference("wrf_60000000000000000000000000000001", "dataset-v1");
+  const vectorProductKey = productReference("wrf_60000000000000000000000000000002", "vector-v1");
+  const currentProductKey = productReference("wrf_60000000000000000000000000000003", "current-v1");
+  const catalogStartedAt = performance.now();
+  const productSearch = envelopeValue(await execute("catalog.search", { schemaVersion: "1.0", limit: 10 }, `${runId}-catalog-all`));
+  measured("catalogSearchBounded", catalogStartedAt, 30_000);
+  const productItems = array(productSearch.items).map(row);
+  check("dataProductKinds", productItems.map((item) => item.dataKind).sort().join(",") === "CURRENT_PROJECTION,NETWORK,VECTOR", productItems);
+  check("dataProductScopeBeforeCount", productItems.length === 3 && productItems.every((item) => row(item.referenceKey).id !== "wrf_6f000000000000000000000000000001"), productItems);
+
+  const vectorProduct = envelopeValue(await execute("catalog.get", { schemaVersion: "1.0", referenceKey: vectorProductKey }, `${runId}-catalog-vector`));
+  const boundCapabilities = (dataKind: "VECTOR" | "NETWORK" | "CURRENT_PROJECTION") => registry.catalog()
+    .filter((descriptor) => dataKind === "CURRENT_PROJECTION"
+      ? descriptor.dataBinding === "WORLD_SNAPSHOT_BOUND" && descriptor.operationId.startsWith("world.")
+      : dataKind === "NETWORK"
+        ? ["WORLD_SNAPSHOT_BOUND", "DATASET_VERSION_BOUND"].includes(descriptor.dataBinding) && /^(network|route|coverage)\./u.test(descriptor.operationId)
+        : descriptor.dataBinding === "DATASET_VERSION_BOUND" && /^(dataset|layer|feature|spatial)\./u.test(descriptor.operationId))
+    .map((descriptor) => descriptor.operationId).filter((operationId, index, values) => values.indexOf(operationId) === index).sort();
+  check("dataProductVectorDescriptor", vectorProduct.dataKind === "VECTOR" && vectorProduct.currentVersion === "vector-v1", vectorProduct);
+  check("dataProductSchemaCrsExtent", typeof vectorProduct.schemaHash === "string" && vectorProduct.crs === "EPSG:4326" && row(vectorProduct.spatialExtent).type === "Polygon" && row(vectorProduct.temporalExtent).from !== undefined, vectorProduct);
+  check("dataProductLineageQuality", array(vectorProduct.lineage).includes("urn:test:vector-source:1") && row(vectorProduct.quality).validationStatus === "VALIDATED" && array(row(vectorProduct.quality).knownLimitations).includes("G00 fixture extent only"), vectorProduct);
+  check("dataProductCapabilities", JSON.stringify(array(vectorProduct.supportedCapabilities)) === JSON.stringify(boundCapabilities("VECTOR")) && array(vectorProduct.supportedCapabilities).includes("dataset.get"), vectorProduct);
+  const networkProduct = envelopeValue(await execute("catalog.get", { schemaVersion: "1.0", referenceKey: networkProductKey }, `${runId}-catalog-network`));
+  const currentProduct = envelopeValue(await execute("catalog.get", { schemaVersion: "1.0", referenceKey: currentProductKey }, `${runId}-catalog-current`));
+  check("dataProductNetworkDescriptor", networkProduct.dataKind === "NETWORK" && JSON.stringify(array(networkProduct.supportedCapabilities)) === JSON.stringify(boundCapabilities("NETWORK")) && array(networkProduct.supportedCapabilities).includes("coverage.road.plan"), networkProduct);
+  check("dataProductCurrentDescriptor", currentProduct.dataKind === "CURRENT_PROJECTION" && JSON.stringify(array(currentProduct.supportedCapabilities)) === JSON.stringify(boundCapabilities("CURRENT_PROJECTION")), currentProduct);
+  check("dataProductUnknownQuality", row(networkProduct.quality).validationStatus === "UNCHECKED" && row(networkProduct.quality).completeness === undefined, networkProduct);
+
+  const versions = envelopeValue(await execute("catalog.list-versions", { schemaVersion: "1.0", referenceKey: vectorProductKey }, `${runId}-catalog-versions`));
+  check("dataProductVersions", array(versions.value).map((item) => row(item).version).join(",") === "vector-v1,vector-v0", versions);
+  const schemaDetail = envelopeValue(await execute("catalog.describe-schema", { schemaVersion: "1.0", referenceKey: vectorProductKey }, `${runId}-catalog-schema`));
+  check("dataProductSchemaDetail", row(schemaDetail.value).schemaHash === vectorProduct.schemaHash && row(schemaDetail.value).schemaRef === vectorProduct.schemaRef, schemaDetail);
+  const lineageDetail = envelopeValue(await execute("catalog.get-lineage", { schemaVersion: "1.0", referenceKey: vectorProductKey }, `${runId}-catalog-lineage`));
+  const qualityDetail = envelopeValue(await execute("catalog.get-quality", { schemaVersion: "1.0", referenceKey: vectorProductKey }, `${runId}-catalog-quality`));
+  const capabilityDetail = envelopeValue(await execute("catalog.get-capabilities", { schemaVersion: "1.0", referenceKey: vectorProductKey }, `${runId}-catalog-capabilities`));
+  check("dataProductDetails", JSON.stringify(lineageDetail.value) === JSON.stringify(vectorProduct.lineage) && JSON.stringify(qualityDetail.value) === JSON.stringify(vectorProduct.quality) && JSON.stringify(capabilityDetail.value) === JSON.stringify(vectorProduct.supportedCapabilities));
+
+  const vectorSearch = envelopeValue(await execute("catalog.search", { schemaVersion: "1.0", dataKinds: ["VECTOR"], limit: 10 }, `${runId}-catalog-kind`));
+  check("dataProductKindSearch", array(vectorSearch.items).length === 1 && row(array(vectorSearch.items)[0]).dataKind === "VECTOR", vectorSearch);
+  const spatialSearch = envelopeValue(await execute("catalog.search", { schemaVersion: "1.0", dataKinds: ["VECTOR"], spatialFilter: { type: "Polygon", coordinates: [[[0.003,-0.0001],[0.004,-0.0001],[0.004,0.0001],[0.003,0.0001],[0.003,-0.0001]]] }, limit: 10 }, `${runId}-catalog-spatial`));
+  check("dataProductSpatialSearch", array(spatialSearch.items).length === 1, spatialSearch);
+  const timeSearch = envelopeValue(await execute("catalog.search", { schemaVersion: "1.0", dataKinds: ["VECTOR"], timeFilter: { from: "2026-08-15T00:00:00Z", to: "2026-08-16T00:00:00Z" }, limit: 10 }, `${runId}-catalog-time`));
+  check("dataProductTimeSearch", array(timeSearch.items).length === 1, timeSearch);
+  const capabilitySearch = envelopeValue(await execute("catalog.search", { schemaVersion: "1.0", requiredCapabilities: ["coverage.road.plan"], limit: 10 }, `${runId}-catalog-capability`));
+  check("dataProductCapabilitySearch", array(capabilitySearch.items).length === 1 && row(array(capabilitySearch.items)[0]).dataKind === "NETWORK", capabilitySearch);
+  const validatedSearch = envelopeValue(await execute("catalog.search", { schemaVersion: "1.0", minimumValidationStatus: "VALIDATED", limit: 10 }, `${runId}-catalog-quality-search`));
+  check("dataProductQualitySearch", array(validatedSearch.items).length === 2, validatedSearch);
+
+  const firstPage = envelopeValue(await execute("catalog.search", { schemaVersion: "1.0", limit: 1 }, `${runId}-catalog-page-1`));
+  const firstCursor = String(firstPage.nextCursor);
+  const secondPage = envelopeValue(await execute("catalog.search", { schemaVersion: "1.0", cursor: firstCursor, limit: 1 }, `${runId}-catalog-page-2`));
+  check("dataProductCursorStable", array(firstPage.items).length === 1 && array(secondPage.items).length === 1 && row(row(array(firstPage.items)[0]).referenceKey).id !== row(row(array(secondPage.items)[0]).referenceKey).id, { firstPage, secondPage });
+  const tamperedCursor = await app.inject({ method: "POST", url: "/v1/operations/catalog.search:execute", payload: gatewayRequest("catalog.search", { schemaVersion: "1.0", cursor: `${firstCursor}x`, limit: 1 }, `${runId}-catalog-cursor-tamper`, "SYNC") });
+  check("dataProductCursorTamper", tamperedCursor.statusCode === 422, tamperedCursor.json());
+  const foreignGet = await app.inject({ method: "POST", url: "/v1/operations/catalog.get:execute", payload: gatewayRequest("catalog.get", { schemaVersion: "1.0", referenceKey: productReference("wrf_6f000000000000000000000000000001", "foreign-v1") }, `${runId}-catalog-foreign`, "SYNC") });
+  check("dataProductCrossScopeOpaque", foreignGet.statusCode === 403 && JSON.stringify(foreignGet.json()).includes("wrf_6f000000000000000000000000000001") === false, foreignGet.json());
   const validate = await execute("coverage.road.validate", coverageRequest, `${runId}-validate`);
   const validation = envelopeValue(validate);
   check("validateDirect", validation.valid === true, validation);
@@ -165,7 +353,10 @@ try {
   check("planAlternatives", resultSet.status === "SUCCEEDED" && array(resultSet.alternatives).length === 2, resultSet);
   check("queryResultIdentity", row(resultSet.referenceKey).kind === "QUERY_RESULT", resultSet.referenceKey);
   check("derivedAlternativeIdentity", array(resultSet.alternatives).every((value) => row(row(value).referenceKey).kind === "DERIVED_REFERENCE"));
-  check("geometryOnDemand", JSON.stringify(resultSet).includes("coordinates") === false);
+  check("geometryOnDemand", array(resultSet.alternatives).every((value) => {
+    const route = row(row(value).route);
+    return route.geometry === undefined && route.geojson === undefined && array(route.segments).every((segment) => !JSON.stringify(segment).includes("coordinates"));
+  }));
 
   const firstAlternative = row(array(resultSet.alternatives)[0]);
   const verify = await execute("coverage.road.verify", {
@@ -176,6 +367,17 @@ try {
     revalidateAgainstCurrentCondition: true
   }, `${runId}-verify`);
   check("verifyDirect", envelopeValue(verify).status === "VALID", envelopeValue(verify));
+  const tamperedAlternative = structuredClone(firstAlternative);
+  const tamperedRoute = row(tamperedAlternative.route);
+  tamperedRoute.metrics = { ...row(tamperedRoute.metrics), durationMs: Number(row(tamperedRoute.metrics).durationMs) + 1 };
+  const invalidVerify = await execute("coverage.road.verify", {
+    schemaVersion: "1.0",
+    problemReference: resultSet.referenceKey,
+    candidate: tamperedAlternative,
+    routingSnapshot: snapshot,
+    revalidateAgainstCurrentCondition: false
+  }, `${runId}-verify-tampered`);
+  check("frozenPlanInvalid", envelopeValue(invalidVerify).status === "INVALID", envelopeValue(invalidVerify));
 
   const expanded = await execute("coverage.road.expand-geojson", {
     schemaVersion: "1.0",
@@ -187,6 +389,7 @@ try {
   const features = array(geojson.features).map(row);
   check("expandDirect", geojson.type === "FeatureCollection" && features.length > 0, geojson);
   check("expandOrder", features.every((feature, index) => row(feature.properties).sequence === index + 1));
+  check("coverageTraversalCredit", features.every((feature) => row(feature.properties).coverageCredit === (row(feature.properties).traversalRole === "SERVICE")) && features.some((feature) => row(feature.properties).coverageCredit === true) && features.some((feature) => row(feature.properties).coverageCredit === false), features);
 
   const replayRuntime = new WorldQueryRuntime({
     validator: new QueryPlanValidator(registry), directExecution: direct, store, autoRunAsync: false
@@ -209,17 +412,43 @@ try {
   check("atomicArtifacts", persisted.candidates === 2 && Number(persisted.segments) > 0 && persisted.verifications === 2, persisted);
   check("pairwiseSimilarity", persisted.similarities === 1, persisted);
 
-  const validationEvidence = await adminPool.query<{ data_snapshot_hash: string }>(
-    "SELECT data_snapshot_hash FROM public.world_query_result_reference WHERE reference_key=$1",
+  const validationEvidence = await adminPool.query<{ data_snapshot_hash: string; compute_snapshot_hash: string }>(
+    "SELECT data_snapshot_hash,compute_snapshot_hash FROM public.world_query_result_reference WHERE reference_key=$1",
     [row(resultSet.referenceKey).id]
   );
   const dataSnapshotHash = validationEvidence.rows[0]?.data_snapshot_hash;
+  const integrity = array(resultSet.receipts).map(row).find((receipt) => receipt.kind === "SNAPSHOT_INTEGRITY");
+  check("coverageSnapshotHashSeparation", integrity !== undefined && new Set([resultSet.problemHash, integrity.dataSnapshotHash, integrity.computeSnapshotHash]).size === 3 &&
+    validationEvidence.rows[0]?.data_snapshot_hash === integrity.dataSnapshotHash && validationEvidence.rows[0]?.compute_snapshot_hash === integrity.computeSnapshotHash, { integrity, registry: validationEvidence.rows[0] });
+  const { snapshotHash: computeHash, ...computeBody } = row(integrity?.computeSnapshot);
+  check("coverageComputeSnapshotContent", integrity !== undefined && validateContract("urn:gowm:v0.6.1:compute-snapshot-manifest", integrity.computeSnapshot).valid &&
+    array(computeBody.engines).map(row).some((engine) => engine.name === "gowm-build-package" && /^sha256:[0-9a-f]{64}$/u.test(String(engine.digest))) &&
+    sha256(computeBody) === computeHash && computeHash === integrity.computeSnapshotHash, integrity);
   if (dataSnapshotHash === undefined) throw new Error("coverage result data snapshot hash is unavailable");
   const resultReferenceKey = row(resultSet.referenceKey) as { namespace: "gowm"; kind: string; id: string; version: string };
   const platformSnapshot = createDataSnapshot("PINNED", [{ referenceKey: resultReferenceKey, resourceKind: "QUERY_RESULT", resourceId: resultReferenceKey.id, version: resultReferenceKey.version, contentHash: dataSnapshotHash }]);
   await adminPool.query("SELECT public.register_platform_data_snapshot($1,$2,$3::jsonb)", [DATA_SCOPE, DATASET_SCOPE, JSON.stringify(platformSnapshot)]);
   const resultValidation = envelopeValue(await execute("result.validate", { schemaVersion: "1.0", references: [{ referenceKey: resultReferenceKey, requireCurrentSnapshot: true }] }, `${runId}-result-validation`));
   check("platformResultValidation", row(array(resultValidation.results)[0]).usable === "YES", resultValidation);
+  const realResultSemantics = row(row(array(resultValidation.results)[0]).resultSemantics);
+  check("platformOriginalStatusRetained", realResultSemantics.sourceStatus === "SUCCEEDED" && realResultSemantics.normalizedStatus === "COMPLETED" && array(row(array(resultValidation.results)[0]).validationEvidenceRefs).includes(dataSnapshotHash), resultValidation);
+
+  const semanticKeys = [...semanticStatuses.keys()].map((id) => ({ namespace: "gowm" as const, kind: "QUERY_RESULT", id, version: "1" }));
+  const semanticValidation = envelopeValue(await execute("result.validate", {
+    schemaVersion: "1.0",
+    references: [...semanticKeys.map((referenceKey) => ({ referenceKey })), {
+      referenceKey: { namespace: "gowm", kind: "QUERY_RESULT", id: "wrf_70000000000000000000000000000009", version: "1" }
+    }]
+  }, `${runId}-result-semantic-mapping`));
+  const semanticResults = array(semanticValidation.results).map(row);
+  check("platformStatusMapping", semanticResults.slice(0, 8).map((item) => row(item.resultSemantics).normalizedStatus).join(",") === "COMPLETED,PARTIAL,NO_DATA,AMBIGUOUS,INDETERMINATE,NO_FEASIBLE_RESULT,STALE,FAILED", semanticResults);
+  check("platformStatusBatchOrder", semanticResults.slice(0, 8).every((item, index) => row(item.referenceKey).id === semanticKeys[index]?.id), semanticResults);
+  check("platformStaleRevalidate", semanticResults[6]?.freshness === "STALE" && semanticResults[6]?.usable === "REVALIDATE", semanticResults[6]);
+  check("platformRetiredReference", semanticResults[8]?.existence === "RETIRED" && semanticResults[8]?.usable === "NO", semanticResults[8]);
+
+  const foreignValidation = envelopeValue(await execute("result.validate", { schemaVersion: "1.0", references: [{ referenceKey: { namespace: "gowm", kind: "DATASET", id: "wrf_6f000000000000000000000000000001", version: "foreign-v1" } }] }, `${runId}-result-foreign`));
+  const foreignValidity = row(array(foreignValidation.results)[0]);
+  check("platformResultScopeOpaque", foreignValidity.existence === "NOT_FOUND" && JSON.stringify(foreignValidity).includes("coverage-gateway-foreign") === false, foreignValidity);
   const snapshotGet = envelopeValue(await execute("snapshot.get", { schemaVersion: "1.0", snapshotId: platformSnapshot.snapshotId }, `${runId}-snapshot-get`));
   check("platformSnapshotGet", snapshotGet.snapshotHash === platformSnapshot.snapshotHash && snapshotGet.consistency === "PINNED", snapshotGet);
   const snapshotCurrent = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: platformSnapshot }, `${runId}-snapshot-current`));
@@ -231,6 +460,52 @@ try {
   const snapshotUnknown = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: unknownSnapshot }, `${runId}-snapshot-unknown`));
   check("platformSnapshotUnknown", snapshotUnknown.status === "UNKNOWN", snapshotUnknown);
 
+  const vectorSnapshotResource = { referenceKey: vectorProductKey, resourceKind: "DATASET", resourceId: vectorProductKey.id, version: "vector-v1", contentHash: `sha256:${"9".repeat(64)}` };
+  const consistentSnapshot = createDataSnapshot("CONSISTENT_AT_START", [vectorSnapshotResource]);
+  const bestEffortSnapshot = createDataSnapshot("BEST_EFFORT", [vectorSnapshotResource]);
+  await adminPool.query("SELECT public.register_platform_data_snapshot($1,$2,$3::jsonb)", [DATA_SCOPE, DATASET_SCOPE, JSON.stringify(consistentSnapshot)]);
+  await adminPool.query("SELECT public.register_platform_data_snapshot($1,$2,$3::jsonb)", [DATA_SCOPE, DATASET_SCOPE, JSON.stringify(bestEffortSnapshot)]);
+  const consistentGet = envelopeValue(await execute("snapshot.get", { schemaVersion: "1.0", snapshotId: consistentSnapshot.snapshotId }, `${runId}-snapshot-consistent-get`));
+  const bestEffortGet = envelopeValue(await execute("snapshot.get", { schemaVersion: "1.0", snapshotId: bestEffortSnapshot.snapshotId }, `${runId}-snapshot-best-effort-get`));
+  check("platformSnapshotConsistencyPreserved", consistentGet.consistency === "CONSISTENT_AT_START" && bestEffortGet.consistency === "BEST_EFFORT", { consistentGet, bestEffortGet });
+  const consistentCurrent = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: consistentSnapshot }, `${runId}-snapshot-consistent-current`));
+  const bestEffortCurrent = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: bestEffortSnapshot }, `${runId}-snapshot-best-effort-current`));
+  check("platformSnapshotConsistencyCurrent", consistentCurrent.status === "CURRENT" && bestEffortCurrent.status === "CURRENT", { consistentCurrent, bestEffortCurrent });
+
+  const graphStale = createDataSnapshot("PINNED", [{ resourceKind: "NETWORK_GRAPH", resourceId: "coverage-gateway-graph", version: "graph-old", contentHash: `sha256:${"0".repeat(64)}` }]);
+  const layerStale = createDataSnapshot("PINNED", [{ resourceKind: "LAYER", resourceId: "wrf_61000000000000000000000000000002", version: "layer-old", contentHash: `sha256:${"0".repeat(64)}` }]);
+  const worldAdvanced = createDataSnapshot("PINNED", [{ resourceKind: "WORLD_REFERENCE", resourceId: vectorProductKey.id, version: "vector-v1", contentHash: `sha256:${"e".repeat(64)}`, worldVersion: 1 }]);
+  const unavailable = createDataSnapshot("PINNED", [{ resourceKind: "FORCED_UNAVAILABLE", resourceId: "g00-unavailable", version: "1" }]);
+  const [graphStaleResult, layerStaleResult, worldAdvancedResult, unavailableResult] = await Promise.all([
+    execute("snapshot.validate", { schemaVersion: "1.0", snapshot: graphStale }, `${runId}-snapshot-graph-stale`).then(envelopeValue),
+    execute("snapshot.validate", { schemaVersion: "1.0", snapshot: layerStale }, `${runId}-snapshot-layer-stale`).then(envelopeValue),
+    execute("snapshot.validate", { schemaVersion: "1.0", snapshot: worldAdvanced }, `${runId}-snapshot-world-advanced`).then(envelopeValue),
+    execute("snapshot.validate", { schemaVersion: "1.0", snapshot: unavailable }, `${runId}-snapshot-unavailable`).then(envelopeValue)
+  ]);
+  check("platformSnapshotGraphStale", graphStaleResult.status === "STALE" && row(array(graphStaleResult.resourceResults)[0]).currentVersion === "graph-v1", graphStaleResult);
+  check("platformSnapshotLayerStale", layerStaleResult.status === "STALE" && row(array(layerStaleResult.resourceResults)[0]).currentVersion === "layer-v1", layerStaleResult);
+  check("platformSnapshotWorldAdvanced", worldAdvancedResult.status === "STALE", worldAdvancedResult);
+  check("platformSnapshotUnavailable", unavailableResult.status === "UNAVAILABLE", unavailableResult);
+
+  const invalidHashSnapshot = { ...structuredClone(consistentSnapshot), snapshotHash: `sha256:${"f".repeat(64)}` };
+  const invalidHashResult = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: invalidHashSnapshot }, `${runId}-snapshot-hash-mismatch`));
+  check("platformSnapshotContentHash", invalidHashResult.status === "STALE" && String(row(array(invalidHashResult.resourceResults)[0]).reason).includes("identity"), invalidHashResult);
+  const replaySnapshot = createDataSnapshot("CONSISTENT_AT_START", [vectorSnapshotResource]);
+  check("platformSnapshotHashReplay", replaySnapshot.snapshotId === consistentSnapshot.snapshotId && replaySnapshot.snapshotHash === consistentSnapshot.snapshotHash, { replaySnapshot, consistentSnapshot });
+
+  const foreignSnapshot = createDataSnapshot("PINNED", [{ resourceKind: "DATASET", resourceId: "wrf_6f000000000000000000000000000001", version: "foreign-v1", contentHash: `sha256:${"f".repeat(64)}` }]);
+  await adminPool.query("SELECT public.register_platform_data_snapshot($1,$2,$3::jsonb)", ["coverage-gateway-foreign", "tenant-b", JSON.stringify(foreignSnapshot)]);
+  const unavailableSnapshots = await Promise.all([foreignSnapshot.snapshotId, `snapshot_${"f".repeat(64)}`].map((snapshotId, index) => app.inject({
+    method: "POST", url: "/v1/operations/snapshot.get:execute",
+    payload: gatewayRequest("snapshot.get", { schemaVersion: "1.0", snapshotId }, `${runId}-snapshot-missing-${index}`, "SYNC")
+  })));
+  check("platformSnapshotScopeOpaque", unavailableSnapshots.every((response) => response.statusCode >= 400 && row(response.json().error).code === "VERSION_NOT_FOUND" && response.json().output === undefined) &&
+    unavailableSnapshots[0]!.statusCode === unavailableSnapshots[1]!.statusCode, unavailableSnapshots.map((response) => response.json()));
+  const snapshotCountBefore = Number((await adminPool.query("SELECT count(*) AS count FROM platform_data_snapshot")).rows[0]?.count);
+  await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: consistentSnapshot }, `${runId}-snapshot-read-only`);
+  const snapshotCountAfter = Number((await adminPool.query("SELECT count(*) AS count FROM platform_data_snapshot")).rows[0]?.count);
+  check("platformSnapshotReadOnly", snapshotCountAfter === snapshotCountBefore, { snapshotCountBefore, snapshotCountAfter });
+
   await new Promise((resolve) => setTimeout(resolve, 2800));
   const stale = await execute("coverage.road.verify", {
     schemaVersion: "1.0",
@@ -240,7 +515,7 @@ try {
     revalidateAgainstCurrentCondition: true
   }, `${runId}-stale`);
   const staleReport = envelopeValue(stale);
-  check("expiredIsStale", staleReport.status === "STALE" && array(staleReport.violations).some((value) => row(value).code === "RESULT_EXPIRED"), staleReport);
+  check("expiredIsStale", staleReport.status === "STALE" && row(staleReport.checks).currentness === true && row(staleReport.checks).resultTtl === false && array(staleReport.violations).some((value) => row(value).code === "RESULT_EXPIRED"), staleReport);
 
   const afterExpiry = await app.inject({
     method: "POST",
@@ -254,9 +529,42 @@ try {
 
   const queryGet = await app.inject({ method: "GET", url: `/v1/world-queries/${submission.plan.queryId}` });
   check("gatewayJobAuthority", queryGet.statusCode === 200 && queryGet.json().status === "COMPLETED", queryGet.json());
+
+  await adminPool.query(`INSERT INTO network_travel_profile_version(
+    travel_profile_id,data_scope_key,version,mode,required_access_mask,maximum_speed_mm_per_s,constraints,content_hash
+  ) SELECT travel_profile_id,data_scope_key,'travel-v2',mode,required_access_mask,maximum_speed_mm_per_s,constraints,'sha256:'||repeat('8',64)
+    FROM network_travel_profile_version WHERE version='travel-v1' AND data_scope_key=$1`, [DATA_SCOPE]);
+  const travelStaleRouting = await networkAuthority.inspectFreshness(loadedNetwork, boundaryScope, 10_000);
+  check("routingCurrentnessTravelStale", travelStaleRouting.currentness.staleDimensions.includes("TRAVEL_PROFILE"), travelStaleRouting);
+
+  await adminPool.query(`INSERT INTO network_cost_profile_version(
+    cost_profile_id,travel_profile_id,travel_profile_version_id,data_scope_key,version,
+    distance_weight_ppm,duration_weight_ppm,risk_weight_ppm,energy_weight_ppm,formula,content_hash
+  ) SELECT old.cost_profile_id,old.travel_profile_id,travel.travel_profile_version_id,old.data_scope_key,'cost-v2',
+      old.distance_weight_ppm,old.duration_weight_ppm,old.risk_weight_ppm,old.energy_weight_ppm,old.formula,'sha256:'||repeat('6',64)
+    FROM network_cost_profile_version old
+    JOIN network_travel_profile_version travel ON travel.travel_profile_id=old.travel_profile_id AND travel.version='travel-v2'
+    WHERE old.version='cost-v1' AND old.data_scope_key=$1`, [DATA_SCOPE]);
+  const v2RoutingSnapshot = { ...loadedNetwork.routingSnapshot, travelProfileVersion: "travel-v2" };
+  const costStaleRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: v2RoutingSnapshot }, boundaryScope, 10_000);
+  check("routingCurrentnessCostStale", costStaleRouting.currentness.staleDimensions.join(",") === "COST_PROFILE", costStaleRouting);
+
+  await adminPool.query(`INSERT INTO network_condition_snapshot(
+    graph_version_id,data_scope_key,condition_snapshot_key,source_snapshot_version,observed_at,valid_until,
+    completeness,source_content_hash,content_hash,metadata
+  ) SELECT graph_version_id,data_scope_key,'cs_'||repeat('9',64),'condition-v2',clock_timestamp(),clock_timestamp()+interval '1 hour',
+      'COMPLETE','sha256:'||repeat('9',64),'sha256:'||repeat('a',64),'{}'
+    FROM network_graph_version WHERE graph_version='graph-v1' AND data_scope_key=$1`, [DATA_SCOPE]);
+  const conditionStaleRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...v2RoutingSnapshot, costProfileVersion: "cost-v2", costContentHash: `sha256:${"6".repeat(64)}` } }, boundaryScope, 10_000);
+  check("routingCurrentnessConditionStale", conditionStaleRouting.currentness.staleDimensions.join(",") === "CONDITION", conditionStaleRouting);
+  const artifact = (await providerPool.query("SELECT coverage_planner.get_coverage_artifact($1,$2,$3) AS value", [row(resultSet.referenceKey).id, DATA_SCOPE, DATASET_SCOPE])).rows[0].value;
+  await coverageHardeningCases({ admin: adminPool, network: networkAuthority, loaded: loadedNetwork, scope: boundaryScope,
+    request: coverageRequest, problem: artifact.problem as GowmV06CoverageProblem, route: firstAlternative.route as GowmV06CoverageRoute,
+    plan: planVariant, check });
   process.stdout.write(`${JSON.stringify({
     status: "PASS",
     checks,
+    performance: performanceEvidence,
     queryId: submission.plan.queryId,
     gatewayJobId: claim!.gatewayJobId,
     publicJobId: claim!.job.jobId,
@@ -266,7 +574,7 @@ try {
   })}\n`);
 } finally {
   await app.close();
-  await Promise.all([providerPool.end(), gatewayPool.end(), adminPool.end(), validationPool.end()]);
+  await Promise.all([providerPool.end(), gatewayPool.end(), adminPool.end(), validationPool.end(), catalogPool.end()]);
 }
 
 async function execute(operationId: string, input: Row, idempotencyKey: string) {
@@ -277,6 +585,12 @@ async function execute(operationId: string, input: Row, idempotencyKey: string) 
   });
   if (response.statusCode !== 200) throw new Error(`${operationId} failed: ${response.statusCode} ${response.body}`);
   return response.json() as CapabilityResultEnvelope;
+}
+
+function measured(name: string, startedAt: number, maximumMs: number) {
+  const elapsedMs = performance.now() - startedAt;
+  performanceEvidence[name] = { elapsedMs, maximumMs };
+  check(name, elapsedMs < maximumMs, performanceEvidence[name]);
 }
 
 function gatewayRequest(operationId: string, input: Row, idempotencyKey: string, preferredExecution: "SYNC" | "ASYNC"): GatewayExecuteRequest {
@@ -290,7 +604,7 @@ function gatewayRequest(operationId: string, input: Row, idempotencyKey: string,
     outputSchemaHash: descriptor.outputSchemaHash,
     input,
     executionPolicy: {
-      deadlineAt: new Date(Date.now() + 120000).toISOString(),
+      deadlineAt: new Date(Date.now() + Math.min(120000, descriptor.execution.maximumTimeoutMs)).toISOString(),
       maximumResultBytes: descriptor.limits.maximumOutputBytes ?? 16777216,
       maximumRows: Math.min(descriptor.limits.maximumRows ?? 100000, 100000),
       maximumCandidates: descriptor.limits.maximumCandidates ?? 1000,
@@ -300,7 +614,27 @@ function gatewayRequest(operationId: string, input: Row, idempotencyKey: string,
   };
 }
 
-function coverageDag(): WorldQuerySubmission {
+async function planVariant(label: string, input: Row): Promise<Row> {
+  const submission = coverageDag({ ...input, requestId: `${runId}-${label}` }, `${runId}-${label}`);
+  await worldQueries.submit(submission, principal, "ASYNC");
+  const claim = await store.claimNext(`gateway-${label}`, 60);
+  if (claim == null) throw new Error(`no Gateway job for ${label}`);
+  const result = await worldQueries.run(claim.job.jobId);
+  check(`${label}-gateway`, result.status === "COMPLETED", result);
+  if (label === "objective-SHORTEST_TOTAL_DISTANCE") {
+    const planned = row(result.outputs.plan);
+    const candidate = row(array(planned.alternatives)[0]);
+    const stale = envelopeValue(await execute("coverage.road.verify", { schemaVersion: "1.0", problemReference: planned.referenceKey, candidate, routingSnapshot: snapshot, revalidateAgainstCurrentCondition: true }, `${runId}-fresh-ttl-stale-snapshot`));
+    check("routingCurrentnessFreshTtlStale", stale.status === "STALE" && row(stale.checks).resultTtl === true && row(stale.checks).currentness === false && row(stale.checks).metrics === true && row(stale.checks).snapshot === true, stale);
+    const tampered = structuredClone(candidate);
+    row(row(tampered.route).metrics).distanceMm = Number(row(row(tampered.route).metrics).distanceMm) + 1;
+    const invalid = envelopeValue(await execute("coverage.road.verify", { schemaVersion: "1.0", problemReference: planned.referenceKey, candidate: tampered, routingSnapshot: snapshot, revalidateAgainstCurrentCondition: true }, `${runId}-invalid-and-stale`));
+    check("frozenInvalidWithStaleSnapshot", invalid.status === "INVALID" && row(invalid.checks).currentness === false && row(invalid.checks).resultTtl === true, invalid);
+  }
+  return row(result.outputs.plan);
+}
+
+function coverageDag(input: Row = coverageRequest, identity: string = runId): WorldQuerySubmission {
   const geometryDescriptor = registry.resolve("world.get-geometry", "1.0", true).descriptor;
   const validateDescriptor = registry.resolve("coverage.road.validate", "1.0", true).descriptor;
   const planDescriptor = registry.resolve("coverage.road.plan", "1.0", true).descriptor;
@@ -326,7 +660,7 @@ function coverageDag(): WorldQuerySubmission {
     }
   });
   const nodes = [
-    node("geometry", geometryDescriptor, { request: { kind: "LITERAL", port: requestPort, value: coverageRequest } }),
+    node("geometry", geometryDescriptor, { request: { kind: "LITERAL", port: requestPort, value: input } }),
     node("validate", validateDescriptor, { request: { kind: "NODE_OUTPUT", nodeId: "geometry", outputPort: "result", port: resolvedRequestPort } }),
     node("plan", planDescriptor, { request: { kind: "NODE_OUTPUT", nodeId: "geometry", outputPort: "result", port: resolvedRequestPort } }, [{
       kind: "VALUE_EQUALS",
@@ -335,13 +669,13 @@ function coverageDag(): WorldQuerySubmission {
     }])
   ];
   return {
-    requestId: `gateway-request-${runId}`,
-    idempotencyKey: `gateway-idempotency-${runId}`,
+    requestId: `gateway-request-${identity}`,
+    idempotencyKey: `gateway-idempotency-${identity}`,
     parameterSchemaHash: getContractSchemaHash("world-query-parameters.schema.json"),
     parameters: {},
     plan: {
       queryPlanVersion: "2.0",
-      queryId: `coverage-query-${runId}`,
+      queryId: `coverage-query-${identity}`,
       nodes,
       outputs: [{ name: "plan", binding: { kind: "NODE_OUTPUT", nodeId: "plan", outputPort: "result", port: port(planDescriptor.ports.outputs[0]!) } }],
       budgets: {

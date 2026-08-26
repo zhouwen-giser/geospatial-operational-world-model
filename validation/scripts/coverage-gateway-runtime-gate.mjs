@@ -63,7 +63,7 @@ try {
   const encoded = encodeURIComponent(password);
   const base = `postgresql://gowm:${encoded}@127.0.0.1:5432/${database}`;
   const output = run("docker", ["run", "--rm", "--network", `container:${container}`, "--volume", `${root}:/workspace`, "--volume", `${nodeModules}:/workspace/node_modules:ro`, "--workdir", "/workspace",
-    "--env", "GOWM_V06_RUN_ID", "--env", "COVERAGE_PROVIDER_DATABASE_URL", "--env", "COVERAGE_GATEWAY_DATABASE_URL", "--env", "COVERAGE_ADMIN_DATABASE_URL", "--env", "PLATFORM_VALIDATION_DATABASE_URL",
+    "--env", "GOWM_V06_RUN_ID", "--env", "COVERAGE_PROVIDER_DATABASE_URL", "--env", "COVERAGE_GATEWAY_DATABASE_URL", "--env", "COVERAGE_ADMIN_DATABASE_URL", "--env", "PLATFORM_VALIDATION_DATABASE_URL", "--env", "CATALOG_PROVIDER_DATABASE_URL",
     "node:22-bookworm", "node", "dist/validation/scripts/coverage-gateway-runtime-client.js"], {
     shown: ["node-container", "coverage-gateway-runtime-client", database],
     env: {
@@ -72,7 +72,8 @@ try {
       COVERAGE_PROVIDER_DATABASE_URL: `${base}?options=-c%20role%3Dcoverage_planner_provider`,
       COVERAGE_GATEWAY_DATABASE_URL: `${base}?options=-c%20role%3Dgowm_gateway_runtime`,
       COVERAGE_ADMIN_DATABASE_URL: base,
-      PLATFORM_VALIDATION_DATABASE_URL: `${base}?options=-c%20role%3Dplatform_validation_provider`
+      PLATFORM_VALIDATION_DATABASE_URL: `${base}?options=-c%20role%3Dplatform_validation_provider`,
+      CATALOG_PROVIDER_DATABASE_URL: `${base}?options=-c%20role%3Dgowm_catalog_reader`
     }
   });
   const line = output.split(/\r?\n/u).map((value) => value.trim()).find((value) => value.startsWith("{"));

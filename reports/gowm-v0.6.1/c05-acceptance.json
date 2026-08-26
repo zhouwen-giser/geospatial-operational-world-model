@@ -1,0 +1,330 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C05",
+  "title": "Result Correctness",
+  "status": "PASS",
+  "requiredCases": 18,
+  "passedCases": 18,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "runtimeEvidence": [
+    "d00-runtime-v061-r2-final.json",
+    "g00-runtime-v061-r2-gateway.json",
+    "t00-runtime-v061-r2-recovery.json",
+    "c00-runtime-v061-r2-compat.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "cases": {
+    "AC-C05-01": {
+      "status": "PASS",
+      "scenario": "Disconnected R",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleDisconnected"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-02": {
+      "status": "PASS",
+      "scenario": "Turn blocked",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleTurn"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-03": {
+      "status": "PASS",
+      "scenario": "Profile excludes required",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleProfile"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-04": {
+      "status": "PASS",
+      "scenario": "Condition closes required",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleCondition"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-05": {
+      "status": "PASS",
+      "scenario": "Endpoint unreachable",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleEndpoint"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-06": {
+      "status": "PASS",
+      "scenario": "Infrastructure DB failure",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "databaseFailureNotNoFeasible"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-07": {
+      "status": "PASS",
+      "scenario": "Provider unavailable",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "coverageOutage"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-08": {
+      "status": "PASS",
+      "scenario": "Problem hash",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageSnapshotHashSeparation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-09": {
+      "status": "PASS",
+      "scenario": "Data snapshot hash",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageSnapshotHashSeparation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-10": {
+      "status": "PASS",
+      "scenario": "Compute snapshot hash",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageSnapshotHashSeparation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-11": {
+      "status": "PASS",
+      "scenario": "Compute snapshot content",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageComputeSnapshotContent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-12": {
+      "status": "PASS",
+      "scenario": "Only SERVICE credit",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageTraversalCredit"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-13": {
+      "status": "PASS",
+      "scenario": "Duplicate evidence",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageTraversalCredit"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-14": {
+      "status": "PASS",
+      "scenario": "Transit evidence",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageTraversalCredit"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-15": {
+      "status": "PASS",
+      "scenario": "Access/return evidence",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageTraversalCredit"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-16": {
+      "status": "PASS",
+      "scenario": "GeoJSON read contract",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expandDirect",
+            "geometryOnDemand"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-17": {
+      "status": "PASS",
+      "scenario": "Expired result",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expiredIsStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-18": {
+      "status": "PASS",
+      "scenario": "Result registry",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleCondition-registry",
+            "platformOriginalStatusRetained"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

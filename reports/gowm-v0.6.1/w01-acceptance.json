@@ -1,0 +1,328 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "W01",
+  "title": "Normalized Result Semantics",
+  "status": "PASS",
+  "requiredCases": 18,
+  "passedCases": 18,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "runtimeEvidence": [
+    "d00-runtime-v061-r2-final.json",
+    "g00-runtime-v061-r2-gateway.json",
+    "t00-runtime-v061-r2-recovery.json",
+    "c00-runtime-v061-r2-compat.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "cases": {
+    "AC-W01-01": {
+      "status": "PASS",
+      "scenario": "COMPLETED mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-02": {
+      "status": "PASS",
+      "scenario": "PARTIAL mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-03": {
+      "status": "PASS",
+      "scenario": "NO_DATA mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-04": {
+      "status": "PASS",
+      "scenario": "AMBIGUOUS mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-05": {
+      "status": "PASS",
+      "scenario": "INDETERMINATE mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-06": {
+      "status": "PASS",
+      "scenario": "NO_FEASIBLE mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-07": {
+      "status": "PASS",
+      "scenario": "STALE mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-08": {
+      "status": "PASS",
+      "scenario": "FAILED mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-09": {
+      "status": "PASS",
+      "scenario": "Original status retained",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformOriginalStatusRetained"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-10": {
+      "status": "PASS",
+      "scenario": "Reference available",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-11": {
+      "status": "PASS",
+      "scenario": "Reference retired",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformRetiredReference"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-12": {
+      "status": "PASS",
+      "scenario": "Result current",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-13": {
+      "status": "PASS",
+      "scenario": "Result stale",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStaleRevalidate"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-14": {
+      "status": "PASS",
+      "scenario": "Result expired",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expiredIsStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-15": {
+      "status": "PASS",
+      "scenario": "Scope denied",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultScopeOpaque"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-16": {
+      "status": "PASS",
+      "scenario": "Batch order",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusBatchOrder"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-17": {
+      "status": "PASS",
+      "scenario": "Provider-specific verify optional",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-18": {
+      "status": "PASS",
+      "scenario": "Audit evidence",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformOriginalStatusRetained"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

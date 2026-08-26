@@ -102,6 +102,37 @@ FROM public.platform_data_snapshot
 WHERE data_scope_key=gowm_platform_validation_v1.current_data_scope_key()
   AND dataset_scope_key=gowm_platform_validation_v1.current_dataset_scope_key();
 
+CREATE VIEW gowm_catalog_v1.active_capability WITH (security_barrier=true) AS
+SELECT DISTINCT capability.operation_id,capability.data_binding
+FROM gowm_capability.capability capability
+JOIN gowm_capability.provider_operation operation
+  ON operation.operation_id=capability.operation_id AND operation.enabled
+JOIN gowm_capability.provider_registry provider
+  ON provider.provider_id=operation.provider_id
+WHERE capability.retired_at IS NULL
+  AND provider.enabled
+  AND provider.approval_state='APPROVED';
+
+CREATE FUNCTION gowm_catalog_v1.dataset_spatial_extent(p_reference_key text)
+RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path=pg_catalog,public,gowm_catalog_v1 AS $fn$
+  SELECT public.ST_AsGeoJSON(public.ST_Envelope(public.ST_Collect(public.ST_GeomFromGeoJSON(feature.geometry::text))))::jsonb
+  FROM gowm_catalog_v1.layer layer
+  JOIN gowm_catalog_v1.feature feature ON feature.layer_reference_key=layer.reference_key
+  WHERE layer.dataset_reference_key=p_reference_key AND feature.geometry IS NOT NULL
+$fn$;
+
+CREATE FUNCTION gowm_catalog_v1.dataset_intersects(p_reference_key text,p_area jsonb)
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path=pg_catalog,public,gowm_catalog_v1 AS $fn$
+  SELECT EXISTS (
+    SELECT 1 FROM gowm_catalog_v1.layer layer
+    JOIN gowm_catalog_v1.feature feature ON feature.layer_reference_key=layer.reference_key
+    WHERE layer.dataset_reference_key=p_reference_key AND feature.geometry IS NOT NULL
+      AND public.ST_Intersects(public.ST_GeomFromGeoJSON(feature.geometry::text),public.ST_GeomFromGeoJSON(p_area::text))
+  )
+$fn$;
+
 DO $roles$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='platform_validation_provider') THEN
@@ -116,12 +147,18 @@ REVOKE ALL ON FUNCTION register_platform_data_snapshot(text,text,jsonb) FROM PUB
 REVOKE ALL ON SCHEMA gowm_platform_validation_v1 FROM PUBLIC;
 REVOKE ALL ON ALL TABLES IN SCHEMA gowm_platform_validation_v1 FROM PUBLIC;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA gowm_platform_validation_v1 FROM PUBLIC;
+REVOKE ALL ON gowm_catalog_v1.active_capability FROM PUBLIC;
+REVOKE ALL ON FUNCTION gowm_catalog_v1.dataset_spatial_extent(text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION gowm_catalog_v1.dataset_intersects(text,jsonb) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION register_platform_data_snapshot(text,text,jsonb) TO gowm_gateway_runtime;
 GRANT USAGE ON SCHEMA gowm_platform_validation_v1 TO platform_validation_provider;
 GRANT SELECT ON gowm_platform_validation_v1.snapshot TO platform_validation_provider;
 GRANT EXECUTE ON FUNCTION gowm_platform_validation_v1.current_data_scope_key() TO platform_validation_provider;
 GRANT EXECUTE ON FUNCTION gowm_platform_validation_v1.current_dataset_scope_key() TO platform_validation_provider;
 GRANT EXECUTE ON FUNCTION gowm_platform_validation_v1.set_scope(text,text) TO platform_validation_provider;
+GRANT SELECT ON gowm_catalog_v1.active_capability TO gowm_catalog_reader;
+GRANT EXECUTE ON FUNCTION gowm_catalog_v1.dataset_spatial_extent(text) TO gowm_catalog_reader;
+GRANT EXECUTE ON FUNCTION gowm_catalog_v1.dataset_intersects(text,jsonb) TO gowm_catalog_reader;
 GRANT gowm_reference_reader,gowm_result_reader,gowm_catalog_reader,network_provider TO platform_validation_provider;
 ALTER ROLE platform_validation_provider SET default_transaction_read_only=on;
 ALTER ROLE platform_validation_provider SET statement_timeout='5s';

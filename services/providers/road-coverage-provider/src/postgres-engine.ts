@@ -1,4 +1,6 @@
 import type { Pool } from "pg";
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 
 import {
   canonicalSha256,
@@ -36,7 +38,7 @@ import {
 import { buildVerifiedCoverageResultSet, type VerifiedAlternativeCandidate } from "../../../../packages/road-coverage-alternatives-core/src/index.js";
 import { admitVerifiedCoverageRoute, verifyCoverageRoute } from "../../../../packages/road-coverage-verifier-core/src/index.js";
 import { PostgresCoverageAsyncRepository } from "../../../../packages/road-coverage-runtime-core/src/index.js";
-import { NetworkRepository, type BoundaryCrossing, type LoadedNetwork, type NetworkSqlPool } from "../../../../packages/network-query-core/src/index.js";
+import { NetworkRepository, type BoundaryCrossing, type LoadedNetwork, type NetworkSqlPool, type RoutingSnapshotCurrentnessResult } from "../../../../packages/network-query-core/src/index.js";
 import type { RoadCoverageEngine } from "./engine.js";
 
 type JsonObject = Record<string, unknown>;
@@ -270,6 +272,7 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     const createdAt = this.#now();
     const result = buildVerifiedCoverageResultSet({
       requestId: request.requestId,
+      identityScope: canonicalSha256(scope),
       problemHash: digest(problem.problemHash),
       routingSnapshot: request.routingSnapshot,
       policy: { ...request.alternativePolicy, profiles: profiles as typeof request.alternativePolicy.profiles },
@@ -300,19 +303,28 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     const artifact = await this.#async.getArtifact(referenceKey, scope.dataScopeKey, scope.datasetScopeKey);
     if (artifact === null) throw new ProviderProtocolError("VERSION_NOT_FOUND", "coverage result/problem artifact is unavailable in scope");
     const problem = artifact.problem as GowmV06CoverageProblem;
-    const network = await this.#network.loadPinned(request.routingSnapshot, scope, context.deadline.remainingMs());
+    const network = await this.#network.loadPinned(problem.routingSnapshot, scope, context.deadline.remainingMs());
+    const freshness = await this.#network.inspectFreshness(network, scope, context.deadline.remainingMs());
     const profile = coverageObjectiveProfile(request.candidate.objectiveProfile);
     const travelPolicy: CoverageTravelPolicy = { profileKey: request.routingSnapshot.travelProfileVersion, requiredAccessMask: 0 };
+    const originalRequest = artifact.request as GowmV06RoadCoverageRequest;
+    const boundaryAnalysis = await this.#network.routeBoundaryCrossings(
+      problem.routingSnapshot, resolvedArea(originalRequest.area) as JsonObject,
+      request.candidate.route.segments as JsonObject[], scope, context.deadline.remainingMs()
+    );
     let report = verifyCoverageRoute({
       problem,
       candidate: request.candidate.route,
-      currentRoutingSnapshot: network.routingSnapshot,
+      currentRoutingSnapshot: problem.routingSnapshot,
       networkArcs: traversalArcs(network),
       objective: verifierObjective(profile),
       travelPolicy,
-      turnRules: coverageTurnRules(network)
+      turnRules: coverageTurnRules(network),
+      authoritativeBoundaryEvents: boundaryAnalysis.crossings,
+      boundaryStartInside: boundaryAnalysis.startInside
     });
-    if (artifact.expired === true && report.status === "VALID") report = expiredReport(report);
+    report = applyCoverageCurrentness(report, freshness.currentness);
+    report = withResultTtl(report, artifact.expired === true);
     return completed(report, network, network.arcs.length, 1);
   }
 
@@ -443,17 +455,38 @@ function noFeasibleReason(error: unknown): string | undefined {
   return "DISCONNECTED_REQUIRED_COMPONENT";
 }
 
-function coverageIntegrity(network: LoadedNetwork): { dataSnapshotHash: `sha256:${string}`; computeSnapshotHash: `sha256:${string}`; contractHash: `sha256:${string}` } {
+function coverageIntegrity(network: LoadedNetwork): { dataSnapshotHash: `sha256:${string}`; computeSnapshotHash: `sha256:${string}`; contractHash: `sha256:${string}`; computeSnapshot: JsonObject } {
   const contractHash = getContractSchemaHash("urn:gowm:v0.6:coverage-result-set");
+  const computeBody = {
+    schemaVersion: "1.0", operationId: "coverage.road.plan", operationVersion: "1.0", providerVersion: "1.0.0",
+    engines: [
+      { name: "coverage-strict-routing", version: "1.1.0" },
+      { name: "coverage-verifier", version: "1.1.0" },
+      { name: "network-query-core", version: "1.0.0" },
+      { name: "gowm-build-package", version: "0.6.1", digest: coverageBuildDigest() }
+    ],
+    policies: [{ id: "gowm-road-coverage-policy", version: "1.1", digest: canonicalSha256({ boundaryAuthority: "gowm_network_v1", weightedArithmetic: "BIGINT_PPM", leaseFencing: true }) }],
+    contractHashes: [contractHash, getContractSchemaHash("urn:gowm:v0.6:road-coverage-request"), getContractSchemaHash("urn:gowm:v0.6:coverage-verification-report")]
+  };
+  const computeSnapshotHash = canonicalSha256(computeBody);
+  const computeSnapshot = { ...computeBody, snapshotHash: computeSnapshotHash };
   return {
     dataSnapshotHash: canonicalSha256(network.dataSnapshot),
-    computeSnapshotHash: canonicalSha256({
-      provider: "gowm.road-coverage-planning/1.0.0", solver: "coverage-strict-routing/1.1.0",
-      verifier: "coverage-verifier/1.1.0", networkQueryCore: "network-query-core/1.0.0",
-      policy: "gowm-road-coverage-policy/1.1", contractHash, buildPackageDigest: "workspace:gowm-v0.6.1"
-    }),
+    computeSnapshotHash,
+    computeSnapshot,
     contractHash
   };
+}
+
+let buildDigest: `sha256:${string}` | undefined;
+function coverageBuildDigest(): `sha256:${string}` {
+  if (buildDigest !== undefined) return buildDigest;
+  const extension = import.meta.url.endsWith(".ts") ? "ts" : "js";
+  const paths = ["./postgres-engine", "../../../../packages/road-coverage-planning-core/src/strict-routing", "../../../../packages/road-coverage-verifier-core/src/verification", "../../../../packages/road-coverage-alternatives-core/src/alternatives", "../../../../packages/network-query-core/src/repository", "../../../../packages/network-query-core/src/currentness"];
+  const hash = createHash("sha256");
+  for (const path of paths) { hash.update(path); hash.update("\0"); hash.update(readFileSync(new URL(`${path}.${extension}`, import.meta.url))); hash.update("\0"); }
+  buildDigest = `sha256:${hash.digest("hex")}`;
+  return buildDigest;
 }
 
 function withBoundaryEvents(route: GowmV06CoverageRoute, crossings: readonly BoundaryCrossing[]): GowmV06CoverageRoute {
@@ -517,16 +550,33 @@ function positive(value: number, name: string): number { if (!Number.isSafeInteg
 function metric(value: unknown): number { return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : 0; }
 async function accepted(value: Promise<boolean>, stage: string): Promise<void> { if (!await value) throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", `${stage} was rejected by the coverage authority`); }
 
-function expiredReport(report: GowmV06CoverageVerificationReport): GowmV06CoverageVerificationReport {
+function withResultTtl(report: GowmV06CoverageVerificationReport, expired: boolean): GowmV06CoverageVerificationReport {
   const body = {
     ...report,
-    status: "STALE" as const,
-    checks: { ...report.checks, resultTtl: false },
-    violations: [...report.violations, { code: "RESULT_EXPIRED", message: "coverage result validUntil has elapsed" }]
+    status: expired && report.status === "VALID" ? "STALE" as const : report.status,
+    checks: { ...report.checks, resultTtl: !expired },
+    violations: [...report.violations, ...(expired ? [{ code: "RESULT_EXPIRED", message: "coverage result validUntil has elapsed" }] : [])]
   };
   const { reportHash: _oldHash, verificationId: _oldId, ...identityBody } = body;
   const identityHash = canonicalSha256(identityBody);
   const verificationId = `verify_${identityHash.slice("sha256:".length)}`;
   const { reportHash: _unused, ...withoutHash } = body;
   return { ...withoutHash, verificationId, reportHash: canonicalSha256({ ...withoutHash, verificationId }) };
+}
+
+export function applyCoverageCurrentness(report: GowmV06CoverageVerificationReport, currentness: RoutingSnapshotCurrentnessResult): GowmV06CoverageVerificationReport {
+  const current = currentness.currentness === "CURRENT";
+  const status = report.status === "INVALID" ? "INVALID" as const
+    : currentness.currentness === "STALE" ? "STALE" as const
+      : current ? report.status : "INDETERMINATE" as const;
+  const violations = report.violations.filter((violation) => violation.code !== "STALE_ROUTING_SNAPSHOT");
+  if (!current) violations.push({
+    code: `ROUTING_CURRENTNESS_${currentness.currentness}`,
+    message: currentness.reasons.join("; ") || `routing currentness is ${currentness.currentness}`
+  });
+  const { reportHash: _oldHash, verificationId: _oldId, ...reportBody } = report;
+  const body = { ...reportBody, status, checks: { ...report.checks, currentness: current }, violations };
+  const identityHash = canonicalSha256(body);
+  const verificationId = `verify_${identityHash.slice("sha256:".length)}`;
+  return { ...body, verificationId, reportHash: canonicalSha256({ ...body, verificationId }) };
 }

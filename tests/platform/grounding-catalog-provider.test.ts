@@ -5,7 +5,8 @@ import { ProviderProtocolError } from "../../packages/platform/provider-sdk/src/
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "../../services/providers/grounding-catalog-provider/src/cursor.js";
 import { decodeEvidenceCursor, encodeEvidenceCursor } from "../../services/providers/grounding-catalog-provider/src/evidence-cursor.js";
 import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
-import type { CatalogSqlPool } from "../../services/providers/grounding-catalog-provider/src/types.js";
+import { GroundingCatalogRepository } from "../../services/providers/grounding-catalog-provider/src/repository.js";
+import type { CatalogSqlClient, CatalogSqlPool } from "../../services/providers/grounding-catalog-provider/src/types.js";
 import { loadControlledProviderDeployments } from "../../services/gateway/world-capability-gateway/src/config.js";
 
 const pool: CatalogSqlPool = {
@@ -51,6 +52,68 @@ describe("grounding catalog providers", () => {
       expect(capability.dataBinding).toBe("DATASET_VERSION_BOUND");
       expect(capability.snapshotPolicy.dataSnapshot).toBe("REQUIRED");
     }
+  });
+
+  it("dispatches catalog operations to the Data Product projection", async () => {
+    const referenceKey = {
+      namespace: "gowm",
+      kind: "DATASET",
+      id: "wrf_60000000000000000000000000000001",
+      version: "dataset-v1"
+    };
+    const dataset = {
+      reference_key: referenceKey.id,
+      reference_key_value: referenceKey,
+      name: "Road network",
+      version: referenceKey.version,
+      dataset_kind: "NETWORK",
+      schema_version: "1.0",
+      crs: "EPSG:4326",
+      valid_from: null,
+      valid_to: null,
+      quality: { validationStatus: "VALIDATED" },
+      lineage: ["urn:test:network-source"],
+      content_hash: `sha256:${"a".repeat(64)}`,
+      published_at: "2026-08-25T00:00:00.000Z",
+      retired_at: null,
+      spatial_extent: null
+    };
+    const client: CatalogSqlClient = {
+      async query<Row extends Record<string, unknown> = Record<string, unknown>>(text: string) {
+        let rows: Record<string, unknown>[] = [];
+        if (text.includes("FROM gowm_catalog_v1.dataset ORDER BY")) rows = [dataset];
+        else if (text.includes("FROM gowm_catalog_v1.scope_resource")) rows = [{ reference_key_value: referenceKey }];
+        else if (text.includes("FROM gowm_catalog_v1.dataset dataset")) rows = [dataset];
+        else if (text.includes("FROM gowm_catalog_v1.dataset_version")) rows = [{ ...dataset, published_at: new Date("2026-08-25T00:00:00.000Z") }];
+        else if (text.includes("FROM gowm_catalog_v1.active_capability")) rows = [
+          { operation_id: "coverage.road.plan", data_binding: "WORLD_SNAPSHOT_BOUND" },
+          { operation_id: "world.get-current-state", data_binding: "WORLD_SNAPSHOT_BOUND" },
+          { operation_id: "spatial.find-in-area", data_binding: "DATASET_VERSION_BOUND" }
+        ];
+        return { rows: rows as Row[], rowCount: rows.length };
+      },
+      release() {}
+    };
+    const catalogPool: CatalogSqlPool = {
+      async connect() {
+        return client;
+      }
+    };
+    const repository = new GroundingCatalogRepository({ pool: catalogPool, cursorSecret });
+    const execution = await repository.execute("catalog.search", {
+      schemaVersion: "1.0",
+      dataKinds: ["NETWORK"],
+      limit: 10
+    }, { dataScopeKey: "default", datasetScopeKey: "tenant-a" }, 5_000);
+    expect(execution.output).toMatchObject({
+      schemaVersion: "1.0",
+      items: [{ referenceKey, dataKind: "NETWORK", currentVersion: "dataset-v1", supportedCapabilities: ["coverage.road.plan"] }]
+    });
+    const versions = await repository.execute("catalog.list-versions", { schemaVersion: "1.0", referenceKey }, { dataScopeKey: "default", datasetScopeKey: "tenant-a" }, 5_000);
+    expect(versions.output).toMatchObject({ value: [{ version: "dataset-v1", published_at: "2026-08-25T00:00:00.000Z", retired_at: null }] });
+    const bounded = new GroundingCatalogRepository({ pool: catalogPool, cursorSecret, maximumCandidates: 1 });
+    const emptyPage = await bounded.execute("catalog.search", { schemaVersion: "1.0", requiredCapabilities: ["missing.operation"], limit: 1 }, { dataScopeKey: "default", datasetScopeKey: "tenant-a" }, 5_000);
+    expect(emptyPage.output).toMatchObject({ items: [], truncated: true, nextCursor: expect.any(String) });
   });
 
   it("registers the frozen World Evidence and Result Registry operations as data-scoped", () => {

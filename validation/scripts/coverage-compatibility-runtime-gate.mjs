@@ -66,7 +66,8 @@ try {
   check(schema.summary?.fresh?.migrationCount === 57, "fresh migration path is incomplete");
   check(schema.summary?.v04Upgrade?.upgradeMarker === "v0.4-preserved", "v0.4 upgrade marker was not preserved");
   check(schema.summary?.v05Upgrade?.upgradeMarker === "v0.5-preserved", "v0.5 upgrade marker was not preserved");
-  check(Object.values(schema.summary?.checksumReplaySkips ?? {}).length === 3 && Object.values(schema.summary.checksumReplaySkips).every((value) => value === 57), "checksum replay did not skip 57/57 on all paths");
+  check(schema.summary?.v06Upgrade?.upgradeMarker === "v0.6.0-preserved", "v0.6.0 upgrade marker was not preserved");
+  check(Object.values(schema.summary?.checksumReplaySkips ?? {}).length === 4 && Object.values(schema.summary.checksumReplaySkips).every((value) => value === 57), "checksum replay did not skip 57/57 on all paths");
   check(schema.summary?.deliberateFailureRollback === true && schema.cleanup?.every((item) => item.status === "PASS"), "migration rollback or cleanup failed");
   evidence.migrationMatrix = { evidence: schemaEvidencePath, ...schema.summary, cleanup: "PASS" };
 
@@ -75,9 +76,9 @@ try {
   check(recovery.status === "PASS" && after.deterministicQuery && after.gatewayWorkerReplay && after.resultReadAfterRestart && after.postgresRestartPersistence, "Coverage result replay/restart evidence is incomplete");
   evidence.resultReplay = { evidence: recoveryEvidencePath, restart: recovery.restart, checks: after };
 
-  const predecessor = run("node", ["validation/scripts/gowm-v06-predecessor-guard.mjs"]);
+  const predecessor = run("node", ["validation/scripts/gowm-v061-predecessor-guard.mjs"]);
   const sourcePolicy = run("node", ["validation/scripts/gowm-v06-source-policy-guard.mjs"]);
-  check(predecessor.includes("GOWM_V06_PREDECESSOR_READY"), "predecessor lock guard did not pass");
+  check(predecessor.includes("GOWM_V061_PREDECESSOR_READY"), "actual R00 predecessor byte lock did not pass");
   check(sourcePolicy.includes("GOWM_V06_SOURCE_POLICY_READY"), "source policy guard did not pass");
   evidence.predecessorLocks = { migrationAndContract: predecessor, sourcePolicy };
   evidence.contractFreeze = await verifyContractFreeze();

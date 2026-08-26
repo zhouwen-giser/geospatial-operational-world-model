@@ -5,7 +5,6 @@ import type {
   CoverageVerificationReport,
   FixedMetrics,
   VerifierNetworkArc,
-  VerifierObjective,
   VerifierTravelPolicy,
   VerifierTurnRule,
   VerifyCoverageRouteInput
@@ -35,7 +34,7 @@ export function verifyCoverageRoute(input: VerifyCoverageRouteInput): CoverageVe
   let arcIdentity = true, continuity = true, direction = true, fractions = true, turns = true, profile = true, condition = true, metrics = true;
   const eligible = new Map<string, VerifierNetworkArc>();
   for (const arc of input.networkArcs) {
-    const evaluated = evaluateArc(arc, input.objective, input.travelPolicy);
+    const evaluated = evaluateArc(arc, input.travelPolicy);
     if (evaluated !== undefined) eligible.set(arc.arcKey, evaluated);
   }
 
@@ -115,7 +114,7 @@ export function verifyCoverageRoute(input: VerifyCoverageRouteInput): CoverageVe
   };
   const body = {
     status,
-    verifierVersion: "coverage-verifier/1.0",
+    verifierVersion: "coverage-verifier/1.1.0",
     routingSnapshotHash: snapshotHash,
     checks,
     coverageRatioPpm: coverage.coverageRatioPpm,
@@ -132,7 +131,7 @@ export function verifyCoverageRoute(input: VerifyCoverageRouteInput): CoverageVe
 
 export function admitVerifiedCoverageRoute(route: CoverageRoute, verification: CoverageVerificationReport): AdmittedVerifiedRoute {
   if (verification.status !== "VALID" || Object.values(verification.checks).some((passed) => !passed)) {
-    throw new Error("only an independently VALID coverage route can be admitted");
+    throw new Error(`only an independently VALID coverage route can be admitted: ${verification.status}; ${verification.violations.map((violation) => violation.code).join(",")}`);
   }
   const { reportHash: _reportHash, ...reportBody } = verification;
   if (canonicalSha256(reportBody) !== verification.reportHash) throw new Error("verification receipt hash mismatch");
@@ -234,7 +233,7 @@ function replayTurn(history: readonly string[], nextArc: string, rules: readonly
   return { history: candidate.slice(-maxHistory), valid: true, penaltyUnits };
 }
 
-function evaluateArc(arc: VerifierNetworkArc, objective: VerifierObjective, policy: VerifierTravelPolicy): VerifierNetworkArc | undefined {
+function evaluateArc(arc: VerifierNetworkArc, policy: VerifierTravelPolicy): VerifierNetworkArc | undefined {
   if (arc.traversalAllowed === false || !profileEligible(arc, policy)) return undefined;
   validateMetrics(arc.metrics);
   const speeds = [arc.speedOverrideMmPerS, policy.maximumSpeedMmPerS, arc.speedMmPerS].filter((value): value is number => value !== undefined);
@@ -243,7 +242,8 @@ function evaluateArc(arc: VerifierNetworkArc, objective: VerifierObjective, poli
   const durationMs = speed === undefined ? arc.metrics.durationMs : ceilRatio(arc.metrics.distanceMm, 1_000, speed);
   const riskMicroUnits = arc.riskOverrideMicroUnits ?? arc.metrics.riskMicroUnits;
   const base = { ...arc.metrics, durationMs, riskMicroUnits };
-  return { ...arc, metrics: { ...base, combinedCostUnits: safeAdd(rawObjective(base, objective), arc.conditionPenaltyUnits ?? 0), turnPenaltyUnits: 0 } };
+  // Objective scores choose a route; they must not replace its pinned cost-profile metrics.
+  return { ...arc, metrics: { ...base, combinedCostUnits: safeAdd(base.combinedCostUnits, arc.conditionPenaltyUnits ?? 0), turnPenaltyUnits: 0 } };
 }
 
 function profileEligible(arc: VerifierNetworkArc, policy: VerifierTravelPolicy): boolean {
@@ -257,7 +257,6 @@ function segmentStartNode(segment: CoverageRoute["segments"][number], arcs: Read
 function segmentEndNode(segment: CoverageRoute["segments"][number], arcs: ReadonlyMap<string, VerifierNetworkArc>): string | undefined { const arc = arcs.get(segment.arcKey); return arc === undefined ? undefined : stateNode(arc, segment.endFractionPpm); }
 function stateNode(arc: VerifierNetworkArc, fraction: number): string { return fraction === 0 ? `node:${arc.fromNodeKey}` : fraction === WHOLE ? `node:${arc.toNodeKey}` : `state:${arc.arcKey}:${fraction.toString().padStart(7, "0")}`; }
 
-function rawObjective(metrics: FixedMetrics, objective: VerifierObjective): number { return objective === "SHORTEST_DISTANCE" ? metrics.distanceMm : objective === "FASTEST" ? metrics.durationMs : objective === "LOWEST_RISK" ? metrics.riskMicroUnits : objective === "LOWEST_ENERGY" ? metrics.energyMwh : metrics.combinedCostUnits; }
 function sliceMetrics(metrics: FixedMetrics, start: number, end: number): FixedMetrics { const slice = (value: number) => Number((BigInt(value) * BigInt(end)) / BigInt(WHOLE) - (BigInt(value) * BigInt(start)) / BigInt(WHOLE)); return { distanceMm: slice(metrics.distanceMm), durationMs: slice(metrics.durationMs), riskMicroUnits: slice(metrics.riskMicroUnits), energyMwh: slice(metrics.energyMwh), combinedCostUnits: slice(metrics.combinedCostUnits), turnPenaltyUnits: slice(metrics.turnPenaltyUnits ?? 0) }; }
 function addTurnPenalty(metrics: FixedMetrics, penalty: number): FixedMetrics { return penalty === 0 ? metrics : { ...metrics, combinedCostUnits: safeAdd(metrics.combinedCostUnits, penalty), turnPenaltyUnits: safeAdd(metrics.turnPenaltyUnits ?? 0, penalty) }; }
 function addMetrics(left: FixedMetrics, right: FixedMetrics): FixedMetrics { return { distanceMm: safeAdd(left.distanceMm, right.distanceMm), durationMs: safeAdd(left.durationMs, right.durationMs), riskMicroUnits: safeAdd(left.riskMicroUnits, right.riskMicroUnits), energyMwh: safeAdd(left.energyMwh, right.energyMwh), combinedCostUnits: safeAdd(left.combinedCostUnits, right.combinedCostUnits), turnPenaltyUnits: safeAdd(left.turnPenaltyUnits ?? 0, right.turnPenaltyUnits ?? 0) }; }

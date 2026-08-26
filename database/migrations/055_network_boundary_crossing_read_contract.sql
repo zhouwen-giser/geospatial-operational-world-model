@@ -1,5 +1,23 @@
 BEGIN;
 
+CREATE OR REPLACE VIEW gowm_network_v1.travel_profile WITH (security_barrier=true) AS
+SELECT profile.profile_key,version.travel_profile_version_id,version.version,
+       version.mode,version.required_access_mask,version.maximum_speed_mm_per_s,
+       version.constraints,version.content_hash,version.created_at
+FROM public.network_travel_profile profile
+JOIN public.network_travel_profile_version version USING(travel_profile_id,data_scope_key)
+WHERE profile.data_scope_key=gowm_network_v1.current_data_scope_key();
+
+CREATE OR REPLACE VIEW gowm_network_v1.cost_profile WITH (security_barrier=true) AS
+SELECT profile.profile_key,version.cost_profile_version_id,
+       version.travel_profile_version_id,version.version,
+       version.distance_weight_ppm,version.duration_weight_ppm,
+       version.risk_weight_ppm,version.energy_weight_ppm,
+       version.formula,version.content_hash,version.surface_weight_ppm,version.created_at
+FROM public.network_cost_profile profile
+JOIN public.network_cost_profile_version version USING(cost_profile_id,travel_profile_id,data_scope_key)
+WHERE profile.data_scope_key=gowm_network_v1.current_data_scope_key();
+
 CREATE FUNCTION gowm_network_v1.segment_boundary_crossings(
   p_graph_version_id uuid,
   p_area jsonb,

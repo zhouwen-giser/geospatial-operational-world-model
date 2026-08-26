@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "D02",
+  "title": "Provider Conformance",
+  "status": "PASS",
+  "requiredCases": 18,
+  "passedCases": 18,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "runtimeEvidence": [
+    "d00-runtime-v061-r2-final.json",
+    "g00-runtime-v061-r2-gateway.json",
+    "t00-runtime-v061-r2-recovery.json",
+    "c00-runtime-v061-r2-compat.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "cases": {
+    "AC-D02-01": {
+      "status": "PASS",
+      "scenario": "Reference provider",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-02": {
+      "status": "PASS",
+      "scenario": "Dataset catalog",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-03": {
+      "status": "PASS",
+      "scenario": "World evidence",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-04": {
+      "status": "PASS",
+      "scenario": "Spatial",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-05": {
+      "status": "PASS",
+      "scenario": "H3",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-06": {
+      "status": "PASS",
+      "scenario": "STAS",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-07": {
+      "status": "PASS",
+      "scenario": "Network",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-08": {
+      "status": "PASS",
+      "scenario": "Route",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-09": {
+      "status": "PASS",
+      "scenario": "Coverage",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-10": {
+      "status": "PASS",
+      "scenario": "Manifest/schema hash",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-11": {
+      "status": "PASS",
+      "scenario": "Semantic profile",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-12": {
+      "status": "PASS",
+      "scenario": "Scope policy",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-13": {
+      "status": "PASS",
+      "scenario": "Snapshot policy",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-14": {
+      "status": "PASS",
+      "scenario": "Status mapping",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-15": {
+      "status": "PASS",
+      "scenario": "No sibling import",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-16": {
+      "status": "PASS",
+      "scenario": "Read contract only",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-17": {
+      "status": "PASS",
+      "scenario": "Limits/health/idempotency",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-D02-18": {
+      "status": "PASS",
+      "scenario": "Machine report hash",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    }
+  }
+}

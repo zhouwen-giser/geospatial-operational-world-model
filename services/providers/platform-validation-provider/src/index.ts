@@ -93,7 +93,7 @@ function operation(operationId: OperationId, authority: PlatformValidationAuthor
       }
       if (operationId === "snapshot.get") {
         const snapshot = await authority.getSnapshot(requiredString(input.snapshotId, "snapshotId"), scope);
-        if (snapshot === undefined) return { status: "NO_DATA", dataSnapshot: dataContext(scope, capturedAt), consumption: { rows: 0, candidates: 0 }, warnings: ["Snapshot is unavailable in the authorized scope"] };
+        if (snapshot === undefined) throw new ProviderProtocolError("VERSION_NOT_FOUND", "Snapshot is unavailable in the authorized scope");
         return completed(snapshot, scope, capturedAt, snapshot.resources.length);
       }
       const snapshot = input.snapshot as DataSnapshotManifest;

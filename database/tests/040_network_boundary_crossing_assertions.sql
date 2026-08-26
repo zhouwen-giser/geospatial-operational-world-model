@@ -18,7 +18,7 @@ BEGIN
     RAISE EXCEPTION 'route/coverage providers cannot execute the boundary crossing authority';
   END IF;
   SELECT pg_get_functiondef('gowm_network_v1.segment_boundary_crossings(uuid,jsonb,text,integer,integer)'::regprocedure) INTO definition;
-  IF definition !~ 'NOT public\.st_isempty\(v_boundary_intersection\)' THEN
+  IF definition !~* 'NOT public\.st_isempty\(v_boundary_intersection\)' THEN
     RAISE EXCEPTION 'typed empty boundary intersections are not excluded from overlap detection';
   END IF;
 END

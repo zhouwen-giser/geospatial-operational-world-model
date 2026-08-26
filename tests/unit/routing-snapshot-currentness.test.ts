@@ -22,4 +22,24 @@ describe("routing snapshot currentness", () => {
     expect(result.currentness).toBe("UNKNOWN");
     expect(result.dimensions.sourceWorld).toBe("UNKNOWN");
   });
+
+  it.each([
+    ["GRAPH", { graphVersion: "graph/2" }],
+    ["TRAVEL_PROFILE", { travelProfileVersion: "ugv/2" }],
+    ["COST_PROFILE", { costProfileVersion: "cost/2" }],
+    ["CONDITION", { conditionSnapshotId: "conditions/2" }],
+    ["SOURCE_WORLD", { sourceWorldVersion: 8 }]
+  ] as const)("reports %s changes without mutating the frozen snapshot", (dimension, change) => {
+    const requested = structuredClone(snapshot);
+    const result = new RoutingSnapshotCurrentnessEvaluator().evaluate(requested, { ...snapshot, ...change });
+    expect(result).toMatchObject({ currentness: "STALE", staleDimensions: [dimension], requestedSnapshot: snapshot });
+    expect(requested).toEqual(snapshot);
+  });
+
+  it("distinguishes unavailable authority from an unknown optional condition", () => {
+    const evaluator = new RoutingSnapshotCurrentnessEvaluator();
+    expect(evaluator.evaluate(snapshot, undefined)).toMatchObject({ currentness: "UNAVAILABLE", staleDimensions: [] });
+    const { conditionSnapshotId: _conditionId, conditionContentHash: _conditionHash, ...withoutCondition } = snapshot;
+    expect(evaluator.evaluate(snapshot, withoutCondition)).toMatchObject({ currentness: "UNKNOWN", dimensions: { condition: "UNKNOWN" } });
+  });
 });

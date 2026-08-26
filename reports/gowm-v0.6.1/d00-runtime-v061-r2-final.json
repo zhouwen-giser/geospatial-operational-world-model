@@ -1,0 +1,455 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "v061-r2-final",
+  "container": "gowm-v061-r2-postgres",
+  "databases": {
+    "fresh": "gowm_v06_fresh_v061_r2_final",
+    "v05Upgrade": "gowm_v06_upgrade_v061_r2_final",
+    "v04Upgrade": "gowm_v06_v04_v061_r2_final",
+    "v06Upgrade": "gowm_v06_v060_v061_r2_final"
+  },
+  "startedAt": "2026-08-26T01:01:58.652Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowm-v061-r2-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 29
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 180
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 269
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..057_platform_validation_snapshot_contract.sql",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4243
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..042_platform_validation_snapshot_contract_assertions.sql",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1393
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 129
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 244
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..047_network_avoid_area_read_contract.sql",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4326
+    },
+    {
+      "command": [
+        "create-upgrade-preservation-probe",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 154
+    },
+    {
+      "command": [
+        "migration-batch:048_coverage_planner_schema.sql..057_platform_validation_snapshot_contract.sql",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 376
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..042_platform_validation_snapshot_contract_assertions.sql",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1126
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 171
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 344
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..032_operational_analysis_findings_replay.sql",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3746
+    },
+    {
+      "command": [
+        "create-v04-preservation-probe",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 131
+    },
+    {
+      "command": [
+        "migration-batch:033_network_graph_catalog.sql..057_platform_validation_snapshot_contract.sql",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 874
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..042_platform_validation_snapshot_contract_assertions.sql",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1331
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 165
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 274
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..053_fix_coverage_request_owned_hash_identity.sql",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4808
+    },
+    {
+      "command": [
+        "seed-v0.6-real-dataset-network",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 411
+    },
+    {
+      "command": [
+        "create-v0.6-preservation-probe",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 140
+    },
+    {
+      "command": [
+        "migration-batch:054_coverage_attempt_generation_reclaim.sql..057_platform_validation_snapshot_contract.sql",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 219
+    },
+    {
+      "command": [
+        "assertion-batch:039_coverage_attempt_reclaim_assertions.sql..042_platform_validation_snapshot_contract_assertions.sql",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 146
+    },
+    {
+      "command": [
+        "v0.6-data-preservation",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 110
+    },
+    {
+      "command": [
+        "checksum-replay-skip",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 109
+    },
+    {
+      "command": [
+        "checksum-replay-skip",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 104
+    },
+    {
+      "command": [
+        "checksum-replay-skip",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 297
+    },
+    {
+      "command": [
+        "checksum-replay-skip",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 98
+    },
+    {
+      "command": [
+        "deliberate-migration-failure",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "EXPECTED_FAIL",
+      "elapsedMs": 132,
+      "exitCode": 3
+    },
+    {
+      "command": [
+        "verify-failed-migration-rollback",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 144
+    },
+    {
+      "command": [
+        "deliberate-migration-failure",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "EXPECTED_FAIL",
+      "elapsedMs": 151,
+      "exitCode": 3
+    },
+    {
+      "command": [
+        "verify-failed-migration-rollback",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 107
+    },
+    {
+      "command": [
+        "deliberate-migration-failure",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "EXPECTED_FAIL",
+      "elapsedMs": 105,
+      "exitCode": 3
+    },
+    {
+      "command": [
+        "verify-failed-migration-rollback",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 122
+    },
+    {
+      "command": [
+        "deliberate-migration-failure",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "EXPECTED_FAIL",
+      "elapsedMs": 111,
+      "exitCode": 3
+    },
+    {
+      "command": [
+        "verify-failed-migration-rollback",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 112
+    },
+    {
+      "command": [
+        "fresh-summary",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 158
+    },
+    {
+      "command": [
+        "v0.5-upgrade-summary",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 162
+    },
+    {
+      "command": [
+        "v0.4-upgrade-summary",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 126
+    },
+    {
+      "command": [
+        "v0.6-upgrade-summary",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 144
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_v060_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 6041
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_v04_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 635
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_upgrade_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 374
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_fresh_v061_r2_final"
+      ],
+      "status": "PASS",
+      "elapsedMs": 280
+    }
+  ],
+  "summary": {
+    "migrations": 57,
+    "assertions": 42,
+    "fresh": {
+      "upgradeMarker": null,
+      "coverageTables": 16,
+      "migrationCount": 57,
+      "coverageFunctions": 17,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 14
+    },
+    "v05Upgrade": {
+      "upgradeMarker": "v0.5-preserved",
+      "coverageTables": 16,
+      "migrationCount": 57,
+      "coverageFunctions": 17,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 14
+    },
+    "v04Upgrade": {
+      "upgradeMarker": "v0.4-preserved",
+      "coverageTables": 16,
+      "migrationCount": 57,
+      "coverageFunctions": 17,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 14
+    },
+    "v06Upgrade": {
+      "upgradeMarker": "v0.6.0-preserved",
+      "coverageTables": 16,
+      "migrationCount": 57,
+      "coverageFunctions": 17,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 14,
+      "preservedData": {
+        "arcs": 7,
+        "datasets": 3,
+        "activeEvents": 1,
+        "graphVersions": 1
+      }
+    },
+    "checksumReplaySkips": {
+      "gowm_v06_fresh_v061_r2_final": 57,
+      "gowm_v06_upgrade_v061_r2_final": 57,
+      "gowm_v06_v04_v061_r2_final": 57,
+      "gowm_v06_v060_v061_r2_final": 57
+    },
+    "deliberateFailureRollback": true
+  },
+  "cleanup": [
+    {
+      "database": "gowm_v06_v060_v061_r2_final",
+      "status": "PASS"
+    },
+    {
+      "database": "gowm_v06_v04_v061_r2_final",
+      "status": "PASS"
+    },
+    {
+      "database": "gowm_v06_upgrade_v061_r2_final",
+      "status": "PASS"
+    },
+    {
+      "database": "gowm_v06_fresh_v061_r2_final",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-08-26T01:02:33.643Z"
+}

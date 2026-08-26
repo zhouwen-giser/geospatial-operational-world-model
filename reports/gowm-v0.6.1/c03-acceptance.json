@@ -1,0 +1,311 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C03",
+  "title": "Currentness",
+  "status": "PASS",
+  "requiredCases": 16,
+  "passedCases": 16,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "runtimeEvidence": [
+    "d00-runtime-v061-r2-final.json",
+    "g00-runtime-v061-r2-gateway.json",
+    "t00-runtime-v061-r2-recovery.json",
+    "c00-runtime-v061-r2-compat.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "cases": {
+    "AC-C03-01": {
+      "status": "PASS",
+      "scenario": "Frozen validity valid",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "verifyDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-02": {
+      "status": "PASS",
+      "scenario": "Frozen invalid",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "frozenPlanInvalid",
+            "frozenInvalidWithStaleSnapshot"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-03": {
+      "status": "PASS",
+      "scenario": "Graph unchanged",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessCurrent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-04": {
+      "status": "PASS",
+      "scenario": "Graph changed",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessGraphStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-05": {
+      "status": "PASS",
+      "scenario": "Travel profile changed",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessTravelStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-06": {
+      "status": "PASS",
+      "scenario": "Cost profile changed",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessCostStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-07": {
+      "status": "PASS",
+      "scenario": "Condition changed",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessConditionStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-08": {
+      "status": "PASS",
+      "scenario": "Source world advanced",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotWorldAdvanced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-09": {
+      "status": "PASS",
+      "scenario": "Unknown current condition",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessConditionUnknown"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-10": {
+      "status": "PASS",
+      "scenario": "Unavailable graph",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessUnavailable"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-11": {
+      "status": "PASS",
+      "scenario": "TTL current snapshot stale",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessFreshTtlStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-12": {
+      "status": "PASS",
+      "scenario": "TTL expired snapshot current",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expiredIsStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-13": {
+      "status": "PASS",
+      "scenario": "Coverage verify",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessFreshTtlStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-14": {
+      "status": "PASS",
+      "scenario": "Route verify",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "routeUnaffected"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-15": {
+      "status": "PASS",
+      "scenario": "result.validate",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStaleRevalidate"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-16": {
+      "status": "PASS",
+      "scenario": "No silent replan",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotReadOnly"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

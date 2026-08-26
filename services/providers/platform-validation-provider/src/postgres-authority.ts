@@ -112,14 +112,14 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
 
   private async resultState(client: pg.PoolClient, kind: string, id: string) {
     if (kind === "QUERY_RESULT") {
-      const result = await client.query<{ status: string; valid_until: Date; created_at: Date; data_snapshot_hash: string }>(
-        `SELECT status,valid_until,created_at,data_snapshot_hash FROM gowm_result_v1.query_result WHERE reference_key=$1
+      const result = await client.query<{ status: string; result_record: unknown; valid_until: Date; created_at: Date; data_snapshot_hash: string }>(
+        `SELECT status,result_record,valid_until,created_at,data_snapshot_hash FROM gowm_result_v1.query_result WHERE reference_key=$1
          UNION ALL
-         SELECT status,valid_until,created_at,data_snapshot_hash FROM gowm_result_v1.route_query_result WHERE reference_key=$1
+         SELECT status,result_record,valid_until,created_at,data_snapshot_hash FROM gowm_result_v1.route_query_result WHERE reference_key=$1
          LIMIT 1`, [id]
       );
       const row = result.rows[0];
-      if (row !== undefined) return { status: row.status, authority: "gowm.result-registry", validUntil: row.valid_until, createdAt: row.created_at, snapshotStatus: "CURRENT" as const, evidence: [row.data_snapshot_hash] };
+      if (row !== undefined) return { status: sourceStatus(row.result_record, row.status), authority: "gowm.result-registry", validUntil: row.valid_until, createdAt: row.created_at, snapshotStatus: "CURRENT" as const, evidence: [row.data_snapshot_hash] };
     }
     if (kind === "DERIVED_REFERENCE") {
       const result = await client.query<{ valid_until: Date; created_at: Date; revalidation_required: boolean; data_snapshot_hash: string }>(
@@ -156,6 +156,21 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
       const row = result.rows[0];
       return row === undefined ? undefined : { ...requested, version: row.version, contentHash: row.content_hash };
     }
+    if (requested.resourceKind === "WORLD_REFERENCE") {
+      const result = await client.query<{ descriptor_version: string; object_version: string | null; world_version: string | null; content_hash: string }>(
+        `SELECT descriptor_version::text,object_version,world_version::text,content_hash
+         FROM gowm_reference_v1.current_descriptor WHERE reference_key=$1`, [requested.resourceId]
+      );
+      const row = result.rows[0];
+      if (row === undefined) return undefined;
+      const worldVersion = row.world_version === null ? undefined : Number(row.world_version);
+      return {
+        ...requested,
+        version: row.object_version ?? row.descriptor_version,
+        contentHash: row.content_hash,
+        ...(worldVersion !== undefined && Number.isSafeInteger(worldVersion) && worldVersion >= 0 ? { worldVersion } : {})
+      };
+    }
     if (["QUERY_RESULT", "DERIVED_REFERENCE", "REFERENCE_SET"].includes(requested.resourceKind)) {
       const state = await this.resultState(client, requested.resourceKind, requested.resourceId);
       return state === undefined ? undefined : { ...requested, version: requested.referenceKey?.version ?? "1", ...(state.evidence[0] === undefined ? {} : { contentHash: state.evidence[0] }) };
@@ -171,4 +186,12 @@ function resourceMapKey(resource: SnapshotResource): string {
 function asIso(value: Date | string | number): string | undefined {
   const date = value instanceof Date ? value : new Date(value);
   return Number.isFinite(date.getTime()) ? date.toISOString() : undefined;
+}
+
+function sourceStatus(resultRecord: unknown, fallback: string): string {
+  if (resultRecord !== null && typeof resultRecord === "object" && !Array.isArray(resultRecord)) {
+    const status = (resultRecord as Record<string, unknown>).status;
+    if (typeof status === "string" && status.length > 0) return status;
+  }
+  return fallback;
 }

@@ -17,6 +17,7 @@ export interface VerifiedAlternativeCandidate {
 
 export interface BuildCoverageResultSetInput {
   requestId: string;
+  identityScope?: string;
   problemHash: `sha256:${string}`;
   routingSnapshot: RoutingSnapshot;
   policy: CoverageAlternativePolicy;
@@ -24,7 +25,7 @@ export interface BuildCoverageResultSetInput {
   searchTerminatedBy: NonNullable<CoverageResultSet["searchTerminatedBy"]>;
   createdAt: string;
   validUntil: string;
-  integrity?: { dataSnapshotHash: `sha256:${string}`; computeSnapshotHash: `sha256:${string}`; contractHash: `sha256:${string}` };
+  integrity?: { dataSnapshotHash: `sha256:${string}`; computeSnapshotHash: `sha256:${string}`; contractHash: `sha256:${string}`; computeSnapshot?: Record<string, unknown> };
   noFeasibleReasons?: string[];
 }
 
@@ -62,7 +63,9 @@ export function buildVerifiedCoverageResultSet(input: BuildCoverageResultSetInpu
         similarity.deadheadJaccardDistancePpm >= input.policy.minimumDeadheadJaccardDistancePpm;
     })) selected.push(candidate);
   }
-  const alternatives = selected.map((candidate, index) => alternative(candidate, index + 1)) as unknown as CoverageResultSet["alternatives"];
+  const resultIdentity = canonicalSha256({ requestId: input.requestId, problemHash: input.problemHash, routingSnapshot: input.routingSnapshot,
+    ...(input.identityScope === undefined ? {} : { identityScope: input.identityScope }) });
+  const alternatives = selected.map((candidate, index) => alternative(candidate, index + 1, resultIdentity)) as unknown as CoverageResultSet["alternatives"];
   const pairwiseSimilarity = alternatives.flatMap((left, leftIndex) => alternatives.slice(leftIndex + 1).map((right) => ({
     leftAlternativeId: left.alternativeId,
     rightAlternativeId: right.alternativeId,
@@ -75,7 +78,6 @@ export function buildVerifiedCoverageResultSet(input: BuildCoverageResultSetInpu
       : alternatives.length === 0
         ? "NO_FEASIBLE_PLAN"
         : "PARTIAL";
-  const resultIdentity = canonicalSha256({ requestId: input.requestId, problemHash: input.problemHash, routingSnapshot: input.routingSnapshot });
   const body = {
     schemaVersion: "1.0" as const,
     referenceKey: reference("QUERY_RESULT", resultIdentity),
@@ -122,7 +124,7 @@ export function compareRoutes(left: AdmittedVerifiedRoute["route"], right: Admit
   };
 }
 
-function alternative(candidate: PreparedCandidate, rank: number): CoverageAlternative {
+function alternative(candidate: PreparedCandidate, rank: number, resultIdentity: string): CoverageAlternative {
   const facts = candidate.facts;
   const explanation = explanationFor(candidate.objectiveProfile, facts);
   const body = {
@@ -137,7 +139,7 @@ function alternative(candidate: PreparedCandidate, rank: number): CoverageAltern
     cons: explanation.cons
   };
   const { alternativeId: _alternativeId, ...identityBody } = body;
-  const identity = canonicalSha256({ ...identityBody, routeSignature: candidate.admitted.route.routeSignature });
+  const identity = canonicalSha256({ ...identityBody, resultIdentity, routeSignature: candidate.admitted.route.routeSignature });
   const alternativeId = `alt_${identity.slice("sha256:".length)}`;
   const withIdentity = { ...body, alternativeId, referenceKey: reference("DERIVED_REFERENCE", identity) };
   return { ...withIdentity, contentHash: canonicalSha256(withIdentity) };

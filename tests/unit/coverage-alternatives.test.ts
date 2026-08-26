@@ -46,6 +46,20 @@ function input(values: VerifiedAlternativeCandidate[], problemHash: `sha256:${st
 }
 
 describe("verified coverage alternatives", () => {
+  it("keeps identical routes request-owned and scope-isolated while preserving replay", () => {
+    const fixture = candidates();
+    const original = { ...input(fixture.values, fixture.problemHash), identityScope: "scope-a" };
+    const first = buildVerifiedCoverageResultSet(original);
+    const replay = buildVerifiedCoverageResultSet(original);
+    const otherRequest = buildVerifiedCoverageResultSet({ ...original, requestId: "another-request" });
+    const otherScope = buildVerifiedCoverageResultSet({ ...original, identityScope: "scope-b" });
+    expect(first.resultHash).toBe(replay.resultHash);
+    for (const other of [otherRequest, otherScope]) {
+      expect(first.referenceKey.id).not.toBe(other.referenceKey.id);
+      expect(first.alternatives[0]!.referenceKey!.id).not.toBe(other.alternatives[0]!.referenceKey!.id);
+      expect(first.alternatives[0]!.route.routeSignature).toBe(other.alternatives[0]!.route.routeSignature);
+    }
+  });
   it("returns one or two requested independently verified alternatives", () => {
     const fixture = candidates();
     const two = buildVerifiedCoverageResultSet(input(fixture.values, fixture.problemHash));

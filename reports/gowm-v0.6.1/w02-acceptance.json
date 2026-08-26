@@ -1,0 +1,260 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "W02",
+  "title": "Snapshot Operations",
+  "status": "PASS",
+  "requiredCases": 14,
+  "passedCases": 14,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "runtimeEvidence": [
+    "d00-runtime-v061-r2-final.json",
+    "g00-runtime-v061-r2-gateway.json",
+    "t00-runtime-v061-r2-recovery.json",
+    "c00-runtime-v061-r2-compat.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "cases": {
+    "AC-W02-01": {
+      "status": "PASS",
+      "scenario": "snapshot.get",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotGet"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-02": {
+      "status": "PASS",
+      "scenario": "snapshot.validate current",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotCurrent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-03": {
+      "status": "PASS",
+      "scenario": "graph stale",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotGraphStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-04": {
+      "status": "PASS",
+      "scenario": "layer stale",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotLayerStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-05": {
+      "status": "PASS",
+      "scenario": "world version advanced",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotWorldAdvanced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-06": {
+      "status": "PASS",
+      "scenario": "unknown resource",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotUnknown"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-07": {
+      "status": "PASS",
+      "scenario": "unavailable resource",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotUnavailable"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-08": {
+      "status": "PASS",
+      "scenario": "pinned consistency",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotConsistencyPreserved"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-09": {
+      "status": "PASS",
+      "scenario": "consistent at start",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotConsistencyCurrent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-10": {
+      "status": "PASS",
+      "scenario": "best effort",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotConsistencyPreserved"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-11": {
+      "status": "PASS",
+      "scenario": "content hash",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotContentHash"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-12": {
+      "status": "PASS",
+      "scenario": "scope",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotScopeOpaque"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-13": {
+      "status": "PASS",
+      "scenario": "read-only",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotReadOnly"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-14": {
+      "status": "PASS",
+      "scenario": "hash replay",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotHashReplay"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

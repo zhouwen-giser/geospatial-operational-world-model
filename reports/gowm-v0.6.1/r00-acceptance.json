@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "R00",
+  "title": "Main Reconciliation",
+  "status": "PASS",
+  "requiredCases": 10,
+  "passedCases": 10,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "runtimeEvidence": [
+    "d00-runtime-v061-r2-final.json",
+    "g00-runtime-v061-r2-gateway.json",
+    "t00-runtime-v061-r2-recovery.json",
+    "c00-runtime-v061-r2-compat.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "cases": {
+    "AC-R001": {
+      "status": "PASS",
+      "scenario": "Actual main head",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R002": {
+      "status": "PASS",
+      "scenario": "Version baseline",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R003": {
+      "status": "PASS",
+      "scenario": "Migration baseline",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R004": {
+      "status": "PASS",
+      "scenario": "Status reconciliation",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R005": {
+      "status": "PASS",
+      "scenario": "No open work theft",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R006": {
+      "status": "PASS",
+      "scenario": "Independent worktree",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R007": {
+      "status": "PASS",
+      "scenario": "No WSGS implementation",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R008": {
+      "status": "PASS",
+      "scenario": "No second registry",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R009": {
+      "status": "PASS",
+      "scenario": "No second catalog",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R010": {
+      "status": "PASS",
+      "scenario": "No protected action",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    }
+  }
+}

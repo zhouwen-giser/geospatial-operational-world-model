@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { validateContract, type ProviderExecutionRequest } from "../../packages/platform/contract-runtime/src/index.js";
 import { createDataSnapshot, type DataSnapshotManifest, type ReferenceRecord, type SnapshotResource } from "../../packages/platform/result-validation-core/src/index.js";
 import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
-import { createPlatformValidationProvider, type PlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
+import { createPlatformValidationProvider, PostgresPlatformValidationAuthority, type PlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
 import { buildPlatformValidationApp } from "../../services/providers/platform-validation-provider/src/app.js";
 
 const now = new Date("2026-08-25T00:00:00.000Z");
@@ -23,6 +23,11 @@ describe("platform validation Provider", () => {
     expect(validateContract("capability-provider-manifest.schema.json", manifest).valid).toBe(true);
     expect(manifest.capabilities.map(({ operationId }) => operationId)).toEqual(["result.validate", "snapshot.get", "snapshot.validate"]);
     expect(manifest.capabilities.every(({ snapshotPolicy, scopePolicy }) => scopePolicy === "DATA_SCOPE_REQUIRED" && snapshotPolicy.dataSnapshot === "REQUIRED" && snapshotPolicy.computeSnapshot === "REQUIRED")).toBe(true);
+  });
+
+  it("fails opaque snapshot lookup with a protocol error rather than an invalid empty result", async () => {
+    const provider = createPlatformValidationProvider(new Authority(), () => now);
+    await expect(execute(provider.runtime, "snapshot.get", { schemaVersion: "1.0", snapshotId: `snapshot_${"f".repeat(64)}` }, "missing")).rejects.toMatchObject({ code: "VERSION_NOT_FOUND" });
   });
 
   it("normalizes result status without hiding source status and validates snapshots read-only", async () => {
@@ -51,6 +56,31 @@ describe("platform validation Provider", () => {
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({ output: { value: { results: [{ usable: "REVALIDATE" }] } } });
     await app.close();
+  });
+
+  it("preserves PostgreSQL result source status and resolves world-version currentness", async () => {
+    const client = {
+      async query(text: string) {
+        if (text.includes("SELECT entity_kind,descriptor_version")) return { rows: [{
+          entity_kind: "QUERY_RESULT", descriptor_version: "1", stale: false, revalidation_required: false,
+          valid_to: new Date("2026-08-26T00:00:00.000Z"), created_at: now
+        }] };
+        if (text.includes("FROM gowm_result_v1.query_result")) return { rows: [{
+          status: "COMPLETED", result_record: { status: "SUCCEEDED" }, valid_until: new Date("2026-08-26T00:00:00.000Z"),
+          created_at: now, data_snapshot_hash: `sha256:${"3".repeat(64)}`
+        }] };
+        if (text.includes("SELECT descriptor_version::text,object_version,world_version::text,content_hash")) return { rows: [{
+          descriptor_version: "7", object_version: "world-v2", world_version: "2", content_hash: `sha256:${"4".repeat(64)}`
+        }] };
+        return { rows: [] };
+      },
+      release() {}
+    };
+    const authority = new PostgresPlatformValidationAuthority({ async connect() { return client as never; } });
+    const records = await authority.resolveReferences([{ referenceKey }], { dataScopeKey: "scope-a", datasetScopeKey: "dataset-a" });
+    expect(records[0]).toMatchObject({ sourceStatus: "SUCCEEDED", sourceAuthority: "gowm.result-registry" });
+    const world = await authority.currentResources([{ resourceKind: "WORLD_REFERENCE", resourceId: referenceKey.id, version: "world-v1", worldVersion: 1 }], { dataScopeKey: "scope-a", datasetScopeKey: "dataset-a" });
+    expect(world.get(`WORLD_REFERENCE\0${referenceKey.id}`)).toMatchObject({ version: "world-v2", worldVersion: 2, contentHash: `sha256:${"4".repeat(64)}` });
   });
 });
 

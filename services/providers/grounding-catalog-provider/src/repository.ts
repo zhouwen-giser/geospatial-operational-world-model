@@ -34,6 +34,7 @@ export class GroundingCatalogRepository {
     const dataScopeKey = security.dataScopeKey?.trim();
     if (!dataScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "data scope is required");
     const isDataset = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.") || operationId.startsWith("catalog.");
+    const isDataProduct = operationId.startsWith("catalog.");
     const isEvidence = operationId.startsWith("world.") || operationId.startsWith("result.") || operationId.startsWith("reference-set.");
     const datasetScopeKey = security.datasetScopeKey?.trim();
     if (isDataset && !datasetScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "dataset scope is required");
@@ -55,8 +56,9 @@ export class GroundingCatalogRepository {
         await client.query("SELECT gowm_reference_v1.set_data_scope($1::text)", [dataScopeKey]);
       }
       const snapshot = await this.snapshot(client, dataScopeKey, isDataset ? datasetScopeKey : undefined, isDataset ? "dataset" : isEvidence ? "evidence" : "reference");
-      const result = isDataset
-        ? await this.datasetOperation(client, operationId, asRecord(input), snapshot)
+      const result = isDataProduct
+        ? await this.dataProductOperation(client, operationId, asRecord(input), snapshot)
+        : isDataset ? await this.datasetOperation(client, operationId, asRecord(input), snapshot)
         : isEvidence ? await this.evidenceOperation(client, operationId, asRecord(input), snapshot)
         : await this.referenceOperation(client, operationId, asRecord(input), snapshot);
       await client.query("COMMIT");
@@ -146,9 +148,6 @@ export class GroundingCatalogRepository {
     input: Row,
     snapshot: { context: DataSnapshotContext; version: string; worldVersion: number; scopeDigest: `sha256:${string}` }
   ): Promise<GroundingCatalogExecutionResult> {
-    if (operationId.startsWith("catalog.")) {
-      return this.dataProductOperation(client, operationId, input, snapshot);
-    }
     if (operationId === "reference.get") {
       const descriptor = await this.descriptor(client, referenceId(input.referenceKey));
       if (!descriptor) throw scopeOpaqueNotFound("reference");
@@ -323,55 +322,49 @@ export class GroundingCatalogRepository {
       const time = isRecord(input.timeFilter) ? input.timeFilter : {};
       const spatial = isRecord(input.spatialFilter) ? input.spatialFilter : null;
       const query = await client.query(
-        `SELECT dataset.*,
-          (SELECT public.ST_AsGeoJSON(public.ST_Envelope(public.ST_Collect(public.ST_GeomFromGeoJSON(feature.geometry::text))))::jsonb
-           FROM gowm_catalog_v1.layer layer
-           JOIN gowm_catalog_v1.feature feature ON feature.layer_reference_key=layer.reference_key
-           WHERE layer.dataset_reference_key=dataset.reference_key AND feature.geometry IS NOT NULL) AS spatial_extent
+        `SELECT dataset.*,gowm_catalog_v1.dataset_spatial_extent(dataset.reference_key) AS spatial_extent
          FROM gowm_catalog_v1.dataset dataset
          WHERE dataset.reference_key>$1::text
            AND ($2::text[] IS NULL OR upper(dataset.dataset_kind)=ANY($2))
            AND ($3::text[] IS NULL OR dataset.crs=ANY($3))
            AND ($4::timestamptz IS NULL OR dataset.valid_to IS NULL OR dataset.valid_to >= $4::timestamptz)
            AND ($5::timestamptz IS NULL OR dataset.valid_from IS NULL OR dataset.valid_from <= $5::timestamptz)
-           AND ($6::jsonb IS NULL OR EXISTS (
-             SELECT 1 FROM gowm_catalog_v1.layer layer
-             JOIN gowm_catalog_v1.feature feature ON feature.layer_reference_key=layer.reference_key
-             WHERE layer.dataset_reference_key=dataset.reference_key AND feature.geometry IS NOT NULL
-               AND public.ST_Intersects(public.ST_GeomFromGeoJSON(feature.geometry::text),public.ST_GeomFromGeoJSON($6::text))
-           ))
+           AND ($6::jsonb IS NULL OR gowm_catalog_v1.dataset_intersects(dataset.reference_key,$6::jsonb))
          ORDER BY dataset.reference_key LIMIT $7::integer`,
         [after, dataKinds, crs, finiteDate(time.from), finiteDate(time.to), spatial === null ? null : JSON.stringify(spatial), this.maximumCandidates]
       );
+      const capabilityBindings = await activeCapabilityBindings(client);
       const requirements = new Set(Array.isArray(input.requiredCapabilities) ? input.requiredCapabilities.filter((item): item is string => typeof item === "string") : []);
       const minimum = typeof input.minimumValidationStatus === "string" ? input.minimumValidationStatus : undefined;
-      const filtered = query.rows.map(dataProduct).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))
+      const filtered = query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))
         .filter((item) => minimum === undefined || qualityRank(requiredString((item.quality as Row).validationStatus, "validationStatus")) >= qualityRank(minimum));
       const visible = filtered.slice(0, limit);
       const truncated = filtered.length > limit || query.rows.length === this.maximumCandidates;
-      const afterId = visible.at(-1)?.referenceKey;
-      const nextCursor = truncated && isRecord(afterId) && typeof afterId.id === "string" ? encodeCatalogCursor({
-        v: 1, operationId, scopeDigest: snapshot.scopeDigest, snapshotVersion: snapshot.version, after: afterId.id
+      const afterId = filtered.length > limit ? (visible.at(-1)?.referenceKey as Row | undefined)?.id : query.rows.at(-1)?.reference_key;
+      const nextCursor = truncated && typeof afterId === "string" ? encodeCatalogCursor({
+        v: 1, operationId, scopeDigest: snapshot.scopeDigest, snapshotVersion: snapshot.version, after: afterId
       }, this.options.cursorSecret) : undefined;
       return result({ schemaVersion: "1.0", items: visible, truncated, ...(nextCursor ? { nextCursor } : {}) }, snapshot.context, visible.length, query.rows.length);
     }
 
     const id = referenceId(input.referenceKey);
     const current = await client.query(
-      `SELECT dataset.*,
-        (SELECT public.ST_AsGeoJSON(public.ST_Envelope(public.ST_Collect(public.ST_GeomFromGeoJSON(feature.geometry::text))))::jsonb
-         FROM gowm_catalog_v1.layer layer
-         JOIN gowm_catalog_v1.feature feature ON feature.layer_reference_key=layer.reference_key
-         WHERE layer.dataset_reference_key=dataset.reference_key AND feature.geometry IS NOT NULL) AS spatial_extent
+      `SELECT dataset.*,gowm_catalog_v1.dataset_spatial_extent(dataset.reference_key) AS spatial_extent
        FROM gowm_catalog_v1.dataset dataset WHERE dataset.reference_key=$1::text`, [id]
     );
     const row = current.rows[0];
     if (!row) throw scopeOpaqueNotFound("data product");
-    const descriptor = dataProduct(row);
+    const descriptor = dataProduct(row, await activeCapabilityBindings(client));
     if (operationId === "catalog.get") return result(descriptor, snapshot.context, 1, 1);
     let value: unknown;
     if (operationId === "catalog.list-versions") {
-      value = (await client.query("SELECT version,schema_version,content_hash,published_at,retired_at FROM gowm_catalog_v1.dataset_version WHERE reference_key=$1 ORDER BY published_at DESC,version DESC LIMIT 100", [id])).rows;
+      value = (await client.query("SELECT version,schema_version,content_hash,published_at,retired_at FROM gowm_catalog_v1.dataset_version WHERE reference_key=$1 ORDER BY published_at DESC,version DESC LIMIT 100", [id])).rows.map((version) => ({
+        version: requiredString(version.version, "version"),
+        schema_version: requiredString(version.schema_version, "schema_version"),
+        content_hash: requiredString(version.content_hash, "content_hash"),
+        published_at: date(version.published_at, "published_at"),
+        retired_at: finiteDate(version.retired_at) ?? null
+      }));
     } else if (operationId === "catalog.describe-schema") value = { schemaRef: descriptor.schemaRef, schemaHash: descriptor.schemaHash };
     else if (operationId === "catalog.get-lineage") value = descriptor.lineage;
     else if (operationId === "catalog.get-quality") value = descriptor.quality;
@@ -643,7 +636,17 @@ function mapDataset(current: Row, versions: Row[]): Row {
 
 const DATA_KINDS = new Set(["VECTOR", "RASTER", "ELEVATION", "NETWORK", "TRAJECTORY", "OBSERVATION", "EVENT", "POINT_CLOUD", "TILESET", "CURRENT_PROJECTION"]);
 
-function dataProduct(row: Row): Row {
+type CapabilityBinding = { operationId: string; dataBinding: string };
+
+async function activeCapabilityBindings(client: CatalogSqlClient): Promise<CapabilityBinding[]> {
+  const query = await client.query("SELECT operation_id,data_binding FROM gowm_catalog_v1.active_capability ORDER BY operation_id");
+  return query.rows.map((row) => ({
+    operationId: requiredString(row.operation_id, "operation_id"),
+    dataBinding: requiredString(row.data_binding, "data_binding")
+  }));
+}
+
+function dataProduct(row: Row, capabilityBindings: CapabilityBinding[]): Row {
   const rawKind = requiredString(row.dataset_kind, "dataset_kind").toUpperCase().replaceAll("-", "_");
   const dataKind = DATA_KINDS.has(rawKind) ? rawKind : "VECTOR";
   const schemaVersion = requiredString(row.schema_version, "schema_version");
@@ -673,15 +676,19 @@ function dataProduct(row: Row): Row {
     lineage: Array.isArray(row.lineage) ? row.lineage.filter((item): item is string => typeof item === "string") : [],
     quality,
     freshnessPolicy: { mode: "VERSIONED", currentVersion: requiredString(row.version, "version") },
-    supportedCapabilities: capabilitiesFor(dataKind),
+    supportedCapabilities: capabilitiesFor(dataKind, capabilityBindings),
     access: { dataScopeRequired: true, datasetScopeRequired: true }
   });
 }
 
-function capabilitiesFor(dataKind: string): string[] {
-  if (dataKind === "NETWORK") return ["network.graph.get", "network.snap.point", "route.plan", "coverage.road.plan"];
-  if (dataKind === "CURRENT_PROJECTION") return ["world.get-current-state", "world.get-state-history"];
-  return ["dataset.get", "layer.list", "spatial.find-in-area", "spatial.find-intersections"];
+function capabilitiesFor(dataKind: string, bindings: CapabilityBinding[]): string[] {
+  const compatible = bindings.filter(({ operationId, dataBinding }) => {
+    if (dataKind === "CURRENT_PROJECTION") return dataBinding === "WORLD_SNAPSHOT_BOUND" && operationId.startsWith("world.");
+    if (dataKind === "NETWORK") return ["WORLD_SNAPSHOT_BOUND", "DATASET_VERSION_BOUND"].includes(dataBinding) && /^(network|route|coverage)\./u.test(operationId);
+    if (dataBinding !== "DATASET_VERSION_BOUND") return false;
+    return /^(dataset|layer|feature|spatial)\./u.test(operationId);
+  }).map(({ operationId }) => operationId);
+  return [...new Set(compatible)].sort();
 }
 
 function qualityRank(status: string): number {

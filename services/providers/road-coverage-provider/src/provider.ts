@@ -110,13 +110,17 @@ export function createRoadCoverageProvider(engine: RoadCoverageEngine): RoadCove
     runtime: createProviderRuntime({
       manifest,
       operations,
-      policyVersion: "gowm-road-coverage-policy/1.0",
+      policyVersion: "gowm-road-coverage-policy/1.1",
       policyDigest: sha256({
         networkAuthority: "gowm_network_v1",
         coverageRuntime: "coverage_planner",
         gatewayJobAuthority: true,
         independentVerification: true,
-        geometryExpansion: "ON_DEMAND"
+        geometryExpansion: "ON_DEMAND",
+        boundaryAuthority: "gowm_network_v1/segment-boundary-crossings",
+        objectivePolicy: "FIXED_POINT_PPM/1.1",
+        generationFencing: true,
+        currentness: "network-query-core/1.0.0"
       })
     })
   };
@@ -176,12 +180,13 @@ function operation(lock: OperationLock, engine: RoadCoverageEngine): ProviderOpe
     outputSchemaLockHash: lock.outputSchemaHash,
     method: {
       engine: "GOWM Road Coverage Planning",
-      engineVersion: "0.6.0",
+      engineVersion: "0.6.1",
       methodId: `gowm-road-coverage/${lock.operationId}`,
       methodVersion: "1.0",
       artifacts: [
-        { kind: "DATABASE", name: "gowm_network_v1+coverage_planner", version: "migration-053" },
-        { kind: "PACKAGE", name: "road-coverage-planning-core+road-coverage-verifier-core", version: "0.6.0" }
+        { kind: "DATABASE", name: "gowm_network_v1+coverage_planner", version: "migration-057" },
+        { kind: "PACKAGE", name: "road-coverage-planning-core+road-coverage-verifier-core", version: "0.6.1" },
+        { kind: "PACKAGE", name: "network-query-core", version: "1.0.0" }
       ]
     },
     async handle(input, context) {

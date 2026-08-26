@@ -1,5 +1,118 @@
 BEGIN;
 
+CREATE OR REPLACE FUNCTION coverage_planner.register_coverage_result_references()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, coverage_planner, public, gowm_capability
+AS $fn$
+DECLARE
+  request_row coverage_planner.coverage_request%ROWTYPE;
+  source_query_id text;
+  source_node_id text;
+  alternative jsonb;
+  similarity jsonb;
+  alternative_reference text;
+  candidate_id uuid;
+  result_kind text;
+  integrity_receipt jsonb;
+  data_digest text;
+  compute_digest text;
+BEGIN
+  IF NEW.result_record->'referenceKey' IS NULL THEN RETURN NEW; END IF;
+  IF NEW.result_record#>>'{referenceKey,kind}' <> 'QUERY_RESULT'
+     OR NEW.result_record#>>'{referenceKey,id}' <> NEW.reference_key THEN
+    RAISE EXCEPTION 'coverage result QUERY_RESULT identity mismatch' USING ERRCODE='22023';
+  END IF;
+  SELECT * INTO STRICT request_row FROM coverage_planner.coverage_request
+  WHERE coverage_request_id=NEW.coverage_request_id;
+  SELECT query_id INTO source_query_id FROM gowm_capability.world_query_job
+  WHERE job_id=request_row.gateway_job_id;
+  IF NOT EXISTS (SELECT 1 FROM public.world_reference_identity WHERE reference_key=NEW.reference_key) THEN
+    PERFORM public.register_result_registry_identity(
+      NEW.reference_key,'QUERY_RESULT',NEW.coverage_request_id::text,NEW.data_scope_key,
+      'Road coverage plan set ' || request_row.external_request_id
+    );
+  END IF;
+  SELECT value INTO integrity_receipt
+  FROM jsonb_array_elements(COALESCE(NEW.result_record->'receipts','[]'::jsonb))
+  WHERE value->>'kind'='SNAPSHOT_INTEGRITY' LIMIT 1;
+  data_digest := COALESCE(integrity_receipt->>'dataSnapshotHash',NEW.routing_snapshot_hash);
+  -- Legacy v1 publishers may omit the additive receipt: hash an explicitly UNKNOWN
+  -- compute manifest, never reuse Problem Hash as computation identity.
+  compute_digest := COALESCE(integrity_receipt->>'computeSnapshotHash',
+    'sha256:'||encode(public.digest('{"availability":"UNKNOWN","provider":"legacy-coverage","reason":"NO_COMPUTE_MANIFEST","schemaVersion":"1.0"}','sha256'),'hex'));
+  IF data_digest !~ '^sha256:[0-9a-f]{64}$' OR compute_digest !~ '^sha256:[0-9a-f]{64}$' THEN
+    RAISE EXCEPTION 'invalid coverage snapshot integrity receipt' USING ERRCODE='22023';
+  END IF;
+  IF source_query_id IS NOT NULL THEN
+    result_kind := CASE NEW.status WHEN 'SUCCEEDED' THEN 'COMPLETED' WHEN 'PARTIAL' THEN 'PARTIAL' ELSE 'NO_DATA' END;
+    INSERT INTO public.world_query_result_reference(
+      reference_key,query_id,data_scope_key,result_hash,status,data_snapshot_hash,
+      compute_snapshot_hash,result_record,valid_until
+    ) VALUES (
+      NEW.reference_key,source_query_id,NEW.data_scope_key,NEW.result_hash,result_kind,
+      data_digest,compute_digest,NEW.result_record,NEW.valid_until
+    ) ON CONFLICT (query_id) DO NOTHING;
+    SELECT node_id INTO source_node_id FROM gowm_capability.world_query_node_execution
+    WHERE job_id=request_row.gateway_job_id AND operation_id='coverage.road.plan'
+    ORDER BY node_ordinal LIMIT 1;
+  END IF;
+
+  FOR alternative IN SELECT value FROM jsonb_array_elements(COALESCE(NEW.result_record->'alternatives','[]'::jsonb))
+  LOOP
+    alternative_reference := alternative#>>'{referenceKey,id}';
+    IF alternative#>>'{referenceKey,kind}' <> 'DERIVED_REFERENCE'
+       OR alternative_reference !~ '^wrf_[0-9a-f]{32}$'
+       OR alternative->>'contentHash' !~ '^sha256:[0-9a-f]{64}$' THEN
+      RAISE EXCEPTION 'coverage alternative DERIVED_REFERENCE identity mismatch' USING ERRCODE='22023';
+    END IF;
+    SELECT candidate.coverage_candidate_id INTO STRICT candidate_id
+    FROM coverage_planner.coverage_candidate candidate
+    JOIN coverage_planner.coverage_candidate_route route USING(coverage_candidate_id,data_scope_key,dataset_scope_key)
+    WHERE candidate.coverage_problem_id=NEW.coverage_problem_id
+      AND route.route_signature=alternative#>>'{route,routeSignature}';
+    INSERT INTO coverage_planner.coverage_alternative(
+      coverage_result_set_id,coverage_candidate_id,data_scope_key,dataset_scope_key,
+      alternative_id,rank,reference_key,content_hash
+    ) VALUES (
+      NEW.coverage_result_set_id,candidate_id,NEW.data_scope_key,NEW.dataset_scope_key,
+      alternative->>'alternativeId',(alternative->>'rank')::integer,alternative_reference,alternative->>'contentHash'
+    );
+    IF NOT EXISTS (SELECT 1 FROM public.world_reference_identity WHERE reference_key=alternative_reference) THEN
+      PERFORM public.register_result_registry_identity(
+        alternative_reference,'DERIVED_REFERENCE',alternative->>'alternativeId',NEW.data_scope_key,
+        'Road coverage alternative ' || (alternative->>'alternativeId')
+      );
+    END IF;
+    IF source_query_id IS NOT NULL THEN
+      INSERT INTO public.derived_reference(
+        reference_key,data_scope_key,derived_type,operator,source_query_id,source_node_id,
+        input_reference_keys,data_snapshot_hash,compute_snapshot_hash,method_version,
+        geometry_summary,artifact_ref,content_hash,valid_until,revalidation_required
+      ) VALUES (
+        alternative_reference,NEW.data_scope_key,'ANALYSIS_RESULT','coverage.road.plan',source_query_id,
+        source_node_id,'[]'::jsonb,data_digest,compute_digest,'1.0',NULL,NULL,
+        alternative->>'contentHash',NEW.valid_until,true
+      ) ON CONFLICT (data_scope_key,content_hash) DO NOTHING;
+    END IF;
+  END LOOP;
+  FOR similarity IN SELECT value FROM jsonb_array_elements(COALESCE(NEW.result_record->'pairwiseSimilarity','[]'::jsonb))
+  LOOP
+    INSERT INTO coverage_planner.coverage_pairwise_similarity(
+      coverage_result_set_id,data_scope_key,dataset_scope_key,left_alternative_id,right_alternative_id,
+      weighted_arc_overlap_ppm,deadhead_jaccard_distance_ppm
+    ) VALUES (
+      NEW.coverage_result_set_id,NEW.data_scope_key,NEW.dataset_scope_key,
+      LEAST(similarity->>'leftAlternativeId',similarity->>'rightAlternativeId'),
+      GREATEST(similarity->>'leftAlternativeId',similarity->>'rightAlternativeId'),
+      (similarity->>'weightedArcOverlapPpm')::integer,(similarity->>'deadheadJaccardDistancePpm')::integer
+    );
+  END LOOP;
+  RETURN NEW;
+END
+$fn$;
+
 CREATE OR REPLACE FUNCTION coverage_planner.get_coverage_artifact(
   p_reference_key text,
   p_data_scope_key text,

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "status": "PASS",
+  "observedAt": "2026-08-26",
+  "decision": "PASS_STATIC_REGRESSION",
+  "mappedCases": 229,
+  "testSummary": {
+    "passed": 264,
+    "failed": 0,
+    "skipped": [
+      {
+        "file": "tests/integration/database.test.ts",
+        "name": "PostGIS integration reports PostGIS/MobilityDB/h3-pg health, canonical contract and monotonic world version",
+        "status": "skipped"
+      }
+    ],
+    "realDatabaseReplacement": "reports/gowm-v0.6.1/d00-runtime-v061-r2-final.json"
+  },
+  "staticEvidence": [
+    "R00 predecessor byte lock: 53 migrations / 103 contract artifacts",
+    "npm run check",
+    "npm run verify:sql",
+    "vitest run",
+    "npm --prefix services/stas test",
+    "npm run build",
+    "npm run validate:provider-conformance"
+  ],
+  "sql": {
+    "migrations": 57,
+    "assertionSuites": 42
+  },
+  "stas": {
+    "passedFiles": 14,
+    "failed": 0
+  },
+  "conformance": {
+    "providers": 9,
+    "report": "provider-conformance/aggregate.json"
+  },
+  "scope": "Static/contract regression only; runtime and final Git delivery are separate required gates."
+}

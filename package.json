@@ -1,6 +1,6 @@
 {
   "name": "geospatial-operational-world-model",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "description": "GOWM+ unified geospatial data foundation with independently deployable STAS analysis service",
   "type": "module",

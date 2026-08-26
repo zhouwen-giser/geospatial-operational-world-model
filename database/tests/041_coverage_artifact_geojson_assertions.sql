@@ -21,6 +21,11 @@ BEGIN
   IF definition ~ 'USING \(coverage_(problem|request)_id' THEN
     RAISE EXCEPTION 'coverage artifact contains an ambiguous multi-relation USING join';
   END IF;
+  SELECT pg_get_functiondef('coverage_planner.register_coverage_result_references()'::regprocedure) INTO definition;
+  IF definition !~ 'computeSnapshotHash' OR definition !~ 'dataSnapshotHash'
+     OR definition ~ 'NEW.routing_snapshot_hash,NEW.problem_hash' THEN
+    RAISE EXCEPTION 'registry conflates Problem Hash with Compute Snapshot identity';
+  END IF;
 END
 $assert$;
 
