@@ -1,3 +1,6 @@
+import semanticProfiles0 from "./semantic-profiles.situation.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0 };
 import type {
   CapabilityDescriptor,
   CapabilityProviderManifest,
@@ -44,7 +47,7 @@ export function createGowmSituationProvider(options: GowmSituationProviderOption
   if (!options.acceptedDataScope.trim()) throw new Error("acceptedDataScope is required");
   const operations = GOWM_SITUATION_OPERATION_IDS.map((operationId) => createOperation(operationId, options));
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId: "gowm.situation.h3",
       providerVersion: "0.2.0",
@@ -99,7 +102,7 @@ function createOperation(
   const schemas = GOWM_SITUATION_OPERATION_SCHEMAS[operationId];
   const descriptor: CapabilityDescriptor = {
     operationId,
-    operationVersion: "1.0",
+    operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"),
     semanticRole: "PROJECTION_QUERY",
     dataBinding: "WORLD_SNAPSHOT_BOUND",
     resultSemantics: "WORLD_PROJECTION",

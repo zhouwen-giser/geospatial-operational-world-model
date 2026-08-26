@@ -1,3 +1,6 @@
+import semanticProfiles0 from "./semantic-profiles.geometry.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0 };
 import type {
   CapabilityDescriptor,
   CapabilityProviderManifest,
@@ -76,7 +79,7 @@ export function createGeometryProviderBridge(options: GeometryProviderBridgeOpti
   );
   const operations = GEOMETRY_OPERATION_IDS.map((operationId) => createOperation(operationId, upstream, options.attestation));
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId: PROVIDER_ID,
       providerVersion: PROVIDER_VERSION,
@@ -141,7 +144,7 @@ function createOperation(
   const scalar = operationId === "geometry.predicate" || operationId === "geometry.geometry-hash";
   const descriptor: CapabilityDescriptor = {
     operationId,
-    operationVersion: "1.0",
+    operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"),
     semanticRole: "FOUNDATION_PRIMITIVE",
     dataBinding: "CALLER_DATA_BOUND",
     resultSemantics: operationId === "geometry.validate"

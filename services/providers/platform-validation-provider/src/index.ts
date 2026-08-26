@@ -1,3 +1,6 @@
+import semanticProfiles0 from "./semantic-profiles.validation.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0 };
 import {
   getContractSchema,
   getContractSchemaHash,
@@ -47,7 +50,7 @@ const statusMapping = {
 export function createPlatformValidationProvider(authority: PlatformValidationAuthority, now: () => Date = () => new Date()): PlatformValidationProvider {
   const providerOperations = operations.map((operationId) => operation(operationId, authority, now));
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId: "gowm.platform-validation", providerVersion: "1.0.0", owner: "gowm-platform",
       implementationDigest: sha256({ provider: "gowm.platform-validation", version: "1.0.0", operations: providerOperations.map(({ descriptor }) => descriptor) }),
@@ -69,7 +72,7 @@ function operation(operationId: OperationId, authority: PlatformValidationAuthor
       : ["snapshot-validation-request", "snapshot-validation-result"];
   const inputSchemaUri = `urn:gowm:v0.6.1:${inputName}`, outputSchemaUri = `urn:gowm:v0.6.1:${outputName}`;
   const descriptor: CapabilityDescriptor = {
-    operationId, operationVersion: "1.0", semanticRole: "FOUNDATION_DATA_QUERY", dataBinding: "WORLD_SNAPSHOT_BOUND", resultSemantics: "VALIDATION",
+    operationId, operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"), semanticRole: "FOUNDATION_DATA_QUERY", dataBinding: "WORLD_SNAPSHOT_BOUND", resultSemantics: "VALIDATION",
     executionBindings: ["SYNC_HTTP", "VERSIONED_SQL_CONTRACT"], criticalPathPolicy: "REMOTE_ONLY", maturity: "STABLE",
     inputSchemaUri, inputSchemaHash: getContractSchemaHash(inputSchemaUri), outputSchemaUri, outputSchemaHash: getContractSchemaHash(outputSchemaUri),
     scopePolicy: "DATA_SCOPE_REQUIRED", execution: { mode: "SYNC", defaultTimeoutMs: 5_000, maximumTimeoutMs: 30_000, costClass: "LOW" },

@@ -1,0 +1,65 @@
+{
+  "reference.validate@1.0": {
+    "profileVersion": "1.0",
+    "domain": "PLATFORM",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "VALIDATES"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "VALIDATION",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "result.validate@1.0": {
+    "profileVersion": "1.0",
+    "domain": "PLATFORM",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "VALIDATES"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "VALIDATION",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "snapshot.get@1.0": {
+    "profileVersion": "1.0",
+    "domain": "PLATFORM",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "VALIDATION",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "snapshot.validate@1.0": {
+    "profileVersion": "1.0",
+    "domain": "PLATFORM",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "VALIDATES_SNAPSHOT"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "VALIDATION",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "CURRENT": "COMPLETED",
+        "STALE": "STALE",
+        "UNAVAILABLE": "INDETERMINATE",
+        "UNKNOWN": "INDETERMINATE"
+      }
+    }
+  }
+}

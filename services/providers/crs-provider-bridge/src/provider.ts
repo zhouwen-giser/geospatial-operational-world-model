@@ -1,3 +1,6 @@
+import semanticProfiles0 from "./semantic-profiles.crs.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0 };
 import type {
   CapabilityDescriptor,
   CapabilityProviderManifest
@@ -51,7 +54,7 @@ export function createCrsProviderBridge(options: CrsProviderBridgeOptions): CrsP
   const upstream = new CrsUpstreamClient(options.endpoint, options.attestation, options.fetch);
   const operations = OPERATION_IDS.map((operationId) => createOperation(operationId, upstream, options.attestation));
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId: "gowm.crs-normalization.bridge",
       providerVersion: "0.2.0",
@@ -111,7 +114,7 @@ function createOperation(
   const outputSchemaHash = sha256(schemas.output);
   const descriptor: CapabilityDescriptor = {
     operationId,
-    operationVersion: "1.0",
+    operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"),
     semanticRole: "FOUNDATION_PRIMITIVE",
     dataBinding: "CALLER_DATA_BOUND",
     resultSemantics: "TRANSFORMATION",

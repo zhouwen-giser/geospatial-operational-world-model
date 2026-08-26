@@ -1,0 +1,713 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.stas",
+  "operations": {
+    "stas.get-tracklet@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.get-tracklet-gaps@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.get-tracklet-quality@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.slice-tracklet@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.get-position-at@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.get-motion-summary@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.find-stop-intervals@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.find-region-interactions@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.find-tracklets-in-region@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": true,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.nearest-approach@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.find-proximity-intervals@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "PROXIMITY_INTERVAL"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.find-nearby-tracklets@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": true,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.find-successor-candidates@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": true,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.compare-pair-features@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    },
+    "stas.find-sensor-coverage@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/stas-provider/src/provider.ts",
+          "symbol": "createStasProvider"
+        },
+        {
+          "path": "services/stas/src/application/analysis-service.ts",
+          "symbol": "execute"
+        },
+        {
+          "path": "services/stas/src/repositories/tool-repository.ts",
+          "symbol": "execute"
+        }
+      ],
+      "tests": [
+        "services/stas/test/canonical-json.test.ts",
+        "services/stas/test/errors.test.ts",
+        "services/stas/test/evidence.test.ts"
+      ],
+      "bridgeLocks": [
+        "contracts/capabilities/stas/source-lock.json"
+      ],
+      "candidateOnly": false,
+      "rationale": "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+    }
+  }
+}

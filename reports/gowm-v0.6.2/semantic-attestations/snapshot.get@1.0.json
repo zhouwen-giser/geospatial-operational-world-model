@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.platform-validation",
+  "operationId": "snapshot.get",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:bc6db055099c71f6da6e9eec903da3e92ea6bd8fd186c5377d871c7336c04200",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/platform-validation-provider.json",
+      "sha256": "b2ac731f8c4c6f7e2ddb148681e8dd50416b2fd0dbd5850c41e882180dedf085"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/platform-validation-provider.json",
+      "sha256": "b2ac731f8c4c6f7e2ddb148681e8dd50416b2fd0dbd5850c41e882180dedf085"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/snapshot-get-request.schema.json",
+      "sha256": "8962702ca4cb691d061e816b9266c52f598c4faae164ce2cbc604863512077eb"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/data-snapshot-manifest.schema.json",
+      "sha256": "dbf73657d45c9b160d12fcef0a63d22213f0c7aebb68784b48ce969ddf8bb7da"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/platform-validation-provider/src/index.ts",
+      "sha256": "62fe167f3eaa5e3a87669f2bb4b07ebbf7fac45c645c53c80896929e91a79cdb",
+      "symbol": "createPlatformValidationProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/platform-validation-provider.test.ts",
+      "sha256": "cc24619b52266ff87ee7dbb3c84cb3f5d754969a17790b5e148d1da47e94c7b7"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

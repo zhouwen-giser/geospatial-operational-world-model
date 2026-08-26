@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas:output:1.0",
+  "title": "StasProviderAnalysisResult",
+  "$ref": "native.schema.json#/$defs/AnalysisResult"
+}

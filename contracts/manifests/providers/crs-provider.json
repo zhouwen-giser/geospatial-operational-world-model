@@ -1,5 +1,6 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.crs-normalization.bridge",
     "providerVersion": "0.2.0",
@@ -18,6 +19,18 @@
     {
       "operationId": "crs.check-source",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -71,6 +84,18 @@
     {
       "operationId": "crs.normalize.point",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -132,6 +157,18 @@
     {
       "operationId": "crs.normalize.points",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -185,6 +222,18 @@
     {
       "operationId": "crs.normalize.geometry",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -246,6 +295,18 @@
     {
       "operationId": "crs.normalize.feature",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -299,6 +360,18 @@
     {
       "operationId": "crs.normalize.feature-collection",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",

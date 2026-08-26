@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.h3.interactive.bridge",
+  "operationId": "h3.index.points",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:e10df26f33b3091082c4ead1b3fd7be019c3ca7d287d013bb88de8d2110b1219",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/h3-interactive-provider.json",
+      "sha256": "e6dd4bb36b125ef6756c9a4f6fd2a7209b27e0f3935e65df842f548760c1495b"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/h3-interactive-provider.json",
+      "sha256": "e6dd4bb36b125ef6756c9a4f6fd2a7209b27e0f3935e65df842f548760c1495b"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/h3.index.points/input-1.0.schema.json",
+      "sha256": "cb86dc85af159680f8c41c89cf9f232bf7e5d620737f054eb199af9f56a23584"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/h3.index.points/output-1.0.schema.json",
+      "sha256": "8ae18064ac0af2f0700fe74ad78a8dd5a1a3f44e10a9f046c85f58f4c00ddd39"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+      "sha256": "f007111ef01b14c67c5ae44bb44a28799ccc489039121982e386aa63bc9b18dd",
+      "symbol": "createH3InteractiveProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "validation/h3-bridge/h3-provider-bridges.test.ts",
+      "sha256": "7a210073782fd7f6b5c650a3bdc506283e664d03cf83386190293f2b3d116ff8"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/h3-toolkit-source-lock.json",
+      "sha256": "3bd364e6c6aab919346f4da157efc8329f82cefebdf78aa51317924cbf38c9d9"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning."
+  ]
+}

@@ -1,0 +1,319 @@
+{
+  "stas.compare-pair-features@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.find-nearby-tracklets@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.find-proximity-intervals@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "PROXIMITY_INTERVAL"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.find-region-interactions@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.find-sensor-coverage@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.find-stop-intervals@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.find-successor-candidates@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.find-tracklets-in-region@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.get-motion-summary@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.get-position-at@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.get-tracklet-gaps@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.get-tracklet-quality@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.get-tracklet@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.nearest-approach@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  },
+  "stas.slice-tracklet@1.0": {
+    "profileVersion": "1.0",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETE": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    }
+  }
+}

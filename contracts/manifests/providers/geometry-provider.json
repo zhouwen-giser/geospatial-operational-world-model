@@ -1,5 +1,6 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.geometry.bridge",
     "providerVersion": "0.2.0",
@@ -18,6 +19,18 @@
     {
       "operationId": "geometry.validate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "VALIDATION",
@@ -79,6 +92,18 @@
     {
       "operationId": "geometry.normalize",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -132,6 +157,18 @@
     {
       "operationId": "geometry.force-2d",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -185,6 +222,18 @@
     {
       "operationId": "geometry.remove-repeated-points",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -238,6 +287,18 @@
     {
       "operationId": "geometry.centroid",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -291,6 +352,18 @@
     {
       "operationId": "geometry.bounding-box",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -344,6 +417,18 @@
     {
       "operationId": "geometry.geometry-hash",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_ANALYSIS",
@@ -397,6 +482,18 @@
     {
       "operationId": "geometry.predicate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_ANALYSIS",
@@ -450,6 +547,18 @@
     {
       "operationId": "geometry.make-valid",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -511,6 +620,18 @@
     {
       "operationId": "geometry.buffer",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -564,6 +685,18 @@
     {
       "operationId": "geometry.intersection",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -617,6 +750,18 @@
     {
       "operationId": "geometry.union",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -670,6 +815,18 @@
     {
       "operationId": "geometry.difference",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -723,6 +880,18 @@
     {
       "operationId": "geometry.symmetric-difference",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -776,6 +945,18 @@
     {
       "operationId": "geometry.simplify",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -829,6 +1010,18 @@
     {
       "operationId": "geometry.simplify-preserve-topology",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -882,6 +1075,18 @@
     {
       "operationId": "geometry.convex-hull",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -935,6 +1140,18 @@
     {
       "operationId": "geometry.closest-point",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",
@@ -988,6 +1205,18 @@
     {
       "operationId": "geometry.shortest-line",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "TRANSFORMATION",

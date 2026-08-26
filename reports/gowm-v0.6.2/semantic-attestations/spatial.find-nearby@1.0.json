@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.spatial-analysis.bridge",
+  "operationId": "spatial.find-nearby",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:327200d1e021c30b21f9a334556a1d830b2e04009dda9fac3dfca84ec6db961f",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/spatial-provider.json",
+      "sha256": "0d3d8c631d146fd31df5a37b872f7a3b3e5975c37b987a3126f524609a456f6d"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/spatial-provider.json",
+      "sha256": "0d3d8c631d146fd31df5a37b872f7a3b3e5975c37b987a3126f524609a456f6d"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/spatial.find-nearby/input-1.0.schema.json",
+      "sha256": "18688d5c9f00efaca3e611cb2c0985d957c41b4cbe6a8075c92babc25b195cc2"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/spatial.find-nearby/output-1.0.schema.json",
+      "sha256": "4b43f4afff71980cddcd7185ed16e5b6701bcdcb607a2da0cc698b95969cd28d"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+      "sha256": "fb6dea19d0ddb74e6e23a962a7548faa16796f3dc8daa225243ba94e4887d5c5",
+      "symbol": "createSpatialProviderBridge"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/spatial-provider-bridge/src/repository.ts",
+      "sha256": "4b28215df12f8dcbee7b0f7bf76bc820644f77006d0162556a880d34bf51da08"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts",
+      "sha256": "30cdcad58f73906609d1d365672d0afb34935c56585888bdf32358d0ca98572a"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/spatial-provider-source-lock.json",
+      "sha256": "4c4e9cf94cec643c70db8acb17a162dd6f8fe3a55c79f90565b039b463367615"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "services/providers/spatial-provider-bridge/src/sql.ts",
+      "sha256": "41576cebc19217cabe2a4d7e18356831f8a430e83b15c01681bfef90e2795775",
+      "symbol": "buildSpatialQuery"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters."
+  ]
+}

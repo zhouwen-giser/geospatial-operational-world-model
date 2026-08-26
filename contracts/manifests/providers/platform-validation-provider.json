@@ -1,10 +1,11 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.platform-validation",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:dcde74ce46d645874623f951afa8aac1d6eefe6af2062ba2be3cdbc4f1957927",
+    "implementationDigest": "sha256:d664e9049f53b9db9206b098d3d928b90e1e3e4f6572ce1a26091446f3595da4",
     "sourceRef": "urn:gowm:source:in-tree:platform-validation-provider:1.0.0"
   },
   "endpoints": {
@@ -18,6 +19,20 @@
     {
       "operationId": "reference.validate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "VALIDATES"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "VALIDATION",
@@ -73,6 +88,20 @@
     {
       "operationId": "result.validate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "VALIDATES"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "VALIDATION",
@@ -128,6 +157,18 @@
     {
       "operationId": "snapshot.get",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "VALIDATION",
@@ -183,6 +224,29 @@
     {
       "operationId": "snapshot.validate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "VALIDATES_SNAPSHOT"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "CURRENT": "COMPLETED",
+            "STALE": "STALE",
+            "UNAVAILABLE": "INDETERMINATE",
+            "UNKNOWN": "INDETERMINATE"
+          }
+        }
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "VALIDATION",

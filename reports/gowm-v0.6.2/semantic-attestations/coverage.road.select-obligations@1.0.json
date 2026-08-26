@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.road-coverage-planning",
+  "operationId": "coverage.road.select-obligations",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:0abf357a6fb5f0902ecc1243492c67b1b10014b37328abd1d3005ac49214e78a",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/road-coverage-provider.json",
+      "sha256": "65ef0da52830b9fcda8a35b9e3cf7043b3ca8c756ae7f648387663bae373eed0"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/road-coverage-provider.json",
+      "sha256": "65ef0da52830b9fcda8a35b9e3cf7043b3ca8c756ae7f648387663bae373eed0"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6/road-coverage-request.schema.json",
+      "sha256": "01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6/coverage-obligation-set.schema.json",
+      "sha256": "f453949199ebdf7eea944c5eac3fbff95bfc52cdb0f8a33abecb38fe6448cbbe"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/road-coverage-provider/src/provider.ts",
+      "sha256": "641167d3f0eb74bb8854299407515096b15ac5b6e43c9cee786f4b89f98795a3",
+      "symbol": "createRoadCoverageProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/unit/coverage-provider-protocol.test.ts",
+      "sha256": "b20ea5f6381eced8a0cb0e432a858a728446f2b375c47505295083076104c5dc"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

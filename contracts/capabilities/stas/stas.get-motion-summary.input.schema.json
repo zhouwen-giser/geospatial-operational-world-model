@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.get-motion-summary:input:1.0",
+  "title": "StasStasNativeGetMotionSummaryInputV1Input",
+  "$ref": "native.schema.json#/$defs/get_motion_summary_input_v1"
+}

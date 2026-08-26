@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.operational-reality",
+  "operationId": "world-event.find-by-correlation",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:ff1343dd39a7582549e881b59e83aee7b4a6246c7c0d5941991e4175ed46e5a6",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/operational-reality-provider.json",
+      "sha256": "c080c0392c115e7cdf17b37c625271e9c15b5e08e68a151f77f48a3424224b4a"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/operational-reality-provider.json",
+      "sha256": "c080c0392c115e7cdf17b37c625271e9c15b5e08e68a151f77f48a3424224b4a"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/operational-query-request.schema.json",
+      "sha256": "8ad08440e1e6842255d0bbc15602bf15408f96b1c136722e488032e30eca6ec8"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/operational-event-timeline.schema.json",
+      "sha256": "c38abf0868b05bac0e62ef4a1741115837bd832c85d5f01e4c49bb204223c962"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/operational-reality-provider/src/provider.ts",
+      "sha256": "0e030bde687602f155f1ca06769d5927a85a0a53fd8669eeae396069b681526f",
+      "symbol": "createOperationalRealityProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/operational-reality-provider/src/repository.ts",
+      "sha256": "815555119f748824fd672fdd1d98235e0c6dbe0356ccbfa3392d45fe69040a53"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/operational-reality-provider.test.ts",
+      "sha256": "b1645694fa469b8bc9091f4287ceb5289ed7e62a426007eb8ebc5e2723770e41"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

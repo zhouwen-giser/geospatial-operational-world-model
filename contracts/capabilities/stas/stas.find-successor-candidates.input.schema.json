@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.find-successor-candidates:input:1.0",
+  "title": "StasStasNativeFindSuccessorCandidatesInputV1Input",
+  "$ref": "native.schema.json#/$defs/find_successor_candidates_input_v1"
+}

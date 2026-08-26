@@ -1,5 +1,6 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.dataset-catalog",
     "providerVersion": "1.0.0",
@@ -18,6 +19,38 @@
     {
       "operationId": "dataset.get",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -72,6 +105,28 @@
     {
       "operationId": "dataset.list",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -126,6 +181,38 @@
     {
       "operationId": "layer.get",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -180,6 +267,28 @@
     {
       "operationId": "layer.list",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -234,6 +343,28 @@
     {
       "operationId": "layer.find-features",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -288,6 +419,38 @@
     {
       "operationId": "feature.get",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -342,6 +505,28 @@
     {
       "operationId": "catalog.get",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -396,6 +581,20 @@
     {
       "operationId": "catalog.search",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "DISCOVERS_DATA_PRODUCT"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -450,6 +649,28 @@
     {
       "operationId": "catalog.list-versions",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -504,6 +725,28 @@
     {
       "operationId": "catalog.describe-schema",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -558,6 +801,28 @@
     {
       "operationId": "catalog.get-lineage",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -612,6 +877,28 @@
     {
       "operationId": "catalog.get-quality",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -666,6 +953,28 @@
     {
       "operationId": "catalog.get-capabilities",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "CATALOG",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "CATALOG",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "DATASET_VERSION_BOUND",
       "resultSemantics": "DATA_QUERY",

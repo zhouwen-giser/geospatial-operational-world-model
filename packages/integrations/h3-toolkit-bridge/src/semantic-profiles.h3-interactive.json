@@ -1,0 +1,104 @@
+{
+  "h3.cells.to-geojson@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "h3.geometry.cover@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "CANDIDATE_COVER"
+    ],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE",
+    "exactVerification": {
+      "operationId": "spatial.find-intersections",
+      "operationVersion": "1.0"
+    }
+  },
+  "h3.hierarchy.children@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "h3.hierarchy.compact@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "h3.hierarchy.parent@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "h3.hierarchy.uncompact@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "h3.index.points@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "h3.neighborhood.disk@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "CANDIDATE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  }
+}

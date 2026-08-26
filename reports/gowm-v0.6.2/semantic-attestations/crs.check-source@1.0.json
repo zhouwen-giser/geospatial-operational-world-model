@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.crs-normalization.bridge",
+  "operationId": "crs.check-source",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:0d8cf3ce49f44c07a948401f873409525974eb296f8c954fdedd69074adff4bf",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/crs-provider.json",
+      "sha256": "4c0dc2f409c8b1ebd2d82e867ae8b07048613a7b205948f57dbb4b0b83d2f6f9"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/crs-provider.json",
+      "sha256": "4c0dc2f409c8b1ebd2d82e867ae8b07048613a7b205948f57dbb4b0b83d2f6f9"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/crs.check-source/input-1.0.schema.json",
+      "sha256": "29ae59b90a8725af03a653ad6e1bf5fc3a99758d8ebee225f6716722c2753c21"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/crs.check-source/output-1.0.schema.json",
+      "sha256": "deb3812552ec3077e0f7ade395d3feb6638f715981c43ad71f78c0d5ee702162"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/crs-provider-bridge/src/provider.ts",
+      "sha256": "a6bd167f5e94ea940ca13501c20367eef8649c2bd4f7782d127d4985f5fba50d",
+      "symbol": "createCrsProviderBridge"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/provider-gateway.test.ts",
+      "sha256": "6220c5e65148bd3729899b045b76e05e2b3f6ecb47ba6675a040cd8752eb9e84"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/crs-provider-source-lock.json",
+      "sha256": "004311a4f40b5a6cb44ea82e955ab9ab9eb342586ddf7dcd956f096e046170d3"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

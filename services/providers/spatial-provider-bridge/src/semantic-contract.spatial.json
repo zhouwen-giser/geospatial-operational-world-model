@@ -1,0 +1,532 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.spatial-analysis.bridge",
+  "operations": {
+    "spatial.find-nearby@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "NEAR"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "sqlProbe": {
+        "input": {
+          "location": {
+            "type": "Point",
+            "coordinates": [
+              116.4,
+              39.9
+            ]
+          },
+          "radiusM": 100
+        },
+        "functions": [
+          "st_dwithin",
+          "st_distance"
+        ]
+      },
+      "distance": {
+        "unit": "METERS",
+        "model": "WGS84_GEOGRAPHY_SPHEROID"
+      }
+    },
+    "spatial.find-nearest@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "NEAR"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "sqlProbe": {
+        "input": {
+          "location": {
+            "type": "Point",
+            "coordinates": [
+              116.4,
+              39.9
+            ]
+          },
+          "maxDistanceM": 100
+        },
+        "functions": [
+          "st_distance"
+        ]
+      },
+      "distance": {
+        "unit": "METERS",
+        "model": "WGS84_GEOGRAPHY_SPHEROID"
+      }
+    },
+    "spatial.find-in-area@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "INSIDE"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "sqlProbe": {
+        "input": {
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  116,
+                  39
+                ],
+                [
+                  117,
+                  39
+                ],
+                [
+                  117,
+                  40
+                ],
+                [
+                  116,
+                  39
+                ]
+              ]
+            ]
+          }
+        },
+        "functions": [
+          "st_covers"
+        ]
+      }
+    },
+    "spatial.find-intersections@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "INTERSECTS"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "sqlProbe": {
+        "input": {
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  116,
+                  39
+                ],
+                [
+                  117,
+                  39
+                ],
+                [
+                  117,
+                  40
+                ],
+                [
+                  116,
+                  39
+                ]
+              ]
+            ]
+          }
+        },
+        "functions": [
+          "st_intersects"
+        ]
+      }
+    },
+    "spatial.find-near-route@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "NEAR"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "sqlProbe": {
+        "input": {
+          "route": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                116,
+                39
+              ],
+              [
+                117,
+                40
+              ]
+            ]
+          },
+          "distanceM": 100
+        },
+        "functions": [
+          "st_dwithin"
+        ]
+      },
+      "distance": {
+        "unit": "METERS",
+        "model": "WGS84_GEOGRAPHY_SPHEROID"
+      }
+    },
+    "spatial.find-containing-area@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "CONTAINS"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "sqlProbe": {
+        "input": {
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              116.4,
+              39.9
+            ]
+          }
+        },
+        "functions": [
+          "st_covers"
+        ]
+      }
+    },
+    "spatial.count-in-area@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "sqlProbe": {
+        "input": {
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  116,
+                  39
+                ],
+                [
+                  117,
+                  39
+                ],
+                [
+                  117,
+                  40
+                ],
+                [
+                  116,
+                  39
+                ]
+              ]
+            ]
+          }
+        },
+        "functions": [
+          "st_covers"
+        ]
+      }
+    },
+    "spatial.summarize-area@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "sqlProbe": {
+        "input": {
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  116,
+                  39
+                ],
+                [
+                  117,
+                  39
+                ],
+                [
+                  117,
+                  40
+                ],
+                [
+                  116,
+                  39
+                ]
+              ]
+            ]
+          },
+          "groupBy": "objectType"
+        },
+        "functions": [
+          "st_covers"
+        ]
+      }
+    },
+    "spatial.join@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ]
+    },
+    "spatial.aggregate@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+          "symbol": "createSpatialProviderBridge"
+        },
+        {
+          "path": "services/providers/spatial-provider-bridge/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ]
+    }
+  }
+}

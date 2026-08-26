@@ -1,0 +1,126 @@
+[
+  {
+    "providerId": "gowm.crs-normalization.bridge",
+    "manifestPath": "contracts/manifests/providers/crs-provider.json",
+    "aliases": [],
+    "declarationPath": "services/providers/crs-provider-bridge/src/semantic-contract.crs.json",
+    "generatedPath": "services/providers/crs-provider-bridge/src/semantic-profiles.crs.json"
+  },
+  {
+    "providerId": "gowm.geometry.bridge",
+    "manifestPath": "contracts/manifests/providers/geometry-provider.json",
+    "aliases": [],
+    "declarationPath": "services/providers/geometry-provider-bridge/src/semantic-contract.geometry.json",
+    "generatedPath": "services/providers/geometry-provider-bridge/src/semantic-profiles.geometry.json"
+  },
+  {
+    "providerId": "gowm.h3.interactive.bridge",
+    "manifestPath": "contracts/manifests/providers/h3-interactive-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/h3-interactive-current.json"
+    ],
+    "declarationPath": "packages/integrations/h3-toolkit-bridge/src/semantic-contract.h3-interactive.json",
+    "generatedPath": "packages/integrations/h3-toolkit-bridge/src/semantic-profiles.h3-interactive.json"
+  },
+  {
+    "providerId": "gowm.h3.analysis.bridge",
+    "manifestPath": "contracts/manifests/providers/h3-analysis-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/h3-current.json"
+    ],
+    "declarationPath": "packages/integrations/h3-toolkit-bridge/src/semantic-contract.h3-analysis.json",
+    "generatedPath": "packages/integrations/h3-toolkit-bridge/src/semantic-profiles.h3-analysis.json"
+  },
+  {
+    "providerId": "gowm.spatial-analysis.bridge",
+    "manifestPath": "contracts/manifests/providers/spatial-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/spatial-current.json"
+    ],
+    "declarationPath": "services/providers/spatial-provider-bridge/src/semantic-contract.spatial.json",
+    "generatedPath": "services/providers/spatial-provider-bridge/src/semantic-profiles.spatial.json"
+  },
+  {
+    "providerId": "gowm.situation.h3",
+    "manifestPath": "contracts/manifests/providers/gowm-situation-provider.json",
+    "aliases": [],
+    "declarationPath": "services/providers/gowm-situation-provider/src/semantic-contract.situation.json",
+    "generatedPath": "services/providers/gowm-situation-provider/src/semantic-profiles.situation.json"
+  },
+  {
+    "providerId": "gowm.reference-catalog",
+    "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/reference-current.json"
+    ],
+    "declarationPath": "services/providers/grounding-catalog-provider/src/semantic-contract.reference.json",
+    "generatedPath": "services/providers/grounding-catalog-provider/src/semantic-profiles.reference.json"
+  },
+  {
+    "providerId": "gowm.dataset-catalog",
+    "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/dataset-catalog-current.json"
+    ],
+    "declarationPath": "services/providers/grounding-catalog-provider/src/semantic-contract.dataset.json",
+    "generatedPath": "services/providers/grounding-catalog-provider/src/semantic-profiles.dataset.json"
+  },
+  {
+    "providerId": "gowm.world-evidence",
+    "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/world-evidence-current.json"
+    ],
+    "declarationPath": "services/providers/grounding-catalog-provider/src/semantic-contract.evidence.json",
+    "generatedPath": "services/providers/grounding-catalog-provider/src/semantic-profiles.evidence.json"
+  },
+  {
+    "providerId": "gowm.operational-reality",
+    "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
+    "aliases": [],
+    "declarationPath": "services/providers/operational-reality-provider/src/semantic-contract.operational.json",
+    "generatedPath": "services/providers/operational-reality-provider/src/semantic-profiles.operational.json"
+  },
+  {
+    "providerId": "gowm.platform-validation",
+    "manifestPath": "contracts/manifests/providers/platform-validation-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/platform-validation-current.json"
+    ],
+    "declarationPath": "services/providers/platform-validation-provider/src/semantic-contract.validation.json",
+    "generatedPath": "services/providers/platform-validation-provider/src/semantic-profiles.validation.json"
+  },
+  {
+    "providerId": "gowm.network",
+    "manifestPath": "contracts/manifests/providers/network-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/network-current.json"
+    ],
+    "declarationPath": "services/providers/network-provider/src/semantic-contract.network.json",
+    "generatedPath": "services/providers/network-provider/src/semantic-profiles.network.json"
+  },
+  {
+    "providerId": "gowm.route-planning",
+    "manifestPath": "contracts/manifests/providers/route-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/route-current.json"
+    ],
+    "declarationPath": "services/providers/route-planning-provider/src/semantic-contract.route.json",
+    "generatedPath": "services/providers/route-planning-provider/src/semantic-profiles.route.json"
+  },
+  {
+    "providerId": "gowm.road-coverage-planning",
+    "manifestPath": "contracts/manifests/providers/road-coverage-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/road-coverage-current.json"
+    ],
+    "declarationPath": "services/providers/road-coverage-provider/src/semantic-contract.coverage.json",
+    "generatedPath": "services/providers/road-coverage-provider/src/semantic-profiles.coverage.json"
+  },
+  {
+    "providerId": "gowm.stas",
+    "manifestPath": "contracts/manifests/providers/stas-provider.json",
+    "declarationPath": "services/providers/stas-provider/src/semantic-contract.stas.json",
+    "generatedPath": "services/providers/stas-provider/src/semantic-profiles.stas.json"
+  }
+]

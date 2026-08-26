@@ -1,3 +1,6 @@
+import semanticProfiles0 from "./semantic-profiles.coverage.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0 };
 import { getContractSchema, getContractSchemaHash, type CapabilityDescriptor, type CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { createProviderRuntime, sha256, type ProviderOperation, type ProviderRuntime } from "../../../../packages/platform/provider-sdk/src/index.js";
 import type { RoadCoverageEngine } from "./engine.js";
@@ -82,7 +85,7 @@ export interface RoadCoverageProvider {
 export function createRoadCoverageProvider(engine: RoadCoverageEngine): RoadCoverageProvider {
   const operations = ROAD_COVERAGE_OPERATION_LOCKS.map((lock) => operation(lock, engine));
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId: "gowm.road-coverage-planning",
       providerVersion: "1.0.0",
@@ -130,7 +133,7 @@ function operation(lock: OperationLock, engine: RoadCoverageEngine): ProviderOpe
   const asynchronous = lock.executionMode !== "SYNC";
   const descriptor: CapabilityDescriptor = {
     operationId: lock.operationId,
-    operationVersion: "1.0",
+    operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, lock.operationId, "1.0"),
     semanticRole: "DOMAIN_ANALYSIS",
     dataBinding: "WORLD_SNAPSHOT_BOUND",
     resultSemantics: lock.resultSemantics,

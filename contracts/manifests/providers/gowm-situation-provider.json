@@ -1,5 +1,6 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.situation.h3",
     "providerVersion": "0.2.0",
@@ -18,10 +19,24 @@
     {
       "operationId": "gowm.situation.h3.get-cell",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "PROJECTION",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "PROJECTION_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "WORLD_PROJECTION",
-      "executionBindings": ["SYNC_HTTP"],
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
       "criticalPathPolicy": "REMOTE_ONLY",
       "maturity": "PREVIEW",
       "inputSchemaUri": "urn:gowm:capability:gowm.situation.h3.get-cell:input:1.0",
@@ -29,54 +44,88 @@
       "outputSchemaUri": "urn:gowm:capability:gowm.situation.h3.get-cell:output:1.0",
       "outputSchemaHash": "sha256:b1fe5f98c108a31515dfef914b51d44deef380217a0ab34d0123a75fe91bdadf",
       "scopePolicy": "DATA_SCOPE_REQUIRED",
-      "execution": { "mode": "SYNC", "defaultTimeoutMs": 5000, "maximumTimeoutMs": 15000, "costClass": "LOW" },
-      "limits": { "maximumInputBytes": 1048576, "maximumOutputBytes": 16777216, "maximumRows": 1000, "maximumCells": 1000 },
-      "snapshotPolicy": { "dataSnapshot": "REQUIRED", "computeSnapshot": "REQUIRED" },
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 15000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCells": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
       "ports": {
-        "inputs": [{
-          "name": "request",
-          "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-cell:input:1.0",
-          "schemaHash": "sha256:7390ec83b3708c8e6c19bb530cca8900e4a462e23a149f8d457052f295665b60",
-          "valueKind": "H3_CELL_SET",
-          "unitSemantics": "DISCRETE"
-        }],
-        "outputs": [{
-          "name": "result",
-          "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-cell:output:1.0",
-          "schemaHash": "sha256:b1fe5f98c108a31515dfef914b51d44deef380217a0ab34d0123a75fe91bdadf",
-          "valueKind": "ANY",
-          "unitSemantics": "DISCRETE"
-        }, {
-          "name": "references",
-          "path": "/references",
-          "schemaUri": "urn:gowm:v0.2:value:array",
-          "schemaHash": "sha256:8e1e4dd66e9483d8341c51dc5ec424d8e6510ae35cdbc53040d0bab497459945",
-          "valueKind": "ROW_SET",
-          "unitSemantics": "DISCRETE"
-        }, {
-          "name": "candidateOnly",
-          "path": "/candidateOnly",
-          "schemaUri": "urn:gowm:v0.2:value:boolean",
-          "schemaHash": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
-          "valueKind": "SCALAR",
-          "unitSemantics": "DIMENSIONLESS"
-        }, {
-          "name": "exactVerificationRequired",
-          "path": "/exactVerificationRequired",
-          "schemaUri": "urn:gowm:v0.2:value:boolean",
-          "schemaHash": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
-          "valueKind": "SCALAR",
-          "unitSemantics": "DIMENSIONLESS"
-        }]
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-cell:input:1.0",
+            "schemaHash": "sha256:7390ec83b3708c8e6c19bb530cca8900e4a462e23a149f8d457052f295665b60",
+            "valueKind": "H3_CELL_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-cell:output:1.0",
+            "schemaHash": "sha256:b1fe5f98c108a31515dfef914b51d44deef380217a0ab34d0123a75fe91bdadf",
+            "valueKind": "ANY",
+            "unitSemantics": "DISCRETE"
+          },
+          {
+            "name": "references",
+            "path": "/references",
+            "schemaUri": "urn:gowm:v0.2:value:array",
+            "schemaHash": "sha256:8e1e4dd66e9483d8341c51dc5ec424d8e6510ae35cdbc53040d0bab497459945",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          },
+          {
+            "name": "candidateOnly",
+            "path": "/candidateOnly",
+            "schemaUri": "urn:gowm:v0.2:value:boolean",
+            "schemaHash": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
+            "valueKind": "SCALAR",
+            "unitSemantics": "DIMENSIONLESS"
+          },
+          {
+            "name": "exactVerificationRequired",
+            "path": "/exactVerificationRequired",
+            "schemaUri": "urn:gowm:v0.2:value:boolean",
+            "schemaHash": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
+            "valueKind": "SCALAR",
+            "unitSemantics": "DIMENSIONLESS"
+          }
+        ]
       }
     },
     {
       "operationId": "gowm.situation.h3.get-area",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "PROJECTION",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "PROJECTION_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "WORLD_PROJECTION",
-      "executionBindings": ["SYNC_HTTP"],
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
       "criticalPathPolicy": "REMOTE_ONLY",
       "maturity": "PREVIEW",
       "inputSchemaUri": "urn:gowm:capability:gowm.situation.h3.get-area:input:1.0",
@@ -84,33 +133,64 @@
       "outputSchemaUri": "urn:gowm:capability:gowm.situation.h3.get-area:output:1.0",
       "outputSchemaHash": "sha256:a63d59615ee999418b494f310f80240fa9667c62b0797efd354859a0dfda7ec5",
       "scopePolicy": "DATA_SCOPE_REQUIRED",
-      "execution": { "mode": "SYNC", "defaultTimeoutMs": 5000, "maximumTimeoutMs": 15000, "costClass": "MEDIUM" },
-      "limits": { "maximumInputBytes": 1048576, "maximumOutputBytes": 16777216, "maximumRows": 100000, "maximumCells": 100000 },
-      "snapshotPolicy": { "dataSnapshot": "REQUIRED", "computeSnapshot": "REQUIRED" },
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 15000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCells": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
       "ports": {
-        "inputs": [{
-          "name": "request",
-          "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-area:input:1.0",
-          "schemaHash": "sha256:81aa8a865c5c0a9b8525746985b4f59ff7b412b32330796ce7474a0ca2123fc1",
-          "valueKind": "ANY",
-          "unitSemantics": "DISCRETE"
-        }],
-        "outputs": [{
-          "name": "result",
-          "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-area:output:1.0",
-          "schemaHash": "sha256:a63d59615ee999418b494f310f80240fa9667c62b0797efd354859a0dfda7ec5",
-          "valueKind": "ROW_SET",
-          "unitSemantics": "DISCRETE"
-        }]
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-area:input:1.0",
+            "schemaHash": "sha256:81aa8a865c5c0a9b8525746985b4f59ff7b412b32330796ce7474a0ca2123fc1",
+            "valueKind": "ANY",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-area:output:1.0",
+            "schemaHash": "sha256:a63d59615ee999418b494f310f80240fa9667c62b0797efd354859a0dfda7ec5",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
       }
     },
     {
       "operationId": "gowm.situation.h3.get-hotspots",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "PROJECTION",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "PROJECTION_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "WORLD_PROJECTION",
-      "executionBindings": ["SYNC_HTTP"],
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
       "criticalPathPolicy": "REMOTE_ONLY",
       "maturity": "PREVIEW",
       "inputSchemaUri": "urn:gowm:capability:gowm.situation.h3.get-hotspots:input:1.0",
@@ -118,33 +198,64 @@
       "outputSchemaUri": "urn:gowm:capability:gowm.situation.h3.get-hotspots:output:1.0",
       "outputSchemaHash": "sha256:eed2fca50de2595782f47980a40254e83870bc307251ea8cdf122f4c1d256c9a",
       "scopePolicy": "DATA_SCOPE_REQUIRED",
-      "execution": { "mode": "SYNC", "defaultTimeoutMs": 5000, "maximumTimeoutMs": 15000, "costClass": "LOW" },
-      "limits": { "maximumInputBytes": 1048576, "maximumOutputBytes": 16777216, "maximumRows": 1000, "maximumCells": 1000 },
-      "snapshotPolicy": { "dataSnapshot": "REQUIRED", "computeSnapshot": "REQUIRED" },
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 15000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCells": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
       "ports": {
-        "inputs": [{
-          "name": "request",
-          "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-hotspots:input:1.0",
-          "schemaHash": "sha256:2879745be01b08e5cd333cc393a15403afd3da914c06f0640a8472b6c8282cab",
-          "valueKind": "ANY",
-          "unitSemantics": "DISCRETE"
-        }],
-        "outputs": [{
-          "name": "result",
-          "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-hotspots:output:1.0",
-          "schemaHash": "sha256:eed2fca50de2595782f47980a40254e83870bc307251ea8cdf122f4c1d256c9a",
-          "valueKind": "ROW_SET",
-          "unitSemantics": "DISCRETE"
-        }]
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-hotspots:input:1.0",
+            "schemaHash": "sha256:2879745be01b08e5cd333cc393a15403afd3da914c06f0640a8472b6c8282cab",
+            "valueKind": "ANY",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-hotspots:output:1.0",
+            "schemaHash": "sha256:eed2fca50de2595782f47980a40254e83870bc307251ea8cdf122f4c1d256c9a",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
       }
     },
     {
       "operationId": "gowm.situation.h3.get-coverage-gaps",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "PROJECTION",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
       "semanticRole": "PROJECTION_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "WORLD_PROJECTION",
-      "executionBindings": ["SYNC_HTTP"],
+      "executionBindings": [
+        "SYNC_HTTP"
+      ],
       "criticalPathPolicy": "REMOTE_ONLY",
       "maturity": "PREVIEW",
       "inputSchemaUri": "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:input:1.0",
@@ -152,24 +263,41 @@
       "outputSchemaUri": "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:output:1.0",
       "outputSchemaHash": "sha256:19f0564e08036eb3609faff4473ad52445e98b9cff25287a04a98058366be88b",
       "scopePolicy": "DATA_SCOPE_REQUIRED",
-      "execution": { "mode": "SYNC", "defaultTimeoutMs": 5000, "maximumTimeoutMs": 15000, "costClass": "LOW" },
-      "limits": { "maximumInputBytes": 1048576, "maximumOutputBytes": 16777216, "maximumRows": 1000, "maximumCells": 1000 },
-      "snapshotPolicy": { "dataSnapshot": "REQUIRED", "computeSnapshot": "REQUIRED" },
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 15000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCells": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
       "ports": {
-        "inputs": [{
-          "name": "request",
-          "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:input:1.0",
-          "schemaHash": "sha256:e2a2aae9b334cbd9df824de1f4fdf681187f00549bdda9a9963397c5b2d65d49",
-          "valueKind": "ANY",
-          "unitSemantics": "DISCRETE"
-        }],
-        "outputs": [{
-          "name": "result",
-          "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:output:1.0",
-          "schemaHash": "sha256:19f0564e08036eb3609faff4473ad52445e98b9cff25287a04a98058366be88b",
-          "valueKind": "ROW_SET",
-          "unitSemantics": "DISCRETE"
-        }]
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:input:1.0",
+            "schemaHash": "sha256:e2a2aae9b334cbd9df824de1f4fdf681187f00549bdda9a9963397c5b2d65d49",
+            "valueKind": "ANY",
+            "unitSemantics": "DISCRETE"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:output:1.0",
+            "schemaHash": "sha256:19f0564e08036eb3609faff4473ad52445e98b9cff25287a04a98058366be88b",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "DISCRETE"
+          }
+        ]
       }
     }
   ]

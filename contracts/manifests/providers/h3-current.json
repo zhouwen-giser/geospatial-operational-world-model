@@ -1,5 +1,6 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.h3.analysis.bridge",
     "providerVersion": "0.2.0",
@@ -19,6 +20,18 @@
     {
       "operationId": "h3.analytics.aggregate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "GENERIC_ANALYSIS",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_ANALYSIS",
@@ -75,6 +88,18 @@
     {
       "operationId": "h3.analytics.coverage",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "GENERIC_ANALYSIS",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_ANALYSIS",
@@ -131,6 +156,18 @@
     {
       "operationId": "h3.analytics.flow",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "GENERIC_ANALYSIS",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_ANALYSIS",

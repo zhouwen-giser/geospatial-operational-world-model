@@ -1,0 +1,53 @@
+{
+  "configVersion": "1.0",
+  "providers": [
+    {
+      "providerId": "gowm.network",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:4d7bdd4fd84fe922734954c1cf12c76e3073e8b3fb360456d8785327e71eb5f6",
+      "manifestHash": "sha256:8d109cb30a3eef679737fd874eb15120ff0c16a6275f76b366545d4fadfb6771",
+      "manifestPath": "contracts/manifests/providers/network-provider.json",
+      "endpoint": "http://network-provider:8096",
+      "approvalId": "world-platform-network-v0.6.2",
+      "approvedBy": "gowm-controlled-contract-build",
+      "transportTokenEnv": "NETWORK_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.route-planning",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:27d8dfc4be2aa6bb39a9675e917dd2f5aaa5b64eddc115a69fc568b2c3a5412d",
+      "manifestHash": "sha256:e564d48d2dd31cedc8deb10e361af62caeeb9edcd744d1b2e5b51e07b15738c8",
+      "manifestPath": "contracts/manifests/providers/route-provider.json",
+      "endpoint": "http://route-planning-provider:8097",
+      "approvalId": "world-platform-route-v0.6.2",
+      "approvedBy": "gowm-controlled-contract-build",
+      "transportTokenEnv": "ROUTE_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.road-coverage-planning",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:bd44b6c87857d394f05d3b9ba2fafb4926cf094df34694d1beb409fd27bc276c",
+      "manifestHash": "sha256:4aa6f023b59dec9186c5e26f3e77703fc4ef6f26f042aaa39edeb67459a2683c",
+      "manifestPath": "contracts/manifests/providers/road-coverage-provider.json",
+      "endpoint": "http://road-coverage-provider:8098",
+      "approvalId": "world-platform-road-coverage-v0.6.2",
+      "approvedBy": "gowm-controlled-contract-build",
+      "transportTokenEnv": "COVERAGE_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.stas",
+      "providerVersion": "0.6.2",
+      "implementationDigest": "sha256:b2a7e1c5cc7ba81485b3536d10d18d4b36e841b1873bb48cae8e4e3c4044d4b9",
+      "manifestHash": "sha256:087d9f7a574388702aa79c78e7e3de145d77641d3c54f823b1b2bd8016e93880",
+      "manifestPath": "contracts/manifests/providers/stas-provider.json",
+      "endpoint": "http://stas-provider:8099",
+      "approvalId": "world-platform-stas-v0.6.2",
+      "approvedBy": "gowm-controlled-contract-build",
+      "transportTokenEnv": "STAS_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    }
+  ]
+}

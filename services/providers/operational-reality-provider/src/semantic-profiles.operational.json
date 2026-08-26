@@ -1,0 +1,268 @@
+{
+  "correlation.resolve@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [
+      "CORRELATES_WITH"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "observability.evaluate@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "FRESH": "COMPLETED",
+        "INDETERMINATE": "INDETERMINATE",
+        "NO_DATA": "NO_DATA",
+        "OBSERVATION_GAP": "NO_DATA",
+        "SOURCE_UNHEALTHY": "INDETERMINATE",
+        "STALE": "STALE"
+      }
+    }
+  },
+  "operational-task.find-by-correlation@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [
+      "CORRELATES_WITH"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "PROJECTION",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "operational-task.find@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "PROJECTION",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "operational-task.get-timeline@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "PROJECTION",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "operational-task.get@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "PROJECTION",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "predicate.evaluate@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "EVALUATES_PREDICATE"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "CONFLICTING": "INDETERMINATE",
+        "INDETERMINATE": "INDETERMINATE",
+        "NOT_SUPPORTED": "INDETERMINATE",
+        "NO_DATA": "NO_DATA",
+        "PARTIALLY_SUPPORTED": "PARTIAL",
+        "SUPPORTED": "COMPLETED"
+      }
+    }
+  },
+  "world-event.find-by-correlation@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [
+      "CORRELATES_WITH"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "PROJECTION",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  }
+}

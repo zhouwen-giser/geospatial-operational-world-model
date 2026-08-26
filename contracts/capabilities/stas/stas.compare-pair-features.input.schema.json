@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.compare-pair-features:input:1.0",
+  "title": "StasStasNativeComparePairFeaturesInputV1Input",
+  "$ref": "native.schema.json#/$defs/compare_pair_features_input_v1"
+}

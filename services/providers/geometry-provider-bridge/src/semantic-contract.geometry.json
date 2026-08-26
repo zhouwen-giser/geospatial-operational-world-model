@@ -1,0 +1,519 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.geometry.bridge",
+  "operations": {
+    "geometry.validate@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.normalize@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.force-2d@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.remove-repeated-points@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.centroid@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.bounding-box@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.geometry-hash@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.predicate@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.make-valid@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.buffer@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.intersection@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.union@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.difference@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.symmetric-difference@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.simplify@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.simplify-preserve-topology@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.convex-hull@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.closest-point@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    },
+    "geometry.shortest-line@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+          "symbol": "createGeometryProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/geometry-provider-bridge.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/geometry-provider-source-lock.json"
+      ]
+    }
+  }
+}

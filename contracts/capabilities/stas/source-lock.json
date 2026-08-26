@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.0",
+  "sourceKind": "IN_TREE_NATIVE_CONTRACT",
+  "source": "services/stas/openapi/openapi.yaml",
+  "sha256": "f793fcc639d4fa9d6c7f1e957f185be8fe3ef30ccadf1c704f6891d01bfabf20",
+  "refinements": "Native executable Zod validation remains mandatory in the adapter."
+}

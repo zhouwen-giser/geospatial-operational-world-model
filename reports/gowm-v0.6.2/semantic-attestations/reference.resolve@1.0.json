@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.reference-catalog",
+  "operationId": "reference.resolve",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:2345427b162f36cc0792116f20cd337f1e95e0e8284b000ab556b876c45328ad",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/reference-catalog-provider.json",
+      "sha256": "3af2dd9a738108a9b2c0b01b493c0e0084d84f35866f12fea144883a54338f15"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/reference-catalog-provider.json",
+      "sha256": "3af2dd9a738108a9b2c0b01b493c0e0084d84f35866f12fea144883a54338f15"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/reference-resolve-request.schema.json",
+      "sha256": "16d73c457ce186f12557fe52bbebca65e757754ed6d00671faad7e3c65b46a0a"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/reference-resolve-result.schema.json",
+      "sha256": "d8cfb0673f90abd2c88b60522b3df0158f8035f69daf9b760a649566acf27749"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/provider.ts",
+      "sha256": "08354fc03464bb12d85415812dea67bebce2a74fd9a2990ffe66bd2b1c50a77c",
+      "symbol": "createGroundingCatalogProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/repository.ts",
+      "sha256": "7bada2d73b10b68ff1dce79dffaf68bf553dd8b243311bff3c97a31c573820cf"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/grounding-catalog-provider.test.ts",
+      "sha256": "d2062a82bfec43c8f9aa9af645750dd2ea618e0aa3ad8e1eebbb0a434da3f427"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

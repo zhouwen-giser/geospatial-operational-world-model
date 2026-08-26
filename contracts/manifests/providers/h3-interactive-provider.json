@@ -1,5 +1,6 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.h3.interactive.bridge",
     "providerVersion": "0.2.0",
@@ -19,6 +20,18 @@
     {
       "operationId": "h3.index.points",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_INDEX",
@@ -75,6 +88,24 @@
     {
       "operationId": "h3.geometry.cover",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "CANDIDATE_COVER"
+        ],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE",
+        "exactVerification": {
+          "operationId": "spatial.find-intersections",
+          "operationVersion": "1.0"
+        }
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_INDEX",
@@ -155,6 +186,18 @@
     {
       "operationId": "h3.cells.to-geojson",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_INDEX",
@@ -211,6 +254,18 @@
     {
       "operationId": "h3.neighborhood.disk",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_INDEX",
@@ -267,6 +322,18 @@
     {
       "operationId": "h3.hierarchy.parent",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_INDEX",
@@ -323,6 +390,18 @@
     {
       "operationId": "h3.hierarchy.children",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_INDEX",
@@ -379,6 +458,18 @@
     {
       "operationId": "h3.hierarchy.compact",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_INDEX",
@@ -435,6 +526,18 @@
     {
       "operationId": "h3.hierarchy.uncompact",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
       "semanticRole": "FOUNDATION_PRIMITIVE",
       "dataBinding": "CALLER_DATA_BOUND",
       "resultSemantics": "DERIVED_INDEX",

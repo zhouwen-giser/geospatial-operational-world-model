@@ -1,0 +1,149 @@
+{
+  "spatial.aggregate@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "spatial.count-in-area@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "AGGREGATED",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "spatial.find-containing-area@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "CONTAINS"
+    ],
+    "spatialSemantics": "EXACT",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed."
+    ]
+  },
+  "spatial.find-in-area@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "INSIDE"
+    ],
+    "spatialSemantics": "EXACT",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed."
+    ]
+  },
+  "spatial.find-intersections@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "INTERSECTS"
+    ],
+    "spatialSemantics": "EXACT",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "spatial.find-near-route@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "NEAR"
+    ],
+    "spatialSemantics": "EXACT",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+    ]
+  },
+  "spatial.find-nearby@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "NEAR"
+    ],
+    "spatialSemantics": "EXACT",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+    ]
+  },
+  "spatial.find-nearest@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [
+      "NEAR"
+    ],
+    "spatialSemantics": "EXACT",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+    ]
+  },
+  "spatial.join@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "spatial.summarize-area@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "AGGREGATED",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  }
+}

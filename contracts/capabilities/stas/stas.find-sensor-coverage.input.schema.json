@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.find-sensor-coverage:input:1.0",
+  "title": "StasStasNativeFindSensorCoverageInputV1Input",
+  "$ref": "native.schema.json#/$defs/find_sensor_coverage_input_v1"
+}

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.platform-validation",
+  "operations": {
+    "reference.validate@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "VALIDATES"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/platform-validation-provider/src/index.ts",
+          "symbol": "createPlatformValidationProvider"
+        }
+      ],
+      "tests": [
+        "tests/platform/platform-validation-provider.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+    },
+    "result.validate@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "VALIDATES"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/platform-validation-provider/src/index.ts",
+          "symbol": "createPlatformValidationProvider"
+        }
+      ],
+      "tests": [
+        "tests/platform/platform-validation-provider.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+    },
+    "snapshot.get@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/platform-validation-provider/src/index.ts",
+          "symbol": "createPlatformValidationProvider"
+        }
+      ],
+      "tests": [
+        "tests/platform/platform-validation-provider.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+    },
+    "snapshot.validate@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "VALIDATES_SNAPSHOT"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "CURRENT": "COMPLETED",
+            "STALE": "STALE",
+            "UNAVAILABLE": "INDETERMINATE",
+            "UNKNOWN": "INDETERMINATE"
+          }
+        }
+      },
+      "implementation": [
+        {
+          "path": "services/providers/platform-validation-provider/src/index.ts",
+          "symbol": "createPlatformValidationProvider"
+        }
+      ],
+      "tests": [
+        "tests/platform/platform-validation-provider.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+    }
+  }
+}

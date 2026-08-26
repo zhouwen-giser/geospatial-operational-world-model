@@ -1,3 +1,6 @@
+import semanticProfiles0 from "./semantic-profiles.operational.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0 };
 import type pg from "pg";
 import type { CapabilityDescriptor,CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { getContractSchemaHash } from "../../../../packages/platform/contract-runtime/src/index.js";
@@ -10,7 +13,7 @@ export function createOperationalRealityProvider(options:{pool:pg.Pool;now?:()=>
   const repository=new OperationalRealityProviderRepository(options.pool,options.now);
   const operations=OPERATIONAL_REALITY_OPERATION_IDS.map((id)=>operation(id,repository));
   const manifest:CapabilityProviderManifest={
-    providerProtocolVersion:"1.0",provider:{
+    providerProtocolVersion:"1.0", manifestSchemaVersion: "1.1",provider:{
       providerId:"gowm.operational-reality",providerVersion:"1.0.0",owner:"gowm-platform",
       implementationDigest:sha256({providerId:"gowm.operational-reality",version:"1.0.0",contract:"gowm_operational_reality_v1",operations:operations.map((item)=>item.descriptor)}),
       sourceRef:"urn:gowm:source:in-tree:operational-reality:1.0.0"
@@ -25,7 +28,7 @@ function operation(operationId:OperationalRealityOperationId,repository:Operatio
   const schemas=OPERATIONAL_REALITY_SCHEMAS[operationId];
   const analysis=["correlation.resolve","predicate.evaluate","observability.evaluate"].includes(operationId);
   const descriptor:CapabilityDescriptor={
-    operationId,operationVersion:"1.0",semanticRole:analysis?"DOMAIN_ANALYSIS":"PROJECTION_QUERY",
+    operationId,operationVersion:"1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"),semanticRole:analysis?"DOMAIN_ANALYSIS":"PROJECTION_QUERY",
     dataBinding:"WORLD_SNAPSHOT_BOUND",resultSemantics:analysis?"DERIVED_ANALYSIS":"WORLD_PROJECTION",
     executionBindings:["SYNC_HTTP","VERSIONED_SQL_CONTRACT"],criticalPathPolicy:"REMOTE_ONLY",maturity:"PREVIEW",
     inputSchemaUri:schemas.inputSchemaUri,inputSchemaHash:schemas.inputSchemaHash,

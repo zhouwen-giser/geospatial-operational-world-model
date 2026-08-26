@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.get-tracklet-gaps:input:1.0",
+  "title": "StasStasNativeGetTrackletGapsInputV1Input",
+  "$ref": "native.schema.json#/$defs/get_tracklet_gaps_input_v1"
+}
