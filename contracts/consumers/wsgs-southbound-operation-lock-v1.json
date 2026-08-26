@@ -1,9 +1,178 @@
 {
   "schemaVersion": "1.0",
   "gatewayContractVersion": "0.6.2",
-  "contractCatalogRevision": "sha256:c1e0c1652a566ef4dbedec58002850aff24ea255816bbc2a197d051d2b6318c6",
+  "contractCatalogRevision": "sha256:2a24b95dbb9921ca4d63bc2d5c07ede73f41169f1ea32e0102a9bb8f47314fe7",
   "semanticCatalogHash": "sha256:0153c0ab1884f1ca8222d59a28a2d14774099b7b7cd66faa8a75a020769b9d90",
-  "defaultOperations": [],
+  "defaultOperations": [
+    {
+      "operationId": "coverage.road.expand-geojson",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:64f0a1a67d9802a0d41f087f3482158ba7bafa5722dd94cda5314786beb24f37",
+      "outputSchemaHash": "sha256:e5c8b4845f9f0717750adb2b5f1b0303f00fd302c1cb962a0336af37474c1b0b",
+      "semanticProfileHash": "sha256:0487055638b8310c4b5d6d304e45bab9b628e0b4a03d62d63a7f5ad51772250a",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "coverage.road.plan",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaHash": "sha256:6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50",
+      "semanticProfileHash": "sha256:733c634a3dd7d695e804f4fec096e7be7bc4c77f456ac0c0f87dd4aa08eff78b",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "coverage.road.select-obligations",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaHash": "sha256:f453949199ebdf7eea944c5eac3fbff95bfc52cdb0f8a33abecb38fe6448cbbe",
+      "semanticProfileHash": "sha256:0487055638b8310c4b5d6d304e45bab9b628e0b4a03d62d63a7f5ad51772250a",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "coverage.road.validate",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaHash": "sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a",
+      "semanticProfileHash": "sha256:73720450302201fa03cd0af993b8022560041455e46577cc1c5af4b72d8a98bb",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "coverage.road.verify",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:f8f242440dbb82ea5790ae163455a838d53da451e0481fa36c2b111c423dfcfa",
+      "outputSchemaHash": "sha256:56063206dc0164bd273a69784a4cc91a9211130f7f71aa2dbbf776cbe20f9584",
+      "semanticProfileHash": "sha256:b81295ca3df9d62f1999c91d2ff4379e7676e0232a859ad5ec255996fb84b745",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.connectivity.inspect",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "semanticProfileHash": "sha256:309a62a867da227b7881f22d35253c97bee3a202c332f7949e4b27f908d50637",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.graph.diagnose",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "semanticProfileHash": "sha256:309a62a867da227b7881f22d35253c97bee3a202c332f7949e4b27f908d50637",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.graph.get",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaHash": "sha256:947f7f3d6a35b8e3bda52722b16f7e42dc612820c12fbd6a3b1af855dd35411c",
+      "semanticProfileHash": "sha256:ad166af348308952ccfc88f85ca9693364e50c12519209a106a3cc6a148f163e",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.graph.list",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "semanticProfileHash": "sha256:309a62a867da227b7881f22d35253c97bee3a202c332f7949e4b27f908d50637",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.path.expand",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "outputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "semanticProfileHash": "sha256:6b69890bd6c146a0fafc2a8ffde2c12b4d0296dd75241a255f3a615f428ada91",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.path.shortest",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:b1bed7cd90744523d035567b0fbae0382a8fddc014728fef93158cadbdc48355",
+      "outputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "semanticProfileHash": "sha256:6b69890bd6c146a0fafc2a8ffde2c12b4d0296dd75241a255f3a615f428ada91",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.path.verify",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "semanticProfileHash": "sha256:041a33be2d8833bd58e5685e76a73c17a22e1843bb3a7ec6682c73bdddac1021",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.snap.point",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+      "semanticProfileHash": "sha256:8363cef0e0100152b6fc13f69d382330b5dee8a9d659387c0e6ecdf843e75623",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "network.snap.points",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+      "semanticProfileHash": "sha256:8363cef0e0100152b6fc13f69d382330b5dee8a9d659387c0e6ecdf843e75623",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "reference.validate",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:02b86151775176b13aa80fc0a8c595621941ab6ca5b6ba777c78d300ec59fc4b",
+      "outputSchemaHash": "sha256:e5f544f8d40c72dc1dc8039c4f5c83ed94b5d16624e05a68d47c65207941c75c",
+      "semanticProfileHash": "sha256:a79f3acf2cb9a825b367a63da65b63ed0f59746f0847ae30f9fb173082be79fc",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "result.validate",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:02b86151775176b13aa80fc0a8c595621941ab6ca5b6ba777c78d300ec59fc4b",
+      "outputSchemaHash": "sha256:e5f544f8d40c72dc1dc8039c4f5c83ed94b5d16624e05a68d47c65207941c75c",
+      "semanticProfileHash": "sha256:a79f3acf2cb9a825b367a63da65b63ed0f59746f0847ae30f9fb173082be79fc",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "route.plan",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+      "outputSchemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+      "semanticProfileHash": "sha256:3c93a68e8f709998c1beff22add31db99c961ed5d558b208127e149f2d26703b",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "route.validate",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "semanticProfileHash": "sha256:b4b668759d51c3886d356a1576c89a3d64c4d4d4aa565d452f27d02d5a606e1e",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "route.verify",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "semanticProfileHash": "sha256:b4b668759d51c3886d356a1576c89a3d64c4d4d4aa565d452f27d02d5a606e1e",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "snapshot.get",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:dd9fe8b28257290a74123631f89e671e868092d2bc664216f95c092b90bfa3fa",
+      "outputSchemaHash": "sha256:bb38e8c7c322bc549723a72af957795d6e5314117ff3502dd7d5048ec28af9a0",
+      "semanticProfileHash": "sha256:95ab3fdffd708473f9e8fa1588ddc858a6b38212def5ff6442b67739e5b06bf9",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "snapshot.validate",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:32ae7b617df7623765471633d9aef335fb69379f850ba4ed4452739f21f145da",
+      "outputSchemaHash": "sha256:16ff7adb2f69a4022cb540835037de73093f9412146c07d918c715bef6c1a72b",
+      "semanticProfileHash": "sha256:74c0eab90716f9ee8835e31f1598c8b62e03987314afda8b243c1e8a2e6eabdc",
+      "maturity": "STABLE"
+    }
+  ],
   "previewOperations": [
     {
       "operationId": "catalog.describe-schema",

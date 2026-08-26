@@ -58,7 +58,7 @@
     {
       "providerId": "gowm.world-evidence",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
-      "manifestHash": "sha256:ca50308e3b9d7cd920774959b5e05000cf82a2c05323afd00b1828cba6c658d1",
+      "manifestHash": "sha256:925b860b6246fa3ee1451a874dbed6759d715847d5ef7c2376c22ff0e8e3c63f",
       "operationCount": 8
     },
     {

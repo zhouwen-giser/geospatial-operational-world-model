@@ -101,7 +101,10 @@
     "validate:world-platform-profile": "node validation/architecture/validate-world-platform-profile.mjs",
     "generate:wsgs-lock": "node --import tsx scripts/generate-wsgs-operation-lock.ts --write",
     "validate:wsgs-lock": "node --import tsx scripts/generate-wsgs-operation-lock.ts",
-    "validate:stas-contracts": "python3 scripts/export-stas-provider-contracts.py --check"
+    "validate:stas-contracts": "python3 scripts/export-stas-provider-contracts.py --check",
+    "validate:world-platform-canary": "node --import tsx validation/scripts/world-platform-semantic-canary.mjs",
+    "validate:world-platform-regression": "node --import tsx validation/scripts/world-platform-regression.mjs",
+    "validate:world-platform-final": "node --import tsx validation/scripts/world-platform-final-candidate.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",

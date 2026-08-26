@@ -62,11 +62,16 @@
       "path": "packages/road-coverage-verifier-core/src/verification.ts",
       "sha256": "74517207a87215381c695371a7edb95753f3486ecfb2730f746ccbdf69912afe",
       "symbol": "verifyCoverageRoute"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.2/black-box-evidence.json",
+      "sha256": "5ac9791fdface7161b02726c902606a7311ae80dfedc6fd70f040f1af2d01468",
+      "symbol": "coverage.road.plan@1.0"
     }
   ],
-  "status": "BLOCKED",
+  "status": "PROVEN",
   "notes": [
-    "Plans are derived against pinned graph/currentness inputs and independently verified by the named implementation; no live-world guarantee follows from mathematical validity.",
-    "Static profile resolved; current real black-box execution remains required for Stable admission."
+    "Plans are derived against pinned graph/currentness inputs and independently verified by the named implementation; no live-world guarantee follows from mathematical validity."
   ]
 }

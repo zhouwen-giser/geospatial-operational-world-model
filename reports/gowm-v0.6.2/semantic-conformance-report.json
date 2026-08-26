@@ -5,11 +5,11 @@
     "semanticRuleViolation": 0,
     "semanticImplementationMismatch": 0,
     "crossCapabilityViolation": 0,
-    "stableCapabilityWithoutBlackBoxEvidence": 21,
+    "stableCapabilityWithoutBlackBoxEvidence": 0,
     "runtimeSemanticInference": 0,
     "providerTopologyLeak": 0,
     "operationCollision": 0
   },
   "issues": [],
-  "status": "FAIL"
+  "status": "PASS"
 }

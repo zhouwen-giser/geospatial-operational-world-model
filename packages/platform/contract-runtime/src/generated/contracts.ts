@@ -2810,9 +2810,11 @@ export type CapabilitySemanticProfileV1 = {
 export type PinnedDirectedNetworkStatePort = GowmV05NetworkCommonDirectedState;
 
 export type ProjectedWgs84PointPort = {
-  coordinates: [number, number, ...Array<number>];
+  coordinates: Wgs84PositionCoordinatesPort;
   type: "Point";
 };
+
+export type Wgs84PositionCoordinatesPort = [number, number, ...Array<number>];
 
 export type SemanticAttestation = {
   evidence: Array<{

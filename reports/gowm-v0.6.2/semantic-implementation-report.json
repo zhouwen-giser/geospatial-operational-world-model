@@ -12211,7 +12211,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -12433,7 +12433,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -12629,7 +12629,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -12851,7 +12851,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -13244,7 +13244,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -13473,7 +13473,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -13646,7 +13646,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -14073,7 +14073,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -14278,7 +14278,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -16376,7 +16376,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -16529,7 +16529,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -16663,7 +16663,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -16823,7 +16823,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -18716,7 +18716,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -19248,7 +19248,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -19569,7 +19569,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -19834,7 +19834,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -20101,7 +20101,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -20758,7 +20758,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -20977,7 +20977,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -21185,7 +21185,7 @@
       "distanceUnit": false,
       "distanceModel": false,
       "implementation": true,
-      "blackBox": false,
+      "blackBox": true,
       "verificationPorts": false
     },
     "inspections": [
@@ -35185,7 +35185,7 @@
     ]
   },
   "world.get-current-state@1.0": {
-    "contractHash": "sha256:3702a2d6c8a9faa105fa2168c867fa93012b138b485314e56e9176765921c26c",
+    "contractHash": "sha256:60f1082a5061f2f2075aebd068d18d19025d6d3ce4444341d422a8f7a8639e98",
     "inputShape": {
       "paths": [
         "/cursor",

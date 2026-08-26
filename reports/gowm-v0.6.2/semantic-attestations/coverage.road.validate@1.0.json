@@ -56,11 +56,16 @@
       "kind": "SQL_IMPLEMENTATION",
       "path": "database/migrations/059_coverage_area_reference_read_contract.sql",
       "sha256": "eb95dd08ef93cf18e3e85fc4353fc851ace004d1e4689b4194bb9537a7797d15"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.2/black-box-evidence.json",
+      "sha256": "5ac9791fdface7161b02726c902606a7311ae80dfedc6fd70f040f1af2d01468",
+      "symbol": "coverage.road.validate@1.0"
     }
   ],
-  "status": "BLOCKED",
+  "status": "PROVEN",
   "notes": [
-    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
-    "Static profile resolved; current real black-box execution remains required for Stable admission."
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
   ]
 }

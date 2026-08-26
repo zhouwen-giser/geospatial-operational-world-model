@@ -174,7 +174,7 @@
       "providerId": "gowm.world-evidence",
       "providerVersion": "1.0.0",
       "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb",
-      "manifestHash": "sha256:ca50308e3b9d7cd920774959b5e05000cf82a2c05323afd00b1828cba6c658d1",
+      "manifestHash": "sha256:925b860b6246fa3ee1451a874dbed6759d715847d5ef7c2376c22ff0e8e3c63f",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
       "endpoint": "http://world-evidence-provider:8093",
       "approvalId": "grounding-world-evidence-v1.0",

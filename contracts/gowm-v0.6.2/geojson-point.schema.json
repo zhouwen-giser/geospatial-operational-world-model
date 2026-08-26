@@ -6,8 +6,6 @@
   "required": ["type", "coordinates"],
   "properties": {
     "type": {"const": "Point"},
-    "coordinates": {"type": "array", "minItems": 2, "maxItems": 3,
-      "prefixItems": [{"type":"number","minimum":-180,"maximum":180},{"type":"number","minimum":-90,"maximum":90}],
-      "items": {"type":"number"}}
+    "coordinates": {"$ref":"geojson-position.schema.json"}
   }
 }

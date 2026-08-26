@@ -56,11 +56,16 @@
       "kind": "UNIT_TEST",
       "path": "tests/platform/network-provider.test.ts",
       "sha256": "34f5761606bf85a5ba9b0bc265567d002fcdf8c011a23cbbf7411d3a900aa663"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.2/black-box-evidence.json",
+      "sha256": "5ac9791fdface7161b02726c902606a7311ae80dfedc6fd70f040f1af2d01468",
+      "symbol": "network.connectivity.inspect@1.0"
     }
   ],
-  "status": "BLOCKED",
+  "status": "PROVEN",
   "notes": [
-    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
-    "Static profile resolved; current real black-box execution remains required for Stable admission."
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
   ]
 }

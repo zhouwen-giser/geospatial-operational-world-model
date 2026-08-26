@@ -13066,25 +13066,31 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
         "const": "Point"
       },
       "coordinates": {
-        "type": "array",
-        "minItems": 2,
-        "maxItems": 3,
-        "prefixItems": [
-          {
-            "type": "number",
-            "minimum": -180,
-            "maximum": 180
-          },
-          {
-            "type": "number",
-            "minimum": -90,
-            "maximum": 90
-          }
-        ],
-        "items": {
-          "type": "number"
-        }
+        "$ref": "geojson-position.schema.json"
       }
+    }
+  },
+  "gowm-v0.6.2/geojson-position.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:geojson-position",
+    "title": "Wgs84PositionCoordinatesPort",
+    "type": "array",
+    "minItems": 2,
+    "maxItems": 3,
+    "prefixItems": [
+      {
+        "type": "number",
+        "minimum": -180,
+        "maximum": 180
+      },
+      {
+        "type": "number",
+        "minimum": -90,
+        "maximum": 90
+      }
+    ],
+    "items": {
+      "type": "number"
     }
   },
   "gowm-v0.6.2/semantic-attestation.schema.json": {

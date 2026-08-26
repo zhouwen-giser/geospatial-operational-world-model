@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/world-evidence-provider.json",
-      "sha256": "e7f62808ae9ed97fa736738f18f534375bc0aa25040a9530af48aa11919cc0e2"
+      "sha256": "9a3af1472aa88c85e60296b0446b60f56d812250fc7e1cf54dbd585054f4055a"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/world-evidence-provider.json",
-      "sha256": "e7f62808ae9ed97fa736738f18f534375bc0aa25040a9530af48aa11919cc0e2"
+      "sha256": "9a3af1472aa88c85e60296b0446b60f56d812250fc7e1cf54dbd585054f4055a"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,7 +44,7 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/provider.ts",
-      "sha256": "d2ded99b9f8476ea511d33c08d1ec0412ba05a2c655189e02de7ce6901b61370",
+      "sha256": "36909cbf1733dce5a87cb154043e175933746997a1881e40c15e1f02c3c87491",
       "symbol": "createGroundingCatalogProvider"
     },
     {

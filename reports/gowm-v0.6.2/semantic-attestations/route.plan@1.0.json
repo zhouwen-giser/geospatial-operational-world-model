@@ -57,11 +57,16 @@
       "path": "services/providers/route-planning-provider/src/verifier.ts",
       "sha256": "5b1e16d1f37d9639ecd61347d9d46d49b1e0ed2c430a737c1d6b2d46d131dc1b",
       "symbol": "verifyRouteCandidate"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.2/black-box-evidence.json",
+      "sha256": "5ac9791fdface7161b02726c902606a7311ae80dfedc6fd70f040f1af2d01468",
+      "symbol": "route.plan@1.0"
     }
   ],
-  "status": "BLOCKED",
+  "status": "PROVEN",
   "notes": [
-    "Plans are derived against pinned graph/currentness inputs and independently verified by the named implementation; no live-world guarantee follows from mathematical validity.",
-    "Static profile resolved; current real black-box execution remains required for Stable admission."
+    "Plans are derived against pinned graph/currentness inputs and independently verified by the named implementation; no live-world guarantee follows from mathematical validity."
   ]
 }

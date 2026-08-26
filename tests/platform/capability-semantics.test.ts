@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { catalogRevisions, semanticVocabularyHash, validateContract, type CapabilityDescriptor, type CapabilityProviderManifest } from "../../packages/platform/contract-runtime/src/index.js";
+import { catalogRevisions, isContractSchemaHash, semanticVocabularyHash, validateContract, type CapabilityDescriptor, type CapabilityProviderManifest } from "../../packages/platform/contract-runtime/src/index.js";
 import { buildGatewayApp } from "../../services/gateway/world-capability-gateway/src/app.js";
 import { projectCapabilitySemantics } from "../../services/gateway/world-capability-gateway/src/capability-semantics.js";
 import { CapabilityRegistry } from "../../services/gateway/world-capability-gateway/src/registry.js";
@@ -17,6 +17,14 @@ function descriptor(operationId: string): CapabilityDescriptor {
 const revision = `sha256:${"7".repeat(64)}`;
 
 describe("capability semantic projection", () => {
+  it("validates every controlled descriptor schema lock and rejects forged hashes", () => {
+    for (const descriptor of officialDescriptors) {
+      for (const side of ["input", "output"] as const) {
+        expect(isContractSchemaHash(descriptor[`${side}SchemaUri`], descriptor[`${side}SchemaHash`])).toBe(true);
+        expect(isContractSchemaHash(descriptor[`${side}SchemaUri`], `sha256:${"0".repeat(64)}`)).toBe(false);
+      }
+    }
+  });
   it("admits Stable consumer operations only after all gates and segregates Preview from Experimental", () => {
     const pending = createSouthboundOperationLock(officialDescriptors,revision,false);
     expect(pending.defaultOperations).toEqual([]);

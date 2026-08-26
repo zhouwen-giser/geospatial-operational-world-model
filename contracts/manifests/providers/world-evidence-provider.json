@@ -103,8 +103,16 @@
             "name": "position",
             "path": "/facts/0/position",
             "schemaUri": "urn:gowm:v0.6.2:geojson-point",
-            "schemaHash": "sha256:dcdf263b1025ef6b4f394d4a62c99b1184f2fe637b47b5005755f811347e4d97",
+            "schemaHash": "sha256:ca781b30258b7e38e93ae58e110dc5130ebb11646c94eb2d788697e9567214e4",
             "valueKind": "GEOMETRY",
+            "unitSemantics": "ANGULAR_DEGREES"
+          },
+          {
+            "name": "positionCoordinates",
+            "path": "/facts/0/position/coordinates",
+            "schemaUri": "urn:gowm:v0.6.2:geojson-position",
+            "schemaHash": "sha256:fdf18bce70f51c76375ac5b13ae88738ed72387ad511359946c800af42c2d812",
+            "valueKind": "ANY",
             "unitSemantics": "ANGULAR_DEGREES"
           }
         ]

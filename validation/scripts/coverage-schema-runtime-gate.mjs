@@ -176,7 +176,7 @@ async function persist() {
     failure ??= new Error("Source changed during real gate");
   }
   evidence.finishedAt = new Date().toISOString();
-  const directory = resolve(repositoryRoot, "reports/gowm-v0.6.1");
+  const directory = resolve(repositoryRoot, "reports/gowm-v0.6.2");
   await mkdir(directory, { recursive: true });
   await writeFile(resolve(directory, `d00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
 }
@@ -193,8 +193,8 @@ try {
   const assertions = (await readdir(resolve(repositoryRoot, "database/tests")))
     .filter((name) => /^\d{3}_.+_assertions\.sql$/u.test(name))
     .sort();
-  if (migrations.length !== 58 || migrations.at(-1)?.slice(0, 3) !== "058") {
-    throw new Error(`expected the current v0.6.1 migration set 001-058, received ${migrations.length}`);
+  if (migrations.length !== 60 || migrations.at(-1)?.slice(0, 3) !== "060") {
+    throw new Error(`expected the current v0.6.2 migration set 001-060, received ${migrations.length}`);
   }
   if (assertions.length !== 43 || assertions.at(-1)?.slice(0, 3) !== "043") {
     throw new Error(`expected the current v0.6.1 assertion set 001-043, received ${assertions.length}`);
@@ -298,7 +298,7 @@ try {
     "v0.6 upgrade summary"
   );
   for (const [kind, summary] of [["fresh", freshSummary], ["v0.5-upgrade", upgradeSummary], ["v0.4-upgrade", v04UpgradeSummary], ["v0.6-upgrade", v06UpgradeSummary]]) {
-    if (summary.migrationCount !== 58 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
+    if (summary.migrationCount !== 60 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
         summary.providerExecutableFunctions !== 14 ||
         summary.providerDirectMutation !== false || summary.providerNetworkMutation !== false) {
       throw new Error(`${kind} database summary failed the D00 invariant set: ${JSON.stringify(summary)}`);

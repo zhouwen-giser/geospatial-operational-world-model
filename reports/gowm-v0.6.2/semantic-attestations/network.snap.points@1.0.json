@@ -62,11 +62,16 @@
       "path": "packages/network-query-core/src/repository.ts",
       "sha256": "06ddfc714b2009d5370318ce655e8dfdf7bf465a62db75ca26657b353eaeba2a",
       "symbol": "snap"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.2/black-box-evidence.json",
+      "sha256": "5ac9791fdface7161b02726c902606a7311ae80dfedc6fd70f040f1af2d01468",
+      "symbol": "network.snap.points@1.0"
     }
   ],
-  "status": "BLOCKED",
+  "status": "PROVEN",
   "notes": [
-    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
-    "Static profile resolved; current real black-box execution remains required for Stable admission."
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
   ]
 }

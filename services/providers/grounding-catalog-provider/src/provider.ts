@@ -144,6 +144,11 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
           schemaUri: "urn:gowm:v0.6.2:geojson-point",
           schemaHash: getContractSchemaHash("urn:gowm:v0.6.2:geojson-point"),
           valueKind: "GEOMETRY" as const, unitSemantics: "ANGULAR_DEGREES" as const
+        },{
+          name: "positionCoordinates", path: "/facts/0/position/coordinates",
+          schemaUri: "urn:gowm:v0.6.2:geojson-position",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.6.2:geojson-position"),
+          valueKind: "ANY" as const, unitSemantics: "ANGULAR_DEGREES" as const
         }] : [])
       ]
     }

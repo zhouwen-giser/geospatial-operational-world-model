@@ -51,11 +51,16 @@
       "kind": "UNIT_TEST",
       "path": "tests/platform/route-planning-provider.test.ts",
       "sha256": "6d868a9050aac5c48224d8f2d7e5dbc5a9be6d19fc369d4f5ff8d204e9dede32"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.2/black-box-evidence.json",
+      "sha256": "5ac9791fdface7161b02726c902606a7311ae80dfedc6fd70f040f1af2d01468",
+      "symbol": "route.validate@1.0"
     }
   ],
-  "status": "BLOCKED",
+  "status": "PROVEN",
   "notes": [
-    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
-    "Static profile resolved; current real black-box execution remains required for Stable admission."
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
   ]
 }

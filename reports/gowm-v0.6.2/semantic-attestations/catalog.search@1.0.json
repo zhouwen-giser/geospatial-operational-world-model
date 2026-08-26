@@ -44,7 +44,7 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/provider.ts",
-      "sha256": "d2ded99b9f8476ea511d33c08d1ec0412ba05a2c655189e02de7ce6901b61370",
+      "sha256": "36909cbf1733dce5a87cb154043e175933746997a1881e40c15e1f02c3c87491",
       "symbol": "createGroundingCatalogProvider"
     },
     {

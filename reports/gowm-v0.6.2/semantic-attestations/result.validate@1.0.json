@@ -61,11 +61,16 @@
       "kind": "SQL_IMPLEMENTATION",
       "path": "database/migrations/058_platform_validation_authority.sql",
       "sha256": "00b5057dc641f58b4477aab1ef874d9a1590f4067210feca3b5dff4feceed98e"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.2/black-box-evidence.json",
+      "sha256": "5ac9791fdface7161b02726c902606a7311ae80dfedc6fd70f040f1af2d01468",
+      "symbol": "result.validate@1.0"
     }
   ],
-  "status": "BLOCKED",
+  "status": "PROVEN",
   "notes": [
-    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
-    "Static profile resolved; current real black-box execution remains required for Stable admission."
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
   ]
 }
