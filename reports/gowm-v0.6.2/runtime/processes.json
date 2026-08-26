@@ -4,7 +4,7 @@
     "State": "running",
     "Health": "healthy",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
@@ -12,7 +12,7 @@
     "State": "running",
     "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
@@ -20,15 +20,15 @@
     "State": "running",
     "Health": "healthy",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
     "Service": "h3-interactive-provider",
     "State": "running",
-    "Health": "healthy",
+    "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
@@ -36,7 +36,7 @@
     "State": "running",
     "Health": "healthy",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
@@ -44,15 +44,15 @@
     "State": "running",
     "Health": "healthy",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
     "Service": "platform-validation-provider",
     "State": "running",
-    "Health": "healthy",
+    "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
@@ -60,7 +60,7 @@
     "State": "running",
     "Health": "healthy",
     "Image": "gowm-v062-test-db:local",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": [
       {
         "URL": "",
@@ -73,41 +73,41 @@
   {
     "Service": "reference-catalog-provider",
     "State": "running",
-    "Health": "healthy",
+    "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
     "Service": "road-coverage-provider",
     "State": "running",
-    "Health": "healthy",
+    "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
     "Service": "route-planning-provider",
     "State": "running",
-    "Health": "healthy",
+    "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
     "Service": "spatial-provider-bridge",
     "State": "running",
-    "Health": "healthy",
+    "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
     "Service": "stas-provider",
     "State": "running",
-    "Health": "healthy",
+    "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   },
   {
@@ -115,12 +115,12 @@
     "State": "running",
     "Health": "healthy",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_world-edge,gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default,gowm-v062-repeat_world-edge",
     "Publishers": [
       {
         "URL": "127.0.0.1",
         "TargetPort": 8090,
-        "PublishedPort": 15491,
+        "PublishedPort": 15492,
         "Protocol": "tcp"
       }
     ]
@@ -128,9 +128,9 @@
   {
     "Service": "world-evidence-provider",
     "State": "running",
-    "Health": "healthy",
+    "Health": "starting",
     "Image": "gowm-world-platform:0.6.2",
-    "Networks": "gowm-v062-canary_default",
+    "Networks": "gowm-v062-repeat_default",
     "Publishers": []
   }
 ]

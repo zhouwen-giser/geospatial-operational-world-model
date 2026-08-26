@@ -1,0 +1,8 @@
+Error: resolve-CanaryVehicle:explicit-status-mapping: {"mapping":{"AMBIGUOUS":"AMBIGUOUS","INVALID":"COMPLETED","RESOLVED_EXACT":"COMPLETED","SUGGESTED_UNIQUE":"COMPLETED","UNRESOLVED":"NO_DATA"}}
+    at check (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:24:91)
+    at validateEnvelope (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:40:106)
+    at execute (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:51:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async unique (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:71:48)
+    at async file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:92:17
+WORLD_PLATFORM_CANARY_FAIL checks=136 positiveOperations=1

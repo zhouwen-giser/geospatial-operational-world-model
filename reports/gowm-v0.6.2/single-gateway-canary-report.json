@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "gatewayBaseUrlHash": "sha256:10ab8b95c267d974813bd9e8ad12616685b8461d8ed43c3260532900d731cb8c",
+  "gatewayBaseUrlHash": "sha256:9bf3eb84037a55c13921785acf0c5e044b0be059318edbe01aaeddd8b412925c",
   "canaries": [
     {
       "id": "A",

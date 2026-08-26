@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0",
   "status": "PASS",
-  "runId": "v062-1787744276313",
+  "runId": "v062-1787744625607",
   "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
-  "gatewayBaseUrlHash": "sha256:10ab8b95c267d974813bd9e8ad12616685b8461d8ed43c3260532900d731cb8c",
+  "gatewayBaseUrlHash": "sha256:9bf3eb84037a55c13921785acf0c5e044b0be059318edbe01aaeddd8b412925c",
   "checks": {
     "runtime-image-matches-built-source": true,
     "catalog-count": true,

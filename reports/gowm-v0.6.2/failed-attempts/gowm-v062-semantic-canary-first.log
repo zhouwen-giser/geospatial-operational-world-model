@@ -1,0 +1,4 @@
+Error: runtime-contract-revision: {"actual":"sha256:c1e0c1652a566ef4dbedec58002850aff24ea255816bbc2a197d051d2b6318c6"}
+    at check (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:24:91)
+    at file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:81:3
+WORLD_PLATFORM_CANARY_FAIL checks=3 positiveOperations=0

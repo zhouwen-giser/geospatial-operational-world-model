@@ -66,7 +66,7 @@
     {
       "kind": "BLACK_BOX_TEST",
       "path": "reports/gowm-v0.6.2/black-box-evidence.json",
-      "sha256": "5ac9791fdface7161b02726c902606a7311ae80dfedc6fd70f040f1af2d01468",
+      "sha256": "c15b5491375487dd3c3df4a4d94887deaa490cb89fad4c9da27620ebfb6a1482",
       "symbol": "network.path.expand@1.0"
     }
   ],
