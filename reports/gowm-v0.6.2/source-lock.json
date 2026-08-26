@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "repository": "zhouwen-giser/geospatial-operational-world-model",
+  "baseBranch": "main",
+  "baseSha": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+  "packageBaseSha": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+  "baseVersion": "0.6.1",
+  "drift": false,
+  "taskPackageSha256": "6cb920c884ab18a3fac731d1753969855ea67bf9d6b1db7ed1c4e9f12e41174a"
+}

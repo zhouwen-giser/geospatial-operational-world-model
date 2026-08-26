@@ -1,0 +1,14 @@
+phase,acceptance_range,deliverable
+P00,AC-B001..AC-B008,Baseline reconciliation
+P01,AC-M001..AC-V008,"Manifest, profile and vocabularies"
+P02,AC-R001..AC-A015,Rules and materializer
+P03,AC-A001..AC-A015,Provider manifest migration
+P04,AC-I001..AC-X012,Static and cross-capability conformance
+P05,AC-N001..AC-N008,Runtime inference removal
+P06,AC-H001..AC-H012,Content-addressed revisions
+P07,AC-G001..AC-G012,Unified registry
+P08,AC-P001..AC-P010,Runtime profile
+P09,AC-L001..AC-L010,WSGS southbound lock
+P10,AC-Q001..AC-Q016,Generated semantic black-box tests
+P11,AC-C001..AC-C010,Single Gateway Canary
+P12,AC-S001..AC-S015,Compatibility and stable candidate

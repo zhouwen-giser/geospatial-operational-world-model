@@ -1,0 +1,34 @@
+{
+  "goal": "GOWM+ v0.6.2 Unified World Gateway & Explicit Capability Semantics",
+  "targetVersion": "0.6.2",
+  "status": "IN_PROGRESS",
+  "phase": "P00",
+  "source": {
+    "branch": "main",
+    "headAtPackageGeneration": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+    "versionAtPackageGeneration": "0.6.1"
+  },
+  "candidate": {
+    "branch": "codex/gowm-world-platform-gateway-semantics-v0.6.2",
+    "baseSha": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+    "localSha": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+    "remoteSha": null
+  },
+  "counters": {
+    "semanticProfileMissing": null,
+    "semanticRuleViolation": null,
+    "semanticImplementationMismatch": null,
+    "crossCapabilityViolation": null,
+    "stableCapabilityWithoutBlackBoxEvidence": null,
+    "runtimeSemanticInference": null,
+    "providerTopologyLeak": null,
+    "operationCollision": null
+  },
+  "milestones": {
+    "worldPlatformGatewayReady": false,
+    "explicitCapabilitySemanticsReady": false,
+    "stableCandidate": false
+  },
+  "blockers": [],
+  "next": "Fetch and reconcile actual main."
+}

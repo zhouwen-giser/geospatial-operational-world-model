@@ -1,0 +1,181 @@
+id,required,area,scenario,expected,evidence_level
+AC-B001,yes,Baseline,Actual main head,Execution records actual latest main and drift,SOURCE
+AC-B002,yes,Baseline,Version baseline,Actual predecessor VERSION is recorded,SOURCE
+AC-B003,yes,Baseline,Independent worktree,Other worktrees are not modified,GIT
+AC-B004,yes,Baseline,Existing verify,Current verify passes before changes,UNIT
+AC-B005,yes,Baseline,Stable gates,Applicable v0.6.1 stable gates are executed,GATE
+AC-B006,yes,Baseline,Provider inventory,All manifests and registry fragments are inventoried,CONTRACT
+AC-B007,yes,Baseline,No protected actions,No merge/tag/release/deploy is performed,GIT
+AC-B008,yes,Baseline,No upper-layer code,No WSGS/SACS/SDAR/SMPP code is introduced,ARCHITECTURE
+AC-M001,yes,Manifest,Protocol unchanged,providerProtocolVersion remains 1.0,CONTRACT
+AC-M002,yes,Manifest,Manifest version,Manifest 1.1 is explicit and validated,CONTRACT
+AC-M003,yes,Manifest,Descriptor profile required,Manifest 1.1 descriptor requires semanticProfile,CONTRACT
+AC-M004,yes,Manifest,Legacy parse,Manifest 1.0 can remain parseable for legacy profile,CONTRACT
+AC-M005,yes,Manifest,Legacy exclusion,Manifest 1.0 cannot enter world-platform registry,CONTRACT
+AC-M006,yes,Manifest,All official providers,Every official provider is migrated to 1.1,CONTRACT
+AC-M007,yes,Manifest,Manifest hash,Profile changes alter manifest hash,UNIT
+AC-M008,yes,Manifest,No silent defaults,Missing profile fails world-platform registration,UNIT
+AC-M009,yes,Manifest,Operation uniqueness,Duplicate operation/version fails registry build,UNIT
+AC-M010,yes,Manifest,Execution compatibility,Direct execution request/result remains compatible,INTEGRATION
+AC-M011,yes,Manifest,Job compatibility,Provider job contract remains compatible,INTEGRATION
+AC-M012,yes,Manifest,Health compatibility,Provider health endpoints remain compatible,INTEGRATION
+AC-V001,yes,Vocabulary,ReferenceKind controlled,Unknown ReferenceKind is rejected,CONTRACT
+AC-V002,yes,Vocabulary,Relation controlled,Unknown RelationSemantic is rejected,CONTRACT
+AC-V003,yes,Vocabulary,Add-only,Existing term meaning is immutable,CONTRACT
+AC-V004,yes,Vocabulary,No synonym drift,WITHIN/IN_AREA cannot bypass INSIDE vocabulary,CONTRACT
+AC-V005,yes,Vocabulary,Status controlled,Unknown normalized status is rejected,CONTRACT
+AC-V006,yes,Vocabulary,Operation profile,All profile arrays use controlled terms,CONTRACT
+AC-V007,yes,Vocabulary,Vocabulary hash,Vocabulary change changes contract revision,UNIT
+AC-V008,yes,Vocabulary,Definition present,Every term has a machine-readable definition,CONTRACT
+AC-R001,yes,SemanticRules,Reference input kind,S001 passes positive and negative fixtures,UNIT
+AC-R002,yes,SemanticRules,Reference output kind,S002 passes positive and negative fixtures,UNIT
+AC-R003,yes,SemanticRules,Snapshot semantics,S003 passes positive and negative fixtures,UNIT
+AC-R004,yes,SemanticRules,Stateless transform,S004 passes positive and negative fixtures,UNIT
+AC-R005,yes,SemanticRules,Candidate not exact,S005 passes positive and negative fixtures,UNIT
+AC-R006,yes,SemanticRules,Exact verifier,S006 passes positive and negative fixtures,UNIT
+AC-R007,yes,SemanticRules,Negative evidence,S007 passes positive and negative fixtures,UNIT
+AC-R008,yes,SemanticRules,NO_DATA mapping,S008 passes positive and negative fixtures,UNIT
+AC-R009,yes,SemanticRules,Exact implementation,S009 passes positive and negative fixtures,UNIT
+AC-R010,yes,SemanticRules,NEAR unit,S010 passes positive and negative fixtures,UNIT
+AC-R011,yes,SemanticRules,Result nature,S011 passes positive and negative fixtures,UNIT
+AC-R012,yes,SemanticRules,Derived freshness,S012 passes positive and negative fixtures,UNIT
+AC-R013,yes,SemanticRules,Scope/snapshot consistency,S013 passes positive and negative fixtures,UNIT
+AC-R014,yes,SemanticRules,Stable evidence,S014 passes positive and negative fixtures,UNIT
+AC-R015,yes,SemanticRules,No human approval,Rule engine has no human-confirmation state,ARCHITECTURE
+AC-R016,yes,SemanticRules,Rule determinism,Same inputs produce same violations/order,UNIT
+AC-R017,yes,SemanticRules,Conflict severity,Stable conflict is release-blocking,UNIT
+AC-R018,yes,SemanticRules,Insufficient policy,Insufficient stable contract is downgraded or blocked,UNIT
+AC-A001,yes,Materializer,All descriptors scanned,No official capability is skipped,STATIC
+AC-A002,yes,Materializer,Schema evidence,Input/output schemas are hashed and recorded,STATIC
+AC-A003,yes,Materializer,Port evidence,Port valueKind and units are recorded,STATIC
+AC-A004,yes,Materializer,Implementation evidence,Handler/adapter evidence is recorded,STATIC
+AC-A005,yes,Materializer,SQL evidence,SQL AST evidence is recorded when applicable,SQL_AST
+AC-A006,yes,Materializer,Test evidence,Stable profile records black-box evidence,STATIC
+AC-A007,yes,Materializer,Resolved write,RESOLVED writes deterministic profile,UNIT
+AC-A008,yes,Materializer,Conflict repair,CONFLICT cannot remain for Stable,UNIT
+AC-A009,yes,Materializer,Insufficient search,Evidence search order is enforced,UNIT
+AC-A010,yes,Materializer,No guessing,Unknown unit/semantics is not guessed,UNIT
+AC-A011,yes,Materializer,Maturity downgrade,Unprovable operation is explicitly downgraded,CONTRACT
+AC-A012,yes,Materializer,Attestation,Every Stable operation has valid attestation,CONTRACT
+AC-A013,yes,Materializer,Idempotence,Second run creates no diff,UNIT
+AC-A014,yes,Materializer,Determinism,Clean runs produce same determinism hash,UNIT
+AC-A015,yes,Materializer,No source mutation during check,Check mode is read-only,UNIT
+AC-I001,yes,Implementation,Exact PostGIS,EXACT spatial profiles have exact predicate evidence,SQL_AST
+AC-I002,yes,Implementation,BBox candidate,BBox-only implementation cannot be EXACT,SQL_AST
+AC-I003,yes,Implementation,H3 candidate,H3 cover is CANDIDATE,STATIC
+AC-I004,yes,Implementation,Near meters,NEAR has explicit unit and distance model,STATIC
+AC-I005,yes,Implementation,Reference output,Produced reference kinds match output schema,STATIC
+AC-I006,yes,Implementation,Snapshot result,Data-bound output includes data snapshot,STATIC
+AC-I007,yes,Implementation,Stateless no evidence,Stateless transform creates no world evidence,STATIC
+AC-I008,yes,Implementation,Status mapping,Provider statuses map explicitly,STATIC
+AC-I009,yes,Implementation,NO_DATA,NO_DATA does not map to negative fact,STATIC
+AC-I010,yes,Implementation,Sibling providers,Providers do not import sibling provider implementations,ARCHITECTURE
+AC-I011,yes,Implementation,Bridge source lock,Bridge semantics cite source lock/upstream contract,STATIC
+AC-I012,yes,Implementation,Plan nature,Route/Coverage result nature is PLAN,STATIC
+AC-I013,yes,Implementation,Validation nature,Validation operations declare VALIDATION,STATIC
+AC-I014,yes,Implementation,Catalog nature,Catalog operations declare CATALOG,STATIC
+AC-X001,yes,CrossCapability,Verifier exists,Every exactVerification target exists,CONTRACT
+AC-X002,yes,CrossCapability,Verifier exact,Target verifier is EXACT,CONTRACT
+AC-X003,yes,CrossCapability,Verifier executable,Target maturity is executable,CONTRACT
+AC-X004,yes,CrossCapability,Verifier ports,Candidate output and verifier input are compatible,CONTRACT
+AC-X005,yes,CrossCapability,No cycle,Verification graph is acyclic,CONTRACT
+AC-X006,yes,CrossCapability,H3 exact path,H3 cover points to spatial exact verification,CONTRACT
+AC-X007,yes,CrossCapability,Result validation,PLAN/QUERY_RESULT has result.validate available,CONTRACT
+AC-X008,yes,CrossCapability,Snapshot validation,Snapshot-bound operations can use snapshot.validate,CONTRACT
+AC-X009,yes,CrossCapability,Reference path,reference.resolve output can feed world state,CONTRACT
+AC-X010,yes,CrossCapability,Network path,world position can feed network snap,CONTRACT
+AC-X011,yes,CrossCapability,Route path,network snap can feed route plan,CONTRACT
+AC-X012,yes,CrossCapability,Coverage path,area reference can feed coverage plan,CONTRACT
+AC-N001,yes,NoInference,No prefix classifier,No operationId.startsWith semantic inference remains,ARCHITECTURE
+AC-N002,yes,NoInference,No OVERRIDES,No runtime override map remains,ARCHITECTURE
+AC-N003,yes,NoInference,No default profile,Missing profile fails registration,ARCHITECTURE
+AC-N004,yes,NoInference,Pure projection,Semantic endpoint projects descriptor profile only,ARCHITECTURE
+AC-N005,yes,NoInference,Profile hash,Endpoint returns canonical profile hash,ARCHITECTURE
+AC-N006,yes,NoInference,Catalog hash,Endpoint returns canonical catalog hash,ARCHITECTURE
+AC-N007,yes,NoInference,Legacy omission,Legacy operations are not silently projected,ARCHITECTURE
+AC-N008,yes,NoInference,Architecture scan,Static gate finds zero inference patterns,ARCHITECTURE
+AC-H001,yes,Revision,Order invariance,Registry entry order does not change contract revision,UNIT
+AC-H002,yes,Revision,Restart invariance,Gateway restart does not change contract revision,E2E
+AC-H003,yes,Revision,Health invariance,Provider health change does not change contract revision,UNIT
+AC-H004,yes,Revision,Endpoint invariance,Container endpoint change does not change contract revision,UNIT
+AC-H005,yes,Revision,Profile sensitivity,Profile change changes contract revision,UNIT
+AC-H006,yes,Revision,Schema sensitivity,Schema hash change changes contract revision,UNIT
+AC-H007,yes,Revision,Maturity sensitivity,Maturity change changes contract revision,UNIT
+AC-H008,yes,Revision,Binding digest,Implementation digest changes binding revision,UNIT
+AC-H009,yes,Revision,Approval sensitivity,Approval ID changes binding revision,UNIT
+AC-H010,yes,Revision,Canonical JSON,Equivalent object key order hashes equally,UNIT
+AC-H011,yes,Revision,Profile hash repeatable,Profile hash is reproducible,UNIT
+AC-H012,yes,Revision,Catalog hash repeatable,Catalog hash is reproducible,UNIT
+AC-G001,yes,Registry,Provider set schema,Provider set validates,CONTRACT
+AC-G002,yes,Registry,Required providers,All required provider manifests are found,STATIC
+AC-G003,yes,Registry,Optional providers,"Optional absence is reported, not hidden",STATIC
+AC-G004,yes,Registry,Write providers excluded,No write/command provider is registered,SECURITY
+AC-G005,yes,Registry,Manifest hash,Every entry matches manifest hash,STATIC
+AC-G006,yes,Registry,Implementation digest,Every entry has approved implementation digest,STATIC
+AC-G007,yes,Registry,Approval,Every entry has approval metadata,STATIC
+AC-G008,yes,Registry,Collision,Duplicate operation fails build,UNIT
+AC-G009,yes,Registry,Determinism,Builder output is order-independent,UNIT
+AC-G010,yes,Registry,No manual duplication,Generated registry matches builder output,STATIC
+AC-G011,yes,Registry,All semantic profiles,All world-platform ops have explicit profiles,CONTRACT
+AC-G012,yes,Registry,All hashes,Build report includes revisions and counts,CONTRACT
+AC-P001,yes,RuntimeProfile,Compose overlay,World platform overlay validates,CONTAINER
+AC-P002,yes,RuntimeProfile,Single external gateway,Only Gateway is exposed externally,SECURITY
+AC-P003,yes,RuntimeProfile,Internal provider network,Providers use internal network endpoints,CONTAINER
+AC-P004,yes,RuntimeProfile,One registry path,Gateway uses unified registry path,CONTAINER
+AC-P005,yes,RuntimeProfile,Liveness,Gateway liveness is independent of provider health,E2E
+AC-P006,yes,RuntimeProfile,Readiness,Gateway readiness checks registry/DB/runtime,E2E
+AC-P007,yes,RuntimeProfile,Health inventory,Health lists provider degradation,E2E
+AC-P008,yes,RuntimeProfile,Unrelated availability,One provider failure leaves unrelated operations available,FAULT_INJECTION
+AC-P009,yes,RuntimeProfile,Scope,Gateway/Provider scope checks remain active,SECURITY
+AC-P010,yes,RuntimeProfile,No topology in response,Catalog responses contain no endpoints/tokens,SECURITY
+AC-L001,yes,WSGSLock,Generated only,"Operation lock is generated, not hand-maintained",STATIC
+AC-L002,yes,WSGSLock,Default stable,Only proven Stable ops enter default,CONTRACT
+AC-L003,yes,WSGSLock,Preview separate,Preview ops are separated,CONTRACT
+AC-L004,yes,WSGSLock,Experimental excluded,Experimental ops are absent,CONTRACT
+AC-L005,yes,WSGSLock,Schema hashes,Input/output hashes match descriptors,CONTRACT
+AC-L006,yes,WSGSLock,Semantic hash,Semantic hash matches profile,CONTRACT
+AC-L007,yes,WSGSLock,Revision,Lock records contract revision/catalog hash,CONTRACT
+AC-L008,yes,WSGSLock,No endpoints,No provider URL is present,SECURITY
+AC-L009,yes,WSGSLock,No secrets,No token/secret is present,SECURITY
+AC-L010,yes,WSGSLock,No topology,No container/manifest path is present,SECURITY
+AC-Q001,yes,BlackBox,Exact inside,Inside object matches exact query,POSTGRES_INTEGRATION
+AC-Q002,yes,BlackBox,Exact outside,Outside object does not match,POSTGRES_INTEGRATION
+AC-Q003,yes,BlackBox,BBox false positive,BBox overlap without geometry relation is rejected,POSTGRES_INTEGRATION
+AC-Q004,yes,BlackBox,Boundary semantics,Boundary behavior matches declared relation,POSTGRES_INTEGRATION
+AC-Q005,yes,BlackBox,H3 candidate,H3 candidate may include false positive,PROVIDER_PROCESS
+AC-Q006,yes,BlackBox,H3 exact verify,Exact verifier removes false positive,GATEWAY_E2E
+AC-Q007,yes,BlackBox,Reference unique,Unique name resolves uniquely,PROVIDER_PROCESS
+AC-Q008,yes,BlackBox,Reference ambiguous,Same name returns AMBIGUOUS,PROVIDER_PROCESS
+AC-Q009,yes,BlackBox,Reference no data,Missing name returns NO_DATA/UNRESOLVED,PROVIDER_PROCESS
+AC-Q010,yes,BlackBox,Cross scope reference,Unauthorized names do not leak,SECURITY
+AC-Q011,yes,BlackBox,Snapshot current,Current snapshot validates CURRENT,POSTGRES_INTEGRATION
+AC-Q012,yes,BlackBox,Snapshot stale,Changed version validates STALE,POSTGRES_INTEGRATION
+AC-Q013,yes,BlackBox,Snapshot unknown,Unresolvable authority validates UNKNOWN,POSTGRES_INTEGRATION
+AC-Q014,yes,BlackBox,Plan no feasible,No route/coverage returns NO_FEASIBLE_RESULT,PROVIDER_PROCESS
+AC-Q015,yes,BlackBox,Plan failed,Infrastructure failure maps FAILED,FAULT_INJECTION
+AC-Q016,yes,BlackBox,NO_DATA not false,World NO_DATA is not negative fact,GATEWAY_E2E
+AC-C001,yes,Canary,Single base URL,All canaries use one Gateway URL,GATEWAY_E2E
+AC-C002,yes,Canary,Reference-world-spatial,Canary A succeeds,GATEWAY_E2E
+AC-C003,yes,Canary,Reference-H3-exact,Canary B succeeds,GATEWAY_E2E
+AC-C004,yes,Canary,Network-route,Canary C succeeds,GATEWAY_E2E
+AC-C005,yes,Canary,Coverage-result,Canary D succeeds,GATEWAY_E2E
+AC-C006,yes,Canary,H3 degradation,Canary E isolates failure,FAULT_INJECTION
+AC-C007,yes,Canary,Real DB,Canaries use real PostgreSQL,COMPOSE_E2E
+AC-C008,yes,Canary,Real providers,Canaries use provider processes,COMPOSE_E2E
+AC-C009,yes,Canary,Result evidence,Results carry snapshots/receipts/evidence as required,GATEWAY_E2E
+AC-C010,yes,Canary,Restart,Gateway restart preserves revision and job state,FAULT_INJECTION
+AC-S001,yes,Compatibility,Legacy registry,Legacy dev registries still load for direct execution,INTEGRATION
+AC-S002,yes,Compatibility,Provider protocol,Protocol 1.0 clients remain compatible,INTEGRATION
+AC-S003,yes,Compatibility,World query,Existing DAG execution remains compatible,INTEGRATION
+AC-S004,yes,Security,Controlled endpoints,User input cannot select provider endpoint,SECURITY
+AC-S005,yes,Security,Catalog redaction,Catalog/semantic endpoint leaks no secrets,SECURITY
+AC-S006,yes,Security,Scope attestation,Scope/deadline semantics remain valid,SECURITY
+AC-S007,yes,Architecture,No domain algorithms,Gateway adds no GIS/route/coverage logic,ARCHITECTURE
+AC-S008,yes,Architecture,No foundation change,Canonical data tables/algorithms are unchanged,ARCHITECTURE
+AC-S009,yes,Docs,Architecture docs,README/ADR describe single gateway and explicit semantics,DOCS
+AC-S010,yes,Docs,Known limits,Runtime qualifications remain explicit,DOCS
+AC-S011,yes,Version,Version 0.6.2,VERSION/package/changelog agree,RELEASE
+AC-S012,yes,Git,Exact SHA,Local and remote candidate SHA match,GIT
+AC-S013,yes,PR,Ready only after gates,PR is Ready only after required passes,GITHUB
+AC-S014,yes,Delivery,No protected actions,No merge/tag/release/deploy,GITHUB
+AC-S015,yes,Completion,Markers,Final report emits all required markers,REPORT

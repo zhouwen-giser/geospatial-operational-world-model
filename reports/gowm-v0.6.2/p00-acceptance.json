@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "P00",
+  "baseSha": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+  "staticStatus": "PASS",
+  "runtimeStatus": "PENDING_FRESH_EXECUTION",
+  "package": {
+    "schemas": 11,
+    "rules": 14,
+    "examples": 13,
+    "acceptance": 180
+  },
+  "tests": {
+    "vitestPassed": 288,
+    "vitestSkipped": 1,
+    "stasPassed": 40,
+    "providerConformance": 11
+  },
+  "protectedActions": []
+}

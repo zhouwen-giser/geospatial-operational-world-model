@@ -1,0 +1,1007 @@
+{
+  "schemaVersion": "1.0",
+  "baseSha": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+  "manifests": [
+    {
+      "path": "contracts/manifests/providers/crs-provider.json",
+      "providerId": "gowm.crs-normalization.bridge",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:f9ebefcd927e17fd5e62438daba54a283a9a8c457773f2347806e286b67ae674",
+      "implementationDigest": "sha256:46f982fbdbab77c2fccd9141796d6f4db9474e4b048fd3fc3d361305e5d34ae7",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "crs.check-source",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "crs.normalize.point",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "crs.normalize.points",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "crs.normalize.geometry",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "crs.normalize.feature",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "crs.normalize.feature-collection",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/dataset-catalog-current.json",
+      "providerId": "gowm.dataset-catalog",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:b79435a8a2ef45415c705f08ace96f868808621f818ce01ea7affa41502571af",
+      "implementationDigest": "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "dataset.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "dataset.list",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "layer.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "layer.list",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "layer.find-features",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "feature.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.search",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.list-versions",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.describe-schema",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.get-lineage",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.get-quality",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.get-capabilities",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/dataset-catalog-provider.json",
+      "providerId": "gowm.dataset-catalog",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:b79435a8a2ef45415c705f08ace96f868808621f818ce01ea7affa41502571af",
+      "implementationDigest": "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "dataset.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "dataset.list",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "layer.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "layer.list",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "layer.find-features",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "feature.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.search",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.list-versions",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.describe-schema",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.get-lineage",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.get-quality",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "catalog.get-capabilities",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/geometry-provider.json",
+      "providerId": "gowm.geometry.bridge",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:7b21c400904f5443b67ccde27a6c835c2b77e2aee97eac7127bc463aaf117e44",
+      "implementationDigest": "sha256:b1eb384a02a8de948f11520b9fdbd882bddc4288c502782bff888b25c8d9b548",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "geometry.validate",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.normalize",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.force-2d",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.remove-repeated-points",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.centroid",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.bounding-box",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.geometry-hash",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.predicate",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.make-valid",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.buffer",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.intersection",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.union",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.difference",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.symmetric-difference",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.simplify",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.simplify-preserve-topology",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.convex-hull",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.closest-point",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "geometry.shortest-line",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/gowm-situation-provider.json",
+      "providerId": "gowm.situation.h3",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:9d81824a99beeaff8861fedaaf441a5a45e752d82f6380ea9d1723909ea86e01",
+      "implementationDigest": "sha256:22e6e6160b0fcb59616c7c86ecec81622cd1aa9fd1da179d54a5b03f90f94a9f",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "gowm.situation.h3.get-cell",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "gowm.situation.h3.get-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "gowm.situation.h3.get-hotspots",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "gowm.situation.h3.get-coverage-gaps",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/h3-analysis-provider.json",
+      "providerId": "gowm.h3.analysis.bridge",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:72433676566bb35b6fd91a07451f1d5f9b3807ef50c7e7b6e32b27a6589efe09",
+      "implementationDigest": "sha256:017ec13d92ce6ec309a565d464162c10bcc301ee0938de4b75ea1afa505331a9",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "h3.analytics.aggregate",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.analytics.coverage",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.analytics.flow",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/h3-current.json",
+      "providerId": "gowm.h3.analysis.bridge",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:72433676566bb35b6fd91a07451f1d5f9b3807ef50c7e7b6e32b27a6589efe09",
+      "implementationDigest": "sha256:017ec13d92ce6ec309a565d464162c10bcc301ee0938de4b75ea1afa505331a9",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "h3.analytics.aggregate",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.analytics.coverage",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.analytics.flow",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/h3-interactive-current.json",
+      "providerId": "gowm.h3.interactive.bridge",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:4bbd9d7e34408f4f13c9b0fb2a941d7005fa34d8772a87203cab1eab44e34c6d",
+      "implementationDigest": "sha256:419f649959cbce5592538011d27bcc5be2628aa9819f69d7698f75383df341f3",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "h3.index.points",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.geometry.cover",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.cells.to-geojson",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.neighborhood.disk",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.hierarchy.parent",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.hierarchy.children",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.hierarchy.compact",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.hierarchy.uncompact",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/h3-interactive-provider.json",
+      "providerId": "gowm.h3.interactive.bridge",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:4bbd9d7e34408f4f13c9b0fb2a941d7005fa34d8772a87203cab1eab44e34c6d",
+      "implementationDigest": "sha256:419f649959cbce5592538011d27bcc5be2628aa9819f69d7698f75383df341f3",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "h3.index.points",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.geometry.cover",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.cells.to-geojson",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.neighborhood.disk",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.hierarchy.parent",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.hierarchy.children",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.hierarchy.compact",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "h3.hierarchy.uncompact",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/network-current.json",
+      "providerId": "gowm.network",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:b349468740618ddfab1071d2dfbf2eb42924d3e16d395d494a0938cc3469e699",
+      "implementationDigest": "sha256:4d7bdd4fd84fe922734954c1cf12c76e3073e8b3fb360456d8785327e71eb5f6",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "network.graph.get",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.graph.list",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.graph.diagnose",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.snap.point",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.snap.points",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.path.shortest",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.path.cost-matrix",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "network.path.expand",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.path.verify",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.connectivity.inspect",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "network.reachability",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/operational-reality-provider.json",
+      "providerId": "gowm.operational-reality",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:03f687c18c4e35c5a02798a6a8ff9b3286b56a6a2f6f1f1b192e1b43018e73ce",
+      "implementationDigest": "sha256:df8fc45459ff9437cfa35d08678c2ca616c4506eeb9efb4c17f22e5046fe4f7a",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "operational-task.find",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "operational-task.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "operational-task.get-timeline",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "operational-task.find-by-correlation",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world-event.find-by-correlation",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "correlation.resolve",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "predicate.evaluate",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "observability.evaluate",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/platform-validation-current.json",
+      "providerId": "gowm.platform-validation",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:5da5ff71a5819ebb136154db48f1f773f914b0439460ecc4184ae781d12fbe41",
+      "implementationDigest": "sha256:dcde74ce46d645874623f951afa8aac1d6eefe6af2062ba2be3cdbc4f1957927",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "reference.validate",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "result.validate",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "snapshot.get",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "snapshot.validate",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/platform-validation-provider.json",
+      "providerId": "gowm.platform-validation",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:5da5ff71a5819ebb136154db48f1f773f914b0439460ecc4184ae781d12fbe41",
+      "implementationDigest": "sha256:dcde74ce46d645874623f951afa8aac1d6eefe6af2062ba2be3cdbc4f1957927",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "reference.validate",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "result.validate",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "snapshot.get",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "snapshot.validate",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/reference-catalog-provider.json",
+      "providerId": "gowm.reference-catalog",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:c24c49b9cd1cf31366a043c07a7d915b1f7d55219396db598fce70c974c69f96",
+      "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "reference.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "reference.resolve",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "reference.batch-get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "reference.search",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/reference-current.json",
+      "providerId": "gowm.reference-catalog",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:c24c49b9cd1cf31366a043c07a7d915b1f7d55219396db598fce70c974c69f96",
+      "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "reference.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "reference.resolve",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "reference.batch-get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "reference.search",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/road-coverage-current.json",
+      "providerId": "gowm.road-coverage-planning",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:14ecf615c059d9928418d78b204aea23df5ed181e793adcc36c5759bc897fcf0",
+      "implementationDigest": "sha256:bd44b6c87857d394f05d3b9ba2fafb4926cf094df34694d1beb409fd27bc276c",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "coverage.road.validate",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "coverage.road.select-obligations",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "coverage.road.plan",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "coverage.road.verify",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "coverage.road.expand-geojson",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/route-current.json",
+      "providerId": "gowm.route-planning",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:60dcb5324d4c584c02972ea7ae472a95381edf80d5e6c381c2323e6854a52436",
+      "implementationDigest": "sha256:27d8dfc4be2aa6bb39a9675e917dd2f5aaa5b64eddc115a69fc568b2c3a5412d",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "route.validate",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "route.plan",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        },
+        {
+          "operationId": "route.plan-alternatives",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "route.verify",
+          "operationVersion": "1.0",
+          "maturity": "STABLE"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/spatial-current.json",
+      "providerId": "gowm.spatial-analysis.bridge",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:41da4a22a4bca774e31407bdfa7c620af3efcca7c04dca1b1b0d7101d46ebe46",
+      "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "spatial.find-nearby",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-nearest",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-in-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-intersections",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-near-route",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-containing-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.count-in-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.summarize-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.join",
+          "operationVersion": "1.0",
+          "maturity": "EXPERIMENTAL"
+        },
+        {
+          "operationId": "spatial.aggregate",
+          "operationVersion": "1.0",
+          "maturity": "EXPERIMENTAL"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/spatial-provider.json",
+      "providerId": "gowm.spatial-analysis.bridge",
+      "providerVersion": "0.2.0",
+      "manifestHash": "sha256:41da4a22a4bca774e31407bdfa7c620af3efcca7c04dca1b1b0d7101d46ebe46",
+      "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "spatial.find-nearby",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-nearest",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-in-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-intersections",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-near-route",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.find-containing-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.count-in-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.summarize-area",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "spatial.join",
+          "operationVersion": "1.0",
+          "maturity": "EXPERIMENTAL"
+        },
+        {
+          "operationId": "spatial.aggregate",
+          "operationVersion": "1.0",
+          "maturity": "EXPERIMENTAL"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/world-evidence-current.json",
+      "providerId": "gowm.world-evidence",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:43c53446d1ea3a5a69b7e8e76c27183e0c26984074c2556ec30b77551704d625",
+      "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "world.get-current-state",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-geometry",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-provenance",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-observations",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-event-timeline",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-state-history",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "result.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "reference-set.get-members",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    },
+    {
+      "path": "contracts/manifests/providers/world-evidence-provider.json",
+      "providerId": "gowm.world-evidence",
+      "providerVersion": "1.0.0",
+      "manifestHash": "sha256:43c53446d1ea3a5a69b7e8e76c27183e0c26984074c2556ec30b77551704d625",
+      "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb",
+      "manifestSchemaVersion": "1.0",
+      "operations": [
+        {
+          "operationId": "world.get-current-state",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-geometry",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-provenance",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-observations",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-event-timeline",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "world.get-state-history",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "result.get",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        },
+        {
+          "operationId": "reference-set.get-members",
+          "operationVersion": "1.0",
+          "maturity": "PREVIEW"
+        }
+      ]
+    }
+  ],
+  "stasNativeContract": "contracts/gowm-v0.6.1/manifests/stas-native-lock.json",
+  "reconciliation": [
+    "15 expected providers; STAS currently exposes a native protocol, requiring a protocol adapter for the unified registry.",
+    "Network, Route and Coverage have current runtime manifests but no controlled registry fragment.",
+    "Current aliases are duplicate snapshots, not independent providers."
+  ]
+}
