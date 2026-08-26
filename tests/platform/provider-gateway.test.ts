@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { readFile } from "node:fs/promises";
+import { assembleWorldPlatformRegistry } from "../../scripts/build-world-platform-registry.js";
+import { loadControlledProviderDeployments } from "../../services/gateway/world-capability-gateway/src/config.js";
 import {
   validateContract,
   type CapabilityProviderManifest,
@@ -407,5 +410,40 @@ describe("Capability Registry and direct execution", () => {
     expect(execution.headers["idempotent-replay"]).toBe("false");
     expect(forged.statusCode).toBe(422);
     await app.close();
+  });
+});
+
+describe("controlled World Platform registry build", () => {
+  async function sources() {
+    const entries = (await Promise.all(["capability", "grounding", "planning"].map((p) => loadControlledProviderDeployments(`config/${p}-gateway-registry.json`)))).flat();
+    const policy = JSON.parse(await readFile("config/world-platform-provider-set.json", "utf8"));
+    return { entries, policy };
+  }
+  it("combines discovered canonical fragments deterministically with 15 providers and no collision", async () => {
+    const { entries, policy } = await sources();
+    const built = assembleWorldPlatformRegistry(entries, policy);
+    expect(built.report).toMatchObject({ providerCount: 15, operationCount: 122, missingRequiredProviders: [], operationCollisions: [], status: "PASS" });
+    expect(assembleWorldPlatformRegistry([...entries].reverse(), policy)).toEqual(built);
+    expect(built.registryDocument.registryProfile).toBe("world-platform");
+  });
+  it("rejects missing required providers, identity/hash drift, duplicate routes and unapproved providers", async () => {
+    const { entries, policy } = await sources();
+    expect(() => assembleWorldPlatformRegistry(entries.filter((e) => e.providerId !== "gowm.stas"), policy)).toThrow("Missing required");
+    expect(() => assembleWorldPlatformRegistry([{ ...entries[0]!, manifestHash: `sha256:${"0".repeat(64)}` }, ...entries.slice(1)], policy)).toThrow("identity/hash mismatch");
+    expect(() => assembleWorldPlatformRegistry([...entries, entries[0]!], policy)).toThrow("Duplicate provider");
+    expect(() => assembleWorldPlatformRegistry(entries, { ...policy, requiredProviders: policy.requiredProviders.filter((p: string) => p !== "gowm.stas") })).toThrow("outside controlled");
+    const duplicate = structuredClone(entries[1]!.approvedManifest);
+    duplicate.capabilities.push(structuredClone(entries[0]!.approvedManifest.capabilities[0]!));
+    const collisions = entries.map((e,i) => i === 1 ? { ...e, approvedManifest: duplicate, manifestHash: sha256(duplicate) } : e);
+    expect(() => assembleWorldPlatformRegistry(collisions, policy)).toThrow(/Operation collision|already registered/u);
+    expect(() => assembleWorldPlatformRegistry(entries, { ...policy, excludedClasses: [] })).toThrow("exclude all");
+  });
+  it("allows absent optional bridges with an explicit warning and unchanged required ownership", async () => {
+    const { entries, policy } = await sources();
+    const required = entries.filter((e) => policy.requiredProviders.includes(e.providerId));
+    const built = assembleWorldPlatformRegistry(required, policy);
+    expect(built.report.providerCount).toBe(13);
+    expect(built.report.warnings).toHaveLength(2);
+    expect(built.report.status).toBe("PASS");
   });
 });

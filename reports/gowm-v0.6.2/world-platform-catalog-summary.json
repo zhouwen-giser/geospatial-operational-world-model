@@ -1,0 +1,108 @@
+{
+  "fragments": [
+    "capability-gateway-registry.json",
+    "grounding-gateway-registry.json",
+    "planning-gateway-registry.json"
+  ],
+  "providerCount": 15,
+  "operationCount": 122,
+  "providers": [
+    {
+      "providerId": "gowm.crs-normalization.bridge",
+      "manifestPath": "contracts/manifests/providers/crs-provider.json",
+      "manifestHash": "sha256:bf6a411829c2a1326aefbdda166438ebde69768f3de7e68d32a4d67c540d88d9",
+      "operationCount": 6
+    },
+    {
+      "providerId": "gowm.geometry.bridge",
+      "manifestPath": "contracts/manifests/providers/geometry-provider.json",
+      "manifestHash": "sha256:9ab71a6700fa582ccd09880db525e7f57fe0b1973404efbb0688c757ca711c6c",
+      "operationCount": 19
+    },
+    {
+      "providerId": "gowm.h3.interactive.bridge",
+      "manifestPath": "contracts/manifests/providers/h3-interactive-provider.json",
+      "manifestHash": "sha256:248446504d5abaa5103839ab6c56e0af280e0f6aa3e4a193ca589cf799b148fc",
+      "operationCount": 8
+    },
+    {
+      "providerId": "gowm.h3.analysis.bridge",
+      "manifestPath": "contracts/manifests/providers/h3-analysis-provider.json",
+      "manifestHash": "sha256:4f2b2d5d341e58f9c9a74ba90c0f7f4ee571914903cd8e558fb6b1c26db6918a",
+      "operationCount": 3
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "manifestPath": "contracts/manifests/providers/spatial-provider.json",
+      "manifestHash": "sha256:23a27eb32f73db3550d4bbde95457754df802a152d2f0bdcff43ce00334f03ee",
+      "operationCount": 10
+    },
+    {
+      "providerId": "gowm.situation.h3",
+      "manifestPath": "contracts/manifests/providers/gowm-situation-provider.json",
+      "manifestHash": "sha256:5d883ad6373409d972666f19f2554587957fe161f30f46686e82c23f2ae8cb4d",
+      "operationCount": 4
+    },
+    {
+      "providerId": "gowm.reference-catalog",
+      "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
+      "manifestHash": "sha256:75a7af4c36b2662a1ceb30f77a1d9143cb158a94a103083c5efad1b17d4291e6",
+      "operationCount": 4
+    },
+    {
+      "providerId": "gowm.dataset-catalog",
+      "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
+      "manifestHash": "sha256:e59b2011c102d8f33b87daa46336994c516c6a9290e95381753059909a148c1f",
+      "operationCount": 13
+    },
+    {
+      "providerId": "gowm.world-evidence",
+      "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
+      "manifestHash": "sha256:5611eb8594d8121adc06d33dc0ab0886ba66edc6f222987b28c37973b9c8053f",
+      "operationCount": 8
+    },
+    {
+      "providerId": "gowm.operational-reality",
+      "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
+      "manifestHash": "sha256:445cc4ff07bad110a9f602c1182e8fb502b9f3b0bba04c7348ee6fe79d0461a9",
+      "operationCount": 8
+    },
+    {
+      "providerId": "gowm.platform-validation",
+      "manifestPath": "contracts/manifests/providers/platform-validation-provider.json",
+      "manifestHash": "sha256:a1c8f328af082fc29935b05b3efd01e7e335b44aa0ccb94356e2033f9c6793e9",
+      "operationCount": 4
+    },
+    {
+      "providerId": "gowm.network",
+      "manifestPath": "contracts/manifests/providers/network-provider.json",
+      "manifestHash": "sha256:8d109cb30a3eef679737fd874eb15120ff0c16a6275f76b366545d4fadfb6771",
+      "operationCount": 11
+    },
+    {
+      "providerId": "gowm.route-planning",
+      "manifestPath": "contracts/manifests/providers/route-provider.json",
+      "manifestHash": "sha256:e564d48d2dd31cedc8deb10e361af62caeeb9edcd744d1b2e5b51e07b15738c8",
+      "operationCount": 4
+    },
+    {
+      "providerId": "gowm.road-coverage-planning",
+      "manifestPath": "contracts/manifests/providers/road-coverage-provider.json",
+      "manifestHash": "sha256:4aa6f023b59dec9186c5e26f3e77703fc4ef6f26f042aaa39edeb67459a2683c",
+      "operationCount": 5
+    },
+    {
+      "providerId": "gowm.stas",
+      "manifestPath": "contracts/manifests/providers/stas-provider.json",
+      "manifestHash": "sha256:087d9f7a574388702aa79c78e7e3de145d77641d3c54f823b1b2bd8016e93880",
+      "operationCount": 15
+    }
+  ],
+  "maturities": {
+    "STABLE": 21,
+    "PREVIEW": 99,
+    "EXPERIMENTAL": 2,
+    "DEPRECATED": 0,
+    "RETIRED": 0
+  }
+}
