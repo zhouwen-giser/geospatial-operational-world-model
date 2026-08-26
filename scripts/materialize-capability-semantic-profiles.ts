@@ -12,6 +12,7 @@ export interface OperationDeclaration {
   implementation: SourceEvidence[];
   tests: string[];
   bridgeLocks?: string[];
+  referenceAuthorities?: string[];
   sqlProbe?: { input: unknown; functions: string[] };
   exactAlgorithm?: SourceEvidence[];
   candidateOnly?: boolean;
@@ -114,6 +115,11 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
         if (inspection.diagnostics || inspection.siblingImports.length || item.symbol && !inspection.symbols.includes(item.symbol)) implementation = false;
       }
       for (const path of declaration?.tests ?? []) await record("UNIT_TEST", path);
+      for (const path of declaration?.referenceAuthorities ?? []) {
+        const source = await record(path.endsWith(".sql") ? "SQL_IMPLEMENTATION" : "TYPESCRIPT_IMPLEMENTATION", path);
+        if (path.endsWith(".sql")) await inspectSql(source);
+        else if (inspectTypeScript(source, resolve(repositoryRoot,path), repositoryRoot).diagnostics) implementation = false;
+      }
       for (const path of declaration?.bridgeLocks ?? []) {
         const lock = JSON.parse(await record("SOURCE_LOCK", path));
         if (!lock.sourceGitCommit && !lock.sourceZipSha256 && !lock.sourceZipDigest && !lock.sourceZip && !lock.sourceKind) implementation = false;
@@ -137,8 +143,8 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
       const currentBlackBox = Boolean(blackBox.status === "PASS" && blackBox.sourceDigest === sourceDigest && receipt?.status === "PASS" && receipt.contractHash === contractHash && Array.isArray(receipt.tests) && receipt.tests.length > 0 && receipt.sourceDigest === sourceDigest);
       if (currentBlackBox) await record("BLACK_BOX_TEST", `${output}/black-box-evidence.json`, op);
       const evidence: ImplementationEvidence = {
-        referenceInput: inputShape.referenceKinds.length > 0 || descriptor.ports.inputs.some((p) => p.valueKind === "REFERENCE_KEY"),
-        referenceOutput: outputShape.referenceKinds.length > 0 || descriptor.ports.outputs.some((p) => p.valueKind === "REFERENCE_KEY"),
+        referenceInput: inputShape.referencePaths.length > 0 || descriptor.ports.inputs.some((p) => p.valueKind === "REFERENCE_KEY"),
+        referenceOutput: outputShape.referencePaths.length > 0 || descriptor.ports.outputs.some((p) => p.valueKind === "REFERENCE_KEY"),
         outputFeatures: outputShape.paths.map((p) => p.split("/").at(-1)!), domainStatuses: primaryStatuses,
         exactSpatial: sql?.exact === true || exactAlgorithm,
         candidateOnly: declaration?.candidateOnly === true || sql?.bboxOnly === true,

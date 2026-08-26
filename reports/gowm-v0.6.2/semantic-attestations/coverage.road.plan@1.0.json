@@ -3,7 +3,7 @@
   "providerId": "gowm.road-coverage-planning",
   "operationId": "coverage.road.plan",
   "operationVersion": "1.0",
-  "semanticProfileHash": "sha256:4e6c3ed2cd69929315e1096d6bc0115dfe448b25d72648b31b1633b9f5c163a2",
+  "semanticProfileHash": "sha256:733c634a3dd7d695e804f4fec096e7be7bc4c77f456ac0c0f87dd4aa08eff78b",
   "rulesApplied": [
     "S001",
     "S002",
@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/road-coverage-provider.json",
-      "sha256": "65ef0da52830b9fcda8a35b9e3cf7043b3ca8c756ae7f648387663bae373eed0"
+      "sha256": "0b332d370c557011b5693386f81a054372b13007b4c7dbddccf0fce85ab07b79"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/road-coverage-provider.json",
-      "sha256": "65ef0da52830b9fcda8a35b9e3cf7043b3ca8c756ae7f648387663bae373eed0"
+      "sha256": "0b332d370c557011b5693386f81a054372b13007b4c7dbddccf0fce85ab07b79"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -50,7 +50,12 @@
     {
       "kind": "UNIT_TEST",
       "path": "tests/unit/coverage-provider-protocol.test.ts",
-      "sha256": "b20ea5f6381eced8a0cb0e432a858a728446f2b375c47505295083076104c5dc"
+      "sha256": "fc76141f2036cf8d9d98f9a4c1d3a4b5081ec1170062bb414224b810c03db321"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/059_coverage_area_reference_read_contract.sql",
+      "sha256": "eb95dd08ef93cf18e3e85fc4353fc851ace004d1e4689b4194bb9537a7797d15"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",

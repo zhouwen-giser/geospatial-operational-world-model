@@ -34,13 +34,13 @@
     {
       "providerId": "gowm.spatial-analysis.bridge",
       "manifestPath": "contracts/manifests/providers/spatial-provider.json",
-      "manifestHash": "sha256:23a27eb32f73db3550d4bbde95457754df802a152d2f0bdcff43ce00334f03ee",
+      "manifestHash": "sha256:bdf02a3574979d5df64760b86f701b76742b83d4328a59dc66b85fac45e7a7b5",
       "operationCount": 10
     },
     {
       "providerId": "gowm.situation.h3",
       "manifestPath": "contracts/manifests/providers/gowm-situation-provider.json",
-      "manifestHash": "sha256:5d883ad6373409d972666f19f2554587957fe161f30f46686e82c23f2ae8cb4d",
+      "manifestHash": "sha256:31e7db4cf03724f7ddbe3d48119d3ed2ed5df483a622a488116afda335e94bcb",
       "operationCount": 4
     },
     {
@@ -52,13 +52,13 @@
     {
       "providerId": "gowm.dataset-catalog",
       "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
-      "manifestHash": "sha256:e59b2011c102d8f33b87daa46336994c516c6a9290e95381753059909a148c1f",
+      "manifestHash": "sha256:9fdab41d6865c6d4cfb8a0d1eccae5041a1589808092a3f35bc9817d4ecc3f08",
       "operationCount": 13
     },
     {
       "providerId": "gowm.world-evidence",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
-      "manifestHash": "sha256:5611eb8594d8121adc06d33dc0ab0886ba66edc6f222987b28c37973b9c8053f",
+      "manifestHash": "sha256:ca50308e3b9d7cd920774959b5e05000cf82a2c05323afd00b1828cba6c658d1",
       "operationCount": 8
     },
     {
@@ -70,13 +70,13 @@
     {
       "providerId": "gowm.platform-validation",
       "manifestPath": "contracts/manifests/providers/platform-validation-provider.json",
-      "manifestHash": "sha256:a1c8f328af082fc29935b05b3efd01e7e335b44aa0ccb94356e2033f9c6793e9",
+      "manifestHash": "sha256:820a10dd38788e4686b503259fed113df736ba42caf27c70b81b19b0d7ac7e84",
       "operationCount": 4
     },
     {
       "providerId": "gowm.network",
       "manifestPath": "contracts/manifests/providers/network-provider.json",
-      "manifestHash": "sha256:8d109cb30a3eef679737fd874eb15120ff0c16a6275f76b366545d4fadfb6771",
+      "manifestHash": "sha256:e771cad36d3cca5fa988e6744e26eb78fd16cec2aa3ad0b4991f022e0bbbe0a0",
       "operationCount": 11
     },
     {
@@ -88,7 +88,7 @@
     {
       "providerId": "gowm.road-coverage-planning",
       "manifestPath": "contracts/manifests/providers/road-coverage-provider.json",
-      "manifestHash": "sha256:4aa6f023b59dec9186c5e26f3e77703fc4ef6f26f042aaa39edeb67459a2683c",
+      "manifestHash": "sha256:fb38889116bc6d313592fd1beb0add5acef75cfba8815551b2277f298cbf5dc4",
       "operationCount": 5
     },
     {

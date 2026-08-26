@@ -40,6 +40,7 @@ import { admitVerifiedCoverageRoute, verifyCoverageRoute } from "../../../../pac
 import { PostgresCoverageAsyncRepository } from "../../../../packages/road-coverage-runtime-core/src/index.js";
 import { NetworkRepository, type BoundaryCrossing, type LoadedNetwork, type NetworkSqlPool, type RoutingSnapshotCurrentnessResult } from "../../../../packages/network-query-core/src/index.js";
 import type { RoadCoverageEngine } from "./engine.js";
+import { resolveCoverageArea } from "./area-reference.js";
 
 type JsonObject = Record<string, unknown>;
 type CoverageObjectiveProfile = GowmV06RoadCoverageRequest["objective"]["profile"];
@@ -92,8 +93,10 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
   readonly #selection: PostgresCoverageSelectionRepository;
   readonly #endpoint: PostgresCoverageEndpointRepository;
   readonly #async: PostgresCoverageAsyncRepository;
+  readonly #pool: Pick<Pool, "connect" | "query">;
 
   constructor(options: PostgresRoadCoverageEngineOptions) {
+    this.#pool = options.pool;
     this.#now = options.now ?? (() => new Date());
     this.#resultTtlMs = positive(options.resultTtlMs ?? 300_000, "resultTtlMs");
     this.#leaseSeconds = positive(options.leaseSeconds ?? 300, "leaseSeconds");
@@ -107,10 +110,12 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
   }
 
   async validate(input: unknown, context: ProviderHandlerContext): Promise<ProviderOperationResult<unknown>> {
-    const request = input as GowmV06RoadCoverageRequest;
+    const resolved = await resolveCoverageArea(this.#pool, input as GowmV06RoadCoverageRequest, context);
+    const request = resolved.request;
     assertRequestResources(request);
     const scope = trustedScope(context);
     const network = await this.#network.loadPinned(request.routingSnapshot, scope, context.deadline.remainingMs());
+    if (resolved.resource) network.dataSnapshot.resources.push(resolved.resource);
     const violations: Array<{ code: string; message: string; path: string }> = [];
     if (request.selectionPolicy.mode !== "MANUAL_OBLIGATIONS" && !isArea(request.area)) {
       violations.push({ code: "AREA_NOT_RESOLVED", message: "area ReferenceKey must be resolved to Polygon or MultiPolygon before planning", path: "/area" });
@@ -134,10 +139,12 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
   }
 
   async selectObligations(input: unknown, context: ProviderHandlerContext): Promise<ProviderOperationResult<unknown>> {
-    const request = input as GowmV06RoadCoverageRequest;
+    const resolved = await resolveCoverageArea(this.#pool, input as GowmV06RoadCoverageRequest, context);
+    const request = resolved.request;
     assertRequestResources(request);
     const scope = trustedScope(context);
     const network = await this.#network.loadPinned(request.routingSnapshot, scope, context.deadline.remainingMs());
+    if (resolved.resource) network.dataSnapshot.resources.push(resolved.resource);
     const startedAt = performance.now();
     const selection = await this.#select(request, scope);
     this.#measure("OBLIGATION_SELECTION", startedAt, selection.obligationSet.obligationCount);
@@ -145,7 +152,9 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
   }
 
   async plan(input: unknown, context: ProviderHandlerContext): Promise<ProviderOperationResult<unknown>> {
-    const request = input as GowmV06RoadCoverageRequest;
+    const original = input as GowmV06RoadCoverageRequest;
+    const resolved = await resolveCoverageArea(this.#pool, original, context);
+    const request = resolved.request;
     assertRequestResources(request);
     const scope = trustedScope(context);
     const gatewayJobId = context.gateway?.gatewayJobId;
@@ -155,16 +164,17 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
       throw new ProviderProtocolError("INVALID_REQUEST", "coverage.road.plan requires a trusted Gateway async job context");
     }
     const network = await this.#network.loadPinned(request.routingSnapshot, scope, context.deadline.remainingMs());
+    if (resolved.resource) network.dataSnapshot.resources.push(resolved.resource);
     const submission = await this.#async.submit({
       dataScopeKey: scope.dataScopeKey,
       datasetScopeKey: scope.datasetScopeKey,
       externalRequestId: request.requestId,
       idempotencyKey: `${gatewayQueryId}:${gatewayNodeId}:${request.requestId}`,
       gatewayJobId,
-      requestHash: canonicalSha256(request),
+      requestHash: canonicalSha256(original),
       routingSnapshotHash: canonicalSha256(request.routingSnapshot),
       routingSnapshot: json(request.routingSnapshot),
-      request: json(request)
+      request: json(original)
     });
     if (["SUCCEEDED", "PARTIAL", "NO_FEASIBLE_PLAN"].includes(submission.status)) {
       const replay = await this.#async.getResult(submission.coverageRequestId, scope.dataScopeKey, scope.datasetScopeKey);
@@ -307,7 +317,9 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     const freshness = await this.#network.inspectFreshness(network, scope, context.deadline.remainingMs());
     const profile = coverageObjectiveProfile(request.candidate.objectiveProfile);
     const travelPolicy: CoverageTravelPolicy = { profileKey: request.routingSnapshot.travelProfileVersion, requiredAccessMask: 0 };
-    const originalRequest = artifact.request as GowmV06RoadCoverageRequest;
+    const resolved = await resolveCoverageArea(this.#pool, artifact.request as GowmV06RoadCoverageRequest, context);
+    const originalRequest = resolved.request;
+    if (resolved.resource) network.dataSnapshot.resources.push(resolved.resource);
     const boundaryAnalysis = await this.#network.routeBoundaryCrossings(
       problem.routingSnapshot, resolvedArea(originalRequest.area) as JsonObject,
       request.candidate.route.segments as JsonObject[], scope, context.deadline.remainingMs()
@@ -336,6 +348,8 @@ export class PostgresRoadCoverageEngine implements RoadCoverageEngine {
     if (artifact === null) throw new ProviderProtocolError("VERSION_NOT_FOUND", "coverage result artifact is unavailable in scope");
     const result = artifact.result as GowmV06CoverageResultSet;
     const network = await this.#network.loadPinned(result.routingSnapshot, scope, context.deadline.remainingMs());
+    const resolved = await resolveCoverageArea(this.#pool, artifact.request as GowmV06RoadCoverageRequest, context);
+    if (resolved.resource) network.dataSnapshot.resources.push(resolved.resource);
     const value = await this.#async.expandGeoJson(request.resultSetReferenceKey.id, request.alternativeId, scope.dataScopeKey, scope.datasetScopeKey);
     this.#measure("GEOJSON_EXPAND", startedAt, Array.isArray(value.features) ? value.features.length : 0);
     return completed(value, network, Array.isArray(value.features) ? value.features.length : 0, 1);
@@ -463,7 +477,7 @@ function coverageIntegrity(network: LoadedNetwork): { dataSnapshotHash: `sha256:
       { name: "coverage-strict-routing", version: "1.1.0" },
       { name: "coverage-verifier", version: "1.1.0" },
       { name: "network-query-core", version: "1.0.0" },
-      { name: "gowm-build-package", version: "0.6.1", digest: coverageBuildDigest() }
+      { name: "gowm-build-package", version: "0.6.2", digest: coverageBuildDigest() }
     ],
     policies: [{ id: "gowm-road-coverage-policy", version: "1.1", digest: canonicalSha256({ boundaryAuthority: "gowm_network_v1", weightedArithmetic: "BIGINT_PPM", leaseFencing: true }) }],
     contractHashes: [contractHash, getContractSchemaHash("urn:gowm:v0.6:road-coverage-request"), getContractSchemaHash("urn:gowm:v0.6:coverage-verification-report")]

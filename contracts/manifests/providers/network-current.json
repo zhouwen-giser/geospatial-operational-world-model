@@ -399,6 +399,14 @@
             "schemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
             "valueKind": "ANY",
             "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "directedState",
+            "path": "/candidates/0/state",
+            "schemaUri": "urn:gowm:v0.6.2:directed-network-state",
+            "schemaHash": "sha256:a5589546cdde35fbabea0152ad38968d8ac91d36abaabf9707530f1945e05bc3",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
           }
         ]
       }

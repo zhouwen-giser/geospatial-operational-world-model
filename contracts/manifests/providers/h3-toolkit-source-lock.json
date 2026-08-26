@@ -35,8 +35,11 @@
     "format": "SELF_CONTAINED_ESM",
     "maximumBytes": 8388608,
     "digestAlgorithm": "SHA-256",
-    "approvedArtifactDigests": [],
-    "approvalState": "BLOCKED_PENDING_REPRODUCIBLE_BUILD"
+    "approvedArtifactDigests": [
+      "sha256:fe1d48cf795e45d7004024a64efb1a792fa42de9a6f2f036ef92a1057ffc2a61"
+    ],
+    "approvalState": "VERIFIED_REPRODUCIBLE_BUILD",
+    "evidence": "reports/gowm-v0.6.2/h3-bindings-build-report.json"
   },
   "sourceCopiedIntoGowm": false
 }

@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "sourceGitCommit": "74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+  "sourceArchiveHash": "sha256:f22096242934925e62ce0efee5dad0ece7f8ba7c96f89fbef91b0945cd8e9ce1",
+  "engineVersion": "4.5.0",
+  "engineArtifact": "h3-js/dist/browser/h3-js.es.js",
+  "engineArtifactHash": "sha256:2932c9fbe968533f03ce98e971bf208ec071a4a628a9ca0695af3432798615da",
+  "esbuildVersion": "0.28.2",
+  "wrapperHash": "sha256:a10253ed7edaed99df2d3ca88a18fbfb9e92b334a43c08f5375afe7b93240a4c",
+  "artifactDigest": "sha256:fe1d48cf795e45d7004024a64efb1a792fa42de9a6f2f036ef92a1057ffc2a61",
+  "artifactBytes": 218759,
+  "independentBuilds": 2,
+  "externalImports": 0,
+  "checks": [
+    "source-commit-export",
+    "pinned-engine",
+    "independent-build-byte-equality",
+    "self-check",
+    "disk",
+    "parent",
+    "cell-geometry"
+  ]
+}

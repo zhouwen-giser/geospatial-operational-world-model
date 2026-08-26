@@ -269,13 +269,20 @@
           "SPATIAL_OBJECT",
           "WORLD_OBJECT"
         ],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "LAYER",
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "CATALOG",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -289,14 +296,21 @@
       "tests": [
         "tests/platform/grounding-catalog-provider.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "referenceAuthorities": [
+        "database/migrations/019_dataset_layer_feature_catalog.sql"
+      ]
     },
     "catalog.search@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "CATALOG",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "LAYER",
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [
           "DISCOVERS_DATA_PRODUCT"
         ],
@@ -304,7 +318,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "CATALOG",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -318,7 +335,10 @@
       "tests": [
         "tests/platform/grounding-catalog-provider.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "referenceAuthorities": [
+        "database/migrations/019_dataset_layer_feature_catalog.sql"
+      ]
     },
     "catalog.list-versions@1.0": {
       "profile": {
@@ -335,13 +355,20 @@
           "SPATIAL_OBJECT",
           "WORLD_OBJECT"
         ],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "LAYER",
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "CATALOG",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -355,7 +382,10 @@
       "tests": [
         "tests/platform/grounding-catalog-provider.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "referenceAuthorities": [
+        "database/migrations/019_dataset_layer_feature_catalog.sql"
+      ]
     },
     "catalog.describe-schema@1.0": {
       "profile": {
@@ -372,13 +402,20 @@
           "SPATIAL_OBJECT",
           "WORLD_OBJECT"
         ],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "LAYER",
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "CATALOG",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -392,7 +429,10 @@
       "tests": [
         "tests/platform/grounding-catalog-provider.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "referenceAuthorities": [
+        "database/migrations/019_dataset_layer_feature_catalog.sql"
+      ]
     },
     "catalog.get-lineage@1.0": {
       "profile": {
@@ -409,13 +449,20 @@
           "SPATIAL_OBJECT",
           "WORLD_OBJECT"
         ],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "LAYER",
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "CATALOG",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -429,7 +476,10 @@
       "tests": [
         "tests/platform/grounding-catalog-provider.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "referenceAuthorities": [
+        "database/migrations/019_dataset_layer_feature_catalog.sql"
+      ]
     },
     "catalog.get-quality@1.0": {
       "profile": {
@@ -446,13 +496,20 @@
           "SPATIAL_OBJECT",
           "WORLD_OBJECT"
         ],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "LAYER",
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "CATALOG",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -466,7 +523,10 @@
       "tests": [
         "tests/platform/grounding-catalog-provider.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "referenceAuthorities": [
+        "database/migrations/019_dataset_layer_feature_catalog.sql"
+      ]
     },
     "catalog.get-capabilities@1.0": {
       "profile": {
@@ -483,13 +543,20 @@
           "SPATIAL_OBJECT",
           "WORLD_OBJECT"
         ],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "LAYER",
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "CATALOG",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -503,7 +570,10 @@
       "tests": [
         "tests/platform/grounding-catalog-provider.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "referenceAuthorities": [
+        "database/migrations/019_dataset_layer_feature_catalog.sql"
+      ]
     }
   }
 }

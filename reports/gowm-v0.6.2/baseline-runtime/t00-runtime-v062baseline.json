@@ -1,0 +1,364 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "T00",
+  "runId": "v062baseline",
+  "image": "gowm-v062-test-db:local",
+  "container": "gowm-v062-acceptance-db",
+  "startedAt": "2026-08-26T11:00:10.031Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "container-exists",
+        "gowm-v062-acceptance-db"
+      ],
+      "status": "PASS",
+      "elapsedMs": 45
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{.Config.Image}}",
+        "gowm-v062-acceptance-db"
+      ],
+      "status": "PASS",
+      "elapsedMs": 25
+    },
+    {
+      "command": [
+        "docker",
+        "exec",
+        "gowm-v062-acceptance-db",
+        "psql",
+        "-U",
+        "gowm",
+        "-d",
+        "postgres",
+        "-Atqc",
+        "SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY datname"
+      ],
+      "status": "PASS",
+      "elapsedMs": 133
+    },
+    {
+      "command": [
+        "docker",
+        "exec",
+        "gowm-v062-acceptance-db",
+        "createdb",
+        "-U",
+        "gowm",
+        "-O",
+        "gowm",
+        "gowm_v061_recovery_v062baseline"
+      ],
+      "status": "PASS",
+      "elapsedMs": 242
+    },
+    {
+      "command": [
+        "initial-postgres-health",
+        "gowm-v062-acceptance-db"
+      ],
+      "status": "PASS",
+      "elapsedMs": 30
+    },
+    {
+      "command": [
+        "migration-batch-001-058",
+        "gowm_v061_recovery_v062baseline"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3680
+    },
+    {
+      "command": [
+        "coverage-small-fixture",
+        "gowm_v061_recovery_v062baseline"
+      ],
+      "status": "PASS",
+      "elapsedMs": 262
+    },
+    {
+      "command": [
+        "coverage-medium-fixture",
+        "gowm_v061_recovery_v062baseline"
+      ],
+      "status": "PASS",
+      "elapsedMs": 174
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-before",
+        "gowm-v062-acceptance-db"
+      ],
+      "status": "PASS",
+      "elapsedMs": 5876
+    },
+    {
+      "command": [
+        "restart-dedicated-postgres",
+        "gowm-v062-acceptance-db"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1385
+    },
+    {
+      "command": [
+        "restarted-postgres-health",
+        "gowm-v062-acceptance-db"
+      ],
+      "status": "PASS",
+      "elapsedMs": 2124
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-t00-after",
+        "gowm-v062-acceptance-db"
+      ],
+      "status": "PASS",
+      "elapsedMs": 1037
+    },
+    {
+      "command": [
+        "docker",
+        "exec",
+        "gowm-v062-acceptance-db",
+        "dropdb",
+        "-U",
+        "gowm",
+        "--force",
+        "gowm_v061_recovery_v062baseline"
+      ],
+      "status": "PASS",
+      "elapsedMs": 270
+    }
+  ],
+  "before": {
+    "status": "PASS",
+    "phase": "before",
+    "checks": {
+      "smallSelection": true,
+      "smallQueued": true,
+      "smallCompleted": true,
+      "smallPlan": true,
+      "smallExpand": true,
+      "mediumSelection": true,
+      "mediumQueued": true,
+      "mediumCompleted": true,
+      "mediumPlan": true,
+      "mediumExpand": true,
+      "mediumMemoryBound": true,
+      "foreignResultDenied": true,
+      "cursorTamperDenied": true,
+      "sqlInjectionDenied": true,
+      "sqlParameterized": true,
+      "urlInjectionDenied": true,
+      "areaVertexLimit": true,
+      "candidateLimit": true,
+      "outputLimit": true,
+      "obligationLimitContract": true,
+      "matrixLimit": true,
+      "foreignRequestDenied": true,
+      "nodeErrorIdentity": true,
+      "coverageOutage": true,
+      "networkUnaffected": true,
+      "routeUnaffected": true,
+      "concurrentDuplicateJob": true,
+      "concurrentDuplicateResult": true,
+      "concurrentDuplicateSingleton": true,
+      "reclaimInitialAttemptGeneration": true,
+      "reclaimExpiredReaped": true,
+      "reclaimRequestRequeued": true,
+      "reclaimConcurrentSingleton": true,
+      "reclaimMonotonicAttemptGeneration": true,
+      "reclaimOldHeartbeatFenced": true,
+      "reclaimOldProblemFenced": true,
+      "reclaimOldCandidateFenced": true,
+      "reclaimOldResultFenced": true,
+      "reclaimNewHeartbeat": true,
+      "reclaimNewResultPublished": true,
+      "reclaimDuplicatePublishFenced": true,
+      "reclaimDurableMonotonicSingleton": true,
+      "reclaimLoadBounded": true,
+      "SOLVINGHeartbeat": true,
+      "SOLVINGCancelled": true,
+      "SOLVINGLateHeartbeatFenced": true,
+      "SOLVINGLatePersistFenced": true,
+      "VERIFYINGHeartbeat": true,
+      "VERIFYINGCancelled": true,
+      "VERIFYINGLateHeartbeatFenced": true,
+      "VERIFYINGLatePersistFenced": true,
+      "PUBLISHINGHeartbeat": true,
+      "PUBLISHINGCancelled": true,
+      "PUBLISHINGLateHeartbeatFenced": true,
+      "PUBLISHINGLatePersistFenced": true,
+      "chaosCancellation": true,
+      "databaseFailureNotNoFeasible": true,
+      "logRedaction": true,
+      "small-OBLIGATION_SELECTION": true,
+      "small-ENDPOINT_RESOLUTION": true,
+      "small-CONNECTOR_MATRIX_SEARCH": true,
+      "small-SOLVER_TOTAL": true,
+      "small-INDEPENDENT_VERIFIER": true,
+      "small-RESULT_PERSIST": true,
+      "small-GEOJSON_EXPAND": true,
+      "medium-OBLIGATION_SELECTION": true,
+      "medium-ENDPOINT_RESOLUTION": true,
+      "medium-CONNECTOR_MATRIX_SEARCH": true,
+      "medium-SOLVER_TOTAL": true,
+      "medium-INDEPENDENT_VERIFIER": true,
+      "medium-RESULT_PERSIST": true,
+      "medium-GEOJSON_EXPAND": true
+    },
+    "profiles": {
+      "small": {
+        "obligationCount": 1,
+        "elapsedMs": 369.555,
+        "heapDeltaBytes": 2034264
+      },
+      "medium": {
+        "obligationCount": 20,
+        "elapsedMs": 958.971,
+        "heapDeltaBytes": 26641984,
+        "segmentCount": 40
+      }
+    },
+    "stages": {
+      "small": {
+        "OBLIGATION_SELECTION": {
+          "samples": 2,
+          "elapsedMs": 12.659,
+          "units": 2
+        },
+        "ENDPOINT_RESOLUTION": {
+          "samples": 1,
+          "elapsedMs": 29.569,
+          "units": 0
+        },
+        "CONNECTOR_MATRIX_SEARCH": {
+          "samples": 1,
+          "elapsedMs": 16,
+          "units": 2
+        },
+        "SOLVER_TOTAL": {
+          "samples": 1,
+          "elapsedMs": 16.094,
+          "units": 1
+        },
+        "INDEPENDENT_VERIFIER": {
+          "samples": 1,
+          "elapsedMs": 14.664,
+          "units": 3
+        },
+        "RESULT_PERSIST": {
+          "samples": 2,
+          "elapsedMs": 37.259,
+          "units": 4
+        },
+        "GEOJSON_EXPAND": {
+          "samples": 1,
+          "elapsedMs": 21.342,
+          "units": 3
+        }
+      },
+      "medium": {
+        "OBLIGATION_SELECTION": {
+          "samples": 3,
+          "elapsedMs": 21.883,
+          "units": 41
+        },
+        "ENDPOINT_RESOLUTION": {
+          "samples": 2,
+          "elapsedMs": 55.98,
+          "units": 0
+        },
+        "CONNECTOR_MATRIX_SEARCH": {
+          "samples": 2,
+          "elapsedMs": 601,
+          "units": 11366
+        },
+        "SOLVER_TOTAL": {
+          "samples": 2,
+          "elapsedMs": 600.371,
+          "units": 11345
+        },
+        "INDEPENDENT_VERIFIER": {
+          "samples": 2,
+          "elapsedMs": 65.908,
+          "units": 44
+        },
+        "RESULT_PERSIST": {
+          "samples": 4,
+          "elapsedMs": 49.455,
+          "units": 46
+        },
+        "GEOJSON_EXPAND": {
+          "samples": 1,
+          "elapsedMs": 12.039,
+          "units": 40
+        }
+      }
+    },
+    "reclaimElapsedMs": 1195.7066399999999,
+    "duplicate": {
+      "jobs": 1,
+      "requests": 1,
+      "results": 1
+    },
+    "restartProbe": {
+      "queryId": "query-plan-small-v062baseline",
+      "resultHash": "sha256:20591cf2d3c13770dbd3cf8fe517b190d5d0e11ee2476b720983047b9b6427a1",
+      "resultReferenceKey": "wrf_4b899da4e1d07fad274cc7621a55230c"
+    }
+  },
+  "after": {
+    "status": "PASS",
+    "phase": "after",
+    "checks": {
+      "deterministicQuery": true,
+      "gatewayWorkerReplay": true,
+      "resultReadAfterRestart": true,
+      "postgresRestartPersistence": true,
+      "reclaimGenerationAfterRestart": true
+    },
+    "probe": {
+      "query_id": "query-plan-small-v062baseline",
+      "result_hash": "sha256:20591cf2d3c13770dbd3cf8fe517b190d5d0e11ee2476b720983047b9b6427a1",
+      "result_reference_key": "wrf_4b899da4e1d07fad274cc7621a55230c",
+      "gateway_job_id": "725143e5-9910-4703-b6f1-fd5593c4e2fc"
+    },
+    "persisted": {
+      "jobs": 1,
+      "requests": 1,
+      "results": 1
+    }
+  },
+  "restart": {
+    "status": "PASS",
+    "elapsedMs": 3509,
+    "healthyElapsedMs": 2124
+  },
+  "cleanup": [
+    {
+      "database": "gowm_v061_recovery_v062baseline",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "sourceBefore": {
+    "digest": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+    "fileCount": 947
+  },
+  "database": "gowm_v061_recovery_v062baseline",
+  "reusedDedicatedContainer": true,
+  "sourceAfter": {
+    "digest": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+    "fileCount": 947
+  },
+  "finishedAt": "2026-08-26T11:00:25.754Z"
+}

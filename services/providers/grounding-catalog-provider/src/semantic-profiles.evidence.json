@@ -45,7 +45,11 @@
       "SPATIAL_OBJECT",
       "WORLD_OBJECT"
     ],
-    "producedReferenceKinds": [],
+    "producedReferenceKinds": [
+      "DERIVED_REFERENCE",
+      "QUERY_RESULT",
+      "REFERENCE_SET"
+    ],
     "relationSemantics": [],
     "spatialSemantics": "NONE",
     "timeSemantics": "SNAPSHOT",
@@ -64,7 +68,10 @@
         "PARTIAL": "PARTIAL",
         "STALE": "STALE"
       }
-    }
+    },
+    "notes": [
+      "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+    ]
   },
   "world.get-current-state@1.0": {
     "profileVersion": "1.0",

@@ -23,7 +23,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "VALIDATION",
         "negativeEvidencePolicy": "NOT_APPLICABLE",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "implementation": [
         {
@@ -34,7 +37,10 @@
       "tests": [
         "tests/unit/coverage-provider-protocol.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "referenceAuthorities": [
+        "database/migrations/059_coverage_area_reference_read_contract.sql"
+      ]
     },
     "coverage.road.select-obligations@1.0": {
       "profile": {
@@ -67,7 +73,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "DERIVED",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "implementation": [
         {
@@ -78,7 +87,10 @@
       "tests": [
         "tests/unit/coverage-provider-protocol.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "referenceAuthorities": [
+        "database/migrations/059_coverage_area_reference_read_contract.sql"
+      ]
     },
     "coverage.road.plan@1.0": {
       "profile": {
@@ -123,7 +135,10 @@
             "PARTIAL": "PARTIAL",
             "SUCCEEDED": "COMPLETED"
           }
-        }
+        },
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "implementation": [
         {
@@ -140,6 +155,9 @@
           "path": "packages/road-coverage-verifier-core/src/verification.ts",
           "symbol": "verifyCoverageRoute"
         }
+      ],
+      "referenceAuthorities": [
+        "database/migrations/059_coverage_area_reference_read_contract.sql"
       ]
     },
     "coverage.road.verify@1.0": {
@@ -172,7 +190,10 @@
             "STALE": "STALE",
             "VALID": "COMPLETED"
           }
-        }
+        },
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "implementation": [
         {
@@ -183,7 +204,10 @@
       "tests": [
         "tests/unit/coverage-provider-protocol.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "referenceAuthorities": [
+        "database/migrations/059_coverage_area_reference_read_contract.sql"
+      ]
     },
     "coverage.road.expand-geojson@1.0": {
       "profile": {
@@ -216,7 +240,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "DERIVED",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "implementation": [
         {
@@ -227,7 +254,10 @@
       "tests": [
         "tests/unit/coverage-provider-protocol.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "referenceAuthorities": [
+        "database/migrations/059_coverage_area_reference_read_contract.sql"
+      ]
     }
   }
 }

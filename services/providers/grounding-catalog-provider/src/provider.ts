@@ -139,6 +139,12 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
           valueKind: "GEOMETRY" as const,
           unitSemantics: "ANGULAR_DEGREES" as const
         }] : [])
+        ,...(operationId === "world.get-current-state" ? [{
+          name: "position", path: "/facts/0/position",
+          schemaUri: "urn:gowm:v0.6.2:geojson-point",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.6.2:geojson-point"),
+          valueKind: "GEOMETRY" as const, unitSemantics: "ANGULAR_DEGREES" as const
+        }] : [])
       ]
     }
   };

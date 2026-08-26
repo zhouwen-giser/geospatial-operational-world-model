@@ -3,7 +3,7 @@
   "providerId": "gowm.spatial-analysis.bridge",
   "operationId": "spatial.summarize-area",
   "operationVersion": "1.0",
-  "semanticProfileHash": "sha256:9ff5ad85f919eb42a8e031e9217557201a6ffd083e8e33c79e5db19f457fc6f7",
+  "semanticProfileHash": "sha256:9962749c808ba158dcf71eb019e74f2ad0f1d12570dcb0030006f0d6d93f9f7a",
   "rulesApplied": [
     "S001",
     "S002",
@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/spatial-provider.json",
-      "sha256": "0d3d8c631d146fd31df5a37b872f7a3b3e5975c37b987a3126f524609a456f6d"
+      "sha256": "629c0d73266bad3a58528b589231f75b59a6b890b0dea504e98b2ebd97744700"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/spatial-provider.json",
-      "sha256": "0d3d8c631d146fd31df5a37b872f7a3b3e5975c37b987a3126f524609a456f6d"
+      "sha256": "629c0d73266bad3a58528b589231f75b59a6b890b0dea504e98b2ebd97744700"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -58,6 +58,11 @@
       "sha256": "30cdcad58f73906609d1d365672d0afb34935c56585888bdf32358d0ca98572a"
     },
     {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/012_gowm_spatial_v1_read_contract.sql",
+      "sha256": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10"
+    },
+    {
       "kind": "SOURCE_LOCK",
       "path": "contracts/manifests/providers/spatial-provider-source-lock.json",
       "sha256": "4c4e9cf94cec643c70db8acb17a162dd6f8fe3a55c79f90565b039b463367615"
@@ -71,6 +76,6 @@
   ],
   "status": "PROVEN",
   "notes": [
-    "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters."
+    "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
   ]
 }

@@ -127,6 +127,17 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
       const requested = parseRoutingSnapshot(payload.routingSnapshot);
       if (!requested) return { status: "UNKNOWN", reasons: ["Stored routing snapshot is invalid"] };
       const currentness = await readRoutingSnapshotCurrentness(client, requested);
+      if (currentness.currentness === "CURRENT") {
+        const area = (await client.query<Row>(
+          "SELECT * FROM gowm_platform_validation_v1.coverage_area_currentness WHERE reference_key=$1", [row.reference_key]
+        )).rows;
+        if (area.length > 1 || area.some((pin) => pin.pinned_version == null || pin.current_version == null)) {
+          return {status:"UNKNOWN",reasons:["Coverage area pin cannot be proven against the scoped feature authority"]};
+        }
+        if (area.some((pin) => pin.pinned_version !== pin.current_version || pin.pinned_hash !== pin.current_hash)) {
+          return {status:"STALE",reasons:["Coverage area feature version or content changed"]};
+        }
+      }
       return { status: currentness.currentness === "UNAVAILABLE" ? "UNKNOWN" : currentness.currentness, reasons: currentness.reasons };
     }
     const stored = (await client.query<{ manifest: DataSnapshotManifest }>(

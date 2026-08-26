@@ -3,7 +3,7 @@
   "providerId": "gowm.dataset-catalog",
   "operationId": "catalog.describe-schema",
   "operationVersion": "1.0",
-  "semanticProfileHash": "sha256:95136359d430e34d5dbbe7450acb0bde42c65c0530e52e1525171eeae2ae0d57",
+  "semanticProfileHash": "sha256:76736ff33a0568e7ba253b29c210a92cd7ee09f7780856de9c9faa8cb8fa8e00",
   "rulesApplied": [
     "S001",
     "S002",
@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/dataset-catalog-provider.json",
-      "sha256": "d43a98cb909a904ade2a699ad13541892ef4793c1f1eb33bb2447ec5cae207bc"
+      "sha256": "f36f9210a8ccf9c5bfa734df7bd751b425cf2e8d7fc5a48f90175bd8dc80573d"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/dataset-catalog-provider.json",
-      "sha256": "d43a98cb909a904ade2a699ad13541892ef4793c1f1eb33bb2447ec5cae207bc"
+      "sha256": "f36f9210a8ccf9c5bfa734df7bd751b425cf2e8d7fc5a48f90175bd8dc80573d"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,22 +44,27 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/provider.ts",
-      "sha256": "08354fc03464bb12d85415812dea67bebce2a74fd9a2990ffe66bd2b1c50a77c",
+      "sha256": "d2ded99b9f8476ea511d33c08d1ec0412ba05a2c655189e02de7ce6901b61370",
       "symbol": "createGroundingCatalogProvider"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/repository.ts",
-      "sha256": "7bada2d73b10b68ff1dce79dffaf68bf553dd8b243311bff3c97a31c573820cf"
+      "sha256": "aecd84888fc2301b8998e52fafd63dc7cd1002674f5a5ef659d33069094cf218"
     },
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/grounding-catalog-provider.test.ts",
-      "sha256": "d2062a82bfec43c8f9aa9af645750dd2ea618e0aa3ad8e1eebbb0a434da3f427"
+      "sha256": "45372873116f2ca23229aa994d121fcda459a6cfc05fab83fa484f97593b704d"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/019_dataset_layer_feature_catalog.sql",
+      "sha256": "831cae1fa3b407ea55fbe2a18d14311eff8ecda8d4e5840f4cd7a8e291b241dd"
     }
   ],
   "status": "PROVEN",
   "notes": [
-    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
   ]
 }

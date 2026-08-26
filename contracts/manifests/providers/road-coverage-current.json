@@ -39,7 +39,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "VALIDATION",
         "negativeEvidencePolicy": "NOT_APPLICABLE",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "semanticRole": "DOMAIN_ANALYSIS",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
@@ -135,7 +138,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "DERIVED",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "semanticRole": "DOMAIN_ANALYSIS",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
@@ -235,7 +241,10 @@
             "PARTIAL": "PARTIAL",
             "SUCCEEDED": "COMPLETED"
           }
-        }
+        },
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "semanticRole": "DOMAIN_ANALYSIS",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
@@ -323,7 +332,10 @@
             "STALE": "STALE",
             "VALID": "COMPLETED"
           }
-        }
+        },
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "semanticRole": "DOMAIN_ANALYSIS",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
@@ -412,7 +424,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "DERIVED",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Area references are pinned LAYER_FEATURE Polygon/MultiPolygon versions, read through gowm_network_v1.coverage_area_reference. Other ReferenceKind syntax in legacy shared schemas does not authorize a different area type. Network and area snapshots remain separate from mathematical plan validity."
+        ]
       },
       "semanticRole": "DOMAIN_ANALYSIS",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",

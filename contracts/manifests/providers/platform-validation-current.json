@@ -5,7 +5,7 @@
     "providerId": "gowm.platform-validation",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:d664e9049f53b9db9206b098d3d928b90e1e3e4f6572ce1a26091446f3595da4",
+    "implementationDigest": "sha256:6014ea778151bdebabb25e5cfe24ed4fca8983c00c3d28d77d2f597c25aa7677",
     "sourceRef": "urn:gowm:source:in-tree:platform-validation-provider:1.0.0"
   },
   "endpoints": {
@@ -22,8 +22,28 @@
       "semanticProfile": {
         "profileVersion": "1.0",
         "domain": "PLATFORM",
-        "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [
           "VALIDATES"
         ],
@@ -31,7 +51,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "VALIDATION",
         "negativeEvidencePolicy": "NOT_APPLICABLE",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
@@ -91,8 +114,28 @@
       "semanticProfile": {
         "profileVersion": "1.0",
         "domain": "PLATFORM",
-        "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [
           "VALIDATES"
         ],
@@ -100,7 +143,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "VALIDATION",
         "negativeEvidencePolicy": "NOT_APPLICABLE",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
@@ -161,13 +207,26 @@
         "profileVersion": "1.0",
         "domain": "PLATFORM",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "VALIDATION",
         "negativeEvidencePolicy": "NOT_APPLICABLE",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
@@ -227,7 +286,17 @@
       "semanticProfile": {
         "profileVersion": "1.0",
         "domain": "PLATFORM",
-        "acceptedReferenceKinds": [],
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
         "producedReferenceKinds": [],
         "relationSemantics": [
           "VALIDATES_SNAPSHOT"
@@ -245,7 +314,10 @@
             "UNAVAILABLE": "INDETERMINATE",
             "UNKNOWN": "INDETERMINATE"
           }
-        }
+        },
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",

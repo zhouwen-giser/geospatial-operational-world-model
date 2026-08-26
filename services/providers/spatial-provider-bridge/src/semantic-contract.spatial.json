@@ -7,7 +7,9 @@
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [
           "NEAR"
         ],
@@ -17,7 +19,8 @@
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
         "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
         "notes": [
-          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
         ]
       },
       "implementation": [
@@ -32,7 +35,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -55,14 +58,19 @@
       "distance": {
         "unit": "METERS",
         "model": "WGS84_GEOGRAPHY_SPHEROID"
-      }
+      },
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+      ]
     },
     "spatial.find-nearest@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [
           "NEAR"
         ],
@@ -72,7 +80,8 @@
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
         "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
         "notes": [
-          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
         ]
       },
       "implementation": [
@@ -87,7 +96,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -109,14 +118,21 @@
       "distance": {
         "unit": "METERS",
         "model": "WGS84_GEOGRAPHY_SPHEROID"
-      }
+      },
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+      ]
     },
     "spatial.find-in-area@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "SPATIAL",
-        "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "acceptedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [
           "INSIDE"
         ],
@@ -126,7 +142,8 @@
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
         "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
         "notes": [
-          "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed."
+          "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
         ]
       },
       "implementation": [
@@ -141,7 +158,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -174,14 +191,21 @@
         "functions": [
           "st_covers"
         ]
-      }
+      },
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+      ]
     },
     "spatial.find-intersections@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "SPATIAL",
-        "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "acceptedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [
           "INTERSECTS"
         ],
@@ -189,7 +213,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "FACT",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -203,7 +230,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -236,14 +263,19 @@
         "functions": [
           "st_intersects"
         ]
-      }
+      },
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+      ]
     },
     "spatial.find-near-route@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [
           "NEAR"
         ],
@@ -253,7 +285,8 @@
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
         "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
         "notes": [
-          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary."
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
         ]
       },
       "implementation": [
@@ -268,7 +301,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -296,14 +329,19 @@
       "distance": {
         "unit": "METERS",
         "model": "WGS84_GEOGRAPHY_SPHEROID"
-      }
+      },
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+      ]
     },
     "spatial.find-containing-area@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [
           "CONTAINS"
         ],
@@ -313,7 +351,8 @@
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
         "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
         "notes": [
-          "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed."
+          "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
         ]
       },
       "implementation": [
@@ -328,7 +367,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -345,20 +384,28 @@
         "functions": [
           "st_covers"
         ]
-      }
+      },
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+      ]
     },
     "spatial.count-in-area@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "AGGREGATED",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "FACT",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -372,7 +419,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -405,20 +452,28 @@
         "functions": [
           "st_covers"
         ]
-      }
+      },
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+      ]
     },
     "spatial.summarize-area@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "AGGREGATED",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "FACT",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -432,7 +487,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -466,20 +521,28 @@
         "functions": [
           "st_covers"
         ]
-      }
+      },
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+      ]
     },
     "spatial.join@1.0": {
       "profile": {
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "FACT",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -493,9 +556,12 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
       ]
     },
     "spatial.aggregate@1.0": {
@@ -503,13 +569,18 @@
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "LAYER_FEATURE"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "NONE",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "FACT",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -523,9 +594,12 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
+      ],
+      "referenceAuthorities": [
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
       ]
     }
   }

@@ -2807,6 +2807,13 @@ export type CapabilitySemanticProfileV1 = {
   timeSemantics: "CURRENT" | "HISTORICAL" | "INTERVAL" | "SNAPSHOT" | "NONE";
 };
 
+export type PinnedDirectedNetworkStatePort = GowmV05NetworkCommonDirectedState;
+
+export type ProjectedWgs84PointPort = {
+  coordinates: [number, number, ...Array<number>];
+  type: "Point";
+};
+
 export type SemanticAttestation = {
   evidence: Array<{
   kind: "DESCRIPTOR" | "INPUT_SCHEMA" | "OUTPUT_SCHEMA" | "PORTS" | "TYPESCRIPT_IMPLEMENTATION" | "SQL_IMPLEMENTATION" | "BRIDGE_CONTRACT" | "SOURCE_LOCK" | "UNIT_TEST" | "BLACK_BOX_TEST" | "ADR" | "CALLER";

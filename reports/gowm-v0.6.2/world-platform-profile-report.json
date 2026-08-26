@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "checks": {
+    "onlyGatewayPublished": true,
+    "internalDefaultNetwork": true,
+    "gatewaySeparateEdge": true,
+    "providerPortsAbsent": true,
+    "providerNetworkIsolated": true,
+    "requiredProcesses": true,
+    "gatewayNoProviderHealthDependency": true,
+    "privilegedBootstrapSeparate": true,
+    "oneConsumerEndpoint": true
+  },
+  "activeServices": [
+    "dataset-catalog-provider",
+    "gowm-situation-provider",
+    "h3-analysis-provider",
+    "h3-interactive-provider",
+    "network-provider",
+    "operational-reality-provider",
+    "platform-validation-provider",
+    "postgres",
+    "reference-catalog-provider",
+    "road-coverage-provider",
+    "route-planning-provider",
+    "spatial-provider-bridge",
+    "stas-provider",
+    "world-capability-gateway",
+    "world-evidence-provider",
+    "world-platform-bootstrap"
+  ],
+  "publishedServices": [
+    "world-capability-gateway"
+  ]
+}

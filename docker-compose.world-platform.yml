@@ -1,0 +1,482 @@
+# World Platform overlay. Only Gateway publishes a host port. Optional bridges require their own deployment attestations.
+services:
+  postgres:
+    image: ${WORLD_PLATFORM_POSTGRES_IMAGE:-gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1}
+    ports: !reset []
+  mqtt:
+    ports: !reset []
+    profiles:
+    - foundation-admin
+  world-api:
+    ports: !reset []
+    profiles:
+    - foundation-admin
+  observation-ingest:
+    ports: !reset []
+    profiles:
+    - foundation-admin
+  stas:
+    ports: !reset []
+    profiles:
+    - foundation-admin
+  world-mcp-server:
+    ports: !reset []
+    profiles:
+    - foundation-admin
+  projection-worker:
+    profiles:
+    - foundation-admin
+  migrate:
+    profiles:
+    - foundation-admin
+  world-platform-bootstrap:
+    image: gowm-world-platform:0.6.2
+    build: &id001
+      context: .
+      dockerfile: Dockerfile
+    networks: &id002
+    - default
+    profiles: &id006
+    - world-platform
+    restart: 'no'
+    init: true
+    security_opt: &id003
+    - no-new-privileges:true
+    cap_drop: &id004
+    - ALL
+    read_only: true
+    tmpfs: &id005
+    - /tmp
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      disable: true
+    command:
+    - node
+    - dist/scripts/bootstrap-world-platform.js
+    environment:
+      GATEWAY_DB_PASSWORD: ${GATEWAY_DB_PASSWORD:?set distinct GATEWAY_DB_PASSWORD}
+      GATEWAY_REGISTRY_DB_PASSWORD: ${GATEWAY_REGISTRY_DB_PASSWORD:?set distinct GATEWAY_REGISTRY_DB_PASSWORD}
+      SPATIAL_DB_PASSWORD: ${SPATIAL_DB_PASSWORD:?set distinct SPATIAL_DB_PASSWORD}
+      SITUATION_DB_PASSWORD: ${SITUATION_DB_PASSWORD:?set distinct SITUATION_DB_PASSWORD}
+      REFERENCE_DB_PASSWORD: ${REFERENCE_DB_PASSWORD:?set distinct REFERENCE_DB_PASSWORD}
+      CATALOG_DB_PASSWORD: ${CATALOG_DB_PASSWORD:?set distinct CATALOG_DB_PASSWORD}
+      EVIDENCE_DB_PASSWORD: ${EVIDENCE_DB_PASSWORD:?set distinct EVIDENCE_DB_PASSWORD}
+      OPERATIONAL_DB_PASSWORD: ${OPERATIONAL_DB_PASSWORD:?set distinct OPERATIONAL_DB_PASSWORD}
+      VALIDATION_DB_PASSWORD: ${VALIDATION_DB_PASSWORD:?set distinct VALIDATION_DB_PASSWORD}
+      NETWORK_DB_PASSWORD: ${NETWORK_DB_PASSWORD:?set distinct NETWORK_DB_PASSWORD}
+      ROUTE_DB_PASSWORD: ${ROUTE_DB_PASSWORD:?set distinct ROUTE_DB_PASSWORD}
+      COVERAGE_DB_PASSWORD: ${COVERAGE_DB_PASSWORD:?set distinct COVERAGE_DB_PASSWORD}
+      STAS_DB_PASSWORD: ${STAS_DB_PASSWORD:?set distinct STAS_DB_PASSWORD}
+      DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/gowm
+      GATEWAY_REGISTRY_DATABASE_URL: postgresql://gowm_gateway_registry_service:${GATEWAY_REGISTRY_DB_PASSWORD}@postgres:5432/gowm
+      ANALYSIS_SRID: '32650'
+  crs-provider-bridge:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles:
+    - world-platform-bridges
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: &id007
+      world-platform-bootstrap:
+        condition: service_completed_successfully
+    healthcheck: &id008
+      test:
+      - CMD
+      - node
+      - -e
+      - fetch('http://127.0.0.1:'+process.env.PROVIDER_HEALTH_PORT+'/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    command:
+    - node
+    - dist/services/providers/crs-provider-bridge/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${CRS_PROVIDER_TRANSPORT_TOKEN:?set CRS_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8086'
+      CRS_BRIDGE_PORT: '8086'
+      CRS_BRIDGE_PROJ_DB_SHA256: ${CRS_BRIDGE_PROJ_DB_SHA256:-}
+      CRS_BRIDGE_GRID_BUNDLE_VERSION: ${CRS_BRIDGE_GRID_BUNDLE_VERSION:-}
+      CRS_BRIDGE_PROJ_VERSION: ${CRS_BRIDGE_PROJ_VERSION:-}
+      CRS_BRIDGE_ENDPOINT_CONFIGURATION_DIGEST: ${CRS_BRIDGE_ENDPOINT_CONFIGURATION_DIGEST:-}
+      CRS_BRIDGE_ENDPOINT_APPROVAL_STATUS: ${CRS_BRIDGE_ENDPOINT_APPROVAL_STATUS:-}
+      CRS_BRIDGE_INTEGRATION_VERSION: ${CRS_BRIDGE_INTEGRATION_VERSION:-}
+      CRS_BRIDGE_PROJ_DB_VERSION: ${CRS_BRIDGE_PROJ_DB_VERSION:-}
+      CRS_BRIDGE_GRID_BUNDLE_SHA256: ${CRS_BRIDGE_GRID_BUNDLE_SHA256:-}
+      CRS_BRIDGE_UPSTREAM_BASE_URL: ${CRS_BRIDGE_UPSTREAM_BASE_URL:-}
+      CRS_BRIDGE_ENDPOINT_ID: ${CRS_BRIDGE_ENDPOINT_ID:-}
+  dataset-catalog-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/grounding-catalog-provider/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${DATASET_CATALOG_PROVIDER_TRANSPORT_TOKEN:?set DATASET_CATALOG_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8091'
+      GROUNDING_CATALOG_MODE: dataset
+      GROUNDING_CATALOG_PORT: '8091'
+      GROUNDING_CATALOG_DATABASE_URL: postgresql://gowm_catalog_service:${CATALOG_DB_PASSWORD}@postgres:5432/gowm
+      GROUNDING_CATALOG_CURSOR_HMAC_SECRET: ${GROUNDING_CURSOR_HMAC_SECRET:?set cursor secret}
+  geometry-provider-bridge:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles:
+    - world-platform-bridges
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/geometry-provider-bridge/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${GEOMETRY_PROVIDER_TRANSPORT_TOKEN:?set GEOMETRY_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8087'
+      GEOMETRY_BRIDGE_PORT: '8087'
+      GEOMETRY_BRIDGE_UPSTREAM_BASE_URL: ${GEOMETRY_BRIDGE_UPSTREAM_BASE_URL:-}
+      GEOMETRY_BRIDGE_INTEGRATION_VERSION: ${GEOMETRY_BRIDGE_INTEGRATION_VERSION:-}
+      GEOMETRY_BRIDGE_MAX_QUEUE_SIZE: ${GEOMETRY_BRIDGE_MAX_QUEUE_SIZE:-}
+      GEOMETRY_BRIDGE_GEOS_VERSION: ${GEOMETRY_BRIDGE_GEOS_VERSION:-}
+      GEOMETRY_BRIDGE_ENDPOINT_CONFIGURATION_DIGEST: ${GEOMETRY_BRIDGE_ENDPOINT_CONFIGURATION_DIGEST:-}
+      GEOMETRY_BRIDGE_MAX_IN_FLIGHT: ${GEOMETRY_BRIDGE_MAX_IN_FLIGHT:-}
+      GEOMETRY_BRIDGE_ENDPOINT_APPROVAL_STATUS: ${GEOMETRY_BRIDGE_ENDPOINT_APPROVAL_STATUS:-}
+      GEOMETRY_BRIDGE_ENDPOINT_ID: ${GEOMETRY_BRIDGE_ENDPOINT_ID:-}
+  h3-analysis-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/runtime/world-platform-h3.js
+    - analysis
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${H3_ANALYSIS_PROVIDER_TRANSPORT_TOKEN:?set H3_ANALYSIS_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8089'
+      H3_PROVIDER_PORT: '8089'
+      H3_TOOLKIT_BINDINGS_MODULE: /opt/gowm/h3-bindings.mjs
+      H3_TOOLKIT_BINDINGS_MODULE_SHA256: ${H3_TOOLKIT_BINDINGS_MODULE_SHA256:?build and set verified H3 artifact digest}
+    volumes:
+    - ${H3_TOOLKIT_BINDINGS_HOST_PATH:?build verified H3 artifact}:/opt/gowm/h3-bindings.mjs:ro
+  h3-interactive-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/runtime/world-platform-h3.js
+    - interactive
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN:?set H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8088'
+      H3_PROVIDER_PORT: '8088'
+      H3_TOOLKIT_BINDINGS_MODULE: /opt/gowm/h3-bindings.mjs
+      H3_TOOLKIT_BINDINGS_MODULE_SHA256: ${H3_TOOLKIT_BINDINGS_MODULE_SHA256:?build and set verified H3 artifact digest}
+    volumes:
+    - ${H3_TOOLKIT_BINDINGS_HOST_PATH:?build verified H3 artifact}:/opt/gowm/h3-bindings.mjs:ro
+  network-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/network-provider/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${NETWORK_PROVIDER_TRANSPORT_TOKEN:?set NETWORK_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8096'
+      NETWORK_PROVIDER_DATABASE_URL: postgresql://network_provider:${NETWORK_DB_PASSWORD}@postgres:5432/gowm
+      NETWORK_PROVIDER_PORT: '8096'
+  operational-reality-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/operational-reality-provider/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN:?set OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8094'
+      OPERATIONAL_REALITY_DATABASE_URL: postgresql://gowm_operational_service:${OPERATIONAL_DB_PASSWORD}@postgres:5432/gowm
+      OPERATIONAL_REALITY_PORT: '8094'
+  platform-validation-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/platform-validation-provider/src/server.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN:?set PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8095'
+      PLATFORM_VALIDATION_DATABASE_URL: postgresql://platform_validation_provider:${VALIDATION_DB_PASSWORD}@postgres:5432/gowm
+      PLATFORM_VALIDATION_PORT: '8095'
+  reference-catalog-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/grounding-catalog-provider/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN:?set REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8090'
+      GROUNDING_CATALOG_MODE: reference
+      GROUNDING_CATALOG_PORT: '8090'
+      GROUNDING_CATALOG_DATABASE_URL: postgresql://gowm_reference_service:${REFERENCE_DB_PASSWORD}@postgres:5432/gowm
+      GROUNDING_CATALOG_CURSOR_HMAC_SECRET: ${GROUNDING_CURSOR_HMAC_SECRET:?set cursor secret}
+  road-coverage-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/road-coverage-provider/src/server.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${COVERAGE_PROVIDER_TRANSPORT_TOKEN:?set COVERAGE_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8098'
+      COVERAGE_PROVIDER_DATABASE_URL: postgresql://coverage_planner_provider:${COVERAGE_DB_PASSWORD}@postgres:5432/gowm
+      COVERAGE_PROVIDER_PORT: '8098'
+  route-planning-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/route-planning-provider/src/server.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${ROUTE_PROVIDER_TRANSPORT_TOKEN:?set ROUTE_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8097'
+      ROUTE_PROVIDER_DATABASE_URL: postgresql://route_planner_provider:${ROUTE_DB_PASSWORD}@postgres:5432/gowm
+      ROUTE_PROVIDER_PORT: '8097'
+  gowm-situation-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/gowm-situation-provider/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${SITUATION_PROVIDER_TRANSPORT_TOKEN:?set SITUATION_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8092'
+      DATABASE_URL: postgresql://gowm_situation_service:${SITUATION_DB_PASSWORD}@postgres:5432/gowm
+      GOWM_SITUATION_PROVIDER_PORT: '8092'
+      GOWM_SITUATION_ACCEPTED_DATA_SCOPE: ${GATEWAY_DATA_SCOPE_CLAIM:?set data scope}
+  spatial-provider-bridge:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/spatial-provider-bridge/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${SPATIAL_PROVIDER_TRANSPORT_TOKEN:?set SPATIAL_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8091'
+      SPATIAL_DATABASE_URL: postgresql://gowm_spatial_service:${SPATIAL_DB_PASSWORD}@postgres:5432/gowm
+      SPATIAL_BRIDGE_PORT: '8091'
+      SPATIAL_CURSOR_HMAC_SECRET: ${SPATIAL_CURSOR_HMAC_SECRET:?set cursor secret}
+      SPATIAL_POSTGIS_VERSION: ${SPATIAL_POSTGIS_VERSION:-3.6.4}
+  stas-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/stas-provider/src/server.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${STAS_PROVIDER_TRANSPORT_TOKEN:?set STAS_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8099'
+      DATABASE_URL: postgresql://stas_app:${STAS_DB_PASSWORD}@postgres:5432/gowm
+      STAS_PROVIDER_PORT: '8099'
+  world-evidence-provider:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/grounding-catalog-provider/src/index.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${WORLD_EVIDENCE_PROVIDER_TRANSPORT_TOKEN:?set WORLD_EVIDENCE_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8093'
+      GROUNDING_CATALOG_MODE: evidence
+      GROUNDING_CATALOG_PORT: '8093'
+      GROUNDING_CATALOG_DATABASE_URL: postgresql://gowm_evidence_service:${EVIDENCE_DB_PASSWORD}@postgres:5432/gowm
+      GROUNDING_CATALOG_CURSOR_HMAC_SECRET: ${GROUNDING_CURSOR_HMAC_SECRET:?set cursor secret}
+  world-capability-gateway:
+    image: gowm-world-platform:0.6.2
+    build: *id001
+    networks:
+    - default
+    - world-edge
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/gateway/world-capability-gateway/src/server.js
+    environment:
+      CRS_PROVIDER_TRANSPORT_TOKEN: ${CRS_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      DATASET_CATALOG_PROVIDER_TRANSPORT_TOKEN: ${DATASET_CATALOG_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      GEOMETRY_PROVIDER_TRANSPORT_TOKEN: ${GEOMETRY_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      H3_ANALYSIS_PROVIDER_TRANSPORT_TOKEN: ${H3_ANALYSIS_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN: ${H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      NETWORK_PROVIDER_TRANSPORT_TOKEN: ${NETWORK_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN: ${OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN: ${PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN: ${REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      COVERAGE_PROVIDER_TRANSPORT_TOKEN: ${COVERAGE_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      ROUTE_PROVIDER_TRANSPORT_TOKEN: ${ROUTE_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      SITUATION_PROVIDER_TRANSPORT_TOKEN: ${SITUATION_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      SPATIAL_PROVIDER_TRANSPORT_TOKEN: ${SPATIAL_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      STAS_PROVIDER_TRANSPORT_TOKEN: ${STAS_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      WORLD_EVIDENCE_PROVIDER_TRANSPORT_TOKEN: ${WORLD_EVIDENCE_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      DATABASE_URL: postgresql://gowm_gateway_service:${GATEWAY_DB_PASSWORD}@postgres:5432/gowm
+      GATEWAY_PROVIDER_REGISTRY_PATH: config/world-platform-gateway-registry.json
+      GATEWAY_PORT: '8090'
+      PROVIDER_HEALTH_PORT: '8090'
+      GATEWAY_AUTH_SHARED_TOKEN: ${GATEWAY_AUTH_SHARED_TOKEN:?set gateway auth token}
+      GATEWAY_RUNTIME_PRINCIPAL_REF: ${GATEWAY_RUNTIME_PRINCIPAL_REF:-world-platform-consumer}
+      GATEWAY_DATA_SCOPE_CLAIM: ${GATEWAY_DATA_SCOPE_CLAIM:?set data scope}
+      GATEWAY_DATASET_SCOPE_CLAIM: ${GATEWAY_DATASET_SCOPE_CLAIM:?set dataset scope}
+    ports:
+    - ${GATEWAY_BIND_ADDRESS:-127.0.0.1}:${GATEWAY_PORT:-8090}:8090
+networks:
+  default:
+    internal: true
+  world-edge: {}

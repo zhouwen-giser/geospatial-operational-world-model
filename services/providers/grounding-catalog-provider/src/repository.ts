@@ -448,6 +448,7 @@ export class GroundingCatalogRepository {
         facts: [compact({
           factKind: "CURRENT_PROJECTION",
           fields: isRecord(row.state) ? row.state : {},
+          position: projectedPosition(row.state),
           objectType: requiredString(row.object_type, "object_type"),
           ...(optionalString(row.subtype) ? { subtype: optionalString(row.subtype) } : {}),
           properties: isRecord(row.properties) ? row.properties : {},
@@ -820,6 +821,15 @@ function isRecord(value: unknown): value is Row { return Boolean(value) && typeo
 function requiredString(value: unknown, name: string): string {
   if (typeof value !== "string" || !value) throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", `${name} must be a non-empty string`);
   return value;
+}
+/** Packs already projected WGS84 coordinates; never estimates a missing position. */
+export function projectedPosition(state: unknown): { type: "Point"; coordinates: number[] } | undefined {
+  const value = isRecord(state) && isRecord(state.position) ? state.position : undefined;
+  if (!value || typeof value.longitude !== "number" || typeof value.latitude !== "number" ||
+      !Number.isFinite(value.longitude) || !Number.isFinite(value.latitude) ||
+      Math.abs(value.longitude) > 180 || Math.abs(value.latitude) > 90) return undefined;
+  return { type: "Point", coordinates: [value.longitude, value.latitude,
+    ...(typeof value.altitude === "number" && Number.isFinite(value.altitude) ? [value.altitude] : [])] };
 }
 function optionalString(value: unknown): string | null | undefined { return typeof value === "string" && value.length ? value : value === null ? null : undefined; }
 function stringArrayOrNull(value: unknown): string[] | null { return Array.isArray(value) && value.length ? value.map((item) => requiredString(item, "array item")) : null; }

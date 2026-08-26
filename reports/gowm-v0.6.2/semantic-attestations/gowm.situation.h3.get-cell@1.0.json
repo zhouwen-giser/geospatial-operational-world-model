@@ -3,7 +3,7 @@
   "providerId": "gowm.situation.h3",
   "operationId": "gowm.situation.h3.get-cell",
   "operationVersion": "1.0",
-  "semanticProfileHash": "sha256:ecda3d367920e3b7cd69d92c97273f860df31a3949b19ddc5c24328360ca56db",
+  "semanticProfileHash": "sha256:a61e0e78cb448462ea655fd5ba64b350de0a89d8c4344a2e4b4116167e5cce37",
   "rulesApplied": [
     "S001",
     "S002",
@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/gowm-situation-provider.json",
-      "sha256": "e1b0edffe9ba3c17eebf4c400c1677de126f4771778bd5165d71bd2ea619a82f"
+      "sha256": "9ef24bc88e048f18d59a700b36993316040af9f53649d810270fdebde3a056c7"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/gowm-situation-provider.json",
-      "sha256": "e1b0edffe9ba3c17eebf4c400c1677de126f4771778bd5165d71bd2ea619a82f"
+      "sha256": "9ef24bc88e048f18d59a700b36993316040af9f53649d810270fdebde3a056c7"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -51,10 +51,15 @@
       "kind": "UNIT_TEST",
       "path": "tests/platform/compatibility-migration.test.ts",
       "sha256": "62f03ef8f4e3502a6a3ac71beb6b5ca3fb4df99bb4bb1f0770b5ef7268d2f362"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/gowm-situation-provider/src/repository-adapter.ts",
+      "sha256": "d59bc24e9110379ab9bede8540a44a5ac350d7990f793489d69c0f183306fc71"
     }
   ],
   "status": "PROVEN",
   "notes": [
-    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
   ]
 }

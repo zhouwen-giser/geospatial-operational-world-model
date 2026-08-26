@@ -7,3 +7,5 @@ export * from "./resolution-policy.js";
 export * from "./schemas.js";
 export * from "./source-lock.js";
 export * from "./types.js";
+
+export { loadVerifiedH3Bindings } from "./bindings-loader.js";

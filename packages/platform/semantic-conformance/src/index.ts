@@ -29,6 +29,14 @@ export const EMPTY_EVIDENCE: ImplementationEvidence = {
   implementation: false, blackBox: false, verificationPorts: false
 };
 export const operationKey = (c: Pick<CapabilityDescriptor, "operationId" | "operationVersion">): string => `${c.operationId}@${c.operationVersion}`;
+export function validateVocabularyExtension(baseline: {vocabularyId:string;terms:{id:string;definition:string}[]}, candidate: typeof baseline): string[] {
+  const failures:string[]=[];
+  if (baseline.vocabularyId !== candidate.vocabularyId) failures.push("vocabulary identity changed");
+  const terms = new Map(candidate.terms.map((t)=>[t.id,t.definition]));
+  if (terms.size !== candidate.terms.length || candidate.terms.some((t)=>!t.id || !t.definition.trim())) failures.push("terms require unique identities and nonempty definitions");
+  for (const term of baseline.terms) if (terms.get(term.id) !== term.definition) failures.push(`frozen meaning changed or removed: ${term.id}`);
+  return failures.sort();
+}
 const key = operationKey;
 const executable = new Set(["STABLE", "PREVIEW", "EXPERIMENTAL", "DEPRECATED"]);
 
@@ -148,14 +156,15 @@ export async function inspectSql(sql: string): Promise<SqlInspection> {
   return { hash: canonicalSha256(tree), functions: [...functions].sort(), operators: [...operators].sort(), relations: [...relations].sort(), exact, bboxOnly: operators.has("&&") && !exact, geographyDistance: geography && [...functions].some((f) => ["st_dwithin", "st_distance"].includes(f)) };
 }
 
-export interface SchemaInspection { paths: string[]; referenceKinds: string[]; statusPaths: Record<string, string[]>; sourceUris: string[] }
+export interface SchemaInspection { paths: string[]; referenceKinds: string[]; referencePaths: string[]; statusPaths: Record<string, string[]>; sourceUris: string[] }
 /** Follows local/URN schema references with a cycle guard and records exact status paths. */
 export function inspectSchema(schema: unknown, resolveReference: (ref: string, parent: unknown) => unknown): SchemaInspection {
-  const paths = new Set<string>(), kinds = new Set<string>(), uris = new Set<string>();
+  const paths = new Set<string>(), kinds = new Set<string>(), uris = new Set<string>(), referencePaths = new Set<string>();
   const statusPaths: Record<string, string[]> = {};
   const visit = (value: unknown, path: string, stack: Set<unknown>, property?: string) => {
     if (!value || typeof value !== "object" || stack.has(value)) return;
     const next = new Set(stack).add(value), node = value as Record<string, any>;
+    if (["namespace", "kind", "id", "version"].every((name) => node.properties?.[name] && node.required?.includes(name))) referencePaths.add(path);
     if (typeof node.$id === "string") uris.add(node.$id);
     if (node.$ref) visit(resolveReference(node.$ref, value), path, next, property);
     if (property === "kind") {
@@ -170,7 +179,7 @@ export function inspectSchema(schema: unknown, resolveReference: (ref: string, p
     for (const branch of [...(node.oneOf ?? []), ...(node.anyOf ?? []), ...(node.allOf ?? [])]) visit(branch, path, next, property);
   };
   visit(schema, "", new Set());
-  return { paths: [...paths].sort(), referenceKinds: [...kinds].sort(), statusPaths, sourceUris: [...uris].sort() };
+  return { paths: [...paths].sort(), referenceKinds: [...kinds].sort(), referencePaths: [...referencePaths].sort(), statusPaths, sourceUris: [...uris].sort() };
 }
 
 export function byteHash(value: string | Uint8Array): string { return createHash("sha256").update(value).digest("hex"); }
@@ -181,6 +190,9 @@ export async function semanticSourceFingerprint(root: string): Promise<string> {
     for (const entry of (await readdir(resolve(root, directory), { withFileTypes: true })).sort((a,b) => a.name.localeCompare(b.name))) {
       if (["node_modules", "dist", ".git"].includes(entry.name)) continue;
       const path = `${directory}/${entry.name}`;
+      // Admission-dependent output is verified separately. Including it here would
+      // invalidate the evidence that admits Stable entries into this very lock.
+      if (path === "contracts/consumers/wsgs-southbound-operation-lock-v1.json") continue;
       if (entry.isDirectory()) await scan(path);
       else if (/\.(ts|mjs|js|json|sql|yaml|yml|py)$/u.test(entry.name)) hashes[path] = byteHash(await readFile(resolve(root, path)));
     }

@@ -15,13 +15,18 @@
     "profileVersion": "1.0",
     "domain": "H3",
     "acceptedReferenceKinds": [],
-    "producedReferenceKinds": [],
+    "producedReferenceKinds": [
+      "WORLD_OBJECT"
+    ],
     "relationSemantics": [],
     "spatialSemantics": "AGGREGATED",
     "timeSemantics": "SNAPSHOT",
     "resultNature": "PROJECTION",
     "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+    ]
   },
   "gowm.situation.h3.get-coverage-gaps@1.0": {
     "profileVersion": "1.0",

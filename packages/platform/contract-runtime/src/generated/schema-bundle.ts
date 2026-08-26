@@ -13045,6 +13045,48 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     }
   },
+  "gowm-v0.6.2/directed-network-state.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:directed-network-state",
+    "title": "PinnedDirectedNetworkStatePort",
+    "$ref": "../gowm-v0.5/network-common.schema.json#/$defs/directedState"
+  },
+  "gowm-v0.6.2/geojson-point.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:geojson-point",
+    "title": "ProjectedWgs84PointPort",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "type",
+      "coordinates"
+    ],
+    "properties": {
+      "type": {
+        "const": "Point"
+      },
+      "coordinates": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 3,
+        "prefixItems": [
+          {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          }
+        ],
+        "items": {
+          "type": "number"
+        }
+      }
+    }
+  },
   "gowm-v0.6.2/semantic-attestation.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.6.2:semantic-attestation",

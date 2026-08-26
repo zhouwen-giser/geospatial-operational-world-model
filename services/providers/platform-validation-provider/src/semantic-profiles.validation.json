@@ -2,8 +2,28 @@
   "reference.validate@1.0": {
     "profileVersion": "1.0",
     "domain": "PLATFORM",
-    "acceptedReferenceKinds": [],
-    "producedReferenceKinds": [],
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
     "relationSemantics": [
       "VALIDATES"
     ],
@@ -11,13 +31,36 @@
     "timeSemantics": "SNAPSHOT",
     "resultNature": "VALIDATION",
     "negativeEvidencePolicy": "NOT_APPLICABLE",
-    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+    ]
   },
   "result.validate@1.0": {
     "profileVersion": "1.0",
     "domain": "PLATFORM",
-    "acceptedReferenceKinds": [],
-    "producedReferenceKinds": [],
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
     "relationSemantics": [
       "VALIDATES"
     ],
@@ -25,24 +68,50 @@
     "timeSemantics": "SNAPSHOT",
     "resultNature": "VALIDATION",
     "negativeEvidencePolicy": "NOT_APPLICABLE",
-    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+    ]
   },
   "snapshot.get@1.0": {
     "profileVersion": "1.0",
     "domain": "PLATFORM",
     "acceptedReferenceKinds": [],
-    "producedReferenceKinds": [],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
     "relationSemantics": [],
     "spatialSemantics": "NONE",
     "timeSemantics": "SNAPSHOT",
     "resultNature": "VALIDATION",
     "negativeEvidencePolicy": "NOT_APPLICABLE",
-    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+    ]
   },
   "snapshot.validate@1.0": {
     "profileVersion": "1.0",
     "domain": "PLATFORM",
-    "acceptedReferenceKinds": [],
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
     "producedReferenceKinds": [],
     "relationSemantics": [
       "VALIDATES_SNAPSHOT"
@@ -60,6 +129,9 @@
         "UNAVAILABLE": "INDETERMINATE",
         "UNKNOWN": "INDETERMINATE"
       }
-    }
+    },
+    "notes": [
+      "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+    ]
   }
 }

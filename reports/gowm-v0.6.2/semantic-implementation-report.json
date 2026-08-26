@@ -6,6 +6,7 @@
         "/sourceCrs"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.check-source:input:1.0"
@@ -21,6 +22,7 @@
         "/traditionalGisInputOrder"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.check-source:output:1.0"
@@ -132,6 +134,7 @@
         "/sourceCrs"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.feature-collection:input:1.0"
@@ -168,6 +171,7 @@
         "/zTransformed"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.feature-collection:output:1.0"
@@ -298,6 +302,7 @@
         "/sourceCrs"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.feature:input:1.0"
@@ -332,6 +337,7 @@
         "/zTransformed"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.feature:output:1.0"
@@ -458,6 +464,7 @@
         "/sourceCrs"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.geometry:input:1.0",
@@ -493,6 +500,7 @@
         "/zTransformed"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.geometry:output:1.0",
@@ -615,6 +623,7 @@
         "/sourceCrs"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.point:input:1.0"
@@ -642,6 +651,7 @@
         "/zTransformed"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.point:output:1.0"
@@ -756,6 +766,7 @@
         "/sourceCrs"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.points:input:1.0"
@@ -783,6 +794,7 @@
         "/zTransformed"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:crs.normalize.points:output:1.0"
@@ -890,7 +902,7 @@
     ]
   },
   "catalog.describe-schema@1.0": {
-    "contractHash": "sha256:17f258ca648580c67ec7ec7181aedc1794e4fffd80394a7c616e24d1e05b6644",
+    "contractHash": "sha256:551a86fc32a524e187bc2e91846fd1f75ae0060681758cb76d284a7d66ee078d",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -915,6 +927,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -932,6 +947,9 @@
         "/value"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -939,7 +957,7 @@
     },
     "evidence": {
       "referenceInput": true,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "operationId",
         "referenceKey",
@@ -1079,6 +1097,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -1143,6 +1162,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -1209,6 +1229,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -1256,7 +1277,7 @@
     ]
   },
   "catalog.get-capabilities@1.0": {
-    "contractHash": "sha256:b73cd788e5a30b5742be72e3ff6a519ae5115b9886bc6a6479168b5f0a06a0e3",
+    "contractHash": "sha256:990762eb68a231e5f2b956a6d792325ed439b02e296c5a1b5b87708cda22c90b",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -1281,6 +1302,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -1298,6 +1322,9 @@
         "/value"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -1305,7 +1332,7 @@
     },
     "evidence": {
       "referenceInput": true,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "operationId",
         "referenceKey",
@@ -1445,6 +1472,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -1509,6 +1537,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -1575,6 +1604,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -1622,7 +1652,7 @@
     ]
   },
   "catalog.get-lineage@1.0": {
-    "contractHash": "sha256:f4d5e5f43e69d4266776560b3a436971c17cad34062e7bb53bd05ef4625bf2ca",
+    "contractHash": "sha256:e36e037c0a041708bbfa08148ca27493ec4792dbd172da92ddf0ee246c6ad55f",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -1647,6 +1677,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -1664,6 +1697,9 @@
         "/value"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -1671,7 +1707,7 @@
     },
     "evidence": {
       "referenceInput": true,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "operationId",
         "referenceKey",
@@ -1811,6 +1847,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -1875,6 +1912,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -1941,6 +1979,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -1988,7 +2027,7 @@
     ]
   },
   "catalog.get-quality@1.0": {
-    "contractHash": "sha256:1b7a80f9dc99dfc6a3a704d34d2754b44e6dd589ca5c3f00ecbc13abce3d0f8e",
+    "contractHash": "sha256:9919cd1407aa4e6ebffa6a5d9581d7ff71d8ea8b6e07fd8dd5822e6c39d81a20",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -2013,6 +2052,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -2030,6 +2072,9 @@
         "/value"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -2037,7 +2082,7 @@
     },
     "evidence": {
       "referenceInput": true,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "operationId",
         "referenceKey",
@@ -2177,6 +2222,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -2241,6 +2287,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -2307,6 +2354,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -2354,7 +2402,7 @@
     ]
   },
   "catalog.get@1.0": {
-    "contractHash": "sha256:7f44bf2fa1251dd6fed85b6d88392640080156eedcf5c2fd4358f12882d87dd1",
+    "contractHash": "sha256:3b2f9b06e628171c2397a8a2d90f84997370cd7425994be00f0095cdcbda3928",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -2378,6 +2426,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -2418,6 +2469,9 @@
         "/temporalExtent/to"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-descriptor",
@@ -2426,7 +2480,7 @@
     },
     "evidence": {
       "referenceInput": true,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "access",
         "dataScopeRequired",
@@ -2588,6 +2642,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -2652,6 +2707,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -2718,6 +2774,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -2765,7 +2822,7 @@
     ]
   },
   "catalog.list-versions@1.0": {
-    "contractHash": "sha256:4c1689a40a84e618dcbca59e98605f71e4871e436d3bc0349ecb7e7ba729e6f0",
+    "contractHash": "sha256:7283c07908ccd9a9868e5ab432228aa567e8dbc1728238fc6991afe9127513f1",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -2790,6 +2847,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -2807,6 +2867,9 @@
         "/value"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-product-detail-result"
@@ -2814,7 +2877,7 @@
     },
     "evidence": {
       "referenceInput": true,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "operationId",
         "referenceKey",
@@ -2954,6 +3017,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -3018,6 +3082,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -3084,6 +3149,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -3131,7 +3197,7 @@
     ]
   },
   "catalog.search@1.0": {
-    "contractHash": "sha256:3b00351c2c6fde80c5167d618ba2288cf55ed8b9cba844de357ee69e496fcc56",
+    "contractHash": "sha256:e29acf61c7bf2116ee6a5b635fb6e09eb6a9c4cce4b2fbd4688ed5b81d09dda4",
     "inputShape": {
       "paths": [
         "/crs",
@@ -3148,6 +3214,7 @@
         "/timeFilter/to"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:catalog-search-request"
@@ -3191,6 +3258,9 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/items/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:catalog-search-result",
@@ -3200,7 +3270,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "items",
         "access",
@@ -3366,6 +3436,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -3430,6 +3501,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -3496,6 +3568,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -3568,6 +3641,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -3603,6 +3679,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -3760,6 +3839,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -3824,6 +3904,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -3890,6 +3971,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -3962,6 +4044,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -3975,6 +4060,7 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -4118,6 +4204,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -4182,6 +4269,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -4248,6 +4336,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -4320,6 +4409,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -4361,6 +4453,10 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/layerReferenceKey",
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -4524,6 +4620,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -4588,6 +4685,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -4654,6 +4752,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -4726,6 +4825,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -4739,6 +4841,7 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -4882,6 +4985,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -4946,6 +5050,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -5012,6 +5117,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -5084,6 +5190,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -5120,6 +5229,10 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/datasetReferenceKey",
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -5278,6 +5391,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -5342,6 +5456,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -5408,6 +5523,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -5480,6 +5596,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -5493,6 +5612,7 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -5636,6 +5756,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -5700,6 +5821,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -5766,6 +5888,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -5829,6 +5952,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.bounding-box:input:1.0"
@@ -5862,6 +5986,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.bounding-box:output:1.0"
@@ -6021,6 +6146,7 @@
         "/singleSided"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.buffer:input:1.0"
@@ -6054,6 +6180,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.buffer:output:1.0"
@@ -6205,6 +6332,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.centroid:input:1.0"
@@ -6238,6 +6366,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.centroid:output:1.0"
@@ -6396,6 +6525,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.closest-point:input:1.0"
@@ -6429,6 +6559,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.closest-point:output:1.0"
@@ -6580,6 +6711,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.convex-hull:input:1.0"
@@ -6613,6 +6745,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.convex-hull:output:1.0"
@@ -6771,6 +6904,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.difference:input:1.0"
@@ -6804,6 +6938,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.difference:output:1.0"
@@ -6955,6 +7090,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.force-2d:input:1.0"
@@ -6988,6 +7124,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.force-2d:output:1.0"
@@ -7139,6 +7276,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.geometry-hash:input:1.0"
@@ -7153,6 +7291,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.geometry-hash:output:1.0"
@@ -7292,6 +7431,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.intersection:input:1.0"
@@ -7325,6 +7465,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.intersection:output:1.0"
@@ -7476,6 +7617,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.make-valid:input:1.0"
@@ -7509,6 +7651,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.make-valid:output:1.0"
@@ -7660,6 +7803,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.normalize:input:1.0"
@@ -7693,6 +7837,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.normalize:output:1.0"
@@ -7849,6 +7994,7 @@
         "/predicate"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.predicate:input:1.0"
@@ -7862,6 +8008,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.predicate:output:1.0"
@@ -7995,6 +8142,7 @@
         "/toleranceUnit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.remove-repeated-points:input:1.0"
@@ -8028,6 +8176,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.remove-repeated-points:output:1.0"
@@ -8186,6 +8335,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.shortest-line:input:1.0"
@@ -8219,6 +8369,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.shortest-line:output:1.0"
@@ -8372,6 +8523,7 @@
         "/toleranceUnit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.simplify-preserve-topology:input:1.0"
@@ -8405,6 +8557,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.simplify-preserve-topology:output:1.0"
@@ -8558,6 +8711,7 @@
         "/toleranceUnit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.simplify:input:1.0"
@@ -8591,6 +8745,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.simplify:output:1.0"
@@ -8749,6 +8904,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.symmetric-difference:input:1.0"
@@ -8782,6 +8938,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.symmetric-difference:output:1.0"
@@ -8940,6 +9097,7 @@
         "/precision/unit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.union:input:1.0"
@@ -8973,6 +9131,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.union:output:1.0"
@@ -9119,6 +9278,7 @@
         "/geometry/type"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.validate:input:1.0",
@@ -9133,6 +9293,7 @@
         "/valid"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry.validate:output:1.0"
@@ -9263,6 +9424,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.aggregate:input:1.0"
@@ -9278,6 +9440,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.aggregate:output:1.0"
@@ -9455,6 +9618,7 @@
         "/visitedPoints/*/longitude"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.coverage:input:1.0"
@@ -9478,6 +9642,7 @@
         "/visitedRequiredCount"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.coverage:output:1.0"
@@ -9664,6 +9829,7 @@
         "/trajectories/*/sequenceId"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.flow:input:1.0"
@@ -9681,6 +9847,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.analytics.flow:output:1.0"
@@ -9853,6 +10020,7 @@
         "/cells"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.cells.to-geojson:input:1.0"
@@ -9870,6 +10038,7 @@
         "/type"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.cells.to-geojson:output:1.0"
@@ -10045,6 +10214,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.geometry.cover:input:1.0"
@@ -10061,6 +10231,7 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.geometry.cover:output:1.0"
@@ -10233,6 +10404,7 @@
         "/childResolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.children:input:1.0"
@@ -10244,6 +10416,7 @@
         "/*/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.children:output:1.0"
@@ -10410,6 +10583,7 @@
         "/cells"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.compact:input:1.0"
@@ -10420,6 +10594,7 @@
         "/cells"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.compact:output:1.0"
@@ -10586,6 +10761,7 @@
         "/parentResolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.parent:input:1.0"
@@ -10597,6 +10773,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.parent:output:1.0"
@@ -10764,6 +10941,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.uncompact:input:1.0"
@@ -10775,6 +10953,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.hierarchy.uncompact:output:1.0"
@@ -10944,6 +11123,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.index.points:input:1.0"
@@ -10955,6 +11135,7 @@
         "/*/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.index.points:output:1.0"
@@ -11122,6 +11303,7 @@
         "/radius"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.neighborhood.disk:input:1.0"
@@ -11134,6 +11316,7 @@
         "/radius"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:h3.neighborhood.disk:output:1.0"
@@ -11340,6 +11523,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/location",
+        "/location/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -11388,6 +11575,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/graphVersion/networkDatasetReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -11486,6 +11676,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -11552,6 +11743,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/location",
+        "/location/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -11600,6 +11795,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/graphVersion/networkDatasetReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -11698,6 +11896,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -11764,6 +11963,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/location",
+        "/location/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -11804,6 +12007,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/networkDatasetReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -11884,6 +12090,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -11950,6 +12157,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/location",
+        "/location/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -11998,6 +12209,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/graphVersion/networkDatasetReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -12096,6 +12310,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -12155,6 +12370,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/points/*/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-cost-matrix-request",
@@ -12183,6 +12401,7 @@
         "/routingSnapshot/travelProfileVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-cost-matrix-result",
@@ -12246,6 +12465,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -12318,6 +12538,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/segments/*/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {
         "/status": [
           "COMPLETED",
@@ -12380,6 +12603,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/segments/*/sourceFeatureReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -12473,6 +12699,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -12544,6 +12771,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/destination/sourceFeatureReferenceKey",
+        "/start/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-shortest-path-request",
@@ -12599,6 +12830,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/segments/*/sourceFeatureReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -12692,6 +12926,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -12764,6 +12999,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/segments/*/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {
         "/status": [
           "COMPLETED",
@@ -12789,6 +13027,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "INDETERMINATE",
@@ -12858,6 +13097,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -12924,6 +13164,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/location",
+        "/location/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -12972,6 +13216,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/graphVersion/networkDatasetReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -13070,6 +13317,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -13091,7 +13339,7 @@
     ]
   },
   "network.snap.point@1.0": {
-    "contractHash": "sha256:598f7dcee3b80effaa326148d2aaa77930a27c0e48fa8ba870fafcf094ba5037",
+    "contractHash": "sha256:e51345964f7ef31f64cd239e2f836dd81e6d7fe7fb216e6c0ca0e3e12f513e67",
     "inputShape": {
       "paths": [
         "/headingDegrees",
@@ -13135,6 +13383,10 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/location",
+        "/location/sourceFeatureReferenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -13181,6 +13433,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/candidates/*/state/sourceFeatureReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -13265,6 +13520,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -13331,6 +13587,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/location",
+        "/location/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:network-snap-request",
@@ -13376,6 +13636,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/candidates/*/state/sourceFeatureReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -13460,6 +13723,7 @@
           "context.deadline.remainingMs",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "getContractSchemaHash",
           "operation",
           "operationId.includes",
           "operationId.startsWith",
@@ -13523,6 +13787,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/actorReferenceKeys/*",
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -13558,6 +13826,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/operationalTaskReferenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -13720,6 +13991,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/actorReferenceKeys/*",
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -13741,6 +14016,7 @@
         "/worldVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "FRESH",
@@ -13913,6 +14189,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/actorReferenceKeys/*",
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -13980,6 +14260,12 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/correlationFindings/*/operationalTaskReferenceKey",
+        "/tasks/*/actorReferenceKeys/*",
+        "/tasks/*/referenceKey",
+        "/tasks/*/targetReferenceKeys/*"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -14176,6 +14462,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/actorReferenceKeys/*",
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -14243,6 +14533,12 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/correlationFindings/*/operationalTaskReferenceKey",
+        "/tasks/*/actorReferenceKeys/*",
+        "/tasks/*/referenceKey",
+        "/tasks/*/targetReferenceKeys/*"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -14439,6 +14735,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/actorReferenceKeys/*",
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -14508,6 +14808,12 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/events/*/actorReferenceKeys/*",
+        "/events/*/subjectReferenceKey",
+        "/events/*/targetReferenceKeys/*",
+        "/operationalTaskReferenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -14706,6 +15012,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/actorReferenceKeys/*",
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -14752,6 +15062,11 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/actorReferenceKeys/*",
+        "/referenceKey",
+        "/targetReferenceKeys/*"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -14913,6 +15228,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/subject"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-predicate"
@@ -14943,6 +15261,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "CONFLICTING",
@@ -15134,6 +15453,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/actorReferenceKeys/*",
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:external-correlation-claim",
@@ -15203,6 +15526,12 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/events/*/actorReferenceKeys/*",
+        "/events/*/subjectReferenceKey",
+        "/events/*/targetReferenceKeys/*",
+        "/operationalTaskReferenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -15359,7 +15688,7 @@
     ]
   },
   "reference.validate@1.0": {
-    "contractHash": "sha256:03b76538db0cb47578d29c2e1b2fefcd62e5f6c26aac5742f723e7d729748265",
+    "contractHash": "sha256:c26f268b9c745cd9d8d570aae40ab5ce1ff045e3afd5dc88c3a5fd53f8e00e0d",
     "inputShape": {
       "paths": [
         "/references",
@@ -15373,6 +15702,9 @@
         "/schemaVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/references/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:result-validation-request"
@@ -15402,6 +15734,9 @@
         "/schemaVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/results/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:reference-validity",
@@ -15410,8 +15745,8 @@
       ]
     },
     "evidence": {
-      "referenceInput": false,
-      "referenceOutput": false,
+      "referenceInput": true,
+      "referenceOutput": true,
       "outputFeatures": [
         "results",
         "existence",
@@ -15504,7 +15839,7 @@
     ]
   },
   "result.validate@1.0": {
-    "contractHash": "sha256:ba62ea9248eafcef192e9ac8a2fd8c26f8e0acb70218d0ed9853fd4c1fb320ef",
+    "contractHash": "sha256:4f26c8efc231dc3199ee17438a5f98ed99913fdf9434971ff5ad2bddf566de6b",
     "inputShape": {
       "paths": [
         "/references",
@@ -15518,6 +15853,9 @@
         "/schemaVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/references/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:result-validation-request"
@@ -15547,6 +15885,9 @@
         "/schemaVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/results/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:reference-validity",
@@ -15555,8 +15896,8 @@
       ]
     },
     "evidence": {
-      "referenceInput": false,
-      "referenceOutput": false,
+      "referenceInput": true,
+      "referenceOutput": true,
       "outputFeatures": [
         "results",
         "existence",
@@ -15649,13 +15990,14 @@
     ]
   },
   "snapshot.get@1.0": {
-    "contractHash": "sha256:0fb92db765da46050366ef04c46573255daf7d81b36d0440031ea085069a9533",
+    "contractHash": "sha256:3efc4d2e3e2cba3393ad6bcc589918dc04833e656b18c6ba8d495262c3da0c3c",
     "inputShape": {
       "paths": [
         "/schemaVersion",
         "/snapshotId"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:snapshot-get-request"
@@ -15681,6 +16023,9 @@
         "/snapshotId"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/resources/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-snapshot-manifest"
@@ -15688,7 +16033,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "capturedAt",
         "consistency",
@@ -15777,7 +16122,7 @@
     ]
   },
   "snapshot.validate@1.0": {
-    "contractHash": "sha256:637292b1befe85d860af85a046ac18bbfcc33b889517369d37ae2f50c4609c2d",
+    "contractHash": "sha256:03712f9cbdbb68c29e65611ec22d6d7c53dffe49f971fe9dfebac2ea45735c1e",
     "inputShape": {
       "paths": [
         "/schemaVersion",
@@ -15800,6 +16145,9 @@
         "/snapshot/snapshotId"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/snapshot/resources/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6.1:data-snapshot-manifest",
@@ -15821,6 +16169,7 @@
         "/status"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "CURRENT",
@@ -15841,7 +16190,7 @@
       ]
     },
     "evidence": {
-      "referenceInput": false,
+      "referenceInput": true,
       "referenceOutput": false,
       "outputFeatures": [
         "evaluatedAt",
@@ -15956,6 +16305,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/references/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:reference-validate-request"
@@ -15969,6 +16321,7 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -16112,6 +16465,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -16176,6 +16530,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -16242,6 +16597,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -16314,6 +16670,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -16362,6 +16721,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -16532,6 +16894,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -16596,6 +16959,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -16662,6 +17026,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -16739,6 +17104,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/context/anchorReferenceKeys/*"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:reference-resolve-request"
@@ -16797,6 +17165,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/resolutions/*/candidates/*/candidate/referenceKey"
       ],
       "statusPaths": {
         "/resolutions/*/status": [
@@ -16992,6 +17363,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -17056,6 +17428,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -17122,6 +17495,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -17199,6 +17573,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/context/anchorReferenceKeys/*"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:reference-resolve-request"
@@ -17257,6 +17634,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/resolutions/*/candidates/*/candidate/referenceKey"
       ],
       "statusPaths": {
         "/resolutions/*/status": [
@@ -17452,6 +17832,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -17516,6 +17897,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -17582,6 +17964,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -17629,7 +18012,7 @@
     ]
   },
   "coverage.road.expand-geojson@1.0": {
-    "contractHash": "sha256:a3fd1a4d8fcbe12b1def27f0a0f2e68b504427e476ee168aff41d6ba2f4070c0",
+    "contractHash": "sha256:6d174071389ec0d1f269a1114f9e6f86b0f8e668bfcbb8bd94c2da1522cd3d00",
     "inputShape": {
       "paths": [
         "/alternativeId",
@@ -17652,6 +18035,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/resultSetReferenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -17682,6 +18068,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/resultSetReferenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -17744,7 +18133,7 @@
     ]
   },
   "coverage.road.plan@1.0": {
-    "contractHash": "sha256:dda1b33166350babe334ab684a7ed2f5b91a766eb673c71c4497658e411463f5",
+    "contractHash": "sha256:7a6316557649a9c6cc7fa6b1c73fccda9ac70c89f8b9a04f7761e54fd9de35b2",
     "inputShape": {
       "paths": [
         "/alternativePolicy",
@@ -17888,6 +18277,17 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/area",
+        "/endpointPolicy/entry/states/*/sourceFeatureReferenceKey",
+        "/endpointPolicy/exit/states/*/sourceFeatureReferenceKey",
+        "/endpointPolicy/fixedEnd",
+        "/endpointPolicy/fixedEnd/sourceFeatureReferenceKey",
+        "/endpointPolicy/start",
+        "/endpointPolicy/start/sourceFeatureReferenceKey",
+        "/selectionPolicy/manualObligations/*/sourceAreaReferenceKey",
+        "/selectionPolicy/manualObligations/*/sourceFeatureReferenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -18043,6 +18443,13 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/alternatives/*/referenceKey",
+        "/alternatives/*/route/endState/sourceFeatureReferenceKey",
+        "/alternatives/*/route/segments/*/sourceFeatureReferenceKey",
+        "/alternatives/*/route/startState/sourceFeatureReferenceKey",
+        "/referenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -18251,7 +18658,7 @@
     ]
   },
   "coverage.road.select-obligations@1.0": {
-    "contractHash": "sha256:f6acaf9c38b12e6dbf5641328a2013a06f7a4902aed9db4ff130c10ae78c7a98",
+    "contractHash": "sha256:b074fe3685e85fde182a3d1cd02cd30c06f07043296eabb9dfcec705531f09f0",
     "inputShape": {
       "paths": [
         "/alternativePolicy",
@@ -18396,6 +18803,17 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/area",
+        "/endpointPolicy/entry/states/*/sourceFeatureReferenceKey",
+        "/endpointPolicy/exit/states/*/sourceFeatureReferenceKey",
+        "/endpointPolicy/fixedEnd",
+        "/endpointPolicy/fixedEnd/sourceFeatureReferenceKey",
+        "/endpointPolicy/start",
+        "/endpointPolicy/start/sourceFeatureReferenceKey",
+        "/selectionPolicy/manualObligations/*/sourceAreaReferenceKey",
+        "/selectionPolicy/manualObligations/*/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-alternative-policy",
@@ -18458,6 +18876,10 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/obligations/*/sourceAreaReferenceKey",
+        "/obligations/*/sourceFeatureReferenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -18550,7 +18972,7 @@
     ]
   },
   "coverage.road.validate@1.0": {
-    "contractHash": "sha256:b4d638b2682ca813fe0d2e1612895be05585c4fa38a62522f4a841edc8469489",
+    "contractHash": "sha256:61915bca962f99a2f1601434b58f0938ca379d198a78de4692555630faed45b8",
     "inputShape": {
       "paths": [
         "/alternativePolicy",
@@ -18695,6 +19117,17 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/area",
+        "/endpointPolicy/entry/states/*/sourceFeatureReferenceKey",
+        "/endpointPolicy/exit/states/*/sourceFeatureReferenceKey",
+        "/endpointPolicy/fixedEnd",
+        "/endpointPolicy/fixedEnd/sourceFeatureReferenceKey",
+        "/endpointPolicy/start",
+        "/endpointPolicy/start/sourceFeatureReferenceKey",
+        "/selectionPolicy/manualObligations/*/sourceAreaReferenceKey",
+        "/selectionPolicy/manualObligations/*/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-alternative-policy",
@@ -18727,6 +19160,7 @@
         "/warnings/*/path"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.6:coverage-validation-result"
@@ -18796,7 +19230,7 @@
     ]
   },
   "coverage.road.verify@1.0": {
-    "contractHash": "sha256:7592668b29734909770a59bd1627d66679e1f437c7ed2b65b43754540d25f551",
+    "contractHash": "sha256:c9ecf63f5ccb62141a28996d2424f12375264c1da001b966140e0a008d5079f5",
     "inputShape": {
       "paths": [
         "/candidate",
@@ -18928,6 +19362,13 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/candidate/referenceKey",
+        "/candidate/route/endState/sourceFeatureReferenceKey",
+        "/candidate/route/segments/*/sourceFeatureReferenceKey",
+        "/candidate/route/startState/sourceFeatureReferenceKey",
+        "/problemReference"
+      ],
       "statusPaths": {
         "/candidate/verification/status": [
           "INDETERMINATE",
@@ -18970,6 +19411,7 @@
         "/violations/*/segmentSequence"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "INDETERMINATE",
@@ -19149,6 +19591,16 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/avoidReferences/*",
+        "/destination",
+        "/destination/sourceFeatureReferenceKey",
+        "/start",
+        "/start/sourceFeatureReferenceKey",
+        "/viaReferences/*",
+        "/waypoints/*",
+        "/waypoints/*/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:route-planning-request",
@@ -19223,6 +19675,10 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/candidates/*/segments/*/sourceFeatureReferenceKey",
+        "/queryResultReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -19470,6 +19926,16 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/avoidReferences/*",
+        "/destination",
+        "/destination/sourceFeatureReferenceKey",
+        "/start",
+        "/start/sourceFeatureReferenceKey",
+        "/viaReferences/*",
+        "/waypoints/*",
+        "/waypoints/*/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:route-planning-request",
@@ -19544,6 +20010,10 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/candidates/*/segments/*/sourceFeatureReferenceKey",
+        "/queryResultReferenceKey"
       ],
       "statusPaths": {
         "/status": [
@@ -19791,6 +20261,16 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/avoidReferences/*",
+        "/destination",
+        "/destination/sourceFeatureReferenceKey",
+        "/start",
+        "/start/sourceFeatureReferenceKey",
+        "/viaReferences/*",
+        "/waypoints/*",
+        "/waypoints/*/sourceFeatureReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.5:route-planning-request",
@@ -19809,6 +20289,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "INDETERMINATE",
@@ -19971,6 +20452,10 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/candidates/*/segments/*/sourceFeatureReferenceKey",
+        "/queryResultReferenceKey"
+      ],
       "statusPaths": {
         "/status": [
           "CANCELLED",
@@ -20010,6 +20495,7 @@
         "/warnings"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "INDETERMINATE",
@@ -20111,6 +20597,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-area:input:1.0"
@@ -20158,6 +20645,7 @@
         "/worldVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-area:output:1.0"
@@ -20300,13 +20788,14 @@
     ]
   },
   "gowm.situation.h3.get-cell@1.0": {
-    "contractHash": "sha256:8805c995dff41a2f96f6918baa3402d8b705d06adb084ca66168702495b76cde",
+    "contractHash": "sha256:1fa23500abfb0f752e47e67a7d55f004036348e11131e0a0f74189e7502db9d3",
     "inputShape": {
       "paths": [
         "/cells",
         "/h3Index"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-cell:input:1.0"
@@ -20349,6 +20838,9 @@
         "/worldVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/references/*"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-cell:output:1.0"
@@ -20356,7 +20848,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "candidateOnly",
         "cells",
@@ -20494,6 +20986,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:input:1.0"
@@ -20531,6 +21024,7 @@
         "/worldVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-coverage-gaps:output:1.0"
@@ -20672,6 +21166,7 @@
         "/resolution"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-hotspots:input:1.0"
@@ -20709,6 +21204,7 @@
         "/worldVersion"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:gowm.situation.h3.get-hotspots:output:1.0"
@@ -20841,7 +21337,7 @@
     ]
   },
   "spatial.aggregate@1.0": {
-    "contractHash": "sha256:689d59f0d7fc59b75751bb4151ed36e06bd85b095f24aac1e7483e88326f2b7c",
+    "contractHash": "sha256:8464b38df8745a703371deaaeabbacb9a5c193525ef619e982834fb1c6f4e6b7",
     "inputShape": {
       "paths": [
         "/areaLayerKeys",
@@ -20855,6 +21351,7 @@
         "/relation"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.aggregate:input:1.0"
@@ -20879,6 +21376,9 @@
         "/context/snapshotConsistency"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/areas/*/areaReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.aggregate:output:1.0"
@@ -20886,7 +21386,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "areas",
         "areaReferenceKey",
@@ -21139,7 +21639,7 @@
     ]
   },
   "spatial.count-in-area@1.0": {
-    "contractHash": "sha256:1b4ba1956763f7e75b3f22d37de836b8c2edb7126bbafe7fc899a8a21da8dadd",
+    "contractHash": "sha256:6b00726f6f320781f37e797520a288cd2c32ba7132dd3f69f5078ebf4ed86cc8",
     "inputShape": {
       "paths": [
         "/crs",
@@ -21151,6 +21651,7 @@
         "/observedTo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.count-in-area:input:1.0"
@@ -21174,6 +21675,9 @@
         "/sourceReferences/*/version"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/sourceReferences/*"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.count-in-area:output:1.0"
@@ -21181,7 +21685,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -21455,7 +21959,7 @@
     ]
   },
   "spatial.find-containing-area@1.0": {
-    "contractHash": "sha256:bfa69056c08ed98f8d0a87487af773c45069e3fdb20e185cdffdc55a1b4e5001",
+    "contractHash": "sha256:40ed984607f14df47e4d61bb69757f3bb831eba134d8400a3b54a6507cf1c680",
     "inputShape": {
       "paths": [
         "/crs",
@@ -21471,6 +21975,7 @@
         "/limit"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -21521,6 +22026,9 @@
         "/page/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/objects/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -21529,7 +22037,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -21833,7 +22341,7 @@
     ]
   },
   "spatial.find-in-area@1.0": {
-    "contractHash": "sha256:45038c537ceff52ea42746a9d0aeb90e7542c2b9dd11016ed5928429205e799c",
+    "contractHash": "sha256:3b0dd87503e87783c63d4757df93d1c833feb154bfef92f646d5195506423990",
     "inputShape": {
       "paths": [
         "/candidateReferences",
@@ -21853,6 +22361,9 @@
         "/observedTo"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/candidateReferences/*"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.find-in-area:input:1.0"
@@ -21902,6 +22413,9 @@
         "/page/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/objects/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -21909,8 +22423,8 @@
       ]
     },
     "evidence": {
-      "referenceInput": false,
-      "referenceOutput": false,
+      "referenceInput": true,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -22209,7 +22723,7 @@
     ]
   },
   "spatial.find-intersections@1.0": {
-    "contractHash": "sha256:268fd38300799973e8dacbec7a2bfcee5cbfe331b851d7d989aaa7be8b85a020",
+    "contractHash": "sha256:28bbb7b4a6aaac3496a5b04dcf28dc033d50c2e233b2586021696049239b3a41",
     "inputShape": {
       "paths": [
         "/candidateReferences",
@@ -22232,6 +22746,9 @@
         "/observedTo"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/candidateReferences/*"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -22282,6 +22799,9 @@
         "/page/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/objects/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -22289,8 +22809,8 @@
       ]
     },
     "evidence": {
-      "referenceInput": false,
-      "referenceOutput": false,
+      "referenceInput": true,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -22589,7 +23109,7 @@
     ]
   },
   "spatial.find-near-route@1.0": {
-    "contractHash": "sha256:1832f54904c4e1302c27262c3e2aa46f845b9f08bd30fbcfb1b6cd0a73f60d64",
+    "contractHash": "sha256:066ae450d495f0e51522fe8eb6af18267d8da3a9daee37c16fc219343c3bd96f",
     "inputShape": {
       "paths": [
         "/crs",
@@ -22605,6 +23125,7 @@
         "/route/type"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.find-near-route:input:1.0"
@@ -22654,6 +23175,9 @@
         "/page/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/objects/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -22662,7 +23186,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -22962,7 +23486,7 @@
     ]
   },
   "spatial.find-nearby@1.0": {
-    "contractHash": "sha256:8f3d0873bb8252b532a6786256b507c41beef0d9fb15708bca775e0e6d82f83a",
+    "contractHash": "sha256:133162f6d929cc6c7d125eb32a8ef9a0e78a41307f8da822bcd1530799f4524c",
     "inputShape": {
       "paths": [
         "/crs",
@@ -22978,6 +23502,7 @@
         "/radiusM"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.find-nearby:input:1.0"
@@ -23027,6 +23552,9 @@
         "/page/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/objects/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -23035,7 +23563,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -23335,7 +23863,7 @@
     ]
   },
   "spatial.find-nearest@1.0": {
-    "contractHash": "sha256:3ab92f7525534a8407806e705a498a4cfae8043cad8cadd363f9a4fdc2121093",
+    "contractHash": "sha256:af03f0f93285c62b87da66ca81375f86de961aae8cb4b8c0ee85a5e7c85958b0",
     "inputShape": {
       "paths": [
         "/crs",
@@ -23351,6 +23879,7 @@
         "/observedTo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.find-nearest:input:1.0"
@@ -23400,6 +23929,9 @@
         "/page/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/objects/*/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:geometry:geojson-geometry:1.0",
@@ -23408,7 +23940,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -23709,7 +24241,7 @@
     ]
   },
   "spatial.join@1.0": {
-    "contractHash": "sha256:e134aa424172b95d0ef54141f99a7cc9d996c738140a09a6fa0571135a872714",
+    "contractHash": "sha256:9667f56f4786a29b64529fb6b7d221a6818fbfd31bf3f8ed0b122f591aeff9ee",
     "inputShape": {
       "paths": [
         "/crs",
@@ -23722,6 +24254,7 @@
         "/rightObjectTypes"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.join:input:1.0"
@@ -23755,6 +24288,10 @@
         "/pairs/*/rightReferenceKey/version"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/pairs/*/leftReferenceKey",
+        "/pairs/*/rightReferenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.join:output:1.0"
@@ -23762,7 +24299,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -24024,7 +24561,7 @@
     ]
   },
   "spatial.summarize-area@1.0": {
-    "contractHash": "sha256:d82ab01d22fdd995222cc64668c5b739b2b5fc2947248e43aa82675a959a85cb",
+    "contractHash": "sha256:220518ce04a7464e732dc435861c6a79f383af0b2e3d213825c9f7ebc0789ebf",
     "inputShape": {
       "paths": [
         "/crs",
@@ -24037,6 +24574,7 @@
         "/observedTo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.summarize-area:input:1.0"
@@ -24063,6 +24601,9 @@
         "/total"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/sourceReferences/*"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:spatial.summarize-area:output:1.0"
@@ -24070,7 +24611,7 @@
     },
     "evidence": {
       "referenceInput": false,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "context",
         "candidateCount",
@@ -24372,6 +24913,7 @@
         "/trackletB/versionNo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.compare-pair-features:input:1.0"
@@ -24487,6 +25029,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -24944,6 +25487,7 @@
         "/uncertaintyPolicy"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-nearby-tracklets:input:1.0"
@@ -25059,6 +25603,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -25520,6 +26065,7 @@
         "/uncertaintyPolicy"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-proximity-intervals:input:1.0"
@@ -25635,6 +26181,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -26094,6 +26641,7 @@
         "/tracklet/versionNo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-region-interactions:input:1.0"
@@ -26209,6 +26757,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -26666,6 +27215,7 @@
         "/timeRange/start"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-sensor-coverage:input:1.0"
@@ -26781,6 +27331,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -27236,6 +27787,7 @@
         "/tracklet/versionNo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-stop-intervals:input:1.0"
@@ -27351,6 +27903,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -27807,6 +28360,7 @@
         "/uncertaintyPolicy"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-successor-candidates:input:1.0"
@@ -27922,6 +28476,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -28376,6 +28931,7 @@
         "/timeRange/start"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.find-tracklets-in-region:input:1.0"
@@ -28491,6 +29047,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -28945,6 +29502,7 @@
         "/units"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-motion-summary:input:1.0"
@@ -29060,6 +29618,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -29510,6 +30069,7 @@
         "/tracklet/versionNo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-position-at:input:1.0"
@@ -29625,6 +30185,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -30079,6 +30640,7 @@
         "/tracklet/versionNo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-tracklet-gaps:input:1.0"
@@ -30194,6 +30756,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -30647,6 +31210,7 @@
         "/tracklet/versionNo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-tracklet-quality:input:1.0"
@@ -30762,6 +31326,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -31212,6 +31777,7 @@
         "/tracklet/versionNo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.get-tracklet:input:1.0"
@@ -31327,6 +31893,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -31785,6 +32352,7 @@
         "/uncertaintyPolicy"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.nearest-approach:input:1.0"
@@ -31900,6 +32468,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -32357,6 +32926,7 @@
         "/tracklet/versionNo"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:capability:stas.slice-tracklet:input:1.0"
@@ -32472,6 +33042,7 @@
         "/warnings/*/message"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {
         "/status": [
           "COMPLETE",
@@ -32932,6 +33503,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -32966,6 +33540,10 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/members/*",
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -33122,6 +33700,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -33186,6 +33765,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -33252,6 +33832,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -33299,7 +33880,7 @@
     ]
   },
   "result.get@1.0": {
-    "contractHash": "sha256:66f8f8acaf53bc8faf18414d56382575627e6b9a7a008531cd4e60bfa60e2d50",
+    "contractHash": "sha256:15f3ef9359c2a54d4345a6ece663f7b7f0effdb8b2643887f04a7678311cc4d5",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -33323,6 +33904,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -33352,6 +33936,9 @@
         "/validUntil"
       ],
       "referenceKinds": [],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {
         "/status": [
           "AMBIGUOUS",
@@ -33371,7 +33958,7 @@
     },
     "evidence": {
       "referenceInput": true,
-      "referenceOutput": false,
+      "referenceOutput": true,
       "outputFeatures": [
         "artifactRefs",
         "computeSnapshotHash",
@@ -33531,6 +34118,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -33595,6 +34183,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -33661,6 +34250,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -33708,7 +34298,7 @@
     ]
   },
   "world.get-current-state@1.0": {
-    "contractHash": "sha256:8dc5ff6113956e022eee31e47b076fd1b6a6bd7ec6022d60754b29bd40864bb0",
+    "contractHash": "sha256:3702a2d6c8a9faa105fa2168c867fa93012b138b485314e56e9176765921c26c",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -33732,6 +34322,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -33767,6 +34360,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -33923,6 +34519,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -33987,6 +34584,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -34053,6 +34651,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -34125,6 +34724,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -34138,6 +34740,7 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -34281,6 +34884,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -34345,6 +34949,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -34411,6 +35016,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -34483,6 +35089,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -34517,6 +35126,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -34673,6 +35285,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -34737,6 +35350,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -34803,6 +35417,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -34875,6 +35490,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -34888,6 +35506,7 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -35031,6 +35650,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -35095,6 +35715,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -35161,6 +35782,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -35233,6 +35855,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -35267,6 +35892,9 @@
         "REFERENCE_SET",
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
+      ],
+      "referencePaths": [
+        "/referenceKey"
       ],
       "statusPaths": {},
       "sourceUris": [
@@ -35423,6 +36051,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -35487,6 +36116,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -35553,6 +36183,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",
@@ -35625,6 +36256,9 @@
         "SPATIAL_OBJECT",
         "WORLD_OBJECT"
       ],
+      "referencePaths": [
+        "/referenceKey"
+      ],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-query-request"
@@ -35638,6 +36272,7 @@
         "/truncated"
       ],
       "referenceKinds": [],
+      "referencePaths": [],
       "statusPaths": {},
       "sourceUris": [
         "urn:gowm:v0.4:catalog-result"
@@ -35781,6 +36416,7 @@
           "output",
           "parsed",
           "positive",
+          "projectedPosition",
           "quality",
           "qualityRank",
           "query",
@@ -35845,6 +36481,7 @@
           "Buffer.byteLength",
           "DATA_KINDS.has",
           "JSON.stringify",
+          "Math.abs",
           "Math.floor",
           "Math.max",
           "Math.min",
@@ -35911,6 +36548,7 @@
           "parsed.getTime",
           "parsed.toISOString",
           "positive",
+          "projectedPosition",
           "qualityRank",
           "query.rows.at",
           "query.rows.map",

@@ -3,7 +3,7 @@
   "providerId": "gowm.spatial-analysis.bridge",
   "operationId": "spatial.join",
   "operationVersion": "1.0",
-  "semanticProfileHash": "sha256:41409a3c515ff4cebcbf4f99841c568b32f9ed52fbcd5ef9d7cfe4403a3232af",
+  "semanticProfileHash": "sha256:221e5aff83827a58e769241c1db630b8bd684fa2df239d7d6ce6587e666d3a86",
   "rulesApplied": [
     "S001",
     "S002",
@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/spatial-provider.json",
-      "sha256": "0d3d8c631d146fd31df5a37b872f7a3b3e5975c37b987a3126f524609a456f6d"
+      "sha256": "629c0d73266bad3a58528b589231f75b59a6b890b0dea504e98b2ebd97744700"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/spatial-provider.json",
-      "sha256": "0d3d8c631d146fd31df5a37b872f7a3b3e5975c37b987a3126f524609a456f6d"
+      "sha256": "629c0d73266bad3a58528b589231f75b59a6b890b0dea504e98b2ebd97744700"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -58,6 +58,11 @@
       "sha256": "30cdcad58f73906609d1d365672d0afb34935c56585888bdf32358d0ca98572a"
     },
     {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/012_gowm_spatial_v1_read_contract.sql",
+      "sha256": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10"
+    },
+    {
       "kind": "SOURCE_LOCK",
       "path": "contracts/manifests/providers/spatial-provider-source-lock.json",
       "sha256": "4c4e9cf94cec643c70db8acb17a162dd6f8fe3a55c79f90565b039b463367615"
@@ -65,6 +70,6 @@
   ],
   "status": "PROVEN",
   "notes": [
-    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
   ]
 }

@@ -7,13 +7,18 @@
         "profileVersion": "1.0",
         "domain": "H3",
         "acceptedReferenceKinds": [],
-        "producedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
         "relationSemantics": [],
         "spatialSemantics": "AGGREGATED",
         "timeSemantics": "SNAPSHOT",
         "resultNature": "PROJECTION",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
       },
       "implementation": [
         {
@@ -24,7 +29,10 @@
       "tests": [
         "tests/platform/compatibility-migration.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "referenceAuthorities": [
+        "services/providers/gowm-situation-provider/src/repository-adapter.ts"
+      ]
     },
     "gowm.situation.h3.get-area@1.0": {
       "profile": {

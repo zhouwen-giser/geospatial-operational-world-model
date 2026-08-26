@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateContract, type CapabilityProviderManifest } from "../packages/platform/contract-runtime/src/index.js";
-import { checkCrossCapability, checkSemanticRules, inspectTypeScript, operationKey, type ImplementationEvidence } from "../packages/platform/semantic-conformance/src/index.js";
+import { checkCrossCapability, checkSemanticRules, inspectTypeScript, operationKey, validateVocabularyExtension, type ImplementationEvidence } from "../packages/platform/semantic-conformance/src/index.js";
 import { scanAndMaterialize, type ProviderSource } from "./materialize-capability-semantic-profiles.js";
 import { syncWorldPlatformManifests } from "./sync-world-platform-manifests.js";
 
@@ -17,6 +17,11 @@ export async function validateSemanticCatalog(requireBlackBox = true, write = fa
   const implementation = JSON.parse(await readFile(resolve(root, "reports/gowm-v0.6.2/semantic-implementation-report.json"), "utf8"));
   const evidence = new Map<string, ImplementationEvidence>(catalog.map((c) => [operationKey(c), implementation[operationKey(c)].evidence]));
   const issues = catalog.flatMap((c) => checkSemanticRules(c, evidence.get(operationKey(c))!, catalog, requireBlackBox));
+  const frozen = JSON.parse(await readFile(resolve(root,"validation/gowm-v0.6.2/frozen-vocabulary-meanings.json"),"utf8"));
+  for (const [name,baseline] of Object.entries(frozen)) {
+    const current = JSON.parse(await readFile(resolve(root,"contracts/gowm-v0.6.2/vocabularies",name),"utf8"));
+    for (const message of validateVocabularyExtension(baseline as Parameters<typeof validateVocabularyExtension>[0],current)) issues.push({rule:"VOCABULARY",operation:current.vocabularyId,message});
+  }
   const cross = checkCrossCapability(catalog, evidence);
   issues.push(...cross);
   for (const manifest of manifests) if (!validateContract("urn:gowm:v0.6.2:capability-provider-manifest-v1.1", manifest).valid) issues.push({ rule: "MANIFEST", operation: manifest.provider.providerId, message: "Manifest 1.1 validation failed" });

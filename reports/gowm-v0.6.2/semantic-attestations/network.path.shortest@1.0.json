@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/network-provider.json",
-      "sha256": "f8937568898552f814c727334ace44356a12f46adaadae6cc6de431ff97c83a7"
+      "sha256": "64970ecfb360b9add757ccca1c9adf8b6f6964b6a0e793285f3b1f29efbea9d6"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/network-provider.json",
-      "sha256": "f8937568898552f814c727334ace44356a12f46adaadae6cc6de431ff97c83a7"
+      "sha256": "64970ecfb360b9add757ccca1c9adf8b6f6964b6a0e793285f3b1f29efbea9d6"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,7 +44,7 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/network-provider/src/provider.ts",
-      "sha256": "51b937aebca53355eacec67ef46a92556061d611c9dfa1e46e93e6c9f760a9b2",
+      "sha256": "7acf21998b589490430ea8cac70dbef37de4293a8e00c58a3c7439f65964b527",
       "symbol": "createNetworkProvider"
     },
     {

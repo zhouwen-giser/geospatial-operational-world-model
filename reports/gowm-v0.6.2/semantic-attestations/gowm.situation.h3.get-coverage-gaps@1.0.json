@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/gowm-situation-provider.json",
-      "sha256": "e1b0edffe9ba3c17eebf4c400c1677de126f4771778bd5165d71bd2ea619a82f"
+      "sha256": "9ef24bc88e048f18d59a700b36993316040af9f53649d810270fdebde3a056c7"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/gowm-situation-provider.json",
-      "sha256": "e1b0edffe9ba3c17eebf4c400c1677de126f4771778bd5165d71bd2ea619a82f"
+      "sha256": "9ef24bc88e048f18d59a700b36993316040af9f53649d810270fdebde3a056c7"
     },
     {
       "kind": "INPUT_SCHEMA",

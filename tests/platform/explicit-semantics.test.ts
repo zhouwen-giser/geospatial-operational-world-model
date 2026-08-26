@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { canonicalSha256, validateContract } from "../../packages/platform/contract-runtime/src/index.js";
 import type { CapabilityDescriptor } from "../../packages/platform/contract-runtime/src/index.js";
-import { EMPTY_EVIDENCE, checkSemanticRules, checkCrossCapability, inspectSql, inspectTypeScript, materializeProfile, operationKey, type ImplementationEvidence } from "../../packages/platform/semantic-conformance/src/index.js";
+import { EMPTY_EVIDENCE, checkSemanticRules, checkCrossCapability, inspectSchema, inspectSql, inspectTypeScript, materializeProfile, operationKey, validateVocabularyExtension, type ImplementationEvidence } from "../../packages/platform/semantic-conformance/src/index.js";
 
 const manifest = JSON.parse(readFileSync(new URL("../../contracts/manifests/providers/spatial-provider.json", import.meta.url), "utf8"));
 export const profile = {
@@ -12,6 +12,13 @@ export const profile = {
 };
 
 describe("explicit Manifest 1.1 contract", () => {
+  it("allows vocabulary additions but rejects removed or redefined meanings", () => {
+    const baseline={vocabularyId:"test",terms:[{id:"INSIDE",definition:"exact covered-by"}]};
+    expect(validateVocabularyExtension(baseline,{...baseline,terms:[...baseline.terms,{id:"NEW",definition:"new meaning"}]})).toEqual([]);
+    expect(validateVocabularyExtension(baseline,{...baseline,terms:[]})).toHaveLength(1);
+    expect(validateVocabularyExtension(baseline,{...baseline,terms:[{id:"INSIDE",definition:"bbox overlap"}]})).toHaveLength(1);
+    expect(validateVocabularyExtension(baseline,{...baseline,terms:[...baseline.terms,...baseline.terms]})).toHaveLength(1);
+  });
   it("keeps legacy execution manifests parseable, but requires every 1.1 profile", () => {
     const legacy = structuredClone(manifest);
     delete legacy.manifestSchemaVersion;
@@ -92,6 +99,14 @@ describe("offline semantic rules and implementation evidence", () => {
     expect(result.symbols).toContain("handle");
     expect(result.siblingImports).toHaveLength(2);
     expect(result.diagnostics).toBe(0);
+  });
+  it("recognizes legacy generic ReferenceKey structures without inventing an enum", () => {
+    const schema = { type:"object", required:["namespace","kind","id","version"], properties:Object.fromEntries(["namespace","kind","id","version"].map((k) => [k,{type:"string"}])) };
+    const inspected = inspectSchema(schema, () => { throw new Error("unexpected ref"); });
+    expect(inspected.referencePaths).toEqual([""]);
+    expect(inspected.referenceKinds).toEqual([]);
+    const { c,e } = base(); e.referenceOutput = inspected.referencePaths.length > 0;
+    expect(checkSemanticRules(c,e).some((i) => i.rule === "S002")).toBe(true);
   });
   it("rejects duplicate operations, missing validators and cyclic or retired exact verification targets", () => {
     const { c, e } = base(), target = structuredClone(c);

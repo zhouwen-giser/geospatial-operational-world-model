@@ -55,7 +55,7 @@
     {
       "kind": "SOURCE_LOCK",
       "path": "contracts/manifests/providers/h3-toolkit-source-lock.json",
-      "sha256": "3bd364e6c6aab919346f4da157efc8329f82cefebdf78aa51317924cbf38c9d9"
+      "sha256": "b0a0a547df9d52b6f29fb38ed39d9e8aedc8498ab956863f92e223a2acf7e22a"
     }
   ],
   "status": "PROVEN",

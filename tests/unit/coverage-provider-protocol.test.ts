@@ -7,6 +7,7 @@ import { validateContract, type ProviderExecutionRequest } from "../../packages/
 import { sha256, type ProviderOperationResult } from "../../packages/platform/provider-sdk/src/index.js";
 import { createRoadCoverageProvider, ROAD_COVERAGE_OPERATION_LOCKS } from "../../services/providers/road-coverage-provider/src/provider.js";
 import type { RoadCoverageEngine } from "../../services/providers/road-coverage-provider/src/provider.js";
+import { resolveCoverageArea } from "../../services/providers/road-coverage-provider/src/area-reference.js";
 
 function unused(): Promise<ProviderOperationResult<unknown>> {
   throw new Error("operation should not execute in this protocol test");
@@ -21,6 +22,33 @@ const engine: RoadCoverageEngine = {
 };
 
 describe("road coverage Provider protocol", () => {
+  it("resolves a pinned scoped area without mutating the caller or dropping its provenance", async () => {
+    const key = {namespace:"gowm",kind:"LAYER_FEATURE",id:`wrf_${"1".repeat(32)}`,version:"descriptor-v1"};
+    const geometry = {type:"Polygon",coordinates:[[[0,0],[1,0],[1,1],[0,0]]]};
+    const calls:string[] = [];
+    const pool = {async connect() { return {async query(sql:string,values?:unknown[]) {
+      calls.push(sql);
+      if(sql.includes("set_scope")) expect(values).toEqual(["scope-a","dataset-a"]);
+      if(sql.includes("coverage_area_reference")) { expect(values).toEqual([key.id,key.version]); return {rows:[{geometry,feature_version:"feature-v1",content_hash:`sha256:${"f".repeat(64)}`}]}; }
+      return {rows:[]};
+    },release(){calls.push("release");}};}};
+    const context = {security:{dataScopeClaim:"scope-a",datasetScopeClaims:["dataset-a"]},deadline:{remainingMs:()=>1000}};
+    const original = {area:key};
+    const resolved = await resolveCoverageArea(pool as never,original as never,context as never);
+    expect(original.area).toEqual(key);
+    expect(resolved.request.area).toEqual(geometry);
+    expect(resolved.resource).toMatchObject({referenceKey:{...key,version:"feature-v1"},pinning:"PINNED"});
+    expect(calls[0]).toContain("READ ONLY"); expect(calls.at(-2)).toBe("COMMIT"); expect(calls.at(-1)).toBe("release");
+    await expect(resolveCoverageArea(pool as never,{area:{...key,kind:"WORLD_OBJECT"}} as never,context as never)).rejects.toThrow("LAYER_FEATURE");
+  });
+  it("fails closed for absent or ambiguous area versions and rolls back", async () => {
+    for (const count of [0,2]) {
+      const calls:string[]=[];
+      const pool={async connect(){return {async query(sql:string){calls.push(sql);return {rows:sql.includes("coverage_area_reference")?Array.from({length:count},()=>({})):[]};},release(){calls.push("release");}};}};
+      await expect(resolveCoverageArea(pool as never,{area:{namespace:"gowm",kind:"LAYER_FEATURE",id:"missing",version:"v1"}} as never,{security:{dataScopeClaim:"a",datasetScopeClaims:["b"]},deadline:{remainingMs:()=>100}} as never)).rejects.toThrow("unavailable or ambiguous");
+      expect(calls.slice(-2)).toEqual(["ROLLBACK","release"]);
+    }
+  });
   it("registers the exact five frozen operation and schema locks", () => {
     const manifest = createRoadCoverageProvider(engine).runtime.manifest;
     expect(validateContract("capability-provider-manifest.schema.json", manifest)).toMatchObject({ valid: true });
