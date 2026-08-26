@@ -184,9 +184,9 @@ try {
   check("capabilitySemanticsFromRegistry", semanticCatalogResponse.statusCode === 200 && semanticProfiles.length === registry.catalog().length, semanticCatalog);
   check("capabilitySemanticsUnique", new Set(semanticProfiles.map((profile) => `${profile.operationId}@${profile.operationVersion}`)).size === semanticProfiles.length, semanticProfiles);
   check("capabilitySemanticsDeterministic", semanticCatalog.catalogHash === semanticReplay.catalogHash, { semanticCatalog, semanticReplay });
-  check("capabilitySemanticsCoverage", semanticProfiles.some((profile) => profile.operationId === "coverage.road.plan" && profile.resultNature === "PLAN" && profile.freshnessSemantics === "SNAPSHOT_CURRENTNESS"), semanticProfiles);
-  check("capabilitySemanticsValidation", semanticProfiles.some((profile) => profile.operationId === "result.validate" && profile.resultNature === "VALIDATION") && semanticProfiles.some((profile) => profile.operationId === "snapshot.validate" && profile.resultNature === "VALIDATION"), semanticProfiles);
-  check("capabilitySemanticsCatalog", semanticProfiles.some((profile) => profile.operationId === "catalog.search" && profile.resultNature === "CATALOG"), semanticProfiles);
+  check("capabilitySemanticsCoverage", semanticProfiles.some((profile) => profile.operationId === "coverage.road.plan" && row(profile.semanticProfile).resultNature === "PLAN" && row(profile.semanticProfile).freshnessSemantics === "SNAPSHOT_CURRENTNESS"), semanticProfiles);
+  check("capabilitySemanticsValidation", semanticProfiles.some((profile) => profile.operationId === "result.validate" && row(profile.semanticProfile).resultNature === "VALIDATION") && semanticProfiles.some((profile) => profile.operationId === "snapshot.validate" && row(profile.semanticProfile).resultNature === "VALIDATION"), semanticProfiles);
+  check("capabilitySemanticsCatalog", semanticProfiles.some((profile) => profile.operationId === "catalog.search" && row(profile.semanticProfile).resultNature === "CATALOG"), semanticProfiles);
   const coverageSemanticDetail = await app.inject({ method: "GET", url: "/v1/capability-semantics/coverage.road.plan/1.0" });
   check("capabilitySemanticsDetail", coverageSemanticDetail.statusCode === 200 && coverageSemanticDetail.json().operationId === "coverage.road.plan", coverageSemanticDetail.json());
   measured("semanticProjectionBounded", semanticStartedAt, 5000);

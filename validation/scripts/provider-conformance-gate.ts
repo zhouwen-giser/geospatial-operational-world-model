@@ -67,7 +67,7 @@ for (const definition of definitions) {
   const sourceFiles = await files(resolve(root, definition.sourceRoot));
   const sources = await Promise.all(sourceFiles.filter((path) => /\.(?:ts|js|sql)$/u.test(path)).map(async (path) => ({ path, source: await readFile(path, "utf8") })));
   const violations = sources.flatMap(({ path, source }) => siblingImports(source, path, root).map((specifier) => `${relative(root, path)}:${specifier}`));
-  const profiles = projectCapabilitySemantics(capabilities, "conformance");
+  const profiles = projectCapabilitySemantics(capabilities, registry.contractCatalogRevision, registry.bindingRevision);
   const schemaChecks = capabilities.flatMap((capability) => [
     { schemaUri: capability.inputSchemaUri, schemaHash: capability.inputSchemaHash },
     { schemaUri: capability.outputSchemaUri, schemaHash: capability.outputSchemaHash },
@@ -93,7 +93,7 @@ for (const definition of definitions) {
     check("MANIFEST", validateContract("capability-provider-manifest.schema.json", manifest).valid && sha256(manifest) === sha256(JSON.parse(await readFile(resolve(root, manifestPath), "utf8"))), manifestPath),
     check("SCHEMA_HASH", schemaChecks.every((lock) => lock.valid), "Exact canonical JSON or actual source-byte hash; unknown URI/path fails closed", schemaChecks.filter((lock) => !lock.valid)),
     check("OPERATION_VERSION", new Set(capabilities.map((c) => `${c.operationId}@${c.operationVersion}`)).size === capabilities.length, "Runtime factory validates operation/handler parity"),
-    check("SEMANTIC_PROFILE", validateContract("urn:gowm:v0.6.1:capability-semantic-catalog", profiles).valid, "Projection from every current descriptor"),
+    check("SEMANTIC_PROFILE", validateContract("urn:gowm:v0.6.2:capability-semantic-catalog", profiles).valid && profiles.profiles.length === capabilities.length, "Explicit projection from every current descriptor"),
     check("SCOPE_SNAPSHOT_LIMITS", validateSemanticManifest(manifest).valid && capabilities.every((c) => c.execution.maximumTimeoutMs >= c.execution.defaultTimeoutMs && (c.limits.maximumInputBytes ?? 0) > 0 && (c.limits.maximumOutputBytes ?? 0) > 0), "Executable manifest schema and cross-field semantic rules"),
     check("HASH_ERROR_FAIL_CLOSED", negativeCases.every((item) => item.passed), "Real runtime rejects forged input hash before IO", negativeCases),
     check("CO_REGISTRATION", registry.catalog().length === operationCount, "All current protocol Provider factories registered together without duplicate routes"),
