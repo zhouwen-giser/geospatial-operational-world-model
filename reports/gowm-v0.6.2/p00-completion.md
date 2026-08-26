@@ -19,3 +19,12 @@ No GOWM database container or complete database image exists on the host. A dedi
 No merge, tag, release, deployment, core fact/algorithm modification or upper-layer repository modification performed.
 
 Next: P01 explicit contract freeze; real runtime validation will be freshly executed.
+
+## Runtime closure recorded during P08
+
+The initial pending runtime gates were subsequently executed against the exact
+predecessor in a separate read-only source worktree with a dedicated PostgreSQL
+image. Fresh D00 (58 migrations / 43 assertions), G00 (160 real checks), and T00
+(72 before / 5 after actual database restart) all passed. See
+`baseline-runtime/{d00,g00,t00}-runtime-v062baseline.json`. The pending paragraph
+above is retained as the original phase record, not a current blocker.

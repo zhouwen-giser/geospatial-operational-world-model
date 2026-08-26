@@ -1,0 +1,5 @@
+
+> geospatial-operational-world-model@0.6.2 validate:boundaries
+> node validation/architecture/validate-capability-boundaries.mjs
+
+CAPABILITY_BOUNDARIES_PASS

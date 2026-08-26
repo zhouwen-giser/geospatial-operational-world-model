@@ -1,0 +1,5 @@
+
+> geospatial-operational-world-model@0.6.2 validate:wsgs-lock
+> node --import tsx scripts/generate-wsgs-operation-lock.ts
+
+{"status":"PASS","defaultOperations":21,"previewOperations":99,"lockHash":"sha256:20537b1f436fbae4976e57e683adcb3928418c1ec7c7a489427b82df9b2b4263"}

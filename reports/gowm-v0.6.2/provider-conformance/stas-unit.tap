@@ -1,0 +1,254 @@
+
+> mobilitydb-stas-service@0.1.0 test
+> node --import tsx --test test/**/*.test.ts
+
+TAP version 13
+# Subtest: semantic analysis hash is key-order stable but query-sensitive
+ok 1 - semantic analysis hash is key-order stable but query-sensitive
+  ---
+  duration_ms: 39.546667
+  type: 'test'
+  ...
+# Subtest: PostgreSQL statement timeout maps to a stable deadline error
+ok 2 - PostgreSQL statement timeout maps to a stable deadline error
+  ---
+  duration_ms: 1.613369
+  type: 'test'
+  ...
+# Subtest: RFC 9457 response includes stable code and instance
+ok 3 - RFC 9457 response includes stable code and instance
+  ---
+  duration_ms: 8.568361
+  type: 'test'
+  ...
+# Subtest: Fastify content-type and not-found errors map to stable application errors
+ok 4 - Fastify content-type and not-found errors map to stable application errors
+  ---
+  duration_ms: 0.398059
+  type: 'test'
+  ...
+# Subtest: compact evidence references are generated from frozen inputs without duplicates
+ok 5 - compact evidence references are generated from frozen inputs without duplicates
+  ---
+  duration_ms: 23.743839
+  type: 'test'
+  ...
+# Subtest: get_position_at returns NO_DATA with the explicit gap that contains the timestamp
+ok 6 - get_position_at returns NO_DATA with the explicit gap that contains the timestamp
+  ---
+  duration_ms: 45.216844
+  type: 'test'
+  ...
+# Subtest: health and readiness distinguish process liveness from database readiness
+ok 7 - health and readiness distinguish process liveness from database readiness
+  ---
+  duration_ms: 318.829157
+  type: 'test'
+  ...
+# Subtest: colon action route exists and rejects missing authorized scope as RFC 9457
+ok 8 - colon action route exists and rejects missing authorized scope as RFC 9457
+  ---
+  duration_ms: 20.371317
+  type: 'test'
+  ...
+# Subtest: tool action route extracts only the tool name before its literal colon
+ok 9 - tool action route extracts only the tool name before its literal colon
+  ---
+  duration_ms: 11.852775
+  type: 'test'
+  ...
+# Subtest: STAS does not expose GOWM-owned observation or Tracklet commands
+ok 10 - STAS does not expose GOWM-owned observation or Tracklet commands
+  ---
+  duration_ms: 14.112923
+  type: 'test'
+  ...
+# Subtest: persisted analysis route requires scope and delegates by UUID plus scope
+ok 11 - persisted analysis route requires scope and delegates by UUID plus scope
+  ---
+  duration_ms: 12.292017
+  type: 'test'
+  ...
+# Subtest: registry HTTP response exposes 15 tools
+ok 12 - registry HTTP response exposes 15 tools
+  ---
+  duration_ms: 16.951871
+  type: 'test'
+  ...
+# Subtest: unknown routes use RFC 9457 not-found responses
+ok 13 - unknown routes use RFC 9457 not-found responses
+  ---
+  duration_ms: 12.500561
+  type: 'test'
+  ...
+# Subtest: unsupported request media types use RFC 9457 responses
+ok 14 - unsupported request media types use RFC 9457 responses
+  ---
+  duration_ms: 12.897851
+  type: 'test'
+  ...
+# Subtest: OpenAPI exposes exactly the application-owned runtime paths
+ok 15 - OpenAPI exposes exactly the application-owned runtime paths
+  ---
+  duration_ms: 15.21186
+  type: 'test'
+  ...
+# Subtest: OpenAPI tool enum and input schema refs match the 15-tool registry
+ok 16 - OpenAPI tool enum and input schema refs match the 15-tool registry
+  ---
+  duration_ms: 5.206221
+  type: 'test'
+  ...
+# Subtest: nearest_approach returns NO_DATA without a common defined domain
+ok 17 - nearest_approach returns NO_DATA without a common defined domain
+  ---
+  duration_ms: 15.663427
+  type: 'test'
+  ...
+# Subtest: compare_pair_features does not coerce a missing distance to zero
+ok 18 - compare_pair_features does not coerce a missing distance to zero
+  ---
+  duration_ms: 4.042803
+  type: 'test'
+  ...
+# Subtest: find_nearby_tracklets returns NO_DATA when the subject is undefined in the requested time
+ok 19 - find_nearby_tracklets returns NO_DATA when the subject is undefined in the requested time
+  ---
+  duration_ms: 1.828973
+  type: 'test'
+  ...
+# Subtest: common evaluable domain with no proximity is COMPLETE with empty intervals
+ok 20 - common evaluable domain with no proximity is COMPLETE with empty intervals
+  ---
+  duration_ms: 4.005007
+  type: 'test'
+  ...
+# Subtest: no common defined domain is NO_DATA rather than a false result
+ok 21 - no common defined domain is NO_DATA rather than a false result
+  ---
+  duration_ms: 0.643074
+  type: 'test'
+  ...
+# Subtest: proximity domain probe treats a NULL span-set intersection as undefined
+ok 22 - proximity domain probe treats a NULL span-set intersection as undefined
+  ---
+  duration_ms: 0.849147
+  type: 'test'
+  ...
+# Subtest: slice_tracklet rejects a region from another analysis space
+ok 23 - slice_tracklet rejects a region from another analysis space
+  ---
+  duration_ms: 25.916391
+  type: 'test'
+  ...
+# Subtest: find_region_interactions rejects a region from another analysis space
+ok 24 - find_region_interactions rejects a region from another analysis space
+  ---
+  duration_ms: 15.872831
+  type: 'test'
+  ...
+# Subtest: find_tracklets_in_region limits candidates to the region analysis space
+ok 25 - find_tracklets_in_region limits candidates to the region analysis space
+  ---
+  duration_ms: 12.457742
+  type: 'test'
+  ...
+# Subtest: slice_tracklet returns COMPLETE empty output when time is evaluable but the region misses
+ok 26 - slice_tracklet returns COMPLETE empty output when time is evaluable but the region misses
+  ---
+  duration_ms: 5.828058
+  type: 'test'
+  ...
+# Subtest: find_region_interactions uses range bounds for tstzspan visit endpoints
+ok 27 - find_region_interactions uses range bounds for tstzspan visit endpoints
+  ---
+  duration_ms: 3.830551
+  type: 'test'
+  ...
+# Subtest: registry exposes all 15 P0 tool contracts and no executable schema object
+ok 28 - registry exposes all 15 P0 tool contracts and no executable schema object
+  ---
+  duration_ms: 2.755705
+  type: 'test'
+  ...
+# Subtest: registry declares repository CRS and uncertainty failures
+ok 29 - registry declares repository CRS and uncertainty failures
+  ---
+  duration_ms: 0.486194
+  type: 'test'
+  ...
+# Subtest: time range rejects an empty or reversed interval
+ok 30 - time range rejects an empty or reversed interval
+  ---
+  duration_ms: 7.93324
+  type: 'test'
+  ...
+# Subtest: tracklet version reference must be pinned by exactly one selector
+ok 31 - tracklet version reference must be pinned by exactly one selector
+  ---
+  duration_ms: 1.109613
+  type: 'test'
+  ...
+# Subtest: slice requires time and/or a versioned region
+ok 32 - slice requires time and/or a versioned region
+  ---
+  duration_ms: 1.256972
+  type: 'test'
+  ...
+# Subtest: v1 proximity contract exposes scalar sensitivity only
+ok 33 - v1 proximity contract exposes scalar sensitivity only
+  ---
+  duration_ms: 5.280324
+  type: 'test'
+  ...
+# Subtest: successor Level 2 requires acceleration and heading hard gates
+ok 34 - successor Level 2 requires acceleration and heading hard gates
+  ---
+  duration_ms: 1.752926
+  type: 'test'
+  ...
+# Subtest: scope must be supplied by authorization boundary and body
+ok 35 - scope must be supplied by authorization boundary and body
+  ---
+  duration_ms: 2.148783
+  type: 'test'
+  ...
+# Subtest: sensor coverage caps bbox candidates before exact evaluation and pins only exact evidence
+ok 36 - sensor coverage caps bbox candidates before exact evaluation and pins only exact evidence
+  ---
+  duration_ms: 4.632831
+  type: 'test'
+  ...
+# Subtest: sensor coverage rejects an over-cap coarse universe without running exact predicates
+ok 37 - sensor coverage rejects an over-cap coarse universe without running exact predicates
+  ---
+  duration_ms: 1.1799
+  type: 'test'
+  ...
+# Subtest: sensor coverage rejects a sensor outside the authorized data scope
+ok 38 - sensor coverage rejects a sensor outside the authorized data scope
+  ---
+  duration_ms: 0.939134
+  type: 'test'
+  ...
+# Subtest: SQL provenance changes with executed text and excludes parameter values
+ok 39 - SQL provenance changes with executed text and excludes parameter values
+  ---
+  duration_ms: 42.129434
+  type: 'test'
+  ...
+# Subtest: SQL provenance preserves statement order while normalizing line endings
+ok 40 - SQL provenance preserves statement order while normalizing line endings
+  ---
+  duration_ms: 0.75959
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1924.829961

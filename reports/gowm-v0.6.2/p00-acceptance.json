@@ -3,7 +3,7 @@
   "phase": "P00",
   "baseSha": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
   "staticStatus": "PASS",
-  "runtimeStatus": "PENDING_FRESH_EXECUTION",
+  "runtimeStatus": "PASS",
   "package": {
     "schemas": 11,
     "rules": 14,
@@ -16,5 +16,10 @@
     "stasPassed": 40,
     "providerConformance": 11
   },
-  "protectedActions": []
+  "protectedActions": [],
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+    "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+    "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+  ]
 }

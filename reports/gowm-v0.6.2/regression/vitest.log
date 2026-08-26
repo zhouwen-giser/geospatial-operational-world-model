@@ -1,0 +1,79 @@
+
+> geospatial-operational-world-model@0.6.2 test
+> vitest run --reporter=default --reporter=json --outputFile=reports/gowm-v0.6.2/regression/vitest.json
+
+
+ RUN  v4.1.10 /tmp/gowm-world-platform-gateway-semantics-v0.6.2
+
+ ✓ tests/platform/gowm-v05-architecture.test.ts (3 tests) 168ms
+ ✓ tests/platform/road-coverage-contracts.test.ts (8 tests) 124ms
+ ✓ tests/scenario/c1-c10.test.ts (8 tests) 670ms
+ ✓ tests/platform/operational-reality-provider.test.ts (2 tests) 411ms
+ ✓ tests/platform/stas-provider.test.ts (3 tests) 992ms
+     ✓ keeps liveness independent of unavailable native data  621ms
+ ✓ tests/platform/grounding-catalog-provider.test.ts (11 tests) 893ms
+ ✓ tests/platform/compatibility-migration.test.ts (11 tests) 827ms
+ ✓ tests/platform/geometry-provider-bridge.test.ts (12 tests) 1854ms
+     ✓ registers exactly 19 schema-locked operations and excludes boundary operations  307ms
+     ✓ executes every registered operation against its authoritative input and output schema  399ms
+     ✓ serves protocol routes and reports the bounded worker pool readiness  478ms
+ ✓ tests/platform/platform-validation-provider.test.ts (7 tests) 844ms
+ ✓ tests/unit/coverage-alternatives.test.ts (8 tests) 337ms
+ ✓ tests/platform/gowm-v04-contracts.test.ts (8 tests) 317ms
+ ✓ tests/unit/coverage-strict-routing.test.ts (7 tests) 211ms
+ ✓ tests/platform/explicit-semantics.test.ts (22 tests) 487ms
+ ✓ tests/unit/operational-predicate.test.ts (10 tests) 106ms
+ ✓ tests/unit/network-topology-builder.test.ts (8 tests) 77ms
+ ✓ tests/platform/world-query-runtime.test.ts (16 tests) 1197ms
+ ✓ tests/unit/network-turn-restrictions.test.ts (6 tests) 81ms
+ ✓ tests/unit/network-catalog-build.test.ts (4 tests) 118ms
+ ✓ tests/unit/coverage-independent-verifier.test.ts (14 tests) 258ms
+ ✓ tests/scenario/mcp.test.ts (1 test) 362ms
+     ✓ lists tools and invokes nearby without database knowledge  359ms
+ ✓ tests/platform/gowm-v05-contracts.test.ts (4 tests) 141ms
+ ✓ tests/platform/network-provider.test.ts (4 tests) 166ms
+ ✓ tests/unit/coverage-provider-protocol.test.ts (6 tests) 351ms
+ ✓ tests/unit/coverage-open-dcpp.test.ts (4 tests) 132ms
+ ✓ tests/platform/route-planning-provider.test.ts (1 test) 93ms
+ ✓ tests/unit/h3.test.ts (2 tests) 107ms
+ ✓ tests/platform/provider-gateway.test.ts (14 tests) 2669ms
+     ✓ combines discovered canonical fragments deterministically with 15 providers and no collision  881ms
+     ✓ rejects missing required providers, identity/hash drift, duplicate routes and unapproved providers  530ms
+     ✓ allows absent optional bridges with an explicit warning and unchanged required ownership  315ms
+ ✓ tests/unit/coverage-problem-canonical.test.ts (6 tests) 178ms
+ ✓ tests/unit/coverage-closed-dcpp.test.ts (4 tests) 240ms
+ ✓ tests/unit/coverage-endpoint-policy.test.ts (10 tests) 122ms
+ ✓ tests/unit/road-coverage-selection.test.ts (10 tests) 199ms
+ ✓ tests/platform/bounded-json-response.test.ts (2 tests) 193ms
+ ✓ tests/unit/operational-event.test.ts (3 tests) 35ms
+ ✓ tests/unit/canonical-observation.test.ts (5 tests) 107ms
+ ✓ tests/unit/network-profile-cost-condition.test.ts (4 tests) 50ms
+ ✓ tests/unit/geometry.test.ts (4 tests) 34ms
+ ✓ tests/unit/coverage-fixed-rpp.test.ts (4 tests) 96ms
+ ✓ tests/unit/coverage-async-runtime.test.ts (3 tests) 64ms
+ ✓ tests/platform/capability-semantics.test.ts (7 tests) 1250ms
+     ✓ admits Stable consumer operations only after all gates and segregates Preview from Experimental  474ms
+     ✓ serves the ten locked semantic profiles from the live Gateway registry  373ms
+ ✓ tests/platform/gowm-v05-database-image.test.ts (4 tests) 94ms
+ ✓ tests/platform/gowm-v05-network-schema.test.ts (3 tests) 42ms
+ ✓ tests/platform/gowm-v05-network-read-contract.test.ts (2 tests) 35ms
+ ✓ tests/platform/platform-validation-authority.test.ts (15 tests) 99ms
+ ✓ tests/unit/operational-observability.test.ts (7 tests) 85ms
+ ✓ tests/unit/h3-situation-delegation.test.ts (2 tests) 68ms
+ ✓ tests/platform/result-validation-core.test.ts (3 tests) 27ms
+ ✓ tests/unit/routing-snapshot-currentness.test.ts (9 tests) 54ms
+ ✓ tests/platform/provider-sdk-deadline.test.ts (1 test) 40ms
+ ✓ tests/unit/fusion.test.ts (3 tests) 10ms
+ ✓ tests/unit/simulator.test.ts (1 test) 27ms
+ ✓ tests/unit/mqtt-bus.test.ts (2 tests) 28ms
+ ✓ tests/platform/route-independent-verifier.test.ts (3 tests) 12ms
+ ✓ tests/platform/canonical-hash.test.ts (2 tests) 13ms
+ ↓ tests/integration/database.test.ts (1 test | 1 skipped)
+ ✓ tests/platform/provider-conformance-inspection.test.ts (3 tests) 22ms
+
+ Test Files  54 passed | 1 skipped (55)
+      Tests  326 passed | 1 skipped (327)
+   Start at  19:40:20
+   Duration  11.86s (transform 32.90s, setup 0ms, import 73.61s, tests 17.21s, environment 26ms)
+
+JSON report written to /tmp/gowm-world-platform-gateway-semantics-v0.6.2/reports/gowm-v0.6.2/regression/vitest.json

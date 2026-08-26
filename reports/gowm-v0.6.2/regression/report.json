@@ -1,0 +1,154 @@
+{
+  "status": "PASS",
+  "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+  "sourceAfter": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+  "commands": [
+    {
+      "id": "types-contracts",
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/types-contracts.log"
+    },
+    {
+      "id": "sql-ast",
+      "command": [
+        "npm",
+        "run",
+        "verify:sql"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/sql-ast.log"
+    },
+    {
+      "id": "vitest",
+      "command": [
+        "npm",
+        "test",
+        "--",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=reports/gowm-v0.6.2/regression/vitest.json"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/vitest.log"
+    },
+    {
+      "id": "stas",
+      "command": [
+        "npm",
+        "--prefix",
+        "services/stas",
+        "test"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/stas.log"
+    },
+    {
+      "id": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/build.log"
+    },
+    {
+      "id": "legacy-contracts",
+      "command": [
+        "npm",
+        "run",
+        "validate:stable-contracts"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/legacy-contracts.log"
+    },
+    {
+      "id": "boundaries",
+      "command": [
+        "npm",
+        "run",
+        "validate:boundaries"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/boundaries.log"
+    },
+    {
+      "id": "profile",
+      "command": [
+        "npm",
+        "run",
+        "validate:world-platform-profile"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/profile.log"
+    },
+    {
+      "id": "materializer",
+      "command": [
+        "npm",
+        "run",
+        "validate:semantic-materializer"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/materializer.log"
+    },
+    {
+      "id": "semantic-catalog",
+      "command": [
+        "npm",
+        "run",
+        "validate:semantic-catalog"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/semantic-catalog.log"
+    },
+    {
+      "id": "registry",
+      "command": [
+        "npm",
+        "run",
+        "validate:world-platform-registry"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/registry.log"
+    },
+    {
+      "id": "wsgs-lock",
+      "command": [
+        "npm",
+        "run",
+        "validate:wsgs-lock"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/wsgs-lock.log"
+    },
+    {
+      "id": "provider-conformance",
+      "command": [
+        "npm",
+        "run",
+        "validate:provider-conformance"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "reports/gowm-v0.6.2/regression/provider-conformance.log"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.h3.analysis.bridge",
+  "providerVersion": "0.2.0",
+  "checks": [
+    {
+      "id": "MANIFEST",
+      "status": "PASS",
+      "message": "contracts/manifests/providers/h3-current.json"
+    },
+    {
+      "id": "SCHEMA_HASH",
+      "status": "PASS",
+      "message": "Exact canonical JSON or actual source-byte hash; unknown URI/path fails closed",
+      "details": []
+    },
+    {
+      "id": "OPERATION_VERSION",
+      "status": "PASS",
+      "message": "Runtime factory validates operation/handler parity"
+    },
+    {
+      "id": "SEMANTIC_PROFILE",
+      "status": "PASS",
+      "message": "Explicit projection from every current descriptor"
+    },
+    {
+      "id": "SCOPE_SNAPSHOT_LIMITS",
+      "status": "PASS",
+      "message": "Executable manifest schema and cross-field semantic rules"
+    },
+    {
+      "id": "HASH_ERROR_FAIL_CLOSED",
+      "status": "PASS",
+      "message": "Real runtime rejects forged input hash before IO",
+      "details": [
+        {
+          "operationId": "h3.analytics.aggregate",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "h3.analytics.coverage",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "h3.analytics.flow",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "CO_REGISTRATION",
+      "status": "PASS",
+      "message": "All current protocol Provider factories registered together without duplicate routes"
+    },
+    {
+      "id": "HEALTH_READINESS_CONTRACT",
+      "status": "PASS",
+      "message": "Executed SDK startup health/readiness contract; external dependency readiness is not claimed"
+    },
+    {
+      "id": "NO_SIBLING_PROVIDER_IMPORT",
+      "status": "PASS",
+      "message": "AST resolves relative/absolute/dynamic imports and re-exports",
+      "details": []
+    },
+    {
+      "id": "NO_SIBLING_PROVIDER_HTTP",
+      "status": "PASS",
+      "message": "No hardcoded sibling Provider HTTP target"
+    },
+    {
+      "id": "VERSIONED_READ_CONTRACT",
+      "status": "PASS",
+      "message": "Provider source has no public base-table read; database grants and SQL assertions are independently checked by D00"
+    },
+    {
+      "id": "UNIT_PROTOCOL_BEHAVIOR",
+      "status": "PASS",
+      "message": "Executed unit/protocol suite: status mapping, receipts/evidence, scope, limits, health, idempotency and errors; not live readiness"
+    }
+  ],
+  "manifestHash": "sha256:4f2b2d5d341e58f9c9a74ba90c0f7f4ee571914903cd8e558fb6b1c26db6918a",
+  "evidenceLevel": "CONTRACT_AND_UNIT_PROTOCOL",
+  "runtimeReadiness": "NOT_CLAIMED",
+  "unitEvidenceRef": "reports/gowm-v0.6.1/provider-conformance/unit-behavior.json",
+  "status": "PASS",
+  "generatedAt": "2026-08-26T11:41:16.828Z",
+  "reportHash": "sha256:1450d3fe1131ed9e634f20773fb45e777d78315a66586ff9bc7ba3e1bd5fecb1"
+}
