@@ -10,7 +10,7 @@ This is a living plan.
 ## Progress
 - [x] P00 (static baseline; fresh runtime gates pending)
 - [x] P01
-- [ ] P02
+- [x] P02
 - [ ] P03
 - [ ] P04
 - [ ] P05
