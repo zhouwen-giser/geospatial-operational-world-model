@@ -1,0 +1,4186 @@
+{
+  "schemaVersion": "1.0",
+  "cases": {
+    "AC-R001": {
+      "scenario": "Actual main head",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R002": {
+      "scenario": "Version baseline",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R003": {
+      "scenario": "Migration baseline",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R004": {
+      "scenario": "Status reconciliation",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R005": {
+      "scenario": "No open work theft",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R006": {
+      "scenario": "Independent worktree",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R007": {
+      "scenario": "No WSGS implementation",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R008": {
+      "scenario": "No second registry",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R009": {
+      "scenario": "No second catalog",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R010": {
+      "scenario": "No protected action",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R011": {
+      "scenario": "Package schemas",
+      "unitFiles": [
+        "tests/platform/road-coverage-contracts.test.ts",
+        "tests/platform/compatibility-migration.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R012": {
+      "scenario": "Compatibility plan",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/current-design-amendment.md"
+      ]
+    },
+    "AC-C00-01": {
+      "scenario": "Attempt 1 initial claim",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimInitialAttemptGeneration"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-02": {
+      "scenario": "Lease expires",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimExpiredReaped"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-03": {
+      "scenario": "Requeue",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimRequestRequeued"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-04": {
+      "scenario": "Reclaim same Gateway Job",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimMonotonicAttemptGeneration"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-05": {
+      "scenario": "Old heartbeat",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimOldHeartbeatFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-06": {
+      "scenario": "Old problem write",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimOldProblemFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-07": {
+      "scenario": "Old candidate write",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimOldCandidateFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-08": {
+      "scenario": "Old result publish",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimOldResultFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-09": {
+      "scenario": "New result publish",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimNewResultPublished",
+            "reclaimDuplicatePublishFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-10": {
+      "scenario": "Concurrent reclaim",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimConcurrentSingleton"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-11": {
+      "scenario": "Attempt monotonic",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimDurableMonotonicSingleton"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-12": {
+      "scenario": "Generation monotonic",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimMonotonicAttemptGeneration"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-13": {
+      "scenario": "Cancellation fence",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "chaosCancellation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-14": {
+      "scenario": "Restart recovery",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.after",
+          "checks": [
+            "reclaimGenerationAfterRestart"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C01-01": {
+      "scenario": "Shared package",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-02": {
+      "scenario": "Network provider dependency",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        },
+        {
+          "report": "recovery.before",
+          "checks": [
+            "networkUnaffected",
+            "routeUnaffected"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-03": {
+      "scenario": "Route provider dependency",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        },
+        {
+          "report": "recovery.before",
+          "checks": [
+            "networkUnaffected",
+            "routeUnaffected"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-04": {
+      "scenario": "Coverage provider dependency",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-05": {
+      "scenario": "No sibling source import",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-06": {
+      "scenario": "No provider HTTP",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-07": {
+      "scenario": "Read contract",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-08": {
+      "scenario": "Scope",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-09": {
+      "scenario": "Read-only",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-10": {
+      "scenario": "Currentness",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessGraphStale",
+            "routingCurrentnessTravelStale",
+            "routingCurrentnessCostStale",
+            "routingCurrentnessConditionStale"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-11": {
+      "scenario": "Geometry expansion",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expandOrder",
+            "boundaryPartialArcMembership"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-12": {
+      "scenario": "Provider isolation",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        },
+        {
+          "report": "recovery.before",
+          "checks": [
+            "networkUnaffected",
+            "routeUnaffected"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C02-01": {
+      "scenario": "Segment crossing contract",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryMultiPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-02": {
+      "scenario": "Partial arc",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryPartialArcMembership"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-03": {
+      "scenario": "Forward direction",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryForwardPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-04": {
+      "scenario": "Reverse direction",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryReversePolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-05": {
+      "scenario": "Polygon",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryForwardPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-06": {
+      "scenario": "MultiPolygon",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryMultiPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-07": {
+      "scenario": "Start inside",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryStartEndInside"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-08": {
+      "scenario": "Start outside",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryForwardPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-09": {
+      "scenario": "Touch only",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryTouchDeterministic"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-10": {
+      "scenario": "Boundary overlap",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryOverlapFailClosed"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-11": {
+      "scenario": "Candidate events ignored",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryNoReentryIgnoresCandidateHints"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-12": {
+      "scenario": "FREE",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryPolicyFree"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-13": {
+      "scenario": "FIRST outside one entry",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstOutsideOneEntry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-14": {
+      "scenario": "FIRST outside zero entry",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstOutsideZeroEntry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-15": {
+      "scenario": "FIRST outside two entries",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstOutsideTwoEntries"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-16": {
+      "scenario": "FIRST inside no entry",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstInsideNoEntry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-17": {
+      "scenario": "FIRST inside re-entry",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstInsideReentry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-18": {
+      "scenario": "ENTRY_SET allowed",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryEntrySetAllowed"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-19": {
+      "scenario": "ENTRY_SET unapproved",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryEntrySetDenied"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-20": {
+      "scenario": "NO_REENTRY",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryNoReentryIgnoresCandidateHints"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-21": {
+      "scenario": "LAST_AREA_EXIT valid",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryLastAreaExitValid"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-22": {
+      "scenario": "LAST_AREA_EXIT invalid",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryLastAreaExitWrongTerminal"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-23": {
+      "scenario": "Invalid area",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryInvalidAreaFailClosed"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-24": {
+      "scenario": "Crossing hash replay",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryEvidenceReplay"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-01": {
+      "scenario": "Frozen validity valid",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "verifyDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-02": {
+      "scenario": "Frozen invalid",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "frozenPlanInvalid",
+            "frozenInvalidWithStaleSnapshot"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-03": {
+      "scenario": "Graph unchanged",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessCurrent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-04": {
+      "scenario": "Graph changed",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessGraphStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-05": {
+      "scenario": "Travel profile changed",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessTravelStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-06": {
+      "scenario": "Cost profile changed",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessCostStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-07": {
+      "scenario": "Condition changed",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessConditionStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-08": {
+      "scenario": "Source world advanced",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotWorldAdvanced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-09": {
+      "scenario": "Unknown current condition",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessConditionUnknown"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-10": {
+      "scenario": "Unavailable graph",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessUnavailable"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-11": {
+      "scenario": "TTL current snapshot stale",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessFreshTtlStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-12": {
+      "scenario": "TTL expired snapshot current",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expiredIsStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-13": {
+      "scenario": "Coverage verify",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessFreshTtlStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-14": {
+      "scenario": "Route verify",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "routeUnaffected"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-15": {
+      "scenario": "result.validate",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/platform/platform-validation-authority.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStaleRevalidate",
+            "platformRoutingInputChanged",
+            "platformRealPlanGraphChanged",
+            "platformUnknownResultSnapshot"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C03-16": {
+      "scenario": "No silent replan",
+      "unitFiles": [
+        "tests/unit/routing-snapshot-currentness.test.ts",
+        "tests/platform/route-independent-verifier.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotReadOnly"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-01": {
+      "scenario": "Primary objective used",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-primary-FASTEST_COMPLETION"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-02": {
+      "scenario": "Generation profiles secondary",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-primary-FASTEST_COMPLETION",
+            "planAlternatives"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-03": {
+      "scenario": "Shortest",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-SHORTEST_TOTAL_DISTANCE"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-04": {
+      "scenario": "Fastest",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-FASTEST_COMPLETION"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-05": {
+      "scenario": "Risk",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-LOWEST_RISK"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-06": {
+      "scenario": "Least deadhead",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-LEAST_DEADHEAD"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-07": {
+      "scenario": "Weighted distance",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-weighted-distance"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-08": {
+      "scenario": "Weighted duration",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-weighted-duration"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-09": {
+      "scenario": "Weighted risk",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-weighted-risk"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-10": {
+      "scenario": "Weighted deadhead",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-weighted-deadhead"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-11": {
+      "scenario": "Weight overflow",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-C04-12": {
+      "scenario": "Weight normalization",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-C04-13": {
+      "scenario": "BigInt fixed point",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-C04-14": {
+      "scenario": "Tie break",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-C04-15": {
+      "scenario": "Result explanation",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-primary-SHORTEST_TOTAL_DISTANCE"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-16": {
+      "scenario": "Objective replay",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-replay-distance",
+            "objective-replay-duration",
+            "objective-replay-risk",
+            "objective-replay-deadhead"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-01": {
+      "scenario": "Disconnected R",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleDisconnected"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-02": {
+      "scenario": "Turn blocked",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleTurn"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-03": {
+      "scenario": "Profile excludes required",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleProfile"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-04": {
+      "scenario": "Condition closes required",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleCondition"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-05": {
+      "scenario": "Endpoint unreachable",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleEndpoint"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-06": {
+      "scenario": "Infrastructure DB failure",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "databaseFailureNotNoFeasible"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-07": {
+      "scenario": "Provider unavailable",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "coverageOutage"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-08": {
+      "scenario": "Problem hash",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageSnapshotHashSeparation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-09": {
+      "scenario": "Data snapshot hash",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageSnapshotHashSeparation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-10": {
+      "scenario": "Compute snapshot hash",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageSnapshotHashSeparation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-11": {
+      "scenario": "Compute snapshot content",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageComputeSnapshotContent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-12": {
+      "scenario": "Only SERVICE credit",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageTraversalCredit"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-13": {
+      "scenario": "Duplicate evidence",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageTraversalCredit"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-14": {
+      "scenario": "Transit evidence",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageTraversalCredit"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-15": {
+      "scenario": "Access/return evidence",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "coverageTraversalCredit"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-16": {
+      "scenario": "GeoJSON read contract",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expandDirect",
+            "geometryOnDemand"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-17": {
+      "scenario": "Expired result",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expiredIsStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C05-18": {
+      "scenario": "Result registry",
+      "unitFiles": [
+        "tests/unit/coverage-alternatives.test.ts",
+        "tests/unit/coverage-independent-verifier.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "noFeasibleCondition-registry",
+            "platformOriginalStatusRetained"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-01": {
+      "scenario": "Projection from registry",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsFromRegistry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-02": {
+      "scenario": "Key uniqueness",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsUnique"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-03": {
+      "scenario": "Reference resolve",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-04": {
+      "scenario": "World state",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-05": {
+      "scenario": "Spatial exact",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-06": {
+      "scenario": "H3 cover",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-07": {
+      "scenario": "H3 exact op",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-08": {
+      "scenario": "Network snap",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-09": {
+      "scenario": "Route plan",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-10": {
+      "scenario": "Coverage plan",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsCoverage"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-11": {
+      "scenario": "Result validate",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-12": {
+      "scenario": "Snapshot validate",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-13": {
+      "scenario": "Catalog search",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsCatalog"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-14": {
+      "scenario": "Accepted reference kinds",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-15": {
+      "scenario": "Produced reference kinds",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-16": {
+      "scenario": "Relation semantics",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-17": {
+      "scenario": "Negative evidence",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-18": {
+      "scenario": "Domain status mapping",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-19": {
+      "scenario": "Unknown source status",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-20": {
+      "scenario": "Capability removal",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-21": {
+      "scenario": "Maturity",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-22": {
+      "scenario": "Hash",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsDeterministic"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-01": {
+      "scenario": "COMPLETED mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-02": {
+      "scenario": "PARTIAL mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-03": {
+      "scenario": "NO_DATA mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-04": {
+      "scenario": "AMBIGUOUS mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-05": {
+      "scenario": "INDETERMINATE mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-06": {
+      "scenario": "NO_FEASIBLE mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-07": {
+      "scenario": "STALE mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-08": {
+      "scenario": "FAILED mapping",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-09": {
+      "scenario": "Original status retained",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformOriginalStatusRetained",
+            "resultGetCurrentSemantics"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-10": {
+      "scenario": "Reference available",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultValidation",
+            "platformReferenceKinds",
+            "platformValidationSingleOwner"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-11": {
+      "scenario": "Reference retired",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformRetiredReference"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-12": {
+      "scenario": "Result current",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-13": {
+      "scenario": "Result stale",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts",
+        "tests/platform/platform-validation-authority.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStaleRevalidate",
+            "platformRoutingInputChanged",
+            "platformRealPlanGraphChanged",
+            "platformUnknownResultSnapshot"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-14": {
+      "scenario": "Result expired",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expiredIsStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-15": {
+      "scenario": "Scope denied",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultScopeOpaque",
+            "platformSiblingDatasetOpaque",
+            "resultGetSiblingDatasetOpaque"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-16": {
+      "scenario": "Batch order",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusBatchOrder"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-17": {
+      "scenario": "Provider-specific verify optional",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W01-18": {
+      "scenario": "Audit evidence",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformOriginalStatusRetained"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-01": {
+      "scenario": "snapshot.get",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotGet"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-02": {
+      "scenario": "snapshot.validate current",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotCurrent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-03": {
+      "scenario": "graph stale",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotGraphStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-04": {
+      "scenario": "layer stale",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotLayerStale"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-05": {
+      "scenario": "world version advanced",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotWorldAdvanced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-06": {
+      "scenario": "unknown resource",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotUnknown"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-07": {
+      "scenario": "unavailable resource",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotUnavailable"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-08": {
+      "scenario": "pinned consistency",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotConsistencyPreserved"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-09": {
+      "scenario": "consistent at start",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotConsistencyCurrent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-10": {
+      "scenario": "best effort",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotConsistencyPreserved"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-11": {
+      "scenario": "content hash",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotContentHash"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-12": {
+      "scenario": "scope",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotScopeOpaque"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-13": {
+      "scenario": "read-only",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotReadOnly"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W02-14": {
+      "scenario": "hash replay",
+      "unitFiles": [
+        "tests/platform/platform-validation-provider.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotHashReplay"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-01": {
+      "scenario": "VECTOR descriptor",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductVectorDescriptor"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-02": {
+      "scenario": "NETWORK descriptor",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductNetworkDescriptor"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-03": {
+      "scenario": "CURRENT projection descriptor",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCurrentDescriptor"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-05": {
+      "scenario": "No second catalog",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductKinds"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-06": {
+      "scenario": "Current version",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductVectorDescriptor"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-07": {
+      "scenario": "Historical versions",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductVersions"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-08": {
+      "scenario": "Schema ref/hash",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductSchemaDetail"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-09": {
+      "scenario": "CRS",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductSchemaCrsExtent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-10": {
+      "scenario": "Spatial extent",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductSchemaCrsExtent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-11": {
+      "scenario": "Temporal extent",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductTimeSearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-12": {
+      "scenario": "Lineage",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductLineageQuality"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-13": {
+      "scenario": "Quality unknown",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductUnknownQuality"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-14": {
+      "scenario": "Quality validated",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductLineageQuality"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-15": {
+      "scenario": "Known limitations",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductLineageQuality"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-16": {
+      "scenario": "Supported capabilities",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCapabilities"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-17": {
+      "scenario": "Catalog search kind",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductKindSearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-18": {
+      "scenario": "Catalog search spatial",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductSpatialSearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-19": {
+      "scenario": "Catalog search time",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductTimeSearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-20": {
+      "scenario": "Catalog search capability",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCapabilitySearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-21": {
+      "scenario": "Cursor",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCursorStable",
+            "dataProductCursorTamper"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-22": {
+      "scenario": "Scope before count",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductScopeBeforeCount"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D02-01": {
+      "scenario": "Reference provider",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-02": {
+      "scenario": "Dataset catalog",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-03": {
+      "scenario": "World evidence",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-04": {
+      "scenario": "Spatial",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "spatial",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-05": {
+      "scenario": "H3",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "h3",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-06": {
+      "scenario": "STAS",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-07": {
+      "scenario": "Network",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "network",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-08": {
+      "scenario": "Route",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "route",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-09": {
+      "scenario": "Coverage",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
+      ]
+    },
+    "AC-D02-10": {
+      "scenario": "Manifest/schema hash",
+      "unitFiles": [
+        "tests/platform/provider-conformance-inspection.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        }
+      ]
+    },
+    "AC-D02-11": {
+      "scenario": "Semantic profile",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        }
+      ]
+    },
+    "AC-D02-12": {
+      "scenario": "Scope policy",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS_VERSION",
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        }
+      ]
+    },
+    "AC-D02-13": {
+      "scenario": "Snapshot policy",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS_VERSION",
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        }
+      ]
+    },
+    "AC-D02-14": {
+      "scenario": "Status mapping",
+      "unitFiles": [],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping",
+            "resultGetCurrentSemantics"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        }
+      ]
+    },
+    "AC-D02-15": {
+      "scenario": "No sibling import",
+      "unitFiles": [
+        "tests/platform/provider-conformance-inspection.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        }
+      ]
+    },
+    "AC-D02-16": {
+      "scenario": "Read contract only",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        }
+      ]
+    },
+    "AC-D02-17": {
+      "scenario": "Limits/health/idempotency",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS_VERSION",
+            "NATIVE_UNIT_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        }
+      ]
+    },
+    "AC-D02-18": {
+      "scenario": "Machine report hash",
+      "unitFiles": [
+        "tests/platform/provider-conformance-inspection.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        }
+      ]
+    },
+    "AC-S-01": {
+      "scenario": "Old migrations immutable",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-02": {
+      "scenario": "Fresh install",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "schema",
+          "checks": [
+            "freshInstall"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-03": {
+      "scenario": "0.6.0 upgrade",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/current-design-amendment.md"
+      ]
+    },
+    "AC-S-04": {
+      "scenario": "Rollback failure",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "schema",
+          "checks": [
+            "deliberateRollback"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-05": {
+      "scenario": "Read roles",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "schema",
+          "checks": [
+            "leastPrivilege",
+            "currentAuthorityScopeAssertions"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-06": {
+      "scenario": "Provider private schemas",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "schema",
+          "checks": [
+            "leastPrivilege",
+            "currentAuthorityScopeAssertions"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-07": {
+      "scenario": "Cross-scope catalog",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCrossScopeOpaque"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-08": {
+      "scenario": "Cross-scope result",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformResultScopeOpaque",
+            "platformSiblingDatasetOpaque",
+            "resultGetSiblingDatasetOpaque"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-09": {
+      "scenario": "Cross-scope snapshot",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformSnapshotScopeOpaque"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-10": {
+      "scenario": "Cursor tamper",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCursorTamper"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-11": {
+      "scenario": "Log redaction",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "logRedaction"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-12": {
+      "scenario": "Gateway restart",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.after",
+          "checks": [
+            "gatewayWorkerReplay",
+            "postgresRestartPersistence"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-13": {
+      "scenario": "Provider restart",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.after",
+          "checks": [
+            "gatewayWorkerReplay",
+            "postgresRestartPersistence"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-14": {
+      "scenario": "DB restart",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.after",
+          "checks": [
+            "gatewayWorkerReplay",
+            "postgresRestartPersistence"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-15": {
+      "scenario": "Lease reclaim load",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimLoadBounded"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-16": {
+      "scenario": "Boundary query performance",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryQueryBounded"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-17": {
+      "scenario": "Catalog search performance",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "catalogSearchBounded"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-18": {
+      "scenario": "Semantic projection performance",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "semanticProjectionBounded"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-19": {
+      "scenario": "Version",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-20": {
+      "scenario": "README/ADR/runbook",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-21": {
+      "scenario": "PROJECT_STATUS",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-22": {
+      "scenario": "Exact local/remote SHA",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-23": {
+      "scenario": "PR Ready",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-24": {
+      "scenario": "Final markers",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    }
+  }
+}

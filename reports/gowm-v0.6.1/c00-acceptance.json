@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C00",
+  "title": "Lease Reclaim",
+  "status": "PASS",
+  "originalCases": 14,
+  "requiredCases": 14,
+  "passedCases": 14,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-C00-01": {
+      "status": "PASS",
+      "scenario": "Attempt 1 initial claim",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimInitialAttemptGeneration"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-02": {
+      "status": "PASS",
+      "scenario": "Lease expires",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimExpiredReaped"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-03": {
+      "status": "PASS",
+      "scenario": "Requeue",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimRequestRequeued"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-04": {
+      "status": "PASS",
+      "scenario": "Reclaim same Gateway Job",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimMonotonicAttemptGeneration"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-05": {
+      "status": "PASS",
+      "scenario": "Old heartbeat",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimOldHeartbeatFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-06": {
+      "status": "PASS",
+      "scenario": "Old problem write",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimOldProblemFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-07": {
+      "status": "PASS",
+      "scenario": "Old candidate write",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimOldCandidateFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-08": {
+      "status": "PASS",
+      "scenario": "Old result publish",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimOldResultFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-09": {
+      "status": "PASS",
+      "scenario": "New result publish",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimNewResultPublished",
+            "reclaimDuplicatePublishFenced"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-10": {
+      "status": "PASS",
+      "scenario": "Concurrent reclaim",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimConcurrentSingleton"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-11": {
+      "status": "PASS",
+      "scenario": "Attempt monotonic",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimDurableMonotonicSingleton"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-12": {
+      "status": "PASS",
+      "scenario": "Generation monotonic",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "reclaimMonotonicAttemptGeneration"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-13": {
+      "status": "PASS",
+      "scenario": "Cancellation fence",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.before",
+          "checks": [
+            "chaosCancellation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C00-14": {
+      "status": "PASS",
+      "scenario": "Restart recovery",
+      "unitFiles": [
+        "tests/unit/coverage-async-runtime.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "recovery.after",
+          "checks": [
+            "reclaimGenerationAfterRestart"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.stas",
+  "providerVersion": "0.1.0",
+  "checks": [
+    {
+      "id": "NATIVE_MANIFEST",
+      "status": "PASS",
+      "message": "Actual STAS ToolRegistry, not a fabricated Provider Protocol manifest"
+    },
+    {
+      "id": "SCHEMA_HASH",
+      "status": "PASS",
+      "message": "Committed exact executable schema/refinement and OpenAPI source locks"
+    },
+    {
+      "id": "SCOPE_SNAPSHOT_LIMITS_VERSION",
+      "status": "PASS",
+      "message": "Actual executable tool definitions"
+    },
+    {
+      "id": "UNKNOWN_INPUT_REJECTED",
+      "status": "PASS",
+      "message": "All executable Zod inputs reject invalid input"
+    },
+    {
+      "id": "NATIVE_UNIT_BEHAVIOR",
+      "status": "PASS",
+      "message": "Executed native STAS suite including scope, statuses, evidence and RFC 9457 error mapping; not live readiness"
+    },
+    {
+      "id": "HEALTH_READINESS_CONTRACT",
+      "status": "PASS",
+      "message": "Executed native HTTP liveness/readiness success and dependency-unavailable tests using an explicitly injected unit database"
+    },
+    {
+      "id": "NO_SIBLING_PROVIDER_IMPORT",
+      "status": "PASS",
+      "message": "AST inspects native STAS imports"
+    },
+    {
+      "id": "NO_SIBLING_PROVIDER_HTTP",
+      "status": "PASS",
+      "message": "Native STAS has no hardcoded sibling HTTP call"
+    },
+    {
+      "id": "VERSIONED_READ_CONTRACT",
+      "status": "PASS",
+      "message": "STAS reads its owned/versioned SQL APIs, not public base tables"
+    }
+  ],
+  "evidenceLevel": "NATIVE_CONTRACT_AND_UNIT",
+  "runtimeReadiness": "NOT_CLAIMED",
+  "unitEvidenceRef": "reports/gowm-v0.6.1/provider-conformance/stas-unit.tap",
+  "status": "PASS",
+  "generatedAt": "2026-08-26T03:52:02.176Z",
+  "reportHash": "sha256:76c8bb4dc693f2eb69f98b0af03a9b61f0037700399f6aa44a920c706476a9e2"
+}

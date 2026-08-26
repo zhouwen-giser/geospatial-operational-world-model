@@ -4,7 +4,8 @@ import {
   buildCanonicalCoverageProblem,
   buildRoadServiceObligation,
   obligationSetHash,
-  solveStrictCoverageRoute
+  solveStrictCoverageRoute,
+  weightedObjectiveValue
 } from "../../packages/road-coverage-planning-core/src/index.js";
 import type {
   CoverageTraversalArc,
@@ -106,6 +107,9 @@ describe("strict turn-aware coverage routing", () => {
     expect(connector("SHORTEST_DISTANCE")).toEqual([short.arcKey]);
     expect(connector("FASTEST")).toEqual([fast1.arcKey, fast2.arcKey]);
     expect(connector("LOWEST_RISK")).toEqual([risk1.arcKey, risk2.arcKey]);
+    const weightedConnector = (weights: NonNullable<StrictCoverageSolverOptions["objectiveWeights"]>) => solveStrictCoverageRoute(input, graph, options({ objective: "WEIGHTED", objectiveWeights: weights })).route.segments.filter((segment) => segment.serviceRole !== "SERVICE" && segment.arcKey !== back.arcKey).map((segment) => segment.arcKey);
+    expect(weightedConnector({ distance: 1_000_000, duration: 0, risk: 0, deadhead: 0 })).toEqual([short.arcKey]);
+    expect(weightedConnector({ distance: 0, duration: 1_000_000, risk: 0, deadhead: 0 })).toEqual([fast1.arcKey, fast2.arcKey]);
     const solved = solveStrictCoverageRoute(input, graph, options({ objective: "SHORTEST_DISTANCE" }));
     expect(solved.route.metrics.distanceMm).toBe(solved.route.segments.reduce((sum, segment) => sum + segment.metrics.distanceMm, 0));
     expect(solved.route.metrics.energyMwh).toBe(solved.route.segments.reduce((sum, segment) => sum + segment.metrics.energyMwh, 0));
@@ -126,6 +130,7 @@ describe("strict turn-aware coverage routing", () => {
     const hugeBack = arc("8", "E", "A", fixed(Number.MAX_SAFE_INTEGER, 1, 1, 1, Number.MAX_SAFE_INTEGER));
     const input = problem(fixture.start, [obligation(hugeService)]);
     expect(() => solveStrictCoverageRoute(input, [fixture.start, fixture.direct, hugeService, hugeBack], options({ objective: "BALANCED" }))).toThrowError(expect.objectContaining({ code: "RESOURCE_EXHAUSTED" }));
+    expect(() => weightedObjectiveValue(fixed(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0), { distance: 1_000_000, duration: 1_000_000, risk: 1_000_000, energy: 1_000_000, deadhead: 1_000_000 }, false)).toThrowError(expect.objectContaining({ code: "RESOURCE_EXHAUSTED" }));
   });
 
   it("rejects multi-route and either-direction requests before search", () => {

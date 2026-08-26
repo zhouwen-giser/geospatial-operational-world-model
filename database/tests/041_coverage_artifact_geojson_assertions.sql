@@ -1,0 +1,32 @@
+BEGIN;
+
+DO $assert$
+DECLARE
+  definition text;
+BEGIN
+  SELECT pg_get_functiondef('coverage_planner.expand_coverage_alternative_geojson(text,text,text,text)'::regprocedure) INTO definition;
+  IF definition !~ 'gowm_network_v1\.graph_version' OR definition !~ 'gowm_network_v1\.arc' THEN
+    RAISE EXCEPTION 'coverage GeoJSON expansion does not use the versioned network read contract';
+  END IF;
+  IF definition ~ 'public\.network_(arc|graph_version)' THEN
+    RAISE EXCEPTION 'coverage GeoJSON expansion reads private public network tables';
+  END IF;
+  IF definition !~ 'coverageCredit' OR definition !~ 'traversalRole' THEN
+    RAISE EXCEPTION 'coverage GeoJSON expansion omits traversal credit evidence';
+  END IF;
+  SELECT pg_get_functiondef('coverage_planner.get_coverage_artifact(text,text,text)'::regprocedure) INTO definition;
+  IF definition !~ '''request''' OR definition !~ 'request_json' THEN
+    RAISE EXCEPTION 'coverage artifact does not retain the authoritative request';
+  END IF;
+  IF definition ~ 'USING \(coverage_(problem|request)_id' THEN
+    RAISE EXCEPTION 'coverage artifact contains an ambiguous multi-relation USING join';
+  END IF;
+  SELECT pg_get_functiondef('coverage_planner.register_coverage_result_references()'::regprocedure) INTO definition;
+  IF definition !~ 'computeSnapshotHash' OR definition !~ 'dataSnapshotHash'
+     OR definition ~ 'NEW.routing_snapshot_hash,NEW.problem_hash' THEN
+    RAISE EXCEPTION 'registry conflates Problem Hash with Compute Snapshot identity';
+  END IF;
+END
+$assert$;
+
+ROLLBACK;

@@ -1,0 +1,276 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C04",
+  "title": "Objectives",
+  "status": "PASS",
+  "originalCases": 16,
+  "requiredCases": 16,
+  "passedCases": 16,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-C04-01": {
+      "status": "PASS",
+      "scenario": "Primary objective used",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-primary-FASTEST_COMPLETION"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-02": {
+      "status": "PASS",
+      "scenario": "Generation profiles secondary",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-primary-FASTEST_COMPLETION",
+            "planAlternatives"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-03": {
+      "status": "PASS",
+      "scenario": "Shortest",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-SHORTEST_TOTAL_DISTANCE"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-04": {
+      "status": "PASS",
+      "scenario": "Fastest",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-FASTEST_COMPLETION"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-05": {
+      "status": "PASS",
+      "scenario": "Risk",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-LOWEST_RISK"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-06": {
+      "status": "PASS",
+      "scenario": "Least deadhead",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-LEAST_DEADHEAD"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-07": {
+      "status": "PASS",
+      "scenario": "Weighted distance",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-weighted-distance"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-08": {
+      "status": "PASS",
+      "scenario": "Weighted duration",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-weighted-duration"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-09": {
+      "status": "PASS",
+      "scenario": "Weighted risk",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-weighted-risk"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-10": {
+      "status": "PASS",
+      "scenario": "Weighted deadhead",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-weighted-deadhead"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-11": {
+      "status": "PASS",
+      "scenario": "Weight overflow",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-C04-12": {
+      "status": "PASS",
+      "scenario": "Weight normalization",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-C04-13": {
+      "status": "PASS",
+      "scenario": "BigInt fixed point",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-C04-14": {
+      "status": "PASS",
+      "scenario": "Tie break",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-C04-15": {
+      "status": "PASS",
+      "scenario": "Result explanation",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-primary-SHORTEST_TOTAL_DISTANCE"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C04-16": {
+      "status": "PASS",
+      "scenario": "Objective replay",
+      "unitFiles": [
+        "tests/unit/coverage-strict-routing.test.ts",
+        "tests/unit/coverage-alternatives.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "objective-replay-distance",
+            "objective-replay-duration",
+            "objective-replay-risk",
+            "objective-replay-deadhead"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

@@ -1,0 +1,615 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.network",
+    "providerVersion": "1.0.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:4d7bdd4fd84fe922734954c1cf12c76e3073e8b3fb360456d8785327e71eb5f6",
+    "sourceRef": "urn:gowm:source:in-tree:network-provider:1.0.0"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "network.graph.get",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-snap-request",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaUri": "urn:gowm:v0.5:network-graph-version",
+      "outputSchemaHash": "sha256:947f7f3d6a35b8e3bda52722b16f7e42dc612820c12fbd6a3b1af855dd35411c",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-snap-request",
+            "schemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-graph-version",
+            "schemaHash": "sha256:947f7f3d6a35b8e3bda52722b16f7e42dc612820c12fbd6a3b1af855dd35411c",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.graph.list",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-snap-request",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaUri": "urn:gowm:v0.5:network-build-result",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-snap-request",
+            "schemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-build-result",
+            "schemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.graph.diagnose",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-snap-request",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaUri": "urn:gowm:v0.5:network-build-result",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-snap-request",
+            "schemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-build-result",
+            "schemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.snap.point",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-snap-request",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaUri": "urn:gowm:v0.5:network-snap-result",
+      "outputSchemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 20
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-snap-request",
+            "schemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-snap-result",
+            "schemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.snap.points",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-snap-request",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaUri": "urn:gowm:v0.5:network-snap-result",
+      "outputSchemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 20
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-snap-request",
+            "schemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-snap-result",
+            "schemaHash": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.path.shortest",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-shortest-path-request",
+      "inputSchemaHash": "sha256:b1bed7cd90744523d035567b0fbae0382a8fddc014728fef93158cadbdc48355",
+      "outputSchemaUri": "urn:gowm:v0.5:network-shortest-path-result",
+      "outputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-shortest-path-request",
+            "schemaHash": "sha256:b1bed7cd90744523d035567b0fbae0382a8fddc014728fef93158cadbdc48355",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-shortest-path-result",
+            "schemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.path.cost-matrix",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT",
+        "ASYNC_JOB"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.5:network-cost-matrix-request",
+      "inputSchemaHash": "sha256:6dc75cdca2990e8239dd060f1d93bed26959d37ab32507fbc96d92844bda0a55",
+      "outputSchemaUri": "urn:gowm:v0.5:network-cost-matrix-result",
+      "outputSchemaHash": "sha256:058346014c99499e53b6b58a2509ef1308c321aad10e4a2525991678824e68f7",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC_OR_ASYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 60000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000,
+        "maximumBatchItems": 64
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-cost-matrix-request",
+            "schemaHash": "sha256:6dc75cdca2990e8239dd060f1d93bed26959d37ab32507fbc96d92844bda0a55",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-cost-matrix-result",
+            "schemaHash": "sha256:058346014c99499e53b6b58a2509ef1308c321aad10e4a2525991678824e68f7",
+            "valueKind": "ROW_SET",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.path.expand",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-shortest-path-result",
+      "inputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "outputSchemaUri": "urn:gowm:v0.5:network-shortest-path-result",
+      "outputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-shortest-path-result",
+            "schemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-shortest-path-result",
+            "schemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.path.verify",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "VALIDATION",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-shortest-path-result",
+      "inputSchemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+      "outputSchemaUri": "urn:gowm:v0.5:route-verification-report",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-shortest-path-result",
+            "schemaHash": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:route-verification-report",
+            "schemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.connectivity.inspect",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:network-snap-request",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaUri": "urn:gowm:v0.5:network-build-result",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-snap-request",
+            "schemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-build-result",
+            "schemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "network.reachability",
+      "operationVersion": "1.0",
+      "semanticRole": "FOUNDATION_DATA_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DATA_QUERY",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.5:network-snap-request",
+      "inputSchemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+      "outputSchemaUri": "urn:gowm:v0.5:network-build-result",
+      "outputSchemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 100000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:network-snap-request",
+            "schemaHash": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:network-build-result",
+            "schemaHash": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    }
+  ]
+}

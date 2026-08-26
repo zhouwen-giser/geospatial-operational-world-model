@@ -1,0 +1,16 @@
+{
+  "gatewayJobId": "00000000-0000-0000-0000-000000000001",
+  "runs": [
+    {
+      "attempt": 1,
+      "generation": 1,
+      "status": "EXPIRED"
+    },
+    {
+      "attempt": 2,
+      "generation": 2,
+      "status": "SUCCEEDED"
+    }
+  ],
+  "expectedOldGenerationWrites": "REJECTED"
+}

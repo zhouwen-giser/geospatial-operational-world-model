@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:capability-semantic-profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "operationId",
+    "operationVersion",
+    "domain",
+    "resultNature",
+    "spatialSemantics",
+    "timeSemantics",
+    "negativeEvidencePolicy",
+    "freshnessSemantics"
+  ],
+  "properties": {
+    "operationId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]+$"
+    },
+    "operationVersion": {
+      "type": "string"
+    },
+    "domain": {
+      "enum": [
+        "REFERENCE",
+        "CATALOG",
+        "WORLD_STATE",
+        "SPATIAL",
+        "TEMPORAL",
+        "H3",
+        "NETWORK",
+        "ROUTING",
+        "COVERAGE",
+        "ANALYSIS",
+        "PLATFORM"
+      ]
+    },
+    "acceptedReferenceKinds": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": {
+        "type": "string"
+      }
+    },
+    "producedReferenceKinds": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": {
+        "type": "string"
+      }
+    },
+    "relationSemantics": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": {
+        "type": "string"
+      }
+    },
+    "spatialSemantics": {
+      "enum": [
+        "EXACT",
+        "CANDIDATE",
+        "AGGREGATED",
+        "NONE"
+      ]
+    },
+    "timeSemantics": {
+      "enum": [
+        "CURRENT",
+        "HISTORICAL",
+        "INTERVAL",
+        "SNAPSHOT",
+        "NONE"
+      ]
+    },
+    "resultNature": {
+      "enum": [
+        "FACT",
+        "PROJECTION",
+        "DERIVED",
+        "PLAN",
+        "VALIDATION",
+        "CATALOG"
+      ]
+    },
+    "negativeEvidencePolicy": {
+      "enum": [
+        "SUPPORTED",
+        "NOT_SUPPORTED",
+        "NO_DATA_IS_UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "freshnessSemantics": {
+      "enum": [
+        "NONE",
+        "TTL",
+        "WORLD_VERSION",
+        "SNAPSHOT_CURRENTNESS"
+      ]
+    },
+    "domainStatusPath": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "domainStatusMapping": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "COMPLETED",
+          "PARTIAL",
+          "NO_DATA",
+          "AMBIGUOUS",
+          "INDETERMINATE",
+          "NO_FEASIBLE_RESULT",
+          "STALE",
+          "FAILED"
+        ]
+      }
+    },
+    "exactVerificationOperation": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

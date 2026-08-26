@@ -3,6 +3,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { runtimeSourceFingerprint } from "./runtime-source-fingerprint.mjs";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const runId = process.env.GOWM_V06_RUN_ID;
@@ -22,8 +23,9 @@ const databaseSuffix = runId.replaceAll("-", "_");
 const freshDatabase = `gowm_v06_fresh_${databaseSuffix}`;
 const upgradeDatabase = `gowm_v06_upgrade_${databaseSuffix}`;
 const v04UpgradeDatabase = `gowm_v06_v04_${databaseSuffix}`;
-const databases = [freshDatabase, upgradeDatabase, v04UpgradeDatabase];
-if (databases.some((database) => !/^gowm_v06_(fresh|upgrade|v04)_[a-z0-9_]{3,32}$/u.test(database))) {
+const v06UpgradeDatabase = `gowm_v06_v060_${databaseSuffix}`;
+const databases = [freshDatabase, upgradeDatabase, v04UpgradeDatabase, v06UpgradeDatabase];
+if (databases.some((database) => !/^gowm_v06_(fresh|upgrade|v04|v060)_[a-z0-9_]{3,32}$/u.test(database))) {
   throw new Error("derived database names escaped the isolated gowm_v06 namespace");
 }
 
@@ -31,8 +33,9 @@ const evidence = {
   schemaVersion: "1.0",
   runId,
   container,
-  databases: { fresh: freshDatabase, v05Upgrade: upgradeDatabase, v04Upgrade: v04UpgradeDatabase },
+  databases: { fresh: freshDatabase, v05Upgrade: upgradeDatabase, v04Upgrade: v04UpgradeDatabase, v06Upgrade: v06UpgradeDatabase },
   startedAt: new Date().toISOString(),
+  sourceBefore: await runtimeSourceFingerprint(repositoryRoot),
   status: "RUNNING",
   commands: [],
   summary: null,
@@ -167,8 +170,13 @@ function parseJsonOutput(output, label) {
 }
 
 async function persist() {
+  evidence.sourceAfter = await runtimeSourceFingerprint(repositoryRoot);
+  if (evidence.sourceAfter.digest !== evidence.sourceBefore.digest) {
+    evidence.status = "FAIL"; evidence.errors.push("Source changed during real gate");
+    failure ??= new Error("Source changed during real gate");
+  }
   evidence.finishedAt = new Date().toISOString();
-  const directory = resolve(repositoryRoot, "reports/gowm-v0.6");
+  const directory = resolve(repositoryRoot, "reports/gowm-v0.6.1");
   await mkdir(directory, { recursive: true });
   await writeFile(resolve(directory, `d00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
 }
@@ -185,11 +193,11 @@ try {
   const assertions = (await readdir(resolve(repositoryRoot, "database/tests")))
     .filter((name) => /^\d{3}_.+_assertions\.sql$/u.test(name))
     .sort();
-  if (migrations.length !== 53 || migrations.at(-1)?.slice(0, 3) !== "053") {
-    throw new Error(`expected the current v0.6 migration set 001-053, received ${migrations.length}`);
+  if (migrations.length !== 58 || migrations.at(-1)?.slice(0, 3) !== "058") {
+    throw new Error(`expected the current v0.6.1 migration set 001-058, received ${migrations.length}`);
   }
-  if (assertions.length !== 38 || assertions.at(-1)?.slice(0, 3) !== "038") {
-    throw new Error(`expected the current v0.6 assertion set 001-038, received ${assertions.length}`);
+  if (assertions.length !== 43 || assertions.at(-1)?.slice(0, 3) !== "043") {
+    throw new Error(`expected the current v0.6.1 assertion set 001-043, received ${assertions.length}`);
   }
 
   createDatabase(freshDatabase);
@@ -221,6 +229,25 @@ try {
   );
   await applyMigrations(v04UpgradeDatabase, postV04Migrations);
   await runAssertions(v04UpgradeDatabase, assertions);
+
+  createDatabase(v06UpgradeDatabase);
+  await applyMigrations(v06UpgradeDatabase, migrations.filter((name) => Number(name.slice(0, 3)) <= 53));
+  runPsql(v06UpgradeDatabase, await readFile(resolve(repositoryRoot, "validation/fixtures/coverage-gateway-runtime.sql"), "utf8"), "seed-v0.6-real-dataset-network");
+  runPsql(v06UpgradeDatabase,
+    "CREATE TABLE gowm_v061_upgrade_preservation_probe(id integer PRIMARY KEY, marker text NOT NULL); " +
+      "INSERT INTO gowm_v061_upgrade_preservation_probe VALUES (1,'v0.6.0-preserved');",
+    "create-v0.6-preservation-probe");
+  await applyMigrations(v06UpgradeDatabase, migrations.filter((name) => Number(name.slice(0, 3)) >= 54));
+  await runAssertions(v06UpgradeDatabase, assertions.filter((name) => Number(name.slice(0, 3)) >= 39));
+  const v06PreservedData = parseJsonOutput(runPsql(v06UpgradeDatabase, `SELECT jsonb_build_object(
+    'datasets',(SELECT count(*) FROM spatial_dataset WHERE data_scope_key='coverage-gateway-runtime'),
+    'graphVersions',(SELECT count(*) FROM network_graph_version WHERE data_scope_key='coverage-gateway-runtime'),
+    'arcs',(SELECT count(*) FROM network_arc WHERE data_scope_key='coverage-gateway-runtime'),
+    'activeEvents',(SELECT count(*) FROM network_graph_activation_event WHERE data_scope_key='coverage-gateway-runtime' AND event_type='ACTIVATE')
+  );`, "v0.6-data-preservation", ["--tuples-only", "--no-align"]), "v0.6 preserved data");
+  if (v06PreservedData.datasets !== 3 || v06PreservedData.graphVersions !== 1 || v06PreservedData.arcs !== 7 || v06PreservedData.activeEvents !== 1) {
+    throw new Error(`v0.6 data was not preserved: ${JSON.stringify(v06PreservedData)}`);
+  }
 
   const checksumReplaySkips = {};
   for (const database of databases) {
@@ -266,9 +293,13 @@ try {
     runPsql(v04UpgradeDatabase, summarySql("(SELECT marker FROM gowm_v06_v04_preservation_probe WHERE id=1)"), "v0.4-upgrade-summary", ["--tuples-only", "--no-align"]),
     "v0.4 upgrade summary"
   );
-  for (const [kind, summary] of [["fresh", freshSummary], ["v0.5-upgrade", upgradeSummary], ["v0.4-upgrade", v04UpgradeSummary]]) {
-    if (summary.migrationCount !== 53 || summary.coverageTables !== 16 || summary.coverageFunctions !== 15 ||
-        summary.providerExecutableFunctions !== 12 ||
+  const v06UpgradeSummary = parseJsonOutput(
+    runPsql(v06UpgradeDatabase, summarySql("(SELECT marker FROM gowm_v061_upgrade_preservation_probe WHERE id=1)"), "v0.6-upgrade-summary", ["--tuples-only", "--no-align"]),
+    "v0.6 upgrade summary"
+  );
+  for (const [kind, summary] of [["fresh", freshSummary], ["v0.5-upgrade", upgradeSummary], ["v0.4-upgrade", v04UpgradeSummary], ["v0.6-upgrade", v06UpgradeSummary]]) {
+    if (summary.migrationCount !== 58 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
+        summary.providerExecutableFunctions !== 14 ||
         summary.providerDirectMutation !== false || summary.providerNetworkMutation !== false) {
       throw new Error(`${kind} database summary failed the D00 invariant set: ${JSON.stringify(summary)}`);
     }
@@ -279,12 +310,14 @@ try {
   if (v04UpgradeSummary.upgradeMarker !== "v0.4-preserved") {
     throw new Error("upgrade database did not preserve the v0.4 marker");
   }
+  if (v06UpgradeSummary.upgradeMarker !== "v0.6.0-preserved") throw new Error("upgrade database did not preserve the v0.6.0 marker");
   evidence.summary = {
     migrations: migrations.length,
     assertions: assertions.length,
     fresh: freshSummary,
     v05Upgrade: upgradeSummary,
     v04Upgrade: v04UpgradeSummary,
+    v06Upgrade: { ...v06UpgradeSummary, preservedData: v06PreservedData },
     checksumReplaySkips,
     deliberateFailureRollback: true
   };
@@ -310,4 +343,4 @@ try {
 }
 
 if (failure) throw failure;
-process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=53 assertions=38\n`);
+process.stdout.write(`GOWM_COVERAGE_SCHEMA_RUNTIME_PASS ${runId} migrations=${evidence.summary.migrations} assertions=${evidence.summary.assertions}\n`);

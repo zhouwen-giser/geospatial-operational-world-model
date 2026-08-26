@@ -1,83 +1,89 @@
 # Project status
 
-Last updated: 2026-08-25
+Last updated: 2026-08-26
 
 ## Current decision
 
-`GOWM+ 0.6.0: NETWORK_READY / ROUTING_READY / ROAD_COVERAGE_READY`
+`GOWM+ 0.6.1: IMPLEMENTATION_EVIDENCE_PASS — FINAL_DECISION_RECEIPT_BOUND`
 
-The stable single-route Road Coverage implementation and every implementation,
-contract, real-database, Gateway/worker, security, performance, migration, and
-recovery gate are complete. F00 documentation/version convergence is complete.
-F01 must aggregate all 226 required rows, commit the final report, push it, and
-prove exact local/remote/Draft-PR SHA equality before terminal completion.
+The four audit findings from the withdrawn `5029bce` completion have been
+corrected and rerun against the current source: duplicate validation ownership,
+false CURRENT/YES for stale results, test-double authority in real gates, and
+fail-open conformance schema hashes.
 
-## Git delivery
+The user's current-design amendment removes old wire/data compatibility only.
+Of 229 original rows, 227 remain Required; AC-R012 and AC-S-03 are explicitly
+SUPERSEDED_BY_USER, never PASS. The preflight proves 224 cases. The three
+delivery cases require exact Git SHA equality, PR Ready, and the final markers.
 
-| Item | State |
+The final decision is authoritative only when
+`/tmp/gowm-v0.6.1-final-acceptance.json` and the PR completion comment name the
+current commit and record PASS. Committed reports deliberately remain
+`AWAITING_DELIVERY_RECEIPT` for that external step, avoiding a self-hash cycle.
+
+## Delivery
+
+- Baseline: `main@7cd5b133a74b07e28f359176dd13943ab7a6cf54`, version 0.6.0.
+- Branch: `codex/gowm-platform-hardening-v0.6.1`, isolated task worktree.
+- [PR #6](https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/6), base main.
+- Version: 0.6.1 in VERSION, package.json and package-lock.json.
+- Final gate: 227 PASS, two superseded, zero failed/blocked/not-run; matching
+  local HEAD, origin tracking, ls-remote and OPEN Ready PR head.
+- Merge/tag/release/deploy: NOT_RUN.
+
+## Current evidence
+
+| Gate | Result |
 |---|---|
-| Exact v0.5 predecessor | `d6a90ddcd00db946018892c34a327caa631785b0` |
-| Candidate branch | `codex/gowm-road-coverage-v0.6` |
-| Pull request | Stacked Draft PR #4 against `codex/gowm-network-routing-v0.5` |
-| Software version | `0.6.0` |
-| Required acceptance | 226 required; phase evidence complete; final aggregation pending F01 |
-| Merge/tag/release/deploy | `NOT_RUN`; separately user-controlled |
+| D00 | 58 migrations, 43 assertion suites; clean install, role/scope isolation, rollback, checksum replay and cleanup PASS |
+| G00 | 160 real Gateway/Provider/PostgreSQL checks PASS |
+| T00 | 72 before / 5 after real dedicated PostgreSQL restart PASS |
+| Static regression | 288 Vitest PASS, 40 STAS PASS, type/schema/SQL/build PASS |
+| Provider conformance | 11 current reports, 70 unique protocol operations PASS; contract/unit evidence, not live readiness |
+| Acceptance preflight | 224 PASS / 3 delivery pending / 2 superseded |
 
-## Phase status
+One default external-database Vitest test is skipped; the Required database
+proof is D00, not that skip. Historical upgrade runs in D00 are supplemental,
+not a promise to support old data or old operation schemas.
 
-| Phase group | Status | Evidence |
-|---|---|---|
-| R00–R01 | PASS | exact predecessor, source/license, clean-room locks |
-| A00–A01 | PASS | authority ADR, 19 schemas, OpenAPI, manifest, generated types |
-| D00–B01 | PASS | private schema, controlled roles, selection, obligations, canonical problem |
-| E00–S03 | PASS | endpoints, boundary policies, Closed/Open DCPP, fixed/both RPP, strict turns |
-| V00–L00 | PASS | independent verifier, mutation corpus, alternatives and ranking |
-| J00–P00 | PASS | generation-fenced async runtime and five-operation Provider |
-| G00 | PASS | real Gateway/DAG/worker/result registry/on-demand expansion |
-| T00 | PASS | scope/security, Small/Medium profiles, cancellation, duplicate, restart |
-| C00 | PASS | fresh/v0.4/v0.5 upgrade, checksum replay, rollback, compatibility |
-| F00 | PASS | README, ADR, runbook, CHANGELOG, status and 0.6.0 convergence |
-| F01 | PENDING | final 226-row aggregation and exact local/remote/PR SHA |
+The three Docker gates and conformance captured the same before/after SHA-256
+source fingerprint:
+`e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda`.
+The runtime lock covers 947 source/config/test/contract files plus evidence.
+The final gate rejects byte or file-set drift and reruns static regression.
 
-## Verified stable boundary
+## Authority boundary
 
-- The v0.5 Network Foundation remains the only GraphVersion, Node, Edge, Arc,
-  TurnRule, Profile, Condition, and RoutingSnapshot authority.
-- Area/manual selection creates immutable fixed-direction service obligations R;
-  the complete traversable network E remains separate and may provide legal
-  access, transit, boundary, exit, and return paths without coverage credit.
-- Stable modes cover `FULLY_COVERED_EDGE`, `INTERSECTING_COMPLETE_EDGE`,
-  `CLIPPED_INSIDE_AREA`, `MANUAL_OBLIGATIONS`, `FIXED_DIRECTION`, and
-  `BOTH_DIRECTIONS`, with RETURN_TO_START, FIXED_END, and LAST_AREA_EXIT.
-- Closed/Open Directed CPP and fixed/both-direction RPP honor pairwise and
-  multi-edge turns, conditions, partial Arc fractions, fixed-point metrics, and
-  bounded resources. Every admitted route passes an independent verifier.
-- The five-operation Coverage Provider uses the existing Gateway Job/DAG,
-  immutable query/derived references, result TTL/revalidation, and on-demand
-  ordered GeoJSON expansion. Provider-to-Provider HTTP does not exist.
-- Migrations 001–053 and 38 assertions pass fresh, v0.4→v0.6, and exact
-  v0.5→v0.6 paths. Checksum replay, atomic rollback, concurrent duplicates,
-  three-stage cancellation fencing, and PostgreSQL restart result replay pass.
-- Acceptance-fixture measurements: Small end-to-end 223.596 ms; Medium
-  20-obligation/40-segment end-to-end 511.490 ms with 21,503,184-byte measured
-  heap delta. Current-code v0.5 p95 ratios are 0.903/0.886/0.909 for
-  Snap/Shortest/Matrix. These are not production SLO or capacity claims.
+- Foundation remains the sole fact, reference, dataset, lineage, network and
+  world-version authority; the Capability Registry is the sole operation registry.
+- Platform Validation alone owns `reference.validate` and `result.validate`.
+  Both use the current batch contract. Reference/result retirement, expiry,
+  source status and currentness stay separate.
+- Actual graph/dataset/profile/condition/world versions determine currentness.
+  Missing authority stays UNKNOWN/UNAVAILABLE; requested versions are not echoed
+  as proof. Same-DataScope sibling DatasetScope results remain opaque.
+- Real G00 uses actual World Evidence, Route, Coverage and PostgreSQL Validation
+  providers. SQL fixtures seed facts; they do not replace validation authority.
+- Coverage generation fencing, independent boundary reconstruction, fixed-point
+  objectives, strict no-feasible semantics and receipt-backed compute identity
+  remain enforced. `result.get` exposes eight normalized statuses plus source semantics.
+- Migrations 001–053 remain immutable; additions run through 058.
 
-## Non-claims and protected actions
+## Non-claims
 
-Stable v0.6 rejects either-direction service, multiple routes, fleet assignment,
-capacity/time windows, CARP/OR-Tools, and dispatchable semantics. A Coverage
-result is not a device instruction, dispatch approval, physical execution,
-completion, safety certification, observed Operational Reality, or production
-availability/capacity qualification.
+WSGS readiness/client implementation, independent Data Platform Readiness, mock
+ELEVATION onboarding, SACS/SDAR/A2A changes and protected publication actions
+remain excluded. Contract/unit conformance is not a live H3/STAS deployment
+readiness claim. Fixture performance is not a production SLO or capacity claim.
+Coverage output is a computational plan, not dispatch, observed completion,
+Operational Reality or safety certification.
 
-The uploaded reference remains `REFERENCE_ONLY_SELECTIVE_REIMPLEMENTATION` with
-unspecified license; its source and generated/dependency artifacts are excluded.
-No merge, tag, release, image publication, or production deployment is authorized
-or performed by this candidate workflow.
+## Evidence index
 
-## Delivery action
-
-Complete F01 final required-matrix aggregation, commit and push the final report,
-then verify exact local/remote/Draft-PR SHA equality and GitHub checks. Retain the
-Draft PR unless every required row and terminal check is PASS.
+See the [current final report](reports/gowm-v0.6.1/final-stable-candidate.md),
+[scope amendment](reports/gowm-v0.6.1/current-design-amendment.md),
+[static regression](reports/gowm-v0.6.1/static-regression.json), current
+`*-acceptance.json` / `*-completion.md`, and the
+[runbook](docs/20_PLATFORM_HARDENING_OPERATIONS_RUNBOOK.md).
+Earlier narrative reports and run attempts are retained as historical evidence;
+they do not certify the corrected candidate.

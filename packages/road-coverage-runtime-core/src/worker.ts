@@ -15,10 +15,10 @@ export interface CoverageWorkerProduct {
 /** Each repository call is one bounded statement; compute never holds a DB client or transaction. */
 export async function executeCoverageWorkerOnce(
   repository: CoverageAsyncRepository,
-  input: { attempt: number; leaseOwner: string; leaseSeconds: number; maximumScopeConcurrency: number },
+  input: { leaseOwner: string; leaseSeconds: number; maximumScopeConcurrency: number },
   compute: (claim: CoverageClaim) => Promise<CoverageWorkerProduct>
 ): Promise<"IDLE" | "PUBLISHED"> {
-  const claim = await repository.claimNext(input.attempt, input.leaseOwner, input.leaseSeconds, input.maximumScopeConcurrency);
+  const claim = await repository.claimNext(input.leaseOwner, input.leaseSeconds, input.maximumScopeConcurrency);
   if (claim === null) return "IDLE";
   if (!await repository.heartbeat(claim, input.leaseOwner, input.leaseSeconds, "BUILDING", 100_000, {})) throw new Error("coverage worker lost its lease before compute");
   const product = await compute(claim);

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:coverage-objective",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile"
+  ],
+  "properties": {
+    "profile": {
+      "enum": [
+        "FASTEST_COMPLETION",
+        "SHORTEST_TOTAL_DISTANCE",
+        "LEAST_DEADHEAD",
+        "LOWEST_RISK",
+        "WEIGHTED"
+      ]
+    },
+    "weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "distance",
+        "duration",
+        "risk",
+        "deadhead"
+      ],
+      "properties": {
+        "distance": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "risk": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "energy": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "deadhead": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        }
+      }
+    },
+    "normalizationPolicyVersion": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "profile": {
+            "const": "WEIGHTED"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "weights"
+        ]
+      }
+    }
+  ]
+}

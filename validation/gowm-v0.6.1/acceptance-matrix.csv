@@ -1,0 +1,230 @@
+id,required,area,scenario,expected,test_type
+AC-R001,yes,Baseline,Actual main head,Source lock records actual main HEAD,source
+AC-R002,yes,Baseline,Version baseline,VERSION and package are reconciled,source
+AC-R003,yes,Baseline,Migration baseline,Existing migration hashes are recorded and immutable,migration
+AC-R004,yes,Baseline,Status reconciliation,PROJECT_STATUS no longer describes deleted branches/old PR,docs
+AC-R005,yes,Baseline,No open work theft,Uncommitted external work is untouched,git-safety
+AC-R006,yes,Baseline,Independent worktree,Codex uses isolated worktree,git-safety
+AC-R007,yes,Architecture,No WSGS implementation,No WSGS/SACS/SDAR/A2A source dependency is introduced,architecture
+AC-R008,yes,Architecture,No second registry,Semantic projection is sourced from approved Capability Registry,architecture
+AC-R009,yes,Architecture,No second catalog,DataProduct projection uses existing Dataset/Layer/Feature authority,architecture
+AC-R010,yes,Architecture,No protected action,No merge/tag/release/deploy is performed,delivery
+AC-R011,yes,Contracts,Package schemas,All task schemas and repository schemas validate,contract
+AC-R012,yes,Contracts,Compatibility plan,Wire compatibility strategy is documented and tested,contract
+AC-C00-01,yes,CoverageLease,Attempt 1 initial claim,attempt=1 generation=1,real-db
+AC-C00-02,yes,CoverageLease,Lease expires,run becomes EXPIRED without terminal result,real-db
+AC-C00-03,yes,CoverageLease,Requeue,request returns QUEUED,real-db
+AC-C00-04,yes,CoverageLease,Reclaim same Gateway Job,attempt=2 generation=2 succeeds,real-db
+AC-C00-05,yes,CoverageLease,Old heartbeat,generation 1 heartbeat rejected,real-db
+AC-C00-06,yes,CoverageLease,Old problem write,generation 1 problem write rejected,real-db
+AC-C00-07,yes,CoverageLease,Old candidate write,generation 1 candidate rejected,real-db
+AC-C00-08,yes,CoverageLease,Old result publish,generation 1 publish rejected,real-db
+AC-C00-09,yes,CoverageLease,New result publish,generation 2 publishes exactly once,real-db
+AC-C00-10,yes,CoverageLease,Concurrent reclaim,only one worker wins,real-db
+AC-C00-11,yes,CoverageLease,Attempt monotonic,attempt never repeats per Gateway Job,real-db
+AC-C00-12,yes,CoverageLease,Generation monotonic,generation never regresses,real-db
+AC-C00-13,yes,CoverageLease,Cancellation fence,cancelled generation cannot publish,real-db
+AC-C00-14,yes,CoverageLease,Restart recovery,DB/provider restart preserves claim state,real-db
+AC-C01-01,yes,NetworkCore,Shared package,network-query-core exists,architecture+integration
+AC-C01-02,yes,NetworkCore,Network provider dependency,uses shared core,architecture+integration
+AC-C01-03,yes,NetworkCore,Route provider dependency,uses shared core,architecture+integration
+AC-C01-04,yes,NetworkCore,Coverage provider dependency,uses shared core,architecture+integration
+AC-C01-05,yes,NetworkCore,No sibling source import,AST import graph has no provider-to-provider implementation dependency,architecture+integration
+AC-C01-06,yes,NetworkCore,No provider HTTP,Coverage has no network/route provider HTTP client,architecture+integration
+AC-C01-07,yes,NetworkCore,Read contract,shared core reads only gowm_network_v1,architecture+integration
+AC-C01-08,yes,NetworkCore,Scope,shared core enforces data and dataset scope,architecture+integration
+AC-C01-09,yes,NetworkCore,Read-only,shared core opens read-only transaction,architecture+integration
+AC-C01-10,yes,NetworkCore,Currentness,shared currentness evaluator covers graph/profile/cost/condition,architecture+integration
+AC-C01-11,yes,NetworkCore,Geometry expansion,shared core expands arc fractions,architecture+integration
+AC-C01-12,yes,NetworkCore,Provider isolation,one provider failure does not break siblings,architecture+integration
+AC-C02-01,yes,Boundary,Segment crossing contract,Network read contract returns stable crossing order,real-postgis+verifier
+AC-C02-02,yes,Boundary,Partial arc,Fractions are respected,real-postgis+verifier
+AC-C02-03,yes,Boundary,Forward direction,Crossing fraction follows directed arc,real-postgis+verifier
+AC-C02-04,yes,Boundary,Reverse direction,Crossing fraction follows directed arc,real-postgis+verifier
+AC-C02-05,yes,Boundary,Polygon,Polygon crossings correct,real-postgis+verifier
+AC-C02-06,yes,Boundary,MultiPolygon,Multiple disjoint intervals correct,real-postgis+verifier
+AC-C02-07,yes,Boundary,Start inside,startInside true,real-postgis+verifier
+AC-C02-08,yes,Boundary,Start outside,startInside false,real-postgis+verifier
+AC-C02-09,yes,Boundary,Touch only,Touch policy is deterministic,real-postgis+verifier
+AC-C02-10,yes,Boundary,Boundary overlap,Overlap policy is deterministic,real-postgis+verifier
+AC-C02-11,yes,Boundary,Candidate events ignored,Verifier does not trust candidate event list,real-postgis+verifier
+AC-C02-12,yes,Boundary,FREE,Valid route allowed,real-postgis+verifier
+AC-C02-13,yes,Boundary,FIRST outside one entry,Valid,real-postgis+verifier
+AC-C02-14,yes,Boundary,FIRST outside zero entry,Invalid,real-postgis+verifier
+AC-C02-15,yes,Boundary,FIRST outside two entries,Invalid,real-postgis+verifier
+AC-C02-16,yes,Boundary,FIRST inside no entry,Valid until exit,real-postgis+verifier
+AC-C02-17,yes,Boundary,FIRST inside re-entry,Invalid,real-postgis+verifier
+AC-C02-18,yes,Boundary,ENTRY_SET allowed,Valid,real-postgis+verifier
+AC-C02-19,yes,Boundary,ENTRY_SET unapproved,Invalid,real-postgis+verifier
+AC-C02-20,yes,Boundary,NO_REENTRY,Exit then entry is invalid,real-postgis+verifier
+AC-C02-21,yes,Boundary,LAST_AREA_EXIT valid,End state equals final real exit,real-postgis+verifier
+AC-C02-22,yes,Boundary,LAST_AREA_EXIT invalid,Wrong end state rejected,real-postgis+verifier
+AC-C02-23,yes,Boundary,Invalid area,Fail closed,real-postgis+verifier
+AC-C02-24,yes,Boundary,Crossing hash replay,Same input gives same analysis hash,real-postgis+verifier
+AC-C03-01,yes,Currentness,Frozen validity valid,Original snapshot route replays valid,real-db+e2e
+AC-C03-02,yes,Currentness,Frozen invalid,Tampered route invalid,real-db+e2e
+AC-C03-03,yes,Currentness,Graph unchanged,graph current,real-db+e2e
+AC-C03-04,yes,Currentness,Graph changed,stale GRAPH,real-db+e2e
+AC-C03-05,yes,Currentness,Travel profile changed,stale TRAVEL_PROFILE,real-db+e2e
+AC-C03-06,yes,Currentness,Cost profile changed,stale COST_PROFILE,real-db+e2e
+AC-C03-07,yes,Currentness,Condition changed,stale CONDITION,real-db+e2e
+AC-C03-08,yes,Currentness,Source world advanced,reported when available,real-db+e2e
+AC-C03-09,yes,Currentness,Unknown current condition,currentness UNKNOWN,real-db+e2e
+AC-C03-10,yes,Currentness,Unavailable graph,currentness UNAVAILABLE,real-db+e2e
+AC-C03-11,yes,Currentness,TTL current snapshot stale,separate freshness/currentness,real-db+e2e
+AC-C03-12,yes,Currentness,TTL expired snapshot current,separate freshness/currentness,real-db+e2e
+AC-C03-13,yes,Currentness,Coverage verify,uses currentness evaluator,real-db+e2e
+AC-C03-14,yes,Currentness,Route verify,uses same evaluator,real-db+e2e
+AC-C03-15,yes,Currentness,result.validate,returns REVALIDATE,real-db+e2e
+AC-C03-16,yes,Currentness,No silent replan,validation does not mutate or recompute plan,real-db+e2e
+AC-C04-01,yes,CoverageObjective,Primary objective used,request objective selects main candidate,unit+behavioral-e2e
+AC-C04-02,yes,CoverageObjective,Generation profiles secondary,profiles only expand alternatives,unit+behavioral-e2e
+AC-C04-03,yes,CoverageObjective,Shortest,selects distance optimum,unit+behavioral-e2e
+AC-C04-04,yes,CoverageObjective,Fastest,selects duration optimum,unit+behavioral-e2e
+AC-C04-05,yes,CoverageObjective,Risk,selects risk optimum,unit+behavioral-e2e
+AC-C04-06,yes,CoverageObjective,Least deadhead,selects minimum non-service travel,unit+behavioral-e2e
+AC-C04-07,yes,CoverageObjective,Weighted distance,weight changes selection,unit+behavioral-e2e
+AC-C04-08,yes,CoverageObjective,Weighted duration,weight changes selection,unit+behavioral-e2e
+AC-C04-09,yes,CoverageObjective,Weighted risk,weight changes selection,unit+behavioral-e2e
+AC-C04-10,yes,CoverageObjective,Weighted deadhead,weight changes selection,unit+behavioral-e2e
+AC-C04-11,yes,CoverageObjective,Weight overflow,fail closed,unit+behavioral-e2e
+AC-C04-12,yes,CoverageObjective,Weight normalization,versioned deterministic policy,unit+behavioral-e2e
+AC-C04-13,yes,CoverageObjective,BigInt fixed point,no floating drift,unit+behavioral-e2e
+AC-C04-14,yes,CoverageObjective,Tie break,stable route signature order,unit+behavioral-e2e
+AC-C04-15,yes,CoverageObjective,Result explanation,reflects actual objective,unit+behavioral-e2e
+AC-C04-16,yes,CoverageObjective,Objective replay,same snapshot/weights gives same result hash,unit+behavioral-e2e
+AC-C05-01,yes,CoverageResult,Disconnected R,NO_FEASIBLE_RESULT,contract+real-db
+AC-C05-02,yes,CoverageResult,Turn blocked,NO_FEASIBLE_RESULT,contract+real-db
+AC-C05-03,yes,CoverageResult,Profile excludes required,NO_FEASIBLE_RESULT,contract+real-db
+AC-C05-04,yes,CoverageResult,Condition closes required,NO_FEASIBLE_RESULT,contract+real-db
+AC-C05-05,yes,CoverageResult,Endpoint unreachable,NO_FEASIBLE_RESULT,contract+real-db
+AC-C05-06,yes,CoverageResult,Infrastructure DB failure,FAILED,contract+real-db
+AC-C05-07,yes,CoverageResult,Provider unavailable,FAILED,contract+real-db
+AC-C05-08,yes,CoverageResult,Problem hash,separate,contract+real-db
+AC-C05-09,yes,CoverageResult,Data snapshot hash,separate,contract+real-db
+AC-C05-10,yes,CoverageResult,Compute snapshot hash,separate,contract+real-db
+AC-C05-11,yes,CoverageResult,Compute snapshot content,contains solver/verifier/network core/policy/contracts,contract+real-db
+AC-C05-12,yes,CoverageResult,Only SERVICE credit,coverageCredit true only for SERVICE,contract+real-db
+AC-C05-13,yes,CoverageResult,Duplicate evidence,coverageCredit false,contract+real-db
+AC-C05-14,yes,CoverageResult,Transit evidence,coverageCredit false,contract+real-db
+AC-C05-15,yes,CoverageResult,Access/return evidence,coverageCredit false,contract+real-db
+AC-C05-16,yes,CoverageResult,GeoJSON read contract,does not query public network base tables,contract+real-db
+AC-C05-17,yes,CoverageResult,Expired result,EXPIRED/STALE semantics retained,contract+real-db
+AC-C05-18,yes,CoverageResult,Result registry,stores normalized status and source status,contract+real-db
+AC-W00-01,yes,CapabilitySemantics,Projection from registry,no second source,contract+gateway
+AC-W00-02,yes,CapabilitySemantics,Key uniqueness,operation/version unique,contract+gateway
+AC-W00-03,yes,CapabilitySemantics,Reference resolve,semantic profile valid,contract+gateway
+AC-W00-04,yes,CapabilitySemantics,World state,semantic profile valid,contract+gateway
+AC-W00-05,yes,CapabilitySemantics,Spatial exact,EXACT,contract+gateway
+AC-W00-06,yes,CapabilitySemantics,H3 cover,CANDIDATE,contract+gateway
+AC-W00-07,yes,CapabilitySemantics,H3 exact op,points to spatial verification,contract+gateway
+AC-W00-08,yes,CapabilitySemantics,Network snap,ambiguity mapping,contract+gateway
+AC-W00-09,yes,CapabilitySemantics,Route plan,PLAN/currentness,contract+gateway
+AC-W00-10,yes,CapabilitySemantics,Coverage plan,PLAN/currentness,contract+gateway
+AC-W00-11,yes,CapabilitySemantics,Result validate,VALIDATION,contract+gateway
+AC-W00-12,yes,CapabilitySemantics,Snapshot validate,VALIDATION,contract+gateway
+AC-W00-13,yes,CapabilitySemantics,Catalog search,CATALOG,contract+gateway
+AC-W00-14,yes,CapabilitySemantics,Accepted reference kinds,typed,contract+gateway
+AC-W00-15,yes,CapabilitySemantics,Produced reference kinds,typed,contract+gateway
+AC-W00-16,yes,CapabilitySemantics,Relation semantics,bounded vocabulary,contract+gateway
+AC-W00-17,yes,CapabilitySemantics,Negative evidence,NO_DATA unknown,contract+gateway
+AC-W00-18,yes,CapabilitySemantics,Domain status mapping,complete for known source statuses,contract+gateway
+AC-W00-19,yes,CapabilitySemantics,Unknown source status,maps fail closed/indeterminate per policy,contract+gateway
+AC-W00-20,yes,CapabilitySemantics,Capability removal,projection reflects registry,contract+gateway
+AC-W00-21,yes,CapabilitySemantics,Maturity,unavailable operation not advertised as stable,contract+gateway
+AC-W00-22,yes,CapabilitySemantics,Hash,semantic catalog hash deterministic,contract+gateway
+AC-W01-01,yes,ResultValidation,COMPLETED mapping,correct,real-gateway
+AC-W01-02,yes,ResultValidation,PARTIAL mapping,correct,real-gateway
+AC-W01-03,yes,ResultValidation,NO_DATA mapping,correct,real-gateway
+AC-W01-04,yes,ResultValidation,AMBIGUOUS mapping,correct,real-gateway
+AC-W01-05,yes,ResultValidation,INDETERMINATE mapping,correct,real-gateway
+AC-W01-06,yes,ResultValidation,NO_FEASIBLE mapping,correct,real-gateway
+AC-W01-07,yes,ResultValidation,STALE mapping,correct,real-gateway
+AC-W01-08,yes,ResultValidation,FAILED mapping,correct,real-gateway
+AC-W01-09,yes,ResultValidation,Original status retained,yes,real-gateway
+AC-W01-10,yes,ResultValidation,Reference available,YES,real-gateway
+AC-W01-11,yes,ResultValidation,Reference retired,NO,real-gateway
+AC-W01-12,yes,ResultValidation,Result current,YES,real-gateway
+AC-W01-13,yes,ResultValidation,Result stale,REVALIDATE,real-gateway
+AC-W01-14,yes,ResultValidation,Result expired,NO/REVALIDATE policy,real-gateway
+AC-W01-15,yes,ResultValidation,Scope denied,no existence leak,real-gateway
+AC-W01-16,yes,ResultValidation,Batch order,stable,real-gateway
+AC-W01-17,yes,ResultValidation,Provider-specific verify optional,platform validation still works,real-gateway
+AC-W01-18,yes,ResultValidation,Audit evidence,validation refs included,real-gateway
+AC-W02-01,yes,Snapshot,snapshot.get,returns manifest,real-db+gateway
+AC-W02-02,yes,Snapshot,snapshot.validate current,CURRENT,real-db+gateway
+AC-W02-03,yes,Snapshot,graph stale,resource stale,real-db+gateway
+AC-W02-04,yes,Snapshot,layer stale,resource stale,real-db+gateway
+AC-W02-05,yes,Snapshot,world version advanced,reported,real-db+gateway
+AC-W02-06,yes,Snapshot,unknown resource,UNKNOWN,real-db+gateway
+AC-W02-07,yes,Snapshot,unavailable resource,UNAVAILABLE,real-db+gateway
+AC-W02-08,yes,Snapshot,pinned consistency,preserved,real-db+gateway
+AC-W02-09,yes,Snapshot,consistent at start,preserved,real-db+gateway
+AC-W02-10,yes,Snapshot,best effort,not upgraded silently,real-db+gateway
+AC-W02-11,yes,Snapshot,content hash,checked,real-db+gateway
+AC-W02-12,yes,Snapshot,scope,no cross-scope resource,real-db+gateway
+AC-W02-13,yes,Snapshot,read-only,no mutation,real-db+gateway
+AC-W02-14,yes,Snapshot,hash replay,deterministic,real-db+gateway
+AC-D00-01,yes,DataProduct,VECTOR descriptor,valid,real-db+gateway
+AC-D00-02,yes,DataProduct,NETWORK descriptor,valid,real-db+gateway
+AC-D00-03,yes,DataProduct,CURRENT projection descriptor,valid,real-db+gateway
+AC-D00-05,yes,DataProduct,No second catalog,projection uses existing catalog,real-db+gateway
+AC-D00-06,yes,DataProduct,Current version,correct,real-db+gateway
+AC-D00-07,yes,DataProduct,Historical versions,listed,real-db+gateway
+AC-D00-08,yes,DataProduct,Schema ref/hash,correct,real-db+gateway
+AC-D00-09,yes,DataProduct,CRS,correct,real-db+gateway
+AC-D00-10,yes,DataProduct,Spatial extent,bounded,real-db+gateway
+AC-D00-11,yes,DataProduct,Temporal extent,bounded,real-db+gateway
+AC-D00-12,yes,DataProduct,Lineage,resolves,real-db+gateway
+AC-D00-13,yes,DataProduct,Quality unknown,fields absent not invented,real-db+gateway
+AC-D00-14,yes,DataProduct,Quality validated,status correct,real-db+gateway
+AC-D00-15,yes,DataProduct,Known limitations,preserved,real-db+gateway
+AC-D00-16,yes,DataProduct,Supported capabilities,derived from registry/data bindings,real-db+gateway
+AC-D00-17,yes,DataProduct,Catalog search kind,works,real-db+gateway
+AC-D00-18,yes,DataProduct,Catalog search spatial,works,real-db+gateway
+AC-D00-19,yes,DataProduct,Catalog search time,works,real-db+gateway
+AC-D00-20,yes,DataProduct,Catalog search capability,works,real-db+gateway
+AC-D00-21,yes,DataProduct,Cursor,stable/tamper safe,real-db+gateway
+AC-D00-22,yes,DataProduct,Scope before count,no leak,real-db+gateway
+AC-D02-01,yes,ProviderConformance,Reference provider,PASS,conformance
+AC-D02-02,yes,ProviderConformance,Dataset catalog,PASS,conformance
+AC-D02-03,yes,ProviderConformance,World evidence,PASS,conformance
+AC-D02-04,yes,ProviderConformance,Spatial,PASS,conformance
+AC-D02-05,yes,ProviderConformance,H3,PASS,conformance
+AC-D02-06,yes,ProviderConformance,STAS,PASS,conformance
+AC-D02-07,yes,ProviderConformance,Network,PASS,conformance
+AC-D02-08,yes,ProviderConformance,Route,PASS,conformance
+AC-D02-09,yes,ProviderConformance,Coverage,PASS,conformance
+AC-D02-10,yes,ProviderConformance,Manifest/schema hash,checked,conformance
+AC-D02-11,yes,ProviderConformance,Semantic profile,checked,conformance
+AC-D02-12,yes,ProviderConformance,Scope policy,checked,conformance
+AC-D02-13,yes,ProviderConformance,Snapshot policy,checked,conformance
+AC-D02-14,yes,ProviderConformance,Status mapping,checked,conformance
+AC-D02-15,yes,ProviderConformance,No sibling import,checked,conformance
+AC-D02-16,yes,ProviderConformance,Read contract only,checked,conformance
+AC-D02-17,yes,ProviderConformance,Limits/health/idempotency,checked,conformance
+AC-D02-18,yes,ProviderConformance,Machine report hash,deterministic,conformance
+AC-S-01,yes,Stable,Old migrations immutable,001-current unchanged,migration+security+delivery
+AC-S-02,yes,Stable,Fresh install,all migrations pass,migration+security+delivery
+AC-S-03,yes,Stable,0.6.0 upgrade,data preserved,migration+security+delivery
+AC-S-04,yes,Stable,Rollback failure,no partial schema,migration+security+delivery
+AC-S-05,yes,Stable,Read roles,least privilege,migration+security+delivery
+AC-S-06,yes,Stable,Provider private schemas,not public contracts,migration+security+delivery
+AC-S-07,yes,Stable,Cross-scope catalog,denied,migration+security+delivery
+AC-S-08,yes,Stable,Cross-scope result,denied,migration+security+delivery
+AC-S-09,yes,Stable,Cross-scope snapshot,denied,migration+security+delivery
+AC-S-10,yes,Stable,Cursor tamper,rejected,migration+security+delivery
+AC-S-11,yes,Stable,Log redaction,tokens/geometry/sensitive names policy,migration+security+delivery
+AC-S-12,yes,Stable,Gateway restart,jobs/results recover,migration+security+delivery
+AC-S-13,yes,Stable,Provider restart,idempotent,migration+security+delivery
+AC-S-14,yes,Stable,DB restart,readiness recovers,migration+security+delivery
+AC-S-15,yes,Stable,Lease reclaim load,bounded,migration+security+delivery
+AC-S-16,yes,Stable,Boundary query performance,measured,migration+security+delivery
+AC-S-17,yes,Stable,Catalog search performance,indexed/bounded,migration+security+delivery
+AC-S-18,yes,Stable,Semantic projection performance,bounded,migration+security+delivery
+AC-S-19,yes,Stable,Version,0.6.1,migration+security+delivery
+AC-S-20,yes,Stable,README/ADR/runbook,updated,migration+security+delivery
+AC-S-21,yes,Stable,PROJECT_STATUS,current,migration+security+delivery
+AC-S-22,yes,Stable,Exact local/remote SHA,equal,migration+security+delivery
+AC-S-23,yes,Stable,PR Ready,only all required pass,migration+security+delivery
+AC-S-24,yes,Stable,Final markers,all four emitted,migration+security+delivery

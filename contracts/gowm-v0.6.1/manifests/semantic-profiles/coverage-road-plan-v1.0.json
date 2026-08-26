@@ -1,0 +1,29 @@
+{
+  "operationId": "coverage.road.plan",
+  "operationVersion": "1.0",
+  "domain": "COVERAGE",
+  "acceptedReferenceKinds": [
+    "LAYER_FEATURE",
+    "DERIVED_REFERENCE"
+  ],
+  "producedReferenceKinds": [
+    "QUERY_RESULT",
+    "DERIVED_REFERENCE"
+  ],
+  "relationSemantics": [
+    "ROAD_COVERAGE_PLAN"
+  ],
+  "spatialSemantics": "EXACT",
+  "timeSemantics": "SNAPSHOT",
+  "resultNature": "PLAN",
+  "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+  "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+  "domainStatusPath": "/status",
+  "domainStatusMapping": {
+    "SUCCEEDED": "COMPLETED",
+    "PARTIAL": "PARTIAL",
+    "NO_FEASIBLE_PLAN": "NO_FEASIBLE_RESULT",
+    "STALE": "STALE",
+    "FAILED": "FAILED"
+  }
+}

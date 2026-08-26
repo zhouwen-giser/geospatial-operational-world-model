@@ -12,7 +12,9 @@ describe("GOWM v0.5 database image lock", () => {
     expect(dockerfile).toContain("ARG H3_PG_VERSION=4.5.0");
     expect(dockerfile).toContain("ARG PGROUTING_VERSION=4.0.1");
     expect(dockerfile).toContain("ARG PGROUTING_SOURCE_SHA256=21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699");
-    expect(dockerfile).toContain("pgrouting/archive/v${PGROUTING_VERSION}.tar.gz");
+    expect(dockerfile).toContain("ADD --checksum=sha256:72f48359cd49ffaa38eb22fbaa607d5497e0144a8f94824f826beb0b370c40d8");
+    expect(dockerfile).toContain("ADD --checksum=sha256:21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699");
+    expect(dockerfile).toContain("pgrouting/archive/v4.0.1.tar.gz");
     expect(dockerfile).not.toMatch(/^FROM\s+pgrouting\//mu);
   });
 

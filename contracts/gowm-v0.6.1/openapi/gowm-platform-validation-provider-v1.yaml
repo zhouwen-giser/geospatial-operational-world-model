@@ -1,0 +1,31 @@
+openapi: 3.1.0
+info:
+  title: GOWM Platform Result and Snapshot Validation Operations
+  version: 1.0.0
+paths:
+  /v1/provider-operations/result.validate:execute:
+    post:
+      operationId: validateResults
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../contracts/result-validation-request.schema.json
+      responses:
+        "200":
+          description: Unified result validity
+          content:
+            application/json:
+              schema:
+                $ref: ../contracts/result-validation-result.schema.json
+  /v1/provider-operations/snapshot.validate:execute:
+    post:
+      operationId: validateSnapshot
+      responses:
+        "200":
+          description: Snapshot currentness
+          content:
+            application/json:
+              schema:
+                $ref: ../contracts/snapshot-validation-result.schema.json

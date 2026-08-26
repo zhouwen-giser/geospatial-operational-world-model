@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.6.1 - 2026-08-26
+
+- Made Coverage claims database-authoritative and generation-fenced; stale
+  workers cannot heartbeat, persist, or publish after reclaim or cancellation.
+- Added shared Network Query Core, independent versioned boundary-crossing
+  reconstruction, fixed-point weighted and least-deadhead objectives, truthful
+  result hashes, explicit traversal/coverage credit, and fail-closed
+  `NO_FEASIBLE_PLAN` semantics.
+- Added deterministic Capability semantic projection, scoped Data Product
+  discovery/detail operations, and the Platform Validation Provider with
+  `reference.validate`, `result.validate`, `snapshot.get`, and `snapshot.validate` current/stale/unknown
+  behavior over existing authorities.
+- Corrected duplicate validation ownership, stale query usability, actual world
+  and RoutingSnapshot currentness, retirement and sibling-DatasetScope isolation.
+  World Evidence result.get now exposes all eight normalized statuses and source
+  semantics; current Coverage publication requires actual compute receipts.
+- Added migrations 054–058 and SQL assertions through 043. Rebuilt conformance
+  around 11 actual current provider reports, exact schema hashes, 70 unique
+  protocol operations and explicitly labelled contract/unit evidence.
+- Passed source-fingerprinted real D00, 160 G00 checks and 72 pre-/5 post-restart
+  T00 checks; 288 Vitest and 40 native STAS tests passed. Retained failed attempts,
+  named per-case evidence, matching before/after source locks and bounded timings.
+- Applied the user's current-design scope: 227 effective Required cases and two
+  explicitly superseded old-compatibility cases. The final receipt independently
+  gates exact SHA and PR Ready; earlier completion for 5029bce is withdrawn.
+- Preserved immutable baseline migrations 001–053. WSGS readiness,
+  separate Data Platform Readiness, mock ELEVATION onboarding, merge, tag,
+  release, and deploy are explicitly outside this release task.
+
 ## 0.6.0 - 2026-08-25
 
 - Added stable single-route road coverage planning over the authoritative v0.5

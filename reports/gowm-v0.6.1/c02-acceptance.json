@@ -1,0 +1,436 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C02",
+  "title": "Boundary Authority",
+  "status": "PASS",
+  "originalCases": 24,
+  "requiredCases": 24,
+  "passedCases": 24,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-C02-01": {
+      "status": "PASS",
+      "scenario": "Segment crossing contract",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryMultiPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-02": {
+      "status": "PASS",
+      "scenario": "Partial arc",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryPartialArcMembership"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-03": {
+      "status": "PASS",
+      "scenario": "Forward direction",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryForwardPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-04": {
+      "status": "PASS",
+      "scenario": "Reverse direction",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryReversePolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-05": {
+      "status": "PASS",
+      "scenario": "Polygon",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryForwardPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-06": {
+      "status": "PASS",
+      "scenario": "MultiPolygon",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryMultiPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-07": {
+      "status": "PASS",
+      "scenario": "Start inside",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryStartEndInside"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-08": {
+      "status": "PASS",
+      "scenario": "Start outside",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryForwardPolygon"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-09": {
+      "status": "PASS",
+      "scenario": "Touch only",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryTouchDeterministic"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-10": {
+      "status": "PASS",
+      "scenario": "Boundary overlap",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryOverlapFailClosed"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-11": {
+      "status": "PASS",
+      "scenario": "Candidate events ignored",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryNoReentryIgnoresCandidateHints"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-12": {
+      "status": "PASS",
+      "scenario": "FREE",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryPolicyFree"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-13": {
+      "status": "PASS",
+      "scenario": "FIRST outside one entry",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstOutsideOneEntry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-14": {
+      "status": "PASS",
+      "scenario": "FIRST outside zero entry",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstOutsideZeroEntry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-15": {
+      "status": "PASS",
+      "scenario": "FIRST outside two entries",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstOutsideTwoEntries"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-16": {
+      "status": "PASS",
+      "scenario": "FIRST inside no entry",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstInsideNoEntry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-17": {
+      "status": "PASS",
+      "scenario": "FIRST inside re-entry",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryFirstInsideReentry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-18": {
+      "status": "PASS",
+      "scenario": "ENTRY_SET allowed",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryEntrySetAllowed"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-19": {
+      "status": "PASS",
+      "scenario": "ENTRY_SET unapproved",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryEntrySetDenied"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-20": {
+      "status": "PASS",
+      "scenario": "NO_REENTRY",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryNoReentryIgnoresCandidateHints"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-21": {
+      "status": "PASS",
+      "scenario": "LAST_AREA_EXIT valid",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryLastAreaExitValid"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-22": {
+      "status": "PASS",
+      "scenario": "LAST_AREA_EXIT invalid",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryLastAreaExitWrongTerminal"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-23": {
+      "status": "PASS",
+      "scenario": "Invalid area",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryInvalidAreaFailClosed"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-C02-24": {
+      "status": "PASS",
+      "scenario": "Crossing hash replay",
+      "unitFiles": [
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/unit/coverage-endpoint-policy.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "boundaryEvidenceReplay"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

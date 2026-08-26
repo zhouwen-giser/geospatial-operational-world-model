@@ -1,0 +1,21 @@
+openapi: 3.1.0
+info:
+  title: GOWM Data Product Catalog Projection
+  version: 1.0.0
+paths:
+  /v1/provider-operations/catalog.search:execute:
+    post:
+      operationId: searchDataProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../contracts/catalog-search-request.schema.json
+      responses:
+        "200":
+          description: Scoped data product search
+          content:
+            application/json:
+              schema:
+                $ref: ../contracts/catalog-search-result.schema.json

@@ -33,7 +33,8 @@ export class GroundingCatalogRepository {
   ): Promise<GroundingCatalogExecutionResult> {
     const dataScopeKey = security.dataScopeKey?.trim();
     if (!dataScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "data scope is required");
-    const isDataset = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.");
+    const isDataset = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.") || operationId.startsWith("catalog.");
+    const isDataProduct = operationId.startsWith("catalog.");
     const isEvidence = operationId.startsWith("world.") || operationId.startsWith("result.") || operationId.startsWith("reference-set.");
     const datasetScopeKey = security.datasetScopeKey?.trim();
     if (isDataset && !datasetScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "dataset scope is required");
@@ -51,12 +52,14 @@ export class GroundingCatalogRepository {
         await client.query("SELECT gowm_catalog_v1.set_scope($1::text,$2::text)", [dataScopeKey, datasetScopeKey]);
       } else if (isEvidence) {
         await client.query("SELECT gowm_evidence_v1.set_data_scope($1::text)", [dataScopeKey]);
+        await client.query("SELECT set_config('gowm.dataset_scope_key',$1::text,true)", [datasetScopeKey ?? ""]);
       } else {
         await client.query("SELECT gowm_reference_v1.set_data_scope($1::text)", [dataScopeKey]);
       }
       const snapshot = await this.snapshot(client, dataScopeKey, isDataset ? datasetScopeKey : undefined, isDataset ? "dataset" : isEvidence ? "evidence" : "reference");
-      const result = isDataset
-        ? await this.datasetOperation(client, operationId, asRecord(input), snapshot)
+      const result = isDataProduct
+        ? await this.dataProductOperation(client, operationId, asRecord(input), snapshot)
+        : isDataset ? await this.datasetOperation(client, operationId, asRecord(input), snapshot)
         : isEvidence ? await this.evidenceOperation(client, operationId, asRecord(input), snapshot)
         : await this.referenceOperation(client, operationId, asRecord(input), snapshot);
       await client.query("COMMIT");
@@ -189,20 +192,6 @@ export class GroundingCatalogRepository {
       }
       return result({ schemaVersion: "1.0", items, truncated: false }, snapshot.context, items.length, references.length);
     }
-    if (operationId === "reference.validate") {
-      const results = [];
-      for (const requested of references) {
-        const key = referenceKeyValue(requested.referenceKey);
-        const descriptor = await this.descriptor(client, key.id);
-        if (!descriptor) {
-          results.push({ referenceKey: key, status: "NOT_FOUND", revalidationRequired: true });
-          continue;
-        }
-        const validation = validateReference(requested, key, descriptor, this.options.now?.() ?? new Date());
-        results.push({ referenceKey: key, ...validation, descriptor });
-      }
-      return result({ schemaVersion: "1.0", results }, snapshot.context, results.length, references.length);
-    }
     throw new ProviderProtocolError("OPERATION_NOT_FOUND", `unsupported reference operation ${operationId}`);
   }
 
@@ -303,6 +292,74 @@ export class GroundingCatalogRepository {
     return result({ schemaVersion: "1.0", items: items.filter(Boolean), truncated, ...(nextCursor ? { nextCursor } : {}) }, snapshot.context, visible.length, query.rows.length);
   }
 
+  private async dataProductOperation(
+    client: CatalogSqlClient,
+    operationId: GroundingCatalogOperationId,
+    input: Row,
+    snapshot: { context: DataSnapshotContext; version: string; worldVersion: number; scopeDigest: `sha256:${string}` }
+  ): Promise<GroundingCatalogExecutionResult> {
+    if (operationId === "catalog.search") {
+      const limit = Math.min(optionalInteger(input.limit, 100), 100, this.maximumRows);
+      const cursor = decodeCatalogCursor(typeof input.cursor === "string" ? input.cursor : undefined, {
+        operationId, scopeDigest: snapshot.scopeDigest, snapshotVersion: snapshot.version
+      }, this.options.cursorSecret);
+      const after = cursor?.after ?? "";
+      const dataKinds = stringArrayOrNull(input.dataKinds);
+      const crs = stringArrayOrNull(input.crs);
+      const time = isRecord(input.timeFilter) ? input.timeFilter : {};
+      const spatial = isRecord(input.spatialFilter) ? input.spatialFilter : null;
+      const query = await client.query(
+        `SELECT dataset.*,gowm_catalog_v1.dataset_spatial_extent(dataset.reference_key) AS spatial_extent
+         FROM gowm_catalog_v1.dataset dataset
+         WHERE dataset.reference_key>$1::text
+           AND ($2::text[] IS NULL OR upper(dataset.dataset_kind)=ANY($2))
+           AND ($3::text[] IS NULL OR dataset.crs=ANY($3))
+           AND ($4::timestamptz IS NULL OR dataset.valid_to IS NULL OR dataset.valid_to >= $4::timestamptz)
+           AND ($5::timestamptz IS NULL OR dataset.valid_from IS NULL OR dataset.valid_from <= $5::timestamptz)
+           AND ($6::jsonb IS NULL OR gowm_catalog_v1.dataset_intersects(dataset.reference_key,$6::jsonb))
+         ORDER BY dataset.reference_key LIMIT $7::integer`,
+        [after, dataKinds, crs, finiteDate(time.from), finiteDate(time.to), spatial === null ? null : JSON.stringify(spatial), this.maximumCandidates]
+      );
+      const capabilityBindings = await activeCapabilityBindings(client);
+      const requirements = new Set(Array.isArray(input.requiredCapabilities) ? input.requiredCapabilities.filter((item): item is string => typeof item === "string") : []);
+      const minimum = typeof input.minimumValidationStatus === "string" ? input.minimumValidationStatus : undefined;
+      const filtered = query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))
+        .filter((item) => minimum === undefined || qualityRank(requiredString((item.quality as Row).validationStatus, "validationStatus")) >= qualityRank(minimum));
+      const visible = filtered.slice(0, limit);
+      const truncated = filtered.length > limit || query.rows.length === this.maximumCandidates;
+      const afterId = filtered.length > limit ? (visible.at(-1)?.referenceKey as Row | undefined)?.id : query.rows.at(-1)?.reference_key;
+      const nextCursor = truncated && typeof afterId === "string" ? encodeCatalogCursor({
+        v: 1, operationId, scopeDigest: snapshot.scopeDigest, snapshotVersion: snapshot.version, after: afterId
+      }, this.options.cursorSecret) : undefined;
+      return result({ schemaVersion: "1.0", items: visible, truncated, ...(nextCursor ? { nextCursor } : {}) }, snapshot.context, visible.length, query.rows.length);
+    }
+
+    const id = referenceId(input.referenceKey);
+    const current = await client.query(
+      `SELECT dataset.*,gowm_catalog_v1.dataset_spatial_extent(dataset.reference_key) AS spatial_extent
+       FROM gowm_catalog_v1.dataset dataset WHERE dataset.reference_key=$1::text`, [id]
+    );
+    const row = current.rows[0];
+    if (!row) throw scopeOpaqueNotFound("data product");
+    const descriptor = dataProduct(row, await activeCapabilityBindings(client));
+    if (operationId === "catalog.get") return result(descriptor, snapshot.context, 1, 1);
+    let value: unknown;
+    if (operationId === "catalog.list-versions") {
+      value = (await client.query("SELECT version,schema_version,content_hash,published_at,retired_at FROM gowm_catalog_v1.dataset_version WHERE reference_key=$1 ORDER BY published_at DESC,version DESC LIMIT 100", [id])).rows.map((version) => ({
+        version: requiredString(version.version, "version"),
+        schema_version: requiredString(version.schema_version, "schema_version"),
+        content_hash: requiredString(version.content_hash, "content_hash"),
+        published_at: date(version.published_at, "published_at"),
+        retired_at: finiteDate(version.retired_at) ?? null
+      }));
+    } else if (operationId === "catalog.describe-schema") value = { schemaRef: descriptor.schemaRef, schemaHash: descriptor.schemaHash };
+    else if (operationId === "catalog.get-lineage") value = descriptor.lineage;
+    else if (operationId === "catalog.get-quality") value = descriptor.quality;
+    else if (operationId === "catalog.get-capabilities") value = descriptor.supportedCapabilities;
+    else throw new ProviderProtocolError("OPERATION_NOT_FOUND", `unsupported data product operation ${operationId}`);
+    return result({ schemaVersion: "1.0", operationId, referenceKey: descriptor.referenceKey, value }, snapshot.context, 1, 1);
+  }
+
   private async evidenceOperation(
     client: CatalogSqlClient,
     operationId: GroundingCatalogOperationId,
@@ -317,19 +374,6 @@ export class GroundingCatalogRepository {
       const item = query.rows[0] ? mapQueryResultReference(query.rows[0]) : undefined;
       if (!item) throw scopeOpaqueNotFound("result reference");
       return result(item, snapshot.context, 1, 1);
-    }
-    if (operationId === "result.validate") {
-      const key = referenceKeyValue(input.referenceKey);
-      const validation = await client.query<{ status: unknown; revalidation_required: unknown }>(
-        "SELECT * FROM gowm_result_v1.validate($1::text,$2::text,clock_timestamp())", [key.id, key.version]
-      );
-      const row = validation.rows[0];
-      const results = [{
-        referenceKey: key,
-        status: requiredString(row?.status, "validation.status"),
-        revalidationRequired: Boolean(row?.revalidation_required)
-      }];
-      return result({ schemaVersion: "1.0", results }, snapshot.context, 1, 1);
     }
     if (operationId === "reference-set.get-members") {
       const setKey = referenceId(input.referenceKey);
@@ -401,7 +445,7 @@ export class GroundingCatalogRepository {
         schemaVersion: "1.0",
         referenceKey: referenceKeyValue(row.reference_key_value),
         worldVersion,
-        facts: [{
+        facts: [compact({
           factKind: "CURRENT_PROJECTION",
           fields: isRecord(row.state) ? row.state : {},
           objectType: requiredString(row.object_type, "object_type"),
@@ -414,7 +458,7 @@ export class GroundingCatalogRepository {
           source: optionalString(row.source),
           sourceObservationId: optionalString(row.source_observation_id),
           uncertainty: isRecord(row.uncertainty_summary) ? row.uncertainty_summary : null
-        }],
+        })],
         evidence,
         unknowns: []
       }, snapshot.context, 1, 1);
@@ -427,7 +471,7 @@ export class GroundingCatalogRepository {
         schemaVersion: "1.0",
         referenceKey: referenceKeyValue(row.reference_key_value),
         worldVersion: safeInteger(row.world_version, "world_version"),
-        facts: [{ factKind: "CURRENT_GEOMETRY", geometry: row.geometry, geometryType: row.geometry_type, bbox: row.bbox, crs: row.crs, version: String(row.world_version), observedAt: finiteDate(row.observed_at) }],
+        facts: [compact({ factKind: "CURRENT_GEOMETRY", geometry: row.geometry, geometryType: row.geometry_type, bbox: row.bbox, crs: row.crs, version: String(row.world_version), observedAt: finiteDate(row.observed_at) })],
         evidence: [],
         unknowns: []
       }, snapshot.context, 1, 1);
@@ -443,14 +487,14 @@ export class GroundingCatalogRepository {
       }] : [];
       return result({
         schemaVersion: "1.0", referenceKey: referenceKeyValue(row.reference_key_value), worldVersion,
-        facts: [{
+        facts: [compact({
           factKind: "PROVENANCE",
           source: optionalString(row.source), sourceObservationId: optionalString(row.source_observation_id),
           evidenceKind: optionalString(row.evidence_kind), projectionPolicyVersion: optionalString(row.projection_policy_version),
           timeSolutionId: optionalString(row.time_solution_id), positionMeasurementId: optionalString(row.position_measurement_id),
           uncertainty: isRecord(row.uncertainty_summary) ? row.uncertainty_summary : null,
           confidence: finite(row.confidence, "confidence"), observedAt: finiteDate(row.observed_at), receivedAt: finiteDate(row.received_at)
-        }],
+        })],
         evidence, unknowns: []
       }, snapshot.context, 1, 1);
     }
@@ -564,6 +608,71 @@ function mapDataset(current: Row, versions: Row[]): Row {
   };
 }
 
+const DATA_KINDS = new Set(["VECTOR", "RASTER", "ELEVATION", "NETWORK", "TRAJECTORY", "OBSERVATION", "EVENT", "POINT_CLOUD", "TILESET", "CURRENT_PROJECTION"]);
+
+type CapabilityBinding = { operationId: string; dataBinding: string };
+
+async function activeCapabilityBindings(client: CatalogSqlClient): Promise<CapabilityBinding[]> {
+  const query = await client.query("SELECT operation_id,data_binding FROM gowm_catalog_v1.active_capability ORDER BY operation_id");
+  return query.rows.map((row) => ({
+    operationId: requiredString(row.operation_id, "operation_id"),
+    dataBinding: requiredString(row.data_binding, "data_binding")
+  }));
+}
+
+function dataProduct(row: Row, capabilityBindings: CapabilityBinding[]): Row {
+  const rawKind = requiredString(row.dataset_kind, "dataset_kind").toUpperCase().replaceAll("-", "_");
+  const dataKind = DATA_KINDS.has(rawKind) ? rawKind : "VECTOR";
+  const schemaVersion = requiredString(row.schema_version, "schema_version");
+  const source = compact({ authority: "GOWM_DATASET", sourceRef: optionalString(row.source_ref), sourceVersion: optionalString(row.source_version) });
+  const rawQuality = isRecord(row.quality) ? row.quality : {};
+  const validationStatus = typeof rawQuality.validationStatus === "string" && ["CERTIFIED", "VALIDATED", "UNCHECKED", "FAILED"].includes(rawQuality.validationStatus) ? rawQuality.validationStatus : "UNCHECKED";
+  const quality = compact({
+    completeness: optionalFinite(rawQuality.completeness),
+    positionalAccuracyM: optionalFinite(rawQuality.positionalAccuracyM),
+    temporalAccuracyMs: optionalFinite(rawQuality.temporalAccuracyMs),
+    sourceReliability: optionalFinite(rawQuality.sourceReliability),
+    validationStatus,
+    knownLimitations: Array.isArray(rawQuality.knownLimitations) ? rawQuality.knownLimitations.filter((item): item is string => typeof item === "string") : []
+  });
+  return compact({
+    schemaVersion: "1.0",
+    referenceKey: referenceKeyValue(row.reference_key_value),
+    dataKind,
+    displayName: optionalString(row.name),
+    currentVersion: requiredString(row.version, "version"),
+    spatialExtent: isRecord(row.spatial_extent) ? row.spatial_extent : undefined,
+    temporalExtent: timeRange(row.valid_from, row.valid_to),
+    crs: optionalString(row.crs),
+    schemaRef: `urn:gowm:dataset-schema:${schemaVersion}`,
+    schemaHash: sha256({ schemaVersion }),
+    source,
+    lineage: Array.isArray(row.lineage) ? row.lineage.filter((item): item is string => typeof item === "string") : [],
+    quality,
+    freshnessPolicy: { mode: "VERSIONED", currentVersion: requiredString(row.version, "version") },
+    supportedCapabilities: capabilitiesFor(dataKind, capabilityBindings),
+    access: { dataScopeRequired: true, datasetScopeRequired: true }
+  });
+}
+
+function capabilitiesFor(dataKind: string, bindings: CapabilityBinding[]): string[] {
+  const compatible = bindings.filter(({ operationId, dataBinding }) => {
+    if (dataKind === "CURRENT_PROJECTION") return dataBinding === "WORLD_SNAPSHOT_BOUND" && operationId.startsWith("world.");
+    if (dataKind === "NETWORK") return ["WORLD_SNAPSHOT_BOUND", "DATASET_VERSION_BOUND"].includes(dataBinding) && /^(network|route|coverage)\./u.test(operationId);
+    if (dataBinding !== "DATASET_VERSION_BOUND") return false;
+    return /^(dataset|layer|feature|spatial)\./u.test(operationId);
+  }).map(({ operationId }) => operationId);
+  return [...new Set(compatible)].sort();
+}
+
+function qualityRank(status: string): number {
+  return status === "CERTIFIED" ? 3 : status === "VALIDATED" ? 2 : status === "UNCHECKED" ? 1 : 0;
+}
+
+function optionalFinite(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
 function mapLayer(row: Row): Row {
   return compact({
     referenceKey: referenceKeyValue(row.reference_key_value),
@@ -596,6 +705,11 @@ function mapQueryResultReference(row: Row): Row {
     queryId: requiredString(row.query_id, "query_id"),
     resultHash: requiredString(row.result_hash, "result_hash"),
     status: requiredString(row.status, "status"),
+    resultSemantics: {
+      schemaVersion: "1.0", normalizedStatus: requiredString(row.status, "status"),
+      sourceStatus: isRecord(row.result_record) && typeof row.result_record.status === "string" ? row.result_record.status : requiredString(row.status, "status"),
+      sourceAuthority: "gowm.result-registry", reasons: []
+    },
     dataSnapshotHash: requiredString(row.data_snapshot_hash, "data_snapshot_hash"),
     computeSnapshotHash: requiredString(row.compute_snapshot_hash, "compute_snapshot_hash"),
     createdAt: date(row.created_at, "created_at"),
@@ -660,21 +774,6 @@ function worldNoData(
     ...result({ schemaVersion: "1.0", referenceKey, worldVersion: snapshot.worldVersion, facts: [], evidence: [], unknowns: [unknown] }, snapshot.context, 0, 0),
     status: "NO_DATA"
   };
-}
-
-function validateReference(requested: Row, key: ReferenceKey, descriptor: Row, now: Date): Row {
-  if (typeof requested.expectedType === "string" && requested.expectedType !== descriptor.referenceType) return { status: "TYPE_MISMATCH", revalidationRequired: true };
-  const version = asRecord(descriptor.version);
-  if (key.version !== version.referenceVersion) return { status: "VERSION_CONFLICT", revalidationRequired: true };
-  if (requested.minimumWorldVersion !== undefined && (typeof version.worldVersion !== "number" || version.worldVersion < safeInteger(requested.minimumWorldVersion, "minimumWorldVersion"))) {
-    return { status: "VERSION_CONFLICT", revalidationRequired: true };
-  }
-  if (typeof descriptor.validUntil === "string" && new Date(descriptor.validUntil).getTime() <= now.getTime()) return { status: "EXPIRED", revalidationRequired: true };
-  const quality = isRecord(descriptor.stateQuality) ? descriptor.stateQuality : {};
-  if (quality.stale === true || (requested.maximumAgeMs !== undefined && (typeof quality.freshnessMs !== "number" || quality.freshnessMs > safeInteger(requested.maximumAgeMs, "maximumAgeMs")))) {
-    return { status: "STALE", revalidationRequired: true };
-  }
-  return { status: "VALID", revalidationRequired: Boolean(descriptor.revalidationRequired) };
 }
 
 function matchedBy(value: unknown): string {

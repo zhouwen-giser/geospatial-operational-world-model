@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:data-product-descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "referenceKey",
+    "dataKind",
+    "currentVersion",
+    "schemaRef",
+    "schemaHash",
+    "source",
+    "lineage",
+    "quality",
+    "freshnessPolicy",
+    "supportedCapabilities",
+    "access"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "dataKind": {
+      "enum": [
+        "VECTOR",
+        "RASTER",
+        "ELEVATION",
+        "NETWORK",
+        "TRAJECTORY",
+        "OBSERVATION",
+        "EVENT",
+        "POINT_CLOUD",
+        "TILESET",
+        "CURRENT_PROJECTION"
+      ]
+    },
+    "displayName": {
+      "type": "string",
+      "maxLength": 512
+    },
+    "currentVersion": {
+      "type": "string"
+    },
+    "spatialExtent": {
+      "type": "object"
+    },
+    "temporalExtent": {
+      "$ref": "common.schema.json#/$defs/timeRange"
+    },
+    "crs": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "schemaRef": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "schemaHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "source": {
+      "type": "object"
+    },
+    "lineage": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string"
+      }
+    },
+    "quality": {
+      "$ref": "data-quality-summary.schema.json"
+    },
+    "freshnessPolicy": {
+      "type": "object"
+    },
+    "supportedCapabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 256,
+      "items": {
+        "type": "string"
+      }
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataScopeRequired",
+        "datasetScopeRequired"
+      ],
+      "properties": {
+        "dataScopeRequired": {
+          "type": "boolean"
+        },
+        "datasetScopeRequired": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

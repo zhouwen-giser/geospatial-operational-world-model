@@ -70,6 +70,11 @@ const engine = new PostgresRoadCoverageEngine({
   pool: providerPool, resultTtlMs: 300_000, leaseSeconds: 30, workerId: `coverage-t00-${runId}`,
   observeStage: (measurement) => measurements.push({ ...measurement, profile: currentProfile })
 });
+const planWithDiagnostics = engine.plan.bind(engine);
+engine.plan = async (input, context) => {
+  try { return await planWithDiagnostics(input, context); }
+  catch (error) { process.stderr.write(`CoveragePlanDiagnostic: ${error instanceof Error ? error.stack : String(error)}\n`); throw error; }
+};
 const coverage = createRoadCoverageProvider(engine);
 const registry = new CapabilityRegistry();
 register(registry, coverage.runtime, "coverage", 36201);
@@ -180,7 +185,12 @@ async function beforeRestart(): Promise<void> {
 
   await providerOutageIsolation();
   const duplicate = await concurrentDuplicate();
+  const reclaimStartedAt = performance.now();
+  await reclaimGenerationFencing();
+  const reclaimElapsedMs = performance.now() - reclaimStartedAt;
+  check("reclaimLoadBounded", reclaimElapsedMs < 10_000, { reclaimElapsedMs });
   await chaosCancellation();
+  await databaseFailureIsNotNoFeasible();
 
   const auditText = JSON.stringify(audit.events());
   const secret = "t00-sensitive-token-geometry-metadata";
@@ -204,7 +214,7 @@ async function beforeRestart(): Promise<void> {
     status: "PASS", phase, checks, profiles: {
       small: { obligationCount: smallSelection.obligationCount, elapsedMs: round(smallElapsedMs), heapDeltaBytes: smallHeapDeltaBytes },
       medium: { obligationCount: mediumSelection.obligationCount, elapsedMs: round(mediumElapsedMs), heapDeltaBytes: mediumHeapDeltaBytes, segmentCount: array(row(mediumAlternative.route).segments).length }
-    }, stages: stageSummary, duplicate, restartProbe: { queryId: smallPlan.submission.plan.queryId, resultHash: sha256(smallPlan.result), resultReferenceKey: row(smallResult.referenceKey).id }
+    }, stages: stageSummary, reclaimElapsedMs, duplicate, restartProbe: { queryId: smallPlan.submission.plan.queryId, resultHash: sha256(smallPlan.result), resultReferenceKey: row(smallResult.referenceKey).id }
   })}\n`);
 }
 
@@ -226,6 +236,10 @@ async function afterRestart(): Promise<void> {
     (SELECT count(*)::integer FROM coverage_planner.coverage_result_set result JOIN coverage_planner.coverage_request request USING(coverage_request_id,data_scope_key,dataset_scope_key) WHERE request.gateway_job_id=$1::uuid) AS results`, [probe.gateway_job_id]);
   const persisted = row(rows.rows[0]);
   check("postgresRestartPersistence", persisted.jobs === 1 && persisted.requests === 1 && persisted.results === 1, persisted);
+  const generations = (await adminPool.query(`SELECT array_agg(run.attempt ORDER BY run.attempt) AS attempts,array_agg(run.generation ORDER BY run.attempt) AS generations
+    FROM coverage_planner.coverage_run run JOIN coverage_planner.coverage_request request USING(coverage_request_id,data_scope_key,dataset_scope_key)
+    WHERE request.external_request_id=$1`, [`${runId}-reclaim-request`])).rows[0];
+  check("reclaimGenerationAfterRestart", String(generations.attempts) === "1,2" && String(generations.generations) === "1,2", generations);
   process.stdout.write(`${JSON.stringify({ status: "PASS", phase, checks, probe, persisted })}\n`);
 }
 
@@ -238,6 +252,17 @@ async function planViaGateway(label: string, request: Row, owner: GatewayPrincip
   const result = await worldQueries.run(claim.job.jobId);
   check(`${label}Completed`, result.status === "COMPLETED", result);
   return { submission, result, gatewayJobId: claim.gatewayJobId, publicJobId: claim.job.jobId };
+}
+
+async function databaseFailureIsNotNoFeasible(): Promise<void> {
+  const closedPool = new Pool({ connectionString: required("COVERAGE_PROVIDER_DATABASE_URL"), max: 1 });
+  await closedPool.query("SELECT 1");
+  await closedPool.end();
+  const unavailable = createRoadCoverageProvider(new PostgresRoadCoverageEngine({ pool: closedPool }));
+  const isolatedRegistry = new CapabilityRegistry();
+  register(isolatedRegistry, unavailable.runtime, "database-failure", 36219);
+  const isolated = new DirectExecutionService({ registry: isolatedRegistry, circuits: new ProviderCircuitBreaker(), idempotency: new MemoryGatewayIdempotencyStore(), audit: new MemoryAuditSink(), gatewayId: "coverage-db-failure", policyVersion: "test/1", attestationIssuer: "coverage-db-failure" });
+  await expectError("databaseFailureNotNoFeasible", ["PROVIDER_NOT_READY"], () => directCall(isolated, isolatedRegistry, "coverage.road.validate", smallRequest, smallPrincipal, `${runId}-db-failure`));
 }
 
 async function failedNodeQuery() {
@@ -297,7 +322,7 @@ async function chaosCancellation(): Promise<void> {
       requestHash: sha256({ externalRequestId }), routingSnapshotHash: sha256(smallSnapshot), routingSnapshot: smallSnapshot, request: smallRequest
     });
     const owner = `chaos-${stage.toLowerCase()}-${runId}`;
-    const claim = await repository.claim(submission.coverageRequestId, 1, owner, 30);
+    const claim = await repository.claim(submission.coverageRequestId, owner, 30);
     if (!claim) throw new Error(`${stage} chaos request was not claimed`);
     check(`${stage}Heartbeat`, await repository.heartbeat(claim, owner, 30, stage, 500_000 + index, { bounded: true }));
     check(`${stage}Cancelled`, await repository.cancel(submission.coverageRequestId, `T00_${stage}_CANCEL`));
@@ -320,6 +345,70 @@ async function chaosCancellation(): Promise<void> {
   const cancelled = Number((await adminPool.query("SELECT count(*) FROM coverage_planner.coverage_request WHERE external_request_id LIKE $1 AND status='CANCELLED'", [`${runId}-chaos-%`])).rows[0]?.count ?? 0);
   const ghosts = Number((await adminPool.query("SELECT count(*) FROM coverage_planner.coverage_result_set result JOIN coverage_planner.coverage_request request USING(coverage_request_id,data_scope_key,dataset_scope_key) WHERE request.external_request_id LIKE $1", [`${runId}-chaos-%`])).rows[0]?.count ?? 0);
   check("chaosCancellation", cancelled === 3 && ghosts === 0, { cancelled, ghosts });
+}
+
+async function reclaimGenerationFencing(): Promise<void> {
+  const repository = new PostgresCoverageAsyncRepository(providerPool);
+  const request = { ...smallRequest, requestId: `${runId}-reclaim-request` };
+  const gatewaySubmission = planSubmission("reclaim", request);
+  await worldQueries.submit(gatewaySubmission, smallPrincipal, "ASYNC");
+  const gatewayClaim = await store.claimNext(`t00-reclaim-gateway-${runId}`, 60);
+  if (!gatewayClaim?.gatewayJobId) throw new Error("reclaim Gateway job was not claimed");
+  const submission = await repository.submit({
+    dataScopeKey: smallPrincipal.dataScopeClaim!, datasetScopeKey: smallPrincipal.datasetScopeClaim!,
+    externalRequestId: request.requestId as string, idempotencyKey: `${runId}-reclaim-runtime`, gatewayJobId: gatewayClaim.gatewayJobId,
+    requestHash: sha256(request), routingSnapshotHash: sha256(smallSnapshot), routingSnapshot: smallSnapshot, request
+  });
+  const first = await repository.claim(submission.coverageRequestId, `reclaim-old-${runId}`, 1);
+  if (!first) throw new Error("initial reclaim generation was not claimed");
+  check("reclaimInitialAttemptGeneration", first.attempt === 1 && first.generation === 1, first);
+  await new Promise((resolve) => setTimeout(resolve, 1_100));
+  check("reclaimExpiredReaped", await repository.reapExpired(10) >= 1);
+  const requeued = row((await adminPool.query("SELECT status FROM coverage_planner.coverage_request WHERE coverage_request_id=$1::uuid", [submission.coverageRequestId])).rows[0]);
+  check("reclaimRequestRequeued", requeued.status === "QUEUED", requeued);
+
+  const attempts = await Promise.allSettled([
+    repository.claim(submission.coverageRequestId, `reclaim-new-a-${runId}`, 30),
+    repository.claim(submission.coverageRequestId, `reclaim-new-b-${runId}`, 30)
+  ]);
+  const winners = attempts.flatMap((attempt, index) => attempt.status === "fulfilled" && attempt.value !== null ? [{ claim: attempt.value, owner: `reclaim-new-${index === 0 ? "a" : "b"}-${runId}` }] : []);
+  check("reclaimConcurrentSingleton", winners.length === 1, attempts);
+  const winner = winners[0]!;
+  check("reclaimMonotonicAttemptGeneration", winner.claim.attempt === 2 && winner.claim.generation === 2, winner.claim);
+  check("reclaimOldHeartbeatFenced", !(await repository.heartbeat(first, `reclaim-old-${runId}`, 30, "SOLVING", 100_000, {})));
+  await expectReject("reclaimOldProblemFenced", repository.persistProblem(first, `reclaim-old-${runId}`, sha256({ stale: "problem" }), { startState: { arcKey: `arc_${"1".repeat(64)}`, fractionPpm: 0, direction: "FORWARD" } }));
+  await expectReject("reclaimOldCandidateFenced", repository.persistCandidate(first, `reclaim-old-${runId}`, {
+    problemHash: sha256({ stale: "problem" }), objectiveProfile: "SHORTEST_TOTAL_DISTANCE", candidateHash: sha256({ stale: "candidate" }), route: { segments: [] }, solverDiagnostics: {}, verification: {}
+  }));
+  await expectReject("reclaimOldResultFenced", repository.publishResult(first, `reclaim-old-${runId}`, {
+    referenceKey: `wrf_${sha256({ stale: "result" }).slice(7,39)}`, status: "NO_FEASIBLE_PLAN", resultHash: sha256({ stale: "result" }),
+    validUntil: new Date(Date.now() + 60_000).toISOString(), result: { status: "NO_FEASIBLE_PLAN", revalidationRequired: true }
+  }));
+  check("reclaimNewHeartbeat", await repository.heartbeat(winner.claim, winner.owner, 30, "SOLVING", 200_000, {}));
+  const problem = {
+    startState: { arcKey: `arc_${"1".repeat(64)}`, fractionPpm: 0, direction: "FORWARD" },
+    entryStates: [], exitStates: [], obligationSet: { obligations: [] }
+  };
+  const problemHash = sha256(problem);
+  await repository.persistProblem(winner.claim, winner.owner, problemHash, problem);
+  const published = await repository.publishResult(winner.claim, winner.owner, {
+    referenceKey: `wrf_${sha256({ current: "result", runId }).slice(7,39)}`,
+    status: "NO_FEASIBLE_PLAN", resultHash: sha256({ current: "result", runId }),
+    validUntil: new Date(Date.now() + 60_000).toISOString(),
+    result: { status: "NO_FEASIBLE_PLAN", reasons: ["T00_RECLAIM_FIXTURE"], revalidationRequired: true }
+  });
+  check("reclaimNewResultPublished", published);
+  await expectReject("reclaimDuplicatePublishFenced", repository.publishResult(winner.claim, winner.owner, {
+    referenceKey: `wrf_${sha256({ duplicate: "result", runId }).slice(7,39)}`,
+    status: "NO_FEASIBLE_PLAN", resultHash: sha256({ duplicate: "result", runId }),
+    validUntil: new Date(Date.now() + 60_000).toISOString(), result: { status: "NO_FEASIBLE_PLAN", revalidationRequired: true }
+  }));
+  const persisted = row((await adminPool.query(`SELECT
+    (SELECT count(*)::integer FROM coverage_planner.coverage_run WHERE coverage_request_id=$1::uuid) AS runs,
+    (SELECT min(attempt)::integer FROM coverage_planner.coverage_run WHERE coverage_request_id=$1::uuid) AS minimum_attempt,
+    (SELECT max(attempt)::integer FROM coverage_planner.coverage_run WHERE coverage_request_id=$1::uuid) AS maximum_attempt,
+    (SELECT count(*)::integer FROM coverage_planner.coverage_result_set WHERE coverage_request_id=$1::uuid) AS results`, [submission.coverageRequestId])).rows[0]);
+  check("reclaimDurableMonotonicSingleton", persisted.runs === 2 && persisted.minimum_attempt === 1 && persisted.maximum_attempt === 2 && persisted.results === 1, persisted);
 }
 
 async function providerOutageIsolation(): Promise<void> {

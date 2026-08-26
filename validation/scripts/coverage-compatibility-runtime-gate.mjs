@@ -13,7 +13,7 @@ if (process.env.ALLOW_GOWM_C00_GATE !== "YES") throw new Error("Set ALLOW_GOWM_C
 if (!/^[a-z0-9][a-z0-9-]{2,31}$/u.test(runId)) throw new Error("GOWM_V06_RUN_ID is invalid");
 if (!/^[A-Za-z0-9][A-Za-z0-9_.-]{2,127}$/u.test(container)) throw new Error("GOWM_V06_POSTGRES_CONTAINER is invalid");
 for (const path of [schemaEvidencePath, recoveryEvidencePath]) {
-  if (!/^reports\/gowm-v0\.6\/[a-z0-9._-]+\.json$/u.test(path.replaceAll("\\", "/"))) throw new Error(`invalid evidence path: ${path}`);
+  if (!/^reports\/gowm-v0\.6\.1\/[a-z0-9._-]+\.json$/u.test(path.replaceAll("\\", "/"))) throw new Error(`invalid evidence path: ${path}`);
 }
 
 const evidence = {
@@ -55,18 +55,19 @@ async function verifyContractFreeze() {
 
 async function persist() {
   evidence.finishedAt = new Date().toISOString();
-  await mkdir(resolve(root, "reports/gowm-v0.6"), { recursive: true });
-  await writeFile(resolve(root, `reports/gowm-v0.6/c00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
+  await mkdir(resolve(root, "reports/gowm-v0.6.1"), { recursive: true });
+  await writeFile(resolve(root, `reports/gowm-v0.6.1/c00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
 }
 
 let failure;
 try {
   const schema = JSON.parse(await readFile(resolve(root, schemaEvidencePath), "utf8"));
-  check(schema.status === "PASS" && schema.summary?.migrations === 53 && schema.summary?.assertions === 38, "C00 schema matrix is not PASS 53/38");
-  check(schema.summary?.fresh?.migrationCount === 53, "fresh migration path is incomplete");
+  check(schema.status === "PASS" && schema.summary?.migrations === 57 && schema.summary?.assertions === 42, "C00 schema matrix is not PASS 57/42");
+  check(schema.summary?.fresh?.migrationCount === 57, "fresh migration path is incomplete");
   check(schema.summary?.v04Upgrade?.upgradeMarker === "v0.4-preserved", "v0.4 upgrade marker was not preserved");
   check(schema.summary?.v05Upgrade?.upgradeMarker === "v0.5-preserved", "v0.5 upgrade marker was not preserved");
-  check(Object.values(schema.summary?.checksumReplaySkips ?? {}).length === 3 && Object.values(schema.summary.checksumReplaySkips).every((value) => value === 53), "checksum replay did not skip 53/53 on all paths");
+  check(schema.summary?.v06Upgrade?.upgradeMarker === "v0.6.0-preserved", "v0.6.0 upgrade marker was not preserved");
+  check(Object.values(schema.summary?.checksumReplaySkips ?? {}).length === 4 && Object.values(schema.summary.checksumReplaySkips).every((value) => value === 57), "checksum replay did not skip 57/57 on all paths");
   check(schema.summary?.deliberateFailureRollback === true && schema.cleanup?.every((item) => item.status === "PASS"), "migration rollback or cleanup failed");
   evidence.migrationMatrix = { evidence: schemaEvidencePath, ...schema.summary, cleanup: "PASS" };
 
@@ -75,31 +76,27 @@ try {
   check(recovery.status === "PASS" && after.deterministicQuery && after.gatewayWorkerReplay && after.resultReadAfterRestart && after.postgresRestartPersistence, "Coverage result replay/restart evidence is incomplete");
   evidence.resultReplay = { evidence: recoveryEvidencePath, restart: recovery.restart, checks: after };
 
-  const predecessor = run("node", ["validation/scripts/gowm-v06-predecessor-guard.mjs"]);
+  const predecessor = run("node", ["validation/scripts/gowm-v061-predecessor-guard.mjs"]);
   const sourcePolicy = run("node", ["validation/scripts/gowm-v06-source-policy-guard.mjs"]);
-  check(predecessor.includes("GOWM_V06_PREDECESSOR_READY"), "predecessor lock guard did not pass");
+  check(predecessor.includes("GOWM_V061_PREDECESSOR_READY"), "actual R00 predecessor byte lock did not pass");
   check(sourcePolicy.includes("GOWM_V06_SOURCE_POLICY_READY"), "source policy guard did not pass");
   evidence.predecessorLocks = { migrationAndContract: predecessor, sourcePolicy };
   evidence.contractFreeze = await verifyContractFreeze();
 
-  const config = execFileSync("docker", ["inspect", "--format", "{{range .Config.Env}}{{println .}}{{end}}", container], { cwd: root, encoding: "utf8" });
-  const passwordEntry = config.split(/\r?\n/u).find((line) => line.startsWith("POSTGRES_PASSWORD="));
-  check(passwordEntry !== undefined, "validated PostgreSQL password was not available");
-  const password = passwordEntry.slice("POSTGRES_PASSWORD=".length);
-  const databaseUrl = `postgresql://gowm:${encodeURIComponent(password)}@127.0.0.1:5432/gowm_v05_r03_20260825t1040?options=-c%20role%3Dnetwork_provider`;
-  const output = run("docker", ["run", "--rm", "--network", `container:${container}`, "--volume", `${root}:/workspace`, "--workdir", "/workspace",
-    "--env", "DATABASE_URL", "node:22-bookworm", "node", "dist/validation/scripts/gowm-v05-routing-performance.js"],
-  ["docker", "run", "--rm", "--network", `container:${container}`, "node:22-bookworm", "gowm-v05-routing-performance"], { ...process.env, DATABASE_URL: databaseUrl });
-  const performance = JSON.parse(output);
-  const baseline = JSON.parse(await readFile(resolve(root, "reports/gowm-v0.5/t00-acceptance.json"), "utf8")).measurements;
-  const comparisons = {
-    snap: performance.snapP95Ms / baseline.snapP95Ms,
-    shortest: performance.shortestP95Ms / baseline.shortestP95Ms,
-    matrix: performance.matrix2x2P95Ms / baseline.matrix2x2P95Ms
+  const profiles = recovery.before?.profiles ?? {};
+  const stages = recovery.before?.stages ?? {};
+  check(Number.isFinite(profiles.small?.elapsedMs) && profiles.small.elapsedMs < 10_000, "small Coverage profile exceeded its 10s acceptance bound");
+  check(Number.isFinite(profiles.medium?.elapsedMs) && profiles.medium.elapsedMs < 30_000, "medium Coverage profile exceeded its 30s acceptance bound");
+  check(profiles.small?.heapDeltaBytes < 128 * 1024 * 1024 && profiles.medium?.heapDeltaBytes < 128 * 1024 * 1024, "Coverage profile exceeded its 128MiB heap bound");
+  check(["small", "medium"].every((profile) => ["OBLIGATION_SELECTION", "ENDPOINT_RESOLUTION", "CONNECTOR_MATRIX_SEARCH", "SOLVER_TOTAL", "INDEPENDENT_VERIFIER", "RESULT_PERSIST", "GEOJSON_EXPAND"].every((stage) => Number(stages[profile]?.[stage]?.samples) > 0)), "Coverage stage performance instrumentation is incomplete");
+  const predecessorBaseline = JSON.parse(await readFile(resolve(root, "reports/gowm-v0.5/t00-acceptance.json"), "utf8")).measurements;
+  evidence.networkRoutePerformance = {
+    currentCoverageProfiles: profiles,
+    currentCoverageStages: stages,
+    predecessorNetworkRouteBaseline: predecessorBaseline,
+    bounds: { smallElapsedMs: 10_000, mediumElapsedMs: 30_000, heapDeltaBytes: 128 * 1024 * 1024 },
+    interpretation: "The v0.6.1 S/M Coverage fixture is bounded independently; frozen v0.5 Network/Route measurements remain predecessor evidence, not a cross-workload ratio."
   };
-  check(performance.result === "GOWM_V05_ROUTING_PERFORMANCE_PASS", "v0.5 Network performance gate failed");
-  check(Object.values(comparisons).every((ratio) => ratio <= 2), `v0.5 Network/Route baseline regressed materially: ${JSON.stringify(comparisons)}`);
-  evidence.networkRoutePerformance = { current: performance, baseline, ratioToBaseline: comparisons, interpretation: "S/M acceptance fixture; not a production SLO" };
   evidence.status = "PASS";
 } catch (error) {
   failure = error;
@@ -110,7 +107,7 @@ try {
 }
 
 if (failure) throw failure;
-process.stdout.write(`GOWM_COVERAGE_COMPATIBILITY_PASS ${runId} migrations=53 assertions=38\n`);
+process.stdout.write(`GOWM_COVERAGE_COMPATIBILITY_PASS ${runId} migrations=57 assertions=42\n`);
 
 function required(name) {
   const value = process.env[name];

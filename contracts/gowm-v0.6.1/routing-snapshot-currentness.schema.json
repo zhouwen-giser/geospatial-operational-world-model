@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:routing-snapshot-currentness",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "requestedSnapshot",
+    "currentness",
+    "dimensions",
+    "evaluatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "requestedSnapshot": {
+      "$ref": "common.schema.json#/$defs/routingSnapshot"
+    },
+    "currentSnapshot": {
+      "$ref": "common.schema.json#/$defs/routingSnapshot"
+    },
+    "currentness": {
+      "enum": [
+        "CURRENT",
+        "STALE",
+        "UNKNOWN",
+        "UNAVAILABLE"
+      ]
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graph",
+        "travelProfile",
+        "costProfile",
+        "condition",
+        "sourceWorld"
+      ],
+      "properties": {
+        "graph": {
+          "enum": [
+            "CURRENT",
+            "STALE",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "travelProfile": {
+          "enum": [
+            "CURRENT",
+            "STALE",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "costProfile": {
+          "enum": [
+            "CURRENT",
+            "STALE",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "condition": {
+          "enum": [
+            "CURRENT",
+            "STALE",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "sourceWorld": {
+          "enum": [
+            "CURRENT",
+            "STALE",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ]
+        }
+      }
+    },
+    "reasons": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "evaluatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "D01",
+  "title": "Catalog Discovery",
+  "status": "PASS",
+  "originalCases": 6,
+  "requiredCases": 6,
+  "passedCases": 6,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-D00-17": {
+      "status": "PASS",
+      "scenario": "Catalog search kind",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductKindSearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-18": {
+      "status": "PASS",
+      "scenario": "Catalog search spatial",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductSpatialSearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-19": {
+      "status": "PASS",
+      "scenario": "Catalog search time",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductTimeSearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-20": {
+      "status": "PASS",
+      "scenario": "Catalog search capability",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCapabilitySearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-21": {
+      "status": "PASS",
+      "scenario": "Cursor",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCursorStable",
+            "dataProductCursorTamper"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-22": {
+      "status": "PASS",
+      "scenario": "Scope before count",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductScopeBeforeCount"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

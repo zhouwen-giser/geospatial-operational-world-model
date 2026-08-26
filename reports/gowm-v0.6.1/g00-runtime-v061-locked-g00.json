@@ -1,0 +1,282 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "v061-locked-g00",
+  "container": "gowm-v061-r2-postgres",
+  "database": "gowm_v06_g00_v061_locked_g00",
+  "startedAt": "2026-08-26T03:54:00.612Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowm-v061-r2-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 24
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_v061_locked_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 146
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_v061_locked_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 231
+    },
+    {
+      "command": [
+        "migration-batch-001-058",
+        "gowm_v06_g00_v061_locked_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 4173
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_v061_locked_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 304
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_v061_locked_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 11914
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_v061_locked_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 288
+    }
+  ],
+  "summary": {
+    "status": "PASS",
+    "checks": {
+      "platformValidationSingleOwner": true,
+      "platformRealRoutePublished": true,
+      "capabilitySemanticsFromRegistry": true,
+      "capabilitySemanticsUnique": true,
+      "capabilitySemanticsDeterministic": true,
+      "capabilitySemanticsCoverage": true,
+      "capabilitySemanticsValidation": true,
+      "capabilitySemanticsCatalog": true,
+      "capabilitySemanticsDetail": true,
+      "semanticProjectionBounded": true,
+      "routingCurrentnessCurrent": true,
+      "routingCurrentnessUnavailable": true,
+      "routingCurrentnessWorldStale": true,
+      "routingCurrentnessConditionUnknown": true,
+      "boundaryForwardPolygon": true,
+      "boundaryReversePolygon": true,
+      "boundaryPartialArcMembership": true,
+      "boundaryQueryBounded": true,
+      "boundaryMultiPolygon": true,
+      "boundaryStartEndInside": true,
+      "boundaryTouchDeterministic": true,
+      "boundaryEvidenceReplay": true,
+      "boundaryOverlapFailClosed": true,
+      "boundaryInvalidAreaFailClosed": true,
+      "catalogSearchBounded": true,
+      "dataProductKinds": true,
+      "dataProductScopeBeforeCount": true,
+      "dataProductVectorDescriptor": true,
+      "dataProductSchemaCrsExtent": true,
+      "dataProductLineageQuality": true,
+      "dataProductCapabilities": true,
+      "dataProductNetworkDescriptor": true,
+      "dataProductCurrentDescriptor": true,
+      "dataProductUnknownQuality": true,
+      "dataProductVersions": true,
+      "dataProductSchemaDetail": true,
+      "dataProductDetails": true,
+      "dataProductKindSearch": true,
+      "dataProductSpatialSearch": true,
+      "dataProductTimeSearch": true,
+      "dataProductCapabilitySearch": true,
+      "dataProductQualitySearch": true,
+      "dataProductCursorStable": true,
+      "dataProductCursorTamper": true,
+      "dataProductCrossScopeOpaque": true,
+      "validateDirect": true,
+      "selectDirect": true,
+      "planRequiresGatewayJob": true,
+      "worldGeometryAuthoritative": true,
+      "gatewayQueued": true,
+      "gatewayClaimed": true,
+      "typedDagCompleted": true,
+      "typedDagOrder": true,
+      "planAlternatives": true,
+      "queryResultIdentity": true,
+      "derivedAlternativeIdentity": true,
+      "geometryOnDemand": true,
+      "verifyDirect": true,
+      "frozenPlanInvalid": true,
+      "expandDirect": true,
+      "expandOrder": true,
+      "coverageTraversalCredit": true,
+      "restartReplay": true,
+      "resultRegistry": true,
+      "atomicArtifacts": true,
+      "pairwiseSimilarity": true,
+      "coverageSnapshotHashSeparation": true,
+      "coverageComputeSnapshotContent": true,
+      "platformResultValidation": true,
+      "platformOriginalStatusRetained": true,
+      "platformStatusMapping": true,
+      "platformStatusBatchOrder": true,
+      "platformStaleRevalidate": true,
+      "platformRetiredReference": true,
+      "platformUnknownResultSnapshot": true,
+      "platformSiblingDatasetOpaque": true,
+      "resultGetCurrentSemantics": true,
+      "resultGetSiblingDatasetOpaque": true,
+      "platformReferenceKinds": true,
+      "platformResultScopeOpaque": true,
+      "platformSnapshotGet": true,
+      "platformSnapshotCurrent": true,
+      "platformSnapshotStale": true,
+      "platformSnapshotUnknown": true,
+      "platformSnapshotConsistencyPreserved": true,
+      "platformSnapshotConsistencyCurrent": true,
+      "platformSnapshotGraphStale": true,
+      "platformSnapshotLayerStale": true,
+      "platformSnapshotWorldAdvanced": true,
+      "platformSnapshotUnavailable": true,
+      "platformSnapshotContentHash": true,
+      "platformSnapshotHashReplay": true,
+      "platformSnapshotScopeOpaque": true,
+      "platformSnapshotReadOnly": true,
+      "expiredIsStale": true,
+      "expiredExpansionDenied": true,
+      "gatewayJobAuthority": true,
+      "routingCurrentnessTravelStale": true,
+      "routingCurrentnessCostStale": true,
+      "routingCurrentnessConditionStale": true,
+      "platformRoutingInputChanged": true,
+      "boundaryPolicyFree": true,
+      "boundaryFirstOutsideOneEntry": true,
+      "boundaryFirstOutsideZeroEntry": true,
+      "boundaryFirstOutsideTwoEntries": true,
+      "boundaryFirstInsideNoEntry": true,
+      "boundaryFirstInsideReentry": true,
+      "boundaryEntrySetAllowed": true,
+      "boundaryEntrySetDenied": true,
+      "boundaryNoReentryIgnoresCandidateHints": true,
+      "boundaryLastAreaExitValid": true,
+      "boundaryLastAreaExitWrongTerminal": true,
+      "objective-SHORTEST_TOTAL_DISTANCE-gateway": true,
+      "routingCurrentnessFreshTtlStale": true,
+      "frozenInvalidWithStaleSnapshot": true,
+      "objective-SHORTEST_TOTAL_DISTANCE": true,
+      "objective-primary-SHORTEST_TOTAL_DISTANCE": true,
+      "objective-FASTEST_COMPLETION-gateway": true,
+      "objective-FASTEST_COMPLETION": true,
+      "objective-primary-FASTEST_COMPLETION": true,
+      "objective-LOWEST_RISK-gateway": true,
+      "objective-LOWEST_RISK": true,
+      "objective-primary-LOWEST_RISK": true,
+      "objective-LEAST_DEADHEAD-gateway": true,
+      "objective-LEAST_DEADHEAD": true,
+      "objective-primary-LEAST_DEADHEAD": true,
+      "weighted-distance-gateway": true,
+      "objective-weighted-distance": true,
+      "weighted-distance-replay-gateway": true,
+      "objective-replay-distance": true,
+      "weighted-duration-gateway": true,
+      "objective-weighted-duration": true,
+      "weighted-duration-replay-gateway": true,
+      "objective-replay-duration": true,
+      "weighted-risk-gateway": true,
+      "objective-weighted-risk": true,
+      "weighted-risk-replay-gateway": true,
+      "objective-replay-risk": true,
+      "weighted-deadhead-gateway": true,
+      "objective-weighted-deadhead": true,
+      "weighted-deadhead-replay-gateway": true,
+      "objective-replay-deadhead": true,
+      "noFeasibleEndpoint-gateway": true,
+      "noFeasibleEndpoint": true,
+      "noFeasibleEndpoint-registry": true,
+      "noFeasibleDisconnected-gateway": true,
+      "noFeasibleDisconnected": true,
+      "noFeasibleDisconnected-registry": true,
+      "noFeasibleCondition-gateway": true,
+      "noFeasibleCondition": true,
+      "noFeasibleCondition-registry": true,
+      "noFeasibleProfile-gateway": true,
+      "noFeasibleProfile": true,
+      "noFeasibleProfile-registry": true,
+      "noFeasibleTurn-gateway": true,
+      "noFeasibleTurn": true,
+      "noFeasibleTurn-registry": true,
+      "routingCurrentnessGraphStale": true,
+      "routingValiditySeparate": true,
+      "platformRealPlanGraphChanged": true
+    },
+    "performance": {
+      "semanticProjectionBounded": {
+        "elapsedMs": 8.65419699999984,
+        "maximumMs": 5000
+      },
+      "boundaryQueryBounded": {
+        "elapsedMs": 8.303017999999838,
+        "maximumMs": 10000
+      },
+      "catalogSearchBounded": {
+        "elapsedMs": 37.99103600000012,
+        "maximumMs": 30000
+      }
+    },
+    "queryId": "coverage-query-v061-locked-g00",
+    "gatewayJobId": "61732e7d-4e03-48ff-8783-3e59d0d3248b",
+    "publicJobId": "query_job_b884088d05404b148f63e2e6b5738705",
+    "resultReferenceKey": "wrf_eb73b4de9e15b32921d9f64d507b8e22",
+    "alternativeIds": [
+      "alt_552abaafee90fadb31aa9ea5733440e1a73eb90014563515ab8e316e7f7ac217",
+      "alt_6dfde2d833680f69e525f04bcc957283f16d2e6d3732ebdbb7d6da39b5493ee2"
+    ],
+    "persisted": {
+      "query_results": 1,
+      "derived_results": 2,
+      "candidates": 2,
+      "segments": 7,
+      "verifications": 2,
+      "similarities": 1
+    }
+  },
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_v061_locked_g00",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "sourceBefore": {
+    "digest": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+    "fileCount": 947
+  },
+  "sourceAfter": {
+    "digest": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+    "fileCount": 947
+  },
+  "finishedAt": "2026-08-26T03:54:18.236Z"
+}

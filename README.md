@@ -1,17 +1,23 @@
 # Geospatial Operational World Model Plus (GOWM+)
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
-Capability Service Plane and a controlled World Capability Gateway. The
-Version `0.6.0` adds stable single-route road coverage planning over the
-authoritative immutable v0.5 Network Graph, with exact service obligations,
-Directed CPP/RPP solving, independent coverage verification, immutable result
-publication, and Gateway/DAG integration without copying network authority or
-moving planning algorithms into the Gateway.
+Capability Service Plane and a controlled World Capability Gateway.
+Version `0.6.1` hardens Road Coverage correctness and public platform contracts:
+generation-safe claims, shared Network Query Core, independently reconstructed
+boundary crossings, fixed-point alternative objectives, explicit
+validity/currentness/TTL semantics, machine-readable Capability semantics,
+Platform Validation, and scoped Data Product discovery. Existing authorities
+remain unchanged. The supported API is the current v0.6.1 design; obsolete
+wire/data compatibility is not a delivery requirement.
 
-> **v0.6 candidate status (2026-08-25): NETWORK_READY / ROUTING_READY /
-> ROAD_COVERAGE_READY.** All 226 required cases have runtime or contract
-> evidence. Final exact-SHA and Draft PR reconciliation remain in F01; protected
-> publication actions remain separately controlled.
+> **v0.6.1 status: candidate acceptance is exact-commit receipt-bound.**
+> The earlier completion receipt for `5029bce` was withdrawn. The corrected
+> candidate has one validation owner, authoritative database currentness and
+> source-fingerprinted runtime gates. The final gate must independently verify
+> all 227 effective requirements and PR #6 Ready at the current commit. Two
+> old-compatibility requirements are superseded, not counted as PASS. See the
+> [scope amendment](reports/gowm-v0.6.1/current-design-amendment.md).
+> Merge, tag, release and deployment remain outside this task.
 
 See [PROJECT_STATUS.md](PROJECT_STATUS.md) for the exact delivery boundary and
 [the v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md) for the
@@ -44,8 +50,9 @@ critical path.
 
 ## Capability catalog
 
-The checked-in manifests currently define 50 controlled operations. All
-versions below are `1.0`; `PREVIEW` is the default maturity unless noted.
+The original computation/spatial manifest group defines the following
+operations. The current catalog/validation/network/coverage groups are listed
+below it. All versions below are `1.0`; `PREVIEW` is the default maturity unless noted.
 
 | Provider | Operations | Maturity |
 |---|---|---|
@@ -65,12 +72,14 @@ H3 cover and Situation lookup are candidate/coarse operations. They never
 replace exact boundary decisions; boundary-sensitive results must be verified
 by the Spatial Provider/PostGIS.
 
-The stable Grounding registry adds four independently controlled Providers and
-28 capabilities: Reference resolution/search/validation, Dataset/Layer/Feature
-catalog access, World Evidence/result/reference-set reads, and eight
+The Grounding registry has independently controlled Reference (4 operations),
+Dataset Catalog (13), World Evidence (8), Platform Validation (4), and
+Operational Reality (8) providers. They expose Reference resolution/search,
+Dataset/Layer/Feature and Data Product catalog access, World Evidence/result/
+reference-set reads, unified validation, and eight
 Operational Reality operations for tasks, timelines, correlation, predicates,
-and observability. Their canonical v1 schemas are byte-locked under
-`contracts/gowm-v0.4`.
+and observability. Historical schemas remain under `contracts/gowm-v0.4`;
+current validation and query-result semantics use `contracts/gowm-v0.6.1`.
 
 The v0.5 Network catalog adds 11 stable read operations for graph lookup,
 diagnostics, directed snapping, shortest path, bounded cost matrix, path
@@ -86,6 +95,13 @@ The v0.6 Road Coverage Provider adds five stable operations:
 keeps required service obligations R separate from the full traversable network
 E, verifies every admitted candidate independently, and expands geometry only
 on demand. The Gateway remains the only public asynchronous Job authority.
+
+The v0.6.1 platform additions expose deterministic registry semantics at
+`/v1/capability-semantics`, expose `reference.validate`, `result.validate`, `snapshot.get`, and
+`snapshot.validate` through the independently deployable Platform Validation
+Provider, and extend the Grounding catalog with scoped Data Product search,
+versions, schema, lineage, quality, and supported-capability reads. These are
+read-only projections, not new fact or registry authorities.
 
 ## Contracts and execution
 
@@ -119,6 +135,10 @@ The PostgreSQL 18 baseline includes PostGIS 3.6, MobilityDB 1.3, h3-pg /
 h3_postgis 4.5, and pgRouting 4.0.1. Migrations `001`-`032` remain the locked
 v0.4 baseline; append-only migrations through `047` add Network/Route authority
 and migrations `048`-`053` add the private, derived `coverage_planner` runtime.
+Append-only migrations `054`-`058` add generation fencing, authoritative
+boundary reads, immutable Coverage artifact reads, and the Platform Validation
+snapshot registry, reference lifecycle/currentness and dataset-scoped result reads.
+All 58 migrations and 43 SQL assertion suites are required.
 Coverage tables pin Network identities and hashes but do not copy Node, Edge,
 Arc, Turn, Profile, or Condition authority.
 
@@ -145,13 +165,14 @@ npm run validate:boundaries
 npm run validate:gowm-v05-migrations
 npm run validate:gowm-v05-performance
 npm run validate:gowm-v06-security-recovery
-npm run validate:gowm-v06-compatibility
-node validation/scripts/stable-contract-compatibility.mjs
+npm run validate:provider-conformance
+node validation/scripts/gowm-v061-final-candidate.mjs
 node validation/architecture/validate-release-boundaries.mjs
 ```
 
-Real local stability gates additionally require an isolated PostgreSQL admin
-URL and exact disposable database container name; see the operations runbook.
+Real local stability gates require an exact task-owned disposable database
+container name and explicit gate consent; see the operations runbook. Old-data
+upgrade runs retained in D00 are supplemental evidence, not compatibility promises.
 
 ## License and release boundaries
 
@@ -193,8 +214,9 @@ URL and exact disposable database container name; see the operations runbook.
 - The legacy H3 Situation projection is safe only for its configured single
   scope; arbitrary multi-scope serving remains blocked until the underlying
   projection is scope-aware.
-- Stacked PR #4 remains Draft until final exact-SHA reconciliation; merge, tag, release,
-  image publication, and deployment remain user-controlled actions.
+- PR #6 is the review candidate. Final acceptance requires its Ready state and
+  exact local/tracking/remote/PR SHA equality; merge, tag, release, image
+  publication, and deployment remain user-controlled actions.
 
 ## Documentation and evidence
 
@@ -204,6 +226,8 @@ URL and exact disposable database container name; see the operations runbook.
 - [Road coverage authority ADR](docs/adr/006-road-coverage-planning-authority.md)
 - [Road coverage architecture](docs/architecture/ROAD_COVERAGE_PLANNING_V0.6.md)
 - [Road coverage operations runbook](docs/19_ROAD_COVERAGE_OPERATIONS_RUNBOOK.md)
+- [v0.6.1 platform-hardening runbook](docs/20_PLATFORM_HARDENING_OPERATIONS_RUNBOOK.md)
+- [Platform-hardening authority ADR](docs/adr/ADR-0061-platform-hardening-authority.md)
 - [Project status](PROJECT_STATUS.md)
 - [Traceability](validation/TRACEABILITY.md)
 - [Phase evidence](reports/capability-platform-v0.2/)

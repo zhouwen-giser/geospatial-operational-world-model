@@ -1,19 +1,28 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, realpath, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { runtimeSourceFingerprint } from "./runtime-source-fingerprint.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const nodeModules = await realpath(resolve(root, "node_modules"));
 const runId = process.env.GOWM_V06_RUN_ID;
 if (process.env.ALLOW_GOWM_COVERAGE_T00_GATE !== "YES") throw new Error("Set ALLOW_GOWM_COVERAGE_T00_GATE=YES");
 if (!runId || !/^[a-z0-9][a-z0-9-]{2,31}$/u.test(runId)) throw new Error("GOWM_V06_RUN_ID is invalid");
 const image = process.env.GOWM_V06_POSTGRES_IMAGE || "gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1";
 if (!/^[A-Za-z0-9][A-Za-z0-9_.:/-]{2,255}$/u.test(image)) throw new Error("GOWM_V06_POSTGRES_IMAGE is invalid");
-const container = `gowm-v06-${runId}-postgres`;
-const password = createHash("sha256").update(`gowm-v06-t00:${runId}`).digest("hex");
+const reuseContainer = process.env.GOWM_V06_REUSE_DEDICATED_POSTGRES;
+if (reuseContainer !== undefined && !/^[A-Za-z0-9][A-Za-z0-9_.-]{2,127}$/u.test(reuseContainer)) throw new Error("invalid dedicated container name");
+if (reuseContainer && process.env.ALLOW_GOWM_DEDICATED_RESTART !== reuseContainer) throw new Error("explicit exact-container restart consent is required");
+const container = reuseContainer ?? `gowm-v06-${runId}-postgres`;
+const database = reuseContainer ? `gowm_v061_recovery_${runId.replaceAll("-", "_")}` : "gowm";
+const password = reuseContainer ? process.env.GOWM_V06_POSTGRES_PASSWORD : createHash("sha256").update(`gowm-v06-t00:${runId}`).digest("hex");
+if (!password) throw new Error("dedicated PostgreSQL password required");
 const evidence = { schemaVersion: "1.0", phase: "T00", runId, image, container, startedAt: new Date().toISOString(), status: "RUNNING", commands: [], before: null, after: null, restart: null, cleanup: [], errors: [] };
+evidence.sourceBefore = await runtimeSourceFingerprint(root);
 let created = false;
+let databaseCreated = false;
 
 function run(command, args, options = {}) {
   const startedAt = Date.now();
@@ -28,12 +37,12 @@ function run(command, args, options = {}) {
 }
 
 function psql(sql, label) {
-  return run("docker", ["exec", "--interactive", container, "psql", "--username", "gowm", "--dbname", "gowm", "--set", "ON_ERROR_STOP=on"], { input: sql, shown: [label, "gowm"] });
+  return run("docker", ["exec", "--interactive", container, "psql", "--username", "gowm", "--dbname", database, "--set", "ON_ERROR_STOP=on"], { input: sql, shown: [label, database] });
 }
 
 async function applyMigrations() {
   const files = (await readdir(resolve(root, "database/migrations"))).filter((name) => /^\d{3}_.+\.sql$/u.test(name)).sort();
-  if (files.length !== 53 || files.at(-1)?.slice(0, 3) !== "053") throw new Error("T00 expects migrations 001-053");
+  if (files.length !== 58 || files.at(-1)?.slice(0, 3) !== "058") throw new Error("T00 expects migrations 001-058");
   const batch = [];
   for (const file of files) {
     const source = (await readFile(resolve(root, "database/migrations", file), "utf8"))
@@ -42,7 +51,7 @@ async function applyMigrations() {
     const checksum = createHash("sha256").update(source).digest("hex");
     batch.push(`\\echo APPLY_MIGRATION ${file}\n${source}\nINSERT INTO schema_migration(version,checksum) VALUES ('${file}','${checksum}');`);
   }
-  psql(batch.join("\n"), "migration-batch-001-053");
+  psql(batch.join("\n"), "migration-batch-001-058");
 }
 
 async function waitHealthy(label) {
@@ -74,8 +83,8 @@ function postgresReady() {
 
 function client(phase) {
   const encoded = encodeURIComponent(password);
-  const base = `postgresql://gowm:${encoded}@127.0.0.1:5432/gowm`;
-  const output = run("docker", ["run", "--rm", "--network", `container:${container}`, "--volume", `${root}:/workspace`, "--workdir", "/workspace",
+  const base = `postgresql://gowm:${encoded}@127.0.0.1:5432/${database}`;
+  const output = run("docker", ["run", "--rm", "--network", `container:${container}`, "--volume", `${root}:/workspace`, "--volume", `${nodeModules}:/workspace/node_modules:ro`, "--workdir", "/workspace",
     "--env", "GOWM_V06_RUN_ID", "--env", "GOWM_V06_T00_PHASE", "--env", "COVERAGE_PROVIDER_DATABASE_URL",
     "--env", "COVERAGE_GATEWAY_DATABASE_URL", "--env", "COVERAGE_ADMIN_DATABASE_URL", "--env", "NETWORK_PROVIDER_DATABASE_URL", "--env", "ROUTE_PROVIDER_DATABASE_URL",
     "node:22-bookworm", "node", "dist/validation/scripts/coverage-security-performance-recovery-client.js"], {
@@ -96,19 +105,36 @@ function client(phase) {
 }
 
 async function save() {
+  evidence.sourceAfter = await runtimeSourceFingerprint(root);
+  if (evidence.sourceAfter.digest !== evidence.sourceBefore.digest) {
+    evidence.status = "FAIL"; evidence.errors.push("Source changed during real gate");
+    failure ??= new Error("Source changed during real gate");
+  }
   evidence.finishedAt = new Date().toISOString();
-  await mkdir(resolve(root, "reports/gowm-v0.6"), { recursive: true });
-  await writeFile(resolve(root, `reports/gowm-v0.6/t00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
+  await mkdir(resolve(root, "reports/gowm-v0.6.1"), { recursive: true });
+  await writeFile(resolve(root, `reports/gowm-v0.6.1/t00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
 }
 
 let failure;
 try {
   const existing = run("docker", ["ps", "--all", "--filter", `name=^/${container}$`, "--format", "{{.Names}}"], { shown: ["container-exists", container] });
-  if (existing) throw new Error(`refusing to reuse T00 container ${container}`);
-  run("docker", ["run", "--detach", "--name", container, "--env", "POSTGRES_DB=gowm", "--env", "POSTGRES_USER=gowm", "--env", `POSTGRES_PASSWORD=${password}`, image], {
-    shown: ["create-dedicated-postgres", container, image, "POSTGRES_PASSWORD=[REDACTED]"]
-  });
-  created = true;
+  if (reuseContainer) {
+    if (existing !== container) throw new Error("exact dedicated container is unavailable");
+    const actualImage = run("docker", ["inspect", "--format", "{{.Config.Image}}", container]);
+    if (actualImage !== image) throw new Error("dedicated container image mismatch");
+    const databases = run("docker", ["exec", container, "psql", "-U", "gowm", "-d", "postgres", "-Atqc", "SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY datname"]);
+    if (databases !== "gowm\npostgres") throw new Error("dedicated restart refused: unexpected databases are present");
+    run("docker", ["exec", container, "createdb", "-U", "gowm", "-O", "gowm", database]);
+    databaseCreated = true;
+    evidence.database = database;
+    evidence.reusedDedicatedContainer = true;
+  } else {
+    if (existing) throw new Error(`refusing to reuse T00 container ${container}`);
+    run("docker", ["run", "--detach", "--name", container, "--env", "POSTGRES_DB=gowm", "--env", "POSTGRES_USER=gowm", "--env", `POSTGRES_PASSWORD=${password}`, image], {
+      shown: ["create-dedicated-postgres", container, image, "POSTGRES_PASSWORD=[REDACTED]"]
+    });
+    created = true;
+  }
   await waitHealthy("initial-postgres-health");
   await applyMigrations();
   psql(await readFile(resolve(root, "validation/fixtures/coverage-gateway-runtime.sql"), "utf8"), "coverage-small-fixture");
@@ -125,6 +151,12 @@ try {
   evidence.status = "FAIL";
   evidence.errors.push(redact(String(error?.stderr || error?.stack || error)));
 } finally {
+  if (databaseCreated) {
+    try {
+      run("docker", ["exec", container, "dropdb", "-U", "gowm", "--force", database]);
+      evidence.cleanup.push({ database, status: "PASS" });
+    } catch (error) { evidence.cleanup.push({ database, status: "FAIL", error: redact(String(error)) }); evidence.status = "FAIL"; failure ??= error; }
+  }
   if (created) {
     try {
       run("docker", ["rm", "--force", container], { shown: ["remove-dedicated-postgres", container] });

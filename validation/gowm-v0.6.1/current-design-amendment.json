@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "authority": "User: 当前没有旧数据，不需要兼容旧版本设计和数据，可以移除过时的内容",
+  "document": "reports/gowm-v0.6.1/current-design-amendment.md",
+  "originalRequiredCount": 229,
+  "effectiveRequiredCount": 227,
+  "superseded": {
+    "AC-R012": "Old wire compatibility removed; one current contract and owner is required instead.",
+    "AC-S-03": "Old-data upgrade compatibility removed; clean install, rollback and checksum replay remain required."
+  }
+}

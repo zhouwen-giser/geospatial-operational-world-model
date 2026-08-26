@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:catalog-search-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "limit"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "dataKinds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "spatialFilter": {
+      "type": "object"
+    },
+    "timeFilter": {
+      "$ref": "common.schema.json#/$defs/timeRange"
+    },
+    "crs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "requiredCapabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "minimumValidationStatus": {
+      "enum": [
+        "CERTIFIED",
+        "VALIDATED",
+        "UNCHECKED"
+      ]
+    },
+    "currentOnly": {
+      "type": "boolean"
+    },
+    "cursor": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "referenceKey": {
+    "namespace": "gowm",
+    "kind": "DATASET",
+    "id": "wrf_11111111111111111111111111111111",
+    "version": "roads-2026.08"
+  },
+  "dataKind": "NETWORK",
+  "displayName": "Operational road network",
+  "currentVersion": "roads-2026.08",
+  "crs": "EPSG:4326",
+  "schemaRef": "urn:gowm:network:v1",
+  "schemaHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "source": {
+    "authority": "GOWM_DATASET"
+  },
+  "lineage": [],
+  "quality": {
+    "validationStatus": "VALIDATED",
+    "knownLimitations": [
+      "Not a production traffic feed"
+    ]
+  },
+  "freshnessPolicy": {
+    "mode": "VERSIONED"
+  },
+  "supportedCapabilities": [
+    "network.snap.point",
+    "route.plan",
+    "coverage.road.plan"
+  ],
+  "access": {
+    "dataScopeRequired": true,
+    "datasetScopeRequired": true
+  }
+}

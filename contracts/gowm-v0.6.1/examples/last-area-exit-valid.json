@@ -1,0 +1,23 @@
+{
+  "endpointMode": "LAST_AREA_EXIT",
+  "lastCrossing": {
+    "sequence": 4,
+    "kind": "EXIT",
+    "arcKey": "arc_deadbeef",
+    "fractionPpm": 650000,
+    "direction": "FORWARD",
+    "point": {
+      "type": "Point",
+      "coordinates": [
+        120.3,
+        30.3
+      ]
+    }
+  },
+  "candidateEndState": {
+    "arcKey": "arc_deadbeef",
+    "fractionPpm": 650000,
+    "direction": "FORWARD"
+  },
+  "expected": "VALID"
+}

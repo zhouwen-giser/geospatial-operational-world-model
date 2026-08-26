@@ -88,10 +88,10 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
 
 function operation(operationId: GroundingCatalogOperationId, repository: GroundingCatalogRepository): ProviderOperation {
   const schemas = GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId];
-  const datasetOperation = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.");
+  const datasetOperation = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.") || operationId.startsWith("catalog.");
   const resultOperation = operationId.startsWith("result.") || operationId.startsWith("reference-set.");
   const evidenceOperation = operationId.startsWith("world.") || operationId.startsWith("result.") || operationId.startsWith("reference-set.");
-  const listOperation = operationId.endsWith(".list") || operationId === "layer.find-features" || operationId === "reference.batch-get" || operationId === "reference-set.get-members" || operationId === "world.get-observations" || operationId === "world.get-event-timeline" || operationId === "world.get-state-history";
+  const listOperation = operationId.endsWith(".list") || operationId === "catalog.search" || operationId === "catalog.list-versions" || operationId === "layer.find-features" || operationId === "reference.batch-get" || operationId === "reference-set.get-members" || operationId === "world.get-observations" || operationId === "world.get-event-timeline" || operationId === "world.get-state-history";
   const descriptor: CapabilityDescriptor = {
     operationId,
     operationVersion: "1.0",
@@ -125,6 +125,14 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
           schemaHash: getContractSchemaHash("urn:gowm:v0.4:reference-key"),
           valueKind: "REFERENCE_KEY" as const,
           unitSemantics: "UNSPECIFIED" as const
+        }] : []),
+        ...(operationId === "world.get-geometry" ? [{
+          name: "geometry",
+          path: "/facts/0/geometry",
+          schemaUri: "urn:gowm:v0.2:value:object",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.2:value:object"),
+          valueKind: "GEOMETRY" as const,
+          unitSemantics: "ANGULAR_DEGREES" as const
         }] : [])
       ]
     }

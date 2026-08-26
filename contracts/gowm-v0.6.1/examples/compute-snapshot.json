@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "operationId": "coverage.road.plan",
+  "operationVersion": "1.0",
+  "providerVersion": "1.0.1",
+  "engines": [
+    {
+      "name": "road-coverage-solver",
+      "version": "1.0.1"
+    },
+    {
+      "name": "coverage-verifier",
+      "version": "1.0.1"
+    },
+    {
+      "name": "network-query-core",
+      "version": "1.0.0"
+    }
+  ],
+  "policies": [
+    {
+      "id": "coverage-boundary-policy",
+      "version": "1.1",
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  ],
+  "contractHashes": [
+    "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  ],
+  "snapshotHash": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+}

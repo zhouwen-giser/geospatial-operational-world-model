@@ -3,6 +3,7 @@ import { CoveragePlanningError } from "./errors.js";
 import type {
   ClosedDcppSolution,
   CoverageProblem,
+  CoverageObjectiveWeights,
   CoverageRoutingObjective,
   CoverageTraversalArc,
   CoverageTurnRule,
@@ -60,15 +61,12 @@ export function solveStrictCoverageRoute(
   if (options.serviceMode === "EITHER_DIRECTION") {
     throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "EITHER_DIRECTION is not a Stable v0.6 service mode");
   }
-  if (problem.endpointMode === "LAST_AREA_EXIT") {
-    throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "LAST_AREA_EXIT requires boundary-event integration");
-  }
   const arcs = effectiveArcs(problem, traversableArcs, options);
   const byArc = new Map(arcs.map((arc) => [arc.arcKey, arc]));
   for (const obligation of problem.obligationSet.obligations) if (!byArc.has(obligation.arcKey)) {
     throw new CoveragePlanningError("NO_FEASIBLE_PLAN", `required Arc is closed or excluded by the travel profile: ${obligation.arcKey}`);
   }
-  const endState = problem.endpointMode === "FIXED_END" ? problem.fixedEndState : problem.startState;
+  const endState = problem.endpointMode === "FIXED_END" ? problem.fixedEndState : problem.endpointMode === "LAST_AREA_EXIT" ? problem.exitStates?.[0] : problem.startState;
   if (endState === undefined) throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "FIXED_END requires fixedEndState");
   validateDirectedState(problem.startState.arcKey, problem.startState.direction, problem.startState.fractionPpm, byArc, "start");
   validateDirectedState(endState.arcKey, endState.direction, endState.fractionPpm, byArc, "end");
@@ -101,7 +99,7 @@ export function solveStrictCoverageRoute(
     history: initialHistory,
     remaining: tasks.map((_, index) => index),
     segments: initialSegments,
-    cost: initialSegments.reduce((sum, segment) => safeAdd(sum, objectiveValue(segment.step.metrics, options.objective)), 0),
+    cost: initialSegments.reduce((sum, segment) => safeAdd(sum, objectiveValue(segment.step.metrics, options.objective, options.objectiveWeights, false)), 0),
     connectorPathCount: 0
   }];
   while (beam[0]?.remaining.length !== 0) {
@@ -115,7 +113,7 @@ export function solveStrictCoverageRoute(
         if (matrixCells > problem.budgets.maximumMatrixCells) throw new CoveragePlanningError("RESOURCE_EXHAUSTED", "strict connector matrix budget exceeded");
         let connector: StrictPath;
         try {
-          connector = strictShortestPath(network, state.currentNode, task.step.from, state.history, task.step.arcKey, rules, maxHistory, options.objective, deadline);
+          connector = strictShortestPath(network, state.currentNode, task.step.from, state.history, task.step.arcKey, rules, maxHistory, options.objective, options.objectiveWeights, deadline);
         } catch (error) {
           if (error instanceof CoveragePlanningError && error.code === "UNREACHABLE") continue;
           throw error;
@@ -124,7 +122,7 @@ export function solveStrictCoverageRoute(
         if (!serviceTurn.valid) continue;
         const connectorSegments = connector.steps.map(({ step, penaltyUnits }) => classifiedConnector(withTurnPenalty(step, penaltyUnits), problem.obligationSet.obligations));
         const serviceStep = withTurnPenalty(task.step, serviceTurn.penaltyUnits);
-        const cost = safeAdd(state.cost, safeAdd(connector.cost, objectiveValue(serviceStep.metrics, options.objective)));
+        const cost = safeAdd(state.cost, safeAdd(connector.cost, objectiveValue(serviceStep.metrics, options.objective, options.objectiveWeights, true)));
         expandedCandidates += 1;
         next.push({
           currentNode: task.step.to,
@@ -149,7 +147,7 @@ export function solveStrictCoverageRoute(
     matrixCells += 1;
     if (matrixCells > problem.budgets.maximumMatrixCells) throw new CoveragePlanningError("RESOURCE_EXHAUSTED", "strict terminal matrix budget exceeded");
     try {
-      const connector = strictShortestPath(network, state.currentNode, terminalNode, state.history, terminalPrefix?.arcKey, rules, maxHistory, options.objective, deadline);
+      const connector = strictShortestPath(network, state.currentNode, terminalNode, state.history, terminalPrefix?.arcKey, rules, maxHistory, options.objective, options.objectiveWeights, deadline);
       const connectorSegments = connector.steps.map(({ step, penaltyUnits }) => classifiedConnector(withTurnPenalty(step, penaltyUnits), problem.obligationSet.obligations));
       let history = connector.history;
       let terminalCost = connector.cost;
@@ -159,7 +157,7 @@ export function solveStrictCoverageRoute(
         if (!turn.valid) continue;
         const step = withTurnPenalty(terminalPrefix, turn.penaltyUnits);
         history = turn.history;
-        terminalCost = safeAdd(terminalCost, objectiveValue(step.metrics, options.objective));
+        terminalCost = safeAdd(terminalCost, objectiveValue(step.metrics, options.objective, options.objectiveWeights, false));
         terminalSegments.push({ step, role: "RETURN", phase: "RETURN", obligationIds: [] });
       }
       completed.push({
@@ -211,7 +209,8 @@ export function solveStrictCoverageRoute(
 }
 
 function validateOptions(options: StrictCoverageSolverOptions): void {
-  if (!(["SHORTEST_DISTANCE", "FASTEST", "LOWEST_RISK", "LOWEST_ENERGY", "BALANCED"] as const).includes(options.objective)) throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "unsupported routing objective");
+  if (!(["SHORTEST_DISTANCE", "FASTEST", "LOWEST_RISK", "LOWEST_ENERGY", "BALANCED", "LEAST_DEADHEAD", "WEIGHTED"] as const).includes(options.objective)) throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "unsupported routing objective");
+  if (options.objective === "WEIGHTED") validateWeights(options.objectiveWeights);
   for (const rule of options.turnRules ?? []) {
     if (rule.arcSequence.length < 2 || (rule.ruleType === "ALLOWED_ONLY" && rule.arcSequence.length !== 2) || !Number.isSafeInteger(rule.penaltyUnits ?? 0) || (rule.penaltyUnits ?? 0) < 0 || (rule.ruleType === "PENALTY" && (rule.penaltyUnits ?? 0) === 0)) {
       throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", `invalid strict turn rule: ${rule.ruleKey}`);
@@ -241,7 +240,7 @@ function effectiveArcs(problem: CoverageProblem, input: readonly CoverageTravers
       ...source.metrics,
       durationMs,
       riskMicroUnits,
-      combinedCostUnits: safeAdd(objectiveRaw({ ...source.metrics, durationMs, riskMicroUnits }, options.objective), source.conditionPenaltyUnits ?? 0),
+      combinedCostUnits: safeAdd(source.metrics.combinedCostUnits, source.conditionPenaltyUnits ?? 0),
       turnPenaltyUnits: 0
     };
     result.push({ ...source, metrics });
@@ -283,7 +282,7 @@ function serviceTasks(obligations: readonly RoadServiceObligation[], byArc: Read
 
 function strictShortestPath(
   network: readonly StrictStep[], from: string, to: string, initialHistory: HistoryState, requiredNextArc: string | undefined,
-  rules: readonly CoverageTurnRule[], maxHistory: number, objective: CoverageRoutingObjective, deadline: number
+  rules: readonly CoverageTurnRule[], maxHistory: number, objective: CoverageRoutingObjective, weights: CoverageObjectiveWeights | undefined, deadline: number
 ): StrictPath {
   if (from === to && (requiredNextArc === undefined || advanceTurn(initialHistory, requiredNextArc, rules, maxHistory).valid)) return { steps: [], cost: 0, history: initialHistory };
   const outgoing = new Map<string, StrictStep[]>();
@@ -313,7 +312,7 @@ function strictShortestPath(
       const turn = advanceTurn(current.history, step.arcKey, rules, maxHistory);
       if (!turn.valid) continue;
       const nextKey = searchKey(step.to, turn.history);
-      const candidate = safeAdd(currentDistance, safeAdd(objectiveValue(step.metrics, objective), turn.penaltyUnits));
+      const candidate = safeAdd(currentDistance, safeAdd(objectiveValue(step.metrics, objective, weights, false), turn.penaltyUnits));
       if (candidate < (distance.get(nextKey) ?? Number.POSITIVE_INFINITY)) {
         distance.set(nextKey, candidate); states.set(nextKey, { node: step.to, history: turn.history }); previous.set(nextKey, { key: currentKey, step, penaltyUnits: turn.penaltyUnits });
       }
@@ -396,10 +395,28 @@ function stateNode(arc: CoverageTraversalArc, fraction: number): string { return
 function searchKey(node: string, history: HistoryState): string { return `${node}\u0000${history.arcKeys.join("\u0001")}`; }
 
 function objectiveRaw(metrics: FixedMetrics, objective: CoverageRoutingObjective): number {
-  return objective === "SHORTEST_DISTANCE" ? metrics.distanceMm : objective === "FASTEST" ? metrics.durationMs : objective === "LOWEST_RISK" ? metrics.riskMicroUnits : objective === "LOWEST_ENERGY" ? metrics.energyMwh : metrics.combinedCostUnits;
+  return objective === "SHORTEST_DISTANCE" || objective === "LEAST_DEADHEAD" ? metrics.distanceMm : objective === "FASTEST" ? metrics.durationMs : objective === "LOWEST_RISK" ? metrics.riskMicroUnits : objective === "LOWEST_ENERGY" ? metrics.energyMwh : metrics.combinedCostUnits;
 }
-function objectiveValue(metrics: FixedMetrics, objective: CoverageRoutingObjective): number {
+function objectiveValue(metrics: FixedMetrics, objective: CoverageRoutingObjective, weights: CoverageObjectiveWeights | undefined, service: boolean): number {
+  if (objective === "LEAST_DEADHEAD") return service ? 0 : safeAdd(metrics.distanceMm, metrics.turnPenaltyUnits ?? 0);
+  if (objective === "WEIGHTED") return safeAdd(weightedObjectiveValue(metrics, weights!, service), metrics.turnPenaltyUnits ?? 0);
   return objective === "BALANCED" ? metrics.combinedCostUnits : safeAdd(objectiveRaw(metrics, objective), metrics.turnPenaltyUnits ?? 0);
+}
+
+export function weightedObjectiveValue(metrics: FixedMetrics, weights: CoverageObjectiveWeights, service: boolean): number {
+  validateWeights(weights);
+  const numerator = BigInt(metrics.distanceMm) * BigInt(weights.distance) + BigInt(metrics.durationMs) * BigInt(weights.duration) +
+    BigInt(metrics.riskMicroUnits) * BigInt(weights.risk) + BigInt(metrics.energyMwh) * BigInt(weights.energy ?? 0) +
+    BigInt(service ? 0 : metrics.distanceMm) * BigInt(weights.deadhead);
+  const score = numerator / 1_000_000n;
+  if (score > BigInt(Number.MAX_SAFE_INTEGER)) throw new CoveragePlanningError("RESOURCE_EXHAUSTED", "weighted objective exceeds safe fixed-point range");
+  return Number(score);
+}
+
+function validateWeights(weights: CoverageObjectiveWeights | undefined): asserts weights is CoverageObjectiveWeights {
+  if (weights === undefined || ![weights.distance, weights.duration, weights.risk, weights.energy ?? 0, weights.deadhead].every((value) => Number.isSafeInteger(value) && value >= 0 && value <= 1_000_000)) {
+    throw new CoveragePlanningError("CAPABILITY_NOT_AVAILABLE", "WEIGHTED requires bounded integer PPM distance, duration, risk, energy, and deadhead weights");
+  }
 }
 
 function sliceMetrics(metrics: FixedMetrics, start: number, end: number): FixedMetrics {

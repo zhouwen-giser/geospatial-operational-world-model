@@ -1,0 +1,268 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "D00",
+  "title": "Data Product Descriptor",
+  "status": "PASS",
+  "originalCases": 15,
+  "requiredCases": 15,
+  "passedCases": 15,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-D00-01": {
+      "status": "PASS",
+      "scenario": "VECTOR descriptor",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductVectorDescriptor"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-02": {
+      "status": "PASS",
+      "scenario": "NETWORK descriptor",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductNetworkDescriptor"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-03": {
+      "status": "PASS",
+      "scenario": "CURRENT projection descriptor",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCurrentDescriptor"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-05": {
+      "status": "PASS",
+      "scenario": "No second catalog",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductKinds"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-06": {
+      "status": "PASS",
+      "scenario": "Current version",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductVectorDescriptor"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-07": {
+      "status": "PASS",
+      "scenario": "Historical versions",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductVersions"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-08": {
+      "status": "PASS",
+      "scenario": "Schema ref/hash",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductSchemaDetail"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-09": {
+      "status": "PASS",
+      "scenario": "CRS",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductSchemaCrsExtent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-10": {
+      "status": "PASS",
+      "scenario": "Spatial extent",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductSchemaCrsExtent"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-11": {
+      "status": "PASS",
+      "scenario": "Temporal extent",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductTimeSearch"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-12": {
+      "status": "PASS",
+      "scenario": "Lineage",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductLineageQuality"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-13": {
+      "status": "PASS",
+      "scenario": "Quality unknown",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductUnknownQuality"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-14": {
+      "status": "PASS",
+      "scenario": "Quality validated",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductLineageQuality"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-15": {
+      "status": "PASS",
+      "scenario": "Known limitations",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductLineageQuality"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-D00-16": {
+      "status": "PASS",
+      "scenario": "Supported capabilities",
+      "unitFiles": [
+        "tests/platform/grounding-catalog-provider.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "dataProductCapabilities"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

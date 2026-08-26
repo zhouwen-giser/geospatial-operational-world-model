@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "c02-r2-20260825",
+  "container": "gowm-v02-c02-20260824-postgres-1",
+  "databases": {
+    "fresh": "gowm_v06_fresh_c02_r2_20260825",
+    "v05Upgrade": "gowm_v06_upgrade_c02_r2_20260825",
+    "v04Upgrade": "gowm_v06_v04_c02_r2_20260825"
+  },
+  "startedAt": "2026-08-25T11:49:04.580Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowm-v02-c02-20260824-postgres-1"
+      ],
+      "status": "PASS",
+      "elapsedMs": 23
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_fresh_c02_r2_20260825"
+      ],
+      "status": "PASS",
+      "elapsedMs": 89
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_fresh_c02_r2_20260825"
+      ],
+      "status": "PASS",
+      "elapsedMs": 149
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..055_network_boundary_crossing_read_contract.sql",
+        "gowm_v06_fresh_c02_r2_20260825"
+      ],
+      "status": "PASS",
+      "elapsedMs": 2557
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..040_network_boundary_crossing_assertions.sql",
+        "gowm_v06_fresh_c02_r2_20260825"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 606
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_fresh_c02_r2_20260825"
+      ],
+      "status": "PASS",
+      "elapsedMs": 273
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_fresh_c02_r2_20260825",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "NOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  extension \"pgrouting\" is not available\nHINT:  The extension must first be installed on the system where PostgreSQL is running.\n",
+    "Command failed: docker exec --interactive gowm-v02-c02-20260824-postgres-1 psql --username gowm --dbname gowm_v06_fresh_c02_r2_20260825 --set ON_ERROR_STOP=on\nNOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  extension \"pgrouting\" is not available\nHINT:  The extension must first be installed on the system where PostgreSQL is running.\n"
+  ],
+  "finishedAt": "2026-08-25T11:49:08.297Z"
+}

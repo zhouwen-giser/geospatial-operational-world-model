@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:route-boundary-analysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "areaHash",
+    "routeHash",
+    "crossings",
+    "startInside",
+    "endInside",
+    "analysisHash"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "areaHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "routeHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "crossings": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "$ref": "boundary-crossing.schema.json"
+      }
+    },
+    "startInside": {
+      "type": "boolean"
+    },
+    "endInside": {
+      "type": "boolean"
+    },
+    "analysisPolicyVersion": {
+      "type": "string"
+    },
+    "analysisHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

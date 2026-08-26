@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-08-25T19:10:00+08:00",
+  "repository": "zhouwen-giser/geospatial-operational-world-model",
+  "sourceBranch": "main",
+  "sourceSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "originMainSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "version": "0.6.0",
+  "packageVersion": "0.6.0",
+  "latestMigration": 53,
+  "migrationCount": 53,
+  "migrationHashAlgorithm": "sha256",
+  "migrationLocks": [
+    "reports/gowm-v0.5/baseline-migration-lock.json",
+    "reports/gowm-v0.6/predecessor-migration-lock.json",
+    "reports/gowm-v0.6/c00-runtime-c00-runtime-20260826t0115.json"
+  ],
+  "candidateBranch": "codex/gowm-platform-hardening-v0.6.1",
+  "worktree": "/tmp/gowm-platform-hardening-v0.6.1",
+  "taskPackage": {
+    "validation": "TASK_PACKAGE_VALID schemas=21 semanticProfiles=10 examples=10 acceptance=229",
+    "preflight": "PREFLIGHT_PASS"
+  }
+}

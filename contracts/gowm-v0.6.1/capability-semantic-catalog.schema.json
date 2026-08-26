@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:capability-semantic-catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "registryRevision",
+    "profiles",
+    "catalogHash"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "registryRevision": {
+      "type": "string"
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "capability-semantic-profile.schema.json"
+      }
+    },
+    "catalogHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

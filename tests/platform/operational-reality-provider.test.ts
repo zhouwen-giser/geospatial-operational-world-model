@@ -29,10 +29,10 @@ describe("operational reality provider",()=>{
         .toEqual(expect.arrayContaining([expect.objectContaining({name:"status",path:"/status",valueKind:"SCALAR"})]));
     }
   });
-  it("is controlled by the Gateway registry as a fourth provider",async()=>{
+  it("remains controlled when the platform validation provider is registered",async()=>{
     const deployments=await loadControlledProviderDeployments("config/grounding-gateway-registry.json");
     const deployment=deployments.find((item)=>item.providerId==="gowm.operational-reality");
-    expect(deployments).toHaveLength(4);
+    expect(deployments).toHaveLength(5);
     expect(deployment?.approvedManifest).toEqual(createOperationalRealityProvider({pool}).runtime.manifest);
   });
 });

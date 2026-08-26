@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "status": "PASS",
+  "decision": "EVIDENCE_PASS_DELIVERY_PENDING",
+  "originalCases": 229,
+  "effectiveRequiredCases": 227,
+  "passedImplementationCases": 224,
+  "pendingDelivery": 3,
+  "supersededCases": 2,
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "testSummary": {
+    "passed": 288,
+    "failed": 0,
+    "skipped": [
+      {
+        "file": "tests/integration/database.test.ts",
+        "name": "PostGIS integration reports PostGIS/MobilityDB/h3-pg health, canonical contract and monotonic world version",
+        "status": "skipped"
+      }
+    ],
+    "realDatabaseReplacement": "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json"
+  },
+  "staticEvidence": [
+    "R00 predecessor byte lock: 53 migrations / 103 contract artifacts",
+    "npm run check",
+    "npm run verify:sql",
+    "vitest run",
+    "npm --prefix services/stas test",
+    "npm run build",
+    "npm run validate:provider-conformance"
+  ],
+  "sql": {
+    "migrations": 58,
+    "assertionSuites": 43
+  },
+  "stas": {
+    "passedTests": 40,
+    "failed": 0,
+    "skipped": 0
+  },
+  "conformance": {
+    "providers": 11,
+    "protocolOperations": 70,
+    "report": "provider-conformance/aggregate.json",
+    "reportHash": "sha256:3b2e6d911b08ce1a5b378b7f33b868f053f5e1ee20eadd60d350a23d9175fdfa",
+    "evidenceLevel": "CONTRACT_AND_UNIT_PROTOCOL",
+    "liveReadiness": "NOT_CLAIMED"
+  },
+  "scope": "Actual preflight static/contract regression; real runtime and exact-commit/Ready delivery are separate gates."
+}

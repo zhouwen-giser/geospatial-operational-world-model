@@ -4,6 +4,7 @@ import { canonicalSha256, validateContract } from "../../packages/platform/contr
 import { admitVerifiedCoverageRoute, verifyCoverageRoute } from "../../packages/road-coverage-verifier-core/src/index.js";
 import type { CoverageRoute, RoutingSnapshot, VerifierNetworkArc, VerifyCoverageRouteInput } from "../../packages/road-coverage-verifier-core/src/index.js";
 import { buildCanonicalCoverageProblem, buildRoadServiceObligation, obligationSetHash, solveStrictCoverageRoute } from "../../packages/road-coverage-planning-core/src/index.js";
+import { applyCoverageCurrentness } from "../../services/providers/road-coverage-provider/src/postgres-engine.js";
 
 const snapshot = {
   networkDatasetVersion: "dataset-v1", graphVersion: "graph-v1", travelProfileVersion: "travel-v1", costProfileVersion: "cost-v1",
@@ -37,6 +38,20 @@ function rehash(route: CoverageRoute): CoverageRoute {
 }
 
 describe("independent coverage verifier", () => {
+  it.each(["SHORTEST_DISTANCE", "FASTEST", "LOWEST_RISK", "LOWEST_ENERGY", "BALANCED"] as const)("replays pinned cost metrics independently of the %s selection score", (objective) => {
+    const input = fixture();
+    const networkArcs = input.networkArcs.map((value) => ({ ...value, conditionPenaltyUnits: 7, metrics: { ...value.metrics, combinedCostUnits: value.metrics.distanceMm * 13 } }));
+    const candidate = solveStrictCoverageRoute(input.problem, networkArcs, {
+      objective, travelPolicy: input.travelPolicy,
+      turnRules: [{ ruleKey: "penalty", arcSequence: [networkArcs[0]!.arcKey, networkArcs[1]!.arcKey], ruleType: "PENALTY", penaltyUnits: 11 }]
+    }).route;
+    const report = verifyCoverageRoute({ ...input, networkArcs, candidate, objective,
+      turnRules: [{ ruleKey: "penalty", arcSequence: [networkArcs[0]!.arcKey, networkArcs[1]!.arcKey], ruleType: "PENALTY", penaltyUnits: 11 }]
+    });
+    expect(report.status).toBe("VALID");
+    expect(report.recomputedMetrics.combinedCostUnits).toBe((5 + 7 + 11) * 13 + 3 * 7 + 11);
+  });
+
   it("validates a legal route with exact pass and length-weighted coverage", () => {
     const input = fixture();
     const report = verifyCoverageRoute(input);
@@ -104,8 +119,15 @@ describe("independent coverage verifier", () => {
       { sequence: 3, kind: "ENTRY", state: input.problem.startState }
     ];
     const boundaryProblem = { ...input.problem, boundaryCrossingPolicy: "NO_REENTRY" as const };
-    const boundaryReport = verifyCoverageRoute({ ...input, problem: boundaryProblem, candidate: rehash(boundaryCandidate) });
+    const boundaryReport = verifyCoverageRoute({ ...input, problem: boundaryProblem, candidate: rehash(boundaryCandidate), authoritativeBoundaryEvents: [
+      { sequence: 1, kind: "ENTRY", state: input.problem.startState },
+      { sequence: 2, kind: "EXIT", state: input.problem.startState },
+      { sequence: 3, kind: "ENTRY", state: input.problem.startState }
+    ] });
     expect(boundaryReport.violations.map((item) => item.code)).toContain("BOUNDARY_POLICY_VIOLATION");
+
+    const ignoredHint = verifyCoverageRoute({ ...input, problem: boundaryProblem, candidate: rehash(boundaryCandidate), authoritativeBoundaryEvents: [] });
+    expect(ignoredHint.violations.map((item) => item.code)).not.toContain("BOUNDARY_POLICY_VIOLATION");
   });
 
   it("detects profile, condition, metric, and result hash mutations", () => {
@@ -132,6 +154,23 @@ describe("independent coverage verifier", () => {
     expect(report.status).toBe("STALE");
     expect(report.checks.snapshot).toBe(false);
     expect(report.violations.map((item) => item.code)).toContain("STALE_ROUTING_SNAPSHOT");
+  });
+
+  it("separates frozen validity from shared routing currentness", () => {
+    const report = verifyCoverageRoute(fixture());
+    const stale = applyCoverageCurrentness(report, {
+      schemaVersion: "1.0",
+      requestedSnapshot: snapshot,
+      currentSnapshot: { ...snapshot, graphVersion: "graph-v2" },
+      currentness: "STALE",
+      dimensions: { graph: "STALE", travelProfile: "CURRENT", costProfile: "CURRENT", condition: "NOT_APPLICABLE", sourceWorld: "NOT_APPLICABLE" },
+      staleDimensions: ["GRAPH"],
+      reasons: ["GRAPH changed since the plan snapshot"],
+      evaluatedAt: "2026-08-25T00:00:00.000Z"
+    });
+    expect(stale).toMatchObject({ status: "STALE", checks: { currentness: false } });
+    expect(stale.violations.map((item) => item.code)).toContain("ROUTING_CURRENTNESS_STALE");
+    expect(validateContract("urn:gowm:v0.6:coverage-verification-report", stale)).toMatchObject({ valid: true });
   });
 
   it("prevents an invalid or tampered verification receipt from admission", () => {

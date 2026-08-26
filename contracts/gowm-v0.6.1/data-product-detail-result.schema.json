@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:data-product-detail-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "operationId", "referenceKey", "value"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "operationId": { "enum": ["catalog.list-versions", "catalog.describe-schema", "catalog.get-lineage", "catalog.get-quality", "catalog.get-capabilities"] },
+    "referenceKey": { "$ref": "common.schema.json#/$defs/referenceKey" },
+    "value": {}
+  }
+}

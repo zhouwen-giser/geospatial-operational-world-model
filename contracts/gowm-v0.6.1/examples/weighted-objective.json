@@ -1,0 +1,13 @@
+{
+  "objective": {
+    "profile": "WEIGHTED",
+    "weights": {
+      "distance": 100000,
+      "duration": 600000,
+      "risk": 200000,
+      "energy": 0,
+      "deadhead": 100000
+    }
+  },
+  "expected": "weights alter route selection"
+}

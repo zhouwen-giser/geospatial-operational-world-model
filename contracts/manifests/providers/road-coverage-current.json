@@ -1,0 +1,309 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.road-coverage-planning",
+    "providerVersion": "1.0.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:bd44b6c87857d394f05d3b9ba2fafb4926cf094df34694d1beb409fd27bc276c",
+    "sourceRef": "urn:gowm:source:in-tree:road-coverage-provider:1.0.0"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "coverage.road.validate",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "VALIDATION",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.6:road-coverage-request",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaUri": "urn:gowm:v0.6:coverage-validation-result",
+      "outputSchemaHash": "sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 30000,
+        "maximumTimeoutMs": 3600000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000000,
+        "maximumCandidates": 100000,
+        "maximumVertices": 50000,
+        "maximumBatchItems": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.6:road-coverage-request",
+            "schemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6:coverage-validation-result",
+            "schemaHash": "sha256:f8df6f34dca1ffeab2dcbca60be2dfecc408a3312b359816fc16be4ca125f55a",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "valid",
+            "schemaUri": "urn:gowm:v0.2:value:boolean",
+            "schemaHash": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
+            "valueKind": "SCALAR",
+            "unitSemantics": "UNSPECIFIED",
+            "path": "/valid"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "coverage.road.select-obligations",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.6:road-coverage-request",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaUri": "urn:gowm:v0.6:coverage-obligation-set",
+      "outputSchemaHash": "sha256:f453949199ebdf7eea944c5eac3fbff95bfc52cdb0f8a33abecb38fe6448cbbe",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 30000,
+        "maximumTimeoutMs": 3600000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000000,
+        "maximumCandidates": 100000,
+        "maximumVertices": 50000,
+        "maximumBatchItems": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.6:road-coverage-request",
+            "schemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6:coverage-obligation-set",
+            "schemaHash": "sha256:f453949199ebdf7eea944c5eac3fbff95bfc52cdb0f8a33abecb38fe6448cbbe",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "coverage.road.plan",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT",
+        "ASYNC_JOB"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.6:road-coverage-request",
+      "inputSchemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+      "outputSchemaUri": "urn:gowm:v0.6:coverage-result-set",
+      "outputSchemaHash": "sha256:6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "ASYNC",
+        "defaultTimeoutMs": 300000,
+        "maximumTimeoutMs": 3600000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000000,
+        "maximumCandidates": 100000,
+        "maximumVertices": 50000,
+        "maximumBatchItems": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.6:road-coverage-request",
+            "schemaHash": "sha256:01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6:coverage-result-set",
+            "schemaHash": "sha256:6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "coverage.road.verify",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "VALIDATION",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT",
+        "ASYNC_JOB"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.6:coverage-verification-request",
+      "inputSchemaHash": "sha256:f8f242440dbb82ea5790ae163455a838d53da451e0481fa36c2b111c423dfcfa",
+      "outputSchemaUri": "urn:gowm:v0.6:coverage-verification-report",
+      "outputSchemaHash": "sha256:56063206dc0164bd273a69784a4cc91a9211130f7f71aa2dbbf776cbe20f9584",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC_OR_ASYNC",
+        "defaultTimeoutMs": 300000,
+        "maximumTimeoutMs": 3600000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000000,
+        "maximumCandidates": 100000,
+        "maximumVertices": 50000,
+        "maximumBatchItems": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.6:coverage-verification-request",
+            "schemaHash": "sha256:f8f242440dbb82ea5790ae163455a838d53da451e0481fa36c2b111c423dfcfa",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6:coverage-verification-report",
+            "schemaHash": "sha256:56063206dc0164bd273a69784a4cc91a9211130f7f71aa2dbbf776cbe20f9584",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "coverage.road.expand-geojson",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.6:coverage-expand-request",
+      "inputSchemaHash": "sha256:64f0a1a67d9802a0d41f087f3482158ba7bafa5722dd94cda5314786beb24f37",
+      "outputSchemaUri": "urn:gowm:v0.6:coverage-geojson-result",
+      "outputSchemaHash": "sha256:e5c8b4845f9f0717750adb2b5f1b0303f00fd302c1cb962a0336af37474c1b0b",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 30000,
+        "maximumTimeoutMs": 3600000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000000,
+        "maximumCandidates": 100000,
+        "maximumVertices": 50000,
+        "maximumBatchItems": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.6:coverage-expand-request",
+            "schemaHash": "sha256:64f0a1a67d9802a0d41f087f3482158ba7bafa5722dd94cda5314786beb24f37",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.6:coverage-geojson-result",
+            "schemaHash": "sha256:e5c8b4845f9f0717750adb2b5f1b0303f00fd302c1cb962a0336af37474c1b0b",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    }
+  ]
+}

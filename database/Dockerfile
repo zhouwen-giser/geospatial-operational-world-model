@@ -3,8 +3,10 @@ FROM ${MOBILITYDB_BASE_IMAGE}
 
 ARG H3_PG_VERSION=4.5.0
 ARG H3_PG_SOURCE_SHA256=72f48359cd49ffaa38eb22fbaa607d5497e0144a8f94824f826beb0b370c40d8
+ARG H3_PG_SOURCE_URL=https://api.pgxn.org/dist/h3/4.5.0/h3-4.5.0.zip
 ARG PGROUTING_VERSION=4.0.1
 ARG PGROUTING_SOURCE_SHA256=21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699
+ARG PGROUTING_SOURCE_URL=https://github.com/pgRouting/pgrouting/archive/v4.0.1.tar.gz
 
 LABEL org.opencontainers.image.title="GOWM PostgreSQL network foundation"
 LABEL org.opencontainers.image.base.name="mobilitydb/mobilitydb:18-3.6-1.3"
@@ -20,12 +22,12 @@ LABEL org.gowm.pgrouting.source-sha256="21c071983a682e048da28f0f211205a20f27ef37
 # The validated MobilityDB image supplies PostgreSQL 18, PostGIS 3.6 and
 # MobilityDB 1.3. PGDG's PG18 binary currently lags at h3-pg 4.2.3, so compile
 # the official PGXN 4.5.0 release from a checksum-pinned archive.
+ADD --checksum=sha256:72f48359cd49ffaa38eb22fbaa607d5497e0144a8f94824f826beb0b370c40d8 \
+    ${H3_PG_SOURCE_URL} /tmp/h3-pg.zip
 RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) -exec sed -i 's|http://|https://|g' {} + \
     && for attempt in 1 2 3 4 5; do apt-get -o Acquire::Retries=5 update && break; test "$attempt" = 5 && exit 1; sleep $((attempt * 2)); done \
     && DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=5 install -y --no-install-recommends \
-       ca-certificates curl unzip cmake make gcc postgresql-server-dev-18 \
-    && curl --fail --location --retry 5 --retry-all-errors \
-       "https://api.pgxn.org/dist/h3/${H3_PG_VERSION}/h3-${H3_PG_VERSION}.zip" -o /tmp/h3-pg.zip \
+       ca-certificates unzip cmake make gcc postgresql-server-dev-18 \
     && echo "${H3_PG_SOURCE_SHA256}  /tmp/h3-pg.zip" | sha256sum --check --strict \
     && unzip -q /tmp/h3-pg.zip -d /tmp \
     && cmake -S "/tmp/h3-${H3_PG_VERSION}" -B /tmp/h3-build -DBUILD_TESTING=OFF -DPOSTGRESQL_VERSION=18 \
@@ -40,6 +42,8 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) -exec sed -i
 # Build the exact official pgRouting release on top of the already pinned
 # MobilityDB/PostGIS/H3 image. A generic pgRouting image would discard the
 # required MobilityDB and h3-pg runtime and is therefore not an acceptable base.
+ADD --checksum=sha256:21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699 \
+    ${PGROUTING_SOURCE_URL} /tmp/pgrouting.tar.gz
 RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) -exec sed -i 's|http://|https://|g' {} + \
     && for attempt in 1 2 3 4 5; do apt-get -o Acquire::Retries=5 update && break; test "$attempt" = 5 && exit 1; sleep $((attempt * 2)); done \
     && DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=5 install -y --no-install-recommends \
@@ -47,9 +51,7 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) -exec sed -i
        libboost-graph1.83.0 libboost-program-options1.83.0 libboost-system1.83.0 \
        libboost-thread1.83.0 \
     && DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=5 install -y --no-install-recommends \
-       build-essential cmake wget libboost-graph-dev libpq-dev postgresql-server-dev-18 \
-    && wget --https-only --tries=5 --output-document=/tmp/pgrouting.tar.gz \
-       "https://github.com/pgRouting/pgrouting/archive/v${PGROUTING_VERSION}.tar.gz" \
+       build-essential cmake libboost-graph-dev libpq-dev postgresql-server-dev-18 \
     && echo "${PGROUTING_SOURCE_SHA256}  /tmp/pgrouting.tar.gz" | sha256sum --check --strict \
     && mkdir -p /usr/src/pgrouting \
     && tar --extract --file /tmp/pgrouting.tar.gz --directory /usr/src/pgrouting --strip-components 1 \
@@ -59,7 +61,7 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) -exec sed -i
     && grep -qx "default_version = '${PGROUTING_VERSION}'" /usr/share/postgresql/18/extension/pgrouting.control \
     && apt-mark manual postgresql-18 \
     && apt-get purge -y --auto-remove \
-       build-essential cmake wget libpq-dev libboost-graph-dev postgresql-server-dev-18 \
+       build-essential cmake libpq-dev libboost-graph-dev postgresql-server-dev-18 \
     && rm -rf /tmp/pgrouting.tar.gz /usr/src/pgrouting /var/lib/apt/lists/*
 
 COPY database/licenses/pgRouting-GPL-2.0.txt /usr/share/doc/gowm-pgrouting/LICENSE

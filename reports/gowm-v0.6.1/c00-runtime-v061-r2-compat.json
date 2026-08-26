@@ -1,0 +1,216 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C00",
+  "runId": "v061-r2-compat",
+  "startedAt": "2026-08-26T01:16:30.072Z",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "validation/scripts/gowm-v061-predecessor-guard.mjs"
+      ],
+      "status": "PASS",
+      "elapsedMs": 805
+    },
+    {
+      "command": [
+        "node",
+        "validation/scripts/gowm-v06-source-policy-guard.mjs"
+      ],
+      "status": "PASS",
+      "elapsedMs": 56
+    }
+  ],
+  "migrationMatrix": {
+    "evidence": "reports/gowm-v0.6.1/d00-runtime-v061-r2-final.json",
+    "migrations": 57,
+    "assertions": 42,
+    "fresh": {
+      "upgradeMarker": null,
+      "coverageTables": 16,
+      "migrationCount": 57,
+      "coverageFunctions": 17,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 14
+    },
+    "v05Upgrade": {
+      "upgradeMarker": "v0.5-preserved",
+      "coverageTables": 16,
+      "migrationCount": 57,
+      "coverageFunctions": 17,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 14
+    },
+    "v04Upgrade": {
+      "upgradeMarker": "v0.4-preserved",
+      "coverageTables": 16,
+      "migrationCount": 57,
+      "coverageFunctions": 17,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 14
+    },
+    "v06Upgrade": {
+      "upgradeMarker": "v0.6.0-preserved",
+      "coverageTables": 16,
+      "migrationCount": 57,
+      "coverageFunctions": 17,
+      "providerDirectMutation": false,
+      "providerNetworkMutation": false,
+      "providerExecutableFunctions": 14,
+      "preservedData": {
+        "arcs": 7,
+        "datasets": 3,
+        "activeEvents": 1,
+        "graphVersions": 1
+      }
+    },
+    "checksumReplaySkips": {
+      "gowm_v06_fresh_v061_r2_final": 57,
+      "gowm_v06_upgrade_v061_r2_final": 57,
+      "gowm_v06_v04_v061_r2_final": 57,
+      "gowm_v06_v060_v061_r2_final": 57
+    },
+    "deliberateFailureRollback": true,
+    "cleanup": "PASS"
+  },
+  "resultReplay": {
+    "evidence": "reports/gowm-v0.6.1/t00-runtime-v061-r2-recovery.json",
+    "restart": {
+      "status": "PASS",
+      "elapsedMs": 3763,
+      "healthyElapsedMs": 2634
+    },
+    "checks": {
+      "deterministicQuery": true,
+      "gatewayWorkerReplay": true,
+      "resultReadAfterRestart": true,
+      "postgresRestartPersistence": true,
+      "reclaimGenerationAfterRestart": true
+    }
+  },
+  "contractFreeze": {
+    "schemaCount": 19,
+    "providerManifestSha256": "601aa3ff9b9b0345fbf2c38cde5dfc50b91daa362544fd0f2aeb6ec8a361275f",
+    "openApiSha256": "0b56fa6b2df8552412e7cdf008c3788c17e57e8cb978a88743553ae4bad697c3",
+    "status": "PASS_EXACT_A01_BYTES"
+  },
+  "predecessorLocks": {
+    "migrationAndContract": "GOWM_V061_PREDECESSOR_READY sha=7cd5b133a74b07e28f359176dd13943ab7a6cf54 migrations=53 contracts=103",
+    "sourcePolicy": "GOWM_V06_SOURCE_POLICY_READY referenceFiles=22 license=UNSPECIFIED redistribution=false"
+  },
+  "networkRoutePerformance": {
+    "currentCoverageProfiles": {
+      "small": {
+        "obligationCount": 1,
+        "elapsedMs": 283.717,
+        "heapDeltaBytes": 5304960
+      },
+      "medium": {
+        "obligationCount": 20,
+        "elapsedMs": 734.029,
+        "heapDeltaBytes": 10058368,
+        "segmentCount": 40
+      }
+    },
+    "currentCoverageStages": {
+      "small": {
+        "OBLIGATION_SELECTION": {
+          "samples": 2,
+          "elapsedMs": 9.709,
+          "units": 2
+        },
+        "ENDPOINT_RESOLUTION": {
+          "samples": 1,
+          "elapsedMs": 26.161,
+          "units": 0
+        },
+        "CONNECTOR_MATRIX_SEARCH": {
+          "samples": 1,
+          "elapsedMs": 14,
+          "units": 2
+        },
+        "SOLVER_TOTAL": {
+          "samples": 1,
+          "elapsedMs": 14.867,
+          "units": 1
+        },
+        "INDEPENDENT_VERIFIER": {
+          "samples": 1,
+          "elapsedMs": 15.289,
+          "units": 3
+        },
+        "RESULT_PERSIST": {
+          "samples": 2,
+          "elapsedMs": 25.19,
+          "units": 4
+        },
+        "GEOJSON_EXPAND": {
+          "samples": 1,
+          "elapsedMs": 11.068,
+          "units": 3
+        }
+      },
+      "medium": {
+        "OBLIGATION_SELECTION": {
+          "samples": 3,
+          "elapsedMs": 13.139,
+          "units": 41
+        },
+        "ENDPOINT_RESOLUTION": {
+          "samples": 2,
+          "elapsedMs": 39.202,
+          "units": 0
+        },
+        "CONNECTOR_MATRIX_SEARCH": {
+          "samples": 2,
+          "elapsedMs": 513,
+          "units": 11366
+        },
+        "SOLVER_TOTAL": {
+          "samples": 2,
+          "elapsedMs": 513.697,
+          "units": 11345
+        },
+        "INDEPENDENT_VERIFIER": {
+          "samples": 2,
+          "elapsedMs": 51.982,
+          "units": 44
+        },
+        "RESULT_PERSIST": {
+          "samples": 4,
+          "elapsedMs": 43.691,
+          "units": 46
+        },
+        "GEOJSON_EXPAND": {
+          "samples": 1,
+          "elapsedMs": 10.267,
+          "units": 40
+        }
+      }
+    },
+    "predecessorNetworkRouteBaseline": {
+      "samples": {
+        "snap": 40,
+        "shortest": 40,
+        "matrix": 20
+      },
+      "snapP95Ms": 11.437,
+      "shortestP95Ms": 11,
+      "matrix2x2P95Ms": 11.002,
+      "graphBuildGateElapsedMs": 1465,
+      "datasetClass": "S/M_ACCEPTANCE_FIXTURE"
+    },
+    "bounds": {
+      "smallElapsedMs": 10000,
+      "mediumElapsedMs": 30000,
+      "heapDeltaBytes": 134217728
+    },
+    "interpretation": "The v0.6.1 S/M Coverage fixture is bounded independently; frozen v0.5 Network/Route measurements remain predecessor evidence, not a cross-workload ratio."
+  },
+  "errors": [],
+  "finishedAt": "2026-08-26T01:16:30.948Z"
+}

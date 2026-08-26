@@ -1,10 +1,12 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, realpath, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { runtimeSourceFingerprint } from "./runtime-source-fingerprint.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const nodeModules = await realpath(resolve(root, "node_modules"));
 const runId = process.env.GOWM_V06_RUN_ID;
 const container = process.env.GOWM_V06_POSTGRES_CONTAINER;
 const password = process.env.GOWM_V06_POSTGRES_PASSWORD;
@@ -15,6 +17,7 @@ if (!password || password.length < 16) throw new Error("GOWM_V06_POSTGRES_PASSWO
 const database = `gowm_v06_g00_${runId.replaceAll("-", "_")}`;
 if (!/^gowm_v06_g00_[a-z0-9_]{3,32}$/u.test(database)) throw new Error("isolated G00 database name is invalid");
 const evidence = { schemaVersion: "1.0", phase: "G00", runId, container, database, startedAt: new Date().toISOString(), status: "RUNNING", commands: [], summary: null, cleanup: [], errors: [] };
+evidence.sourceBefore = await runtimeSourceFingerprint(root);
 let created = false;
 
 function run(command, args, options = {}) {
@@ -33,7 +36,7 @@ function psql(sql, label, target = database, extra = []) {
 }
 async function migrationBatch() {
   const files = (await readdir(resolve(root, "database/migrations"))).filter((name) => /^\d{3}_.+\.sql$/u.test(name)).sort();
-  if (files.length !== 53 || files.at(-1)?.slice(0, 3) !== "053") throw new Error("G00 expects migrations 001-053");
+  if (files.length !== 58 || files.at(-1)?.slice(0, 3) !== "058") throw new Error("G00 expects migrations 001-058");
   const parts = [];
   for (const file of files) {
     const template = await readFile(resolve(root, "database/migrations", file), "utf8");
@@ -41,12 +44,17 @@ async function migrationBatch() {
     const checksum = createHash("sha256").update(sql).digest("hex");
     parts.push(`\\echo APPLY_MIGRATION ${file}\n${sql}\nINSERT INTO schema_migration(version,checksum) VALUES ('${file}','${checksum}');`);
   }
-  psql(parts.join("\n"), "migration-batch-001-053");
+  psql(parts.join("\n"), "migration-batch-001-058");
 }
 async function save() {
+  evidence.sourceAfter = await runtimeSourceFingerprint(root);
+  if (evidence.sourceAfter.digest !== evidence.sourceBefore.digest) {
+    evidence.status = "FAIL"; evidence.errors.push("Source changed during real gate");
+    failure ??= new Error("Source changed during real gate");
+  }
   evidence.finishedAt = new Date().toISOString();
-  await mkdir(resolve(root, "reports/gowm-v0.6"), { recursive: true });
-  await writeFile(resolve(root, `reports/gowm-v0.6/g00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
+  await mkdir(resolve(root, "reports/gowm-v0.6.1"), { recursive: true });
+  await writeFile(resolve(root, `reports/gowm-v0.6.1/g00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
 }
 
 let failure;
@@ -61,8 +69,8 @@ try {
   psql(await readFile(resolve(root, "validation/fixtures/coverage-gateway-runtime.sql"), "utf8"), "coverage-gateway-fixture");
   const encoded = encodeURIComponent(password);
   const base = `postgresql://gowm:${encoded}@127.0.0.1:5432/${database}`;
-  const output = run("docker", ["run", "--rm", "--network", `container:${container}`, "--volume", `${root}:/workspace`, "--workdir", "/workspace",
-    "--env", "GOWM_V06_RUN_ID", "--env", "COVERAGE_PROVIDER_DATABASE_URL", "--env", "COVERAGE_GATEWAY_DATABASE_URL", "--env", "COVERAGE_ADMIN_DATABASE_URL",
+  const output = run("docker", ["run", "--rm", "--network", `container:${container}`, "--volume", `${root}:/workspace`, "--volume", `${nodeModules}:/workspace/node_modules:ro`, "--workdir", "/workspace",
+    "--env", "GOWM_V06_RUN_ID", "--env", "COVERAGE_PROVIDER_DATABASE_URL", "--env", "COVERAGE_GATEWAY_DATABASE_URL", "--env", "COVERAGE_ADMIN_DATABASE_URL", "--env", "PLATFORM_VALIDATION_DATABASE_URL", "--env", "CATALOG_PROVIDER_DATABASE_URL",
     "node:22-bookworm", "node", "dist/validation/scripts/coverage-gateway-runtime-client.js"], {
     shown: ["node-container", "coverage-gateway-runtime-client", database],
     env: {
@@ -70,7 +78,9 @@ try {
       GOWM_V06_RUN_ID: runId,
       COVERAGE_PROVIDER_DATABASE_URL: `${base}?options=-c%20role%3Dcoverage_planner_provider`,
       COVERAGE_GATEWAY_DATABASE_URL: `${base}?options=-c%20role%3Dgowm_gateway_runtime`,
-      COVERAGE_ADMIN_DATABASE_URL: base
+      COVERAGE_ADMIN_DATABASE_URL: base,
+      PLATFORM_VALIDATION_DATABASE_URL: `${base}?options=-c%20role%3Dplatform_validation_provider`,
+      CATALOG_PROVIDER_DATABASE_URL: `${base}?options=-c%20role%3Dgowm_catalog_reader`
     }
   });
   const line = output.split(/\r?\n/u).map((value) => value.trim()).find((value) => value.startsWith("{"));

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:snapshot-validation-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "snapshot"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "snapshot": { "$ref": "data-snapshot-manifest.schema.json" }
+  }
+}

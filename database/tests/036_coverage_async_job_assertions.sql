@@ -84,12 +84,17 @@ $assert$;
 DO $architecture$
 DECLARE
   claim_definition text;
+  compatibility_claim_definition text;
   reaper_definition text;
 BEGIN
-  SELECT pg_get_functiondef('coverage_planner.claim_next_coverage_request(integer,text,integer,integer)'::regprocedure) INTO claim_definition;
+  SELECT pg_get_functiondef('coverage_planner.claim_next_coverage_request(text,integer,integer)'::regprocedure) INTO claim_definition;
+  SELECT pg_get_functiondef('coverage_planner.claim_next_coverage_request(integer,text,integer,integer)'::regprocedure) INTO compatibility_claim_definition;
   SELECT pg_get_functiondef('coverage_planner.reap_expired_coverage_runs(integer)'::regprocedure) INTO reaper_definition;
   IF position('SKIP LOCKED' in upper(claim_definition)) = 0 OR position('PG_ADVISORY_XACT_LOCK' in upper(claim_definition)) = 0 THEN
     RAISE EXCEPTION 'queue claim lacks SKIP LOCKED or scope admission lock';
+  END IF;
+  IF position('CLAIM_NEXT_COVERAGE_REQUEST(P_LEASE_OWNER, P_LEASE_SECONDS, P_MAX_SCOPE_RUNNING)' in upper(compatibility_claim_definition)) = 0 THEN
+    RAISE EXCEPTION 'compatibility queue claim bypasses the authoritative allocator';
   END IF;
   IF position('SKIP LOCKED' in upper(reaper_definition)) = 0 THEN RAISE EXCEPTION 'reaper lacks SKIP LOCKED'; END IF;
   IF NOT has_function_privilege('coverage_planner_provider','coverage_planner.claim_next_coverage_request(integer,text,integer,integer)','EXECUTE')

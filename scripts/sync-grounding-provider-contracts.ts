@@ -5,6 +5,8 @@ import type pg from "pg";
 
 import { createGroundingCatalogProvider } from "../services/providers/grounding-catalog-provider/src/provider.js";
 import { createOperationalRealityProvider } from "../services/providers/operational-reality-provider/src/provider.js";
+import { createPlatformValidationProvider, type PlatformValidationAuthority } from "../services/providers/platform-validation-provider/src/index.js";
+import type { DataSnapshotManifest, SnapshotResource } from "../packages/platform/result-validation-core/src/index.js";
 import type { CatalogSqlPool, GroundingCatalogMode } from "../services/providers/grounding-catalog-provider/src/types.js";
 import { sha256 } from "../packages/platform/provider-sdk/src/index.js";
 
@@ -23,8 +25,10 @@ const targets: Array<[GroundingCatalogMode, string]> = [
 ];
 
 let stale = false;
+const catalogProviders = new Map<string, ReturnType<typeof createGroundingCatalogProvider>>();
 for (const [mode, filename] of targets) {
   const provider = createGroundingCatalogProvider({ mode, pool, cursorSecret });
+  catalogProviders.set(provider.runtime.manifest.provider.providerId, provider);
   const path = resolve(repositoryRoot, "contracts", "manifests", "providers", filename);
   const expected = `${JSON.stringify(provider.runtime.manifest, null, 2)}\n`;
   if (check) {
@@ -48,8 +52,32 @@ if (check) {
   }
 } else await writeFile(operationalManifestPath,operationalExpected,"utf8");
 
+const validationAuthority: PlatformValidationAuthority = {
+  async scopeReference() { throw new Error("contract synchronization must not read scope identity"); },
+  async resolveReferences() { throw new Error("contract synchronization must not resolve references"); },
+  async getSnapshot(): Promise<DataSnapshotManifest | undefined> { throw new Error("contract synchronization must not read snapshots"); },
+  async currentResources(): Promise<ReadonlyMap<string, SnapshotResource | "UNAVAILABLE">> { throw new Error("contract synchronization must not inspect resources"); }
+};
+const validationProvider=createPlatformValidationProvider(validationAuthority);
+const validationManifestPath=resolve(repositoryRoot,"contracts","manifests","providers","platform-validation-provider.json");
+const validationExpected=`${JSON.stringify(validationProvider.runtime.manifest,null,2)}\n`;
+if (check) {
+  if (await readFile(validationManifestPath,"utf8").catch(()=>"")!==validationExpected) {
+    process.stderr.write(`Stale Platform Validation Provider contract artifact: ${validationManifestPath}\n`);stale=true;
+  }
+} else await writeFile(validationManifestPath,validationExpected,"utf8");
+
 const registryPath=resolve(repositoryRoot,"config","grounding-gateway-registry.json");
 const registry=JSON.parse(await readFile(registryPath,"utf8")) as {configVersion:string;providers:Array<Record<string,unknown>>};
+registry.providers=registry.providers.map((entry) => {
+  const provider = catalogProviders.get(String(entry.providerId));
+  return provider === undefined ? entry : {
+    ...entry,
+    providerVersion: provider.runtime.manifest.provider.providerVersion,
+    implementationDigest: provider.runtime.manifest.provider.implementationDigest,
+    manifestHash: sha256(provider.runtime.manifest)
+  };
+});
 const operationalEntry={
   providerId:"gowm.operational-reality",providerVersion:"1.0.0",
   implementationDigest:operationalProvider.runtime.manifest.provider.implementationDigest,
@@ -61,6 +89,17 @@ const operationalEntry={
 };
 registry.providers=registry.providers.filter((entry)=>entry.providerId!=="gowm.operational-reality");
 registry.providers.push(operationalEntry);
+const validationEntry={
+  providerId:"gowm.platform-validation",providerVersion:"1.0.0",
+  implementationDigest:validationProvider.runtime.manifest.provider.implementationDigest,
+  manifestHash:sha256(validationProvider.runtime.manifest),
+  manifestPath:"contracts/manifests/providers/platform-validation-provider.json",
+  endpoint:"http://platform-validation-provider:8095",approvalId:"platform-validation-v1.0",
+  approvedBy:"gowm-release-operator",transportTokenEnv:"PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN",
+  allowPlaintextPrivateNetwork:true
+};
+registry.providers=registry.providers.filter((entry)=>entry.providerId!=="gowm.platform-validation");
+registry.providers.push(validationEntry);
 const registryExpected=`${JSON.stringify(registry,null,2)}\n`;
 if (check) {
   if (await readFile(registryPath,"utf8")!==registryExpected) {

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:boundary-crossing",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sequence",
+    "kind",
+    "arcKey",
+    "fractionPpm",
+    "direction",
+    "point"
+  ],
+  "properties": {
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "kind": {
+      "enum": [
+        "ENTRY",
+        "EXIT"
+      ]
+    },
+    "arcKey": {
+      "type": "string",
+      "pattern": "^arc_[0-9a-f]+$"
+    },
+    "fractionPpm": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "direction": {
+      "enum": [
+        "FORWARD",
+        "REVERSE"
+      ]
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "properties": {
+        "type": {
+          "const": "Point"
+        },
+        "coordinates": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "classification": {
+      "enum": [
+        "CROSSING",
+        "TOUCH",
+        "OVERLAP_START",
+        "OVERLAP_END"
+      ]
+    },
+    "evidenceHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

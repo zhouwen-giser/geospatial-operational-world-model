@@ -1,0 +1,333 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "C01",
+  "title": "Shared Network Query Core",
+  "status": "PASS",
+  "originalCases": 12,
+  "requiredCases": 12,
+  "passedCases": 12,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-C01-01": {
+      "status": "PASS",
+      "scenario": "Shared package",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-02": {
+      "status": "PASS",
+      "scenario": "Network provider dependency",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        },
+        {
+          "report": "recovery.before",
+          "checks": [
+            "networkUnaffected",
+            "routeUnaffected"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-03": {
+      "status": "PASS",
+      "scenario": "Route provider dependency",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        },
+        {
+          "report": "recovery.before",
+          "checks": [
+            "networkUnaffected",
+            "routeUnaffected"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-04": {
+      "status": "PASS",
+      "scenario": "Coverage provider dependency",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-05": {
+      "status": "PASS",
+      "scenario": "No sibling source import",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-06": {
+      "status": "PASS",
+      "scenario": "No provider HTTP",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-07": {
+      "status": "PASS",
+      "scenario": "Read contract",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-08": {
+      "status": "PASS",
+      "scenario": "Scope",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-09": {
+      "status": "PASS",
+      "scenario": "Read-only",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-10": {
+      "status": "PASS",
+      "scenario": "Currentness",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "routingCurrentnessGraphStale",
+            "routingCurrentnessTravelStale",
+            "routingCurrentnessCostStale",
+            "routingCurrentnessConditionStale"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-11": {
+      "status": "PASS",
+      "scenario": "Geometry expansion",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "expandOrder",
+            "boundaryPartialArcMembership"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-C01-12": {
+      "status": "PASS",
+      "scenario": "Provider isolation",
+      "unitFiles": [
+        "tests/platform/gowm-v05-network-read-contract.test.ts",
+        "tests/platform/network-provider.test.ts",
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "validateDirect",
+            "selectDirect",
+            "typedDagCompleted",
+            "verifyDirect",
+            "expandDirect"
+          ]
+        },
+        {
+          "report": "recovery.before",
+          "checks": [
+            "networkUnaffected",
+            "routeUnaffected"
+          ]
+        }
+      ],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:reference-validity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "referenceKey",
+    "existence",
+    "freshness",
+    "snapshot",
+    "usable",
+    "reasons"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "existence": {
+      "enum": [
+        "AVAILABLE",
+        "RETIRED",
+        "NOT_FOUND",
+        "SCOPE_DENIED"
+      ]
+    },
+    "freshness": {
+      "enum": [
+        "CURRENT",
+        "STALE",
+        "EXPIRED",
+        "NOT_APPLICABLE",
+        "UNKNOWN"
+      ]
+    },
+    "snapshot": {
+      "enum": [
+        "CURRENT",
+        "STALE",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "usable": {
+      "enum": [
+        "YES",
+        "REVALIDATE",
+        "NO"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "resultSemantics": {
+      "$ref": "world-result-semantics.schema.json"
+    },
+    "validationEvidenceRefs": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

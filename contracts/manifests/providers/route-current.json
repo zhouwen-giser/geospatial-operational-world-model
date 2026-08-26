@@ -1,0 +1,241 @@
+{
+  "providerProtocolVersion": "1.0",
+  "provider": {
+    "providerId": "gowm.route-planning",
+    "providerVersion": "1.0.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:27d8dfc4be2aa6bb39a9675e917dd2f5aaa5b64eddc115a69fc568b2c3a5412d",
+    "sourceRef": "urn:gowm:source:in-tree:route-planning-provider:1.0.0"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "route.validate",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "VALIDATION",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:route-planning-request",
+      "inputSchemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+      "outputSchemaUri": "urn:gowm:v0.5:route-verification-report",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 30000,
+        "maximumTimeoutMs": 300000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 128,
+        "maximumBatchItems": 100
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:route-planning-request",
+            "schemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:route-verification-report",
+            "schemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "route.plan",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT",
+        "ASYNC_JOB"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:route-planning-request",
+      "inputSchemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+      "outputSchemaUri": "urn:gowm:v0.5:route-planning-result",
+      "outputSchemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC_OR_ASYNC",
+        "defaultTimeoutMs": 30000,
+        "maximumTimeoutMs": 300000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 128,
+        "maximumBatchItems": 100
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:route-planning-request",
+            "schemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:route-planning-result",
+            "schemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "route.plan-alternatives",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT",
+        "ASYNC_JOB"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.5:route-planning-request",
+      "inputSchemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+      "outputSchemaUri": "urn:gowm:v0.5:route-planning-result",
+      "outputSchemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC_OR_ASYNC",
+        "defaultTimeoutMs": 30000,
+        "maximumTimeoutMs": 300000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 128,
+        "maximumBatchItems": 100
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:route-planning-request",
+            "schemaHash": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:route-planning-result",
+            "schemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "route.verify",
+      "operationVersion": "1.0",
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "VALIDATION",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "STABLE",
+      "inputSchemaUri": "urn:gowm:v0.5:route-planning-result",
+      "inputSchemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+      "outputSchemaUri": "urn:gowm:v0.5:route-verification-report",
+      "outputSchemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 30000,
+        "maximumTimeoutMs": 300000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100000,
+        "maximumCandidates": 128,
+        "maximumBatchItems": 100
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.5:route-planning-result",
+            "schemaHash": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.5:route-verification-report",
+            "schemaHash": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "R00",
+  "title": "Main Reconciliation",
+  "status": "PASS",
+  "originalCases": 10,
+  "requiredCases": 10,
+  "passedCases": 10,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-R001": {
+      "status": "PASS",
+      "scenario": "Actual main head",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R002": {
+      "status": "PASS",
+      "scenario": "Version baseline",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R003": {
+      "status": "PASS",
+      "scenario": "Migration baseline",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R004": {
+      "status": "PASS",
+      "scenario": "Status reconciliation",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R005": {
+      "status": "PASS",
+      "scenario": "No open work theft",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R006": {
+      "status": "PASS",
+      "scenario": "Independent worktree",
+      "unitFiles": [],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-main-reconciliation.md",
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-R007": {
+      "status": "PASS",
+      "scenario": "No WSGS implementation",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R008": {
+      "status": "PASS",
+      "scenario": "No second registry",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R009": {
+      "status": "PASS",
+      "scenario": "No second catalog",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    },
+    "AC-R010": {
+      "status": "PASS",
+      "scenario": "No protected action",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ]
+    }
+  }
+}

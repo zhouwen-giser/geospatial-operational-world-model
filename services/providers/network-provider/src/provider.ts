@@ -1,8 +1,8 @@
 import type { CapabilityDescriptor, CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { createProviderRuntime, sha256, type ProviderOperation, type ProviderRuntime } from "../../../../packages/platform/provider-sdk/src/index.js";
-import { NetworkRepository, NETWORK_OPERATION_IDS, type NetworkOperationId } from "./repository.js";
+import { NetworkRepository, NETWORK_OPERATION_IDS, type NetworkOperationId } from "../../../../packages/network-query-core/src/index.js";
 import { NETWORK_SCHEMA_LOCKS, schemasFor } from "./schemas.js";
-import type { NetworkProviderOptions } from "./types.js";
+import type { NetworkProviderOptions } from "../../../../packages/network-query-core/src/index.js";
 
 export interface NetworkProvider { runtime: ProviderRuntime; repository: NetworkRepository; }
 

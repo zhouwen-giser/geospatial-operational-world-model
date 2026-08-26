@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:no-feasible-result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "status",
+    "reasons",
+    "diagnostics",
+    "revalidationRequired"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "status": {
+      "const": "NO_FEASIBLE_RESULT"
+    },
+    "reasons": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "enum": [
+          "DISCONNECTED_REQUIRED_COMPONENT",
+          "TURN_CONSTRAINT_BLOCKED",
+          "PROFILE_EXCLUDES_REQUIRED_ARC",
+          "CONDITION_CLOSES_REQUIRED_ARC",
+          "ENDPOINT_UNREACHABLE",
+          "RESOURCE_LIMIT_PREVENTS_PROOF",
+          "UNKNOWN"
+        ]
+      }
+    },
+    "diagnostics": {
+      "type": "object"
+    },
+    "dataSnapshotHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "computeSnapshotHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "problemHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "revalidationRequired": {
+      "const": true
+    }
+  }
+}

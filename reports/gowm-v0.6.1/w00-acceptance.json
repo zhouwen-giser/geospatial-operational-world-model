@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "W00",
+  "title": "Capability Semantic Projection",
+  "status": "PASS",
+  "originalCases": 22,
+  "requiredCases": 22,
+  "passedCases": 22,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
+  "failedCases": 0,
+  "notRunCases": 0,
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+  "runtimeSourceLock": "runtime-source-lock.json",
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-W00-01": {
+      "status": "PASS",
+      "scenario": "Projection from registry",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsFromRegistry"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-02": {
+      "status": "PASS",
+      "scenario": "Key uniqueness",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsUnique"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-03": {
+      "status": "PASS",
+      "scenario": "Reference resolve",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-04": {
+      "status": "PASS",
+      "scenario": "World state",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-05": {
+      "status": "PASS",
+      "scenario": "Spatial exact",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-06": {
+      "status": "PASS",
+      "scenario": "H3 cover",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-07": {
+      "status": "PASS",
+      "scenario": "H3 exact op",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-08": {
+      "status": "PASS",
+      "scenario": "Network snap",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-09": {
+      "status": "PASS",
+      "scenario": "Route plan",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-10": {
+      "status": "PASS",
+      "scenario": "Coverage plan",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsCoverage"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-11": {
+      "status": "PASS",
+      "scenario": "Result validate",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-12": {
+      "status": "PASS",
+      "scenario": "Snapshot validate",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsValidation"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-13": {
+      "status": "PASS",
+      "scenario": "Catalog search",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsCatalog"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    },
+    "AC-W00-14": {
+      "status": "PASS",
+      "scenario": "Accepted reference kinds",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-15": {
+      "status": "PASS",
+      "scenario": "Produced reference kinds",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-16": {
+      "status": "PASS",
+      "scenario": "Relation semantics",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-17": {
+      "status": "PASS",
+      "scenario": "Negative evidence",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-18": {
+      "status": "PASS",
+      "scenario": "Domain status mapping",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-19": {
+      "status": "PASS",
+      "scenario": "Unknown source status",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-20": {
+      "status": "PASS",
+      "scenario": "Capability removal",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-21": {
+      "status": "PASS",
+      "scenario": "Maturity",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": []
+    },
+    "AC-W00-22": {
+      "status": "PASS",
+      "scenario": "Hash",
+      "unitFiles": [
+        "tests/platform/capability-semantics.test.ts",
+        "tests/platform/result-validation-core.test.ts"
+      ],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "capabilitySemanticsDeterministic"
+          ]
+        }
+      ],
+      "supportingEvidence": []
+    }
+  }
+}

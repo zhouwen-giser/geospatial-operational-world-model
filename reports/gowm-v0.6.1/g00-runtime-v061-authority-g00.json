@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "v061-authority-g00",
+  "container": "gowm-v061-r2-postgres",
+  "database": "gowm_v06_g00_v061_authority_g00",
+  "startedAt": "2026-08-26T03:19:03.208Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowm-v061-r2-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 19
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_v061_authority_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 115
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_v061_authority_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 219
+    },
+    {
+      "command": [
+        "migration-batch-001-058",
+        "gowm_v06_g00_v061_authority_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3816
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_v061_authority_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 435
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_v061_authority_g00"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 1751
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_v061_authority_g00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 351
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_v061_authority_g00",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "file:///workspace/dist/services/gateway/world-capability-gateway/src/registry.js:57\n                throw new ProviderProtocolError(\"INVALID_REQUEST\", `operation route ${key} is already registered`);\n                      ^\n\nProviderProtocolError: operation route world.get-geometry@1.0 is already registered\n    at CapabilityRegistry.register (file:///workspace/dist/services/gateway/world-capability-gateway/src/registry.js:57:23)\n    at register (file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:699:12)\n    at file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:118:1\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  code: 'INVALID_REQUEST',\n  httpStatus: 422,\n  retryable: false,\n  details: undefined\n}\n\nNode.js v22.23.2\n"
+  ],
+  "finishedAt": "2026-08-26T03:19:09.941Z"
+}

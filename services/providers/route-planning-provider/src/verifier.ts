@@ -1,7 +1,7 @@
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
-import type { LoadedNetwork, NetworkArc, Row, TurnRule } from "../../network-provider/src/types.js";
+import type { LoadedNetwork, NetworkArc, Row, RoutingSnapshotCurrentnessResult, TurnRule } from "../../../../packages/network-query-core/src/index.js";
 
-export interface RouteFreshness { graphCurrent: boolean; profileCurrent: boolean; conditionCurrent: boolean; }
+export interface RouteFreshness { graphCurrent: boolean; profileCurrent: boolean; conditionCurrent: boolean; currentness?: RoutingSnapshotCurrentnessResult; }
 
 export function verifyRouteCandidate(network: LoadedNetwork, candidateValue: unknown, freshness?: RouteFreshness): Row {
   const candidate = row(candidateValue); const segments = list(candidate.segments).map(row);
@@ -29,7 +29,7 @@ export function verifyRouteCandidate(network: LoadedNetwork, candidateValue: unk
   const valid = identity && continuity && direction && fractions && turns && segmentMetrics && aggregateMetrics && signatureValid;
   const stale = valid && freshness !== undefined && (!freshness.graphCurrent || !freshness.profileCurrent || !freshness.conditionCurrent);
   if (freshness) checks.push({ code: "GRAPH_CURRENT", status: freshness.graphCurrent ? "PASS" : "FAIL" }, { code: "PROFILE_CURRENT", status: freshness.profileCurrent ? "PASS" : "FAIL" }, { code: "CONDITION_CURRENT", status: freshness.conditionCurrent ? "PASS" : "FAIL" });
-  return { status: valid ? stale ? "STALE" : "VALID" : "INVALID", checks, verifierVersion: "gowm-route-independent-verifier/1.0.0", verifiedResultHash: sha256(candidate), warnings: stale ? ["The immutable route is valid for its pinned snapshot, but newer routing input is current."] : [] };
+  return { status: valid ? stale ? "STALE" : "VALID" : "INVALID", checks, verifierVersion: "gowm-route-independent-verifier/1.0.0", verifiedResultHash: sha256(candidate), warnings: stale ? [`The immutable route remains valid for its pinned snapshot; currentness is ${freshness?.currentness?.currentness ?? "STALE"}.`] : [] };
 }
 
 function replayTurn(history: string[], next: string, rules: TurnRule[]): { forbidden: boolean; penalty: number } { const candidate = [...history, next]; let penalty = 0; for (const rule of rules) { if (rule.ruleType === "ALLOWED_ONLY" && rule.sequence.length === 2 && history.at(-1) === rule.sequence[0] && next !== rule.sequence[1]) return { forbidden: true, penalty: 0 }; if (rule.sequence.length > candidate.length) continue; const suffix = candidate.slice(-rule.sequence.length); if (!suffix.every((key, index) => key === rule.sequence[index])) continue; if (rule.ruleType === "FORBIDDEN") return { forbidden: true, penalty: 0 }; if (rule.ruleType === "PENALTY") penalty += rule.penaltyUnits; } return { forbidden: false, penalty }; }

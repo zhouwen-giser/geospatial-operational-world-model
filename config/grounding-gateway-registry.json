@@ -4,8 +4,8 @@
     {
       "providerId": "gowm.reference-catalog",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:071f93af7b3a738c407ae337db285b5afd4250d552c1f1564b319ae4fc9d3e2f",
-      "manifestHash": "sha256:d41d8de82139e59cda3fb72a1b3130a51a6d85dcf001ae4374f933768c0864ab",
+      "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba",
+      "manifestHash": "sha256:c24c49b9cd1cf31366a043c07a7d915b1f7d55219396db598fce70c974c69f96",
       "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
       "endpoint": "http://reference-catalog-provider:8090",
       "approvalId": "grounding-reference-catalog-v1.0",
@@ -16,8 +16,8 @@
     {
       "providerId": "gowm.dataset-catalog",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:cdb47b50ae8ddf25feb6b616bfa3aef5f1791549064befd6de55d2b0ee8b048b",
-      "manifestHash": "sha256:609785cfcf7073ab129fe66b54ced9cdb9c1a943203d48098c418470874f8598",
+      "implementationDigest": "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",
+      "manifestHash": "sha256:b79435a8a2ef45415c705f08ace96f868808621f818ce01ea7affa41502571af",
       "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
       "endpoint": "http://dataset-catalog-provider:8091",
       "approvalId": "grounding-dataset-catalog-v1.0",
@@ -28,8 +28,8 @@
     {
       "providerId": "gowm.world-evidence",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:933b0ce8bfbcc76801edfe3352085a48a6147ae87600398f38657a254f93f7be",
-      "manifestHash": "sha256:09e5dc0e09f05bb6997c21344814b0d7d57e835a6db9c9adade2c15fd15df420",
+      "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb",
+      "manifestHash": "sha256:43c53446d1ea3a5a69b7e8e76c27183e0c26984074c2556ec30b77551704d625",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
       "endpoint": "http://world-evidence-provider:8093",
       "approvalId": "grounding-world-evidence-v1.0",
@@ -47,6 +47,18 @@
       "approvalId": "operational-reality-v1.0",
       "approvedBy": "gowm-release-operator",
       "transportTokenEnv": "OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.platform-validation",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:dcde74ce46d645874623f951afa8aac1d6eefe6af2062ba2be3cdbc4f1957927",
+      "manifestHash": "sha256:5da5ff71a5819ebb136154db48f1f773f914b0439460ecc4184ae781d12fbe41",
+      "manifestPath": "contracts/manifests/providers/platform-validation-provider.json",
+      "endpoint": "http://platform-validation-provider:8095",
+      "approvalId": "platform-validation-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN",
       "allowPlaintextPrivateNetwork": true
     }
   ]

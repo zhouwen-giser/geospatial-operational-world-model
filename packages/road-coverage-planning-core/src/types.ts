@@ -102,7 +102,15 @@ export interface CoverageTraversalArc {
   conditionPenaltyUnits?: number;
 }
 
-export type CoverageRoutingObjective = "SHORTEST_DISTANCE" | "FASTEST" | "LOWEST_RISK" | "LOWEST_ENERGY" | "BALANCED";
+export type CoverageRoutingObjective = "SHORTEST_DISTANCE" | "FASTEST" | "LOWEST_RISK" | "LOWEST_ENERGY" | "BALANCED" | "LEAST_DEADHEAD" | "WEIGHTED";
+
+export interface CoverageObjectiveWeights {
+  distance: number;
+  duration: number;
+  risk: number;
+  energy?: number;
+  deadhead: number;
+}
 
 export interface CoverageTurnRule {
   ruleKey: string;
@@ -122,6 +130,7 @@ export interface CoverageTravelPolicy {
 
 export interface StrictCoverageSolverOptions {
   objective: CoverageRoutingObjective;
+  objectiveWeights?: CoverageObjectiveWeights;
   travelPolicy: CoverageTravelPolicy;
   turnRules?: CoverageTurnRule[];
   routeCount?: number;
