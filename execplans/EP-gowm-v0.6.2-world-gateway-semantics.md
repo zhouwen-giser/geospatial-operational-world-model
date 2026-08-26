@@ -9,7 +9,7 @@ This is a living plan.
 ## Registry fragment inventory
 ## Progress
 - [x] P00 (static baseline; fresh runtime gates pending)
-- [ ] P01
+- [x] P01
 - [ ] P02
 - [ ] P03
 - [ ] P04

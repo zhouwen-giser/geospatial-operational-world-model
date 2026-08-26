@@ -11057,6 +11057,791 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     }
   },
+  "gowm-v0.6.2/capability-descriptor-v1.1.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:capability-descriptor-v1.1",
+    "title": "CapabilityDescriptorV1_1",
+    "allOf": [
+      {
+        "$ref": "../platform/capability-descriptor.schema.json"
+      },
+      {
+        "type": "object",
+        "required": [
+          "semanticProfile"
+        ]
+      }
+    ]
+  },
+  "gowm-v0.6.2/capability-provider-manifest-v1.1.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:capability-provider-manifest-v1.1",
+    "title": "CapabilityProviderManifestV1_1",
+    "allOf": [
+      {
+        "$ref": "../platform/capability-provider-manifest.schema.json"
+      },
+      {
+        "type": "object",
+        "required": [
+          "manifestSchemaVersion"
+        ],
+        "properties": {
+          "manifestSchemaVersion": {
+            "const": "1.1"
+          }
+        }
+      }
+    ]
+  },
+  "gowm-v0.6.2/capability-semantic-catalog-v1.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:capability-semantic-catalog",
+    "title": "CapabilitySemanticCatalogV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "contractCatalogRevision",
+      "bindingRevision",
+      "profiles",
+      "catalogHash"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.1"
+      },
+      "registryRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "bindingRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "profiles": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operationId",
+            "operationVersion",
+            "semanticProfile",
+            "semanticProfileHash"
+          ],
+          "properties": {
+            "operationId": {
+              "type": "string"
+            },
+            "operationVersion": {
+              "type": "string"
+            },
+            "semanticProfile": {
+              "$ref": "capability-semantic-profile-v1.schema.json"
+            },
+            "semanticProfileHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          }
+        }
+      },
+      "catalogHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      }
+    }
+  },
+  "gowm-v0.6.2/capability-semantic-profile-v1.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:capability-semantic-profile",
+    "title": "CapabilitySemanticProfileV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "profileVersion",
+      "domain",
+      "acceptedReferenceKinds",
+      "producedReferenceKinds",
+      "relationSemantics",
+      "spatialSemantics",
+      "timeSemantics",
+      "resultNature",
+      "negativeEvidencePolicy",
+      "freshnessSemantics"
+    ],
+    "properties": {
+      "profileVersion": {
+        "const": "1.0"
+      },
+      "domain": {
+        "enum": [
+          "REFERENCE",
+          "CATALOG",
+          "WORLD_STATE",
+          "SPATIAL",
+          "TEMPORAL",
+          "H3",
+          "NETWORK",
+          "ROUTING",
+          "COVERAGE",
+          "ANALYSIS",
+          "PLATFORM"
+        ]
+      },
+      "acceptedReferenceKinds": {
+        "type": "array",
+        "uniqueItems": true,
+        "maxItems": 64,
+        "items": {
+          "enum": [
+            "WORLD_OBJECT",
+            "SPATIAL_OBJECT",
+            "DATASET",
+            "LAYER",
+            "LAYER_FEATURE",
+            "OPERATIONAL_TASK",
+            "DERIVED_REFERENCE",
+            "REFERENCE_SET",
+            "QUERY_RESULT"
+          ]
+        }
+      },
+      "producedReferenceKinds": {
+        "type": "array",
+        "uniqueItems": true,
+        "maxItems": 64,
+        "items": {
+          "enum": [
+            "WORLD_OBJECT",
+            "SPATIAL_OBJECT",
+            "DATASET",
+            "LAYER",
+            "LAYER_FEATURE",
+            "OPERATIONAL_TASK",
+            "DERIVED_REFERENCE",
+            "REFERENCE_SET",
+            "QUERY_RESULT"
+          ]
+        }
+      },
+      "relationSemantics": {
+        "type": "array",
+        "uniqueItems": true,
+        "maxItems": 64,
+        "items": {
+          "enum": [
+            "RESOLVES_TO",
+            "DESCRIBES",
+            "HAS_GEOMETRY",
+            "INSIDE",
+            "CONTAINS",
+            "INTERSECTS",
+            "NEAR",
+            "CANDIDATE_COVER",
+            "SNAPPED_TO_NETWORK",
+            "ROUTE_BETWEEN",
+            "ROAD_COVERAGE_PLAN",
+            "TEMPORALLY_OVERLAPS",
+            "PROXIMITY_INTERVAL",
+            "CORRELATES_WITH",
+            "EVALUATES_PREDICATE",
+            "VALIDATES",
+            "VALIDATES_SNAPSHOT",
+            "DISCOVERS_DATA_PRODUCT"
+          ]
+        }
+      },
+      "spatialSemantics": {
+        "enum": [
+          "EXACT",
+          "CANDIDATE",
+          "AGGREGATED",
+          "NONE"
+        ]
+      },
+      "timeSemantics": {
+        "enum": [
+          "CURRENT",
+          "HISTORICAL",
+          "INTERVAL",
+          "SNAPSHOT",
+          "NONE"
+        ]
+      },
+      "resultNature": {
+        "enum": [
+          "FACT",
+          "PROJECTION",
+          "DERIVED",
+          "PLAN",
+          "VALIDATION",
+          "CATALOG"
+        ]
+      },
+      "negativeEvidencePolicy": {
+        "enum": [
+          "SUPPORTED",
+          "NOT_SUPPORTED",
+          "NO_DATA_IS_UNKNOWN",
+          "NOT_APPLICABLE"
+        ]
+      },
+      "freshnessSemantics": {
+        "enum": [
+          "NONE",
+          "TTL",
+          "WORLD_VERSION",
+          "SNAPSHOT_CURRENTNESS"
+        ]
+      },
+      "domainStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "mapping"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "mapping": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "enum": [
+                "COMPLETED",
+                "PARTIAL",
+                "NO_DATA",
+                "AMBIGUOUS",
+                "INDETERMINATE",
+                "NO_FEASIBLE_RESULT",
+                "STALE",
+                "FAILED"
+              ]
+            }
+          }
+        }
+      },
+      "exactVerification": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "operationVersion"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{2,127}$"
+          },
+          "operationVersion": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+$"
+          }
+        }
+      },
+      "notes": {
+        "type": "array",
+        "maxItems": 64,
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "gowm-v0.6.2/semantic-attestation.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:semantic-attestation",
+    "title": "SemanticAttestation",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "providerId",
+      "operationId",
+      "operationVersion",
+      "semanticProfileHash",
+      "rulesApplied",
+      "evidence",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "providerId": {
+        "type": "string"
+      },
+      "operationId": {
+        "type": "string"
+      },
+      "operationVersion": {
+        "type": "string"
+      },
+      "semanticProfileHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "rulesApplied": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^S[0-9]{3}$"
+        }
+      },
+      "evidence": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 256,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "DESCRIPTOR",
+                "INPUT_SCHEMA",
+                "OUTPUT_SCHEMA",
+                "PORTS",
+                "TYPESCRIPT_IMPLEMENTATION",
+                "SQL_IMPLEMENTATION",
+                "BRIDGE_CONTRACT",
+                "SOURCE_LOCK",
+                "UNIT_TEST",
+                "BLACK_BOX_TEST",
+                "ADR",
+                "CALLER"
+              ]
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "symbol": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      },
+      "status": {
+        "enum": [
+          "PROVEN",
+          "DOWNGRADED",
+          "BLOCKED"
+        ]
+      },
+      "notes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.6.2/semantic-conformance-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:semantic-conformance-report",
+    "title": "SemanticConformanceReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "counters",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "counters": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "semanticProfileMissing",
+          "semanticRuleViolation",
+          "semanticImplementationMismatch",
+          "crossCapabilityViolation",
+          "stableCapabilityWithoutBlackBoxEvidence",
+          "runtimeSemanticInference",
+          "providerTopologyLeak",
+          "operationCollision"
+        ],
+        "properties": {
+          "semanticProfileMissing": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "semanticRuleViolation": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "semanticImplementationMismatch": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "crossCapabilityViolation": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "stableCapabilityWithoutBlackBoxEvidence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "runtimeSemanticInference": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "providerTopologyLeak": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "operationCollision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "issues": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL"
+        ]
+      }
+    }
+  },
+  "gowm-v0.6.2/semantic-materializer-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:semantic-materializer-report",
+    "title": "SemanticMaterializerReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "resolved",
+      "conflicts",
+      "insufficient",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "resolved": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "conflicts": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "insufficient": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "determinismHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL"
+        ]
+      }
+    }
+  },
+  "gowm-v0.6.2/single-gateway-canary-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:single-gateway-canary-report",
+    "title": "SingleGatewayCanaryReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "gatewayBaseUrlHash",
+      "canaries",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "gatewayBaseUrlHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "canaries": {
+        "type": "array",
+        "minItems": 5,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "operations",
+            "status"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "operations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "BLOCKED"
+              ]
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL",
+          "BLOCKED"
+        ]
+      }
+    }
+  },
+  "gowm-v0.6.2/world-platform-provider-set.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:world-platform-provider-set",
+    "title": "WorldPlatformProviderSet",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "requiredProviders",
+      "optionalProviders",
+      "excludedClasses"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "requiredProviders": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "type": "string"
+        }
+      },
+      "optionalProviders": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "type": "string"
+        }
+      },
+      "excludedClasses": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "OBSERVATION_WRITE",
+            "DEVICE_COMMAND",
+            "SDAR_A2A",
+            "DYNAMIC_MCP_DISCOVERY",
+            "ARBITRARY_SQL"
+          ]
+        }
+      }
+    }
+  },
+  "gowm-v0.6.2/world-platform-registry-build-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:world-platform-registry-build-report",
+    "title": "WorldPlatformRegistryBuildReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "providerCount",
+      "operationCount",
+      "contractCatalogRevision",
+      "bindingRevision",
+      "missingRequiredProviders",
+      "operationCollisions",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "providerCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "operationCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "bindingRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "missingRequiredProviders": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "operationCollisions": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL"
+        ]
+      }
+    }
+  },
+  "gowm-v0.6.2/wsgs-southbound-operation-lock.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:wsgs-southbound-operation-lock",
+    "title": "WsgsSouthboundOperationLock",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "gatewayContractVersion",
+      "contractCatalogRevision",
+      "semanticCatalogHash",
+      "defaultOperations",
+      "previewOperations"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "gatewayContractVersion": {
+        "type": "string"
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "semanticCatalogHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "defaultOperations": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/operationLock"
+        }
+      },
+      "previewOperations": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/operationLock"
+        }
+      }
+    },
+    "$defs": {
+      "operationLock": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "operationVersion",
+          "inputSchemaHash",
+          "outputSchemaHash",
+          "semanticProfileHash",
+          "maturity"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string"
+          },
+          "operationVersion": {
+            "type": "string"
+          },
+          "inputSchemaHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "outputSchemaHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "semanticProfileHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "maturity": {
+            "enum": [
+              "PREVIEW",
+              "STABLE"
+            ]
+          }
+        }
+      }
+    }
+  },
   "gowm-v0.6/coverage-alternative-policy.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.6:coverage-alternative-policy",
@@ -13039,6 +13824,9 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
             "format": "date"
           }
         }
+      },
+      "semanticProfile": {
+        "$ref": "../gowm-v0.6.2/capability-semantic-profile-v1.schema.json"
       }
     },
     "$defs": {
@@ -13220,8 +14008,39 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
         "items": {
           "$ref": "capability-descriptor.schema.json"
         }
+      },
+      "manifestSchemaVersion": {
+        "enum": [
+          "1.0",
+          "1.1"
+        ]
       }
-    }
+    },
+    "allOf": [
+      {
+        "if": {
+          "required": [
+            "manifestSchemaVersion"
+          ],
+          "properties": {
+            "manifestSchemaVersion": {
+              "const": "1.1"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "capabilities": {
+              "items": {
+                "required": [
+                  "semanticProfile"
+                ]
+              }
+            }
+          }
+        }
+      }
+    ]
   },
   "platform/capability-result-envelope.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",

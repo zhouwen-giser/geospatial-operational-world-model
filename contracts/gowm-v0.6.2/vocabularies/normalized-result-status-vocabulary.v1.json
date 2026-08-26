@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "vocabularyId": "gowm-normalized-result-status",
+  "version": "1.0",
+  "terms": [
+    "COMPLETED",
+    "PARTIAL",
+    "NO_DATA",
+    "AMBIGUOUS",
+    "INDETERMINATE",
+    "NO_FEASIBLE_RESULT",
+    "STALE",
+    "FAILED"
+  ],
+  "semanticConstraints": {
+    "NO_DATA": "Must not imply a negative fact.",
+    "NO_FEASIBLE_RESULT": "A domain result, not an infrastructure failure.",
+    "STALE": "Currentness failure, not necessarily mathematical invalidity.",
+    "AMBIGUOUS": "Multiple viable candidates, not a provider failure."
+  }
+}

@@ -2371,6 +2371,139 @@ export type GowmV061WorldResultSemantics = {
   sourceStatus: string;
 };
 
+export type CapabilityDescriptorV1_1 = (CapabilityDescriptor) & (Record<string, unknown>);
+
+export type CapabilityProviderManifestV1_1 = (CapabilityProviderManifest) & ({
+  manifestSchemaVersion: "1.1";
+});
+
+export type CapabilitySemanticCatalogV1 = {
+  bindingRevision: string;
+  catalogHash: string;
+  contractCatalogRevision: string;
+  profiles: Array<{
+  operationId: string;
+  operationVersion: string;
+  semanticProfile: CapabilitySemanticProfileV1;
+  semanticProfileHash: string;
+}>;
+  registryRevision?: string;
+  schemaVersion: "1.1";
+};
+
+export type CapabilitySemanticProfileV1 = {
+  acceptedReferenceKinds: Array<"WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT">;
+  domain: "REFERENCE" | "CATALOG" | "WORLD_STATE" | "SPATIAL" | "TEMPORAL" | "H3" | "NETWORK" | "ROUTING" | "COVERAGE" | "ANALYSIS" | "PLATFORM";
+  domainStatus?: {
+  mapping: Record<string, "COMPLETED" | "PARTIAL" | "NO_DATA" | "AMBIGUOUS" | "INDETERMINATE" | "NO_FEASIBLE_RESULT" | "STALE" | "FAILED">;
+  path: string;
+};
+  exactVerification?: {
+  operationId: string;
+  operationVersion: string;
+};
+  freshnessSemantics: "NONE" | "TTL" | "WORLD_VERSION" | "SNAPSHOT_CURRENTNESS";
+  negativeEvidencePolicy: "SUPPORTED" | "NOT_SUPPORTED" | "NO_DATA_IS_UNKNOWN" | "NOT_APPLICABLE";
+  notes?: Array<string>;
+  producedReferenceKinds: Array<"WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT">;
+  profileVersion: "1.0";
+  relationSemantics: Array<"RESOLVES_TO" | "DESCRIBES" | "HAS_GEOMETRY" | "INSIDE" | "CONTAINS" | "INTERSECTS" | "NEAR" | "CANDIDATE_COVER" | "SNAPPED_TO_NETWORK" | "ROUTE_BETWEEN" | "ROAD_COVERAGE_PLAN" | "TEMPORALLY_OVERLAPS" | "PROXIMITY_INTERVAL" | "CORRELATES_WITH" | "EVALUATES_PREDICATE" | "VALIDATES" | "VALIDATES_SNAPSHOT" | "DISCOVERS_DATA_PRODUCT">;
+  resultNature: "FACT" | "PROJECTION" | "DERIVED" | "PLAN" | "VALIDATION" | "CATALOG";
+  spatialSemantics: "EXACT" | "CANDIDATE" | "AGGREGATED" | "NONE";
+  timeSemantics: "CURRENT" | "HISTORICAL" | "INTERVAL" | "SNAPSHOT" | "NONE";
+};
+
+export type SemanticAttestation = {
+  evidence: Array<{
+  kind: "DESCRIPTOR" | "INPUT_SCHEMA" | "OUTPUT_SCHEMA" | "PORTS" | "TYPESCRIPT_IMPLEMENTATION" | "SQL_IMPLEMENTATION" | "BRIDGE_CONTRACT" | "SOURCE_LOCK" | "UNIT_TEST" | "BLACK_BOX_TEST" | "ADR" | "CALLER";
+  path: string;
+  sha256: string;
+  symbol?: string;
+}>;
+  notes?: Array<string>;
+  operationId: string;
+  operationVersion: string;
+  providerId: string;
+  rulesApplied: Array<string>;
+  schemaVersion: "1.0";
+  semanticProfileHash: string;
+  status: "PROVEN" | "DOWNGRADED" | "BLOCKED";
+};
+
+export type SemanticConformanceReport = {
+  counters: {
+  crossCapabilityViolation: number;
+  operationCollision: number;
+  providerTopologyLeak: number;
+  runtimeSemanticInference: number;
+  semanticImplementationMismatch: number;
+  semanticProfileMissing: number;
+  semanticRuleViolation: number;
+  stableCapabilityWithoutBlackBoxEvidence: number;
+};
+  issues?: Array<Record<string, unknown>>;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL";
+};
+
+export type SemanticMaterializerReport = {
+  conflicts: Array<Record<string, unknown>>;
+  determinismHash?: string;
+  insufficient: Array<Record<string, unknown>>;
+  resolved: Array<string>;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL";
+};
+
+export type SingleGatewayCanaryReport = {
+  canaries: Array<{
+  evidence?: Array<string>;
+  id: string;
+  operations: Array<string>;
+  status: "PASS" | "FAIL" | "BLOCKED";
+}>;
+  gatewayBaseUrlHash: string;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL" | "BLOCKED";
+};
+
+export type WorldPlatformProviderSet = {
+  excludedClasses: Array<"OBSERVATION_WRITE" | "DEVICE_COMMAND" | "SDAR_A2A" | "DYNAMIC_MCP_DISCOVERY" | "ARBITRARY_SQL">;
+  optionalProviders: Array<string>;
+  requiredProviders: Array<string>;
+  schemaVersion: "1.0";
+};
+
+export type WorldPlatformRegistryBuildReport = {
+  bindingRevision: string;
+  contractCatalogRevision: string;
+  missingRequiredProviders: Array<string>;
+  operationCollisions: Array<Record<string, unknown>>;
+  operationCount: number;
+  providerCount: number;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL";
+  warnings?: Array<string>;
+};
+
+export type WsgsSouthboundOperationLock = {
+  contractCatalogRevision: string;
+  defaultOperations: Array<WsgsSouthboundOperationLockOperationLock>;
+  gatewayContractVersion: string;
+  previewOperations: Array<WsgsSouthboundOperationLockOperationLock>;
+  schemaVersion: "1.0";
+  semanticCatalogHash: string;
+};
+
+export type WsgsSouthboundOperationLockOperationLock = {
+  inputSchemaHash: string;
+  maturity: "PREVIEW" | "STABLE";
+  operationId: string;
+  operationVersion: string;
+  outputSchemaHash: string;
+  semanticProfileHash: string;
+};
+
 export type GowmV06CoverageAlternativePolicy = {
   maximumGenerationCandidates?: number;
   maximumWeightedArcOverlapPpm: number;
@@ -2766,6 +2899,7 @@ export type CapabilityDescriptor = {
 };
   resultSemantics: "TRANSFORMATION" | "VALIDATION" | "DERIVED_INDEX" | "DATA_QUERY" | "DERIVED_ANALYSIS" | "WORLD_PROJECTION";
   scopePolicy: "IDENTITY_ONLY" | "REQUEST_CONTEXT" | "DATA_SCOPE_REQUIRED" | "DATASET_SCOPE_REQUIRED";
+  semanticProfile?: CapabilitySemanticProfileV1;
   semanticRole: "FOUNDATION_PRIMITIVE" | "FOUNDATION_DATA_QUERY" | "GENERIC_ANALYSIS" | "DOMAIN_ANALYSIS" | "PROJECTION_QUERY";
   snapshotPolicy: {
   computeSnapshot: "REQUIRED";
@@ -2787,7 +2921,7 @@ export type CapabilityListResponse = {
   registryVersion: string;
 };
 
-export type CapabilityProviderManifest = {
+export type CapabilityProviderManifest = ({
   capabilities: Array<CapabilityDescriptor>;
   endpoints: {
   execute: string;
@@ -2796,6 +2930,7 @@ export type CapabilityProviderManifest = {
   manifest: string;
   readiness: string;
 };
+  manifestSchemaVersion?: "1.0" | "1.1";
   provider: {
   implementationDigest: PlatformCommonDefinitionsSha256Digest;
   owner: string;
@@ -2805,7 +2940,7 @@ export type CapabilityProviderManifest = {
   sourceRef?: string;
 };
   providerProtocolVersion: "1.0";
-};
+}) & ((Record<string, unknown>));
 
 export type CapabilityResultEnvelope = {
   computeSnapshot: ComputeSnapshotContext;

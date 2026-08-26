@@ -112,12 +112,35 @@
     "execution": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mode", "defaultTimeoutMs", "maximumTimeoutMs", "costClass"],
+      "required": [
+        "mode",
+        "defaultTimeoutMs",
+        "maximumTimeoutMs",
+        "costClass"
+      ],
       "properties": {
-        "mode": { "enum": ["SYNC", "ASYNC", "SYNC_OR_ASYNC"] },
-        "defaultTimeoutMs": { "type": "integer", "minimum": 1 },
-        "maximumTimeoutMs": { "type": "integer", "minimum": 1 },
-        "costClass": { "enum": ["LOW", "MEDIUM", "HIGH"] }
+        "mode": {
+          "enum": [
+            "SYNC",
+            "ASYNC",
+            "SYNC_OR_ASYNC"
+          ]
+        },
+        "defaultTimeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumTimeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "costClass": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        }
       }
     },
     "limits": {
@@ -125,61 +148,121 @@
       "additionalProperties": false,
       "minProperties": 1,
       "properties": {
-        "maximumInputBytes": { "type": "integer", "minimum": 1 },
-        "maximumOutputBytes": { "type": "integer", "minimum": 1 },
-        "maximumRows": { "type": "integer", "minimum": 1 },
-        "maximumVertices": { "type": "integer", "minimum": 1 },
-        "maximumCells": { "type": "integer", "minimum": 1 },
-        "maximumCandidates": { "type": "integer", "minimum": 1 },
-        "maximumBatchItems": { "type": "integer", "minimum": 1 },
-        "maximumQueueDepth": { "type": "integer", "minimum": 1 }
+        "maximumInputBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumOutputBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumRows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumVertices": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumCells": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumCandidates": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumBatchItems": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumQueueDepth": {
+          "type": "integer",
+          "minimum": 1
+        }
       }
     },
     "snapshotPolicy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["dataSnapshot", "computeSnapshot"],
+      "required": [
+        "dataSnapshot",
+        "computeSnapshot"
+      ],
       "properties": {
-        "dataSnapshot": { "enum": ["NONE", "OPTIONAL", "REQUIRED"] },
-        "computeSnapshot": { "const": "REQUIRED" }
+        "dataSnapshot": {
+          "enum": [
+            "NONE",
+            "OPTIONAL",
+            "REQUIRED"
+          ]
+        },
+        "computeSnapshot": {
+          "const": "REQUIRED"
+        }
       }
     },
     "ports": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["inputs", "outputs"],
+      "required": [
+        "inputs",
+        "outputs"
+      ],
       "properties": {
         "inputs": {
           "type": "array",
           "maxItems": 64,
-          "items": { "$ref": "#/$defs/port" }
+          "items": {
+            "$ref": "#/$defs/port"
+          }
         },
         "outputs": {
           "type": "array",
           "minItems": 1,
           "maxItems": 64,
-          "items": { "$ref": "#/$defs/port" }
+          "items": {
+            "$ref": "#/$defs/port"
+          }
         }
       }
     },
     "deprecation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["message"],
+      "required": [
+        "message"
+      ],
       "properties": {
-        "message": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
         "replacementOperationId": {
           "$ref": "common-definitions.schema.json#/$defs/operationId"
         },
-        "retireAfter": { "type": "string", "format": "date" }
+        "retireAfter": {
+          "type": "string",
+          "format": "date"
+        }
       }
+    },
+    "semanticProfile": {
+      "$ref": "../gowm-v0.6.2/capability-semantic-profile-v1.schema.json"
     }
   },
   "$defs": {
     "port": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "schemaUri", "schemaHash", "valueKind", "unitSemantics"],
+      "required": [
+        "name",
+        "schemaUri",
+        "schemaHash",
+        "valueKind",
+        "unitSemantics"
+      ],
       "properties": {
         "name": {
           "type": "string",

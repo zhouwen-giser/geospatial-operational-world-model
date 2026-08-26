@@ -11,7 +11,8 @@ const contractRoots = [
   resolve(repositoryRoot, "contracts/gowm-v0.4"),
   resolve(repositoryRoot, "contracts/gowm-v0.5"),
   resolve(repositoryRoot, "contracts/gowm-v0.6"),
-  resolve(repositoryRoot, "contracts/gowm-v0.6.1")
+  resolve(repositoryRoot, "contracts/gowm-v0.6.1"),
+  resolve(repositoryRoot, "contracts/gowm-v0.6.2")
 ];
 const generatedDirectory = resolve(repositoryRoot, "packages/platform/contract-runtime/src/generated");
 const contractsOutput = resolve(generatedDirectory, "contracts.ts");
