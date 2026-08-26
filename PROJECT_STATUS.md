@@ -1,83 +1,91 @@
 # Project status
 
-Last updated: 2026-08-25
+Last updated: 2026-08-26
 
 ## Current decision
 
-`GOWM+ 0.6.0: NETWORK_READY / ROUTING_READY / ROAD_COVERAGE_READY`
+`GOWM+ 0.6.1: STABLE CANDIDATE — REVIEW DELIVERY`
 
-The stable single-route Road Coverage implementation and every implementation,
-contract, real-database, Gateway/worker, security, performance, migration, and
-recovery gate are complete. F00 documentation/version convergence is complete.
-F01 must aggregate all 226 required rows, commit the final report, push it, and
-prove exact local/remote/Draft-PR SHA equality before terminal completion.
+The implementation, public contracts, generated artifacts, nine-provider
+conformance suite, 57 migrations, and 42 SQL assertion suites are complete.
+Real D00, G00, T00 and C00 gates all PASS. All 229 case mappings have verified
+test/runtime evidence. The final PASS decision is bound to the exact commit and
+Ready PR state recorded in `/tmp/gowm-v0.6.1-final-acceptance.json` and the PR
+completion comment; a changed commit must pass that gate again.
 
 ## Git delivery
 
 | Item | State |
 |---|---|
-| Exact v0.5 predecessor | `d6a90ddcd00db946018892c34a327caa631785b0` |
-| Candidate branch | `codex/gowm-road-coverage-v0.6` |
-| Pull request | Stacked Draft PR #4 against `codex/gowm-network-routing-v0.5` |
-| Software version | `0.6.0` |
-| Required acceptance | 226 required; phase evidence complete; final aggregation pending F01 |
-| Merge/tag/release/deploy | `NOT_RUN`; separately user-controlled |
+| Exact source baseline | `main@7cd5b133a74b07e28f359176dd13943ab7a6cf54` |
+| Candidate branch | `codex/gowm-platform-hardening-v0.6.1` |
+| Pull request | PR #6 against `main`; Ready required and verified by final receipt |
+| Software version | `0.6.1` |
+| Required acceptance | 229 explicit case mappings; final gate requires 229 PASS / 0 failed / 0 not-run |
+| Merge/tag/release/deploy | `NOT_RUN`; outside task scope |
 
 ## Phase status
 
-| Phase group | Status | Evidence |
+| Phase | Status | Boundary/evidence |
 |---|---|---|
-| R00–R01 | PASS | exact predecessor, source/license, clean-room locks |
-| A00–A01 | PASS | authority ADR, 19 schemas, OpenAPI, manifest, generated types |
-| D00–B01 | PASS | private schema, controlled roles, selection, obligations, canonical problem |
-| E00–S03 | PASS | endpoints, boundary policies, Closed/Open DCPP, fixed/both RPP, strict turns |
-| V00–L00 | PASS | independent verifier, mutation corpus, alternatives and ranking |
-| J00–P00 | PASS | generation-fenced async runtime and five-operation Provider |
-| G00 | PASS | real Gateway/DAG/worker/result registry/on-demand expansion |
-| T00 | PASS | scope/security, Small/Medium profiles, cancellation, duplicate, restart |
-| C00 | PASS | fresh/v0.4/v0.5 upgrade, checksum replay, rollback, compatibility |
-| F00 | PASS | README, ADR, runbook, CHANGELOG, status and 0.6.0 convergence |
-| F01 | PENDING | final 226-row aggregation and exact local/remote/PR SHA |
+| R00–R01 | PASS | source reconciliation, package validation, compatibility plan |
+| C00–C05 | PASS | generation fencing, shared Network Query Core, boundary authority, currentness, objectives, truthful results |
+| C06 | PASS | G00 150 checks; T00 72 pre-/5 post-restart checks |
+| W00–W02 | PASS | semantic projection, result validation, snapshot get/validate |
+| D00–D02 | PASS | Data Product contracts, discovery/detail operations, nine-provider conformance |
+| S00–S02 | PASS | migrations/compatibility, security/recovery/performance, docs/version |
+| S03 | Receipt-bound | final 229-case gate verifies exact SHA, clean worktree and PR Ready |
 
-## Verified stable boundary
+## Hardened authority boundary
 
-- The v0.5 Network Foundation remains the only GraphVersion, Node, Edge, Arc,
-  TurnRule, Profile, Condition, and RoutingSnapshot authority.
-- Area/manual selection creates immutable fixed-direction service obligations R;
-  the complete traversable network E remains separate and may provide legal
-  access, transit, boundary, exit, and return paths without coverage credit.
-- Stable modes cover `FULLY_COVERED_EDGE`, `INTERSECTING_COMPLETE_EDGE`,
-  `CLIPPED_INSIDE_AREA`, `MANUAL_OBLIGATIONS`, `FIXED_DIRECTION`, and
-  `BOTH_DIRECTIONS`, with RETURN_TO_START, FIXED_END, and LAST_AREA_EXIT.
-- Closed/Open Directed CPP and fixed/both-direction RPP honor pairwise and
-  multi-edge turns, conditions, partial Arc fractions, fixed-point metrics, and
-  bounded resources. Every admitted route passes an independent verifier.
-- The five-operation Coverage Provider uses the existing Gateway Job/DAG,
-  immutable query/derived references, result TTL/revalidation, and on-demand
-  ordered GeoJSON expansion. Provider-to-Provider HTTP does not exist.
-- Migrations 001–053 and 38 assertions pass fresh, v0.4→v0.6, and exact
-  v0.5→v0.6 paths. Checksum replay, atomic rollback, concurrent duplicates,
-  three-stage cancellation fencing, and PostgreSQL restart result replay pass.
-- Acceptance-fixture measurements: Small end-to-end 223.596 ms; Medium
-  20-obligation/40-segment end-to-end 511.490 ms with 21,503,184-byte measured
-  heap delta. Current-code v0.5 p95 ratios are 0.903/0.886/0.909 for
-  Snap/Shortest/Matrix. These are not production SLO or capacity claims.
+- The Data Foundation remains the only fact, reference, dataset, lineage,
+  Network, and world-version authority. The Capability Registry remains the
+  only operation registry.
+- Capability semantics and Data Product descriptors are deterministic scoped
+  projections. Platform Validation reads existing result/reference authorities
+  and an immutable snapshot registry; it does not recompute or create facts.
+- Coverage workers receive database-allocated attempts and generations. Reclaim,
+  cancellation, heartbeat, artifact writes, and result publication are fenced.
+- Candidate boundary events are hints. The verifier reconstructs crossings and
+  endpoint membership from pinned versioned Arc geometry through
+  `gowm_network_v1` security-definer read contracts.
+- Frozen computation validity, snapshot currentness, result TTL, and execution
+  completion are separate dimensions. `UNKNOWN` never silently becomes
+  `CURRENT`.
+- Existing v1.0 public bytes and migrations 001–053 are preserved; changes are
+  additive in contracts/gowm-v0.6.1 and migrations 054–057.
 
-## Non-claims and protected actions
+## Runtime and acceptance boundary
 
-Stable v0.6 rejects either-direction service, multiple routes, fleet assignment,
-capacity/time windows, CARP/OR-Tools, and dispatchable semantics. A Coverage
-result is not a device instruction, dispatch approval, physical execution,
-completion, safety certification, observed Operational Reality, or production
-availability/capacity qualification.
+The required database stack is PostgreSQL 18, PostGIS 3.6, MobilityDB 1.3,
+h3-pg/h3_postgis 4.5.0, and pgRouting 4.0.1. Fresh, v0.4, v0.5 and seeded v0.6.0
+migration paths, checksum replay, deliberate rollback, scope isolation,
+Gateway/DAG, result/snapshot validation, real restart and bounded S/M fixtures
+all passed. The runtime source freeze locks 811 files and all four reports.
 
-The uploaded reference remains `REFERENCE_ONLY_SELECTIVE_REIMPLEMENTATION` with
-unspecified license; its source and generated/dependency artifacts are excluded.
-No merge, tag, release, image publication, or production deployment is authorized
-or performed by this candidate workflow.
+Full Vitest: 264 passed / 0 failed; the one default external-database test is
+skipped in that runner and covered by D00's real database gate. STAS: 14 test
+files passed. All Required real gates were run; none relies on the skipped test.
 
-## Delivery action
+The deterministic provider-conformance aggregate is
+`sha256:7ce2f4b58f74b0b725f4720dc96db4f00b590e297978704097ba70313abe07ad`.
+Acceptance-fixture measurements are not production SLO or capacity claims.
 
-Complete F01 final required-matrix aggregation, commit and push the final report,
-then verify exact local/remote/Draft-PR SHA equality and GitHub checks. Retain the
-Draft PR unless every required row and terminal check is PASS.
+## Explicit exclusions and non-claims
+
+R2 excludes WSGS client/readiness, separate Data Platform Readiness, mock
+ELEVATION onboarding, merge, tag, release, and deploy. It does not build SACS,
+SDAR, or A2A.
+
+A Coverage result is not a device instruction, dispatch approval, physical
+execution, observed completion, safety certification, Operational Reality, or
+production availability/capacity qualification. Uploaded reference material
+remains reference-only and is not redistributed.
+
+## Delivery evidence
+
+See [final report](reports/gowm-v0.6.1/final-stable-candidate.md), per-phase
+`*-completion.md` / `*-acceptance.json`, and the final receipt command in the
+[runbook](docs/20_PLATFORM_HARDENING_OPERATIONS_RUNBOOK.md). The receipt is
+outside Git so that it can name the final commit without a self-hash cycle.
+No protected publication action is part of this delivery.

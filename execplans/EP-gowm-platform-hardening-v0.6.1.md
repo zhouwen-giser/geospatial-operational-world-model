@@ -44,8 +44,8 @@ second authority.
 - [x] D02
 - [x] S00
 - [x] S01
-- [ ] S02
-- [ ] S03
+- [x] S02
+- [x] S03 — exact commit and Ready state are receipt-bound, not self-hashed in Git
 
 ## Decisions
 
@@ -131,6 +131,11 @@ second authority.
 - Per-case evidence preflight: PASS for 229 mappings; Git delivery remains
   separately gated. Runtime source/evidence frozen in `runtime-source-lock.json`.
 
-## Remaining work
+## Final delivery
 
-Finish S02 documentation, then S03 commit/push, exact-SHA, and PR Ready gates.
+R00–S03 evidence is delivered on PR #6. The final gate reruns static regression,
+verifies all 229 named case mappings, rejects runtime-source/report drift, and
+requires exact local/tracking/remote/PR SHA equality plus OPEN Ready state.
+The authoritative final receipt is `/tmp/gowm-v0.6.1-final-acceptance.json` and
+the corresponding PR completion comment. A changed candidate must rerun the
+gate. No merge, tag, release or deployment is part of completion.

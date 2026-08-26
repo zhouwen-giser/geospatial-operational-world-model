@@ -108,6 +108,17 @@ const finalReport = await readFile(resolve(root, finalReportPath), "utf8");
 for (const marker of ["ROAD_COVERAGE_CORRECT", "CAPABILITY_CONTRACTS_HARDENED", "PUBLIC_DATA_FOUNDATION_HARDENED", "GOWM_V0_6_1_STABLE_CANDIDATE_COMPLETE"]) {
   if (!finalReport.includes(marker)) throw new Error(`final report is missing ${marker}`);
 }
+const sync = JSON.parse(await readFile(resolve(root, "reports/gowm-v0.6.1/sync-state.json"), "utf8"));
+if (sync.status !== "COMPLETE" || sync.phase !== "S03" || Object.values(sync.markers).some((value) => value !== true) || sync.acceptance.passed !== 229 || sync.acceptance.failed !== 0 || sync.acceptance.notRun !== 0 || sync.blockers.length !== 0) throw new Error("sync-state is incomplete");
+const phases = ["r00", "r01", "c00", "c01", "c02", "c03", "c04", "c05", "c06", "w00", "w01", "w02", "d00", "d01", "d02", "s00", "s01", "s02", "s03"];
+for (const phase of phases) {
+  await readFile(resolve(root, `reports/gowm-v0.6.1/${phase}-completion.md`));
+  const report = JSON.parse(await readFile(resolve(root, `reports/gowm-v0.6.1/${phase}-acceptance.json`), "utf8"));
+  if (report.status !== "PASS" || report.requiredCases !== report.passedCases || report.failedCases !== 0 || report.notRunCases !== 0) throw new Error(`${phase} phase acceptance is incomplete`);
+}
+for (const path of ["README.md", "PROJECT_STATUS.md", "CHANGELOG.md", "docs/20_PLATFORM_HARDENING_OPERATIONS_RUNBOOK.md", "execplans/EP-gowm-platform-hardening-v0.6.1.md"]) {
+  if (!(await readFile(resolve(root, path), "utf8")).includes("0.6.1")) throw new Error(`version documentation is missing: ${path}`);
+}
 
 const branch = "codex/gowm-platform-hardening-v0.6.1";
 const local = git(["rev-parse", "HEAD"]);
@@ -163,7 +174,10 @@ async function runStaticGates() {
     ["npm", ["run", "build"], "npm run build"],
     ["npm", ["run", "validate:provider-conformance"], "npm run validate:provider-conformance"]
   ];
-  for (const [command, args] of commands) execFileSync(command, args, { cwd: root, encoding: "utf8", stdio: "pipe", maxBuffer: 128 * 1024 * 1024 });
+  for (const [command, args, label] of commands) {
+    process.stdout.write(`STATIC_GATE running: ${label}\n`);
+    execFileSync(command, args, { cwd: root, encoding: "utf8", stdio: "pipe", maxBuffer: 128 * 1024 * 1024 });
+  }
   const tests = JSON.parse(await readFile(testOutput, "utf8"));
   if (!tests.success || tests.numFailedTests !== 0 || tests.numPassedTests < 264) throw new Error("full Vitest regression did not pass");
   const testFiles = new Map(tests.testResults.map((file) => [relative(root, file.name).replaceAll("\\", "/"), file]));

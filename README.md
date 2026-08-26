@@ -1,17 +1,19 @@
 # Geospatial Operational World Model Plus (GOWM+)
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
-Capability Service Plane and a controlled World Capability Gateway. The
-Version `0.6.0` adds stable single-route road coverage planning over the
-authoritative immutable v0.5 Network Graph, with exact service obligations,
-Directed CPP/RPP solving, independent coverage verification, immutable result
-publication, and Gateway/DAG integration without copying network authority or
-moving planning algorithms into the Gateway.
+Capability Service Plane and a controlled World Capability Gateway.
+Version `0.6.1` hardens Road Coverage correctness and public platform contracts:
+generation-safe claims, shared Network Query Core, independently reconstructed
+boundary crossings, fixed-point alternative objectives, explicit
+validity/currentness/TTL semantics, machine-readable Capability semantics,
+Platform Validation, and scoped Data Product discovery. Existing authorities
+remain unchanged and existing v1.0 wire contracts remain compatible.
 
-> **v0.6 candidate status (2026-08-25): NETWORK_READY / ROUTING_READY /
-> ROAD_COVERAGE_READY.** All 226 required cases have runtime or contract
-> evidence. Final exact-SHA and Draft PR reconciliation remain in F01; protected
-> publication actions remain separately controlled.
+> **v0.6.1 stable candidate (2026-08-26): runtime and contract gates PASS.**
+> D00/G00/T00/C00 real gates, 264 regression tests, and nine-provider conformance
+> pass. The [final report](reports/gowm-v0.6.1/final-stable-candidate.md) defines
+> the 229-case acceptance receipt and exact-SHA/Ready delivery gate. Merge, tag,
+> release, and deploy remain outside this task.
 
 See [PROJECT_STATUS.md](PROJECT_STATUS.md) for the exact delivery boundary and
 [the v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md) for the
@@ -87,6 +89,13 @@ keeps required service obligations R separate from the full traversable network
 E, verifies every admitted candidate independently, and expands geometry only
 on demand. The Gateway remains the only public asynchronous Job authority.
 
+The v0.6.1 platform additions expose deterministic registry semantics at
+`/v1/capability-semantics`, add `result.validate`, `snapshot.get`, and
+`snapshot.validate` through the independently deployable Platform Validation
+Provider, and extend the Grounding catalog with scoped Data Product search,
+versions, schema, lineage, quality, and supported-capability reads. These are
+read-only projections, not new fact or registry authorities.
+
 ## Contracts and execution
 
 JSON Schemas under `contracts/platform` and `contracts/capabilities` are the
@@ -119,6 +128,9 @@ The PostgreSQL 18 baseline includes PostGIS 3.6, MobilityDB 1.3, h3-pg /
 h3_postgis 4.5, and pgRouting 4.0.1. Migrations `001`-`032` remain the locked
 v0.4 baseline; append-only migrations through `047` add Network/Route authority
 and migrations `048`-`053` add the private, derived `coverage_planner` runtime.
+Append-only migrations `054`-`057` add generation fencing, authoritative
+boundary reads, immutable Coverage artifact reads, and the Platform Validation
+snapshot registry. All 57 migrations and 42 SQL assertion suites are required.
 Coverage tables pin Network identities and hashes but do not copy Node, Edge,
 Arc, Turn, Profile, or Condition authority.
 
@@ -146,6 +158,7 @@ npm run validate:gowm-v05-migrations
 npm run validate:gowm-v05-performance
 npm run validate:gowm-v06-security-recovery
 npm run validate:gowm-v06-compatibility
+node validation/scripts/gowm-v061-final-candidate.mjs
 node validation/scripts/stable-contract-compatibility.mjs
 node validation/architecture/validate-release-boundaries.mjs
 ```
@@ -193,8 +206,9 @@ URL and exact disposable database container name; see the operations runbook.
 - The legacy H3 Situation projection is safe only for its configured single
   scope; arbitrary multi-scope serving remains blocked until the underlying
   projection is scope-aware.
-- Stacked PR #4 remains Draft until final exact-SHA reconciliation; merge, tag, release,
-  image publication, and deployment remain user-controlled actions.
+- PR #6 is the review candidate. Final acceptance requires its Ready state and
+  exact local/tracking/remote/PR SHA equality; merge, tag, release, image
+  publication, and deployment remain user-controlled actions.
 
 ## Documentation and evidence
 
@@ -204,6 +218,8 @@ URL and exact disposable database container name; see the operations runbook.
 - [Road coverage authority ADR](docs/adr/006-road-coverage-planning-authority.md)
 - [Road coverage architecture](docs/architecture/ROAD_COVERAGE_PLANNING_V0.6.md)
 - [Road coverage operations runbook](docs/19_ROAD_COVERAGE_OPERATIONS_RUNBOOK.md)
+- [v0.6.1 platform-hardening runbook](docs/20_PLATFORM_HARDENING_OPERATIONS_RUNBOOK.md)
+- [Platform-hardening authority ADR](docs/adr/ADR-0061-platform-hardening-authority.md)
 - [Project status](PROJECT_STATUS.md)
 - [Traceability](validation/TRACEABILITY.md)
 - [Phase evidence](reports/capability-platform-v0.2/)

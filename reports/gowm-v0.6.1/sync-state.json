@@ -1,8 +1,8 @@
 {
   "goal": "GOWM+ v0.6.1 Platform Hardening",
   "targetVersion": "0.6.1",
-  "status": "IN_PROGRESS",
-  "phase": "R01",
+  "status": "COMPLETE",
+  "phase": "S03",
   "source": {
     "branch": "main",
     "sha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
@@ -12,14 +12,23 @@
   "candidate": {
     "branch": "codex/gowm-platform-hardening-v0.6.1",
     "baseSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
-    "localSha": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
-    "remoteSha": null
+    "version": "0.6.1",
+    "pullRequest": 6,
+    "expectedPullRequestState": "OPEN_READY",
+    "shaAuthority": "/tmp/gowm-v0.6.1-final-acceptance.json#candidateContentSha",
+    "shaVerification": [
+      "local_HEAD",
+      "origin_tracking",
+      "ls_remote",
+      "pull_request_head"
+    ],
+    "runtimeSourceLock": "runtime-source-lock.json"
   },
   "markers": {
-    "roadCoverageCorrect": false,
-    "capabilityContractsHardened": false,
-    "publicDataFoundationHardened": false,
-    "stableCandidate": false
+    "roadCoverageCorrect": true,
+    "capabilityContractsHardened": true,
+    "publicDataFoundationHardened": true,
+    "stableCandidate": true
   },
   "cancelledGates": {
     "wsgsReadinessBlackBox": true,
@@ -27,10 +36,28 @@
     "mockElevationOnboarding": true
   },
   "acceptance": {
-    "passed": ["AC-R001", "AC-R002", "AC-R003", "AC-R005", "AC-R006", "AC-R007", "AC-R010"],
-    "failed": [],
-    "notRun": ["AC-R004", "AC-R008", "AC-R009", "AC-R011", "AC-R012"]
+    "required": 229,
+    "passed": 229,
+    "failed": 0,
+    "blocked": 0,
+    "notRun": 0,
+    "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+    "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+    "verification": "Completion is valid only with a PASS final receipt naming the current exact candidate commit and OPEN Ready PR."
+  },
+  "runtime": {
+    "database": "PASS",
+    "gateway": "PASS_150_CHECKS",
+    "securityRecovery": "PASS_72_BEFORE_5_AFTER_RESTART",
+    "compatibility": "PASS",
+    "providerConformance": "PASS_9_PROVIDERS"
+  },
+  "protectedActions": {
+    "merge": "NOT_RUN",
+    "tag": "NOT_RUN",
+    "release": "NOT_RUN",
+    "deploy": "NOT_RUN"
   },
   "blockers": [],
-  "next": "Freeze v0.6.1 contracts and architecture decisions."
+  "next": "Review PR #6. No further protected publication action is authorized."
 }

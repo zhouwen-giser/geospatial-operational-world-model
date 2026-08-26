@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.6.1 - 2026-08-26
+
+- Made Coverage claims database-authoritative and generation-fenced; stale
+  workers cannot heartbeat, persist, or publish after reclaim or cancellation.
+- Added shared Network Query Core, independent versioned boundary-crossing
+  reconstruction, fixed-point weighted and least-deadhead objectives, truthful
+  result hashes, explicit traversal/coverage credit, and fail-closed
+  `NO_FEASIBLE_PLAN` semantics.
+- Added deterministic Capability semantic projection, scoped Data Product
+  discovery/detail operations, and the Platform Validation Provider with
+  `result.validate`, `snapshot.get`, and `snapshot.validate` current/stale/unknown
+  behavior over existing authorities.
+- Added append-only migrations 054–057, SQL assertions through 042, nine-provider
+  conformance evidence, real PostgreSQL/Gateway/restart gates, and a 229-case
+  fail-closed final acceptance aggregator.
+- Passed real fresh/v0.4/v0.5/v0.6.0 upgrade, 150 Gateway checks, 72 pre-/5
+  post-restart checks, and compatibility gates. Retained per-case evidence,
+  runtime source locks, failed-attempt explanations, and bounded S/M timings.
+- Preserved migrations 001–053 and existing v1.0 wire bytes. WSGS readiness,
+  separate Data Platform Readiness, mock ELEVATION onboarding, merge, tag,
+  release, and deploy are explicitly outside this release task.
+
 ## 0.6.0 - 2026-08-25
 
 - Added stable single-route road coverage planning over the authoritative v0.5
