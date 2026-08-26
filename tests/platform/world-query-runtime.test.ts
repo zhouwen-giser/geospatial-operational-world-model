@@ -124,7 +124,7 @@ function descriptor(
   };
 }
 
-function harness(autoRunAsync = false): Harness {
+function harness(autoRunAsync = false, configure?: (descriptors: Harness["descriptors"]) => void): Harness {
   const positionHash = getContractSchemaHash(positionSchemaUri);
   const elevationHash = getContractSchemaHash(elevationSchemaUri);
   const nestedHash = getContractSchemaHash(nestedSchemaUri);
@@ -153,6 +153,7 @@ function harness(autoRunAsync = false): Harness {
       uri: nestedSchemaUri, hash: nestedHash, kind: "ANY", unit: "UNSPECIFIED"
     })
   };
+  configure?.(descriptors);
   const calls: Record<"source" | "sample" | "fail", number> = { source: 0, sample: 0, fail: 0 };
   let nestedCalls = 0;
   const operations: ProviderOperation[] = [
@@ -469,6 +470,24 @@ describe("World Query DAG runtime", () => {
     const request = submission("query_port_mismatch", [source, sample], "sample", test.descriptors.sample);
 
     await expect(test.runtime.submit(request, principal)).rejects.toMatchObject({ code: "INVALID_REQUEST" });
+    expect(test.calls).toEqual({ source: 0, sample: 0, fail: 0 });
+  });
+
+  it.each(["REFERENCE_KEY", "GEOMETRY"] as const)("rejects incompatible explicit %s semantics before any Provider execution", async (kind) => {
+    const test = harness(false, (descriptors) => {
+      const p: NonNullable<CapabilityDescriptor["semanticProfile"]> = {
+        profileVersion: "1.0", domain: "SPATIAL", acceptedReferenceKinds: [], producedReferenceKinds: [], relationSemantics: [],
+        spatialSemantics: "NONE", timeSemantics: "NONE", resultNature: "DERIVED", negativeEvidencePolicy: "NOT_APPLICABLE", freshnessSemantics: "NONE"
+      };
+      descriptors.source.semanticProfile = { ...p, producedReferenceKinds: ["WORLD_OBJECT"], spatialSemantics: kind === "GEOMETRY" ? "CANDIDATE" : "NONE" };
+      descriptors.sample.semanticProfile = { ...p, acceptedReferenceKinds: ["DATASET"], spatialSemantics: kind === "GEOMETRY" ? "EXACT" : "NONE" };
+      descriptors.source.ports.outputs[0]!.valueKind = kind;
+      descriptors.sample.ports.inputs[0]!.valueKind = kind;
+    });
+    const source = node("source", test.descriptors.source, literalInput(test.descriptors.source));
+    const sample = node("sample", test.descriptors.sample, linkedInput(test.descriptors.source, test.descriptors.sample, "source"));
+    const request = submission(`query_semantic_${kind}`, [source, sample], "sample", test.descriptors.sample);
+    await expect(test.runtime.submit(request, principal)).rejects.toThrow(kind === "REFERENCE_KEY" ? "ReferenceKind" : "Candidate geometry");
     expect(test.calls).toEqual({ source: 0, sample: 0, fail: 0 });
   });
 

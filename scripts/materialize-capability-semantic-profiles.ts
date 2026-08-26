@@ -2,7 +2,7 @@ import { readFile, readdir, mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { canonicalJson, canonicalSha256, validateContract, type CapabilityDescriptor, type CapabilityProviderManifest } from "../packages/platform/contract-runtime/src/index.js";
-import { byteHash, inspectSchema, inspectSql, inspectTypeScript, materializeProfile, operationKey, type ImplementationEvidence, type SemanticProfile } from "../packages/platform/semantic-conformance/src/index.js";
+import { byteHash, inspectSchema, inspectSql, inspectTypeScript, materializeProfile, operationKey, semanticSourceFingerprint, type ImplementationEvidence, type SemanticProfile } from "../packages/platform/semantic-conformance/src/index.js";
 import { buildSpatialQuery } from "../services/providers/spatial-provider-bridge/src/sql.js";
 import type { SpatialOperationId } from "../services/providers/spatial-provider-bridge/src/schemas.js";
 
@@ -77,6 +77,7 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
   }
   const catalog = [...manifests.values()].flatMap((m) => m.capabilities.map((c) => ({ ...c, ...(declarations.get(operationKey(c)) ? { semanticProfile: declarations.get(operationKey(c))!.profile } : {}) })));
   const blackBox = await readJson(resolve(repositoryRoot, `${output}/black-box-evidence.json`)).catch(() => ({ operations: {} }));
+  const sourceDigest = await semanticSourceFingerprint(repositoryRoot);
   const resolved: string[] = [], conflicts: object[] = [], insufficient: object[] = [];
   const artifacts = new Map<string, string>();
   const implementationReport: Record<string, unknown> = {};
@@ -133,7 +134,7 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
       const primaryStatuses = outputShape.statusPaths[declaration?.profile.domainStatus?.path ?? "/status"] ?? [];
       const receipt = blackBox.operations[op];
       const contractHash = canonicalSha256({ ...descriptor, semanticProfile: declaration?.profile ?? null });
-      const currentBlackBox = receipt?.status === "PASS" && receipt.contractHash === contractHash && Array.isArray(receipt.tests) && receipt.tests.length > 0 && receipt.sourceDigest === blackBox.sourceDigest;
+      const currentBlackBox = Boolean(blackBox.status === "PASS" && blackBox.sourceDigest === sourceDigest && receipt?.status === "PASS" && receipt.contractHash === contractHash && Array.isArray(receipt.tests) && receipt.tests.length > 0 && receipt.sourceDigest === sourceDigest);
       if (currentBlackBox) await record("BLACK_BOX_TEST", `${output}/black-box-evidence.json`, op);
       const evidence: ImplementationEvidence = {
         referenceInput: inputShape.referenceKinds.length > 0 || descriptor.ports.inputs.some((p) => p.valueKind === "REFERENCE_KEY"),

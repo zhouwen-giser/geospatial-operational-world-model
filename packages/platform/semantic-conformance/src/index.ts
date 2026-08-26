@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
+import { readFile, readdir } from "node:fs/promises";
 import ts from "typescript";
 import { parse } from "pgsql-parser";
 import {
@@ -174,6 +175,21 @@ export function inspectSchema(schema: unknown, resolveReference: (ref: string, p
 
 export function byteHash(value: string | Uint8Array): string { return createHash("sha256").update(value).digest("hex"); }
 
+export async function semanticSourceFingerprint(root: string): Promise<string> {
+  const hashes: Record<string, string> = {};
+  const scan = async (directory: string): Promise<void> => {
+    for (const entry of (await readdir(resolve(root, directory), { withFileTypes: true })).sort((a,b) => a.name.localeCompare(b.name))) {
+      if (["node_modules", "dist", ".git"].includes(entry.name)) continue;
+      const path = `${directory}/${entry.name}`;
+      if (entry.isDirectory()) await scan(path);
+      else if (/\.(ts|mjs|js|json|sql|yaml|yml|py)$/u.test(entry.name)) hashes[path] = byteHash(await readFile(resolve(root, path)));
+    }
+  };
+  for (const directory of ["packages", "services", "contracts", "config", "database", "scripts", "tests", "validation"]) await scan(directory);
+  for (const path of ["package.json", "package-lock.json", "tsconfig.json"]) hashes[path] = byteHash(await readFile(resolve(root, path)));
+  return canonicalSha256(hashes);
+}
+
 export interface MaterializationInput {
   descriptor: CapabilityDescriptor;
   declaration?: SemanticProfile;
@@ -192,4 +208,21 @@ export function materializeProfile(input: MaterializationInput): {
   const issues = checkSemanticRules(descriptor, input.evidence, catalog, false);
   if (issues.length) return { status: "CONFLICT", issues };
   return { status: "RESOLVED", profile: descriptor.semanticProfile, profileHash: canonicalSha256(descriptor.semanticProfile), issues: [] };
+}
+
+export function checkCrossCapability(catalog: readonly CapabilityDescriptor[], evidence: ReadonlyMap<string, ImplementationEvidence>): SemanticIssue[] {
+  const issues: SemanticIssue[] = [], seen = new Set<string>();
+  const fail = (c: CapabilityDescriptor, message: string) => issues.push({ rule: "CROSS_CAPABILITY", operation: key(c), message });
+  const validation = catalog.find((c) => c.operationId === "result.validate" && executable.has(c.maturity));
+  const snapshot = catalog.find((c) => c.operationId === "snapshot.validate" && executable.has(c.maturity));
+  for (const c of catalog) {
+    if (seen.has(key(c))) fail(c, "Operation key is registered more than once");
+    seen.add(key(c));
+    const p = c.semanticProfile;
+    if (!p) { fail(c, "Explicit semantic profile missing"); continue; }
+    if ((p.resultNature === "PLAN" || p.producedReferenceKinds.includes("QUERY_RESULT")) && (!validation || validation.semanticProfile?.resultNature !== "VALIDATION")) fail(c, "Public result requires an executable result validator");
+    if (["WORLD_SNAPSHOT_BOUND", "DATASET_VERSION_BOUND"].includes(c.dataBinding) && !snapshot) fail(c, "Snapshot-bound operation requires an executable snapshot validator");
+    for (const issue of checkSemanticRules(c, evidence.get(key(c)) ?? EMPTY_EVIDENCE, catalog, false)) if (issue.rule === "S006") fail(c, issue.message);
+  }
+  return issues.sort((a,b) => `${a.operation}:${a.message}`.localeCompare(`${b.operation}:${b.message}`));
 }

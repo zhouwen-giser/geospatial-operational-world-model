@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { canonicalSha256, validateContract } from "../../packages/platform/contract-runtime/src/index.js";
 import type { CapabilityDescriptor } from "../../packages/platform/contract-runtime/src/index.js";
-import { EMPTY_EVIDENCE, checkSemanticRules, inspectSql, inspectTypeScript, materializeProfile, type ImplementationEvidence } from "../../packages/platform/semantic-conformance/src/index.js";
+import { EMPTY_EVIDENCE, checkSemanticRules, checkCrossCapability, inspectSql, inspectTypeScript, materializeProfile, operationKey, type ImplementationEvidence } from "../../packages/platform/semantic-conformance/src/index.js";
 
 const manifest = JSON.parse(readFileSync(new URL("../../contracts/manifests/providers/spatial-provider.json", import.meta.url), "utf8"));
 export const profile = {
@@ -92,5 +92,21 @@ describe("offline semantic rules and implementation evidence", () => {
     expect(result.symbols).toContain("handle");
     expect(result.siblingImports).toHaveLength(2);
     expect(result.diagnostics).toBe(0);
+  });
+  it("rejects duplicate operations, missing validators and cyclic or retired exact verification targets", () => {
+    const { c, e } = base(), target = structuredClone(c);
+    target.operationId = "test.exact-verifier";
+    c.semanticProfile!.exactVerification = { operationId: target.operationId, operationVersion: "1.0" };
+    target.semanticProfile!.exactVerification = { operationId: c.operationId, operationVersion: "1.0" };
+    e.verificationPorts = true;
+    expect(checkSemanticRules(c, e, [c,target]).some((i) => i.message.includes("cycle"))).toBe(true);
+    delete target.semanticProfile!.exactVerification;
+    target.maturity = "RETIRED";
+    expect(checkSemanticRules(c, e, [c,target]).some((i) => i.rule === "S006")).toBe(true);
+    const issues = checkCrossCapability([c,c], new Map([[operationKey(c),e]]));
+    expect(issues.some((i) => i.message.includes("more than once"))).toBe(true);
+    expect(issues.some((i) => i.message.includes("snapshot validator"))).toBe(true);
+    c.semanticProfile!.producedReferenceKinds = ["QUERY_RESULT"];
+    expect(checkCrossCapability([c], new Map([[operationKey(c),e]])).some((i) => i.message.includes("result validator"))).toBe(true);
   });
 });
