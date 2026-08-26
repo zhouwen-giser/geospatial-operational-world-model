@@ -1,0 +1,36 @@
+{
+  "goal": "GOWM+ v0.6.2 Unified World Gateway & Explicit Capability Semantics",
+  "targetVersion": "0.6.2",
+  "status": "AWAITING_DELIVERY_RECEIPT",
+  "phase": "P12",
+  "source": {
+    "branch": "main",
+    "headAtPackageGeneration": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+    "versionAtPackageGeneration": "0.6.1"
+  },
+  "candidate": {
+    "branch": "codex/gowm-world-platform-gateway-semantics-v0.6.2",
+    "baseSha": "55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1",
+    "localSha": null,
+    "remoteSha": null,
+    "receipt": "/tmp/gowm-v062-final-delivery.json",
+    "note": "Exact candidate SHA is verified outside the committed tree to avoid self-hash cycles."
+  },
+  "counters": {
+    "semanticProfileMissing": 0,
+    "semanticRuleViolation": 0,
+    "semanticImplementationMismatch": 0,
+    "crossCapabilityViolation": 0,
+    "stableCapabilityWithoutBlackBoxEvidence": 0,
+    "runtimeSemanticInference": 0,
+    "providerTopologyLeak": 0,
+    "operationCollision": 0
+  },
+  "milestones": {
+    "worldPlatformGatewayReady": true,
+    "explicitCapabilitySemanticsReady": true,
+    "stableCandidate": false
+  },
+  "blockers": [],
+  "next": "Read exact final Git/Ready PR receipt; no merge, tag, release or production deploy."
+}

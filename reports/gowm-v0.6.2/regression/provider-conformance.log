@@ -1,0 +1,5 @@
+
+> geospatial-operational-world-model@0.6.2 validate:provider-conformance
+> node validation/scripts/provider-conformance-gate.mjs
+
+GOWM_PROVIDER_CONFORMANCE_PASS providers=11 operations=70

@@ -11,6 +11,9 @@ COPY services ./services
 COPY simulator ./simulator
 COPY scripts ./scripts
 COPY tests ./tests
+COPY validation ./validation
+COPY contracts ./contracts
+COPY config ./config
 RUN npm run build
 
 FROM ${NODE_BASE_IMAGE} AS runtime

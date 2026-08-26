@@ -6548,6 +6548,1691 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
     "title": "SpatialSummarizeAreaOutputV1",
     "$ref": "../spatial-provider/operations.schema.json#/$defs/summarizeOutput"
   },
+  "capabilities/stas/analysis-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas:output:1.0",
+    "title": "StasProviderAnalysisResult",
+    "$ref": "native.schema.json#/$defs/AnalysisResult"
+  },
+  "capabilities/stas/native.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:stas-native",
+    "title": "StasNativeContracts",
+    "$defs": {
+      "Health": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "serviceVersion"
+        ],
+        "properties": {
+          "status": {
+            "const": "ok"
+          },
+          "serviceVersion": {
+            "type": "string"
+          }
+        },
+        "title": "StasNativeHealth"
+      },
+      "Readiness": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "mobilityDbVersion",
+          "postgisVersion",
+          "schemaContractVersion",
+          "analysisSrid"
+        ],
+        "properties": {
+          "status": {
+            "const": "ready"
+          },
+          "mobilityDbVersion": {
+            "type": "string"
+          },
+          "postgisVersion": {
+            "type": "string"
+          },
+          "schemaContractVersion": {
+            "type": "string"
+          },
+          "analysisSrid": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "title": "StasNativeReadiness"
+      },
+      "Problem": {
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail",
+          "instance",
+          "code"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "title": "StasNativeProblem"
+      },
+      "TimeRange": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "start",
+          "end"
+        ],
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bounds": {
+            "const": "[)",
+            "default": "[)"
+          }
+        },
+        "title": "StasNativeTimerange"
+      },
+      "EvidenceTimeRange": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "start",
+          "end",
+          "bounds"
+        ],
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bounds": {
+            "enum": [
+              "[)",
+              "()",
+              "[]",
+              "(]"
+            ]
+          }
+        },
+        "title": "StasNativeEvidencetimerange"
+      },
+      "TrackletRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "trackletId"
+        ],
+        "properties": {
+          "trackletId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "trackletVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versionNo": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "trackletVersionId"
+            ],
+            "not": {
+              "required": [
+                "versionNo"
+              ]
+            }
+          },
+          {
+            "required": [
+              "versionNo"
+            ],
+            "not": {
+              "required": [
+                "trackletVersionId"
+              ]
+            }
+          }
+        ],
+        "title": "StasNativeTrackletref"
+      },
+      "CommonToolInput": {
+        "type": "object",
+        "required": [
+          "dataScopeId"
+        ],
+        "properties": {
+          "dataScopeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "snapshotPolicy": {
+            "const": "PINNED",
+            "default": "PINNED"
+          },
+          "evidenceLevel": {
+            "enum": [
+              "SUMMARY",
+              "STANDARD",
+              "FULL"
+            ],
+            "default": "SUMMARY"
+          },
+          "deadlineMs": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 60000
+          }
+        },
+        "title": "StasNativeCommontoolinput"
+      },
+      "SingleTrackletInput": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/CommonToolInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "tracklet"
+            ],
+            "properties": {
+              "tracklet": {
+                "$ref": "#/$defs/TrackletRef"
+              }
+            }
+          }
+        ],
+        "title": "StasNativeSingletrackletinput"
+      },
+      "PairInput": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/CommonToolInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "trackletA",
+              "trackletB",
+              "timeRange"
+            ],
+            "properties": {
+              "trackletA": {
+                "$ref": "#/$defs/TrackletRef"
+              },
+              "trackletB": {
+                "$ref": "#/$defs/TrackletRef"
+              },
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              }
+            }
+          }
+        ],
+        "title": "StasNativePairinput"
+      },
+      "get_tracklet_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/SingleTrackletInput"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "enum": [
+                  "SUMMARY",
+                  "SEQUENCES",
+                  "OBSERVATION_REFS"
+                ]
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000
+              }
+            }
+          }
+        ],
+        "title": "StasNativeGetTrackletInputV1"
+      },
+      "get_tracklet_gaps_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/SingleTrackletInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "timeRange"
+            ],
+            "properties": {
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "reasons": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "limit": {
+                "type": "integer",
+                "maximum": 1000
+              }
+            }
+          }
+        ],
+        "title": "StasNativeGetTrackletGapsInputV1"
+      },
+      "get_tracklet_quality_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/SingleTrackletInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "dimensions"
+            ],
+            "properties": {
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "dimensions": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 20,
+                "items": {
+                  "enum": [
+                    "TEMPORAL_COVERAGE",
+                    "POSITION_UNCERTAINTY",
+                    "SOURCE_HEALTH",
+                    "PROVENANCE",
+                    "CONFLICTS",
+                    "SAMPLING"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "title": "StasNativeGetTrackletQualityInputV1"
+      },
+      "slice_tracklet_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/SingleTrackletInput"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "region": {
+                "$ref": "#/$defs/RegionRef"
+              },
+              "spatialMode": {
+                "const": "INTERSECTS_INCLUSIVE_BOUNDARY"
+              },
+              "boundaryPolicy": {
+                "enum": [
+                  "REPORT_AMBIGUOUS",
+                  "NOMINAL"
+                ]
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "timeRange"
+                ]
+              },
+              {
+                "required": [
+                  "region"
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "StasNativeSliceTrackletInputV1"
+      },
+      "get_position_at_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/SingleTrackletInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "timestamp",
+              "interpolationPolicy"
+            ],
+            "properties": {
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "interpolationPolicy": {
+                "enum": [
+                  "ALLOW_WITHIN_SEQUENCE",
+                  "OBSERVED_ONLY"
+                ]
+              }
+            }
+          }
+        ],
+        "title": "StasNativeGetPositionAtInputV1"
+      },
+      "get_motion_summary_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/SingleTrackletInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "timeRange"
+            ],
+            "properties": {
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "units": {
+                "const": "SI"
+              },
+              "perSequence": {
+                "type": "boolean"
+              }
+            }
+          }
+        ],
+        "title": "StasNativeGetMotionSummaryInputV1"
+      },
+      "find_stop_intervals_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/SingleTrackletInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "timeRange",
+              "maximumDiameterMeters",
+              "minimumDurationSeconds"
+            ],
+            "properties": {
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "maximumDiameterMeters": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "minimumDurationSeconds": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000
+              }
+            }
+          }
+        ],
+        "title": "StasNativeFindStopIntervalsInputV1"
+      },
+      "find_region_interactions_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/SingleTrackletInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "region",
+              "timeRange",
+              "events"
+            ],
+            "properties": {
+              "region": {
+                "$ref": "#/$defs/RegionRef"
+              },
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "events": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "enum": [
+                    "VISIT",
+                    "ENTER",
+                    "EXIT",
+                    "TOUCH",
+                    "CROSS"
+                  ]
+                }
+              },
+              "minimumVisitSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "boundaryPolicy": {
+                "enum": [
+                  "REPORT_AMBIGUOUS",
+                  "NOMINAL"
+                ]
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000
+              }
+            }
+          }
+        ],
+        "title": "StasNativeFindRegionInteractionsInputV1"
+      },
+      "find_tracklets_in_region_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/CommonToolInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "region",
+              "timeRange"
+            ],
+            "properties": {
+              "region": {
+                "$ref": "#/$defs/RegionRef"
+              },
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "sourceTypes": {
+                "type": "array",
+                "maxItems": 32,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "mode": {
+                "enum": [
+                  "CANDIDATE",
+                  "EXACT_VISIT"
+                ]
+              },
+              "limit": {
+                "type": "integer",
+                "maximum": 5000
+              }
+            }
+          }
+        ],
+        "title": "StasNativeFindTrackletsInRegionInputV1"
+      },
+      "nearest_approach_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/PairInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "dimensionPolicy"
+            ],
+            "properties": {
+              "dimensionPolicy": {
+                "const": "2D"
+              },
+              "uncertaintyPolicy": {
+                "const": "NOMINAL_WITH_SCALAR_SENSITIVITY"
+              }
+            }
+          }
+        ],
+        "title": "StasNativeNearestApproachInputV1"
+      },
+      "find_proximity_intervals_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/PairInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "maxDistanceMeters",
+              "minimumDurationSeconds"
+            ],
+            "properties": {
+              "maxDistanceMeters": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "minimumDurationSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "uncertaintyPolicy": {
+                "const": "NOMINAL_WITH_SCALAR_SENSITIVITY"
+              },
+              "uncertaintyAlgorithm": {
+                "const": "SCALAR_SENSITIVITY"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000
+              }
+            }
+          }
+        ],
+        "title": "StasNativeFindProximityIntervalsInputV1"
+      },
+      "find_nearby_tracklets_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/CommonToolInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "subject",
+              "timeRange",
+              "maxDistanceMeters"
+            ],
+            "properties": {
+              "subject": {
+                "$ref": "#/$defs/TrackletRef"
+              },
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "maxDistanceMeters": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "sourceTypes": {
+                "type": "array",
+                "maxItems": 32,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "mode": {
+                "enum": [
+                  "CANDIDATE",
+                  "EXACT_EVER"
+                ]
+              },
+              "uncertaintyPolicy": {
+                "enum": [
+                  "NOMINAL",
+                  "CONSERVATIVE_BOUND"
+                ]
+              },
+              "limit": {
+                "type": "integer",
+                "maximum": 5000
+              }
+            }
+          }
+        ],
+        "title": "StasNativeFindNearbyTrackletsInputV1"
+      },
+      "find_successor_candidates_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/CommonToolInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "predecessor",
+              "maxGapSeconds",
+              "maxSpeedMps",
+              "reachabilityLevel"
+            ],
+            "properties": {
+              "predecessor": {
+                "$ref": "#/$defs/TrackletRef"
+              },
+              "maxGapSeconds": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 86400
+              },
+              "maxSpeedMps": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 10000
+              },
+              "maxAccelerationMps2": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 10000
+              },
+              "maxHeadingDeltaDegrees": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 180
+              },
+              "reachabilityLevel": {
+                "enum": [
+                  1,
+                  2
+                ]
+              },
+              "uncertaintyPolicy": {
+                "enum": [
+                  "NOMINAL",
+                  "CONSERVATIVE_BOUND"
+                ]
+              },
+              "sourceTypes": {
+                "type": "array",
+                "maxItems": 32,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5000
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "required": [
+                    "reachabilityLevel"
+                  ],
+                  "properties": {
+                    "reachabilityLevel": {
+                      "const": 2
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "maxAccelerationMps2",
+                    "maxHeadingDeltaDegrees"
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "title": "StasNativeFindSuccessorCandidatesInputV1"
+      },
+      "compare_pair_features_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/PairInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "features",
+              "thresholds"
+            ],
+            "properties": {
+              "features": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "enum": [
+                    "TEMPORAL_OVERLAP",
+                    "MIN_DISTANCE",
+                    "PROXIMITY_DURATION",
+                    "GAP_CONTEXT"
+                  ]
+                }
+              },
+              "thresholds": {
+                "type": "object",
+                "required": [
+                  "proximityMeters"
+                ],
+                "properties": {
+                  "proximityMeters": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 1,
+                    "items": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "title": "StasNativeComparePairFeaturesInputV1"
+      },
+      "find_sensor_coverage_input_v1": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/CommonToolInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "timeRange"
+            ],
+            "properties": {
+              "sensorId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "objectClass": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "timeRange": {
+                "$ref": "#/$defs/TimeRange"
+              },
+              "point": {
+                "$ref": "#/$defs/Point"
+              },
+              "spatialObjectVersionId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "includeInactive": {
+                "type": "boolean"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "sensorId"
+                ]
+              },
+              {
+                "required": [
+                  "point"
+                ]
+              },
+              {
+                "required": [
+                  "spatialObjectVersionId"
+                ]
+              }
+            ],
+            "not": {
+              "required": [
+                "point",
+                "spatialObjectVersionId"
+              ]
+            }
+          }
+        ],
+        "title": "StasNativeFindSensorCoverageInputV1"
+      },
+      "RegionRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "spatialObjectId",
+          "spatialObjectVersionId"
+        ],
+        "properties": {
+          "spatialObjectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "spatialObjectVersionId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "title": "StasNativeRegionref"
+      },
+      "Point": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "x",
+          "y",
+          "srid"
+        ],
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "srid": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "title": "StasNativePoint"
+      },
+      "AnalysisResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "analysisId",
+          "status",
+          "generatedAt",
+          "subjects",
+          "query",
+          "result",
+          "coverage",
+          "evidence",
+          "gaps",
+          "uncertainties",
+          "assumptions",
+          "sourceReferences",
+          "quality",
+          "method",
+          "snapshot",
+          "warnings",
+          "execution"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": "1.0"
+          },
+          "analysisId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "enum": [
+              "COMPLETE",
+              "PARTIAL",
+              "NO_DATA",
+              "INDETERMINATE"
+            ]
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/SubjectRef"
+            }
+          },
+          "query": {
+            "type": "object"
+          },
+          "result": {
+            "type": [
+              "object",
+              "array",
+              "null"
+            ],
+            "description": "Tool-specific payload is selected by method.tool and method.toolVersion."
+          },
+          "coverage": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/EvidenceRef"
+            }
+          },
+          "gaps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/GapRef"
+            }
+          },
+          "uncertainties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/UncertaintyStatement"
+            }
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/Assumption"
+            }
+          },
+          "sourceReferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/SourceReference"
+            }
+          },
+          "quality": {
+            "$ref": "#/$defs/Quality"
+          },
+          "method": {
+            "$ref": "#/$defs/Method"
+          },
+          "snapshot": {
+            "$ref": "#/$defs/Snapshot"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/Warning"
+            }
+          },
+          "page": {
+            "$ref": "#/$defs/Page"
+          },
+          "execution": {
+            "$ref": "#/$defs/Execution"
+          }
+        },
+        "title": "StasNativeAnalysisresult"
+      },
+      "SubjectRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "id"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          }
+        },
+        "title": "StasNativeSubjectref"
+      },
+      "EvidenceRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "timeRange": {
+            "$ref": "#/$defs/EvidenceTimeRange"
+          },
+          "summaryHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "title": "StasNativeEvidenceref"
+      },
+      "GapRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "timeRange",
+          "reasonCodes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "timeRange": {
+            "$ref": "#/$defs/EvidenceTimeRange"
+          },
+          "reasonCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "observability": {
+            "type": "string"
+          }
+        },
+        "title": "StasNativeGapref"
+      },
+      "UncertaintyStatement": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "quantity",
+          "model"
+        ],
+        "properties": {
+          "quantity": {
+            "type": "string"
+          },
+          "model": {
+            "enum": [
+              "HARD_RADIUS",
+              "STDDEV",
+              "COVARIANCE",
+              "INTERVAL",
+              "UNKNOWN"
+            ]
+          },
+          "value": {},
+          "unit": {
+            "type": "string"
+          },
+          "confidenceLevel": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "conclusion": {
+            "type": "string"
+          },
+          "sourceRefs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "title": "StasNativeUncertaintystatement"
+      },
+      "Coverage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "requestedTime": {
+            "$ref": "#/$defs/TimeRange"
+          },
+          "evaluableTime": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/EvidenceTimeRange"
+            }
+          },
+          "observedDurationMs": {
+            "type": "number",
+            "minimum": 0
+          },
+          "requestedDurationMs": {
+            "type": "number",
+            "minimum": 0
+          },
+          "temporalRatio": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "spatialScope": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "title": "StasNativeCoverage"
+      },
+      "Assumption": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "description"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "title": "StasNativeAssumption"
+      },
+      "SourceReference": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sourceId"
+        ],
+        "properties": {
+          "sourceId": {
+            "type": "string"
+          },
+          "rawReference": {
+            "type": "string"
+          }
+        },
+        "title": "StasNativeSourcereference"
+      },
+      "Quality": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "grade",
+          "flags"
+        ],
+        "properties": {
+          "grade": {
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "UNKNOWN"
+            ]
+          },
+          "score": {
+            "type": "number"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "title": "StasNativeQuality"
+      },
+      "Method": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tool",
+          "toolVersion",
+          "algorithm",
+          "algorithmVersion",
+          "mobilityDbVersion",
+          "postgisVersion",
+          "interpolationPolicy",
+          "uncertaintyPolicy",
+          "metricDimension",
+          "sqlTemplateHash"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "toolVersion": {
+            "type": "string"
+          },
+          "algorithm": {
+            "type": "string"
+          },
+          "algorithmVersion": {
+            "type": "string"
+          },
+          "mobilityDbVersion": {
+            "type": "string"
+          },
+          "postgisVersion": {
+            "type": "string"
+          },
+          "interpolationPolicy": {
+            "type": "string"
+          },
+          "uncertaintyPolicy": {
+            "type": "string"
+          },
+          "metricDimension": {
+            "enum": [
+              "2D",
+              "3D"
+            ]
+          },
+          "sqlTemplateHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "title": "StasNativeMethod"
+      },
+      "TrackletVersionSnapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "trackletId",
+          "trackletVersionId",
+          "versionNo"
+        ],
+        "properties": {
+          "trackletId": {
+            "type": "string"
+          },
+          "trackletVersionId": {
+            "type": "string"
+          },
+          "versionNo": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "title": "StasNativeTrackletversionsnapshot"
+      },
+      "Snapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dataScopeId",
+          "trackletVersions"
+        ],
+        "properties": {
+          "dataScopeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "databaseSnapshotId": {
+            "type": "string"
+          },
+          "trackletVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/TrackletVersionSnapshot"
+            }
+          },
+          "timeSolutionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "clockModelIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "spatialObjectVersionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "coverageSliceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "datastreamIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "sensorPoseVersionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "sensorExtrinsicVersionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "sensorStatusIntervalIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "detectorModelIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "watermarkRevisionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "processingRunIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "ruleProfileIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "sourceReliabilityProfileIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "title": "StasNativeSnapshot"
+      },
+      "Warning": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "intervals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/EvidenceTimeRange"
+            }
+          }
+        },
+        "title": "StasNativeWarning"
+      },
+      "Page": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "returned",
+          "truncated"
+        ],
+        "properties": {
+          "nextCursor": {
+            "type": "string"
+          },
+          "returned": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        },
+        "title": "StasNativePage"
+      },
+      "Execution": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "elapsedMs",
+          "cacheHit"
+        ],
+        "properties": {
+          "elapsedMs": {
+            "type": "number",
+            "minimum": 0
+          },
+          "candidateCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "exactCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cacheHit": {
+            "type": "boolean"
+          }
+        },
+        "title": "StasNativeExecution"
+      },
+      "ToolDefinition": {
+        "type": "object",
+        "required": [
+          "name",
+          "version",
+          "description",
+          "inputSchemaUri",
+          "outputSchemaUri",
+          "defaultTimeoutMs",
+          "maxTimeoutMs",
+          "costClass",
+          "maxRows",
+          "idempotent",
+          "dataScopePolicy",
+          "interpolationPolicy",
+          "gapPolicy",
+          "uncertaintyPolicy"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "inputSchemaUri": {
+            "type": "string"
+          },
+          "outputSchemaUri": {
+            "type": "string"
+          },
+          "defaultTimeoutMs": {
+            "type": "integer"
+          },
+          "maxTimeoutMs": {
+            "type": "integer"
+          },
+          "costClass": {
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "maxRows": {
+            "type": "integer"
+          },
+          "maxCandidates": {
+            "type": "integer"
+          },
+          "idempotent": {
+            "type": "boolean"
+          },
+          "cacheableWhenPinned": {
+            "type": "boolean"
+          },
+          "dataScopePolicy": {
+            "const": "REQUIRED_EXACT_MATCH"
+          },
+          "interpolationPolicy": {
+            "const": "TOOL_DECLARED_NO_CROSS_GAP"
+          },
+          "gapPolicy": {
+            "const": "UNKNOWN_DOMAIN_EXPLICIT"
+          },
+          "uncertaintyPolicy": {
+            "const": "REPORT_SEPARATE_DIMENSIONS"
+          },
+          "errorCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "title": "StasNativeTooldefinition"
+      }
+    }
+  },
+  "capabilities/stas/stas.compare-pair-features.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.compare-pair-features:input:1.0",
+    "title": "StasStasNativeComparePairFeaturesInputV1Input",
+    "$ref": "native.schema.json#/$defs/compare_pair_features_input_v1"
+  },
+  "capabilities/stas/stas.find-nearby-tracklets.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.find-nearby-tracklets:input:1.0",
+    "title": "StasStasNativeFindNearbyTrackletsInputV1Input",
+    "$ref": "native.schema.json#/$defs/find_nearby_tracklets_input_v1"
+  },
+  "capabilities/stas/stas.find-proximity-intervals.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.find-proximity-intervals:input:1.0",
+    "title": "StasStasNativeFindProximityIntervalsInputV1Input",
+    "$ref": "native.schema.json#/$defs/find_proximity_intervals_input_v1"
+  },
+  "capabilities/stas/stas.find-region-interactions.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.find-region-interactions:input:1.0",
+    "title": "StasStasNativeFindRegionInteractionsInputV1Input",
+    "$ref": "native.schema.json#/$defs/find_region_interactions_input_v1"
+  },
+  "capabilities/stas/stas.find-sensor-coverage.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.find-sensor-coverage:input:1.0",
+    "title": "StasStasNativeFindSensorCoverageInputV1Input",
+    "$ref": "native.schema.json#/$defs/find_sensor_coverage_input_v1"
+  },
+  "capabilities/stas/stas.find-stop-intervals.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.find-stop-intervals:input:1.0",
+    "title": "StasStasNativeFindStopIntervalsInputV1Input",
+    "$ref": "native.schema.json#/$defs/find_stop_intervals_input_v1"
+  },
+  "capabilities/stas/stas.find-successor-candidates.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.find-successor-candidates:input:1.0",
+    "title": "StasStasNativeFindSuccessorCandidatesInputV1Input",
+    "$ref": "native.schema.json#/$defs/find_successor_candidates_input_v1"
+  },
+  "capabilities/stas/stas.find-tracklets-in-region.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.find-tracklets-in-region:input:1.0",
+    "title": "StasStasNativeFindTrackletsInRegionInputV1Input",
+    "$ref": "native.schema.json#/$defs/find_tracklets_in_region_input_v1"
+  },
+  "capabilities/stas/stas.get-motion-summary.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.get-motion-summary:input:1.0",
+    "title": "StasStasNativeGetMotionSummaryInputV1Input",
+    "$ref": "native.schema.json#/$defs/get_motion_summary_input_v1"
+  },
+  "capabilities/stas/stas.get-position-at.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.get-position-at:input:1.0",
+    "title": "StasStasNativeGetPositionAtInputV1Input",
+    "$ref": "native.schema.json#/$defs/get_position_at_input_v1"
+  },
+  "capabilities/stas/stas.get-tracklet-gaps.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.get-tracklet-gaps:input:1.0",
+    "title": "StasStasNativeGetTrackletGapsInputV1Input",
+    "$ref": "native.schema.json#/$defs/get_tracklet_gaps_input_v1"
+  },
+  "capabilities/stas/stas.get-tracklet-quality.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.get-tracklet-quality:input:1.0",
+    "title": "StasStasNativeGetTrackletQualityInputV1Input",
+    "$ref": "native.schema.json#/$defs/get_tracklet_quality_input_v1"
+  },
+  "capabilities/stas/stas.get-tracklet.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.get-tracklet:input:1.0",
+    "title": "StasStasNativeGetTrackletInputV1Input",
+    "$ref": "native.schema.json#/$defs/get_tracklet_input_v1"
+  },
+  "capabilities/stas/stas.nearest-approach.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.nearest-approach:input:1.0",
+    "title": "StasStasNativeNearestApproachInputV1Input",
+    "$ref": "native.schema.json#/$defs/nearest_approach_input_v1"
+  },
+  "capabilities/stas/stas.slice-tracklet.input.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:capability:stas.slice-tracklet:input:1.0",
+    "title": "StasStasNativeSliceTrackletInputV1Input",
+    "$ref": "native.schema.json#/$defs/slice_tracklet_input_v1"
+  },
   "gowm-v0.4/catalog-query-request.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.4:catalog-query-request",
@@ -11057,6 +12742,839 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     }
   },
+  "gowm-v0.6.2/capability-descriptor-v1.1.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:capability-descriptor-v1.1",
+    "title": "CapabilityDescriptorV1_1",
+    "allOf": [
+      {
+        "$ref": "../platform/capability-descriptor.schema.json"
+      },
+      {
+        "type": "object",
+        "required": [
+          "semanticProfile"
+        ]
+      }
+    ]
+  },
+  "gowm-v0.6.2/capability-provider-manifest-v1.1.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:capability-provider-manifest-v1.1",
+    "title": "CapabilityProviderManifestV1_1",
+    "allOf": [
+      {
+        "$ref": "../platform/capability-provider-manifest.schema.json"
+      },
+      {
+        "type": "object",
+        "required": [
+          "manifestSchemaVersion"
+        ],
+        "properties": {
+          "manifestSchemaVersion": {
+            "const": "1.1"
+          }
+        }
+      }
+    ]
+  },
+  "gowm-v0.6.2/capability-semantic-catalog-v1.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:capability-semantic-catalog",
+    "title": "CapabilitySemanticCatalogV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "contractCatalogRevision",
+      "bindingRevision",
+      "profiles",
+      "catalogHash"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.1"
+      },
+      "registryRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "bindingRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "profiles": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operationId",
+            "operationVersion",
+            "semanticProfile",
+            "semanticProfileHash"
+          ],
+          "properties": {
+            "operationId": {
+              "type": "string"
+            },
+            "operationVersion": {
+              "type": "string"
+            },
+            "semanticProfile": {
+              "$ref": "capability-semantic-profile-v1.schema.json"
+            },
+            "semanticProfileHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          }
+        }
+      },
+      "catalogHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      }
+    }
+  },
+  "gowm-v0.6.2/capability-semantic-profile-v1.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:capability-semantic-profile",
+    "title": "CapabilitySemanticProfileV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "profileVersion",
+      "domain",
+      "acceptedReferenceKinds",
+      "producedReferenceKinds",
+      "relationSemantics",
+      "spatialSemantics",
+      "timeSemantics",
+      "resultNature",
+      "negativeEvidencePolicy",
+      "freshnessSemantics"
+    ],
+    "properties": {
+      "profileVersion": {
+        "const": "1.0"
+      },
+      "domain": {
+        "enum": [
+          "REFERENCE",
+          "CATALOG",
+          "WORLD_STATE",
+          "SPATIAL",
+          "TEMPORAL",
+          "H3",
+          "NETWORK",
+          "ROUTING",
+          "COVERAGE",
+          "ANALYSIS",
+          "PLATFORM"
+        ]
+      },
+      "acceptedReferenceKinds": {
+        "type": "array",
+        "uniqueItems": true,
+        "maxItems": 64,
+        "items": {
+          "enum": [
+            "WORLD_OBJECT",
+            "SPATIAL_OBJECT",
+            "DATASET",
+            "LAYER",
+            "LAYER_FEATURE",
+            "OPERATIONAL_TASK",
+            "DERIVED_REFERENCE",
+            "REFERENCE_SET",
+            "QUERY_RESULT"
+          ]
+        }
+      },
+      "producedReferenceKinds": {
+        "type": "array",
+        "uniqueItems": true,
+        "maxItems": 64,
+        "items": {
+          "enum": [
+            "WORLD_OBJECT",
+            "SPATIAL_OBJECT",
+            "DATASET",
+            "LAYER",
+            "LAYER_FEATURE",
+            "OPERATIONAL_TASK",
+            "DERIVED_REFERENCE",
+            "REFERENCE_SET",
+            "QUERY_RESULT"
+          ]
+        }
+      },
+      "relationSemantics": {
+        "type": "array",
+        "uniqueItems": true,
+        "maxItems": 64,
+        "items": {
+          "enum": [
+            "RESOLVES_TO",
+            "DESCRIBES",
+            "HAS_GEOMETRY",
+            "INSIDE",
+            "CONTAINS",
+            "INTERSECTS",
+            "NEAR",
+            "CANDIDATE_COVER",
+            "SNAPPED_TO_NETWORK",
+            "ROUTE_BETWEEN",
+            "ROAD_COVERAGE_PLAN",
+            "TEMPORALLY_OVERLAPS",
+            "PROXIMITY_INTERVAL",
+            "CORRELATES_WITH",
+            "EVALUATES_PREDICATE",
+            "VALIDATES",
+            "VALIDATES_SNAPSHOT",
+            "DISCOVERS_DATA_PRODUCT"
+          ]
+        }
+      },
+      "spatialSemantics": {
+        "enum": [
+          "EXACT",
+          "CANDIDATE",
+          "AGGREGATED",
+          "NONE"
+        ]
+      },
+      "timeSemantics": {
+        "enum": [
+          "CURRENT",
+          "HISTORICAL",
+          "INTERVAL",
+          "SNAPSHOT",
+          "NONE"
+        ]
+      },
+      "resultNature": {
+        "enum": [
+          "FACT",
+          "PROJECTION",
+          "DERIVED",
+          "PLAN",
+          "VALIDATION",
+          "CATALOG"
+        ]
+      },
+      "negativeEvidencePolicy": {
+        "enum": [
+          "SUPPORTED",
+          "NOT_SUPPORTED",
+          "NO_DATA_IS_UNKNOWN",
+          "NOT_APPLICABLE"
+        ]
+      },
+      "freshnessSemantics": {
+        "enum": [
+          "NONE",
+          "TTL",
+          "WORLD_VERSION",
+          "SNAPSHOT_CURRENTNESS"
+        ]
+      },
+      "domainStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "mapping"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "mapping": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "enum": [
+                "COMPLETED",
+                "PARTIAL",
+                "NO_DATA",
+                "AMBIGUOUS",
+                "INDETERMINATE",
+                "NO_FEASIBLE_RESULT",
+                "STALE",
+                "FAILED"
+              ]
+            }
+          }
+        }
+      },
+      "exactVerification": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "operationVersion"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{2,127}$"
+          },
+          "operationVersion": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+$"
+          }
+        }
+      },
+      "notes": {
+        "type": "array",
+        "maxItems": 64,
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "gowm-v0.6.2/directed-network-state.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:directed-network-state",
+    "title": "PinnedDirectedNetworkStatePort",
+    "$ref": "../gowm-v0.5/network-common.schema.json#/$defs/directedState"
+  },
+  "gowm-v0.6.2/geojson-point.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:geojson-point",
+    "title": "ProjectedWgs84PointPort",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "type",
+      "coordinates"
+    ],
+    "properties": {
+      "type": {
+        "const": "Point"
+      },
+      "coordinates": {
+        "$ref": "geojson-position.schema.json"
+      }
+    }
+  },
+  "gowm-v0.6.2/geojson-position.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:geojson-position",
+    "title": "Wgs84PositionCoordinatesPort",
+    "type": "array",
+    "minItems": 2,
+    "maxItems": 3,
+    "prefixItems": [
+      {
+        "type": "number",
+        "minimum": -180,
+        "maximum": 180
+      },
+      {
+        "type": "number",
+        "minimum": -90,
+        "maximum": 90
+      }
+    ],
+    "items": {
+      "type": "number"
+    }
+  },
+  "gowm-v0.6.2/semantic-attestation.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:semantic-attestation",
+    "title": "SemanticAttestation",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "providerId",
+      "operationId",
+      "operationVersion",
+      "semanticProfileHash",
+      "rulesApplied",
+      "evidence",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "providerId": {
+        "type": "string"
+      },
+      "operationId": {
+        "type": "string"
+      },
+      "operationVersion": {
+        "type": "string"
+      },
+      "semanticProfileHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "rulesApplied": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^S[0-9]{3}$"
+        }
+      },
+      "evidence": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 256,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "DESCRIPTOR",
+                "INPUT_SCHEMA",
+                "OUTPUT_SCHEMA",
+                "PORTS",
+                "TYPESCRIPT_IMPLEMENTATION",
+                "SQL_IMPLEMENTATION",
+                "BRIDGE_CONTRACT",
+                "SOURCE_LOCK",
+                "UNIT_TEST",
+                "BLACK_BOX_TEST",
+                "ADR",
+                "CALLER"
+              ]
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "symbol": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      },
+      "status": {
+        "enum": [
+          "PROVEN",
+          "DOWNGRADED",
+          "BLOCKED"
+        ]
+      },
+      "notes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "gowm-v0.6.2/semantic-conformance-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:semantic-conformance-report",
+    "title": "SemanticConformanceReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "counters",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "counters": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "semanticProfileMissing",
+          "semanticRuleViolation",
+          "semanticImplementationMismatch",
+          "crossCapabilityViolation",
+          "stableCapabilityWithoutBlackBoxEvidence",
+          "runtimeSemanticInference",
+          "providerTopologyLeak",
+          "operationCollision"
+        ],
+        "properties": {
+          "semanticProfileMissing": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "semanticRuleViolation": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "semanticImplementationMismatch": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "crossCapabilityViolation": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "stableCapabilityWithoutBlackBoxEvidence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "runtimeSemanticInference": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "providerTopologyLeak": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "operationCollision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "issues": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL"
+        ]
+      }
+    }
+  },
+  "gowm-v0.6.2/semantic-materializer-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:semantic-materializer-report",
+    "title": "SemanticMaterializerReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "resolved",
+      "conflicts",
+      "insufficient",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "resolved": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "conflicts": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "insufficient": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "determinismHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL"
+        ]
+      }
+    }
+  },
+  "gowm-v0.6.2/single-gateway-canary-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:single-gateway-canary-report",
+    "title": "SingleGatewayCanaryReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "gatewayBaseUrlHash",
+      "canaries",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "gatewayBaseUrlHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "canaries": {
+        "type": "array",
+        "minItems": 5,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "operations",
+            "status"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "operations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "BLOCKED"
+              ]
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL",
+          "BLOCKED"
+        ]
+      }
+    }
+  },
+  "gowm-v0.6.2/world-platform-provider-set.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:world-platform-provider-set",
+    "title": "WorldPlatformProviderSet",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "requiredProviders",
+      "optionalProviders",
+      "excludedClasses"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "requiredProviders": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "type": "string"
+        }
+      },
+      "optionalProviders": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "type": "string"
+        }
+      },
+      "excludedClasses": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "OBSERVATION_WRITE",
+            "DEVICE_COMMAND",
+            "SDAR_A2A",
+            "DYNAMIC_MCP_DISCOVERY",
+            "ARBITRARY_SQL"
+          ]
+        }
+      }
+    }
+  },
+  "gowm-v0.6.2/world-platform-registry-build-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:world-platform-registry-build-report",
+    "title": "WorldPlatformRegistryBuildReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "providerCount",
+      "operationCount",
+      "contractCatalogRevision",
+      "bindingRevision",
+      "missingRequiredProviders",
+      "operationCollisions",
+      "status"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "providerCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "operationCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "bindingRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "missingRequiredProviders": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "operationCollisions": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL"
+        ]
+      }
+    }
+  },
+  "gowm-v0.6.2/wsgs-southbound-operation-lock.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.2:wsgs-southbound-operation-lock",
+    "title": "WsgsSouthboundOperationLock",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "gatewayContractVersion",
+      "contractCatalogRevision",
+      "semanticCatalogHash",
+      "defaultOperations",
+      "previewOperations"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "gatewayContractVersion": {
+        "type": "string"
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "semanticCatalogHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "defaultOperations": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/operationLock"
+        }
+      },
+      "previewOperations": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/operationLock"
+        }
+      }
+    },
+    "$defs": {
+      "operationLock": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "operationVersion",
+          "inputSchemaHash",
+          "outputSchemaHash",
+          "semanticProfileHash",
+          "maturity"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string"
+          },
+          "operationVersion": {
+            "type": "string"
+          },
+          "inputSchemaHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "outputSchemaHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "semanticProfileHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "maturity": {
+            "enum": [
+              "PREVIEW",
+              "STABLE"
+            ]
+          }
+        }
+      }
+    }
+  },
   "gowm-v0.6/coverage-alternative-policy.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.6:coverage-alternative-policy",
@@ -13039,6 +15557,9 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
             "format": "date"
           }
         }
+      },
+      "semanticProfile": {
+        "$ref": "../gowm-v0.6.2/capability-semantic-profile-v1.schema.json"
       }
     },
     "$defs": {
@@ -13112,7 +15633,19 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
     "properties": {
       "registryVersion": {
         "type": "string",
-        "pattern": "^registry-[0-9]+$"
+        "pattern": "^(registry-[0-9]+|sha256:[0-9a-f]{64})$"
+      },
+      "registryRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "bindingRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
       },
       "capabilities": {
         "type": "array",
@@ -13220,8 +15753,39 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
         "items": {
           "$ref": "capability-descriptor.schema.json"
         }
+      },
+      "manifestSchemaVersion": {
+        "enum": [
+          "1.0",
+          "1.1"
+        ]
       }
-    }
+    },
+    "allOf": [
+      {
+        "if": {
+          "required": [
+            "manifestSchemaVersion"
+          ],
+          "properties": {
+            "manifestSchemaVersion": {
+              "const": "1.1"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "capabilities": {
+              "items": {
+                "required": [
+                  "semanticProfile"
+                ]
+              }
+            }
+          }
+        }
+      }
+    ]
   },
   "platform/capability-result-envelope.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -13401,7 +15965,7 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
     "properties": {
       "registryVersion": {
         "type": "string",
-        "pattern": "^registry-[0-9]+$"
+        "pattern": "^(registry-[0-9]+|sha256:[0-9a-f]{64})$"
       },
       "operationId": {
         "$ref": "common-definitions.schema.json#/$defs/operationId"

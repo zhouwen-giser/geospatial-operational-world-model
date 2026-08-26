@@ -1,0 +1,6 @@
+Error: C-typed:queued: {"status":422,"body":{"schemaVersion":"1.0","requestId":"req-21","error":{"code":"INVALID_REQUEST","message":"Request validation failed","retryable":false,"stage":"DAG_VALIDATION","nodeId":"snap","details":{"stage":"DAG_VALIDATION","nodeId":"snap","schemaUri":"urn:gowm:v0.5:network-snap-request","registeredHash":"sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb","canonicalHash":"sha256:c778df85e5118167328282120a3c94c55bff75f64e44bd8fa5392ab556ac6944"}}}}
+    at check (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:24:91)
+    at dag (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:62:84)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:124:3
+WORLD_PLATFORM_CANARY_FAIL checks=265 positiveOperations=11

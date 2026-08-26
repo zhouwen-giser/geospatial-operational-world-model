@@ -1,0 +1,19 @@
+
+> geospatial-operational-world-model@0.6.2 validate:semantic-catalog
+> node --import tsx scripts/validate-semantic-catalog.ts --write
+
+{
+  "schemaVersion": "1.0",
+  "counters": {
+    "semanticProfileMissing": 0,
+    "semanticRuleViolation": 0,
+    "semanticImplementationMismatch": 0,
+    "crossCapabilityViolation": 0,
+    "stableCapabilityWithoutBlackBoxEvidence": 0,
+    "runtimeSemanticInference": 0,
+    "providerTopologyLeak": 0,
+    "operationCollision": 0
+  },
+  "issues": [],
+  "status": "PASS"
+}

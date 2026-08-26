@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.2:world-platform-registry-build-report",
+  "title": "WorldPlatformRegistryBuildReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "providerCount",
+    "operationCount",
+    "contractCatalogRevision",
+    "bindingRevision",
+    "missingRequiredProviders",
+    "operationCollisions",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "providerCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "operationCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "contractCatalogRevision": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "bindingRevision": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "missingRequiredProviders": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "operationCollisions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL"
+      ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+
+> geospatial-operational-world-model@0.6.2 check
+> npm run verify:contracts && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck
+
+
+> geospatial-operational-world-model@0.6.2 verify:contracts
+> node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check
+
+
+> mobilitydb-stas-service@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit

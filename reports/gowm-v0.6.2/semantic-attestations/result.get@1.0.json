@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.world-evidence",
+  "operationId": "result.get",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:d7a49600de76950cfe550dd38b6c0c8a25e7deef48f9ad896f8d26f506756e7a",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/world-evidence-provider.json",
+      "sha256": "9a3af1472aa88c85e60296b0446b60f56d812250fc7e1cf54dbd585054f4055a"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/world-evidence-provider.json",
+      "sha256": "9a3af1472aa88c85e60296b0446b60f56d812250fc7e1cf54dbd585054f4055a"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/catalog-query-request.schema.json",
+      "sha256": "6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/query-result-reference.schema.json",
+      "sha256": "75364bca33c26d6a26554f9a07146383dc51a560bb49e87420ae478831f472ec"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/provider.ts",
+      "sha256": "36909cbf1733dce5a87cb154043e175933746997a1881e40c15e1f02c3c87491",
+      "symbol": "createGroundingCatalogProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/repository.ts",
+      "sha256": "aecd84888fc2301b8998e52fafd63dc7cd1002674f5a5ef659d33069094cf218"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/grounding-catalog-provider.test.ts",
+      "sha256": "45372873116f2ca23229aa994d121fcda459a6cfc05fab83fa484f97593b704d"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/022_derived_result_registry.sql",
+      "sha256": "ae936cceaa7a3904becdb0d5dd47954715db67a6d5de773f37fe7afd5499cc5c"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
+  ]
+}

@@ -1,0 +1,3329 @@
+{
+  "status": "AWAITING_DELIVERY_RECEIPT",
+  "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+  "passed": 177,
+  "pending": 3,
+  "checks": {
+    "baseline": true,
+    "isolated-worktree": true,
+    "baseline-verify": true,
+    "baseline-d00": true,
+    "baseline-g00": true,
+    "baseline-t00": true,
+    "fresh-regression": true,
+    "unit-suite": true,
+    "rule-S001": true,
+    "rule-S002": true,
+    "rule-S003": true,
+    "rule-S004": true,
+    "rule-S005": true,
+    "rule-S006": true,
+    "rule-S007": true,
+    "rule-S008": true,
+    "rule-S009": true,
+    "rule-S010": true,
+    "rule-S011": true,
+    "rule-S012": true,
+    "rule-S013": true,
+    "rule-S014": true,
+    "zero-semantic-counters": true,
+    "explicit-manifests": true,
+    "schema-locks": true,
+    "operation-unique": true,
+    "maturity-preserved": true,
+    "fresh-black-box": true,
+    "real-runtime-image": true,
+    "stable:reference.validate@1.0": true,
+    "stable:result.validate@1.0": true,
+    "stable:snapshot.get@1.0": true,
+    "stable:snapshot.validate@1.0": true,
+    "stable:network.graph.get@1.0": true,
+    "stable:network.graph.list@1.0": true,
+    "stable:network.graph.diagnose@1.0": true,
+    "stable:network.snap.point@1.0": true,
+    "stable:network.snap.points@1.0": true,
+    "stable:network.path.shortest@1.0": true,
+    "stable:network.path.expand@1.0": true,
+    "stable:network.path.verify@1.0": true,
+    "stable:network.connectivity.inspect@1.0": true,
+    "stable:route.validate@1.0": true,
+    "stable:route.plan@1.0": true,
+    "stable:route.verify@1.0": true,
+    "stable:coverage.road.validate@1.0": true,
+    "stable:coverage.road.select-obligations@1.0": true,
+    "stable:coverage.road.plan@1.0": true,
+    "stable:coverage.road.verify@1.0": true,
+    "stable:coverage.road.expand-geojson@1.0": true,
+    "materializer": true,
+    "registry": true,
+    "runtime-profile": true,
+    "consumer-lock": true,
+    "canaries": true,
+    "database-regression": true,
+    "protected-core": true,
+    "canonical-migrations-frozen": true,
+    "version": true,
+    "docs": true,
+    "required-matrix": true,
+    "black-box:exact-inside": true,
+    "black-box:exact-outside-and-bbox-false-positive": true,
+    "black-box:bbox-really-overlaps-without-exact-relation": true,
+    "black-box:exact-boundary-covered": true,
+    "black-box:H3-candidate-false-positive": true,
+    "black-box:KestrelVehicleZX:unique": true,
+    "black-box:reference-ambiguous": true,
+    "black-box:reference-opaque:AbsolutelyMissingCanaryZxyz": true,
+    "black-box:reference-opaque:HiddenForeignRPT": true,
+    "black-box:snapshot-current": true,
+    "black-box:snapshot-stale-after-authority-change": true,
+    "black-box:snapshot-unknown": true,
+    "black-box:plan-no-feasible-normalized": true,
+    "black-box:plan-infrastructure-maps-FAILED": true,
+    "black-box:NO_DATA-is-unknown": true,
+    "preflight-complete": true
+  },
+  "acceptance": [
+    {
+      "id": "AC-B001",
+      "required": true,
+      "area": "Baseline",
+      "scenario": "Actual main head",
+      "expected": "Execution records actual latest main and drift",
+      "evidenceLevel": "SOURCE",
+      "status": "PASS",
+      "guards": [
+        "baseline",
+        "baseline-verify",
+        "baseline-d00",
+        "baseline-g00",
+        "baseline-t00",
+        "isolated-worktree"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/source-lock.json",
+        "reports/gowm-v0.6.2/p00-acceptance.json",
+        "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+      ]
+    },
+    {
+      "id": "AC-B002",
+      "required": true,
+      "area": "Baseline",
+      "scenario": "Version baseline",
+      "expected": "Actual predecessor VERSION is recorded",
+      "evidenceLevel": "SOURCE",
+      "status": "PASS",
+      "guards": [
+        "baseline",
+        "baseline-verify",
+        "baseline-d00",
+        "baseline-g00",
+        "baseline-t00",
+        "isolated-worktree"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/source-lock.json",
+        "reports/gowm-v0.6.2/p00-acceptance.json",
+        "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+      ]
+    },
+    {
+      "id": "AC-B003",
+      "required": true,
+      "area": "Baseline",
+      "scenario": "Independent worktree",
+      "expected": "Other worktrees are not modified",
+      "evidenceLevel": "GIT",
+      "status": "PASS",
+      "guards": [
+        "baseline",
+        "baseline-verify",
+        "baseline-d00",
+        "baseline-g00",
+        "baseline-t00",
+        "isolated-worktree"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/source-lock.json",
+        "reports/gowm-v0.6.2/p00-acceptance.json",
+        "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+      ]
+    },
+    {
+      "id": "AC-B004",
+      "required": true,
+      "area": "Baseline",
+      "scenario": "Existing verify",
+      "expected": "Current verify passes before changes",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "baseline",
+        "baseline-verify",
+        "baseline-d00",
+        "baseline-g00",
+        "baseline-t00",
+        "isolated-worktree"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/source-lock.json",
+        "reports/gowm-v0.6.2/p00-acceptance.json",
+        "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+      ]
+    },
+    {
+      "id": "AC-B005",
+      "required": true,
+      "area": "Baseline",
+      "scenario": "Stable gates",
+      "expected": "Applicable v0.6.1 stable gates are executed",
+      "evidenceLevel": "GATE",
+      "status": "PASS",
+      "guards": [
+        "baseline",
+        "baseline-verify",
+        "baseline-d00",
+        "baseline-g00",
+        "baseline-t00",
+        "isolated-worktree"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/source-lock.json",
+        "reports/gowm-v0.6.2/p00-acceptance.json",
+        "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+      ]
+    },
+    {
+      "id": "AC-B006",
+      "required": true,
+      "area": "Baseline",
+      "scenario": "Provider inventory",
+      "expected": "All manifests and registry fragments are inventoried",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "baseline",
+        "baseline-verify",
+        "baseline-d00",
+        "baseline-g00",
+        "baseline-t00",
+        "isolated-worktree"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/source-lock.json",
+        "reports/gowm-v0.6.2/p00-acceptance.json",
+        "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+      ]
+    },
+    {
+      "id": "AC-B007",
+      "required": true,
+      "area": "Baseline",
+      "scenario": "No protected actions",
+      "expected": "No merge/tag/release/deploy is performed",
+      "evidenceLevel": "GIT",
+      "status": "PASS",
+      "guards": [
+        "baseline",
+        "baseline-verify",
+        "baseline-d00",
+        "baseline-g00",
+        "baseline-t00",
+        "isolated-worktree"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/source-lock.json",
+        "reports/gowm-v0.6.2/p00-acceptance.json",
+        "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+      ]
+    },
+    {
+      "id": "AC-B008",
+      "required": true,
+      "area": "Baseline",
+      "scenario": "No upper-layer code",
+      "expected": "No WSGS/SACS/SDAR/SMPP code is introduced",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "baseline",
+        "baseline-verify",
+        "baseline-d00",
+        "baseline-g00",
+        "baseline-t00",
+        "isolated-worktree"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/source-lock.json",
+        "reports/gowm-v0.6.2/p00-acceptance.json",
+        "reports/gowm-v0.6.2/baseline-runtime/d00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/g00-runtime-v062baseline.json",
+        "reports/gowm-v0.6.2/baseline-runtime/t00-runtime-v062baseline.json"
+      ]
+    },
+    {
+      "id": "AC-M001",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Protocol unchanged",
+      "expected": "providerProtocolVersion remains 1.0",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M002",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Manifest version",
+      "expected": "Manifest 1.1 is explicit and validated",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M003",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Descriptor profile required",
+      "expected": "Manifest 1.1 descriptor requires semanticProfile",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M004",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Legacy parse",
+      "expected": "Manifest 1.0 can remain parseable for legacy profile",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M005",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Legacy exclusion",
+      "expected": "Manifest 1.0 cannot enter world-platform registry",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M006",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "All official providers",
+      "expected": "Every official provider is migrated to 1.1",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M007",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Manifest hash",
+      "expected": "Profile changes alter manifest hash",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M008",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "No silent defaults",
+      "expected": "Missing profile fails world-platform registration",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M009",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Operation uniqueness",
+      "expected": "Duplicate operation/version fails registry build",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M010",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Execution compatibility",
+      "expected": "Direct execution request/result remains compatible",
+      "evidenceLevel": "INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M011",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Job compatibility",
+      "expected": "Provider job contract remains compatible",
+      "evidenceLevel": "INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-M012",
+      "required": true,
+      "area": "Manifest",
+      "scenario": "Health compatibility",
+      "expected": "Provider health endpoints remain compatible",
+      "evidenceLevel": "INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "explicit-manifests",
+        "schema-locks",
+        "operation-unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-V001",
+      "required": true,
+      "area": "Vocabulary",
+      "scenario": "ReferenceKind controlled",
+      "expected": "Unknown ReferenceKind is rejected",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-V002",
+      "required": true,
+      "area": "Vocabulary",
+      "scenario": "Relation controlled",
+      "expected": "Unknown RelationSemantic is rejected",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-V003",
+      "required": true,
+      "area": "Vocabulary",
+      "scenario": "Add-only",
+      "expected": "Existing term meaning is immutable",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-V004",
+      "required": true,
+      "area": "Vocabulary",
+      "scenario": "No synonym drift",
+      "expected": "WITHIN/IN_AREA cannot bypass INSIDE vocabulary",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-V005",
+      "required": true,
+      "area": "Vocabulary",
+      "scenario": "Status controlled",
+      "expected": "Unknown normalized status is rejected",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-V006",
+      "required": true,
+      "area": "Vocabulary",
+      "scenario": "Operation profile",
+      "expected": "All profile arrays use controlled terms",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-V007",
+      "required": true,
+      "area": "Vocabulary",
+      "scenario": "Vocabulary hash",
+      "expected": "Vocabulary change changes contract revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-V008",
+      "required": true,
+      "area": "Vocabulary",
+      "scenario": "Definition present",
+      "expected": "Every term has a machine-readable definition",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R001",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Reference input kind",
+      "expected": "S001 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S001"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R002",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Reference output kind",
+      "expected": "S002 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S002"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R003",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Snapshot semantics",
+      "expected": "S003 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S003"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R004",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Stateless transform",
+      "expected": "S004 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S004"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R005",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Candidate not exact",
+      "expected": "S005 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S005"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R006",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Exact verifier",
+      "expected": "S006 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S006"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R007",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Negative evidence",
+      "expected": "S007 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S007"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R008",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "NO_DATA mapping",
+      "expected": "S008 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S008"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R009",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Exact implementation",
+      "expected": "S009 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S009"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R010",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "NEAR unit",
+      "expected": "S010 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S010"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R011",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Result nature",
+      "expected": "S011 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S011"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R012",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Derived freshness",
+      "expected": "S012 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S012"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R013",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Scope/snapshot consistency",
+      "expected": "S013 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S013"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R014",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Stable evidence",
+      "expected": "S014 passes positive and negative fixtures",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite",
+        "rule-S014"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R015",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "No human approval",
+      "expected": "Rule engine has no human-confirmation state",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R016",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Rule determinism",
+      "expected": "Same inputs produce same violations/order",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R017",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Conflict severity",
+      "expected": "Stable conflict is release-blocking",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-R018",
+      "required": true,
+      "area": "SemanticRules",
+      "scenario": "Insufficient policy",
+      "expected": "Insufficient stable contract is downgraded or blocked",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "unit-suite"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/vitest.json"
+      ]
+    },
+    {
+      "id": "AC-A001",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "All descriptors scanned",
+      "expected": "No official capability is skipped",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A002",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Schema evidence",
+      "expected": "Input/output schemas are hashed and recorded",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A003",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Port evidence",
+      "expected": "Port valueKind and units are recorded",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A004",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Implementation evidence",
+      "expected": "Handler/adapter evidence is recorded",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A005",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "SQL evidence",
+      "expected": "SQL AST evidence is recorded when applicable",
+      "evidenceLevel": "SQL_AST",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A006",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Test evidence",
+      "expected": "Stable profile records black-box evidence",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A007",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Resolved write",
+      "expected": "RESOLVED writes deterministic profile",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A008",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Conflict repair",
+      "expected": "CONFLICT cannot remain for Stable",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A009",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Insufficient search",
+      "expected": "Evidence search order is enforced",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A010",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "No guessing",
+      "expected": "Unknown unit/semantics is not guessed",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A011",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Maturity downgrade",
+      "expected": "Unprovable operation is explicitly downgraded",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A012",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Attestation",
+      "expected": "Every Stable operation has valid attestation",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A013",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Idempotence",
+      "expected": "Second run creates no diff",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A014",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "Determinism",
+      "expected": "Clean runs produce same determinism hash",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-A015",
+      "required": true,
+      "area": "Materializer",
+      "scenario": "No source mutation during check",
+      "expected": "Check mode is read-only",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "fresh-black-box",
+        "maturity-preserved"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-materializer-report.json",
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/black-box-evidence.json"
+      ]
+    },
+    {
+      "id": "AC-I001",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Exact PostGIS",
+      "expected": "EXACT spatial profiles have exact predicate evidence",
+      "evidenceLevel": "SQL_AST",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I002",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "BBox candidate",
+      "expected": "BBox-only implementation cannot be EXACT",
+      "evidenceLevel": "SQL_AST",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I003",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "H3 candidate",
+      "expected": "H3 cover is CANDIDATE",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I004",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Near meters",
+      "expected": "NEAR has explicit unit and distance model",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I005",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Reference output",
+      "expected": "Produced reference kinds match output schema",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I006",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Snapshot result",
+      "expected": "Data-bound output includes data snapshot",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I007",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Stateless no evidence",
+      "expected": "Stateless transform creates no world evidence",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I008",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Status mapping",
+      "expected": "Provider statuses map explicitly",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I009",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "NO_DATA",
+      "expected": "NO_DATA does not map to negative fact",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I010",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Sibling providers",
+      "expected": "Providers do not import sibling provider implementations",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I011",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Bridge source lock",
+      "expected": "Bridge semantics cite source lock/upstream contract",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I012",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Plan nature",
+      "expected": "Route/Coverage result nature is PLAN",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I013",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Validation nature",
+      "expected": "Validation operations declare VALIDATION",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-I014",
+      "required": true,
+      "area": "Implementation",
+      "scenario": "Catalog nature",
+      "expected": "Catalog operations declare CATALOG",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "materializer",
+        "zero-semantic-counters",
+        "protected-core"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-implementation-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-X001",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Verifier exists",
+      "expected": "Every exactVerification target exists",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X002",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Verifier exact",
+      "expected": "Target verifier is EXACT",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X003",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Verifier executable",
+      "expected": "Target maturity is executable",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X004",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Verifier ports",
+      "expected": "Candidate output and verifier input are compatible",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X005",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "No cycle",
+      "expected": "Verification graph is acyclic",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X006",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "H3 exact path",
+      "expected": "H3 cover points to spatial exact verification",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X007",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Result validation",
+      "expected": "PLAN/QUERY_RESULT has result.validate available",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X008",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Snapshot validation",
+      "expected": "Snapshot-bound operations can use snapshot.validate",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X009",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Reference path",
+      "expected": "reference.resolve output can feed world state",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X010",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Network path",
+      "expected": "world position can feed network snap",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X011",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Route path",
+      "expected": "network snap can feed route plan",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-X012",
+      "required": true,
+      "area": "CrossCapability",
+      "scenario": "Coverage path",
+      "expected": "area reference can feed coverage plan",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-N001",
+      "required": true,
+      "area": "NoInference",
+      "scenario": "No prefix classifier",
+      "expected": "No operationId.startsWith semantic inference remains",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-N002",
+      "required": true,
+      "area": "NoInference",
+      "scenario": "No OVERRIDES",
+      "expected": "No runtime override map remains",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-N003",
+      "required": true,
+      "area": "NoInference",
+      "scenario": "No default profile",
+      "expected": "Missing profile fails registration",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-N004",
+      "required": true,
+      "area": "NoInference",
+      "scenario": "Pure projection",
+      "expected": "Semantic endpoint projects descriptor profile only",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-N005",
+      "required": true,
+      "area": "NoInference",
+      "scenario": "Profile hash",
+      "expected": "Endpoint returns canonical profile hash",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-N006",
+      "required": true,
+      "area": "NoInference",
+      "scenario": "Catalog hash",
+      "expected": "Endpoint returns canonical catalog hash",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-N007",
+      "required": true,
+      "area": "NoInference",
+      "scenario": "Legacy omission",
+      "expected": "Legacy operations are not silently projected",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-N008",
+      "required": true,
+      "area": "NoInference",
+      "scenario": "Architecture scan",
+      "expected": "Static gate finds zero inference patterns",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "zero-semantic-counters",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/semantic-conformance-report.json",
+        "reports/gowm-v0.6.2/regression/boundaries.log"
+      ]
+    },
+    {
+      "id": "AC-H001",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Order invariance",
+      "expected": "Registry entry order does not change contract revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H002",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Restart invariance",
+      "expected": "Gateway restart does not change contract revision",
+      "evidenceLevel": "E2E",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H003",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Health invariance",
+      "expected": "Provider health change does not change contract revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H004",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Endpoint invariance",
+      "expected": "Container endpoint change does not change contract revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H005",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Profile sensitivity",
+      "expected": "Profile change changes contract revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H006",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Schema sensitivity",
+      "expected": "Schema hash change changes contract revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H007",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Maturity sensitivity",
+      "expected": "Maturity change changes contract revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H008",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Binding digest",
+      "expected": "Implementation digest changes binding revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H009",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Approval sensitivity",
+      "expected": "Approval ID changes binding revision",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H010",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Canonical JSON",
+      "expected": "Equivalent object key order hashes equally",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H011",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Profile hash repeatable",
+      "expected": "Profile hash is reproducible",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-H012",
+      "required": true,
+      "area": "Revision",
+      "scenario": "Catalog hash repeatable",
+      "expected": "Catalog hash is reproducible",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "unit-suite",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/vitest.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-G001",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Provider set schema",
+      "expected": "Provider set validates",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G002",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Required providers",
+      "expected": "All required provider manifests are found",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G003",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Optional providers",
+      "expected": "Optional absence is reported, not hidden",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G004",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Write providers excluded",
+      "expected": "No write/command provider is registered",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G005",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Manifest hash",
+      "expected": "Every entry matches manifest hash",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G006",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Implementation digest",
+      "expected": "Every entry has approved implementation digest",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G007",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Approval",
+      "expected": "Every entry has approval metadata",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G008",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Collision",
+      "expected": "Duplicate operation fails build",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G009",
+      "required": true,
+      "area": "Registry",
+      "scenario": "Determinism",
+      "expected": "Builder output is order-independent",
+      "evidenceLevel": "UNIT",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G010",
+      "required": true,
+      "area": "Registry",
+      "scenario": "No manual duplication",
+      "expected": "Generated registry matches builder output",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G011",
+      "required": true,
+      "area": "Registry",
+      "scenario": "All semantic profiles",
+      "expected": "All world-platform ops have explicit profiles",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-G012",
+      "required": true,
+      "area": "Registry",
+      "scenario": "All hashes",
+      "expected": "Build report includes revisions and counts",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "registry",
+        "explicit-manifests"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-registry-build-report.json",
+        "reports/gowm-v0.6.2/regression/registry.log"
+      ]
+    },
+    {
+      "id": "AC-P001",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "Compose overlay",
+      "expected": "World platform overlay validates",
+      "evidenceLevel": "CONTAINER",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P002",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "Single external gateway",
+      "expected": "Only Gateway is exposed externally",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P003",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "Internal provider network",
+      "expected": "Providers use internal network endpoints",
+      "evidenceLevel": "CONTAINER",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P004",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "One registry path",
+      "expected": "Gateway uses unified registry path",
+      "evidenceLevel": "CONTAINER",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P005",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "Liveness",
+      "expected": "Gateway liveness is independent of provider health",
+      "evidenceLevel": "E2E",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P006",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "Readiness",
+      "expected": "Gateway readiness checks registry/DB/runtime",
+      "evidenceLevel": "E2E",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P007",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "Health inventory",
+      "expected": "Health lists provider degradation",
+      "evidenceLevel": "E2E",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P008",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "Unrelated availability",
+      "expected": "One provider failure leaves unrelated operations available",
+      "evidenceLevel": "FAULT_INJECTION",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P009",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "Scope",
+      "expected": "Gateway/Provider scope checks remain active",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-P010",
+      "required": true,
+      "area": "RuntimeProfile",
+      "scenario": "No topology in response",
+      "expected": "Catalog responses contain no endpoints/tokens",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "runtime-profile",
+        "canaries"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/world-platform-profile-report.json",
+        "reports/gowm-v0.6.2/runtime/processes.json",
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json"
+      ]
+    },
+    {
+      "id": "AC-L001",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "Generated only",
+      "expected": "Operation lock is generated, not hand-maintained",
+      "evidenceLevel": "STATIC",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L002",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "Default stable",
+      "expected": "Only proven Stable ops enter default",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L003",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "Preview separate",
+      "expected": "Preview ops are separated",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L004",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "Experimental excluded",
+      "expected": "Experimental ops are absent",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L005",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "Schema hashes",
+      "expected": "Input/output hashes match descriptors",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L006",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "Semantic hash",
+      "expected": "Semantic hash matches profile",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L007",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "Revision",
+      "expected": "Lock records contract revision/catalog hash",
+      "evidenceLevel": "CONTRACT",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L008",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "No endpoints",
+      "expected": "No provider URL is present",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L009",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "No secrets",
+      "expected": "No token/secret is present",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-L010",
+      "required": true,
+      "area": "WSGSLock",
+      "scenario": "No topology",
+      "expected": "No container/manifest path is present",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "consumer-lock",
+        "fresh-regression"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/wsgs-lock.log",
+        "reports/gowm-v0.6.2/../..//contracts/consumers/wsgs-southbound-operation-lock-v1.json"
+      ]
+    },
+    {
+      "id": "AC-Q001",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Exact inside",
+      "expected": "Inside object matches exact query",
+      "evidenceLevel": "POSTGRES_INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:exact-inside"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q002",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Exact outside",
+      "expected": "Outside object does not match",
+      "evidenceLevel": "POSTGRES_INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:exact-outside-and-bbox-false-positive"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q003",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "BBox false positive",
+      "expected": "BBox overlap without geometry relation is rejected",
+      "evidenceLevel": "POSTGRES_INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:bbox-really-overlaps-without-exact-relation"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q004",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Boundary semantics",
+      "expected": "Boundary behavior matches declared relation",
+      "evidenceLevel": "POSTGRES_INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:exact-boundary-covered"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q005",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "H3 candidate",
+      "expected": "H3 candidate may include false positive",
+      "evidenceLevel": "PROVIDER_PROCESS",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:H3-candidate-false-positive"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q006",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "H3 exact verify",
+      "expected": "Exact verifier removes false positive",
+      "evidenceLevel": "GATEWAY_E2E",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:exact-outside-and-bbox-false-positive"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q007",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Reference unique",
+      "expected": "Unique name resolves uniquely",
+      "evidenceLevel": "PROVIDER_PROCESS",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:KestrelVehicleZX:unique"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q008",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Reference ambiguous",
+      "expected": "Same name returns AMBIGUOUS",
+      "evidenceLevel": "PROVIDER_PROCESS",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:reference-ambiguous"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q009",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Reference no data",
+      "expected": "Missing name returns NO_DATA/UNRESOLVED",
+      "evidenceLevel": "PROVIDER_PROCESS",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:reference-opaque:AbsolutelyMissingCanaryZxyz"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q010",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Cross scope reference",
+      "expected": "Unauthorized names do not leak",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:reference-opaque:HiddenForeignRPT"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q011",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Snapshot current",
+      "expected": "Current snapshot validates CURRENT",
+      "evidenceLevel": "POSTGRES_INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:snapshot-current"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q012",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Snapshot stale",
+      "expected": "Changed version validates STALE",
+      "evidenceLevel": "POSTGRES_INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:snapshot-stale-after-authority-change"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q013",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Snapshot unknown",
+      "expected": "Unresolvable authority validates UNKNOWN",
+      "evidenceLevel": "POSTGRES_INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:snapshot-unknown"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q014",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Plan no feasible",
+      "expected": "No route/coverage returns NO_FEASIBLE_RESULT",
+      "evidenceLevel": "PROVIDER_PROCESS",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:plan-no-feasible-normalized"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q015",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "Plan failed",
+      "expected": "Infrastructure failure maps FAILED",
+      "evidenceLevel": "FAULT_INJECTION",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:plan-infrastructure-maps-FAILED"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-Q016",
+      "required": true,
+      "area": "BlackBox",
+      "scenario": "NO_DATA not false",
+      "expected": "World NO_DATA is not negative fact",
+      "evidenceLevel": "GATEWAY_E2E",
+      "status": "PASS",
+      "guards": [
+        "fresh-black-box",
+        "black-box:NO_DATA-is-unknown"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/runtime/semantic-black-box-report.json",
+        "reports/gowm-v0.6.2/runtime/executions.json"
+      ]
+    },
+    {
+      "id": "AC-C001",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Single base URL",
+      "expected": "All canaries use one Gateway URL",
+      "evidenceLevel": "GATEWAY_E2E",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C002",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Reference-world-spatial",
+      "expected": "Canary A succeeds",
+      "evidenceLevel": "GATEWAY_E2E",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C003",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Reference-H3-exact",
+      "expected": "Canary B succeeds",
+      "evidenceLevel": "GATEWAY_E2E",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C004",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Network-route",
+      "expected": "Canary C succeeds",
+      "evidenceLevel": "GATEWAY_E2E",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C005",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Coverage-result",
+      "expected": "Canary D succeeds",
+      "evidenceLevel": "GATEWAY_E2E",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C006",
+      "required": true,
+      "area": "Canary",
+      "scenario": "H3 degradation",
+      "expected": "Canary E isolates failure",
+      "evidenceLevel": "FAULT_INJECTION",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C007",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Real DB",
+      "expected": "Canaries use real PostgreSQL",
+      "evidenceLevel": "COMPOSE_E2E",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C008",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Real providers",
+      "expected": "Canaries use provider processes",
+      "evidenceLevel": "COMPOSE_E2E",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C009",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Result evidence",
+      "expected": "Results carry snapshots/receipts/evidence as required",
+      "evidenceLevel": "GATEWAY_E2E",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-C010",
+      "required": true,
+      "area": "Canary",
+      "scenario": "Restart",
+      "expected": "Gateway restart preserves revision and job state",
+      "evidenceLevel": "FAULT_INJECTION",
+      "status": "PASS",
+      "guards": [
+        "canaries",
+        "real-runtime-image"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/single-gateway-canary-report.json",
+        "reports/gowm-v0.6.2/runtime/runtime-image-attestation.json"
+      ]
+    },
+    {
+      "id": "AC-S001",
+      "required": true,
+      "area": "Compatibility",
+      "scenario": "Legacy registry",
+      "expected": "Legacy dev registries still load for direct execution",
+      "evidenceLevel": "INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S002",
+      "required": true,
+      "area": "Compatibility",
+      "scenario": "Provider protocol",
+      "expected": "Protocol 1.0 clients remain compatible",
+      "evidenceLevel": "INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S003",
+      "required": true,
+      "area": "Compatibility",
+      "scenario": "World query",
+      "expected": "Existing DAG execution remains compatible",
+      "evidenceLevel": "INTEGRATION",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S004",
+      "required": true,
+      "area": "Security",
+      "scenario": "Controlled endpoints",
+      "expected": "User input cannot select provider endpoint",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S005",
+      "required": true,
+      "area": "Security",
+      "scenario": "Catalog redaction",
+      "expected": "Catalog/semantic endpoint leaks no secrets",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S006",
+      "required": true,
+      "area": "Security",
+      "scenario": "Scope attestation",
+      "expected": "Scope/deadline semantics remain valid",
+      "evidenceLevel": "SECURITY",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S007",
+      "required": true,
+      "area": "Architecture",
+      "scenario": "No domain algorithms",
+      "expected": "Gateway adds no GIS/route/coverage logic",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S008",
+      "required": true,
+      "area": "Architecture",
+      "scenario": "No foundation change",
+      "expected": "Canonical data tables/algorithms are unchanged",
+      "evidenceLevel": "ARCHITECTURE",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S009",
+      "required": true,
+      "area": "Docs",
+      "scenario": "Architecture docs",
+      "expected": "README/ADR describe single gateway and explicit semantics",
+      "evidenceLevel": "DOCS",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S010",
+      "required": true,
+      "area": "Docs",
+      "scenario": "Known limits",
+      "expected": "Runtime qualifications remain explicit",
+      "evidenceLevel": "DOCS",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S011",
+      "required": true,
+      "area": "Version",
+      "scenario": "Version 0.6.2",
+      "expected": "VERSION/package/changelog agree",
+      "evidenceLevel": "RELEASE",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S012",
+      "required": true,
+      "area": "Git",
+      "scenario": "Exact SHA",
+      "expected": "Local and remote candidate SHA match",
+      "evidenceLevel": "GIT",
+      "status": "AWAITING_DELIVERY_RECEIPT",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S013",
+      "required": true,
+      "area": "PR",
+      "scenario": "Ready only after gates",
+      "expected": "PR is Ready only after required passes",
+      "evidenceLevel": "GITHUB",
+      "status": "AWAITING_DELIVERY_RECEIPT",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S014",
+      "required": true,
+      "area": "Delivery",
+      "scenario": "No protected actions",
+      "expected": "No merge/tag/release/deploy",
+      "evidenceLevel": "GITHUB",
+      "status": "PASS",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    },
+    {
+      "id": "AC-S015",
+      "required": true,
+      "area": "Completion",
+      "scenario": "Markers",
+      "expected": "Final report emits all required markers",
+      "evidenceLevel": "REPORT",
+      "status": "AWAITING_DELIVERY_RECEIPT",
+      "guards": [
+        "fresh-regression",
+        "protected-core",
+        "canonical-migrations-frozen",
+        "docs",
+        "version"
+      ],
+      "evidence": [
+        "reports/gowm-v0.6.2/regression/report.json",
+        "reports/gowm-v0.6.2/../../docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md"
+      ]
+    }
+  ],
+  "protectedActions": []
+}

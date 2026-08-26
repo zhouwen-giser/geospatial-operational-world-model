@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "requiredProviders": [
+    "gowm.reference-catalog",
+    "gowm.dataset-catalog",
+    "gowm.world-evidence",
+    "gowm.platform-validation",
+    "gowm.operational-reality",
+    "gowm.spatial-analysis.bridge",
+    "gowm.h3.interactive.bridge",
+    "gowm.h3.analysis.bridge",
+    "gowm.situation.h3",
+    "gowm.network",
+    "gowm.route-planning",
+    "gowm.road-coverage-planning",
+    "gowm.stas"
+  ],
+  "optionalProviders": [
+    "gowm.crs-normalization.bridge",
+    "gowm.geometry.bridge"
+  ],
+  "excludedClasses": [
+    "OBSERVATION_WRITE",
+    "DEVICE_COMMAND",
+    "SDAR_A2A",
+    "DYNAMIC_MCP_DISCOVERY",
+    "ARBITRARY_SQL"
+  ]
+}

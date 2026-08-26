@@ -1,6 +1,7 @@
 import type { CapabilityDescriptor } from "../../../../packages/platform/contract-runtime/src/index.js";
 import {
   validateContract,
+  catalogRevisions,
   validateProviderManifestSemantics
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError } from "../../../../packages/platform/provider-sdk/src/errors.js";
@@ -37,7 +38,7 @@ export function assertControlledProviderEndpoint(endpoint: URL, allowPlaintextPr
 export class CapabilityRegistry {
   readonly #routes = new Map<string, ResolvedCapability>();
   readonly #bindings = new Map<string, ControlledProviderBinding>();
-  #revision = 0;
+  constructor(private readonly options: { profile?: "legacy" | "world-platform"; vocabularyHash?: `sha256:${string}` } = {}) {}
 
   register(binding: ControlledProviderBinding): void {
     if (!binding.approved || !binding.approvalId.trim()) {
@@ -49,6 +50,9 @@ export class CapabilityRegistry {
       throw new ProviderProtocolError("SCHEMA_MISMATCH", "controlled provider manifest is invalid", {
         details: { issues: validation.issues }
       });
+    }
+    if (this.options.profile === "world-platform" && binding.manifest.manifestSchemaVersion !== "1.1") {
+      throw new ProviderProtocolError("SCHEMA_MISMATCH", "World Platform registry requires Manifest 1.1 with explicit semantics");
     }
     const semantics = validateProviderManifestSemantics(binding.manifest);
     if (!semantics.valid) {
@@ -64,23 +68,23 @@ export class CapabilityRegistry {
       throw new ProviderProtocolError("INVALID_REQUEST", `provider ${providerId} is already registered`);
     }
 
+    const manifest = structuredClone(binding.manifest);
     const pending = new Map<string, ResolvedCapability>();
-    for (const descriptor of binding.manifest.capabilities) {
+    for (const descriptor of manifest.capabilities) {
       const key = operationKey(descriptor.operationId, descriptor.operationVersion);
       if (this.#routes.has(key) || pending.has(key)) {
         throw new ProviderProtocolError("INVALID_REQUEST", `operation route ${key} is already registered`);
       }
       pending.set(key, {
         descriptor,
-        manifest: binding.manifest,
+        manifest,
         endpoint: new URL(binding.endpoint.toString()),
         client: binding.client,
         approvalId: binding.approvalId
       });
     }
-    this.#bindings.set(providerId, binding);
+    this.#bindings.set(providerId, { ...binding, manifest });
     for (const [key, route] of pending) this.#routes.set(key, route);
-    this.#revision += 1;
   }
 
   resolve(operationId: string, operationVersion: string, allowExperimental = false): ResolvedCapability {
@@ -120,6 +124,18 @@ export class CapabilityRegistry {
   }
 
   get revision(): string {
-    return `registry-${this.#revision}`;
+    return this.contractCatalogRevision;
+  }
+
+  get contractCatalogRevision(): string {
+    return catalogRevisions([...this.#bindings.values()], this.options.vocabularyHash).contractCatalogRevision;
+  }
+
+  get bindingRevision(): string {
+    return catalogRevisions([...this.#bindings.values()], this.options.vocabularyHash).bindingRevision;
+  }
+
+  semanticDescriptors(): CapabilityDescriptor[] {
+    return [...this.#routes.values()].filter((r) => r.manifest.manifestSchemaVersion === "1.1").map((r) => structuredClone(r.descriptor));
   }
 }

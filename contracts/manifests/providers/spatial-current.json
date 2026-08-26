@@ -1,5 +1,6 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.spatial-analysis.bridge",
     "providerVersion": "0.2.0",
@@ -18,6 +19,26 @@
     {
       "operationId": "spatial.find-nearby",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [
+          "NEAR"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -73,6 +94,26 @@
     {
       "operationId": "spatial.find-nearest",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [
+          "NEAR"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -128,6 +169,28 @@
     {
       "operationId": "spatial.find-in-area",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [
+          "INSIDE"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -183,6 +246,27 @@
     {
       "operationId": "spatial.find-intersections",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [
+          "INTERSECTS"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -238,6 +322,26 @@
     {
       "operationId": "spatial.find-near-route",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [
+          "NEAR"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Distance is measured in metres using WGS84 geography on the spheroid, including the distance threshold boundary.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -293,6 +397,26 @@
     {
       "operationId": "spatial.find-containing-area",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "LAYER_FEATURE"
+        ],
+        "relationSemantics": [
+          "CONTAINS"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Boundary-inclusive planar geometry predicate: ST_Covers. Boundary contact is included; no geodesic containment is claimed.",
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -348,6 +472,23 @@
     {
       "operationId": "spatial.count-in-area",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -403,6 +544,23 @@
     {
       "operationId": "spatial.summarize-area",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -458,6 +616,23 @@
     {
       "operationId": "spatial.join",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",
@@ -513,6 +688,23 @@
     {
       "operationId": "spatial.aggregate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "LAYER_FEATURE"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "FACT",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "DATA_QUERY",

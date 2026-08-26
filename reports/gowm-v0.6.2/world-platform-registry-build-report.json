@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "providerCount": 15,
+  "operationCount": 122,
+  "contractCatalogRevision": "sha256:2a24b95dbb9921ca4d63bc2d5c07ede73f41169f1ea32e0102a9bb8f47314fe7",
+  "bindingRevision": "sha256:bb3dc24372a494e5cd9c87fd126c5db2219abddfe20e28a169419d2d45dd0c69",
+  "missingRequiredProviders": [],
+  "operationCollisions": [],
+  "warnings": [],
+  "status": "PASS"
+}

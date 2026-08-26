@@ -1,3 +1,6 @@
+import semanticProfiles0 from "./semantic-profiles.spatial.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0 };
 import type {
   CapabilityDescriptor,
   CapabilityProviderManifest
@@ -37,7 +40,7 @@ export function createSpatialProviderBridge(options: SpatialProviderBridgeOption
   const repository = new GowmSpatialV1Repository(options);
   const operations = SPATIAL_OPERATION_IDS.map((operationId) => operation(operationId, repository, options.postgisVersion));
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId: "gowm.spatial-analysis.bridge",
       providerVersion: "0.2.0",
@@ -101,7 +104,7 @@ function operation(
   const schemas = SPATIAL_OPERATION_SCHEMAS[operationId];
   const descriptor: CapabilityDescriptor = {
     operationId,
-    operationVersion: "1.0",
+    operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"),
     semanticRole: "FOUNDATION_DATA_QUERY",
     dataBinding: "WORLD_SNAPSHOT_BOUND",
     resultSemantics: "DATA_QUERY",

@@ -1,0 +1,5 @@
+# P02 — Deterministic semantic materializer
+
+Implemented the offline materializer and semantic-conformance package. Compiler API scans handlers, imports, schema/status construction; pgsql-parser inspects actual generated query AST; schema traversal follows references and records status paths/kinds. All S001–S014 rules have positive/negative unit cases. Materialization returns RESOLVED / CONFLICT / INSUFFICIENT_CONTRACT, never invents missing declarations, and separates profile resolution from Stable runtime admission. Check mode reads without writing. Attestations hash source bytes and final manifests; generated artifacts use canonical profile hashes and stable ordering.
+
+Actual checks: TypeScript/contract check PASS; 19 semantic tests PASS. The SQL test initially exposed nested TypeCast typeName handling and was fixed; comments/literals cannot forge exact evidence. Provider source declarations and full-tree determinism are completed in P03; current black-box evidence remains required in P10/P11.

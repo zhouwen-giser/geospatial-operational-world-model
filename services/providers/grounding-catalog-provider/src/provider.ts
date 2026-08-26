@@ -1,3 +1,8 @@
+import semanticProfiles0 from "./semantic-profiles.reference.json" with { type: "json" };
+import semanticProfiles1 from "./semantic-profiles.dataset.json" with { type: "json" };
+import semanticProfiles2 from "./semantic-profiles.evidence.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0, ...semanticProfiles1, ...semanticProfiles2 };
 import {
   getContractSchemaHash,
   type CapabilityDescriptor,
@@ -35,7 +40,7 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
   const operations = operationIds.map((operationId) => operation(operationId, repository));
   const providerId = options.mode === "reference" ? "gowm.reference-catalog" : options.mode === "dataset" ? "gowm.dataset-catalog" : "gowm.world-evidence";
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId,
       providerVersion: "1.0.0",
@@ -94,7 +99,7 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
   const listOperation = operationId.endsWith(".list") || operationId === "catalog.search" || operationId === "catalog.list-versions" || operationId === "layer.find-features" || operationId === "reference.batch-get" || operationId === "reference-set.get-members" || operationId === "world.get-observations" || operationId === "world.get-event-timeline" || operationId === "world.get-state-history";
   const descriptor: CapabilityDescriptor = {
     operationId,
-    operationVersion: "1.0",
+    operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"),
     semanticRole: "FOUNDATION_DATA_QUERY",
     dataBinding: datasetOperation ? "DATASET_VERSION_BOUND" : "WORLD_SNAPSHOT_BOUND",
     resultSemantics: "DATA_QUERY",
@@ -133,6 +138,17 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
           schemaHash: getContractSchemaHash("urn:gowm:v0.2:value:object"),
           valueKind: "GEOMETRY" as const,
           unitSemantics: "ANGULAR_DEGREES" as const
+        }] : [])
+        ,...(operationId === "world.get-current-state" ? [{
+          name: "position", path: "/facts/0/position",
+          schemaUri: "urn:gowm:v0.6.2:geojson-point",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.6.2:geojson-point"),
+          valueKind: "GEOMETRY" as const, unitSemantics: "ANGULAR_DEGREES" as const
+        },{
+          name: "positionCoordinates", path: "/facts/0/position/coordinates",
+          schemaUri: "urn:gowm:v0.6.2:geojson-position",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.6.2:geojson-position"),
+          valueKind: "ANY" as const, unitSemantics: "ANGULAR_DEGREES" as const
         }] : [])
       ]
     }

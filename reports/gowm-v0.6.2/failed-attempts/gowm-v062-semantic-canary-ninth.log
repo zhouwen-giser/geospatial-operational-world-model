@@ -1,0 +1,4 @@
+Error: runtime-image-matches-built-source: ["dist/packages/platform/contract-runtime/src/schema-validator.js"]
+    at check (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:25:91)
+    at file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:84:3
+WORLD_PLATFORM_CANARY_FAIL checks=2 positiveOperations=0

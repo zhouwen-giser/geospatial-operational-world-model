@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.find-stop-intervals:input:1.0",
+  "title": "StasStasNativeFindStopIntervalsInputV1Input",
+  "$ref": "native.schema.json#/$defs/find_stop_intervals_input_v1"
+}

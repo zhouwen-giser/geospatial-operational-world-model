@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.2:geojson-point",
+  "title": "ProjectedWgs84PointPort",
+  "type": "object", "additionalProperties": false,
+  "required": ["type", "coordinates"],
+  "properties": {
+    "type": {"const": "Point"},
+    "coordinates": {"$ref":"geojson-position.schema.json"}
+  }
+}

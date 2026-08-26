@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.crs-normalization.bridge",
+  "operations": {
+    "crs.check-source@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/crs-provider-bridge/src/provider.ts",
+          "symbol": "createCrsProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/provider-gateway.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/crs-provider-source-lock.json"
+      ]
+    },
+    "crs.normalize.point@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/crs-provider-bridge/src/provider.ts",
+          "symbol": "createCrsProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/provider-gateway.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/crs-provider-source-lock.json"
+      ]
+    },
+    "crs.normalize.points@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/crs-provider-bridge/src/provider.ts",
+          "symbol": "createCrsProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/provider-gateway.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/crs-provider-source-lock.json"
+      ]
+    },
+    "crs.normalize.geometry@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/crs-provider-bridge/src/provider.ts",
+          "symbol": "createCrsProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/provider-gateway.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/crs-provider-source-lock.json"
+      ]
+    },
+    "crs.normalize.feature@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/crs-provider-bridge/src/provider.ts",
+          "symbol": "createCrsProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/provider-gateway.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/crs-provider-source-lock.json"
+      ]
+    },
+    "crs.normalize.feature-collection@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "SPATIAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "services/providers/crs-provider-bridge/src/provider.ts",
+          "symbol": "createCrsProviderBridge"
+        }
+      ],
+      "tests": [
+        "tests/platform/provider-gateway.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/crs-provider-source-lock.json"
+      ]
+    }
+  }
+}

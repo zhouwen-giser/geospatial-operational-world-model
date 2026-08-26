@@ -74,6 +74,9 @@ export function buildGatewayApp(options: GatewayAppOptions): FastifyInstance {
 
   app.get("/v1/capabilities", async () => ({
     registryVersion: options.registry.revision,
+    registryRevision: options.registry.revision,
+    contractCatalogRevision: options.registry.contractCatalogRevision,
+    bindingRevision: options.registry.bindingRevision,
     capabilities: options.registry.catalog()
   }));
 
@@ -86,12 +89,12 @@ export function buildGatewayApp(options: GatewayAppOptions): FastifyInstance {
   });
 
   app.get("/v1/capability-semantics", async () =>
-    projectCapabilitySemantics(options.registry.catalog(), options.registry.revision)
+    projectCapabilitySemantics(options.registry.semanticDescriptors(), options.registry.contractCatalogRevision, options.registry.bindingRevision)
   );
 
   app.get("/v1/capability-semantics/:operationId/:operationVersion", async (request, reply) => {
     const { operationId, operationVersion } = request.params as { operationId: string; operationVersion: string };
-    const profile = projectCapabilitySemantics(options.registry.catalog(), options.registry.revision).profiles
+    const profile = projectCapabilitySemantics(options.registry.semanticDescriptors(), options.registry.contractCatalogRevision, options.registry.bindingRevision).profiles
       .find((candidate) => candidate.operationId === operationId && candidate.operationVersion === operationVersion);
     return profile ?? reply.code(404).send(platformError(normalizeRequestId(request.id), "VERSION_NOT_FOUND", "semantic profile is not registered", "REGISTRY_RESOLUTION"));
   });

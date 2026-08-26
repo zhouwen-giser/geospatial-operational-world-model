@@ -35,10 +35,12 @@ export interface GatewayProviderDeployment extends ControlledProviderDeployment 
 
 export interface ControlledProviderRegistryDocument {
   configVersion: "1.0";
+  registryProfile?: "legacy" | "world-platform";
   providers: ControlledProviderDeploymentLock[];
 }
 
 export interface GatewayServerConfig {
+  registryProfile?: "legacy" | "world-platform";
   host: string;
   port: number;
   databaseUrl: string;
@@ -59,7 +61,8 @@ export interface GatewayServerConfig {
 
 export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.env): Promise<GatewayServerConfig> {
   const registryConfigPath = resolve(env.GATEWAY_PROVIDER_REGISTRY_PATH?.trim() || "config/capability-gateway-registry.json");
-  const controlledProviders = await loadControlledProviderDeployments(registryConfigPath);
+  const document = parseControlledProviderRegistryDocument(JSON.parse(await readFile(registryConfigPath, "utf8")) as unknown);
+  const controlledProviders = await loadProviderDeployments(document, registryConfigPath);
   const providers = controlledProviders.map((deployment) => ({
     ...deployment,
     transportToken: validateProviderTransportToken(env[deployment.transportTokenEnv])
@@ -72,6 +75,7 @@ export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.e
   const dataScopeClaim = optional(env, "GATEWAY_DATA_SCOPE_CLAIM");
   const datasetScopeClaim = optional(env, "GATEWAY_DATASET_SCOPE_CLAIM");
   return {
+    registryProfile: document.registryProfile ?? "legacy",
     host: env.GATEWAY_HOST?.trim() || "0.0.0.0",
     port: tcpPort(env.GATEWAY_PORT, 8090, "GATEWAY_PORT"),
     databaseUrl,
@@ -97,16 +101,25 @@ export async function loadControlledProviderDeployments(
   const document = parseControlledProviderRegistryDocument(
     JSON.parse(await readFile(registryConfigPath, "utf8")) as unknown
   );
+  return loadProviderDeployments(document, registryConfigPath);
+}
+
+async function loadProviderDeployments(document: ControlledProviderRegistryDocument, registryConfigPath: string): Promise<ControlledProviderDeployment[]> {
   const repositoryRoot = resolve(registryConfigPath, "..", "..");
-  return Promise.all(document.providers.map((deployment) =>
+  const providers = await Promise.all(document.providers.map((deployment) =>
     loadApprovedManifest(deployment, repositoryRoot)
   ));
+  if (document.registryProfile === "world-platform" && providers.some((p) => p.approvedManifest.manifestSchemaVersion !== "1.1")) {
+    throw new Error("World Platform registry requires Manifest 1.1 with explicit semantics");
+  }
+  return providers;
 }
 
 export function parseControlledProviderRegistryDocument(value: unknown): ControlledProviderRegistryDocument {
   const root = record(value, "provider registry document");
-  exactKeys(root, ["configVersion", "providers"], "provider registry document");
+  exactKeys(root, ["configVersion", "providers", "registryProfile"], "provider registry document", ["registryProfile"]);
   if (root.configVersion !== "1.0") throw new Error("provider registry configVersion must be 1.0");
+  if (root.registryProfile !== undefined && root.registryProfile !== "legacy" && root.registryProfile !== "world-platform") throw new Error("unknown registry profile");
   if (!Array.isArray(root.providers) || root.providers.length === 0 || root.providers.length > 64) {
     throw new Error("provider registry must contain between 1 and 64 providers");
   }
@@ -114,7 +127,7 @@ export function parseControlledProviderRegistryDocument(value: unknown): Control
   assertUnique(providers.map(({ providerId }) => providerId), "providerId");
   assertUnique(providers.map(({ endpoint }) => endpoint.toString()), "endpoint");
   assertUnique(providers.map(({ approvalId }) => approvalId), "approvalId");
-  return { configVersion: "1.0", providers };
+  return { configVersion: "1.0", ...(root.registryProfile === undefined ? {} : { registryProfile: root.registryProfile }), providers };
 }
 
 function parseProvider(value: unknown, index: number): ControlledProviderDeploymentLock {
@@ -185,10 +198,10 @@ async function loadApprovedManifest(
   return { ...deployment, approvedManifest: structuredClone(approvedManifest) };
 }
 
-function exactKeys(value: Record<string, unknown>, allowed: readonly string[], name: string): void {
+function exactKeys(value: Record<string, unknown>, allowed: readonly string[], name: string, optional: readonly string[] = []): void {
   const expected = new Set(allowed);
   const unknown = Object.keys(value).filter((key) => !expected.has(key));
-  const missing = allowed.filter((key) => !Object.hasOwn(value, key));
+  const missing = allowed.filter((key) => !optional.includes(key) && !Object.hasOwn(value, key));
   if (unknown.length > 0 || missing.length > 0) {
     throw new Error(`${name} keys differ from the controlled schema`);
   }

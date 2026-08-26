@@ -1,0 +1,1146 @@
+{
+  "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
+  "provider": {
+    "providerId": "gowm.stas",
+    "providerVersion": "0.6.2",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:b2a7e1c5cc7ba81485b3536d10d18d4b36e841b1873bb48cae8e4e3c4044d4b9"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "stas.get-tracklet",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.get-tracklet:input:1.0",
+      "inputSchemaHash": "sha256:181a91ae7ce929df4e5b5a53fe3eeeba059229ae10257d37108997b7cf16e40f",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 5000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.get-tracklet:input:1.0",
+            "schemaHash": "sha256:181a91ae7ce929df4e5b5a53fe3eeeba059229ae10257d37108997b7cf16e40f",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.get-tracklet-gaps",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.get-tracklet-gaps:input:1.0",
+      "inputSchemaHash": "sha256:97be9ddeb139293497673c6ad26c8115f2173a304d01d5b047f1c6d448eed8f3",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 5000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.get-tracklet-gaps:input:1.0",
+            "schemaHash": "sha256:97be9ddeb139293497673c6ad26c8115f2173a304d01d5b047f1c6d448eed8f3",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.get-tracklet-quality",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.get-tracklet-quality:input:1.0",
+      "inputSchemaHash": "sha256:7426079127ccade2e5ac5080b8f90ee71c3d95099c6b0dc9a3bab4a397e210d9",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 8000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 20,
+        "maximumCandidates": 20
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.get-tracklet-quality:input:1.0",
+            "schemaHash": "sha256:7426079127ccade2e5ac5080b8f90ee71c3d95099c6b0dc9a3bab4a397e210d9",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.slice-tracklet",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.slice-tracklet:input:1.0",
+      "inputSchemaHash": "sha256:07e0c88873ad742693e09a72739a417e63c573b89f1c4213bfb68534e090460b",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 8000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 100
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.slice-tracklet:input:1.0",
+            "schemaHash": "sha256:07e0c88873ad742693e09a72739a417e63c573b89f1c4213bfb68534e090460b",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.get-position-at",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.get-position-at:input:1.0",
+      "inputSchemaHash": "sha256:01ffc737d9aee567011e477e4eb5af8f30a1254ff7ff1ae296b3971d579d4604",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 2000,
+        "maximumTimeoutMs": 5000,
+        "costClass": "LOW"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1,
+        "maximumCandidates": 1
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.get-position-at:input:1.0",
+            "schemaHash": "sha256:01ffc737d9aee567011e477e4eb5af8f30a1254ff7ff1ae296b3971d579d4604",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.get-motion-summary",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.get-motion-summary:input:1.0",
+      "inputSchemaHash": "sha256:3f0ad1a80989a53dd6567363a4567e5840e4b267fe8eb31d347704d3c68c1483",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 3000,
+        "maximumTimeoutMs": 8000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 100,
+        "maximumCandidates": 100
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.get-motion-summary:input:1.0",
+            "schemaHash": "sha256:3f0ad1a80989a53dd6567363a4567e5840e4b267fe8eb31d347704d3c68c1483",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.find-stop-intervals",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.find-stop-intervals:input:1.0",
+      "inputSchemaHash": "sha256:2b7f284f8db90d88b99d951f0cb3063c4f1a43287424eb6e064fcd8f5f3d30d3",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.find-stop-intervals:input:1.0",
+            "schemaHash": "sha256:2b7f284f8db90d88b99d951f0cb3063c4f1a43287424eb6e064fcd8f5f3d30d3",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.find-region-interactions",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.find-region-interactions:input:1.0",
+      "inputSchemaHash": "sha256:af5521b23ca8a74d93234136e671565a97971f069c303608f9786e612cdfa019",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.find-region-interactions:input:1.0",
+            "schemaHash": "sha256:af5521b23ca8a74d93234136e671565a97971f069c303608f9786e612cdfa019",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.find-tracklets-in-region",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.find-tracklets-in-region:input:1.0",
+      "inputSchemaHash": "sha256:1df8d9e78b725df0f3f9847127f99bf370dd87113042669ec07ad7301489ee8e",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 20000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 5000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.find-tracklets-in-region:input:1.0",
+            "schemaHash": "sha256:1df8d9e78b725df0f3f9847127f99bf370dd87113042669ec07ad7301489ee8e",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.nearest-approach",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.nearest-approach:input:1.0",
+      "inputSchemaHash": "sha256:fa852ea7022341b5e4f93985af177c0eadf0085928ca0b7516111dfeb4b74dd1",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1,
+        "maximumCandidates": 1
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.nearest-approach:input:1.0",
+            "schemaHash": "sha256:fa852ea7022341b5e4f93985af177c0eadf0085928ca0b7516111dfeb4b74dd1",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.find-proximity-intervals",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "PROXIMITY_INTERVAL"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.find-proximity-intervals:input:1.0",
+      "inputSchemaHash": "sha256:64b0cf5aa805af4882185ba30209853ba8fd598d2e5966b9ab0975fef3eca0b5",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 12000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.find-proximity-intervals:input:1.0",
+            "schemaHash": "sha256:64b0cf5aa805af4882185ba30209853ba8fd598d2e5966b9ab0975fef3eca0b5",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.find-nearby-tracklets",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.find-nearby-tracklets:input:1.0",
+      "inputSchemaHash": "sha256:9559407ebe85eabad406e1bdbe18573069f5119b14334af1f21ad66d95b48d3d",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 20000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 5000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.find-nearby-tracklets:input:1.0",
+            "schemaHash": "sha256:9559407ebe85eabad406e1bdbe18573069f5119b14334af1f21ad66d95b48d3d",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.find-successor-candidates",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.find-successor-candidates:input:1.0",
+      "inputSchemaHash": "sha256:4501547ac50d26457e943660ba757962220360e10e428d16bc703ba01729bcbc",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 20000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 5000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.find-successor-candidates:input:1.0",
+            "schemaHash": "sha256:4501547ac50d26457e943660ba757962220360e10e428d16bc703ba01729bcbc",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.compare-pair-features",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.compare-pair-features:input:1.0",
+      "inputSchemaHash": "sha256:f3a16a03b83cfed4fa3548ebb76dd8dd41fa16fb059d395ea7256af8c5e2607a",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 8000,
+        "maximumTimeoutMs": 20000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 32,
+        "maximumCandidates": 32
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.compare-pair-features:input:1.0",
+            "schemaHash": "sha256:f3a16a03b83cfed4fa3548ebb76dd8dd41fa16fb059d395ea7256af8c5e2607a",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "stas.find-sensor-coverage",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETE": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        }
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:capability:stas.find-sensor-coverage:input:1.0",
+      "inputSchemaHash": "sha256:6ee91d7bca0a599f5d5f36cab2dc329af4c4cce7614cc806605c82f8e83415b8",
+      "outputSchemaUri": "urn:gowm:capability:stas:output:1.0",
+      "outputSchemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 10000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 1000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:capability:stas.find-sensor-coverage:input:1.0",
+            "schemaHash": "sha256:6ee91d7bca0a599f5d5f36cab2dc329af4c4cce7614cc806605c82f8e83415b8",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:capability:stas:output:1.0",
+            "schemaHash": "sha256:7e6e2bad26790a6f049ac887951dc3c7409b12a3f8f6ae517de8be0ed606f1a6",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    }
+  ]
+}

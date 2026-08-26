@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "originalWorktree": {
+    "path": "/home/zhouwen/web-download/geospatial-operational-world-model",
+    "head": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
+    "status": "?? GOWM_Platform_Hardening_v0.6.1_Codex_Goal_R2/"
+  },
+  "h3Upstream": {
+    "path": "/home/zhouwen/web-download/h3-spatial-toolkit",
+    "head": "74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+    "clean": true
+  },
+  "protectedActions": []
+}

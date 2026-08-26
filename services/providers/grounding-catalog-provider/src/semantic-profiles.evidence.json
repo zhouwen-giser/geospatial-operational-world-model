@@ -1,0 +1,240 @@
+{
+  "reference-set.get-members@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "result.get@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DERIVED_REFERENCE",
+      "QUERY_RESULT",
+      "REFERENCE_SET"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "AMBIGUOUS": "AMBIGUOUS",
+        "COMPLETED": "COMPLETED",
+        "FAILED": "FAILED",
+        "INDETERMINATE": "INDETERMINATE",
+        "NO_DATA": "NO_DATA",
+        "NO_FEASIBLE_RESULT": "NO_FEASIBLE_RESULT",
+        "PARTIAL": "PARTIAL",
+        "STALE": "STALE"
+      }
+    },
+    "notes": [
+      "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+    ]
+  },
+  "world.get-current-state@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "world.get-event-timeline@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "world.get-geometry@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [
+      "HAS_GEOMETRY"
+    ],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "world.get-observations@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "world.get-provenance@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "world.get-state-history@1.0": {
+    "profileVersion": "1.0",
+    "domain": "WORLD_STATE",
+    "acceptedReferenceKinds": [
+      "DATASET",
+      "DERIVED_REFERENCE",
+      "LAYER",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "QUERY_RESULT",
+      "REFERENCE_SET",
+      "SPATIAL_OBJECT",
+      "WORLD_OBJECT"
+    ],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "SNAPSHOT",
+    "resultNature": "FACT",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  }
+}

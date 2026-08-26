@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.find-nearby-tracklets:input:1.0",
+  "title": "StasStasNativeFindNearbyTrackletsInputV1Input",
+  "$ref": "native.schema.json#/$defs/find_nearby_tracklets_input_v1"
+}

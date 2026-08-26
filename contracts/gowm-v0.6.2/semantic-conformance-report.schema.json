@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.2:semantic-conformance-report",
+  "title": "SemanticConformanceReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "counters",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "counters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "semanticProfileMissing",
+        "semanticRuleViolation",
+        "semanticImplementationMismatch",
+        "crossCapabilityViolation",
+        "stableCapabilityWithoutBlackBoxEvidence",
+        "runtimeSemanticInference",
+        "providerTopologyLeak",
+        "operationCollision"
+      ],
+      "properties": {
+        "semanticProfileMissing": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "semanticRuleViolation": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "semanticImplementationMismatch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "crossCapabilityViolation": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stableCapabilityWithoutBlackBoxEvidence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runtimeSemanticInference": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "providerTopologyLeak": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operationCollision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL"
+      ]
+    }
+  }
+}

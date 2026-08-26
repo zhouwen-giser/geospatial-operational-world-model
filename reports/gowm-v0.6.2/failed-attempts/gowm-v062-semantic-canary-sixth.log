@@ -1,0 +1,6 @@
+Error: C-route:http: {"status":500,"body":{"schemaVersion":"1.0","requestId":"req-l","error":{"code":"INTERNAL_PROVIDER_ERROR","message":"Gateway request failed","retryable":false,"stage":"PROVIDER_EXECUTION","providerId":"gowm.route-planning","details":{"providerId":"gowm.route-planning","stage":"PROVIDER_EXECUTION"}}}}
+    at check (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:24:91)
+    at execute (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:51:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:118:20
+WORLD_PLATFORM_CANARY_FAIL checks=246 positiveOperations=10

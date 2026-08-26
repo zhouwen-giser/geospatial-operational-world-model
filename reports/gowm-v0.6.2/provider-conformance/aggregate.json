@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "1.0",
+  "providers": [
+    {
+      "providerId": "gowm.reference-catalog",
+      "providerVersion": "1.0.0",
+      "status": "PASS",
+      "reportHash": "sha256:451004687563f52a8529cfcbb36f7b9550a0dc7bf529ec3b5f1bc808ae551e7d"
+    },
+    {
+      "providerId": "gowm.dataset-catalog",
+      "providerVersion": "1.0.0",
+      "status": "PASS",
+      "reportHash": "sha256:87dff4eece2d4660201a29d55d424bf527eb09ee148050e89c1d41176847e71a"
+    },
+    {
+      "providerId": "gowm.world-evidence",
+      "providerVersion": "1.0.0",
+      "status": "PASS",
+      "reportHash": "sha256:0237c92bf649a31d00c03cf3574b9580ad893a9bcf0568569d9d8e93f1d03359"
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "providerVersion": "0.2.0",
+      "status": "PASS",
+      "reportHash": "sha256:6163b3c0b8da0a2b3ff066cf5d2195846997f880bc23155d6b91c5a0d1a25fa7"
+    },
+    {
+      "providerId": "gowm.h3.analysis.bridge",
+      "providerVersion": "0.2.0",
+      "status": "PASS",
+      "reportHash": "sha256:1450d3fe1131ed9e634f20773fb45e777d78315a66586ff9bc7ba3e1bd5fecb1"
+    },
+    {
+      "providerId": "gowm.h3.interactive.bridge",
+      "providerVersion": "0.2.0",
+      "status": "PASS",
+      "reportHash": "sha256:c8cd7dd574383aeaf032b9bcb1ed0e095b7c0d4913421b3566f8053de19daf00"
+    },
+    {
+      "providerId": "gowm.network",
+      "providerVersion": "1.0.0",
+      "status": "PASS",
+      "reportHash": "sha256:484534a11c23ec182c5c680cf2cd25b3209a4a344474852ef1837ac217648dbe"
+    },
+    {
+      "providerId": "gowm.route-planning",
+      "providerVersion": "1.0.0",
+      "status": "PASS",
+      "reportHash": "sha256:2ece034d900728edd025fc66486c8f58821acca89f276fa2c5e3e52834047fd2"
+    },
+    {
+      "providerId": "gowm.road-coverage-planning",
+      "providerVersion": "1.0.0",
+      "status": "PASS",
+      "reportHash": "sha256:0c38dfc9fa1bb0ae4ce7819cc1488ed522118cd3845e8cfb0cba429ab9bcf782"
+    },
+    {
+      "providerId": "gowm.platform-validation",
+      "providerVersion": "1.0.0",
+      "status": "PASS",
+      "reportHash": "sha256:583ea372649d536b73238d2f1c5b091dc62f3ab8350c52f59d91c77b9040a81c"
+    },
+    {
+      "providerId": "gowm.stas",
+      "providerVersion": "0.1.0",
+      "status": "PASS",
+      "reportHash": "sha256:76c8bb4dc693f2eb69f98b0af03a9b61f0037700399f6aa44a920c706476a9e2"
+    }
+  ],
+  "checks": [
+    {
+      "id": "ALL_PROVIDER_REPORTS",
+      "status": "PASS",
+      "message": "Required nine domains plus H3 interactive and Platform Validation"
+    },
+    {
+      "id": "REGISTRY_UNIQUE",
+      "status": "PASS",
+      "message": "70 unique operations"
+    },
+    {
+      "id": "SOURCE_STABLE",
+      "status": "PASS",
+      "message": "Source fingerprint captured before and after this executable gate"
+    }
+  ],
+  "sourceBefore": {
+    "digest": "3a3a98b544b0747480a2bdc2f19fe2fcc799081f8da953bed53e4717d41b3778",
+    "fileCount": 1057
+  },
+  "sourceAfter": {
+    "digest": "3a3a98b544b0747480a2bdc2f19fe2fcc799081f8da953bed53e4717d41b3778",
+    "fileCount": 1057
+  },
+  "evidenceLevel": "CONTRACT_AND_UNIT_PROTOCOL",
+  "runtimeReadiness": "NOT_CLAIMED",
+  "status": "PASS",
+  "generatedAt": "2026-08-26T11:41:16.828Z",
+  "reportHash": "sha256:813a0aec1e8928aa66f188710b23fddcb965ecc9ba3939e3ebee52c395a2fe6b"
+}

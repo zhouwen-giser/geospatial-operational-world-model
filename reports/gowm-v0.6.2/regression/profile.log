@@ -1,0 +1,5 @@
+
+> geospatial-operational-world-model@0.6.2 validate:world-platform-profile
+> node validation/architecture/validate-world-platform-profile.mjs
+
+WORLD_PLATFORM_PROFILE_PASS 9 checks

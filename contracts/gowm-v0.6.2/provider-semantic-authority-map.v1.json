@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "1.0",
+  "authorities": [
+    {
+      "providerId": "gowm.reference-catalog",
+      "allowedDomains": [
+        "REFERENCE"
+      ]
+    },
+    {
+      "providerId": "gowm.dataset-catalog",
+      "allowedDomains": [
+        "CATALOG"
+      ]
+    },
+    {
+      "providerId": "gowm.world-evidence",
+      "allowedDomains": [
+        "WORLD_STATE",
+        "TEMPORAL"
+      ]
+    },
+    {
+      "providerId": "gowm.platform-validation",
+      "allowedDomains": [
+        "PLATFORM"
+      ]
+    },
+    {
+      "providerId": "gowm.operational-reality",
+      "allowedDomains": [
+        "WORLD_STATE",
+        "TEMPORAL",
+        "ANALYSIS"
+      ]
+    },
+    {
+      "providerId": "gowm.crs-normalization.bridge",
+      "allowedDomains": [
+        "SPATIAL"
+      ]
+    },
+    {
+      "providerId": "gowm.geometry.bridge",
+      "allowedDomains": [
+        "SPATIAL"
+      ]
+    },
+    {
+      "providerId": "gowm.h3.interactive.bridge",
+      "allowedDomains": [
+        "H3"
+      ]
+    },
+    {
+      "providerId": "gowm.h3.analysis.bridge",
+      "allowedDomains": [
+        "H3",
+        "ANALYSIS"
+      ]
+    },
+    {
+      "providerId": "gowm.situation.h3",
+      "allowedDomains": [
+        "H3",
+        "WORLD_STATE"
+      ]
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "allowedDomains": [
+        "SPATIAL"
+      ]
+    },
+    {
+      "providerId": "gowm.stas",
+      "allowedDomains": [
+        "TEMPORAL",
+        "ANALYSIS"
+      ]
+    },
+    {
+      "providerId": "gowm.network",
+      "allowedDomains": [
+        "NETWORK"
+      ]
+    },
+    {
+      "providerId": "gowm.route-planning",
+      "allowedDomains": [
+        "ROUTING"
+      ]
+    },
+    {
+      "providerId": "gowm.road-coverage-planning",
+      "allowedDomains": [
+        "COVERAGE"
+      ]
+    }
+  ],
+  "note": "This constrains automatic materialization; it is not a runtime inference table."
+}

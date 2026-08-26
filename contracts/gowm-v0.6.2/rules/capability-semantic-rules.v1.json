@@ -1,0 +1,319 @@
+{
+  "schemaVersion": "1.0",
+  "rulesVersion": "1.0",
+  "resolutionPolicy": {
+    "humanConfirmationAllowed": false,
+    "stableUnknownPolicy": "DOWNGRADE_OR_BLOCK",
+    "conflictPolicy": "FIX_CONTRACT_IMPLEMENTATION_OR_MATURITY",
+    "insufficientContractSearchOrder": [
+      "DESCRIPTOR",
+      "SCHEMA",
+      "PORTS",
+      "IMPLEMENTATION",
+      "SQL",
+      "TESTS",
+      "ADR",
+      "CALLERS"
+    ]
+  },
+  "rules": [
+    {
+      "id": "S001",
+      "name": "Reference input declaration",
+      "appliesWhen": {
+        "inputValueKindsAny": [
+          "REFERENCE_KEY"
+        ],
+        "inputSchemaTypesAny": [
+          "ReferenceKey",
+          "ReferenceSet",
+          "DerivedReference",
+          "QueryResultReference"
+        ]
+      },
+      "assertions": [
+        {
+          "field": "acceptedReferenceKinds",
+          "operator": "NON_EMPTY"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_REFERENCE_INPUT_MISSING"
+    },
+    {
+      "id": "S002",
+      "name": "Reference output declaration",
+      "appliesWhen": {
+        "outputValueKindsAny": [
+          "REFERENCE_KEY"
+        ],
+        "outputSchemaTypesAny": [
+          "ReferenceKey",
+          "ReferenceSet",
+          "DerivedReference",
+          "QueryResultReference"
+        ]
+      },
+      "assertions": [
+        {
+          "field": "producedReferenceKinds",
+          "operator": "NON_EMPTY"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_REFERENCE_OUTPUT_MISSING"
+    },
+    {
+      "id": "S003",
+      "name": "Data-bound snapshot semantics",
+      "appliesWhen": {
+        "dataBindingIn": [
+          "WORLD_SNAPSHOT_BOUND",
+          "DATASET_VERSION_BOUND"
+        ]
+      },
+      "assertions": [
+        {
+          "field": "timeSemantics",
+          "operator": "NOT_EQUALS",
+          "value": "NONE"
+        },
+        {
+          "field": "freshnessSemantics",
+          "operator": "NOT_EQUALS",
+          "value": "NONE"
+        },
+        {
+          "field": "snapshotPolicy.dataSnapshot",
+          "operator": "EQUALS",
+          "value": "REQUIRED"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_SNAPSHOT_MISSING"
+    },
+    {
+      "id": "S004",
+      "name": "Stateless transformation semantics",
+      "appliesWhen": {
+        "dataBindingIn": [
+          "WORLD_INDEPENDENT"
+        ],
+        "resultSemanticsIn": [
+          "TRANSFORMATION"
+        ]
+      },
+      "assertions": [
+        {
+          "field": "timeSemantics",
+          "operator": "EQUALS",
+          "value": "NONE"
+        },
+        {
+          "field": "freshnessSemantics",
+          "operator": "EQUALS",
+          "value": "NONE"
+        },
+        {
+          "field": "negativeEvidencePolicy",
+          "operator": "EQUALS",
+          "value": "NOT_APPLICABLE"
+        },
+        {
+          "field": "relationSemantics",
+          "operator": "EMPTY"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_STATELESS_INVALID"
+    },
+    {
+      "id": "S005",
+      "name": "Candidate cannot be exact",
+      "appliesWhen": {
+        "implementationEvidenceAny": [
+          "H3_COVER",
+          "BBOX_FILTER",
+          "COARSE_INDEX",
+          "CANDIDATE_SET"
+        ]
+      },
+      "assertions": [
+        {
+          "field": "spatialSemantics",
+          "operator": "EQUALS",
+          "value": "CANDIDATE"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_CANDIDATE_AS_EXACT"
+    },
+    {
+      "id": "S006",
+      "name": "Exact verification target",
+      "appliesWhen": {
+        "fieldEquals": {
+          "spatialSemantics": "CANDIDATE"
+        },
+        "usedForExactConclusion": true
+      },
+      "assertions": [
+        {
+          "field": "exactVerification",
+          "operator": "PRESENT"
+        },
+        {
+          "crossCapability": "TARGET_EXISTS_AND_IS_EXACT"
+        },
+        {
+          "crossCapability": "VERIFICATION_GRAPH_ACYCLIC"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_EXACT_VERIFIER_INVALID"
+    },
+    {
+      "id": "S007",
+      "name": "Explicit negative evidence",
+      "appliesWhen": {
+        "domainIn": [
+          "WORLD_STATE",
+          "SPATIAL",
+          "TEMPORAL",
+          "ANALYSIS"
+        ]
+      },
+      "assertions": [
+        {
+          "field": "negativeEvidencePolicy",
+          "operator": "PRESENT"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_NEGATIVE_POLICY_MISSING"
+    },
+    {
+      "id": "S008",
+      "name": "NO_DATA is unknown",
+      "appliesWhen": {
+        "domainStatusesAny": [
+          "NO_DATA",
+          "UNKNOWN",
+          "OBSERVATION_GAP",
+          "INDETERMINATE",
+          "STALE"
+        ]
+      },
+      "assertions": [
+        {
+          "field": "domainStatus.mapping",
+          "operator": "EXPLICIT"
+        },
+        {
+          "mappingConstraint": "NO_DATA_NOT_NEGATIVE"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_NO_DATA_NEGATIVE"
+    },
+    {
+      "id": "S009",
+      "name": "Exact spatial implementation evidence",
+      "appliesWhen": {
+        "fieldEquals": {
+          "spatialSemantics": "EXACT"
+        }
+      },
+      "assertions": [
+        {
+          "implementationConstraint": "EXACT_SPATIAL_EVIDENCE"
+        }
+      ],
+      "failureCode": "SEMANTIC_IMPLEMENTATION_EXACT_NOT_PROVEN"
+    },
+    {
+      "id": "S010",
+      "name": "Near unit and distance model",
+      "appliesWhen": {
+        "relationSemanticsAny": [
+          "NEAR"
+        ]
+      },
+      "assertions": [
+        {
+          "portConstraint": "DISTANCE_UNIT_DECLARED"
+        },
+        {
+          "implementationConstraint": "DISTANCE_MODEL_DECLARED"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_NEAR_UNIT_MISSING"
+    },
+    {
+      "id": "S011",
+      "name": "Result nature consistency",
+      "appliesWhen": {
+        "always": true
+      },
+      "assertions": [
+        {
+          "crossFieldConstraint": "RESULT_NATURE_MATCHES_RESULT_SEMANTICS"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_RESULT_NATURE_CONFLICT"
+    },
+    {
+      "id": "S012",
+      "name": "Derived freshness",
+      "appliesWhen": {
+        "resultNatureIn": [
+          "PLAN",
+          "DERIVED"
+        ],
+        "outputFeaturesAny": [
+          "validUntil",
+          "dataSnapshot",
+          "worldVersion",
+          "routingSnapshot"
+        ]
+      },
+      "assertions": [
+        {
+          "field": "freshnessSemantics",
+          "operator": "NOT_EQUALS",
+          "value": "NONE"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_FRESHNESS_MISSING"
+    },
+    {
+      "id": "S013",
+      "name": "Data binding, scope and snapshot",
+      "appliesWhen": {
+        "always": true
+      },
+      "assertions": [
+        {
+          "crossFieldConstraint": "DATA_BINDING_SCOPE_SNAPSHOT_CONSISTENT"
+        }
+      ],
+      "failureCode": "SEMANTIC_PROFILE_SCOPE_SNAPSHOT_CONFLICT"
+    },
+    {
+      "id": "S014",
+      "name": "Stable evidence completeness",
+      "appliesWhen": {
+        "maturityIn": [
+          "STABLE"
+        ]
+      },
+      "assertions": [
+        {
+          "evidenceConstraint": "PROFILE_EXPLICIT"
+        },
+        {
+          "evidenceConstraint": "STATIC_IMPLEMENTATION_PASS"
+        },
+        {
+          "evidenceConstraint": "CROSS_CAPABILITY_PASS"
+        },
+        {
+          "evidenceConstraint": "BLACK_BOX_PASS"
+        }
+      ],
+      "failureCode": "STABLE_CAPABILITY_EVIDENCE_INCOMPLETE"
+    }
+  ]
+}

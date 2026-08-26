@@ -119,6 +119,19 @@ export function getContractSchemaHash(nameOrId: string): `sha256:${string}` {
 }
 
 const sourceByteSchemaHashes: Readonly<Record<string, `sha256:${string}`>> = {
+  // Frozen Network 1.0 manifests use source-byte locks, like Route/Coverage.
+  "urn:gowm:v0.5:network-build-request": "sha256:763a2c6eb01323275c7c30c5a84891018424ceec43d4021ee3db4cdd7db774b4",
+  "urn:gowm:v0.5:network-build-result": "sha256:be1fbd02ea7c8c826c910dbbf742bde188ac19037acc419490f1529219dbbe57",
+  "urn:gowm:v0.5:network-common": "sha256:1f35b48d91d8138e3a52762e9fdfb9ee21a97980b43fb6bf15126cd8faae149c",
+  "urn:gowm:v0.5:network-condition-snapshot": "sha256:9b29c7dcbe62aa90321576389fd698fff74debd1932d52d4cee4a83a25d75d89",
+  "urn:gowm:v0.5:network-cost-matrix-request": "sha256:6dc75cdca2990e8239dd060f1d93bed26959d37ab32507fbc96d92844bda0a55",
+  "urn:gowm:v0.5:network-cost-matrix-result": "sha256:058346014c99499e53b6b58a2509ef1308c321aad10e4a2525991678824e68f7",
+  "urn:gowm:v0.5:network-graph-version": "sha256:947f7f3d6a35b8e3bda52722b16f7e42dc612820c12fbd6a3b1af855dd35411c",
+  "urn:gowm:v0.5:provider-manifest-extension": "sha256:4c641c6be9ac763744ddb309402cc1e60f28a49060f92280c768fd87259ba2d9",
+  "urn:gowm:v0.5:network-shortest-path-request": "sha256:b1bed7cd90744523d035567b0fbae0382a8fddc014728fef93158cadbdc48355",
+  "urn:gowm:v0.5:network-shortest-path-result": "sha256:c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794",
+  "urn:gowm:v0.5:network-snap-request": "sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb",
+  "urn:gowm:v0.5:network-snap-result": "sha256:e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd",
   "urn:gowm:v0.5:route-planning-request": "sha256:0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67",
   "urn:gowm:v0.5:route-planning-result": "sha256:e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c",
   "urn:gowm:v0.5:route-verification-report": "sha256:76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd",

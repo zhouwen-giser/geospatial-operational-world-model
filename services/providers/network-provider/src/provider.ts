@@ -1,4 +1,7 @@
-import type { CapabilityDescriptor, CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
+import semanticProfiles0 from "./semantic-profiles.network.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0 };
+import { getContractSchemaHash, type CapabilityDescriptor, type CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { createProviderRuntime, sha256, type ProviderOperation, type ProviderRuntime } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { NetworkRepository, NETWORK_OPERATION_IDS, type NetworkOperationId } from "../../../../packages/network-query-core/src/index.js";
 import { NETWORK_SCHEMA_LOCKS, schemasFor } from "./schemas.js";
@@ -15,7 +18,7 @@ export function createNetworkProvider(options: NetworkProviderOptions): NetworkP
     algorithms: ["directed-dijkstra", "turn-product-state", "independent-replay"], maximumSegments: options.maximumSegments ?? 100_000
   } as const;
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId: "gowm.network", providerVersion: "1.0.0", owner: "gowm-platform",
       implementationDigest: sha256({ providerId: "gowm.network", version: "1.0.0", readContract: "gowm_network_v1", operations: operations.map(({ descriptor }) => ({ operationId: descriptor.operationId, inputSchemaHash: descriptor.inputSchemaHash, outputSchemaHash: descriptor.outputSchemaHash })) }),
@@ -35,7 +38,7 @@ function operation(operationId: NetworkOperationId, repository: NetworkRepositor
   const lock = NETWORK_SCHEMA_LOCKS[operationId];
   const matrix = operationId === "network.path.cost-matrix";
   const descriptor: CapabilityDescriptor = {
-    operationId, operationVersion: "1.0", semanticRole: "FOUNDATION_DATA_QUERY", dataBinding: "WORLD_SNAPSHOT_BOUND",
+    operationId, operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"), semanticRole: "FOUNDATION_DATA_QUERY", dataBinding: "WORLD_SNAPSHOT_BOUND",
     resultSemantics: operationId === "network.path.verify" ? "VALIDATION" : operationId.includes("path") ? "DERIVED_ANALYSIS" : "DATA_QUERY",
     executionBindings: ["SYNC_HTTP", "VERSIONED_SQL_CONTRACT", ...(matrix ? ["ASYNC_JOB" as const] : [])],
     criticalPathPolicy: "REMOTE_ONLY", maturity: lock.maturity,
@@ -47,7 +50,12 @@ function operation(operationId: NetworkOperationId, repository: NetworkRepositor
     snapshotPolicy: { dataSnapshot: "REQUIRED", computeSnapshot: "REQUIRED" },
     ports: {
       inputs: [{ name: "request", schemaUri: schemas.inputSchemaUri, schemaHash: schemas.inputSchemaHash, valueKind: "ANY", unitSemantics: "UNSPECIFIED" }],
-      outputs: [{ name: "result", schemaUri: schemas.outputSchemaUri, schemaHash: schemas.outputSchemaHash, valueKind: matrix ? "ROW_SET" : "ANY", unitSemantics: "UNSPECIFIED" }]
+      outputs: [{ name: "result", schemaUri: schemas.outputSchemaUri, schemaHash: schemas.outputSchemaHash, valueKind: matrix ? "ROW_SET" : "ANY", unitSemantics: "UNSPECIFIED" },
+        ...(operationId === "network.snap.point" ? [{
+          name: "directedState", path: "/candidates/0/state",
+          schemaUri: "urn:gowm:v0.6.2:directed-network-state", schemaHash: getContractSchemaHash("urn:gowm:v0.6.2:directed-network-state"),
+          valueKind: "ANY" as const, unitSemantics: "UNSPECIFIED" as const
+        }] : [])]
     }
   };
   return {

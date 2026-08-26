@@ -1,0 +1,241 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.h3.interactive.bridge",
+  "operations": {
+    "h3.index.points@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3InteractiveProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ],
+      "candidateOnly": true
+    },
+    "h3.geometry.cover@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "CANDIDATE_COVER"
+        ],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE",
+        "exactVerification": {
+          "operationId": "spatial.find-intersections",
+          "operationVersion": "1.0"
+        }
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3InteractiveProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ],
+      "candidateOnly": true,
+      "verificationMapping": {
+        "retainedInput": "/geometry",
+        "targetInput": "/geometry",
+        "explanation": "Retain original input geometry for exact verification; cell set alone cannot establish an exact world relation."
+      }
+    },
+    "h3.cells.to-geojson@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3InteractiveProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ],
+      "candidateOnly": true
+    },
+    "h3.neighborhood.disk@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3InteractiveProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ],
+      "candidateOnly": true
+    },
+    "h3.hierarchy.parent@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3InteractiveProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ],
+      "candidateOnly": true
+    },
+    "h3.hierarchy.children@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3InteractiveProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ],
+      "candidateOnly": true
+    },
+    "h3.hierarchy.compact@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3InteractiveProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ],
+      "candidateOnly": true
+    },
+    "h3.hierarchy.uncompact@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "CANDIDATE",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3InteractiveProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ],
+      "candidateOnly": true
+    }
+  }
+}

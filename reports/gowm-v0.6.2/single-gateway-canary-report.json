@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "1.0",
+  "gatewayBaseUrlHash": "sha256:9bf3eb84037a55c13921785acf0c5e044b0be059318edbe01aaeddd8b412925c",
+  "canaries": [
+    {
+      "id": "A",
+      "operations": [
+        "reference.resolve",
+        "world.get-current-state",
+        "spatial.find-nearby"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/executions.json",
+        "runtime/semantic-black-box-report.json#A-world-position"
+      ]
+    },
+    {
+      "id": "B",
+      "operations": [
+        "reference.resolve",
+        "world.get-geometry",
+        "h3.geometry.cover",
+        "spatial.find-intersections",
+        "result.validate"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/executions.json",
+        "runtime/semantic-black-box-report.json#H3-candidate-false-positive"
+      ]
+    },
+    {
+      "id": "C",
+      "operations": [
+        "world.get-current-state",
+        "network.snap.point",
+        "route.plan",
+        "result.validate"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/executions.json"
+      ]
+    },
+    {
+      "id": "D",
+      "operations": [
+        "reference.resolve",
+        "coverage.road.plan",
+        "result.validate"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/executions.json"
+      ]
+    },
+    {
+      "id": "E",
+      "operations": [
+        "h3.analytics.aggregate",
+        "reference.resolve",
+        "world.get-current-state",
+        "spatial.find-nearby"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/executions.json",
+        "runtime/semantic-black-box-report.json#E-localized-failure"
+      ]
+    }
+  ],
+  "status": "PASS"
+}

@@ -5,7 +5,7 @@ import { ProviderProtocolError, sha256 } from "../../packages/platform/provider-
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "../../services/providers/grounding-catalog-provider/src/cursor.js";
 import { decodeEvidenceCursor, encodeEvidenceCursor } from "../../services/providers/grounding-catalog-provider/src/evidence-cursor.js";
 import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
-import { GroundingCatalogRepository } from "../../services/providers/grounding-catalog-provider/src/repository.js";
+import { GroundingCatalogRepository, projectedPosition } from "../../services/providers/grounding-catalog-provider/src/repository.js";
 import type { CatalogSqlClient, CatalogSqlPool } from "../../services/providers/grounding-catalog-provider/src/types.js";
 import { loadControlledProviderDeployments } from "../../services/gateway/world-capability-gateway/src/config.js";
 
@@ -17,6 +17,15 @@ const pool: CatalogSqlPool = {
 const cursorSecret = "GowmCatalogCursorSecret_2026_Alpha_Bravo";
 
 describe("grounding catalog providers", () => {
+  it("packs only authoritative projected coordinates for the typed Point port", () => {
+    expect(projectedPosition({position:{longitude:121,latitude:31,altitude:12}})).toEqual({type:"Point",coordinates:[121,31,12]});
+    for (const state of [{}, {position:{longitude:0}}, {position:{longitude:181,latitude:0}}, {position:{longitude:0,latitude:NaN}}]) {
+      expect(projectedPosition(state)).toBeUndefined();
+    }
+    const manifest = createGroundingCatalogProvider({mode:"evidence",pool,cursorSecret}).runtime.manifest;
+    expect(manifest.capabilities.find((c)=>c.operationId==="world.get-current-state")?.ports?.outputs.find((p)=>p.name==="position"))
+      .toMatchObject({path:"/facts/0/position",valueKind:"GEOMETRY",schemaHash:getContractSchemaHash("urn:gowm:v0.6.2:geojson-point")});
+  });
   it.each(["world.get-current-state", "world.get-geometry", "world.get-provenance"])("serializes and receipts %s with absent optional dates", async (operationId) => {
     const referenceKey = { namespace: "gowm", kind: "WORLD_OBJECT", id: `wrf_${"1".repeat(32)}`, version: "1" };
     const client: CatalogSqlClient = {

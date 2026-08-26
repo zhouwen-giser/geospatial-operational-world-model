@@ -1410,6 +1410,400 @@ export type SpatialSummarizeAreaInputV1 = SpatialProviderOperationContractsV1Sum
 
 export type SpatialSummarizeAreaOutputV1 = SpatialProviderOperationContractsV1SummarizeOutput;
 
+export type StasProviderAnalysisResult = StasNativeAnalysisresult;
+
+export type StasNativeContracts = Record<string, unknown>;
+
+export type StasNativeAnalysisresult = {
+  analysisId: string;
+  assumptions: Array<StasNativeAssumption>;
+  coverage: StasNativeCoverage;
+  evidence: Array<StasNativeEvidenceref>;
+  execution: StasNativeExecution;
+  gaps: Array<StasNativeGapref>;
+  generatedAt: string;
+  method: StasNativeMethod;
+  page?: StasNativePage;
+  quality: StasNativeQuality;
+  query: Record<string, unknown>;
+  result: Record<string, unknown> | Array<unknown> | null;
+  schemaVersion: "1.0";
+  snapshot: StasNativeSnapshot;
+  sourceReferences: Array<StasNativeSourcereference>;
+  status: "COMPLETE" | "PARTIAL" | "NO_DATA" | "INDETERMINATE";
+  subjects: Array<StasNativeSubjectref>;
+  uncertainties: Array<StasNativeUncertaintystatement>;
+  warnings: Array<StasNativeWarning>;
+};
+
+export type StasNativeAssumption = {
+  code: string;
+  description: string;
+};
+
+export type StasNativeCommontoolinput = {
+  dataScopeId: string;
+  deadlineMs?: number;
+  evidenceLevel?: "SUMMARY" | "STANDARD" | "FULL";
+  snapshotPolicy?: "PINNED";
+};
+
+export type StasNativeCoverage = {
+  evaluableTime?: Array<StasNativeEvidencetimerange>;
+  observedDurationMs?: number;
+  requestedDurationMs?: number;
+  requestedTime?: StasNativeTimerange;
+  spatialScope?: Array<{
+  id?: string;
+  version?: string;
+}>;
+  temporalRatio?: number;
+};
+
+export type StasNativeEvidenceref = {
+  id: string;
+  summaryHash?: string;
+  timeRange?: StasNativeEvidencetimerange;
+  type: string;
+};
+
+export type StasNativeEvidencetimerange = {
+  bounds: "[)" | "()" | "[]" | "(]";
+  end: string;
+  start: string;
+};
+
+export type StasNativeExecution = {
+  cacheHit: boolean;
+  candidateCount?: number;
+  elapsedMs: number;
+  exactCount?: number;
+};
+
+export type StasNativeGapref = {
+  id?: string;
+  observability?: string;
+  reasonCodes: Array<string>;
+  timeRange: StasNativeEvidencetimerange;
+};
+
+export type StasNativeHealth = {
+  serviceVersion: string;
+  status: "ok";
+};
+
+export type StasNativeMethod = {
+  algorithm: string;
+  algorithmVersion: string;
+  interpolationPolicy: string;
+  metricDimension: "2D" | "3D";
+  mobilityDbVersion: string;
+  postgisVersion: string;
+  sqlTemplateHash: string;
+  tool: string;
+  toolVersion: string;
+  uncertaintyPolicy: string;
+};
+
+export type StasNativePage = {
+  nextCursor?: string;
+  returned: number;
+  truncated: boolean;
+};
+
+export type StasNativePairinput = (StasNativeCommontoolinput) & ({
+  timeRange: StasNativeTimerange;
+  trackletA: StasNativeTrackletref;
+  trackletB: StasNativeTrackletref;
+});
+
+export type StasNativePoint = {
+  srid: number;
+  x: number;
+  y: number;
+};
+
+export type StasNativeProblem = {
+  code: string;
+  detail: string;
+  instance: string;
+  status: number;
+  title: string;
+  type: string;
+};
+
+export type StasNativeQuality = {
+  flags: Array<string>;
+  grade: "A" | "B" | "C" | "D" | "UNKNOWN";
+  score?: number;
+};
+
+export type StasNativeReadiness = {
+  analysisSrid: number;
+  mobilityDbVersion: string;
+  postgisVersion: string;
+  schemaContractVersion: string;
+  status: "ready";
+};
+
+export type StasNativeRegionref = {
+  spatialObjectId: string;
+  spatialObjectVersionId: string;
+};
+
+export type StasNativeSingletrackletinput = (StasNativeCommontoolinput) & ({
+  tracklet: StasNativeTrackletref;
+});
+
+export type StasNativeSnapshot = {
+  clockModelIds?: Array<string>;
+  coverageSliceIds?: Array<string>;
+  dataScopeId: string;
+  databaseSnapshotId?: string;
+  datastreamIds?: Array<string>;
+  detectorModelIds?: Array<string>;
+  processingRunIds?: Array<string>;
+  ruleProfileIds?: Array<string>;
+  sensorExtrinsicVersionIds?: Array<string>;
+  sensorPoseVersionIds?: Array<string>;
+  sensorStatusIntervalIds?: Array<string>;
+  sourceReliabilityProfileIds?: Array<string>;
+  spatialObjectVersionIds?: Array<string>;
+  timeSolutionIds?: Array<string>;
+  trackletVersions: Array<StasNativeTrackletversionsnapshot>;
+  watermarkRevisionIds?: Array<string>;
+};
+
+export type StasNativeSourcereference = {
+  rawReference?: string;
+  sourceId: string;
+};
+
+export type StasNativeSubjectref = {
+  id: string;
+  kind: string;
+  version?: string | number;
+};
+
+export type StasNativeTimerange = {
+  bounds?: "[)";
+  end: string;
+  start: string;
+};
+
+export type StasNativeTooldefinition = {
+  cacheableWhenPinned?: boolean;
+  costClass: "LOW" | "MEDIUM" | "HIGH";
+  dataScopePolicy: "REQUIRED_EXACT_MATCH";
+  defaultTimeoutMs: number;
+  description: string;
+  errorCodes?: Array<string>;
+  gapPolicy: "UNKNOWN_DOMAIN_EXPLICIT";
+  idempotent: boolean;
+  inputSchemaUri: string;
+  interpolationPolicy: "TOOL_DECLARED_NO_CROSS_GAP";
+  maxCandidates?: number;
+  maxRows: number;
+  maxTimeoutMs: number;
+  name: string;
+  outputSchemaUri: string;
+  uncertaintyPolicy: "REPORT_SEPARATE_DIMENSIONS";
+  version: string;
+};
+
+export type StasNativeTrackletref = ({
+  trackletId: string;
+  trackletVersionId: string;
+  versionNo?: number;
+}) | ({
+  trackletId: string;
+  trackletVersionId?: string;
+  versionNo: number;
+});
+
+export type StasNativeTrackletversionsnapshot = {
+  trackletId: string;
+  trackletVersionId: string;
+  versionNo: number;
+};
+
+export type StasNativeUncertaintystatement = {
+  conclusion?: string;
+  confidenceLevel?: number;
+  model: "HARD_RADIUS" | "STDDEV" | "COVARIANCE" | "INTERVAL" | "UNKNOWN";
+  quantity: string;
+  sourceRefs?: Array<string>;
+  unit?: string;
+  value?: unknown;
+};
+
+export type StasNativeWarning = {
+  code: string;
+  intervals?: Array<StasNativeEvidencetimerange>;
+  message: string;
+};
+
+export type StasNativeComparePairFeaturesInputV1 = (StasNativePairinput) & ({
+  features: Array<"TEMPORAL_OVERLAP" | "MIN_DISTANCE" | "PROXIMITY_DURATION" | "GAP_CONTEXT">;
+  thresholds: {
+  proximityMeters: [number];
+};
+});
+
+export type StasNativeFindNearbyTrackletsInputV1 = (StasNativeCommontoolinput) & ({
+  limit?: number;
+  maxDistanceMeters: number;
+  mode?: "CANDIDATE" | "EXACT_EVER";
+  sourceTypes?: Array<string>;
+  subject: StasNativeTrackletref;
+  timeRange: StasNativeTimerange;
+  uncertaintyPolicy?: "NOMINAL" | "CONSERVATIVE_BOUND";
+});
+
+export type StasNativeFindProximityIntervalsInputV1 = (StasNativePairinput) & ({
+  limit?: number;
+  maxDistanceMeters: number;
+  minimumDurationSeconds: number;
+  uncertaintyAlgorithm?: "SCALAR_SENSITIVITY";
+  uncertaintyPolicy?: "NOMINAL_WITH_SCALAR_SENSITIVITY";
+});
+
+export type StasNativeFindRegionInteractionsInputV1 = (StasNativeSingletrackletinput) & ({
+  boundaryPolicy?: "REPORT_AMBIGUOUS" | "NOMINAL";
+  events: Array<"VISIT" | "ENTER" | "EXIT" | "TOUCH" | "CROSS">;
+  limit?: number;
+  minimumVisitSeconds?: number;
+  region: StasNativeRegionref;
+  timeRange: StasNativeTimerange;
+});
+
+export type StasNativeFindSensorCoverageInputV1 = (StasNativeCommontoolinput) & (({
+  includeInactive?: boolean;
+  limit?: number;
+  objectClass?: string;
+  point?: StasNativePoint;
+  sensorId: string;
+  spatialObjectVersionId?: string;
+  timeRange: StasNativeTimerange;
+}) | ({
+  includeInactive?: boolean;
+  limit?: number;
+  objectClass?: string;
+  point: StasNativePoint;
+  sensorId?: string;
+  spatialObjectVersionId?: string;
+  timeRange: StasNativeTimerange;
+}) | ({
+  includeInactive?: boolean;
+  limit?: number;
+  objectClass?: string;
+  point?: StasNativePoint;
+  sensorId?: string;
+  spatialObjectVersionId: string;
+  timeRange: StasNativeTimerange;
+}));
+
+export type StasNativeFindStopIntervalsInputV1 = (StasNativeSingletrackletinput) & ({
+  limit?: number;
+  maximumDiameterMeters: number;
+  minimumDurationSeconds: number;
+  timeRange: StasNativeTimerange;
+});
+
+export type StasNativeFindSuccessorCandidatesInputV1 = (StasNativeCommontoolinput) & (({
+  limit?: number;
+  maxAccelerationMps2?: number;
+  maxGapSeconds: number;
+  maxHeadingDeltaDegrees?: number;
+  maxSpeedMps: number;
+  predecessor: StasNativeTrackletref;
+  reachabilityLevel: 1 | 2;
+  sourceTypes?: Array<string>;
+  uncertaintyPolicy?: "NOMINAL" | "CONSERVATIVE_BOUND";
+}) & ((Record<string, unknown>)));
+
+export type StasNativeFindTrackletsInRegionInputV1 = (StasNativeCommontoolinput) & ({
+  limit?: number;
+  mode?: "CANDIDATE" | "EXACT_VISIT";
+  region: StasNativeRegionref;
+  sourceTypes?: Array<string>;
+  timeRange: StasNativeTimerange;
+});
+
+export type StasNativeGetMotionSummaryInputV1 = (StasNativeSingletrackletinput) & ({
+  perSequence?: boolean;
+  timeRange: StasNativeTimerange;
+  units?: "SI";
+});
+
+export type StasNativeGetPositionAtInputV1 = (StasNativeSingletrackletinput) & ({
+  interpolationPolicy: "ALLOW_WITHIN_SEQUENCE" | "OBSERVED_ONLY";
+  timestamp: string;
+});
+
+export type StasNativeGetTrackletGapsInputV1 = (StasNativeSingletrackletinput) & ({
+  limit?: number;
+  reasons?: Array<string>;
+  timeRange: StasNativeTimerange;
+});
+
+export type StasNativeGetTrackletInputV1 = (StasNativeSingletrackletinput) & ({
+  detail?: "SUMMARY" | "SEQUENCES" | "OBSERVATION_REFS";
+  limit?: number;
+});
+
+export type StasNativeGetTrackletQualityInputV1 = (StasNativeSingletrackletinput) & ({
+  dimensions: Array<"TEMPORAL_COVERAGE" | "POSITION_UNCERTAINTY" | "SOURCE_HEALTH" | "PROVENANCE" | "CONFLICTS" | "SAMPLING">;
+  timeRange?: StasNativeTimerange;
+});
+
+export type StasNativeNearestApproachInputV1 = (StasNativePairinput) & ({
+  dimensionPolicy: "2D";
+  uncertaintyPolicy?: "NOMINAL_WITH_SCALAR_SENSITIVITY";
+});
+
+export type StasNativeSliceTrackletInputV1 = (StasNativeSingletrackletinput) & (({
+  boundaryPolicy?: "REPORT_AMBIGUOUS" | "NOMINAL";
+  region?: StasNativeRegionref;
+  spatialMode?: "INTERSECTS_INCLUSIVE_BOUNDARY";
+  timeRange: StasNativeTimerange;
+}) | ({
+  boundaryPolicy?: "REPORT_AMBIGUOUS" | "NOMINAL";
+  region: StasNativeRegionref;
+  spatialMode?: "INTERSECTS_INCLUSIVE_BOUNDARY";
+  timeRange?: StasNativeTimerange;
+}));
+
+export type StasStasNativeComparePairFeaturesInputV1Input = StasNativeComparePairFeaturesInputV1;
+
+export type StasStasNativeFindNearbyTrackletsInputV1Input = StasNativeFindNearbyTrackletsInputV1;
+
+export type StasStasNativeFindProximityIntervalsInputV1Input = StasNativeFindProximityIntervalsInputV1;
+
+export type StasStasNativeFindRegionInteractionsInputV1Input = StasNativeFindRegionInteractionsInputV1;
+
+export type StasStasNativeFindSensorCoverageInputV1Input = StasNativeFindSensorCoverageInputV1;
+
+export type StasStasNativeFindStopIntervalsInputV1Input = StasNativeFindStopIntervalsInputV1;
+
+export type StasStasNativeFindSuccessorCandidatesInputV1Input = StasNativeFindSuccessorCandidatesInputV1;
+
+export type StasStasNativeFindTrackletsInRegionInputV1Input = StasNativeFindTrackletsInRegionInputV1;
+
+export type StasStasNativeGetMotionSummaryInputV1Input = StasNativeGetMotionSummaryInputV1;
+
+export type StasStasNativeGetPositionAtInputV1Input = StasNativeGetPositionAtInputV1;
+
+export type StasStasNativeGetTrackletGapsInputV1Input = StasNativeGetTrackletGapsInputV1;
+
+export type StasStasNativeGetTrackletQualityInputV1Input = StasNativeGetTrackletQualityInputV1;
+
+export type StasStasNativeGetTrackletInputV1Input = StasNativeGetTrackletInputV1;
+
+export type StasStasNativeNearestApproachInputV1Input = StasNativeNearestApproachInputV1;
+
+export type StasStasNativeSliceTrackletInputV1Input = StasNativeSliceTrackletInputV1;
+
 export type GowmV04CatalogQueryRequest = {
   cursor?: string;
   limit?: number;
@@ -2371,6 +2765,148 @@ export type GowmV061WorldResultSemantics = {
   sourceStatus: string;
 };
 
+export type CapabilityDescriptorV1_1 = (CapabilityDescriptor) & (Record<string, unknown>);
+
+export type CapabilityProviderManifestV1_1 = (CapabilityProviderManifest) & ({
+  manifestSchemaVersion: "1.1";
+});
+
+export type CapabilitySemanticCatalogV1 = {
+  bindingRevision: string;
+  catalogHash: string;
+  contractCatalogRevision: string;
+  profiles: Array<{
+  operationId: string;
+  operationVersion: string;
+  semanticProfile: CapabilitySemanticProfileV1;
+  semanticProfileHash: string;
+}>;
+  registryRevision?: string;
+  schemaVersion: "1.1";
+};
+
+export type CapabilitySemanticProfileV1 = {
+  acceptedReferenceKinds: Array<"WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT">;
+  domain: "REFERENCE" | "CATALOG" | "WORLD_STATE" | "SPATIAL" | "TEMPORAL" | "H3" | "NETWORK" | "ROUTING" | "COVERAGE" | "ANALYSIS" | "PLATFORM";
+  domainStatus?: {
+  mapping: Record<string, "COMPLETED" | "PARTIAL" | "NO_DATA" | "AMBIGUOUS" | "INDETERMINATE" | "NO_FEASIBLE_RESULT" | "STALE" | "FAILED">;
+  path: string;
+};
+  exactVerification?: {
+  operationId: string;
+  operationVersion: string;
+};
+  freshnessSemantics: "NONE" | "TTL" | "WORLD_VERSION" | "SNAPSHOT_CURRENTNESS";
+  negativeEvidencePolicy: "SUPPORTED" | "NOT_SUPPORTED" | "NO_DATA_IS_UNKNOWN" | "NOT_APPLICABLE";
+  notes?: Array<string>;
+  producedReferenceKinds: Array<"WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT">;
+  profileVersion: "1.0";
+  relationSemantics: Array<"RESOLVES_TO" | "DESCRIBES" | "HAS_GEOMETRY" | "INSIDE" | "CONTAINS" | "INTERSECTS" | "NEAR" | "CANDIDATE_COVER" | "SNAPPED_TO_NETWORK" | "ROUTE_BETWEEN" | "ROAD_COVERAGE_PLAN" | "TEMPORALLY_OVERLAPS" | "PROXIMITY_INTERVAL" | "CORRELATES_WITH" | "EVALUATES_PREDICATE" | "VALIDATES" | "VALIDATES_SNAPSHOT" | "DISCOVERS_DATA_PRODUCT">;
+  resultNature: "FACT" | "PROJECTION" | "DERIVED" | "PLAN" | "VALIDATION" | "CATALOG";
+  spatialSemantics: "EXACT" | "CANDIDATE" | "AGGREGATED" | "NONE";
+  timeSemantics: "CURRENT" | "HISTORICAL" | "INTERVAL" | "SNAPSHOT" | "NONE";
+};
+
+export type PinnedDirectedNetworkStatePort = GowmV05NetworkCommonDirectedState;
+
+export type ProjectedWgs84PointPort = {
+  coordinates: Wgs84PositionCoordinatesPort;
+  type: "Point";
+};
+
+export type Wgs84PositionCoordinatesPort = [number, number, ...Array<number>];
+
+export type SemanticAttestation = {
+  evidence: Array<{
+  kind: "DESCRIPTOR" | "INPUT_SCHEMA" | "OUTPUT_SCHEMA" | "PORTS" | "TYPESCRIPT_IMPLEMENTATION" | "SQL_IMPLEMENTATION" | "BRIDGE_CONTRACT" | "SOURCE_LOCK" | "UNIT_TEST" | "BLACK_BOX_TEST" | "ADR" | "CALLER";
+  path: string;
+  sha256: string;
+  symbol?: string;
+}>;
+  notes?: Array<string>;
+  operationId: string;
+  operationVersion: string;
+  providerId: string;
+  rulesApplied: Array<string>;
+  schemaVersion: "1.0";
+  semanticProfileHash: string;
+  status: "PROVEN" | "DOWNGRADED" | "BLOCKED";
+};
+
+export type SemanticConformanceReport = {
+  counters: {
+  crossCapabilityViolation: number;
+  operationCollision: number;
+  providerTopologyLeak: number;
+  runtimeSemanticInference: number;
+  semanticImplementationMismatch: number;
+  semanticProfileMissing: number;
+  semanticRuleViolation: number;
+  stableCapabilityWithoutBlackBoxEvidence: number;
+};
+  issues?: Array<Record<string, unknown>>;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL";
+};
+
+export type SemanticMaterializerReport = {
+  conflicts: Array<Record<string, unknown>>;
+  determinismHash?: string;
+  insufficient: Array<Record<string, unknown>>;
+  resolved: Array<string>;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL";
+};
+
+export type SingleGatewayCanaryReport = {
+  canaries: Array<{
+  evidence?: Array<string>;
+  id: string;
+  operations: Array<string>;
+  status: "PASS" | "FAIL" | "BLOCKED";
+}>;
+  gatewayBaseUrlHash: string;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL" | "BLOCKED";
+};
+
+export type WorldPlatformProviderSet = {
+  excludedClasses: Array<"OBSERVATION_WRITE" | "DEVICE_COMMAND" | "SDAR_A2A" | "DYNAMIC_MCP_DISCOVERY" | "ARBITRARY_SQL">;
+  optionalProviders: Array<string>;
+  requiredProviders: Array<string>;
+  schemaVersion: "1.0";
+};
+
+export type WorldPlatformRegistryBuildReport = {
+  bindingRevision: string;
+  contractCatalogRevision: string;
+  missingRequiredProviders: Array<string>;
+  operationCollisions: Array<Record<string, unknown>>;
+  operationCount: number;
+  providerCount: number;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL";
+  warnings?: Array<string>;
+};
+
+export type WsgsSouthboundOperationLock = {
+  contractCatalogRevision: string;
+  defaultOperations: Array<WsgsSouthboundOperationLockOperationLock>;
+  gatewayContractVersion: string;
+  previewOperations: Array<WsgsSouthboundOperationLockOperationLock>;
+  schemaVersion: "1.0";
+  semanticCatalogHash: string;
+};
+
+export type WsgsSouthboundOperationLockOperationLock = {
+  inputSchemaHash: string;
+  maturity: "PREVIEW" | "STABLE";
+  operationId: string;
+  operationVersion: string;
+  outputSchemaHash: string;
+  semanticProfileHash: string;
+};
+
 export type GowmV06CoverageAlternativePolicy = {
   maximumGenerationCandidates?: number;
   maximumWeightedArcOverlapPpm: number;
@@ -2766,6 +3302,7 @@ export type CapabilityDescriptor = {
 };
   resultSemantics: "TRANSFORMATION" | "VALIDATION" | "DERIVED_INDEX" | "DATA_QUERY" | "DERIVED_ANALYSIS" | "WORLD_PROJECTION";
   scopePolicy: "IDENTITY_ONLY" | "REQUEST_CONTEXT" | "DATA_SCOPE_REQUIRED" | "DATASET_SCOPE_REQUIRED";
+  semanticProfile?: CapabilitySemanticProfileV1;
   semanticRole: "FOUNDATION_PRIMITIVE" | "FOUNDATION_DATA_QUERY" | "GENERIC_ANALYSIS" | "DOMAIN_ANALYSIS" | "PROJECTION_QUERY";
   snapshotPolicy: {
   computeSnapshot: "REQUIRED";
@@ -2783,11 +3320,14 @@ export type CapabilityDescriptorPort = {
 };
 
 export type CapabilityListResponse = {
+  bindingRevision?: string;
   capabilities: Array<CapabilityDescriptor>;
+  contractCatalogRevision?: string;
+  registryRevision?: string;
   registryVersion: string;
 };
 
-export type CapabilityProviderManifest = {
+export type CapabilityProviderManifest = ({
   capabilities: Array<CapabilityDescriptor>;
   endpoints: {
   execute: string;
@@ -2796,6 +3336,7 @@ export type CapabilityProviderManifest = {
   manifest: string;
   readiness: string;
 };
+  manifestSchemaVersion?: "1.0" | "1.1";
   provider: {
   implementationDigest: PlatformCommonDefinitionsSha256Digest;
   owner: string;
@@ -2805,7 +3346,7 @@ export type CapabilityProviderManifest = {
   sourceRef?: string;
 };
   providerProtocolVersion: "1.0";
-};
+}) & ((Record<string, unknown>));
 
 export type CapabilityResultEnvelope = {
   computeSnapshot: ComputeSnapshotContext;

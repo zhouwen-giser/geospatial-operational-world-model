@@ -1,0 +1,74 @@
+{
+  "crs.check-source@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "crs.normalize.feature-collection@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "crs.normalize.feature@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "crs.normalize.geometry@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "crs.normalize.point@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "crs.normalize.points@1.0": {
+    "profileVersion": "1.0",
+    "domain": "SPATIAL",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  }
+}

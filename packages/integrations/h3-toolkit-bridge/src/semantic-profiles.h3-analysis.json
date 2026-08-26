@@ -1,0 +1,38 @@
+{
+  "h3.analytics.aggregate@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "AGGREGATED",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "h3.analytics.coverage@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "AGGREGATED",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  },
+  "h3.analytics.flow@1.0": {
+    "profileVersion": "1.0",
+    "domain": "H3",
+    "acceptedReferenceKinds": [],
+    "producedReferenceKinds": [],
+    "relationSemantics": [],
+    "spatialSemantics": "AGGREGATED",
+    "timeSemantics": "NONE",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NOT_APPLICABLE",
+    "freshnessSemantics": "NONE"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "phase": "P03",
+  "status": "STATIC_PASS_RUNTIME_PENDING",
+  "providers": 15,
+  "operations": 122,
+  "missingProfile": 0,
+  "unresolvedStaticStable": 0,
+  "maturityChanges": [],
+  "stableBlackBoxPending": 21,
+  "materializerDeterminismHash": "sha256:3ed3f9488fbc2d2e3ab8e0c5861fb4d64ad58b5e32110e5a329384645cf58d0b",
+  "checks": [
+    {
+      "name": "platform tests: 26 files / 163 tests passed",
+      "logSha256": "50b849daf25e4e239cdcf14d70866af8b1d7dcdc65f1ef1dc54e63d02dcd2c25"
+    },
+    {
+      "name": "complete root and native STAS typecheck",
+      "logSha256": "420ac5e187e762ea11bc42751d208addc7f5ffa68b3dadc40d1d550fdc72f93d"
+    },
+    {
+      "name": "materializer write/write/check; factory manifest parity",
+      "logSha256": "4dd0e652bf6eea65b29e797cc89efbcc8541daf4c8ad550667b0095d1b775094"
+    }
+  ]
+}

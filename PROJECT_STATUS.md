@@ -2,88 +2,67 @@
 
 Last updated: 2026-08-26
 
-## Current decision
+## Current candidate
 
-`GOWM+ 0.6.1: IMPLEMENTATION_EVIDENCE_PASS — FINAL_DECISION_RECEIPT_BOUND`
+GOWM+ **0.6.2 — Unified World Gateway & Explicit Capability Semantics**.
+Baseline: `main@55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1` (0.6.1).
+Work is isolated on `codex/gowm-world-platform-gateway-semantics-v0.6.2`.
+[PR #7](https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/7).
 
-The four audit findings from the withdrawn `5029bce` completion have been
-corrected and rerun against the current source: duplicate validation ownership,
-false CURRENT/YES for stale results, test-double authority in real gates, and
-fail-open conformance schema hashes.
+The final decision is bound to the exact commit in
+`/tmp/gowm-v062-final-delivery.json` and the PR completion comment. The committed
+preflight keeps three delivery checks pending until local/remote SHA equality,
+OPEN Ready PR state, and completion markers are verified. It must not be read as
+an independent final delivery receipt.
 
-The user's current-design amendment removes old wire/data compatibility only.
-Of 229 original rows, 227 remain Required; AC-R012 and AC-S-03 are explicitly
-SUPERSEDED_BY_USER, never PASS. The preflight proves 224 cases. The three
-delivery cases require exact Git SHA equality, PR Ready, and the final markers.
+## Scope and authority
 
-The final decision is authoritative only when
-`/tmp/gowm-v0.6.1-final-acceptance.json` and the PR completion comment name the
-current commit and record PASS. Committed reports deliberately remain
-`AWAITING_DELIVERY_RECEIPT` for that external step, avoiding a self-hash cycle.
+The formal registry contains 15 providers and 122 explicit Manifest 1.1
+capabilities. Provider Execution Protocol remains 1.0. Maturity is unchanged:
+21 Stable, 99 Preview, 2 Experimental. WSGS default admission requires current
+implementation and real black-box proof for all Stable operations. Preview is
+separate; Experimental is excluded. The generated consumer lock has no provider
+addresses, secrets, database names or deployment topology.
 
-## Delivery
+Gateway projects and hashes provider-owned profiles. It does not infer domains,
+units, references or relations from operation names. Vocabulary and S001–S014
+rules are checked offline against schemas, ports, TypeScript, SQL AST and tests.
+Foundation remains the fact authority and its write path is independent.
+Network, Route and Coverage algorithms and migrations 001–058 are unchanged.
 
-- Baseline: `main@7cd5b133a74b07e28f359176dd13943ab7a6cf54`, version 0.6.0.
-- Branch: `codex/gowm-platform-hardening-v0.6.1`, isolated task worktree.
-- [PR #6](https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/6), base main.
-- Version: 0.6.1 in VERSION, package.json and package-lock.json.
-- Final gate: 227 PASS, two superseded, zero failed/blocked/not-run; matching
-  local HEAD, origin tracking, ls-remote and OPEN Ready PR head.
-- Merge/tag/release/deploy: NOT_RUN.
+## Runtime and qualifications
 
-## Current evidence
+The world-platform overlay exposes only the Gateway. Thirteen required provider
+processes and PostgreSQL use an internal network; two optional CRS/Geometry
+bridges are registered but require separately supplied operator artifacts.
+Their unavailability is visible. Situation retains its existing single-scope
+readiness qualification. STAS stays Preview. These qualifications are not
+represented as Stable execution proof.
 
-| Gate | Result |
-|---|---|
-| D00 | 58 migrations, 43 assertion suites; clean install, role/scope isolation, rollback, checksum replay and cleanup PASS |
-| G00 | 160 real Gateway/Provider/PostgreSQL checks PASS |
-| T00 | 72 before / 5 after real dedicated PostgreSQL restart PASS |
-| Static regression | 288 Vitest PASS, 40 STAS PASS, type/schema/SQL/build PASS |
-| Provider conformance | 11 current reports, 70 unique protocol operations PASS; contract/unit evidence, not live readiness |
-| Acceptance preflight | 224 PASS / 3 delivery pending / 2 superseded |
+H3 bindings are reproducibly built from the locked upstream commit and checked
+against the source-lock digest before import. H3 cover is a candidate operation;
+exact Spatial verification uses the retained original geometry. World position
+and Network directed-state ports make their actual schemas explicit. Coverage
+resolves pinned area references through scoped views and rechecks area
+currentness. Route LOGIN uses controlled write functions with no direct
+fact/job-table mutation privilege.
 
-One default external-database Vitest test is skipped; the Required database
-proof is D00, not that skip. Historical upgrade runs in D00 are supplemental,
-not a promise to support old data or old operation schemas.
+## Evidence
 
-The three Docker gates and conformance captured the same before/after SHA-256
-source fingerprint:
-`e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda`.
-The runtime lock covers 947 source/config/test/contract files plus evidence.
-The final gate rejects byte or file-set drift and reruns static regression.
+- `reports/gowm-v0.6.2/baseline-runtime`: freshly rerun predecessor D00/G00/T00.
+- `semantic-implementation-report.json` and 122 semantic attestations.
+- `runtime`: real single-Gateway HTTP envelopes, compiled-image identity,
+  PostgreSQL/process observations, boundary/H3/reference/snapshot/failure tests.
+- `single-gateway-canary-report.json`: A–E status, including isolated H3 failure.
+- `regression`: full TypeScript/schema/SQL/Vitest/STAS/build/compatibility gates.
+- `d00-runtime-v062final.json`: 60 migrations, 43 SQL assertion suites and
+  install/upgrade/replay/rollback checks against dedicated PostgreSQL.
+- `final-acceptance-preflight.json` and `validation/gowm-v0.6.2/traceability.csv`:
+  all 180 required criteria and their evidence.
 
-## Authority boundary
-
-- Foundation remains the sole fact, reference, dataset, lineage, network and
-  world-version authority; the Capability Registry is the sole operation registry.
-- Platform Validation alone owns `reference.validate` and `result.validate`.
-  Both use the current batch contract. Reference/result retirement, expiry,
-  source status and currentness stay separate.
-- Actual graph/dataset/profile/condition/world versions determine currentness.
-  Missing authority stays UNKNOWN/UNAVAILABLE; requested versions are not echoed
-  as proof. Same-DataScope sibling DatasetScope results remain opaque.
-- Real G00 uses actual World Evidence, Route, Coverage and PostgreSQL Validation
-  providers. SQL fixtures seed facts; they do not replace validation authority.
-- Coverage generation fencing, independent boundary reconstruction, fixed-point
-  objectives, strict no-feasible semantics and receipt-backed compute identity
-  remain enforced. `result.get` exposes eight normalized statuses plus source semantics.
-- Migrations 001–053 remain immutable; additions run through 058.
-
-## Non-claims
-
-WSGS readiness/client implementation, independent Data Platform Readiness, mock
-ELEVATION onboarding, SACS/SDAR/A2A changes and protected publication actions
-remain excluded. Contract/unit conformance is not a live H3/STAS deployment
-readiness claim. Fixture performance is not a production SLO or capacity claim.
-Coverage output is a computational plan, not dispatch, observed completion,
-Operational Reality or safety certification.
-
-## Evidence index
-
-See the [current final report](reports/gowm-v0.6.1/final-stable-candidate.md),
-[scope amendment](reports/gowm-v0.6.1/current-design-amendment.md),
-[static regression](reports/gowm-v0.6.1/static-regression.json), current
-`*-acceptance.json` / `*-completion.md`, and the
-[runbook](docs/20_PLATFORM_HARDENING_OPERATIONS_RUNBOOK.md).
-Earlier narrative reports and run attempts are retained as historical evidence;
-they do not certify the corrected candidate.
+One existing optional external-database Vitest test remains skipped. Required
+PostgreSQL behavior is verified by the dedicated schema gate and actual
+provider processes, not inferred from that skip or metadata-only unit tests.
+No merge, tag, release, production deployment or other-repository change is
+part of this task. See [operator guide](docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md)
+and [execution record](execplans/EP-gowm-v0.6.2-world-gateway-semantics.md).

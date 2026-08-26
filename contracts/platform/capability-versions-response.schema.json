@@ -8,7 +8,7 @@
   "properties": {
     "registryVersion": {
       "type": "string",
-      "pattern": "^registry-[0-9]+$"
+      "pattern": "^(registry-[0-9]+|sha256:[0-9a-f]{64})$"
     },
     "operationId": {
       "$ref": "common-definitions.schema.json#/$defs/operationId"

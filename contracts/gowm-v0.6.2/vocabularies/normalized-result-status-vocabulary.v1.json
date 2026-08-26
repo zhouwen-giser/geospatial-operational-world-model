@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "vocabularyId": "gowm-normalized-result-status",
+  "version": "1.0",
+  "terms": [
+    "COMPLETED",
+    "PARTIAL",
+    "NO_DATA",
+    "AMBIGUOUS",
+    "INDETERMINATE",
+    "NO_FEASIBLE_RESULT",
+    "STALE",
+    "FAILED"
+  ],
+  "semanticConstraints": {
+    "NO_DATA": "Must not imply a negative fact.",
+    "NO_FEASIBLE_RESULT": "A domain result, not an infrastructure failure.",
+    "STALE": "Currentness failure, not necessarily mathematical invalidity.",
+    "AMBIGUOUS": "Multiple viable candidates, not a provider failure."
+  },
+  "definitions": {
+    "COMPLETED": "Execution completed according to its operation contract; currentness is evaluated separately.",
+    "PARTIAL": "Only part of the declared result is available; completeness is not asserted.",
+    "NO_DATA": "Must not imply a negative fact.",
+    "AMBIGUOUS": "Multiple viable candidates, not a provider failure.",
+    "INDETERMINATE": "Available evidence cannot determine the requested domain result.",
+    "NO_FEASIBLE_RESULT": "A domain result, not an infrastructure failure.",
+    "STALE": "Currentness failure, not necessarily mathematical invalidity.",
+    "FAILED": "Execution failed; no successful domain result is asserted."
+  },
+  "compatibilityPolicy": "ADD_ONLY"
+}

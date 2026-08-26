@@ -1,0 +1,12 @@
+Error: Command failed: docker compose --env-file /tmp/gowm-v062-canary.env -f docker-compose.yml -f docker-compose.world-platform.yml --profile world-platform exec -T postgres psql -U gowm -d gowm -XAt -v ON_ERROR_STOP=1
+ERROR:  query returned no rows
+CONTEXT:  PL/pgSQL function validate_network_topology_row() line 7 at SQL statement
+
+    at genericNodeError (node:internal/errors:983:15)
+    at wrappedFn (node:internal/errors:537:14)
+    at checkExecSyncError (node:child_process:916:11)
+    at execFileSync (node:child_process:952:15)
+    at compose (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:15:29)
+    at sql (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:16:20)
+    at file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:89:18
+WORLD_PLATFORM_CANARY_FAIL checks=127 positiveOperations=0

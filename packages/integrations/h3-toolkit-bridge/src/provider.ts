@@ -1,3 +1,7 @@
+import semanticProfiles0 from "./semantic-profiles.h3-interactive.json" with { type: "json" };
+import semanticProfiles1 from "./semantic-profiles.h3-analysis.json" with { type: "json" };
+import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
+const DECLARED_SEMANTICS = { ...semanticProfiles0, ...semanticProfiles1 };
 import type {
   CapabilityDescriptor,
   CapabilityProviderManifest
@@ -75,7 +79,7 @@ function createBridge(
   const operations = descriptors.map((item) => operation(item, options.upstream, qos.maximumTimeoutMs));
   const providerId = kind === "interactive" ? "gowm.h3.interactive.bridge" : "gowm.h3.analysis.bridge";
   const manifest: CapabilityProviderManifest = {
-    providerProtocolVersion: "1.0",
+    providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId,
       providerVersion: "0.2.0",
@@ -122,7 +126,7 @@ function descriptor(operationId: H3OperationId, kind: "interactive" | "analysis"
   const qos = kind === "interactive" ? INTERACTIVE_QOS : ANALYSIS_QOS;
   return {
     operationId,
-    operationVersion: "1.0",
+    operationVersion: "1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"),
     semanticRole: kind === "interactive" ? "FOUNDATION_PRIMITIVE" : "GENERIC_ANALYSIS",
     dataBinding: "CALLER_DATA_BOUND",
     resultSemantics: kind === "interactive" ? "DERIVED_INDEX" : "DERIVED_ANALYSIS",

@@ -1,0 +1,216 @@
+{
+  "status": "PASS",
+  "checks": {
+    "gatewayReady": true,
+    "catalog122": true,
+    "onlyGatewayPublished": true,
+    "thirteenProviderProcesses": true,
+    "allProvidersInternal": true
+  },
+  "services": [
+    {
+      "Service": "dataset-catalog-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "gowm-situation-provider",
+      "State": "running",
+      "Health": "unhealthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "h3-analysis-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "h3-interactive-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "network-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "operational-reality-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "platform-validation-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "postgres",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-v062-test-db:local",
+      "Ports": "5432/tcp"
+    },
+    {
+      "Service": "reference-catalog-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "road-coverage-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "route-planning-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "spatial-provider-bridge",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "stas-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    },
+    {
+      "Service": "world-capability-gateway",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": "127.0.0.1:15490->8090/tcp"
+    },
+    {
+      "Service": "world-evidence-provider",
+      "State": "running",
+      "Health": "healthy",
+      "Image": "gowm-world-platform:0.6.2",
+      "Ports": ""
+    }
+  ],
+  "gateway": {
+    "status": "ok",
+    "service": "world-capability-gateway",
+    "registryVersion": "sha256:daed96e71a19718756c9cf3e08ec9bd1e2e14266b9387fb42bf2ff1c81d82d9f",
+    "capabilityCount": 122
+  },
+  "providerHealth": {
+    "gowm.crs-normalization.bridge": {
+      "live": false,
+      "ready": false,
+      "checkedAt": "2026-08-26T11:09:48.865Z",
+      "detail": "provider control plane unavailable"
+    },
+    "gowm.dataset-catalog": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.865Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.geometry.bridge": {
+      "live": false,
+      "ready": false,
+      "checkedAt": "2026-08-26T11:09:48.866Z",
+      "detail": "provider control plane unavailable"
+    },
+    "gowm.h3.analysis.bridge": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.866Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.h3.interactive.bridge": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.866Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.network": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.866Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.operational-reality": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.867Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.platform-validation": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.867Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.reference-catalog": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.867Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.road-coverage-planning": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.867Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.route-planning": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.867Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.situation.h3": {
+      "live": true,
+      "ready": false,
+      "checkedAt": "2026-08-26T11:09:48.867Z",
+      "detail": "liveness=200;readiness=503"
+    },
+    "gowm.spatial-analysis.bridge": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.868Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.stas": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.868Z",
+      "detail": "liveness=200;readiness=200"
+    },
+    "gowm.world-evidence": {
+      "live": true,
+      "ready": true,
+      "checkedAt": "2026-08-26T11:09:48.868Z",
+      "detail": "liveness=200;readiness=200"
+    }
+  },
+  "note": "PublishedPort=0 denotes an internal exposed port, not a host binding. Optional CRS/Geometry bridges are not launched. Situation remains Preview with its existing single-scope readiness qualification."
+}

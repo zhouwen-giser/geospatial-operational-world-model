@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.world-evidence",
+  "operationId": "world.get-current-state",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:d41323fdb7bb22db3100e45a3024b978e9325504ab865c5b08852a3caf91a12a",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/world-evidence-provider.json",
+      "sha256": "9a3af1472aa88c85e60296b0446b60f56d812250fc7e1cf54dbd585054f4055a"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/world-evidence-provider.json",
+      "sha256": "9a3af1472aa88c85e60296b0446b60f56d812250fc7e1cf54dbd585054f4055a"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/catalog-query-request.schema.json",
+      "sha256": "6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/world-fact-result.schema.json",
+      "sha256": "920062e401515fc021aebe87dde56023dcfadfbf2bb59d2d791c9a1b86966ddb"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/provider.ts",
+      "sha256": "36909cbf1733dce5a87cb154043e175933746997a1881e40c15e1f02c3c87491",
+      "symbol": "createGroundingCatalogProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/repository.ts",
+      "sha256": "aecd84888fc2301b8998e52fafd63dc7cd1002674f5a5ef659d33069094cf218"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/grounding-catalog-provider.test.ts",
+      "sha256": "45372873116f2ca23229aa994d121fcda459a6cfc05fab83fa484f97593b704d"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

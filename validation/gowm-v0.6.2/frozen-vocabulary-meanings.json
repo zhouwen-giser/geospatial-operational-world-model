@@ -1,0 +1,147 @@
+{
+  "normalized-result-status-vocabulary.v1.json": {
+    "schemaVersion": "1.0",
+    "vocabularyId": "gowm-normalized-result-status",
+    "version": "1.0",
+    "terms": [
+      "COMPLETED",
+      "PARTIAL",
+      "NO_DATA",
+      "AMBIGUOUS",
+      "INDETERMINATE",
+      "NO_FEASIBLE_RESULT",
+      "STALE",
+      "FAILED"
+    ],
+    "semanticConstraints": {
+      "NO_DATA": "Must not imply a negative fact.",
+      "NO_FEASIBLE_RESULT": "A domain result, not an infrastructure failure.",
+      "STALE": "Currentness failure, not necessarily mathematical invalidity.",
+      "AMBIGUOUS": "Multiple viable candidates, not a provider failure."
+    }
+  },
+  "reference-kind-vocabulary.v1.json": {
+    "schemaVersion": "1.0",
+    "vocabularyId": "gowm-reference-kind",
+    "version": "1.0",
+    "terms": [
+      {
+        "id": "WORLD_OBJECT",
+        "definition": "A persistent object in the current or historical world model."
+      },
+      {
+        "id": "SPATIAL_OBJECT",
+        "definition": "A persistent spatial object with geometry and version semantics."
+      },
+      {
+        "id": "DATASET",
+        "definition": "A versioned data product dataset."
+      },
+      {
+        "id": "LAYER",
+        "definition": "A versioned layer within a dataset."
+      },
+      {
+        "id": "LAYER_FEATURE",
+        "definition": "A versioned feature identity within a layer."
+      },
+      {
+        "id": "OPERATIONAL_TASK",
+        "definition": "A GOWM operational reality task identity, not an SDAR planning task."
+      },
+      {
+        "id": "DERIVED_REFERENCE",
+        "definition": "A revalidatable reference derived by a capability execution."
+      },
+      {
+        "id": "REFERENCE_SET",
+        "definition": "An immutable, paged set of reference identities."
+      },
+      {
+        "id": "QUERY_RESULT",
+        "definition": "A public reference to an immutable query or plan result."
+      }
+    ],
+    "compatibilityPolicy": "ADD_ONLY"
+  },
+  "relation-semantic-vocabulary.v1.json": {
+    "schemaVersion": "1.0",
+    "vocabularyId": "gowm-relation-semantic",
+    "version": "1.0",
+    "terms": [
+      {
+        "id": "RESOLVES_TO",
+        "definition": "A structured mention or external identifier resolves to a reference candidate."
+      },
+      {
+        "id": "DESCRIBES",
+        "definition": "A descriptor or catalog record describes a reference."
+      },
+      {
+        "id": "HAS_GEOMETRY",
+        "definition": "A reference exposes versioned geometry."
+      },
+      {
+        "id": "INSIDE",
+        "definition": "An exact inside/covered-by relationship under declared boundary semantics."
+      },
+      {
+        "id": "CONTAINS",
+        "definition": "An exact contains/covers relationship under declared boundary semantics."
+      },
+      {
+        "id": "INTERSECTS",
+        "definition": "An exact geometric intersection relationship."
+      },
+      {
+        "id": "NEAR",
+        "definition": "A distance-bounded relation with declared unit and distance model."
+      },
+      {
+        "id": "CANDIDATE_COVER",
+        "definition": "A coarse cover or index candidate that requires exact verification."
+      },
+      {
+        "id": "SNAPPED_TO_NETWORK",
+        "definition": "A position/reference is snapped to a directed network state."
+      },
+      {
+        "id": "ROUTE_BETWEEN",
+        "definition": "A derived route plan relates start and destination references."
+      },
+      {
+        "id": "ROAD_COVERAGE_PLAN",
+        "definition": "A derived plan covers required road obligations."
+      },
+      {
+        "id": "TEMPORALLY_OVERLAPS",
+        "definition": "Two temporal extents overlap."
+      },
+      {
+        "id": "PROXIMITY_INTERVAL",
+        "definition": "A time interval during which entities satisfy a proximity relation."
+      },
+      {
+        "id": "CORRELATES_WITH",
+        "definition": "Evidence or events correlate with an external identifier or task."
+      },
+      {
+        "id": "EVALUATES_PREDICATE",
+        "definition": "A result evaluates an external predicate against world evidence."
+      },
+      {
+        "id": "VALIDATES",
+        "definition": "A validation result evaluates a reference or result."
+      },
+      {
+        "id": "VALIDATES_SNAPSHOT",
+        "definition": "A validation result evaluates data snapshot currentness."
+      },
+      {
+        "id": "DISCOVERS_DATA_PRODUCT",
+        "definition": "A catalog query discovers matching data products."
+      }
+    ],
+    "compatibilityPolicy": "ADD_ONLY"
+  }
+}

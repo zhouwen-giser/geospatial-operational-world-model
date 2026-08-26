@@ -1,0 +1,12 @@
+{
+  "phase": "P01",
+  "status": "PASS",
+  "checks": {
+    "typecheck": true,
+    "platformTestFiles": 25,
+    "platformTestsPassed": 137,
+    "negativeManifestVocabularyCases": true
+  },
+  "migrationStatus": "PENDING_P03",
+  "runtimeStatus": "PENDING_P05"
+}

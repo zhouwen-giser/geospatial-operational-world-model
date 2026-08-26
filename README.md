@@ -2,22 +2,18 @@
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
 Capability Service Plane and a controlled World Capability Gateway.
-Version `0.6.1` hardens Road Coverage correctness and public platform contracts:
-generation-safe claims, shared Network Query Core, independently reconstructed
-boundary crossings, fixed-point alternative objectives, explicit
-validity/currentness/TTL semantics, machine-readable Capability semantics,
-Platform Validation, and scoped Data Product discovery. Existing authorities
-remain unchanged. The supported API is the current v0.6.1 design; obsolete
-wire/data compatibility is not a delivery requirement.
+Version `0.6.2` adds the unified World Platform Gateway, Manifest 1.1 explicit
+capability semantics, controlled vocabularies, deterministic implementation
+attestations, content-addressed catalog revisions and a generated WSGS operation
+lock. Execution Protocol remains 1.0. Existing Foundation, GIS, H3, STAS,
+routing and coverage authorities remain unchanged.
 
-> **v0.6.1 status: candidate acceptance is exact-commit receipt-bound.**
-> The earlier completion receipt for `5029bce` was withdrawn. The corrected
-> candidate has one validation owner, authoritative database currentness and
-> source-fingerprinted runtime gates. The final gate must independently verify
-> all 227 effective requirements and PR #6 Ready at the current commit. Two
-> old-compatibility requirements are superseded, not counted as PASS. See the
-> [scope amendment](reports/gowm-v0.6.1/current-design-amendment.md).
-> Merge, tag, release and deployment remain outside this task.
+Use the [World Platform guide](docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md)
+for the single consumer endpoint, isolated Compose profile, exact/candidate
+semantics, runtime qualifications and acceptance commands. Completion is bound
+to fresh machine evidence and exact local/remote/PR SHA agreement; historical
+v0.6.1 reports are not evidence for this candidate. No merge, tag, release or
+production deployment is performed.
 
 See [PROJECT_STATUS.md](PROJECT_STATUS.md) for the exact delivery boundary and
 [the v0.2 architecture](docs/architecture/CAPABILITY_PLATFORM_V0.2.md) for the

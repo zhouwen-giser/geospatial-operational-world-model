@@ -20,6 +20,25 @@ BEGIN
 END
 $privileges$;
 
+DO $world_platform_privileges$
+BEGIN
+  IF NOT has_table_privilege('coverage_planner_provider','gowm_network_v1.coverage_area_reference','SELECT') OR
+     NOT has_table_privilege('platform_validation_provider','gowm_platform_validation_v1.coverage_area_currentness','SELECT') OR
+     has_table_privilege('coverage_planner_provider','public.spatial_feature_version','SELECT') OR
+     has_table_privilege('platform_validation_provider','coverage_planner.coverage_request','SELECT') THEN
+    RAISE EXCEPTION 'area reference adapters violate the scoped view boundary';
+  END IF;
+  IF has_table_privilege('route_planner_provider','public.world_object','INSERT') OR
+     has_table_privilege('route_planner_provider','route_planner_runtime.route_request','INSERT') OR
+     NOT has_function_privilege('route_planner_provider','route_planner_runtime.submit_route_request(text,text,text,text,text,jsonb,text)','EXECUTE') THEN
+    RAISE EXCEPTION 'route runtime writes are not restricted to controlled functions';
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname='route_planner_provider' AND 'default_transaction_read_only=on'=ANY(rolconfig)) THEN
+    RAISE EXCEPTION 'real Route LOGIN cannot execute its controlled runtime write contract';
+  END IF;
+END
+$world_platform_privileges$;
+
 INSERT INTO data_scope(scope_key,operational_domain) VALUES ('validation-authority-test','TEST'),('validation-authority-other','TEST');
 DO $seed$
 DECLARE tenant text; query_key text; job_key uuid; result_key text; derived_key text;

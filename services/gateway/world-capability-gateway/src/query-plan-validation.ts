@@ -219,6 +219,18 @@ export class QueryPlanValidator {
           principal,
           { nodeId: node.nodeId, sourceNodeId: binding.nodeId, outputPort: binding.outputPort }
         );
+        const sourceNode = nodes.get(binding.nodeId)!;
+        const sourceDescriptor = (routes.get(binding.nodeId) ?? this.registry.resolve(sourceNode.operation.operationId, sourceNode.operation.operationVersion, principal.allowExperimental ?? false)).descriptor;
+        const sourceSemantics = sourceDescriptor.semanticProfile;
+        const targetSemantics = descriptor.semanticProfile;
+        if (sourceSemantics && targetSemantics) {
+          if (sourcePort.valueKind === "REFERENCE_KEY" && !sourceSemantics.producedReferenceKinds.some((kind) => targetSemantics.acceptedReferenceKinds.includes(kind))) {
+            this.fail("ReferenceKind output is incompatible with the declared input semantics", { nodeId: node.nodeId, sourceNodeId: binding.nodeId });
+          }
+          if (sourceSemantics.spatialSemantics === "CANDIDATE" && targetSemantics.spatialSemantics === "EXACT" && ["H3_CELL_SET", "GEOMETRY"].includes(sourcePort.valueKind)) {
+            this.fail("Candidate geometry cannot substitute for original geometry in an exact predicate", { nodeId: node.nodeId, sourceNodeId: binding.nodeId });
+          }
+        }
         if (sourcePort.valueKind === "H3_CELL_SET" && binding.port.valueKind === "GEOMETRY") {
           this.fail("An H3 candidate set cannot feed an exact Geometry boolean port", {
             nodeId: node.nodeId,

@@ -1,0 +1,205 @@
+{
+  "status": "PASS",
+  "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+  "runId": "v062-1787744625607",
+  "operations": {
+    "coverage.road.expand-geojson@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:6d174071389ec0d1f269a1114f9e6f86b0f8e668bfcbb8bd94c2da1522cd3d00",
+      "tests": [
+        "D-expand",
+        "generated-forged-contract:coverage.road.expand-geojson"
+      ]
+    },
+    "coverage.road.plan@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:7a6316557649a9c6cc7fa6b1c73fccda9ac70c89f8b9a04f7761e54fd9de35b2",
+      "tests": [
+        "D-coverage:plan",
+        "generated-forged-contract:coverage.road.plan"
+      ]
+    },
+    "coverage.road.select-obligations@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:b074fe3685e85fde182a3d1cd02cd30c06f07043296eabb9dfcec705531f09f0",
+      "tests": [
+        "D-obligations",
+        "generated-forged-contract:coverage.road.select-obligations"
+      ]
+    },
+    "coverage.road.validate@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:61915bca962f99a2f1601434b58f0938ca379d198a78de4692555630faed45b8",
+      "tests": [
+        "D-validate",
+        "generated-forged-contract:coverage.road.validate"
+      ]
+    },
+    "coverage.road.verify@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:c9ecf63f5ccb62141a28996d2424f12375264c1da001b966140e0a008d5079f5",
+      "tests": [
+        "D-verify",
+        "generated-forged-contract:coverage.road.verify"
+      ]
+    },
+    "network.connectivity.inspect@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:4744e3c7cdd0fff6f415674e341b023fe287060157bf351524161ab7f84da9e7",
+      "tests": [
+        "positive-network.connectivity.inspect",
+        "generated-forged-contract:network.connectivity.inspect"
+      ]
+    },
+    "network.graph.diagnose@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:39e8091224c27be878ed6582792f35c4034082026566760f6dcfaf7fdef683eb",
+      "tests": [
+        "positive-network.graph.diagnose",
+        "generated-forged-contract:network.graph.diagnose"
+      ]
+    },
+    "network.graph.get@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:76e8a07360bc0bbc5f87797a5beaee5bc385b77b2cbdcc25cd6ecfb724ca5c51",
+      "tests": [
+        "positive-network.graph.get",
+        "generated-forged-contract:network.graph.get"
+      ]
+    },
+    "network.graph.list@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:04be6b9de072fc7661f7af72f9b618a4a2eff2d76501c18d5095fb449be44277",
+      "tests": [
+        "positive-network.graph.list",
+        "generated-forged-contract:network.graph.list"
+      ]
+    },
+    "network.path.expand@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:4a165130da65bfcdce2014bdbbcbe2e14d5253ff9089b07e29e0dac360706f62",
+      "tests": [
+        "positive-network-expand",
+        "generated-forged-contract:network.path.expand"
+      ]
+    },
+    "network.path.shortest@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:16ba48a9a550536a447c9f65c7de2258f5b1a38859903cf3de61a6f053d20b8e",
+      "tests": [
+        "positive-network-shortest",
+        "generated-forged-contract:network.path.shortest"
+      ]
+    },
+    "network.path.verify@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:2e0d444384d5943995f29435df9e91f595cf90f19c2fcf8a8b68a7a10d38a62c",
+      "tests": [
+        "positive-network-verify",
+        "generated-forged-contract:network.path.verify"
+      ]
+    },
+    "network.snap.point@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:e51345964f7ef31f64cd239e2f836dd81e6d7fe7fb216e6c0ca0e3e12f513e67",
+      "tests": [
+        "C-snap",
+        "C-typed:snap",
+        "generated-forged-contract:network.snap.point"
+      ]
+    },
+    "network.snap.points@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:c95b34b6d25d13661c6c0a07ca560c3a7724718972b2bbb97fa45fb4271579d1",
+      "tests": [
+        "positive-network.snap.points",
+        "generated-forged-contract:network.snap.points"
+      ]
+    },
+    "reference.validate@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:c26f268b9c745cd9d8d570aae40ab5ce1ff045e3afd5dc88c3a5fd53f8e00e0d",
+      "tests": [
+        "positive-reference-validate",
+        "generated-forged-contract:reference.validate"
+      ]
+    },
+    "result.validate@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:4f26c8efc231dc3199ee17438a5f98ed99913fdf9434971ff5ad2bddf566de6b",
+      "tests": [
+        "B-reference-validation",
+        "C-route-validation",
+        "D-result-validation",
+        "negative-no-feasible-validation",
+        "negative-plan-area-stale",
+        "generated-forged-contract:result.validate"
+      ]
+    },
+    "route.plan@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:faf2ca8fa09f9b1b042b7a9e57d96f762c998845103e71f6580a524a1bb03964",
+      "tests": [
+        "C-route",
+        "C-typed:route",
+        "negative-plan-no-path",
+        "generated-forged-contract:route.plan"
+      ]
+    },
+    "route.validate@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:4d839c010171bf25df3f421fec330f4a669f9b5196ef26b5ff3671efc22384bc",
+      "tests": [
+        "positive-route-validate",
+        "generated-forged-contract:route.validate"
+      ]
+    },
+    "route.verify@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:d208aa174e97263e8b3c4243d929a4f614481d55e14a120d11c699d8066cc0c8",
+      "tests": [
+        "positive-route-verify",
+        "generated-forged-contract:route.verify"
+      ]
+    },
+    "snapshot.get@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:3efc4d2e3e2cba3393ad6bcc589918dc04833e656b18c6ba8d495262c3da0c3c",
+      "tests": [
+        "positive-snapshot-get",
+        "generated-forged-contract:snapshot.get"
+      ]
+    },
+    "snapshot.validate@1.0": {
+      "status": "PASS",
+      "sourceDigest": "sha256:194e266f974e8771fb9ccf38e95fe7db7ec57f78c29c8f66c24a7495a260ac01",
+      "contractHash": "sha256:03712f9cbdbb68c29e65611ec22d6d7c53dffe49f971fe9dfebac2ea45735c1e",
+      "tests": [
+        "positive-snapshot-current",
+        "negative-snapshot-unknown",
+        "negative-snapshot-stale",
+        "generated-forged-contract:snapshot.validate"
+      ]
+    }
+  }
+}

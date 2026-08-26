@@ -34,7 +34,7 @@ export async function createGatewayRuntime(config: GatewayServerConfig): Promise
     connectionTimeoutMillis: 5_000
   });
   pool.on("error", () => process.stderr.write("gateway postgres pool error\n"));
-  const registry = new CapabilityRegistry();
+  const registry = new CapabilityRegistry({ profile: config.registryProfile ?? "legacy" });
   try {
     for (const deployment of config.providers) {
       const client = new HttpProviderClient({

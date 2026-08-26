@@ -1,3 +1,4 @@
+import sourceLock from "../../../../contracts/manifests/providers/h3-toolkit-source-lock.json" with { type: "json" };
 import { ProviderProtocolError } from "../../../platform/provider-sdk/src/index.js";
 import type { H3ToolkitAttestation } from "./types.js";
 
@@ -15,7 +16,10 @@ export const H3_TOOLKIT_SOURCE_LOCK = Object.freeze({
  * produced and reviewed a self-contained bindings artifact. Empty is an
  * intentional fail-closed production state, never a wildcard.
  */
-export const APPROVED_H3_TOOLKIT_BINDINGS_ARTIFACT_DIGESTS: readonly `sha256:${string}`[] = Object.freeze([]);
+export const APPROVED_H3_TOOLKIT_BINDINGS_ARTIFACT_DIGESTS: readonly `sha256:${string}`[] = Object.freeze(sourceLock.bindingsArtifactPolicy.approvedArtifactDigests.map((digest) => {
+  if (!/^sha256:[0-9a-f]{64}$/u.test(digest)) throw new Error("Invalid committed H3 artifact digest");
+  return digest as `sha256:${string}`;
+}));
 
 export function assertH3ToolkitAttestation(attestation: H3ToolkitAttestation): void {
   for (const key of ["sourceRef", "sourceGitCommit", "toolkitVersion", "engine", "engineVersion", "license"] as const) {

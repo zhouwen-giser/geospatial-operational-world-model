@@ -8,8 +8,11 @@
   "properties": {
     "registryVersion": {
       "type": "string",
-      "pattern": "^registry-[0-9]+$"
+      "pattern": "^(registry-[0-9]+|sha256:[0-9a-f]{64})$"
     },
+    "registryRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "contractCatalogRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "bindingRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
     "capabilities": {
       "type": "array",
       "maxItems": 4096,

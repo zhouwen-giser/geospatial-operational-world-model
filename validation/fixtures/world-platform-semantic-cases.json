@@ -1,0 +1,93 @@
+{
+  "area": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          0.019841391,
+          0.019205841
+        ],
+        [
+          0.020141391,
+          0.019205841
+        ],
+        [
+          0.019841391,
+          0.019505841
+        ],
+        [
+          0.019841391,
+          0.019205841
+        ]
+      ]
+    ]
+  },
+  "points": {
+    "vehicle": [
+      0,
+      0
+    ],
+    "inside": [
+      0.019941391,
+      0.019305841
+    ],
+    "outside": [
+      0.020031391,
+      0.019395841
+    ],
+    "boundary": [
+      0.019841391,
+      0.019205841
+    ],
+    "foreign": [
+      0.019941391,
+      0.019305841
+    ]
+  },
+  "referenceKeys": {
+    "vehicle": {
+      "namespace": "gowm",
+      "kind": "WORLD_OBJECT",
+      "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+      "version": "1"
+    },
+    "inside": {
+      "namespace": "gowm",
+      "kind": "WORLD_OBJECT",
+      "id": "wrf_8a5efe5d0137779aa29b6332388040eb",
+      "version": "1"
+    },
+    "outside": {
+      "namespace": "gowm",
+      "kind": "WORLD_OBJECT",
+      "id": "wrf_aeccbe0049e722543bbb969195954686",
+      "version": "1"
+    },
+    "boundary": {
+      "namespace": "gowm",
+      "kind": "WORLD_OBJECT",
+      "id": "wrf_e2f930670348b0162db9487c77905e71",
+      "version": "1"
+    },
+    "foreign": {
+      "namespace": "gowm",
+      "kind": "WORLD_OBJECT",
+      "id": "wrf_b1db67c3f4aa0b0146e769d56aa9c9b9",
+      "version": "1"
+    },
+    "area": {
+      "namespace": "gowm",
+      "kind": "WORLD_OBJECT",
+      "id": "wrf_c781e9c05ea54551c5b45bed70312b68",
+      "version": "1"
+    }
+  },
+  "candidateCell": "89754a936dbffff",
+  "resolution": 9,
+  "coverageAreaReference": {
+    "namespace": "gowm",
+    "kind": "LAYER_FEATURE",
+    "id": "wrf_62000000000000000000000000000002",
+    "version": "feature-v1"
+  }
+}

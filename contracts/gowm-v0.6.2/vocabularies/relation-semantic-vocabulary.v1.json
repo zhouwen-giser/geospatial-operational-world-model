@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "1.0",
+  "vocabularyId": "gowm-relation-semantic",
+  "version": "1.0",
+  "terms": [
+    {
+      "id": "RESOLVES_TO",
+      "definition": "A structured mention or external identifier resolves to a reference candidate."
+    },
+    {
+      "id": "DESCRIBES",
+      "definition": "A descriptor or catalog record describes a reference."
+    },
+    {
+      "id": "HAS_GEOMETRY",
+      "definition": "A reference exposes versioned geometry."
+    },
+    {
+      "id": "INSIDE",
+      "definition": "An exact inside/covered-by relationship under declared boundary semantics."
+    },
+    {
+      "id": "CONTAINS",
+      "definition": "An exact contains/covers relationship under declared boundary semantics."
+    },
+    {
+      "id": "INTERSECTS",
+      "definition": "An exact geometric intersection relationship."
+    },
+    {
+      "id": "NEAR",
+      "definition": "A distance-bounded relation with declared unit and distance model."
+    },
+    {
+      "id": "CANDIDATE_COVER",
+      "definition": "A coarse cover or index candidate that requires exact verification."
+    },
+    {
+      "id": "SNAPPED_TO_NETWORK",
+      "definition": "A position/reference is snapped to a directed network state."
+    },
+    {
+      "id": "ROUTE_BETWEEN",
+      "definition": "A derived route plan relates start and destination references."
+    },
+    {
+      "id": "ROAD_COVERAGE_PLAN",
+      "definition": "A derived plan covers required road obligations."
+    },
+    {
+      "id": "TEMPORALLY_OVERLAPS",
+      "definition": "Two temporal extents overlap."
+    },
+    {
+      "id": "PROXIMITY_INTERVAL",
+      "definition": "A time interval during which entities satisfy a proximity relation."
+    },
+    {
+      "id": "CORRELATES_WITH",
+      "definition": "Evidence or events correlate with an external identifier or task."
+    },
+    {
+      "id": "EVALUATES_PREDICATE",
+      "definition": "A result evaluates an external predicate against world evidence."
+    },
+    {
+      "id": "VALIDATES",
+      "definition": "A validation result evaluates a reference or result."
+    },
+    {
+      "id": "VALIDATES_SNAPSHOT",
+      "definition": "A validation result evaluates data snapshot currentness."
+    },
+    {
+      "id": "DISCOVERS_DATA_PRODUCT",
+      "definition": "A catalog query discovers matching data products."
+    }
+  ],
+  "compatibilityPolicy": "ADD_ONLY"
+}

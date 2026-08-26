@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.2 - 2026-08-26
+
+- Added a unified World Platform registry and isolated runtime with one consumer Gateway endpoint.
+- Required explicit Manifest 1.1 semantic profiles across 15 Providers and 122 operations; kept Execution Protocol 1.0 and legacy direct routing compatible.
+- Added deterministic TypeScript/SQL/schema evidence scanning, controlled vocabulary meanings, semantic conformance and typed exact-verification paths.
+- Removed Gateway semantic inference and introduced content-addressed profile/catalog/contract revisions with separate binding identity.
+- Added a generated, evidence-gated WSGS operation lock, independent native STAS adapter and reproducible external H3 bundle verification.
+- Added typed World coordinate/Network-state ports and scoped, version-pinned Coverage area reference resolution without changing planning algorithms.
+- Added real single-Gateway semantic canaries, failure isolation and restart/idempotency acceptance.
+
 ## 0.6.1 - 2026-08-26
 
 - Made Coverage claims database-authoritative and generation-fenced; stale

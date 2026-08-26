@@ -1,10 +1,11 @@
 {
   "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
   "provider": {
     "providerId": "gowm.platform-validation",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:dcde74ce46d645874623f951afa8aac1d6eefe6af2062ba2be3cdbc4f1957927",
+    "implementationDigest": "sha256:6014ea778151bdebabb25e5cfe24ed4fca8983c00c3d28d77d2f597c25aa7677",
     "sourceRef": "urn:gowm:source:in-tree:platform-validation-provider:1.0.0"
   },
   "endpoints": {
@@ -18,6 +19,43 @@
     {
       "operationId": "reference.validate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [
+          "VALIDATES"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "VALIDATION",
@@ -73,6 +111,43 @@
     {
       "operationId": "result.validate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [
+          "VALIDATES"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "VALIDATION",
@@ -128,6 +203,31 @@
     {
       "operationId": "snapshot.get",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "VALIDATION",
@@ -183,6 +283,42 @@
     {
       "operationId": "snapshot.validate",
       "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.0",
+        "domain": "PLATFORM",
+        "acceptedReferenceKinds": [
+          "DATASET",
+          "DERIVED_REFERENCE",
+          "LAYER",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "QUERY_RESULT",
+          "REFERENCE_SET",
+          "SPATIAL_OBJECT",
+          "WORLD_OBJECT"
+        ],
+        "producedReferenceKinds": [],
+        "relationSemantics": [
+          "VALIDATES_SNAPSHOT"
+        ],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "SNAPSHOT",
+        "resultNature": "VALIDATION",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "CURRENT": "COMPLETED",
+            "STALE": "STALE",
+            "UNAVAILABLE": "INDETERMINATE",
+            "UNKNOWN": "INDETERMINATE"
+          }
+        },
+        "notes": [
+          "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
+        ]
+      },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",
       "resultSemantics": "VALIDATION",

@@ -10,3 +10,6 @@ export * from "./scope.js";
 export * from "./trace.js";
 export * from "./transport-auth.js";
 export * from "./types.js";
+
+export * from "./declared-semantics.js";
+export { buildProviderProtocolApp } from "./http-app.js";

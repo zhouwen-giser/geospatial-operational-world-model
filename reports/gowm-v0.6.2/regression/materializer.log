@@ -1,0 +1,5 @@
+
+> geospatial-operational-world-model@0.6.2 validate:semantic-materializer
+> node --import tsx scripts/materialize-capability-semantic-profiles.ts
+
+SEMANTIC_MATERIALIZER_PASS operations=122 sha256:3cccea2a5364aed3625aa4cbf216fb85d4bb550ead762dd1253b99fc58b4b0b8

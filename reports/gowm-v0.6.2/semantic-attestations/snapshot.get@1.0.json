@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.platform-validation",
+  "operationId": "snapshot.get",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:95ab3fdffd708473f9e8fa1588ddc858a6b38212def5ff6442b67739e5b06bf9",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/platform-validation-provider.json",
+      "sha256": "bab4d7d385f36fbef6f3bbc9ba7f43fa52a5ae7f300f766dd5072a5082d3d6de"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/platform-validation-provider.json",
+      "sha256": "bab4d7d385f36fbef6f3bbc9ba7f43fa52a5ae7f300f766dd5072a5082d3d6de"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/snapshot-get-request.schema.json",
+      "sha256": "8962702ca4cb691d061e816b9266c52f598c4faae164ce2cbc604863512077eb"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/data-snapshot-manifest.schema.json",
+      "sha256": "dbf73657d45c9b160d12fcef0a63d22213f0c7aebb68784b48ce969ddf8bb7da"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/platform-validation-provider/src/index.ts",
+      "sha256": "62fe167f3eaa5e3a87669f2bb4b07ebbf7fac45c645c53c80896929e91a79cdb",
+      "symbol": "createPlatformValidationProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/platform-validation-provider.test.ts",
+      "sha256": "cc24619b52266ff87ee7dbb3c84cb3f5d754969a17790b5e148d1da47e94c7b7"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/platform-validation-provider/src/postgres-authority.ts",
+      "sha256": "ed496922157363806e3bd0259f8aa9ea83c21e2ed68b4f2b70c1a18a2427c749"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/058_platform_validation_authority.sql",
+      "sha256": "00b5057dc641f58b4477aab1ef874d9a1590f4067210feca3b5dff4feceed98e"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.2/black-box-evidence.json",
+      "sha256": "c15b5491375487dd3c3df4a4d94887deaa490cb89fad4c9da27620ebfb6a1482",
+      "symbol": "snapshot.get@1.0"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.h3.analysis.bridge",
+  "operations": {
+    "h3.analytics.aggregate@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3AnalysisProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ]
+    },
+    "h3.analytics.coverage@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3AnalysisProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ]
+    },
+    "h3.analytics.flow@1.0": {
+      "profile": {
+        "profileVersion": "1.0",
+        "domain": "H3",
+        "acceptedReferenceKinds": [],
+        "producedReferenceKinds": [],
+        "relationSemantics": [],
+        "spatialSemantics": "AGGREGATED",
+        "timeSemantics": "NONE",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NOT_APPLICABLE",
+        "freshnessSemantics": "NONE"
+      },
+      "implementation": [
+        {
+          "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+          "symbol": "createH3AnalysisProvider"
+        }
+      ],
+      "tests": [
+        "validation/h3-bridge/h3-provider-bridges.test.ts"
+      ],
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "bridgeLocks": [
+        "contracts/manifests/providers/h3-toolkit-source-lock.json"
+      ]
+    }
+  }
+}

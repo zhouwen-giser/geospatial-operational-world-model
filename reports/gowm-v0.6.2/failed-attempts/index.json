@@ -1,0 +1,65 @@
+{
+  "purpose": "Retained failed actual attempts; never used as passing evidence",
+  "attempts": [
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-eighth.log",
+      "sha256": "3cdcffbd786a038faf4641b3f39533c5350883685d8a004e7e959f08ec82cbf3",
+      "status": "FAIL",
+      "reason": "Error: C-typed:queued: {\"status\":422,\"body\":{\"schemaVersion\":\"1.0\",\"requestId\":\"req-21\",\"error\":{\"code\":\"INVALID_REQUEST\",\"message\":\"Request validation failed\",\"retryable\":false,\"stage\":\"DAG_VALIDATION\",\"nodeId\":\"snap\",\"details\":{\"stage\":\"DAG_VALIDATION\",\"nodeId\":\"snap\",\"schemaUri\":\"urn:gowm:v0.5:network-snap-request\",\"registeredHash\":\"sha256:d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d67739"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-fifth.log",
+      "sha256": "120f9b022f53d3600e894604f1bb583c44323e047f853a0b5a1f7f0ed5c53542",
+      "status": "FAIL",
+      "reason": "Error: exact-boundary-covered: {\"objects\":[{\"referenceKey\":{\"namespace\":\"gowm\",\"kind\":\"WORLD_OBJECT\",\"id\":\"wrf_8a5efe5d0137779aa29b6332388040eb\",\"version\":\"1\"},\"objectType\":\"CANARY_POINT\",\"subtype\":null,\"status\":\"ACTIVE\",\"source\":\"v062-acceptance\",\"properties\":{},\"observedAt\":\"2026-08-26T11:18:19.594Z\",\"receivedAt\":\"2026-08-26T11:18:19.594Z\",\"updatedAt\":\"2026-08-26T11:18:19.595Z\",\"worldVersion\":1,"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-first.log",
+      "sha256": "4b2ef7e02e958adca51c897351a7ff3734e45ab18bc28fd2efbb7397bc01e8f5",
+      "status": "FAIL",
+      "reason": "Error: runtime-contract-revision: {\"actual\":\"sha256:c1e0c1652a566ef4dbedec58002850aff24ea255816bbc2a197d051d2b6318c6\"}"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-fourth.log",
+      "sha256": "35d1f53cc3b8e5e61b7a92951bf158471a2e95bd75f0681ec66c29f5c2e6e5d9",
+      "status": "FAIL",
+      "reason": "Error: A-nearby:inputSchema: [{\"path\":\"/location\",\"schemaPath\":\"capabilities/spatial-provider/operations.schema.json#/$defs/location/oneOf\",\"keyword\":\"oneOf\",\"message\":\"must match exactly one branch; matched 0\"}]"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-ninth.log",
+      "sha256": "4df20c44df2fa49d2bfa5e1cec8ad2d71141b34454700ea3683544208939980f",
+      "status": "FAIL",
+      "reason": "Error: runtime-image-matches-built-source: [\"dist/packages/platform/contract-runtime/src/schema-validator.js\"]"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-second.log",
+      "sha256": "c09d5166a63ef3071740afbdc241aa5e74f1cd389390a78fd4df062ac17abaea",
+      "status": "FAIL",
+      "reason": "Error: resolve-CanaryVehicle:explicit-status-mapping: {\"mapping\":{\"AMBIGUOUS\":\"AMBIGUOUS\",\"INVALID\":\"COMPLETED\",\"RESOLVED_EXACT\":\"COMPLETED\",\"SUGGESTED_UNIQUE\":\"COMPLETED\",\"UNRESOLVED\":\"NO_DATA\"}}"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-seventh.log",
+      "sha256": "3bc35186266a6ddd4a6d03d1bfe64f8f4f8761518a7d93e7fa91f6c5d03c107e",
+      "status": "FAIL",
+      "reason": "Error: Command failed: docker compose --env-file /tmp/gowm-v062-canary.env -f docker-compose.yml -f docker-compose.world-platform.yml --profile world-platform exec -T postgres psql -U gowm -d gowm -XAt -v ON_ERROR_STOP=1"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-sixth.log",
+      "sha256": "948e13f7e7a53e738d81df22aea95d2303dfbc19593d87d622913d383905d7bf",
+      "status": "FAIL",
+      "reason": "Error: C-route:http: {\"status\":500,\"body\":{\"schemaVersion\":\"1.0\",\"requestId\":\"req-l\",\"error\":{\"code\":\"INTERNAL_PROVIDER_ERROR\",\"message\":\"Gateway request failed\",\"retryable\":false,\"stage\":\"PROVIDER_EXECUTION\",\"providerId\":\"gowm.route-planning\",\"details\":{\"providerId\":\"gowm.route-planning\",\"stage\":\"PROVIDER_EXECUTION\"}}}}"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-tenth.log",
+      "sha256": "86034a9cfcb92c69022f2f5c5b13645cccbd5ed2a0b1074ce9eb599d9e0c6f9b",
+      "status": "FAIL",
+      "reason": "Error: D-expand:inputSchema: [{\"path\":\"/include\",\"schemaPath\":\"gowm-v0.6/coverage-expand-request.schema.json/required\",\"keyword\":\"required\",\"message\":\"is required\"}]"
+    },
+    {
+      "path": "reports/gowm-v0.6.2/failed-attempts/gowm-v062-semantic-canary-third.log",
+      "sha256": "11eed8283664e8586d051e51d50152184bc3220082673e649825687eda02c872",
+      "status": "FAIL",
+      "reason": "Error: CanaryVehicle:unique: {\"schemaVersion\":\"1.0\",\"resolutions\":[{\"mentionId\":\"m1\",\"status\":\"AMBIGUOUS\",\"candidates\":[{\"candidate\":{\"referenceKey\":{\"namespace\":\"gowm\",\"kind\":\"WORLD_OBJECT\",\"id\":\"wrf_1eb2264c33a12edd09b324e8073cc280\",\"version\":\"9\"},\"referenceType\":\"CANARY_VEHICLE\",\"displayName\":\"CanaryVehicle\",\"aliases\":[],\"version\":{\"referenceVersion\":\"9\",\"objectVersion\":\"1\",\"worldVersion\":1},\"r"
+    }
+  ]
+}

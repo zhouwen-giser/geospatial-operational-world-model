@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.get-position-at:input:1.0",
+  "title": "StasStasNativeGetPositionAtInputV1Input",
+  "$ref": "native.schema.json#/$defs/get_position_at_input_v1"
+}

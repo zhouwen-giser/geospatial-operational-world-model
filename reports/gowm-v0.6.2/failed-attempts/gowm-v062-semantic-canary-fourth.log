@@ -1,0 +1,6 @@
+Error: A-nearby:inputSchema: [{"path":"/location","schemaPath":"capabilities/spatial-provider/operations.schema.json#/$defs/location/oneOf","keyword":"oneOf","message":"must match exactly one branch; matched 0"}]
+    at check (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:24:91)
+    at execute (file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:48:74)
+    at file:///tmp/gowm-world-platform-gateway-semantics-v0.6.2/validation/scripts/world-platform-semantic-canary.mjs:95:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+WORLD_PLATFORM_CANARY_FAIL checks=149 positiveOperations=2

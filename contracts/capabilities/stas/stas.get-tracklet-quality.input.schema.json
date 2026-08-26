@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.get-tracklet-quality:input:1.0",
+  "title": "StasStasNativeGetTrackletQualityInputV1Input",
+  "$ref": "native.schema.json#/$defs/get_tracklet_quality_input_v1"
+}

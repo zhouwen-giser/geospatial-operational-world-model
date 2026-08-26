@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:capability:stas.find-region-interactions:input:1.0",
+  "title": "StasStasNativeFindRegionInteractionsInputV1Input",
+  "$ref": "native.schema.json#/$defs/find_region_interactions_input_v1"
+}
