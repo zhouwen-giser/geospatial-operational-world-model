@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { getContractSchemaHash } from "../../packages/platform/contract-runtime/src/index.js";
-import { ProviderProtocolError } from "../../packages/platform/provider-sdk/src/index.js";
+import { ProviderProtocolError, sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "../../services/providers/grounding-catalog-provider/src/cursor.js";
 import { decodeEvidenceCursor, encodeEvidenceCursor } from "../../services/providers/grounding-catalog-provider/src/evidence-cursor.js";
 import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
@@ -17,11 +17,36 @@ const pool: CatalogSqlPool = {
 const cursorSecret = "GowmCatalogCursorSecret_2026_Alpha_Bravo";
 
 describe("grounding catalog providers", () => {
-  it("registers the frozen Reference operation set with canonical hashes", () => {
+  it.each(["world.get-current-state", "world.get-geometry", "world.get-provenance"])("serializes and receipts %s with absent optional dates", async (operationId) => {
+    const referenceKey = { namespace: "gowm", kind: "WORLD_OBJECT", id: `wrf_${"1".repeat(32)}`, version: "1" };
+    const client: CatalogSqlClient = {
+      async query<Row extends Record<string, unknown> = Record<string, unknown>>(text: string) {
+        let rows: Record<string, unknown>[] = [];
+        if (text.includes("scope_resource")) rows = [{ reference_key_value: { ...referenceKey, kind: "DATA_SCOPE" } }];
+        else if (text.includes("GREATEST")) rows = [{ world_version: "1" }];
+        else if (text.startsWith("SELECT * FROM gowm_evidence_v1.")) rows = [{ reference_key_value: referenceKey, world_version: "1", state: {}, object_type: "AREA", confidence: 1, freshness_ms: null, geometry: { type: "Point", coordinates: [0, 0] }, geometry_type: "POINT", bbox: [0, 0, 0, 0], crs: "EPSG:4326", observed_at: null, received_at: null }];
+        return { rows: rows as Row[], rowCount: rows.length };
+      }, release() {}
+    };
+    const provider = createGroundingCatalogProvider({ mode: "evidence", pool: { async connect() { return client; } }, cursorSecret });
+    const descriptor = provider.runtime.manifest.capabilities.find((c) => c.operationId === operationId)!;
+    const now = new Date().toISOString(), deadlineAt = new Date(Date.now() + 10_000).toISOString();
+    const output = await provider.runtime.execute({
+      providerProtocolVersion: "1.0", requestId: "world-optional-fields", gatewayRequestId: "world-optional-fields", idempotencyKey: operationId,
+      operation: { operationId, operationVersion: "1.0", inputSchemaHash: descriptor.inputSchemaHash, outputSchemaHash: descriptor.outputSchemaHash }, input: { schemaVersion: "1.0", referenceKey },
+      securityContext: { principalRef: "test", authenticationMethod: "UNIT", authenticatedAt: now, dataScopeClaim: "scope", scopeAttestation: { issuer: "test", issuedAt: now, expiresAt: deadlineAt, claimDigest: sha256({ scope: "scope" }) } },
+      gatewayContext: { gatewayId: "test", registryVersion: "1", policyVersion: "1" }, executionPolicy: { deadlineAt, maximumInputBytes: 1_048_576, maximumResultBytes: 1_048_576, maximumCostClass: "MEDIUM" }
+    });
+    expect(output.status).toBe("COMPLETED");
+    expect(output.receipts[0]?.outputHash).toBe(sha256(output.output?.value));
+    expect(output.output?.value).toEqual(JSON.parse(JSON.stringify(output.output?.value)));
+  });
+
+  it("registers Reference read operations with canonical hashes and delegates validation to the platform", () => {
     const provider = createGroundingCatalogProvider({ mode: "reference", pool, cursorSecret });
     expect(provider.runtime.manifest.provider.providerId).toBe("gowm.reference-catalog");
     expect(provider.runtime.manifest.capabilities.map((capability) => capability.operationId)).toEqual([
-      "reference.get", "reference.resolve", "reference.validate", "reference.batch-get", "reference.search"
+      "reference.get", "reference.resolve", "reference.batch-get", "reference.search"
     ]);
     for (const capability of provider.runtime.manifest.capabilities) {
       expect(capability.scopePolicy).toBe("DATA_SCOPE_REQUIRED");
@@ -116,13 +141,13 @@ describe("grounding catalog providers", () => {
     expect(emptyPage.output).toMatchObject({ items: [], truncated: true, nextCursor: expect.any(String) });
   });
 
-  it("registers the frozen World Evidence and Result Registry operations as data-scoped", () => {
+  it("registers World Evidence and Result Registry read operations as data-scoped", () => {
     const provider = createGroundingCatalogProvider({ mode: "evidence", pool, cursorSecret });
     expect(provider.runtime.manifest.provider.providerId).toBe("gowm.world-evidence");
     expect(provider.runtime.manifest.capabilities.map((capability) => capability.operationId)).toEqual([
       "world.get-current-state", "world.get-geometry", "world.get-provenance",
       "world.get-observations", "world.get-event-timeline", "world.get-state-history",
-      "result.get", "result.validate", "reference-set.get-members"
+      "result.get", "reference-set.get-members"
     ]);
     for (const capability of provider.runtime.manifest.capabilities) {
       expect(capability.scopePolicy).toBe("DATA_SCOPE_REQUIRED");
@@ -186,12 +211,14 @@ describe("grounding catalog providers", () => {
     }, cursorSecret)).toThrow(ProviderProtocolError);
   });
 
-  it("loads the controlled Grounding Gateway registry with frozen full manifests", async () => {
+  it("loads the controlled Grounding Gateway registry with current full manifests", async () => {
     const deployments = await loadControlledProviderDeployments(resolve("config/grounding-gateway-registry.json"));
     expect(deployments.map((deployment) => deployment.providerId)).toEqual([
       "gowm.reference-catalog", "gowm.dataset-catalog", "gowm.world-evidence", "gowm.operational-reality", "gowm.platform-validation"
     ]);
-    expect(deployments.flatMap((deployment) => deployment.approvedManifest.capabilities)).toHaveLength(38);
+    const capabilities = deployments.flatMap((deployment) => deployment.approvedManifest.capabilities);
+    expect(capabilities).toHaveLength(37);
+    expect(new Set(capabilities.map((capability) => `${capability.operationId}@${capability.operationVersion}`)).size).toBe(capabilities.length);
     expect(deployments.every((deployment) =>
       deployment.approvedManifest.provider.implementationDigest === deployment.implementationDigest
     )).toBe(true);

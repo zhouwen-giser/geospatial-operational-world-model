@@ -1,7 +1,6 @@
 import { Pool } from "pg";
 
 import {
-  getContractSchema,
   getContractSchemaHash,
   validateContract,
   type CapabilityDescriptor,
@@ -14,10 +13,11 @@ import {
   type GowmV06CoverageProblem,
   type GowmV06CoverageRoute
 } from "../../packages/platform/contract-runtime/src/index.js";
-import { createProviderRuntime, sha256, type ProviderOperation, type ProviderRuntime } from "../../packages/platform/provider-sdk/src/index.js";
+import { sha256, type ProviderRuntime } from "../../packages/platform/provider-sdk/src/index.js";
 import { createDataSnapshot } from "../../packages/platform/result-validation-core/src/index.js";
 import { NetworkRepository, RoutingSnapshotCurrentnessEvaluator } from "../../packages/network-query-core/src/index.js";
 import { coverageHardeningCases } from "./coverage-hardening-runtime-checks.js";
+import { seedPlatformValidationCases, withAdvancedGraph } from "./coverage-validation-runtime-checks.js";
 import {
   buildGatewayApp,
   CapabilityRegistry,
@@ -33,11 +33,12 @@ import {
 } from "../../services/gateway/world-capability-gateway/src/index.js";
 import {
   createRoadCoverageProvider,
-  PostgresRoadCoverageEngine,
-  ROAD_COVERAGE_OPERATION_LOCKS
+  PostgresRoadCoverageEngine
 } from "../../services/providers/road-coverage-provider/src/provider.js";
 import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
-import { createPlatformValidationProvider, PostgresPlatformValidationAuthority, type PlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
+import { createPlatformValidationProvider, PostgresPlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
+import { createNetworkProvider } from "../../services/providers/network-provider/src/provider.js";
+import { createRoutePlanningProvider } from "../../services/providers/route-planning-provider/src/provider.js";
 
 type Row = Record<string, unknown>;
 const providerUrl = required("COVERAGE_PROVIDER_DATABASE_URL");
@@ -48,8 +49,6 @@ const catalogUrl = required("CATALOG_PROVIDER_DATABASE_URL");
 const runId = required("GOWM_V06_RUN_ID");
 const DATA_SCOPE = "coverage-gateway-runtime";
 const DATASET_SCOPE = "tenant-a";
-const requestSchemaUri = "urn:gowm:v0.6:road-coverage-request";
-const requestSchemaHash = ROAD_COVERAGE_OPERATION_LOCKS[0].inputSchemaHash;
 const checks: Record<string, boolean> = {};
 const performanceEvidence: Record<string, { elapsedMs: number; maximumMs: number }> = {};
 const providerPool = new Pool({ connectionString: providerUrl, max: 8 });
@@ -57,6 +56,10 @@ const gatewayPool = new Pool({ connectionString: gatewayUrl, max: 8 });
 const adminPool = new Pool({ connectionString: adminUrl, max: 2 });
 const validationPool = new Pool({ connectionString: validationUrl, max: 4 });
 const catalogPool = new Pool({ connectionString: catalogUrl, max: 4 });
+const referencePool = new Pool({ connectionString: adminUrl, options: "-c role=gowm_reference_reader", max: 2 });
+const evidencePool = new Pool({ connectionString: adminUrl, options: "-c role=gowm_evidence_service", max: 2 });
+const networkPool = new Pool({ connectionString: adminUrl, options: "-c role=network_provider", max: 2 });
+const routePool = new Pool({ connectionString: adminUrl, options: "-c role=route_planner_provider", max: 2 });
 const snapshot = {
   networkDatasetVersion: "dataset-v1",
   graphVersion: "graph-v1",
@@ -120,61 +123,24 @@ coverageEngine.plan = async (input, context) => {
 };
 const coverage = createRoadCoverageProvider(coverageEngine);
 const postgresValidationAuthority = new PostgresPlatformValidationAuthority(validationPool);
-const semanticStatuses = new Map([
-  ["wrf_70000000000000000000000000000001", "SUCCEEDED"],
-  ["wrf_70000000000000000000000000000002", "PARTIAL"],
-  ["wrf_70000000000000000000000000000003", "NO_DATA"],
-  ["wrf_70000000000000000000000000000004", "AMBIGUOUS"],
-  ["wrf_70000000000000000000000000000005", "INDETERMINATE"],
-  ["wrf_70000000000000000000000000000006", "NO_PATH"],
-  ["wrf_70000000000000000000000000000007", "STALE"],
-  ["wrf_70000000000000000000000000000008", "FAILED"]
-]);
-const semanticValidationAuthority: PlatformValidationAuthority = {
-  async resolveReferences(requests, scope) {
-    return await Promise.all(requests.map(async (request) => {
-      const sourceStatus = semanticStatuses.get(request.referenceKey.id);
-      if (sourceStatus !== undefined) return {
-        referenceKey: request.referenceKey,
-        sourceStatus,
-        sourceAuthority: "gowm.g00-semantic-status-fixture",
-        available: true,
-        snapshotStatus: sourceStatus === "STALE" ? "STALE" as const : "CURRENT" as const,
-        validationEvidenceRefs: [`urn:gowm:g00:status:${sourceStatus}`]
-      };
-      if (request.referenceKey.id === "wrf_70000000000000000000000000000009") return {
-        referenceKey: request.referenceKey,
-        sourceStatus: "COMPLETED",
-        sourceAuthority: "gowm.g00-semantic-status-fixture",
-        available: true,
-        retired: true,
-        snapshotStatus: "CURRENT" as const,
-        validationEvidenceRefs: ["urn:gowm:g00:retired"]
-      };
-      return (await postgresValidationAuthority.resolveReferences([request], scope))[0];
-    }));
-  },
-  getSnapshot: (snapshotId, scope) => postgresValidationAuthority.getSnapshot(snapshotId, scope),
-  async currentResources(resources, scope) {
-    const current = new Map(await postgresValidationAuthority.currentResources(resources, scope));
-    for (const resource of resources) {
-      if (resource.resourceKind === "FORCED_UNAVAILABLE") current.set(`${resource.resourceKind}\u0000${resource.resourceId}`, "UNAVAILABLE");
-    }
-    return current;
-  }
-};
-const platformValidation = createPlatformValidationProvider(semanticValidationAuthority);
+const platformValidation = createPlatformValidationProvider(postgresValidationAuthority);
 const catalog = createGroundingCatalogProvider({
   mode: "dataset",
   pool: catalogPool,
   cursorSecret: "GowmCatalogG00CursorSecret_2026_Alpha_Bravo"
 });
-const geometry = createGeometryProvider();
+const referenceProvider = createGroundingCatalogProvider({ mode: "reference", pool: referencePool, cursorSecret: "GowmReferenceG00CursorSecret_2026_Alpha" });
+const evidenceProvider = createGroundingCatalogProvider({ mode: "evidence", pool: evidencePool, cursorSecret: "GowmEvidenceG00CursorSecret_2026_Alpha" });
+const networkProvider = createNetworkProvider({ pool: networkPool });
+const routeProvider = createRoutePlanningProvider({ pool: routePool });
 const registry = new CapabilityRegistry();
-register(registry, geometry, "geometry", 36100);
 register(registry, coverage.runtime, "coverage", 36101);
 register(registry, platformValidation.runtime, "platform-validation", 36102);
 register(registry, catalog.runtime, "dataset-catalog", 36103);
+register(registry, referenceProvider.runtime, "reference", 36104);
+register(registry, evidenceProvider.runtime, "evidence", 36105);
+register(registry, networkProvider.runtime, "network", 36106);
+register(registry, routeProvider.runtime, "route", 36107);
 const direct = new DirectExecutionService({
   registry,
   circuits: new ProviderCircuitBreaker(),
@@ -194,10 +160,21 @@ const worldQueries = new WorldQueryRuntime({
 const app = buildGatewayApp({ registry, directExecution: direct, worldQueries, authenticate: async () => principal });
 
 try {
-  await persistRuntimeRegistry(adminPool, geometry, "http://geometry.coverage-g00.invalid");
+  const validationCases = await seedPlatformValidationCases(adminPool, snapshot, DATA_SCOPE, DATASET_SCOPE);
   await persistRuntimeRegistry(adminPool, coverage.runtime, "http://coverage.coverage-g00.invalid");
   await persistRuntimeRegistry(adminPool, platformValidation.runtime, "http://platform-validation.coverage-g00.invalid");
   await persistRuntimeRegistry(adminPool, catalog.runtime, "http://dataset-catalog.coverage-g00.invalid");
+  for (const runtime of [referenceProvider.runtime, evidenceProvider.runtime, networkProvider.runtime, routeProvider.runtime]) {
+    await persistRuntimeRegistry(adminPool, runtime, `http://${runtime.manifest.provider.providerId}.coverage-g00.invalid`);
+  }
+  check("platformValidationSingleOwner", ["reference.validate", "result.validate"].every((id) => registry.resolve(id, "1.0").manifest.provider.providerId === "gowm.platform-validation"));
+  const routePlan = envelopeValue(await execute("route.plan", {
+    requestId: `${runId}-validation-route`, routingSnapshot: snapshot,
+    start: coverageRequest.endpointPolicy.start, destination: { arcKey: `arc_${"5".repeat(64)}`, fractionPpm: 1_000_000, direction: "FORWARD" },
+    travelProfile: "travel-v1", costProfile: "cost-v1", objective: "SHORTEST_DISTANCE", deadlineMs: 10_000
+  }, `${runId}-validation-route`));
+  const routeKey = row(routePlan.queryResultReferenceKey);
+  check("platformRealRoutePublished", routePlan.status === "COMPLETED" && routeKey.kind === "QUERY_RESULT", routePlan);
 
   const semanticStartedAt = performance.now();
   const semanticCatalogResponse = await app.inject({ method: "GET", url: "/v1/capability-semantics" });
@@ -219,16 +196,12 @@ try {
   const loadedNetwork = await networkAuthority.loadPinned(snapshot, boundaryScope, 10_000);
   const currentRouting = await networkAuthority.inspectFreshness(loadedNetwork, boundaryScope, 10_000);
   check("routingCurrentnessCurrent", currentRouting.currentness.currentness === "CURRENT" && currentRouting.graphCurrent && currentRouting.profileCurrent && currentRouting.conditionCurrent, currentRouting);
-  const graphStaleRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...loadedNetwork.routingSnapshot, graphVersion: "graph-old" } }, boundaryScope, 10_000);
-  check("routingCurrentnessGraphStale", graphStaleRouting.currentness.currentness === "STALE" && graphStaleRouting.currentness.staleDimensions.join(",") === "GRAPH", graphStaleRouting);
-  const unavailableRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, graph: { ...loadedNetwork.graph, graph_key: "missing-g00-graph" } }, boundaryScope, 10_000);
+  const unavailableRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...loadedNetwork.routingSnapshot, graphVersion: "missing-g00-graph" } }, boundaryScope, 10_000);
   check("routingCurrentnessUnavailable", unavailableRouting.currentness.currentness === "UNAVAILABLE", unavailableRouting);
   const unknownWorldRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...loadedNetwork.routingSnapshot, sourceWorldVersion: 1 } }, boundaryScope, 10_000);
-  check("routingCurrentnessWorldUnknown", unknownWorldRouting.currentness.currentness === "UNKNOWN" && unknownWorldRouting.currentness.dimensions.sourceWorld === "UNKNOWN", unknownWorldRouting);
+  check("routingCurrentnessWorldStale", unknownWorldRouting.currentness.currentness === "STALE" && unknownWorldRouting.currentness.dimensions.sourceWorld === "STALE", unknownWorldRouting);
   const unknownConditionRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...loadedNetwork.routingSnapshot, conditionSnapshotId: "unknown-prior-condition" } }, boundaryScope, 10_000);
   check("routingCurrentnessConditionUnknown", unknownConditionRouting.currentness.currentness === "UNKNOWN" && unknownConditionRouting.currentness.dimensions.condition === "UNKNOWN", unknownConditionRouting);
-  const stalePlanValidation = new RoutingSnapshotCurrentnessEvaluator().planValidation("VALID", graphStaleRouting.currentness);
-  check("routingValiditySeparate", stalePlanValidation.planValidity === "VALID" && stalePlanValidation.currentness === "STALE" && stalePlanValidation.usable === "REVALIDATE", stalePlanValidation);
   const stripArea = { type: "Polygon", coordinates: [[[0.001,-0.0001],[0.002,-0.0001],[0.002,0.0001],[0.001,0.0001],[0.001,-0.0001]]] };
   const forwardBoundary = await networkAuthority.routeBoundaryCrossings(snapshot, stripArea, [{ arcKey: `arc_${"2".repeat(64)}`, startFractionPpm: 0, endFractionPpm: 1000000 }], boundaryScope, 10_000);
   check("boundaryForwardPolygon", forwardBoundary.crossings.map((item) => `${item.kind}:${item.fractionPpm}:${item.direction}`).join(",") === "ENTRY:333333:FORWARD,EXIT:666667:FORWARD" && forwardBoundary.startInside === false && forwardBoundary.endInside === false, forwardBoundary);
@@ -335,7 +308,7 @@ try {
   });
   check("planRequiresGatewayJob", directPlan.statusCode === 422, directPlan.json());
 
-  const submission = coverageDag();
+  const submission = await coverageDag();
   try {
     new QueryPlanValidator(registry).validate(submission, principal);
   } catch (error) {
@@ -426,25 +399,32 @@ try {
     sha256(computeBody) === computeHash && computeHash === integrity.computeSnapshotHash, integrity);
   if (dataSnapshotHash === undefined) throw new Error("coverage result data snapshot hash is unavailable");
   const resultReferenceKey = row(resultSet.referenceKey) as { namespace: "gowm"; kind: string; id: string; version: string };
-  const platformSnapshot = createDataSnapshot("PINNED", [{ referenceKey: resultReferenceKey, resourceKind: "QUERY_RESULT", resourceId: resultReferenceKey.id, version: resultReferenceKey.version, contentHash: dataSnapshotHash }]);
+  const resultContentHash = String((await adminPool.query("SELECT result_hash FROM world_query_result_reference WHERE reference_key=$1", [resultReferenceKey.id])).rows[0].result_hash);
+  const platformSnapshot = createDataSnapshot("PINNED", [{ referenceKey: resultReferenceKey, resourceKind: "QUERY_RESULT", resourceId: resultReferenceKey.id, version: resultReferenceKey.version, contentHash: resultContentHash }]);
   await adminPool.query("SELECT public.register_platform_data_snapshot($1,$2,$3::jsonb)", [DATA_SCOPE, DATASET_SCOPE, JSON.stringify(platformSnapshot)]);
   const resultValidation = envelopeValue(await execute("result.validate", { schemaVersion: "1.0", references: [{ referenceKey: resultReferenceKey, requireCurrentSnapshot: true }] }, `${runId}-result-validation`));
   check("platformResultValidation", row(array(resultValidation.results)[0]).usable === "YES", resultValidation);
   const realResultSemantics = row(row(array(resultValidation.results)[0]).resultSemantics);
   check("platformOriginalStatusRetained", realResultSemantics.sourceStatus === "SUCCEEDED" && realResultSemantics.normalizedStatus === "COMPLETED" && array(row(array(resultValidation.results)[0]).validationEvidenceRefs).includes(dataSnapshotHash), resultValidation);
 
-  const semanticKeys = [...semanticStatuses.keys()].map((id) => ({ namespace: "gowm" as const, kind: "QUERY_RESULT", id, version: "1" }));
+  const semanticKeys = validationCases.keys.slice(0, 8);
   const semanticValidation = envelopeValue(await execute("result.validate", {
     schemaVersion: "1.0",
-    references: [...semanticKeys.map((referenceKey) => ({ referenceKey })), {
-      referenceKey: { namespace: "gowm", kind: "QUERY_RESULT", id: "wrf_70000000000000000000000000000009", version: "1" }
-    }]
+    references: validationCases.keys.map((referenceKey) => ({ referenceKey }))
   }, `${runId}-result-semantic-mapping`));
   const semanticResults = array(semanticValidation.results).map(row);
   check("platformStatusMapping", semanticResults.slice(0, 8).map((item) => row(item.resultSemantics).normalizedStatus).join(",") === "COMPLETED,PARTIAL,NO_DATA,AMBIGUOUS,INDETERMINATE,NO_FEASIBLE_RESULT,STALE,FAILED", semanticResults);
   check("platformStatusBatchOrder", semanticResults.slice(0, 8).every((item, index) => row(item.referenceKey).id === semanticKeys[index]?.id), semanticResults);
   check("platformStaleRevalidate", semanticResults[6]?.freshness === "STALE" && semanticResults[6]?.usable === "REVALIDATE", semanticResults[6]);
   check("platformRetiredReference", semanticResults[8]?.existence === "RETIRED" && semanticResults[8]?.usable === "NO", semanticResults[8]);
+  check("platformUnknownResultSnapshot", semanticResults[9]?.snapshot === "UNKNOWN" && semanticResults[9]?.usable === "REVALIDATE", semanticResults[9]);
+  check("platformSiblingDatasetOpaque", semanticResults[10]?.existence === "NOT_FOUND" && semanticResults[10]?.resultSemantics === undefined, semanticResults[10]);
+  const readStatuses = await Promise.all(semanticKeys.map((referenceKey, index) => execute("result.get", { schemaVersion: "1.0", referenceKey }, `${runId}-result-get-${index}`).then(envelopeValue)));
+  check("resultGetCurrentSemantics", readStatuses.every((item, index) => item.status === row(semanticResults[index]!.resultSemantics).normalizedStatus && row(item.resultSemantics).sourceStatus === row(semanticResults[index]!.resultSemantics).sourceStatus), readStatuses);
+  const foreignRead = await app.inject({ method: "POST", url: "/v1/operations/result.get:execute", payload: gatewayRequest("result.get", { schemaVersion: "1.0", referenceKey: validationCases.keys[10] }, `${runId}-result-get-sibling`, "SYNC") });
+  check("resultGetSiblingDatasetOpaque", foreignRead.statusCode >= 400 && foreignRead.json().output === undefined, foreignRead.json());
+  const unified = envelopeValue(await execute("reference.validate", { schemaVersion: "1.0", references: [validationCases.world, validationCases.derived, validationCases.set, vectorProductKey].map((referenceKey) => ({ referenceKey, requireCurrentSnapshot: true })) }, `${runId}-reference-validation`));
+  check("platformReferenceKinds", array(unified.results).every((item) => row(item).usable === "YES"), unified);
 
   const foreignValidation = envelopeValue(await execute("result.validate", { schemaVersion: "1.0", references: [{ referenceKey: { namespace: "gowm", kind: "DATASET", id: "wrf_6f000000000000000000000000000001", version: "foreign-v1" } }] }, `${runId}-result-foreign`));
   const foreignValidity = row(array(foreignValidation.results)[0]);
@@ -474,18 +454,20 @@ try {
 
   const graphStale = createDataSnapshot("PINNED", [{ resourceKind: "NETWORK_GRAPH", resourceId: "coverage-gateway-graph", version: "graph-old", contentHash: `sha256:${"0".repeat(64)}` }]);
   const layerStale = createDataSnapshot("PINNED", [{ resourceKind: "LAYER", resourceId: "wrf_61000000000000000000000000000002", version: "layer-old", contentHash: `sha256:${"0".repeat(64)}` }]);
-  const worldAdvanced = createDataSnapshot("PINNED", [{ resourceKind: "WORLD_REFERENCE", resourceId: vectorProductKey.id, version: "vector-v1", contentHash: `sha256:${"e".repeat(64)}`, worldVersion: 1 }]);
-  const unavailable = createDataSnapshot("PINNED", [{ resourceKind: "FORCED_UNAVAILABLE", resourceId: "g00-unavailable", version: "1" }]);
-  const [graphStaleResult, layerStaleResult, worldAdvancedResult, unavailableResult] = await Promise.all([
+  const worldAdvanced = createDataSnapshot("PINNED", [{ resourceKind: "WORLD_REFERENCE", resourceId: validationCases.world.id, version: "1", worldVersion: 1 }]);
+  const [graphStaleResult, layerStaleResult, worldAdvancedResult] = await Promise.all([
     execute("snapshot.validate", { schemaVersion: "1.0", snapshot: graphStale }, `${runId}-snapshot-graph-stale`).then(envelopeValue),
     execute("snapshot.validate", { schemaVersion: "1.0", snapshot: layerStale }, `${runId}-snapshot-layer-stale`).then(envelopeValue),
-    execute("snapshot.validate", { schemaVersion: "1.0", snapshot: worldAdvanced }, `${runId}-snapshot-world-advanced`).then(envelopeValue),
-    execute("snapshot.validate", { schemaVersion: "1.0", snapshot: unavailable }, `${runId}-snapshot-unavailable`).then(envelopeValue)
+    execute("snapshot.validate", { schemaVersion: "1.0", snapshot: worldAdvanced }, `${runId}-snapshot-world-advanced`).then(envelopeValue)
   ]);
   check("platformSnapshotGraphStale", graphStaleResult.status === "STALE" && row(array(graphStaleResult.resourceResults)[0]).currentVersion === "graph-v1", graphStaleResult);
   check("platformSnapshotLayerStale", layerStaleResult.status === "STALE" && row(array(layerStaleResult.resourceResults)[0]).currentVersion === "layer-v1", layerStaleResult);
   check("platformSnapshotWorldAdvanced", worldAdvancedResult.status === "STALE", worldAdvancedResult);
-  check("platformSnapshotUnavailable", unavailableResult.status === "UNAVAILABLE", unavailableResult);
+  await adminPool.query("REVOKE SELECT ON gowm_network_v1.graph_version FROM network_provider");
+  try {
+    const unavailableResult = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: graphStale }, `${runId}-snapshot-unavailable`));
+    check("platformSnapshotUnavailable", unavailableResult.status === "UNAVAILABLE", unavailableResult);
+  } finally { await adminPool.query("GRANT SELECT ON gowm_network_v1.graph_version TO network_provider"); }
 
   const invalidHashSnapshot = { ...structuredClone(consistentSnapshot), snapshotHash: `sha256:${"f".repeat(64)}` };
   const invalidHashResult = envelopeValue(await execute("snapshot.validate", { schemaVersion: "1.0", snapshot: invalidHashSnapshot }, `${runId}-snapshot-hash-mismatch`));
@@ -546,8 +528,8 @@ try {
     JOIN network_travel_profile_version travel ON travel.travel_profile_id=old.travel_profile_id AND travel.version='travel-v2'
     WHERE old.version='cost-v1' AND old.data_scope_key=$1`, [DATA_SCOPE]);
   const v2RoutingSnapshot = { ...loadedNetwork.routingSnapshot, travelProfileVersion: "travel-v2" };
-  const costStaleRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: v2RoutingSnapshot }, boundaryScope, 10_000);
-  check("routingCurrentnessCostStale", costStaleRouting.currentness.staleDimensions.join(",") === "COST_PROFILE", costStaleRouting);
+  const costStaleRouting = await networkAuthority.inspectFreshness(loadedNetwork, boundaryScope, 10_000);
+  check("routingCurrentnessCostStale", costStaleRouting.currentness.staleDimensions.includes("COST_PROFILE"), costStaleRouting);
 
   await adminPool.query(`INSERT INTO network_condition_snapshot(
     graph_version_id,data_scope_key,condition_snapshot_key,source_snapshot_version,observed_at,valid_until,
@@ -557,10 +539,20 @@ try {
     FROM network_graph_version WHERE graph_version='graph-v1' AND data_scope_key=$1`, [DATA_SCOPE]);
   const conditionStaleRouting = await networkAuthority.inspectFreshness({ ...loadedNetwork, routingSnapshot: { ...v2RoutingSnapshot, costProfileVersion: "cost-v2", costContentHash: `sha256:${"6".repeat(64)}` } }, boundaryScope, 10_000);
   check("routingCurrentnessConditionStale", conditionStaleRouting.currentness.staleDimensions.join(",") === "CONDITION", conditionStaleRouting);
+  const staleResult = envelopeValue(await execute("result.validate", { schemaVersion: "1.0", references: [{ referenceKey: validationCases.keys[0]!, requireCurrentSnapshot: true }, { referenceKey: validationCases.derived, requireCurrentSnapshot: true }] }, `${runId}-result-currentness-after-update`));
+  check("platformRoutingInputChanged", array(staleResult.results).every((item) => row(item).snapshot === "STALE" && row(item).usable === "REVALIDATE"), staleResult);
   const artifact = (await providerPool.query("SELECT coverage_planner.get_coverage_artifact($1,$2,$3) AS value", [row(resultSet.referenceKey).id, DATA_SCOPE, DATASET_SCOPE])).rows[0].value;
   await coverageHardeningCases({ admin: adminPool, network: networkAuthority, loaded: loadedNetwork, scope: boundaryScope,
     request: coverageRequest, problem: artifact.problem as GowmV06CoverageProblem, route: firstAlternative.route as GowmV06CoverageRoute,
     plan: planVariant, check });
+  await withAdvancedGraph(adminPool, DATA_SCOPE, async () => {
+    const graphStaleRouting = await networkAuthority.inspectFreshness(loadedNetwork, boundaryScope, 10_000);
+    check("routingCurrentnessGraphStale", graphStaleRouting.currentness.currentness === "STALE" && graphStaleRouting.currentness.staleDimensions.includes("GRAPH"), graphStaleRouting);
+    const stalePlanValidation = new RoutingSnapshotCurrentnessEvaluator().planValidation("VALID", graphStaleRouting.currentness);
+    check("routingValiditySeparate", stalePlanValidation.planValidity === "VALID" && stalePlanValidation.currentness === "STALE" && stalePlanValidation.usable === "REVALIDATE", stalePlanValidation);
+    const changed = envelopeValue(await execute("result.validate", { schemaVersion: "1.0", references: [resultReferenceKey, routeKey].map((referenceKey) => ({ referenceKey, requireCurrentSnapshot: true })) }, `${runId}-real-plan-graph-advanced`));
+    check("platformRealPlanGraphChanged", array(changed.results).every((item) => row(item).snapshot === "STALE" && row(item).usable !== "YES"), changed);
+  });
   process.stdout.write(`${JSON.stringify({
     status: "PASS",
     checks,
@@ -574,7 +566,7 @@ try {
   })}\n`);
 } finally {
   await app.close();
-  await Promise.all([providerPool.end(), gatewayPool.end(), adminPool.end(), validationPool.end(), catalogPool.end()]);
+  await Promise.all([providerPool.end(), gatewayPool.end(), adminPool.end(), validationPool.end(), catalogPool.end(), referencePool.end(), evidencePool.end(), networkPool.end(), routePool.end()]);
 }
 
 async function execute(operationId: string, input: Row, idempotencyKey: string) {
@@ -615,7 +607,7 @@ function gatewayRequest(operationId: string, input: Row, idempotencyKey: string,
 }
 
 async function planVariant(label: string, input: Row): Promise<Row> {
-  const submission = coverageDag({ ...input, requestId: `${runId}-${label}` }, `${runId}-${label}`);
+  const submission = await coverageDag({ ...input, requestId: `${runId}-${label}` }, `${runId}-${label}`);
   await worldQueries.submit(submission, principal, "ASYNC");
   const claim = await store.claimNext(`gateway-${label}`, 60);
   if (claim == null) throw new Error(`no Gateway job for ${label}`);
@@ -634,12 +626,31 @@ async function planVariant(label: string, input: Row): Promise<Row> {
   return row(result.outputs.plan);
 }
 
-function coverageDag(input: Row = coverageRequest, identity: string = runId): WorldQuerySubmission {
+async function coverageDag(input: Row = coverageRequest, identity: string = runId): Promise<WorldQuerySubmission> {
+  // Geometry is a real Foundation fact, read by the production World Evidence Provider.
+  const objectId = `g00-area-${sha256(input.area).slice(7)}`;
+  await adminPool.query("INSERT INTO world_object(id,object_type,data_scope_key) VALUES ($1,'COVERAGE_AREA',$2) ON CONFLICT (id) DO NOTHING", [objectId, DATA_SCOPE]);
+  await adminPool.query("INSERT INTO world_object_state(object_id,version) VALUES ($1,1) ON CONFLICT (object_id) DO NOTHING", [objectId]);
+  await adminPool.query("INSERT INTO world_object_geometry(object_id,geometry) VALUES ($1,ST_GeomFromGeoJSON($2)) ON CONFLICT (object_id) DO NOTHING", [objectId, JSON.stringify(input.area)]);
+  const geometryKey = (await adminPool.query("SELECT reference_key FROM world_reference_identity WHERE entity_kind='WORLD_OBJECT' AND internal_id=$1 AND data_scope_key=$2", [objectId, DATA_SCOPE])).rows[0].reference_key;
+  const geometryInput = { schemaVersion: "1.0", referenceKey: { namespace: "gowm", kind: "WORLD_OBJECT", id: geometryKey, version: "1" } };
+  // Keep SQL diagnostics outside the public redacted Gateway error envelope.
+  const geometryFact = await evidenceProvider.repository.execute("world.get-geometry", geometryInput, { dataScopeKey: DATA_SCOPE, datasetScopeKey: DATASET_SCOPE }, 10_000);
+  check("worldGeometryAuthoritative", sha256(row(array(row(geometryFact.output).facts)[0]).geometry) === sha256(input.area), geometryFact.output);
   const geometryDescriptor = registry.resolve("world.get-geometry", "1.0", true).descriptor;
   const validateDescriptor = registry.resolve("coverage.road.validate", "1.0", true).descriptor;
   const planDescriptor = registry.resolve("coverage.road.plan", "1.0", true).descriptor;
   const requestPort = port(geometryDescriptor.ports.inputs[0]!);
-  const resolvedRequestPort = port(geometryDescriptor.ports.outputs[0]!);
+  const geometryPort = port(geometryDescriptor.ports.outputs.find((candidate) => candidate.name === "geometry")!);
+  const coverageInputs: WorldQueryPlanV2Node["inputs"] = {};
+  for (const [name, value] of Object.entries(input)) {
+    if (name === "area") {
+      coverageInputs[name] = { kind: "NODE_OUTPUT", nodeId: "geometry", outputPort: "geometry", path: "/facts/0/geometry", targetPath: "/area", port: geometryPort };
+    } else {
+      const schemaUri = `urn:gowm:v0.2:value:${Array.isArray(value) ? "array" : typeof value}`;
+      coverageInputs[name] = { kind: "LITERAL", targetPath: `/${name}`, value, port: { schemaUri, schemaHash: getContractSchemaHash(schemaUri), valueKind: "ANY", unitSemantics: "UNSPECIFIED" } };
+    }
+  }
   const validPort = port(validateDescriptor.ports.outputs.find((candidate) => candidate.name === "valid")!);
   const node = (nodeId: string, descriptor: CapabilityDescriptor, inputs: WorldQueryPlanV2Node["inputs"], preconditions?: WorldQueryPlanV2Node["preconditions"]): WorldQueryPlanV2Node => ({
     nodeId,
@@ -660,9 +671,9 @@ function coverageDag(input: Row = coverageRequest, identity: string = runId): Wo
     }
   });
   const nodes = [
-    node("geometry", geometryDescriptor, { request: { kind: "LITERAL", port: requestPort, value: input } }),
-    node("validate", validateDescriptor, { request: { kind: "NODE_OUTPUT", nodeId: "geometry", outputPort: "result", port: resolvedRequestPort } }),
-    node("plan", planDescriptor, { request: { kind: "NODE_OUTPUT", nodeId: "geometry", outputPort: "result", port: resolvedRequestPort } }, [{
+    node("geometry", geometryDescriptor, { request: { kind: "LITERAL", port: requestPort, value: geometryInput } }),
+    node("validate", validateDescriptor, coverageInputs),
+    node("plan", planDescriptor, coverageInputs, [{
       kind: "VALUE_EQUALS",
       binding: { kind: "NODE_OUTPUT", nodeId: "validate", outputPort: "valid", path: "/valid", port: validPort },
       value: true
@@ -688,71 +699,6 @@ function coverageDag(input: Row = coverageRequest, identity: string = runId): Wo
       }
     }
   };
-}
-
-function createGeometryProvider(): ProviderRuntime {
-  const descriptor: CapabilityDescriptor = {
-    operationId: "world.get-geometry",
-    operationVersion: "1.0",
-    semanticRole: "FOUNDATION_DATA_QUERY",
-    dataBinding: "WORLD_SNAPSHOT_BOUND",
-    resultSemantics: "DATA_QUERY",
-    executionBindings: ["SYNC_HTTP"],
-    criticalPathPolicy: "REMOTE_ONLY",
-    maturity: "STABLE",
-    inputSchemaUri: requestSchemaUri,
-    inputSchemaHash: requestSchemaHash,
-    outputSchemaUri: requestSchemaUri,
-    outputSchemaHash: requestSchemaHash,
-    scopePolicy: "DATA_SCOPE_REQUIRED",
-    execution: { mode: "SYNC", defaultTimeoutMs: 1000, maximumTimeoutMs: 30000, costClass: "MEDIUM" },
-    limits: { maximumInputBytes: 1048576, maximumOutputBytes: 1048576, maximumRows: 1, maximumCandidates: 1 },
-    snapshotPolicy: { dataSnapshot: "REQUIRED", computeSnapshot: "REQUIRED" },
-    ports: {
-      inputs: [{ name: "request", schemaUri: requestSchemaUri, schemaHash: requestSchemaHash, valueKind: "ANY", unitSemantics: "UNSPECIFIED" }],
-      outputs: [{ name: "result", schemaUri: requestSchemaUri, schemaHash: requestSchemaHash, valueKind: "ANY", unitSemantics: "UNSPECIFIED" }]
-    }
-  };
-  const operation: ProviderOperation = {
-    descriptor,
-    inputSchema: getContractSchema(requestSchemaUri),
-    outputSchema: getContractSchema(requestSchemaUri),
-    inputSchemaLockHash: requestSchemaHash,
-    outputSchemaLockHash: requestSchemaHash,
-    method: { engine: "GOWM Grounding Geometry", engineVersion: "1.0", methodId: "world.get-geometry/coverage-fixture", methodVersion: "1.0" },
-    async handle(input) {
-      const value = row(input);
-      const area = row(value.area);
-      if (area.type !== "Polygon" && area.type !== "MultiPolygon") throw new Error("geometry is not resolved");
-      return {
-        status: "COMPLETED",
-        value,
-        dataSnapshot: {
-          consistency: "PINNED",
-          capturedAt: new Date().toISOString(),
-          scopeDigest: sha256({ dataScope: DATA_SCOPE, datasetScope: DATASET_SCOPE }),
-          resources: [{
-            referenceKey: { namespace: "gowm", kind: "DATASET", id: "wrf_60000000000000000000000000000001", version: "dataset-v1" },
-            authority: "GOWM Grounding Geometry",
-            pinning: "PINNED",
-            digest: snapshot.graphContentHash
-          }]
-        },
-        consumption: { rows: 1, candidates: 1 }
-      };
-    }
-  };
-  return createProviderRuntime({
-    manifest: {
-      providerProtocolVersion: "1.0",
-      provider: { providerId: "gowm.coverage-geometry-fixture", providerVersion: "1.0.0", owner: "gowm-platform", implementationDigest: sha256({ fixture: "coverage-g00-geometry" }), sourceRef: "urn:gowm:source:g00:coverage-geometry" },
-      endpoints: { manifest: "/v1/manifest", liveness: "/health/live", readiness: "/health/ready", execute: "/v1/operations/{operationId}:execute", job: "/v1/jobs/{jobId}" },
-      capabilities: [descriptor]
-    },
-    operations: [operation],
-    policyVersion: "coverage-g00-geometry/1",
-    policyDigest: sha256({ policy: "coverage-g00-geometry/1" })
-  });
 }
 
 function register(target: CapabilityRegistry, runtime: ProviderRuntime, label: string, portNumber: number): void {

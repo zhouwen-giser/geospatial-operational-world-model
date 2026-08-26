@@ -25,6 +25,7 @@ type ValidationRequest = { referenceKey: ReferenceRecord["referenceKey"]; maximu
 type Scope = { dataScopeKey: string; datasetScopeKey?: string };
 
 export interface PlatformValidationAuthority {
+  scopeReference(scope: Scope): Promise<ReferenceRecord["referenceKey"]>;
   resolveReferences(requests: readonly ValidationRequest[], scope: Scope): Promise<Array<ReferenceRecord | undefined>>;
   getSnapshot(snapshotId: string, scope: Scope): Promise<DataSnapshotManifest | undefined>;
   currentResources(resources: readonly SnapshotResource[], scope: Scope): Promise<ReadonlyMap<string, SnapshotResource | "UNAVAILABLE">>;
@@ -36,7 +37,7 @@ export { PostgresPlatformValidationAuthority } from "./postgres-authority.js";
 export { buildPlatformValidationApp } from "./app.js";
 export { loadPlatformValidationConfig } from "./config.js";
 
-const operations = ["result.validate", "snapshot.get", "snapshot.validate"] as const;
+const operations = ["reference.validate", "result.validate", "snapshot.get", "snapshot.validate"] as const;
 type OperationId = (typeof operations)[number];
 const statusMapping = {
   SUCCEEDED: "COMPLETED", COMPLETED: "COMPLETED", PARTIAL: "PARTIAL", NO_DATA: "NO_DATA", AMBIGUOUS: "AMBIGUOUS",
@@ -62,7 +63,8 @@ export function createPlatformValidationProvider(authority: PlatformValidationAu
 }
 
 function operation(operationId: OperationId, authority: PlatformValidationAuthority, now: () => Date): ProviderOperation {
-  const [inputName, outputName] = operationId === "result.validate" ? ["result-validation-request", "result-validation-result"]
+  const referenceValidation = operationId === "reference.validate" || operationId === "result.validate";
+  const [inputName, outputName] = referenceValidation ? ["result-validation-request", "result-validation-result"]
     : operationId === "snapshot.get" ? ["snapshot-get-request", "data-snapshot-manifest"]
       : ["snapshot-validation-request", "snapshot-validation-result"];
   const inputSchemaUri = `urn:gowm:v0.6.1:${inputName}`, outputSchemaUri = `urn:gowm:v0.6.1:${outputName}`;
@@ -75,7 +77,7 @@ function operation(operationId: OperationId, authority: PlatformValidationAuthor
     snapshotPolicy: { dataSnapshot: "REQUIRED", computeSnapshot: "REQUIRED" },
     ports: {
       inputs: [{ name: "request", schemaUri: inputSchemaUri, schemaHash: getContractSchemaHash(inputSchemaUri), valueKind: "ANY", unitSemantics: "UNSPECIFIED" }],
-      outputs: [{ name: "result", schemaUri: outputSchemaUri, schemaHash: getContractSchemaHash(outputSchemaUri), valueKind: operationId === "result.validate" ? "ROW_SET" : "ANY", unitSemantics: "UNSPECIFIED" }]
+      outputs: [{ name: "result", schemaUri: outputSchemaUri, schemaHash: getContractSchemaHash(outputSchemaUri), valueKind: referenceValidation ? "ROW_SET" : "ANY", unitSemantics: "UNSPECIFIED" }]
     }
   };
   return {
@@ -85,30 +87,30 @@ function operation(operationId: OperationId, authority: PlatformValidationAuthor
       const input = inputValue as JsonObject;
       const scope = trustedScope(context.security.dataScopeClaim, context.security.datasetScopeClaims?.[0]);
       const capturedAt = now().toISOString();
-      if (operationId === "result.validate") {
+      const snapshotContext = dataContext(scope, capturedAt, await authority.scopeReference(scope));
+      if (referenceValidation) {
         const requests = (input.references as ValidationRequest[]);
         const records = await authority.resolveReferences(requests, scope);
         const results = requests.map((request, index) => validateReferenceRecord(records[index], request, statusMapping, now()));
-        return completed({ schemaVersion: "1.0", results }, scope, capturedAt, results.length);
+        return completed({ schemaVersion: "1.0", results }, snapshotContext, results.length);
       }
       if (operationId === "snapshot.get") {
         const snapshot = await authority.getSnapshot(requiredString(input.snapshotId, "snapshotId"), scope);
         if (snapshot === undefined) throw new ProviderProtocolError("VERSION_NOT_FOUND", "Snapshot is unavailable in the authorized scope");
-        return completed(snapshot, scope, capturedAt, snapshot.resources.length);
+        return completed(snapshot, snapshotContext, snapshot.resources.length);
       }
       const snapshot = input.snapshot as DataSnapshotManifest;
       const current = await authority.currentResources(snapshot.resources, scope);
-      return completed(validateDataSnapshot(snapshot, current, capturedAt), scope, capturedAt, snapshot.resources.length);
+      return completed(validateDataSnapshot(snapshot, current, capturedAt), snapshotContext, snapshot.resources.length);
     }
   };
 }
 
-function completed(value: unknown, scope: Scope, capturedAt: string, rows: number) {
-  return { status: "COMPLETED" as const, value, dataSnapshot: dataContext(scope, capturedAt), consumption: { rows, candidates: rows }, warnings: [], changes: { repairApplied: false, typeChanged: false } };
+function completed(value: unknown, dataSnapshot: DataSnapshotContext, rows: number) {
+  return { status: "COMPLETED" as const, value, dataSnapshot, consumption: { rows, candidates: rows }, warnings: [], changes: { repairApplied: false, typeChanged: false } };
 }
-function dataContext(scope: Scope, capturedAt: string): DataSnapshotContext {
-  const identity = sha256(scope);
-  return { consistency: "CONSISTENT_AT_START", capturedAt, scopeDigest: identity, resources: [{ referenceKey: { namespace: "gowm", kind: "DATASET", id: `wrf_${identity.slice(7, 39)}`, version: "1" }, authority: "gowm.platform-validation", pinning: "AT_LEAST", digest: identity }] };
+function dataContext(scope: Scope, capturedAt: string, referenceKey: ReferenceRecord["referenceKey"]): DataSnapshotContext {
+  return { consistency: "CONSISTENT_AT_START", capturedAt, scopeDigest: sha256(scope), resources: [{ referenceKey, authority: "gowm.foundation", pinning: "PINNED" }] };
 }
 function trustedScope(dataScopeKey?: string, datasetScopeKey?: string): Scope {
   if (dataScopeKey === undefined || dataScopeKey.trim() === "") throw new ProviderProtocolError("SCOPE_REQUIRED", "platform validation requires a data scope");

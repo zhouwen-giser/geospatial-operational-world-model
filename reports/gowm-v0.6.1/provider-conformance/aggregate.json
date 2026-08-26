@@ -1,62 +1,101 @@
 {
   "schemaVersion": "1.0",
-  "status": "PASS",
   "providers": [
     {
       "providerId": "gowm.reference-catalog",
       "providerVersion": "1.0.0",
       "status": "PASS",
-      "reportHash": "sha256:701e61c74e081019680bff8311caaf6e3e90ac9d9888301177669a6f57e00c76"
+      "reportHash": "sha256:4bf772b4f5304aa1fa8f3518990fd351d0ab0dc860b967759274e1abd87b1ef5"
     },
     {
       "providerId": "gowm.dataset-catalog",
       "providerVersion": "1.0.0",
       "status": "PASS",
-      "reportHash": "sha256:4cfb3da52e0a7982d2f62ef93f03ea66aaf3a4cf7f304d17833fffa30ba4ff69"
+      "reportHash": "sha256:5117d07c0aacea06b80f413c8abfc6c8679a33cdc77a9cc597032dda5dd1fdbb"
     },
     {
       "providerId": "gowm.world-evidence",
       "providerVersion": "1.0.0",
       "status": "PASS",
-      "reportHash": "sha256:f42b0ac12431b0b169230ab167a1f239cdbc80ca941e23a1fdaba2ab66e06992"
+      "reportHash": "sha256:536aad5be8fe5dffbc1b3ba7d339c213f4dcdb2fc4d1c100e6ff4a56d1272297"
     },
     {
       "providerId": "gowm.spatial-analysis.bridge",
       "providerVersion": "0.2.0",
       "status": "PASS",
-      "reportHash": "sha256:c49e4f52fdf69b1fbf6c7d28cc8a4fa15a347b4f97eea35f85ae1f401625bf5f"
+      "reportHash": "sha256:6a2f0f3cb436d8f08bfb4b59810a37939f836116f7e298920c75b4c9e00b7d2c"
     },
     {
       "providerId": "gowm.h3.analysis.bridge",
       "providerVersion": "0.2.0",
       "status": "PASS",
-      "reportHash": "sha256:67ca2de155a5c68f64c856767719e4e16ee14b982e6783a3bd0a60f4e02447be"
+      "reportHash": "sha256:f0d30eadd9641f7d3795ab24a2f90f36377c5c7b5f49fdd0554693baf572d2ad"
     },
     {
-      "providerId": "gowm.stas",
-      "providerVersion": "0.1.0",
+      "providerId": "gowm.h3.interactive.bridge",
+      "providerVersion": "0.2.0",
       "status": "PASS",
-      "reportHash": "sha256:9b7b34e4885a981ddda601012b84b0bf2e1ccd0c2225a9ba62daa4291c7ba62c"
+      "reportHash": "sha256:f4b655fe3e0705847bba557bd16ef0486ebece25e01c815fec92a6d059f4342a"
     },
     {
       "providerId": "gowm.network",
       "providerVersion": "1.0.0",
       "status": "PASS",
-      "reportHash": "sha256:2c7b0b7e36a588ca231eecf301ebfb79b5848d9b3a93ff0ad8406ce5c8ab6280"
+      "reportHash": "sha256:389ab917d0a84478b9bc081824a4d7964dfe01673c7f8721af4dbba51f46845a"
     },
     {
       "providerId": "gowm.route-planning",
       "providerVersion": "1.0.0",
       "status": "PASS",
-      "reportHash": "sha256:b6745ec2c2a56ef738c264bff358992d7911fc325d1617deacda9cb011fecd8e"
+      "reportHash": "sha256:858c0589db817f868366288a3621e4151afc63e07ada8be13b01098496352167"
     },
     {
       "providerId": "gowm.road-coverage-planning",
       "providerVersion": "1.0.0",
       "status": "PASS",
-      "reportHash": "sha256:9df298d61a227af44d93da4943da221feeae9f62e22ffb441d5beedbeb30d1fe"
+      "reportHash": "sha256:0b4487603343402e9d72783922ee977914371e81eb9caf372c190226d5b5650f"
+    },
+    {
+      "providerId": "gowm.platform-validation",
+      "providerVersion": "1.0.0",
+      "status": "PASS",
+      "reportHash": "sha256:4821aaf1543f4a157757529e5d56ddd32b0555c6ac18478ea1c114f0e16fd20e"
+    },
+    {
+      "providerId": "gowm.stas",
+      "providerVersion": "0.1.0",
+      "status": "PASS",
+      "reportHash": "sha256:76c8bb4dc693f2eb69f98b0af03a9b61f0037700399f6aa44a920c706476a9e2"
     }
   ],
-  "generatedAt": "2026-08-25T00:00:00.000Z",
-  "reportHash": "sha256:7ce2f4b58f74b0b725f4720dc96db4f00b590e297978704097ba70313abe07ad"
+  "checks": [
+    {
+      "id": "ALL_PROVIDER_REPORTS",
+      "status": "PASS",
+      "message": "Required nine domains plus H3 interactive and Platform Validation"
+    },
+    {
+      "id": "REGISTRY_UNIQUE",
+      "status": "PASS",
+      "message": "70 unique operations"
+    },
+    {
+      "id": "SOURCE_STABLE",
+      "status": "PASS",
+      "message": "Source fingerprint captured before and after this executable gate"
+    }
+  ],
+  "sourceBefore": {
+    "digest": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+    "fileCount": 947
+  },
+  "sourceAfter": {
+    "digest": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+    "fileCount": 947
+  },
+  "evidenceLevel": "CONTRACT_AND_UNIT_PROTOCOL",
+  "runtimeReadiness": "NOT_CLAIMED",
+  "status": "PASS",
+  "generatedAt": "2026-08-26T03:52:02.176Z",
+  "reportHash": "sha256:3b2e6d911b08ce1a5b378b7f33b868f053f5e1ee20eadd60d350a23d9175fdfa"
 }

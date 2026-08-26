@@ -53,6 +53,7 @@ if (check) {
 } else await writeFile(operationalManifestPath,operationalExpected,"utf8");
 
 const validationAuthority: PlatformValidationAuthority = {
+  async scopeReference() { throw new Error("contract synchronization must not read scope identity"); },
   async resolveReferences() { throw new Error("contract synchronization must not resolve references"); },
   async getSnapshot(): Promise<DataSnapshotManifest | undefined> { throw new Error("contract synchronization must not read snapshots"); },
   async currentResources(): Promise<ReadonlyMap<string, SnapshotResource | "UNAVAILABLE">> { throw new Error("contract synchronization must not inspect resources"); }

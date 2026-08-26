@@ -1,11 +1,15 @@
 {
   "schemaVersion": "1.0",
   "status": "PASS",
-  "observedAt": "2026-08-26",
-  "decision": "PASS_STATIC_REGRESSION",
-  "mappedCases": 229,
+  "decision": "EVIDENCE_PASS_DELIVERY_PENDING",
+  "originalCases": 229,
+  "effectiveRequiredCases": 227,
+  "passedImplementationCases": 224,
+  "pendingDelivery": 3,
+  "supersededCases": 2,
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
   "testSummary": {
-    "passed": 264,
+    "passed": 288,
     "failed": 0,
     "skipped": [
       {
@@ -14,7 +18,7 @@
         "status": "skipped"
       }
     ],
-    "realDatabaseReplacement": "reports/gowm-v0.6.1/d00-runtime-v061-r2-final.json"
+    "realDatabaseReplacement": "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json"
   },
   "staticEvidence": [
     "R00 predecessor byte lock: 53 migrations / 103 contract artifacts",
@@ -26,16 +30,21 @@
     "npm run validate:provider-conformance"
   ],
   "sql": {
-    "migrations": 57,
-    "assertionSuites": 42
+    "migrations": 58,
+    "assertionSuites": 43
   },
   "stas": {
-    "passedFiles": 14,
-    "failed": 0
+    "passedTests": 40,
+    "failed": 0,
+    "skipped": 0
   },
   "conformance": {
-    "providers": 9,
-    "report": "provider-conformance/aggregate.json"
+    "providers": 11,
+    "protocolOperations": 70,
+    "report": "provider-conformance/aggregate.json",
+    "reportHash": "sha256:3b2e6d911b08ce1a5b378b7f33b868f053f5e1ee20eadd60d350a23d9175fdfa",
+    "evidenceLevel": "CONTRACT_AND_UNIT_PROTOCOL",
+    "liveReadiness": "NOT_CLAIMED"
   },
-  "scope": "Static/contract regression only; runtime and final Git delivery are separate required gates."
+  "scope": "Actual preflight static/contract regression; real runtime and exact-commit/Ready delivery are separate gates."
 }

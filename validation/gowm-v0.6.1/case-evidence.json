@@ -108,13 +108,10 @@
     },
     "AC-R012": {
       "scenario": "Compatibility plan",
-      "unitFiles": [
-        "tests/platform/road-coverage-contracts.test.ts",
-        "tests/platform/compatibility-migration.test.ts"
-      ],
+      "unitFiles": [],
       "runtime": [],
       "supportingEvidence": [
-        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+        "reports/gowm-v0.6.1/current-design-amendment.md"
       ]
     },
     "AC-C00-01": {
@@ -1249,13 +1246,17 @@
       "unitFiles": [
         "tests/unit/routing-snapshot-currentness.test.ts",
         "tests/platform/route-independent-verifier.test.ts",
-        "tests/unit/coverage-independent-verifier.test.ts"
+        "tests/unit/coverage-independent-verifier.test.ts",
+        "tests/platform/platform-validation-authority.test.ts"
       ],
       "runtime": [
         {
           "report": "gateway",
           "checks": [
-            "platformStaleRevalidate"
+            "platformStaleRevalidate",
+            "platformRoutingInputChanged",
+            "platformRealPlanGraphChanged",
+            "platformUnknownResultSnapshot"
           ]
         }
       ],
@@ -2185,7 +2186,8 @@
         {
           "report": "gateway",
           "checks": [
-            "platformOriginalStatusRetained"
+            "platformOriginalStatusRetained",
+            "resultGetCurrentSemantics"
           ]
         }
       ],
@@ -2201,7 +2203,9 @@
         {
           "report": "gateway",
           "checks": [
-            "platformResultValidation"
+            "platformResultValidation",
+            "platformReferenceKinds",
+            "platformValidationSingleOwner"
           ]
         }
       ],
@@ -2243,13 +2247,17 @@
       "scenario": "Result stale",
       "unitFiles": [
         "tests/platform/platform-validation-provider.test.ts",
-        "tests/platform/result-validation-core.test.ts"
+        "tests/platform/result-validation-core.test.ts",
+        "tests/platform/platform-validation-authority.test.ts"
       ],
       "runtime": [
         {
           "report": "gateway",
           "checks": [
-            "platformStaleRevalidate"
+            "platformStaleRevalidate",
+            "platformRoutingInputChanged",
+            "platformRealPlanGraphChanged",
+            "platformUnknownResultSnapshot"
           ]
         }
       ],
@@ -2281,7 +2289,9 @@
         {
           "report": "gateway",
           "checks": [
-            "platformResultScopeOpaque"
+            "platformResultScopeOpaque",
+            "platformSiblingDatasetOpaque",
+            "resultGetSiblingDatasetOpaque"
           ]
         }
       ],
@@ -2881,6 +2891,15 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-02": {
@@ -2889,6 +2908,15 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-03": {
@@ -2897,6 +2925,15 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-04": {
@@ -2905,6 +2942,15 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "spatial",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-05": {
@@ -2913,6 +2959,15 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "h3",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-06": {
@@ -2921,6 +2976,15 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-07": {
@@ -2929,6 +2993,15 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "network",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-08": {
@@ -2937,6 +3010,15 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "route",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-09": {
@@ -2945,14 +3027,114 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        }
       ]
     },
     "AC-D02-10": {
       "scenario": "Manifest/schema hash",
-      "unitFiles": [],
+      "unitFiles": [
+        "tests/platform/provider-conformance-inspection.test.ts"
+      ],
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_MANIFEST",
+            "SCHEMA_HASH"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "MANIFEST",
+            "SCHEMA_HASH",
+            "HASH_ERROR_FAIL_CLOSED"
+          ]
+        }
       ]
     },
     "AC-D02-11": {
@@ -2961,6 +3143,74 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "SEMANTIC_PROFILE"
+          ]
+        }
       ]
     },
     "AC-D02-12": {
@@ -2969,6 +3219,75 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS_VERSION",
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        }
       ]
     },
     "AC-D02-13": {
@@ -2977,22 +3296,248 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS_VERSION",
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS"
+          ]
+        }
       ]
     },
     "AC-D02-14": {
       "scenario": "Status mapping",
       "unitFiles": [],
-      "runtime": [],
+      "runtime": [
+        {
+          "report": "gateway",
+          "checks": [
+            "platformStatusMapping",
+            "resultGetCurrentSemantics"
+          ]
+        }
+      ],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "UNIT_PROTOCOL_BEHAVIOR"
+          ]
+        }
       ]
     },
     "AC-D02-15": {
       "scenario": "No sibling import",
-      "unitFiles": [],
+      "unitFiles": [
+        "tests/platform/provider-conformance-inspection.test.ts"
+      ],
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "NO_SIBLING_PROVIDER_IMPORT",
+            "NO_SIBLING_PROVIDER_HTTP"
+          ]
+        }
       ]
     },
     "AC-D02-16": {
@@ -3001,6 +3546,74 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "VERSIONED_READ_CONTRACT"
+          ]
+        }
       ]
     },
     "AC-D02-17": {
@@ -3009,14 +3622,184 @@
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS_VERSION",
+            "NATIVE_UNIT_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "SCOPE_SNAPSHOT_LIMITS",
+            "UNIT_PROTOCOL_BEHAVIOR",
+            "HEALTH_READINESS_CONTRACT"
+          ]
+        }
       ]
     },
     "AC-D02-18": {
       "scenario": "Machine report hash",
-      "unitFiles": [],
+      "unitFiles": [
+        "tests/platform/provider-conformance-inspection.test.ts"
+      ],
       "runtime": [],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/provider-conformance/aggregate.json"
+      ],
+      "conformance": [
+        {
+          "provider": "reference",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "dataset-catalog",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "world-evidence",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "spatial",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "h3",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "stas",
+          "checks": [
+            "NATIVE_UNIT_BEHAVIOR"
+          ]
+        },
+        {
+          "provider": "network",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "route",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "road-coverage",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "h3-interactive",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        },
+        {
+          "provider": "platform-validation",
+          "checks": [
+            "MANIFEST",
+            "CO_REGISTRATION"
+          ]
+        }
       ]
     },
     "AC-S-01": {
@@ -3036,20 +3819,24 @@
         "tests/platform/gowm-v05-architecture.test.ts",
         "tests/platform/road-coverage-contracts.test.ts"
       ],
-      "runtime": [],
+      "runtime": [
+        {
+          "report": "schema",
+          "checks": [
+            "freshInstall"
+          ]
+        }
+      ],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
       ]
     },
     "AC-S-03": {
       "scenario": "0.6.0 upgrade",
-      "unitFiles": [
-        "tests/platform/gowm-v05-architecture.test.ts",
-        "tests/platform/road-coverage-contracts.test.ts"
-      ],
+      "unitFiles": [],
       "runtime": [],
       "supportingEvidence": [
-        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+        "reports/gowm-v0.6.1/current-design-amendment.md"
       ]
     },
     "AC-S-04": {
@@ -3058,7 +3845,14 @@
         "tests/platform/gowm-v05-architecture.test.ts",
         "tests/platform/road-coverage-contracts.test.ts"
       ],
-      "runtime": [],
+      "runtime": [
+        {
+          "report": "schema",
+          "checks": [
+            "deliberateRollback"
+          ]
+        }
+      ],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
       ]
@@ -3069,7 +3863,15 @@
         "tests/platform/gowm-v05-architecture.test.ts",
         "tests/platform/road-coverage-contracts.test.ts"
       ],
-      "runtime": [],
+      "runtime": [
+        {
+          "report": "schema",
+          "checks": [
+            "leastPrivilege",
+            "currentAuthorityScopeAssertions"
+          ]
+        }
+      ],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
       ]
@@ -3080,7 +3882,15 @@
         "tests/platform/gowm-v05-architecture.test.ts",
         "tests/platform/road-coverage-contracts.test.ts"
       ],
-      "runtime": [],
+      "runtime": [
+        {
+          "report": "schema",
+          "checks": [
+            "leastPrivilege",
+            "currentAuthorityScopeAssertions"
+          ]
+        }
+      ],
       "supportingEvidence": [
         "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
       ]
@@ -3113,7 +3923,9 @@
         {
           "report": "gateway",
           "checks": [
-            "platformResultScopeOpaque"
+            "platformResultScopeOpaque",
+            "platformSiblingDatasetOpaque",
+            "resultGetSiblingDatasetOpaque"
           ]
         }
       ],

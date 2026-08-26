@@ -55,6 +55,7 @@
           "message": {
             "type": "string"
           },
+          "details": {},
           "evidenceRefs": {
             "type": "array",
             "items": {
@@ -71,6 +72,18 @@
     "reportHash": {
       "type": "string",
       "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "manifestHash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "evidenceLevel": {
+      "enum": ["CONTRACT_AND_UNIT_PROTOCOL", "NATIVE_CONTRACT_AND_UNIT"]
+    },
+    "runtimeReadiness": {
+      "const": "NOT_CLAIMED"
+    },
+    "unitEvidenceRef": {
+      "type": "string"
     }
   }
 }

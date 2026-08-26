@@ -1,56 +1,13 @@
 # S01 — Security / Recovery / Performance
 
-## Scope completed
+Decision: PASS.
 
-Cross-scope rejection, cursor/injection limits, redaction, provider isolation, concurrent reclaim and cancellation fencing, real PostgreSQL restart, deterministic replay, and bounded local S/M workloads.
+12 effective cases passed; 0 delivery cases pending external receipt; 0 original compatibility cases superseded by the user (not PASS). Zero failed or missing implementation cases.
 
-## Source state
+Current named unit/runtime/conformance evidence: [s01-acceptance.json](s01-acceptance.json). Source fingerprint: `e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda`.
 
-R00 main `7cd5b133a74b07e28f359176dd13943ab7a6cf54`; isolated candidate branch
-`codex/gowm-platform-hardening-v0.6.1`. Runtime source freeze:
-[runtime-source-lock.json](runtime-source-lock.json).
+D00: 58 migrations / 43 SQL assertion suites. G00: 160 actual Gateway/Provider/PostgreSQL checks. T00: 72 before / 5 after real restart. Provider conformance: 11 current reports, 70 protocol operations; contract/unit evidence is not live readiness. Full static regression: [static-regression.json](static-regression.json).
 
-## Migrations/contracts
+The [current-design amendment](current-design-amendment.md) supersedes old-wire/data compatibility only. Earlier phase narratives and runtime attempts are historical; the current acceptance JSON, [final report](final-stable-candidate.md), and exact-commit final receipt take precedence. The corrections retain scoped authoritative reads, immutable baseline migrations, and real runtime evidence.
 
-Migrations 001–053 and 103 predecessor contract artifacts are byte-preserved.
-New changes are additive in 054–057; v1.0 Coverage wire contracts remain frozen.
-
-## Tests actually run
-
-| Gate | Result | Evidence |
-|---|---|---|
-| D00 real schema | PASS; 57 migrations / 42 assertion suites / four upgrade paths | [JSON](d00-runtime-v061-r2-final.json) |
-| G00 real Gateway | PASS; 150 checks | [JSON](g00-runtime-v061-r2-gateway.json) |
-| T00 security/recovery | PASS; 72 before / 5 after restart | [JSON](t00-runtime-v061-r2-recovery.json) |
-| C00 compatibility | PASS | [JSON](c00-runtime-v061-r2-compat.json) |
-
-## Acceptance cases
-
-12 Required cases; all PASS in [s01-acceptance.json](s01-acceptance.json).
-Cases can appear in more than one integration phase; the final matrix counts
-229 unique IDs, never the sum of phase counts.
-
-## Authority/scope/compatibility review
-
-Only dedicated disposable gate databases were mutated. No fact-authority or
-Registry/Catalog duplication, no provider-to-provider implementation dependency,
-and no Gateway domain algorithm were introduced.
-
-## Failed attempts
-
-See the living ExecPlan. Failed attempts were corrected and rerun; no failed
-or unavailable execution is counted as PASS. Real boundary-policy predicates
-and full-route E2E are distinct evidence, not interchangeable claims.
-
-## Commit/push/PR
-
-Runtime fixes and PASS evidence are delivered in the semantic integration
-commit on PR #6; final exact-SHA/Ready checks are recorded by S03.
-
-## Blockers
-
-None for this gate.
-
-## Next phase
-
-S02 documentation and S03 exact-SHA delivery.
+Final delivery is independently checked after commit/push and PR Ready. The PR receipt records the exact SHA. No merge, tag, release, or deployment is authorized or performed.

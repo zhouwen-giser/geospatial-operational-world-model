@@ -69,7 +69,7 @@ export async function coverageHardeningCases(options: {
     const result = await onePlan(label, patch);
     check(label, result.status === "NO_FEASIBLE_PLAN" && (result.alternatives as unknown[]).length === 0 && (result.receipts as Row[]).some((receipt) => receipt.kind === "NO_FEASIBLE_RESULT" && (receipt.reasons as unknown[]).length > 0), result);
     const persisted = await admin.query("SELECT result_record->>'status' AS source_status,status FROM world_query_result_reference WHERE reference_key=$1", [(result.referenceKey as Row).id]);
-    check(`${label}-registry`, persisted.rows[0]?.source_status === "NO_FEASIBLE_PLAN" && persisted.rows[0]?.status === "NO_DATA", persisted.rows);
+    check(`${label}-registry`, persisted.rows[0]?.source_status === "NO_FEASIBLE_PLAN" && persisted.rows[0]?.status === "NO_FEASIBLE_RESULT", persisted.rows);
   };
   await noFeasible("noFeasibleEndpoint", { endpointPolicy: { ...(request.endpointPolicy as Row), endpointMode: "FIXED_END", fixedEnd: { arcKey: `arc_${"1".repeat(64)}`, fractionPpm: 0, direction: "FORWARD" } } });
   for (const [label, closed] of [["noFeasibleDisconnected", ["2", "3"]], ["noFeasibleCondition", ["5"]]] as const) {

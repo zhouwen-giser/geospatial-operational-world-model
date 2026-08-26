@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { mkdir, readFile, readdir, realpath, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { runtimeSourceFingerprint } from "./runtime-source-fingerprint.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const nodeModules = await realpath(resolve(root, "node_modules"));
@@ -19,6 +20,7 @@ const database = reuseContainer ? `gowm_v061_recovery_${runId.replaceAll("-", "_
 const password = reuseContainer ? process.env.GOWM_V06_POSTGRES_PASSWORD : createHash("sha256").update(`gowm-v06-t00:${runId}`).digest("hex");
 if (!password) throw new Error("dedicated PostgreSQL password required");
 const evidence = { schemaVersion: "1.0", phase: "T00", runId, image, container, startedAt: new Date().toISOString(), status: "RUNNING", commands: [], before: null, after: null, restart: null, cleanup: [], errors: [] };
+evidence.sourceBefore = await runtimeSourceFingerprint(root);
 let created = false;
 let databaseCreated = false;
 
@@ -40,7 +42,7 @@ function psql(sql, label) {
 
 async function applyMigrations() {
   const files = (await readdir(resolve(root, "database/migrations"))).filter((name) => /^\d{3}_.+\.sql$/u.test(name)).sort();
-  if (files.length !== 57 || files.at(-1)?.slice(0, 3) !== "057") throw new Error("T00 expects migrations 001-057");
+  if (files.length !== 58 || files.at(-1)?.slice(0, 3) !== "058") throw new Error("T00 expects migrations 001-058");
   const batch = [];
   for (const file of files) {
     const source = (await readFile(resolve(root, "database/migrations", file), "utf8"))
@@ -49,7 +51,7 @@ async function applyMigrations() {
     const checksum = createHash("sha256").update(source).digest("hex");
     batch.push(`\\echo APPLY_MIGRATION ${file}\n${source}\nINSERT INTO schema_migration(version,checksum) VALUES ('${file}','${checksum}');`);
   }
-  psql(batch.join("\n"), "migration-batch-001-057");
+  psql(batch.join("\n"), "migration-batch-001-058");
 }
 
 async function waitHealthy(label) {
@@ -103,6 +105,11 @@ function client(phase) {
 }
 
 async function save() {
+  evidence.sourceAfter = await runtimeSourceFingerprint(root);
+  if (evidence.sourceAfter.digest !== evidence.sourceBefore.digest) {
+    evidence.status = "FAIL"; evidence.errors.push("Source changed during real gate");
+    failure ??= new Error("Source changed during real gate");
+  }
   evidence.finishedAt = new Date().toISOString();
   await mkdir(resolve(root, "reports/gowm-v0.6.1"), { recursive: true });
   await writeFile(resolve(root, `reports/gowm-v0.6.1/t00-runtime-${runId}.json`), `${JSON.stringify(evidence, null, 2)}\n`);

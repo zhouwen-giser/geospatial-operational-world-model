@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createApp, type AppDependencies } from '../src/app.js';
 import { ToolRegistry } from '../src/tools/registry.js';
+import { AppError } from '../src/domain/errors.js';
 
 const scope = '00000000-0000-4000-8000-000000000001';
 
@@ -16,6 +17,34 @@ function testDependencies(): AppDependencies {
     registry: new ToolRegistry(),
   };
 }
+
+test('health and readiness distinguish process liveness from database readiness', async () => {
+  const dependencies = testDependencies();
+  let databaseAvailable = true;
+  dependencies.database = { withTransaction: async (timeout: number, isolation: string) => {
+    assert.equal(timeout, 1000);
+    assert.equal(isolation, 'REPEATABLE_READ');
+    if (!databaseAvailable) throw new AppError('DATABASE_UNAVAILABLE', 503, 'Database unavailable', 'Unit fixture unavailable');
+    return { mobilityDbVersion: '1.3.0', postgisVersion: '3.6.1', schemaContractVersion: '1.0.0', analysisSrid: 32654 };
+  } } as unknown as AppDependencies['database'];
+  const app = createApp(dependencies);
+  try {
+    const ready = await app.inject({ method: 'GET', url: '/readyz' });
+    assert.equal(ready.statusCode, 200);
+    assert.equal(ready.json().status, 'ready');
+    assert.equal(ready.json().schemaContractVersion, '1.0.0');
+    databaseAvailable = false;
+    const unavailable = await app.inject({ method: 'GET', url: '/readyz' });
+    assert.equal(unavailable.statusCode, 503);
+    assert.equal(unavailable.json().code, 'DATABASE_UNAVAILABLE');
+    assert.match(unavailable.headers['content-type'] as string, /application\/problem\+json/);
+    const live = await app.inject({ method: 'GET', url: '/healthz' });
+    assert.equal(live.statusCode, 200);
+    assert.deepEqual(live.json(), { status: 'ok', serviceVersion: 'test' });
+  } finally {
+    await app.close();
+  }
+});
 
 test('colon action route exists and rejects missing authorized scope as RFC 9457', async () => {
   const app = createApp(testDependencies());

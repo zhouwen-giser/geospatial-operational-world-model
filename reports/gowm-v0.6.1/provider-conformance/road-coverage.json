@@ -2,113 +2,102 @@
   "schemaVersion": "1.0",
   "providerId": "gowm.road-coverage-planning",
   "providerVersion": "1.0.0",
-  "status": "PASS",
   "checks": [
     {
       "id": "MANIFEST",
       "status": "PASS",
-      "message": "Provider Protocol 1.0 manifest and non-empty capability set",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6/manifests/providers/road-coverage-provider.json"
-      ]
+      "message": "contracts/manifests/providers/road-coverage-current.json"
     },
     {
       "id": "SCHEMA_HASH",
       "status": "PASS",
-      "message": "Every operation schema hash matches the checked-in canonical schema",
-      "evidenceRefs": [
-        "packages/platform/contract-runtime/src/generated/schema-hashes.ts"
-      ]
+      "message": "Exact canonical JSON or actual source-byte hash; unknown URI/path fails closed",
+      "details": []
     },
     {
       "id": "OPERATION_VERSION",
       "status": "PASS",
-      "message": "Operation identity and version are explicit and unique",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6/manifests/providers/road-coverage-provider.json"
-      ]
+      "message": "Runtime factory validates operation/handler parity"
     },
     {
       "id": "SEMANTIC_PROFILE",
       "status": "PASS",
-      "message": "Semantic projection is defined for coverage.road.plan and all capabilities carry base semantics",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6.1/manifests/semantic-profiles"
+      "message": "Projection from every current descriptor"
+    },
+    {
+      "id": "SCOPE_SNAPSHOT_LIMITS",
+      "status": "PASS",
+      "message": "Executable manifest schema and cross-field semantic rules"
+    },
+    {
+      "id": "HASH_ERROR_FAIL_CLOSED",
+      "status": "PASS",
+      "message": "Real runtime rejects forged input hash before IO",
+      "details": [
+        {
+          "operationId": "coverage.road.validate",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "coverage.road.select-obligations",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "coverage.road.plan",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "coverage.road.verify",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "coverage.road.expand-geojson",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        }
       ]
     },
     {
-      "id": "SCOPE_POLICY",
+      "id": "CO_REGISTRATION",
       "status": "PASS",
-      "message": "Every capability declares an authorization scope policy",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6/manifests/providers/road-coverage-provider.json"
-      ]
+      "message": "All current protocol Provider factories registered together without duplicate routes"
     },
     {
-      "id": "SNAPSHOT_POLICY",
+      "id": "HEALTH_READINESS_CONTRACT",
       "status": "PASS",
-      "message": "Every capability declares data and compute snapshot policy",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6/manifests/providers/road-coverage-provider.json"
-      ]
+      "message": "Executed SDK startup health/readiness contract; external dependency readiness is not claimed"
     },
     {
-      "id": "STATUS_MAPPING",
+      "id": "NO_SIBLING_PROVIDER_IMPORT",
       "status": "PASS",
-      "message": "Every capability declares result semantics for normalized status projection",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6/manifests/providers/road-coverage-provider.json"
-      ]
+      "message": "AST resolves relative/absolute/dynamic imports and re-exports",
+      "details": []
     },
     {
-      "id": "RECEIPT_EVIDENCE",
+      "id": "NO_SIBLING_PROVIDER_HTTP",
       "status": "PASS",
-      "message": "Every capability exposes a result port; runtime envelopes supply receipts and evidence separately",
-      "evidenceRefs": [
-        "packages/platform/provider-sdk/src/runtime.ts"
-      ]
-    },
-    {
-      "id": "LIMITS",
-      "status": "PASS",
-      "message": "Every capability has positive bounded execution and result limits",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6/manifests/providers/road-coverage-provider.json"
-      ]
-    },
-    {
-      "id": "HEALTH_READINESS",
-      "status": "PASS",
-      "message": "Manifest exposes liveness, readiness, and execution endpoints",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6/manifests/providers/road-coverage-provider.json"
-      ]
-    },
-    {
-      "id": "IDEMPOTENCY_ERROR",
-      "status": "PASS",
-      "message": "Provider uses the common runtime idempotency and protocol error mapping layer",
-      "evidenceRefs": [
-        "services/providers/road-coverage-provider/src"
-      ]
-    },
-    {
-      "id": "NO_SIBLING_PROVIDER_COUPLING",
-      "status": "PASS",
-      "message": "Source has no sibling Provider import or sibling HTTP call",
-      "evidenceRefs": [
-        "services/providers/road-coverage-provider/src"
-      ]
+      "message": "No hardcoded sibling Provider HTTP target"
     },
     {
       "id": "VERSIONED_READ_CONTRACT",
       "status": "PASS",
-      "message": "SQL does not read public base tables; versioned read contracts remain the data boundary",
-      "evidenceRefs": [
-        "services/providers/road-coverage-provider/src"
-      ]
+      "message": "Provider source has no public base-table read; database grants and SQL assertions are independently checked by D00"
+    },
+    {
+      "id": "UNIT_PROTOCOL_BEHAVIOR",
+      "status": "PASS",
+      "message": "Executed unit/protocol suite: status mapping, receipts/evidence, scope, limits, health, idempotency and errors; not live readiness"
     }
   ],
-  "generatedAt": "2026-08-25T00:00:00.000Z",
-  "reportHash": "sha256:9df298d61a227af44d93da4943da221feeae9f62e22ffb441d5beedbeb30d1fe"
+  "manifestHash": "sha256:14ecf615c059d9928418d78b204aea23df5ed181e793adcc36c5759bc897fcf0",
+  "evidenceLevel": "CONTRACT_AND_UNIT_PROTOCOL",
+  "runtimeReadiness": "NOT_CLAIMED",
+  "unitEvidenceRef": "reports/gowm-v0.6.1/provider-conformance/unit-behavior.json",
+  "status": "PASS",
+  "generatedAt": "2026-08-26T03:52:02.176Z",
+  "reportHash": "sha256:0b4487603343402e9d72783922ee977914371e81eb9caf372c190226d5b5650f"
 }

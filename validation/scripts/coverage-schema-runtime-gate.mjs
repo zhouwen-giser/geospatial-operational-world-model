@@ -3,6 +3,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { runtimeSourceFingerprint } from "./runtime-source-fingerprint.mjs";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const runId = process.env.GOWM_V06_RUN_ID;
@@ -34,6 +35,7 @@ const evidence = {
   container,
   databases: { fresh: freshDatabase, v05Upgrade: upgradeDatabase, v04Upgrade: v04UpgradeDatabase, v06Upgrade: v06UpgradeDatabase },
   startedAt: new Date().toISOString(),
+  sourceBefore: await runtimeSourceFingerprint(repositoryRoot),
   status: "RUNNING",
   commands: [],
   summary: null,
@@ -168,6 +170,11 @@ function parseJsonOutput(output, label) {
 }
 
 async function persist() {
+  evidence.sourceAfter = await runtimeSourceFingerprint(repositoryRoot);
+  if (evidence.sourceAfter.digest !== evidence.sourceBefore.digest) {
+    evidence.status = "FAIL"; evidence.errors.push("Source changed during real gate");
+    failure ??= new Error("Source changed during real gate");
+  }
   evidence.finishedAt = new Date().toISOString();
   const directory = resolve(repositoryRoot, "reports/gowm-v0.6.1");
   await mkdir(directory, { recursive: true });
@@ -186,11 +193,11 @@ try {
   const assertions = (await readdir(resolve(repositoryRoot, "database/tests")))
     .filter((name) => /^\d{3}_.+_assertions\.sql$/u.test(name))
     .sort();
-  if (migrations.length !== 57 || migrations.at(-1)?.slice(0, 3) !== "057") {
-    throw new Error(`expected the current v0.6.1 migration set 001-057, received ${migrations.length}`);
+  if (migrations.length !== 58 || migrations.at(-1)?.slice(0, 3) !== "058") {
+    throw new Error(`expected the current v0.6.1 migration set 001-058, received ${migrations.length}`);
   }
-  if (assertions.length !== 42 || assertions.at(-1)?.slice(0, 3) !== "042") {
-    throw new Error(`expected the current v0.6.1 assertion set 001-042, received ${assertions.length}`);
+  if (assertions.length !== 43 || assertions.at(-1)?.slice(0, 3) !== "043") {
+    throw new Error(`expected the current v0.6.1 assertion set 001-043, received ${assertions.length}`);
   }
 
   createDatabase(freshDatabase);
@@ -291,7 +298,7 @@ try {
     "v0.6 upgrade summary"
   );
   for (const [kind, summary] of [["fresh", freshSummary], ["v0.5-upgrade", upgradeSummary], ["v0.4-upgrade", v04UpgradeSummary], ["v0.6-upgrade", v06UpgradeSummary]]) {
-    if (summary.migrationCount !== 57 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
+    if (summary.migrationCount !== 58 || summary.coverageTables !== 16 || summary.coverageFunctions !== 17 ||
         summary.providerExecutableFunctions !== 14 ||
         summary.providerDirectMutation !== false || summary.providerNetworkMutation !== false) {
       throw new Error(`${kind} database summary failed the D00 invariant set: ${JSON.stringify(summary)}`);

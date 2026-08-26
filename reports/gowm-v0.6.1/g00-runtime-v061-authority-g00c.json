@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "v061-authority-g00c",
+  "container": "gowm-v061-r2-postgres",
+  "database": "gowm_v06_g00_v061_authority_g00c",
+  "startedAt": "2026-08-26T03:26:35.301Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowm-v061-r2-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 23
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_v061_authority_g00c"
+      ],
+      "status": "PASS",
+      "elapsedMs": 142
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_v061_authority_g00c"
+      ],
+      "status": "PASS",
+      "elapsedMs": 181
+    },
+    {
+      "command": [
+        "migration-batch-001-058",
+        "gowm_v06_g00_v061_authority_g00c"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3008
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_v061_authority_g00c"
+      ],
+      "status": "PASS",
+      "elapsedMs": 285
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_v061_authority_g00c"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 1662
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_v061_authority_g00c"
+      ],
+      "status": "PASS",
+      "elapsedMs": 288
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_v061_authority_g00c",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "/home/zhouwen/web-download/geospatial-operational-world-model/node_modules/pg-pool/index.js:45\n    Error.captureStackTrace(err)\n          ^\n\nerror: null value in column \"actor_reference_key\" of relation \"network_graph_activation_event\" violates not-null constraint\n    at /home/zhouwen/web-download/geospatial-operational-world-model/node_modules/pg-pool/index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async withAdvancedGraph (file:///workspace/dist/validation/scripts/coverage-validation-runtime-checks.js:44:5)\n    at async file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:169:31 {\n  length: 1300,\n  severity: 'ERROR',\n  code: '23502',\n  detail: 'Failing row contains (e54c145e-561b-42be-9d4b-00ab373aff44, a2979894-62b7-413b-a761-5f8927b7dafd, 353637b4-1d33-4a3c-ae9f-0f9414b7692c, 353637b4-1d33-4a3c-ae9f-0f9414b7692c, coverage-gateway-runtime, tenant-a, RETIRE, g00-currentness/1, null, sha256:a1b9087d26756fc72a103e5d5920c758b7e092fabf8478e1cd2a623a3..., 2026-08-26 03:26:40.433764+00).',\n  hint: undefined,\n  position: undefined,\n  internalPosition: undefined,\n  internalQuery: undefined,\n  where: 'SQL statement \"INSERT INTO public.network_graph_activation_event(\\n' +\n    '      graph_id,graph_version_id,previous_graph_version_id,data_scope_key,dataset_scope_key,\\n' +\n    '      event_type,activation_policy_version,actor_reference_key,event_hash\\n' +\n    '    ) VALUES (\\n' +\n    '      target.graph_id,previous_id,previous_id,target.data_scope_key,target.dataset_scope_key,\\n' +\n    \"      'RETIRE',p_activation_policy_version,p_actor_reference_key,\\n\" +\n    \"      'sha256:' || encode(digest(concat_ws(':','RETIRE',target.graph_id::text,previous_id::text,\\n\" +\n    \"        p_graph_version_id::text,p_activation_policy_version,p_actor_reference_key),'sha256'),'hex')\\n\" +\n    '    )\"\\n' +\n    'PL/pgSQL function activate_network_graph_version(uuid,text,text) line 25 at SQL statement',\n  schema: 'public',\n  table: 'network_graph_activation_event',\n  column: 'actor_reference_key',\n  dataType: undefined,\n  constraint: undefined,\n  file: 'execMain.c',\n  line: '2213',\n  routine: 'ReportNotNullViolationError'\n}\n\nNode.js v22.23.2\n"
+  ],
+  "finishedAt": "2026-08-26T03:26:40.911Z"
+}

@@ -3,25 +3,62 @@
   "phase": "S02",
   "title": "Documentation / Version",
   "status": "PASS",
+  "originalCases": 3,
   "requiredCases": 3,
   "passedCases": 3,
+  "pendingDelivery": 0,
+  "supersededCases": 0,
   "failedCases": 0,
   "notRunCases": 0,
-  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
-  "validity": "Final PASS is authoritative only when the final receipt names the current exact Git commit and OPEN Ready PR. No self-referential candidate SHA is committed here.",
-  "caseIds": [
-    "AC-S-19",
-    "AC-S-20",
-    "AC-S-21"
-  ],
-  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "sourceBaseline": "7cd5b133a74b07e28f359176dd13943ab7a6cf54",
   "runtimeSourceLock": "runtime-source-lock.json",
-  "evidence": [
-    "static-regression.json",
-    "d00-runtime-v061-r2-final.json",
-    "g00-runtime-v061-r2-gateway.json",
-    "t00-runtime-v061-r2-recovery.json",
-    "c00-runtime-v061-r2-compat.json",
-    "final-stable-candidate.md"
-  ]
+  "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+  "runtimeEvidence": [
+    "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+    "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+    "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+  ],
+  "staticEvidence": "static-regression.json",
+  "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
+  "scopeAmendment": "../../validation/gowm-v0.6.1/current-design-amendment.json",
+  "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
+  "validity": "Implementation evidence is source-fingerprint bound. Final delivery requires a fresh PASS receipt for exact local/tracking/remote/PR HEAD and OPEN Ready PR #6; this file is not self-referential commit evidence.",
+  "cases": {
+    "AC-S-19": {
+      "status": "PASS",
+      "scenario": "Version",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-20": {
+      "status": "PASS",
+      "scenario": "README/ADR/runbook",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    },
+    "AC-S-21": {
+      "status": "PASS",
+      "scenario": "PROJECT_STATUS",
+      "unitFiles": [
+        "tests/platform/gowm-v05-architecture.test.ts",
+        "tests/platform/road-coverage-contracts.test.ts"
+      ],
+      "runtime": [],
+      "supportingEvidence": [
+        "reports/gowm-v0.6.1/r00-predecessor-byte-lock.json"
+      ]
+    }
+  }
 }

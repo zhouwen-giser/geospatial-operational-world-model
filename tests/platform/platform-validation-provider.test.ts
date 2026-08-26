@@ -4,6 +4,8 @@ import { createDataSnapshot, type DataSnapshotManifest, type ReferenceRecord, ty
 import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 import { createPlatformValidationProvider, PostgresPlatformValidationAuthority, type PlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
 import { buildPlatformValidationApp } from "../../services/providers/platform-validation-provider/src/app.js";
+import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
+import { CapabilityRegistry } from "../../services/gateway/world-capability-gateway/src/registry.js";
 
 const now = new Date("2026-08-25T00:00:00.000Z");
 const referenceKey = { namespace: "gowm" as const, kind: "QUERY_RESULT", id: `wrf_${"1".repeat(32)}`, version: "1" };
@@ -11,6 +13,7 @@ const resource: SnapshotResource = { referenceKey, resourceKind: "QUERY_RESULT",
 const snapshot = createDataSnapshot("PINNED", [resource], now.toISOString());
 
 class Authority implements PlatformValidationAuthority {
+  async scopeReference() { return { ...referenceKey, kind: "DATA_SCOPE" }; }
   record: ReferenceRecord = { referenceKey, sourceStatus: "SUCCEEDED", sourceAuthority: "gowm.road-coverage-planning", available: true, snapshotStatus: "STALE" };
   async resolveReferences() { return [this.record]; }
   async getSnapshot(snapshotId: string): Promise<DataSnapshotManifest | undefined> { return snapshotId === snapshot.snapshotId ? snapshot : undefined; }
@@ -21,8 +24,37 @@ describe("platform validation Provider", () => {
   it("registers stable result and snapshot operations", () => {
     const manifest = createPlatformValidationProvider(new Authority(), () => now).runtime.manifest;
     expect(validateContract("capability-provider-manifest.schema.json", manifest).valid).toBe(true);
-    expect(manifest.capabilities.map(({ operationId }) => operationId)).toEqual(["result.validate", "snapshot.get", "snapshot.validate"]);
+    expect(manifest.capabilities.map(({ operationId }) => operationId)).toEqual(["reference.validate", "result.validate", "snapshot.get", "snapshot.validate"]);
     expect(manifest.capabilities.every(({ snapshotPolicy, scopePolicy }) => scopePolicy === "DATA_SCOPE_REQUIRED" && snapshotPolicy.dataSnapshot === "REQUIRED" && snapshotPolicy.computeSnapshot === "REQUIRED")).toBe(true);
+  });
+
+  it("co-registers current Reference, Dataset, World Evidence and Platform manifests with one validation owner", () => {
+    const pool = { async connect(): Promise<never> { throw new Error("manifest registration must not access the database"); } };
+    const runtimes = [
+      ...(["reference", "dataset", "evidence"] as const).map((mode) => createGroundingCatalogProvider({ mode, pool, cursorSecret: "CurrentManifestRegistrationAuditSecret_2026" }).runtime),
+      createPlatformValidationProvider(new Authority(), () => now).runtime
+    ];
+    const registry = new CapabilityRegistry();
+    for (const runtime of runtimes) registry.register({
+      manifest: runtime.manifest, endpoint: new URL("http://127.0.0.1:8095"), approved: true, approvalId: "current-contract-test",
+      client: { providerId: runtime.manifest.provider.providerId, async manifest() { return runtime.manifest; }, execute: (_operationId, request) => runtime.execute(request), async health() { return { live: true, ready: true, checkedAt: now.toISOString() }; } }
+    });
+    for (const operationId of ["reference.validate", "result.validate"]) {
+      const route = registry.resolve(operationId, "1.0");
+      expect(route.manifest.provider.providerId).toBe("gowm.platform-validation");
+      expect(route.descriptor.maturity).toBe("STABLE");
+      expect(route.descriptor.outputSchemaUri).toBe("urn:gowm:v0.6.1:result-validation-result");
+    }
+    expect(registry.catalog().length).toBe(runtimes.reduce((count, runtime) => count + runtime.manifest.capabilities.length, 0));
+  });
+
+  it("exposes identical unified validation behavior for reference.validate and result.validate", async () => {
+    const provider = createPlatformValidationProvider(new Authority(), () => now);
+    const input = { schemaVersion: "1.0", references: [{ referenceKey, requireCurrentSnapshot: true }] };
+    const reference = await execute(provider.runtime, "reference.validate", input, "reference");
+    const result = await execute(provider.runtime, "result.validate", input, "result");
+    expect(reference.output?.value).toEqual(result.output?.value);
+    expect(reference.output?.value).toMatchObject({ results: [{ usable: "REVALIDATE", snapshot: "STALE" }] });
   });
 
   it("fails opaque snapshot lookup with a protocol error rather than an invalid empty result", async () => {
@@ -61,12 +93,8 @@ describe("platform validation Provider", () => {
   it("preserves PostgreSQL result source status and resolves world-version currentness", async () => {
     const client = {
       async query(text: string) {
-        if (text.includes("SELECT entity_kind,descriptor_version")) return { rows: [{
-          entity_kind: "QUERY_RESULT", descriptor_version: "1", stale: false, revalidation_required: false,
-          valid_to: new Date("2026-08-26T00:00:00.000Z"), created_at: now
-        }] };
-        if (text.includes("FROM gowm_result_v1.query_result")) return { rows: [{
-          status: "COMPLETED", result_record: { status: "SUCCEEDED" }, valid_until: new Date("2026-08-26T00:00:00.000Z"),
+        if (text.includes("FROM gowm_platform_validation_v1.result_reference")) return { rows: [{
+          source_status: "SUCCEEDED", source_authority: "gowm.result-registry", result_record: { status: "SUCCEEDED" }, valid_until: new Date("2026-08-26T00:00:00.000Z"),
           created_at: now, data_snapshot_hash: `sha256:${"3".repeat(64)}`
         }] };
         if (text.includes("SELECT descriptor_version::text,object_version,world_version::text,content_hash")) return { rows: [{
@@ -79,6 +107,7 @@ describe("platform validation Provider", () => {
     const authority = new PostgresPlatformValidationAuthority({ async connect() { return client as never; } });
     const records = await authority.resolveReferences([{ referenceKey }], { dataScopeKey: "scope-a", datasetScopeKey: "dataset-a" });
     expect(records[0]).toMatchObject({ sourceStatus: "SUCCEEDED", sourceAuthority: "gowm.result-registry" });
+    expect(records[0]).toMatchObject({ snapshotStatus: "UNKNOWN" });
     const world = await authority.currentResources([{ resourceKind: "WORLD_REFERENCE", resourceId: referenceKey.id, version: "world-v1", worldVersion: 1 }], { dataScopeKey: "scope-a", datasetScopeKey: "dataset-a" });
     expect(world.get(`WORLD_REFERENCE\0${referenceKey.id}`)).toMatchObject({ version: "world-v2", worldVersion: 2, contentHash: `sha256:${"4".repeat(64)}` });
   });

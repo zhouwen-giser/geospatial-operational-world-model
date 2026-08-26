@@ -1,4 +1,4 @@
-# ADR-0061: Platform hardening authority and compatibility
+# ADR-0061: Platform hardening authority and current contract
 
 Status: Accepted for v0.6.1 implementation.
 
@@ -18,11 +18,27 @@ reconstructs crossings from pinned route segments and versioned geometries.
 Frozen plan validity is reported separately from current snapshot currentness;
 TTL expiry is a third independent dimension.
 
-The v0.6.1 wire strategy is additive. Existing v1.0 operation schemas remain
-unchanged. New common contracts and endpoints use version 1.0 within the new
-v0.6.1 namespace; optional Coverage fields may be added only where old clients
-continue to validate. Migrations 001–053 are immutable, and all changes are
-append-only from 054.
+The user confirmed there is no old data and removed old wire/data compatibility
+from acceptance. Each operation has one current contract and owner.
+`reference.validate` and `result.validate` belong only to Platform Validation
+and share the current batch contract. World Evidence `result.get` exposes the
+eight normalized statuses and retains source status/authority explicitly.
+No obsolete validation route or synthetic legacy compute manifest is retained
+in the current public execution path. Migrations 001–053 stay immutable;
+changes are append-only through 058.
+
+Platform Validation reads scoped authoritative views in a read-only repeatable
+read transaction. Currentness is determined from actual graph, dataset,
+travel/cost profile, condition and world versions, never from a echoed request
+version. Reference retirement and expiry are separate from source execution
+status and frozen computational validity. Result visibility includes the
+source Gateway job's dataset scope, including same-DataScope sibling datasets.
+
+Conformance inspects executable manifests and exact known schema hashes,
+co-registers the current providers and labels contract/unit evidence as such.
+The real Docker gates use PostgreSQL-backed providers and capture the source
+fingerprint before and after execution. Compatibility rows AC-R012 and AC-S-03
+remain traceable as SUPERSEDED_BY_USER, not PASS.
 
 The implementation does not build or validate WSGS, SACS, SDAR, A2A, a separate
 Data Platform Readiness gate, or mock ELEVATION onboarding.

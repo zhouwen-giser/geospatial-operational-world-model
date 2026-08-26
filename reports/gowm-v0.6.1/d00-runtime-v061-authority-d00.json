@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "v061-authority-d00",
+  "container": "gowm-v061-r2-postgres",
+  "databases": {
+    "fresh": "gowm_v06_fresh_v061_authority_d00",
+    "v05Upgrade": "gowm_v06_upgrade_v061_authority_d00",
+    "v04Upgrade": "gowm_v06_v04_v061_authority_d00",
+    "v06Upgrade": "gowm_v06_v060_v061_authority_d00"
+  },
+  "startedAt": "2026-08-26T03:09:25.626Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowm-v061-r2-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 20
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_fresh_v061_authority_d00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 117
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_fresh_v061_authority_d00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 239
+    },
+    {
+      "command": [
+        "migration-batch:001_initial_schema.sql..058_platform_validation_authority.sql",
+        "gowm_v06_fresh_v061_authority_d00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 3340
+    },
+    {
+      "command": [
+        "assertion-batch:001_v12_assertions.sql..043_platform_validation_authority_assertions.sql",
+        "gowm_v06_fresh_v061_authority_d00"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 1208
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_fresh_v061_authority_d00"
+      ],
+      "status": "PASS",
+      "elapsedMs": 367
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_fresh_v061_authority_d00",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "NOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  world_reference_identity is append-only\nCONTEXT:  PL/pgSQL function reject_world_reference_mutation() line 3 at RAISE\nSQL statement \"UPDATE world_reference_identity SET retired_at=clock_timestamp() WHERE reference_key=derived_key\"\nPL/pgSQL function inline_code_block line 22 at SQL statement\n",
+    "Command failed: docker exec --interactive gowm-v061-r2-postgres psql --username gowm --dbname gowm_v06_fresh_v061_authority_d00 --set ON_ERROR_STOP=on\nNOTICE:  extension \"postgis\" already exists, skipping\nNOTICE:  extension \"mobilitydb\" already exists, skipping\nNOTICE:  extension \"h3\" already exists, skipping\nNOTICE:  extension \"h3_postgis\" already exists, skipping\nERROR:  world_reference_identity is append-only\nCONTEXT:  PL/pgSQL function reject_world_reference_mutation() line 3 at RAISE\nSQL statement \"UPDATE world_reference_identity SET retired_at=clock_timestamp() WHERE reference_key=derived_key\"\nPL/pgSQL function inline_code_block line 22 at SQL statement\n"
+  ],
+  "finishedAt": "2026-08-26T03:09:30.941Z"
+}

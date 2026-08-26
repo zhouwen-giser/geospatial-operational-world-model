@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "G00",
+  "runId": "v061-authority-g00b",
+  "container": "gowm-v061-r2-postgres",
+  "database": "gowm_v06_g00_v061_authority_g00b",
+  "startedAt": "2026-08-26T03:25:13.232Z",
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "--format",
+        "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}",
+        "gowm-v061-r2-postgres"
+      ],
+      "status": "PASS",
+      "elapsedMs": 27
+    },
+    {
+      "command": [
+        "database-exists",
+        "gowm_v06_g00_v061_authority_g00b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 143
+    },
+    {
+      "command": [
+        "create-isolated-database",
+        "gowm_v06_g00_v061_authority_g00b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 174
+    },
+    {
+      "command": [
+        "migration-batch-001-058",
+        "gowm_v06_g00_v061_authority_g00b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 2772
+    },
+    {
+      "command": [
+        "coverage-gateway-fixture",
+        "gowm_v06_g00_v061_authority_g00b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 205
+    },
+    {
+      "command": [
+        "node-container",
+        "coverage-gateway-runtime-client",
+        "gowm_v06_g00_v061_authority_g00b"
+      ],
+      "status": "FAIL",
+      "elapsedMs": 992
+    },
+    {
+      "command": [
+        "drop-isolated-database",
+        "gowm_v06_g00_v061_authority_g00b"
+      ],
+      "status": "PASS",
+      "elapsedMs": 297
+    }
+  ],
+  "summary": null,
+  "cleanup": [
+    {
+      "database": "gowm_v06_g00_v061_authority_g00b",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    "/home/zhouwen/web-download/geospatial-operational-world-model/node_modules/pg-pool/index.js:45\n    Error.captureStackTrace(err)\n          ^\n\nerror: new row for relation \"gateway_job\" violates check constraint \"gateway_job_terminal_time\"\n    at /home/zhouwen/web-download/geospatial-operational-world-model/node_modules/pg-pool/index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async seedPlatformValidationCases (file:///workspace/dist/validation/scripts/coverage-validation-runtime-checks.js:11:22)\n    at async file:///workspace/dist/validation/scripts/coverage-gateway-runtime-client.js:135:29 {\n  length: 580,\n  severity: 'ERROR',\n  code: '23514',\n  detail: 'Failing row contains (a28d1d84-590a-4fa8-aaa1-5186b75512b9, WORLD_QUERY, null, null, sha256:b7a36fdebdcd9887b4c99db72724e425cf5f17e8a0a40b8532142d61e..., coverage-gateway-runtime, sha256:4cb5a7f674c583526b9a474ebaa9701ec85081131f2a98e2bbf314395..., SUCCEEDED, 0, null, null, null, null, null, 0, 2026-08-26 03:25:17.303885+00, 2026-08-26 03:25:17.303885+00, null, null).',\n  hint: undefined,\n  position: undefined,\n  internalPosition: undefined,\n  internalQuery: undefined,\n  where: undefined,\n  schema: 'gowm_capability',\n  table: 'gateway_job',\n  column: undefined,\n  dataType: undefined,\n  constraint: 'gateway_job_terminal_time',\n  file: 'execMain.c',\n  line: '2076',\n  routine: 'ExecConstraints'\n}\n\nNode.js v22.23.2\n"
+  ],
+  "finishedAt": "2026-08-26T03:25:17.859Z"
+}

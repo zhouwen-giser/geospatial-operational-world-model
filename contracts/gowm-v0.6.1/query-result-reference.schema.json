@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.1:query-result-reference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "referenceKey",
+    "queryId",
+    "resultHash",
+    "status",
+    "dataSnapshotHash",
+    "computeSnapshotHash",
+    "createdAt",
+    "resultSemantics"
+  ],
+  "properties": {
+    "referenceKey": {
+      "$ref": "common.schema.json#/$defs/referenceKey"
+    },
+    "queryId": {
+      "type": "string"
+    },
+    "resultHash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "status": {
+      "enum": [
+        "COMPLETED",
+        "PARTIAL",
+        "NO_DATA",
+        "AMBIGUOUS",
+        "INDETERMINATE",
+        "NO_FEASIBLE_RESULT",
+        "STALE",
+        "FAILED"
+      ]
+    },
+    "dataSnapshotHash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "computeSnapshotHash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "createdAt": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "validUntil": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "artifactRefs": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string"
+      }
+    },
+    "resultSemantics": {
+      "$ref": "world-result-semantics.schema.json"
+    }
+  }
+}

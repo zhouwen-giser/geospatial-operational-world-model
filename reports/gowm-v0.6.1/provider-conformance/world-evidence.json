@@ -2,113 +2,117 @@
   "schemaVersion": "1.0",
   "providerId": "gowm.world-evidence",
   "providerVersion": "1.0.0",
-  "status": "PASS",
   "checks": [
     {
       "id": "MANIFEST",
       "status": "PASS",
-      "message": "Provider Protocol 1.0 manifest and non-empty capability set",
-      "evidenceRefs": [
-        "contracts/manifests/providers/world-evidence-provider.json"
-      ]
+      "message": "contracts/manifests/providers/world-evidence-current.json"
     },
     {
       "id": "SCHEMA_HASH",
       "status": "PASS",
-      "message": "Every operation schema hash matches the checked-in canonical schema",
-      "evidenceRefs": [
-        "packages/platform/contract-runtime/src/generated/schema-hashes.ts"
-      ]
+      "message": "Exact canonical JSON or actual source-byte hash; unknown URI/path fails closed",
+      "details": []
     },
     {
       "id": "OPERATION_VERSION",
       "status": "PASS",
-      "message": "Operation identity and version are explicit and unique",
-      "evidenceRefs": [
-        "contracts/manifests/providers/world-evidence-provider.json"
-      ]
+      "message": "Runtime factory validates operation/handler parity"
     },
     {
       "id": "SEMANTIC_PROFILE",
       "status": "PASS",
-      "message": "Semantic projection is defined for world.get-current-state and all capabilities carry base semantics",
-      "evidenceRefs": [
-        "contracts/gowm-v0.6.1/manifests/semantic-profiles"
+      "message": "Projection from every current descriptor"
+    },
+    {
+      "id": "SCOPE_SNAPSHOT_LIMITS",
+      "status": "PASS",
+      "message": "Executable manifest schema and cross-field semantic rules"
+    },
+    {
+      "id": "HASH_ERROR_FAIL_CLOSED",
+      "status": "PASS",
+      "message": "Real runtime rejects forged input hash before IO",
+      "details": [
+        {
+          "operationId": "world.get-current-state",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "world.get-geometry",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "world.get-provenance",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "world.get-observations",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "world.get-event-timeline",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "world.get-state-history",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "result.get",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        },
+        {
+          "operationId": "reference-set.get-members",
+          "code": "SCHEMA_MISMATCH",
+          "passed": true
+        }
       ]
     },
     {
-      "id": "SCOPE_POLICY",
+      "id": "CO_REGISTRATION",
       "status": "PASS",
-      "message": "Every capability declares an authorization scope policy",
-      "evidenceRefs": [
-        "contracts/manifests/providers/world-evidence-provider.json"
-      ]
+      "message": "All current protocol Provider factories registered together without duplicate routes"
     },
     {
-      "id": "SNAPSHOT_POLICY",
+      "id": "HEALTH_READINESS_CONTRACT",
       "status": "PASS",
-      "message": "Every capability declares data and compute snapshot policy",
-      "evidenceRefs": [
-        "contracts/manifests/providers/world-evidence-provider.json"
-      ]
+      "message": "Executed SDK startup health/readiness contract; external dependency readiness is not claimed"
     },
     {
-      "id": "STATUS_MAPPING",
+      "id": "NO_SIBLING_PROVIDER_IMPORT",
       "status": "PASS",
-      "message": "Every capability declares result semantics for normalized status projection",
-      "evidenceRefs": [
-        "contracts/manifests/providers/world-evidence-provider.json"
-      ]
+      "message": "AST resolves relative/absolute/dynamic imports and re-exports",
+      "details": []
     },
     {
-      "id": "RECEIPT_EVIDENCE",
+      "id": "NO_SIBLING_PROVIDER_HTTP",
       "status": "PASS",
-      "message": "Every capability exposes a result port; runtime envelopes supply receipts and evidence separately",
-      "evidenceRefs": [
-        "packages/platform/provider-sdk/src/runtime.ts"
-      ]
-    },
-    {
-      "id": "LIMITS",
-      "status": "PASS",
-      "message": "Every capability has positive bounded execution and result limits",
-      "evidenceRefs": [
-        "contracts/manifests/providers/world-evidence-provider.json"
-      ]
-    },
-    {
-      "id": "HEALTH_READINESS",
-      "status": "PASS",
-      "message": "Manifest exposes liveness, readiness, and execution endpoints",
-      "evidenceRefs": [
-        "contracts/manifests/providers/world-evidence-provider.json"
-      ]
-    },
-    {
-      "id": "IDEMPOTENCY_ERROR",
-      "status": "PASS",
-      "message": "Provider uses the common runtime idempotency and protocol error mapping layer",
-      "evidenceRefs": [
-        "services/providers/grounding-catalog-provider/src"
-      ]
-    },
-    {
-      "id": "NO_SIBLING_PROVIDER_COUPLING",
-      "status": "PASS",
-      "message": "Source has no sibling Provider import or sibling HTTP call",
-      "evidenceRefs": [
-        "services/providers/grounding-catalog-provider/src"
-      ]
+      "message": "No hardcoded sibling Provider HTTP target"
     },
     {
       "id": "VERSIONED_READ_CONTRACT",
       "status": "PASS",
-      "message": "SQL does not read public base tables; versioned read contracts remain the data boundary",
-      "evidenceRefs": [
-        "services/providers/grounding-catalog-provider/src"
-      ]
+      "message": "Provider source has no public base-table read; database grants and SQL assertions are independently checked by D00"
+    },
+    {
+      "id": "UNIT_PROTOCOL_BEHAVIOR",
+      "status": "PASS",
+      "message": "Executed unit/protocol suite: status mapping, receipts/evidence, scope, limits, health, idempotency and errors; not live readiness"
     }
   ],
-  "generatedAt": "2026-08-25T00:00:00.000Z",
-  "reportHash": "sha256:f42b0ac12431b0b169230ab167a1f239cdbc80ca941e23a1fdaba2ab66e06992"
+  "manifestHash": "sha256:43c53446d1ea3a5a69b7e8e76c27183e0c26984074c2556ec30b77551704d625",
+  "evidenceLevel": "CONTRACT_AND_UNIT_PROTOCOL",
+  "runtimeReadiness": "NOT_CLAIMED",
+  "unitEvidenceRef": "reports/gowm-v0.6.1/provider-conformance/unit-behavior.json",
+  "status": "PASS",
+  "generatedAt": "2026-08-26T03:52:02.176Z",
+  "reportHash": "sha256:536aad5be8fe5dffbc1b3ba7d339c213f4dcdb2fc4d1c100e6ff4a56d1272297"
 }

@@ -50,7 +50,7 @@ describe("GOWM v0.3/v0.4 authority contracts", () => {
           // byte lock remains strict without making verification OS-dependent.
           const canonicalBytes = Buffer.from(bytes.toString("utf8").replaceAll("\r\n", "\n"), "utf8");
           expect(`sha256:${createHash("sha256").update(canonicalBytes).digest("hex")}`).toBe(lockedHash);
-          expect(getContractSchemaHash(name)).toMatch(/^sha256:[0-9a-f]{64}$/u);
+          expect(getContractSchemaHash(`gowm-v0.4/${name}`)).toMatch(/^sha256:[0-9a-f]{64}$/u);
         }
       }
     }

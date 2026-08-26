@@ -1,7 +1,8 @@
 import { ProviderProtocolError, sha256 } from "../../platform/provider-sdk/src/index.js";
 import type { PlatformCommonDefinitionsReferenceKey } from "../../platform/contract-runtime/src/index.js";
 import { matrix, shortestPath, verifyPath, type Objective } from "./engine.js";
-import { RoutingSnapshotCurrentnessEvaluator, type RoutingSnapshotCurrentnessResult } from "./currentness.js";
+import type { RoutingSnapshotCurrentnessResult } from "./currentness.js";
+import { readRoutingSnapshotCurrentness } from "./currentness-reader.js";
 import type {
   DirectedState,
   BoundaryCrossing,
@@ -66,23 +67,8 @@ export class NetworkRepository {
       const timeout = Math.max(1, Math.min(this.statementTimeoutMs, Math.floor(deadlineRemainingMs)));
       await client.query("SELECT set_config('statement_timeout',$1::text,true)", [`${timeout}ms`]);
       await client.query("SELECT gowm_network_v1.set_scope($1::text,$2::text)", [dataScopeKey, datasetScopeKey]);
-      const active = (await client.query("SELECT graph_version,content_hash FROM gowm_network_v1.resolve_active_graph($1)", [requiredString(network.graph.graph_key, "graph_key")])).rows[0];
-      const condition = (await client.query("SELECT condition_snapshot_id::text,content_hash FROM gowm_network_v1.condition_snapshot WHERE graph_version_id=$1::uuid ORDER BY observed_at DESC,condition_snapshot_id DESC LIMIT 1", [requiredString(network.graph.graph_version_id, "graph_version_id")])).rows[0];
-      const profiles = (await client.query(`WITH chosen_travel AS (SELECT profile_key FROM gowm_network_v1.travel_profile WHERE version=$1 ORDER BY profile_key LIMIT 1), chosen_cost AS (SELECT profile_key FROM gowm_network_v1.cost_profile WHERE version=$2 AND content_hash=$3 ORDER BY profile_key LIMIT 1), latest_travel AS (SELECT version FROM gowm_network_v1.travel_profile WHERE profile_key=(SELECT profile_key FROM chosen_travel) ORDER BY created_at DESC,travel_profile_version_id DESC LIMIT 1), latest_cost AS (SELECT version,content_hash FROM gowm_network_v1.cost_profile WHERE profile_key=(SELECT profile_key FROM chosen_cost) ORDER BY created_at DESC,cost_profile_version_id DESC LIMIT 1) SELECT (SELECT version FROM latest_travel) AS travel_version,(SELECT version FROM latest_cost) AS cost_version,(SELECT content_hash FROM latest_cost) AS cost_hash`, [network.routingSnapshot.travelProfileVersion, network.routingSnapshot.costProfileVersion, network.routingSnapshot.costContentHash])).rows[0];
+      const currentness = await readRoutingSnapshotCurrentness(client, network.routingSnapshot, this.now().toISOString());
       await client.query("COMMIT"); open = false;
-      const currentSnapshot = active === undefined || profiles === undefined || typeof active.graph_version !== "string" || typeof active.content_hash !== "string" || typeof profiles.travel_version !== "string" || typeof profiles.cost_version !== "string" || typeof profiles.cost_hash !== "string" ? undefined : {
-        networkDatasetVersion: network.routingSnapshot.networkDatasetVersion,
-        graphVersion: active.graph_version,
-        travelProfileVersion: profiles.travel_version,
-        costProfileVersion: profiles.cost_version,
-        graphContentHash: active.content_hash as `sha256:${string}`,
-        costContentHash: profiles.cost_hash as `sha256:${string}`,
-        ...(condition === undefined ? {} : {
-          conditionSnapshotId: String(condition.condition_snapshot_id),
-          conditionContentHash: String(condition.content_hash) as `sha256:${string}`
-        })
-      } satisfies RoutingSnapshot;
-      const currentness = new RoutingSnapshotCurrentnessEvaluator().evaluate(network.routingSnapshot, currentSnapshot, this.now().toISOString());
       return {
         graphCurrent: currentness.dimensions.graph === "CURRENT",
         profileCurrent: currentness.dimensions.travelProfile === "CURRENT" && currentness.dimensions.costProfile === "CURRENT",

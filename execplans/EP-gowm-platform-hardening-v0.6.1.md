@@ -45,12 +45,15 @@ second authority.
 - [x] S00
 - [x] S01
 - [x] S02
-- [x] S03 — exact commit and Ready state are receipt-bound, not self-hashed in Git
+- [ ] S03 — implementation preflight passed; exact commit and Ready state are
+  independently receipt-bound after commit/push, not self-hashed in Git
 
 ## Decisions
 
 - R2 cancellation rules override the residual mock-ELEVATION sentence in numbered file 12.
-- Public v0.6.1 additions are additive; existing v1.0 contracts remain byte-compatible.
+- The user removed old wire/data compatibility from scope. There is one current
+  contract and owner per operation; AC-R012 and AC-S-03 are SUPERSEDED_BY_USER,
+  not PASS. Baseline migration immutability remains required.
 - New database changes start at migration 054.
 - Platform validation is a scoped read projection backed by existing Reference,
   Result, Catalog, and Network authorities plus an immutable snapshot registry;
@@ -78,7 +81,7 @@ second authority.
   projection now reads only approved, enabled registry operations through a
   scoped, read-only catalog view and filters them by authoritative data binding.
 
-## Failed attempts retained
+## Historical failed attempts retained
 
 - The approved current-candidate D00 rerun rejected migration 055 because the
   replacement cost-profile view omitted the existing `surface_weight_ppm`
@@ -91,7 +94,8 @@ second authority.
   alternative identities across requests. All were fixed and rerun against
   the real database; regression tests retain those cases.
 - Migration 056 now registers separate compute/data hashes from integrity
-  receipts. Legacy missing compute metadata is explicitly UNKNOWN.
+  receipts. Its initial legacy UNKNOWN fallback was later removed from the
+  current public publication path by migration 058, following the user amendment.
 - The default T00 create-container request twice timed out at execution review.
   A narrower, explicitly consented reuse mode verified the dedicated container
   had no foreign databases, created its own database, restarted it, and cleaned
@@ -116,25 +120,56 @@ second authority.
 - `bash scripts/preflight.sh .`: PASS
 - task validator: PASS (21 schemas, 10 profiles, 10 examples, 229 cases)
 - `npm run check`: PASS
-- `npm run verify:sql`: PASS (57 migrations, 42 assertion suites)
-- `npm test`: 264 passed, 1 skipped (default external DB test; real Docker D00 replaces it)
-- `npm --prefix services/stas test`: 14 test files passed
+- `npm run verify:sql`: PASS (58 migrations, 43 assertion suites)
+- `npm test`: 288 passed, 1 skipped (default external DB test; real Docker D00 covers it)
+- `npm --prefix services/stas test`: 40 tests passed, zero failed/skipped
 - `npm run build`: PASS
-- Provider conformance: PASS for the nine required public providers; deterministic
-  report hash `sha256:7ce2f4b58f74b0b725f4720dc96db4f00b590e297978704097ba70313abe07ad`
-- D00 real runtime: PASS (fresh/v0.4/v0.5/v0.6.0, 57 migrations, 42 assertions,
-  seeded predecessor data preserved, four checksum replays, rollback, cleanup).
-- G00 real Gateway/Provider/PostGIS: PASS (150 checks).
+- Provider conformance: PASS for 11 current reports / 70 protocol operations;
+  report hash `sha256:3b2e6d911b08ce1a5b378b7f33b868f053f5e1ee20eadd60d350a23d9175fdfa`.
+  Evidence is explicitly CONTRACT_AND_UNIT_PROTOCOL / NATIVE_CONTRACT_AND_UNIT,
+  not a live readiness claim.
+- D00 real runtime: PASS (58 migrations, 43 assertions, fresh install, four
+  checksum replays, rollback, scope/grants and cleanup; historical upgrades supplemental).
+- G00 real Gateway/Provider/PostGIS: PASS (160 checks).
 - T00 recovery/security: PASS (72 before / 5 after real PostgreSQL restart).
-- C00 compatibility: PASS (53 old migrations and 103 contract artifacts byte-locked).
+- Predecessor integrity: 53 baseline migrations and 103 retained contract artifacts
+  byte-locked. Old-wire/data compatibility is no longer Required.
 - W00–W02 and D00–D02: PASS in the same real Gateway runtime.
-- Per-case evidence preflight: PASS for 229 mappings; Git delivery remains
-  separately gated. Runtime source/evidence frozen in `runtime-source-lock.json`.
+- Per-case evidence preflight: 224 PASS, 3 delivery pending, 2 superseded across
+  229 original rows. Runtime source/evidence frozen in `runtime-source-lock.json`.
+
+## Corrective audit closure
+
+The prior 5029bce completion was withdrawn and PR #6 returned to Draft. The
+following reproduced findings were corrected without preserving obsolete APIs:
+
+- Platform Validation is the sole current reference/result validation owner.
+- PostgreSQL authority checks actual scoped graph/dataset/travel/cost/condition/
+  world versions, source status, lifecycle and TTL. Missing authority is not CURRENT.
+- Migration 058 adds scoped authority/lifecycle views and dataset isolation for
+  result.get/reference sets. It rejects public compute identity without a real
+  integrity receipt and maps no-feasible outcomes without legacy NO_DATA fallback.
+- G00 uses actual World Evidence geometry and PostgreSQL validation providers,
+  publishes real route/coverage results and mutates actual current authority.
+- Conformance inspects current executable manifests, exact known hashes and all
+  provider co-registration; AST inspections and adversarial tests cover prior
+  hash/import fail-open paths. STAS health tests separate liveness from readiness.
+- Intermediate G00 runs exposed undefined optional dates in fact hashing, missing
+  geometry port metadata, forbidden graph reactivation and expired TTL expectations.
+  Corrected implementations/assertions were rerun; failures are retained, not PASS.
+- The current-schema addition exposed an ambiguous old test's basename lookup;
+  the test now names its explicit historical schema namespace.
+
+The final source-locked runs are v061-locked-d00/g00/t00. Each Docker gate and
+conformance recorded identical before/after fingerprint
+`e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda`
+over 947 files. Only documentation and generated evidence changed afterward.
 
 ## Final delivery
 
 R00–S03 evidence is delivered on PR #6. The final gate reruns static regression,
-verifies all 229 named case mappings, rejects runtime-source/report drift, and
+retains 229 named rows (227 effective Required, two superseded), rejects
+runtime-source/report drift, and
 requires exact local/tracking/remote/PR SHA equality plus OPEN Ready state.
 The authoritative final receipt is `/tmp/gowm-v0.6.1-final-acceptance.json` and
 the corresponding PR completion comment. A changed candidate must rerun the

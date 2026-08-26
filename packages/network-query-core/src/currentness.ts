@@ -32,7 +32,7 @@ export class RoutingSnapshotCurrentnessEvaluator {
       };
     }
     const dimensions: RoutingSnapshotCurrentnessResult["dimensions"] = {
-      graph: equal(requested.graphVersion, current.graphVersion) && equal(requested.graphContentHash, current.graphContentHash) ? "CURRENT" : "STALE",
+      graph: equal(requested.networkDatasetVersion, current.networkDatasetVersion) && equal(requested.graphVersion, current.graphVersion) && equal(requested.graphContentHash, current.graphContentHash) ? "CURRENT" : "STALE",
       travelProfile: equal(requested.travelProfileVersion, current.travelProfileVersion) ? "CURRENT" : "STALE",
       costProfile: equal(requested.costProfileVersion, current.costProfileVersion) && equal(requested.costContentHash, current.costContentHash) ? "CURRENT" : "STALE",
       condition: optionalDimension(requested.conditionSnapshotId, current.conditionSnapshotId, requested.conditionContentHash, current.conditionContentHash),

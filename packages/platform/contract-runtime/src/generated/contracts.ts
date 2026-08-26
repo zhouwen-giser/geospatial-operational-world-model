@@ -2254,17 +2254,35 @@ export type GowmV061PlanValidationResult = {
 
 export type GowmV061ProviderConformanceReport = {
   checks: Array<{
+  details?: unknown;
   evidenceRefs?: Array<string>;
   id: string;
   message: string;
   status: "PASS" | "FAIL" | "BLOCKED";
 }>;
+  evidenceLevel?: "CONTRACT_AND_UNIT_PROTOCOL" | "NATIVE_CONTRACT_AND_UNIT";
   generatedAt: string;
+  manifestHash?: GowmV061CommonSha256;
   providerId: string;
   providerVersion: string;
   reportHash: string;
+  runtimeReadiness?: "NOT_CLAIMED";
   schemaVersion: "1.0";
   status: "PASS" | "FAIL" | "BLOCKED";
+  unitEvidenceRef?: string;
+};
+
+export type GowmV061QueryResultReference = {
+  artifactRefs?: Array<string>;
+  computeSnapshotHash: GowmV061CommonSha256;
+  createdAt: GowmV061CommonDateTime;
+  dataSnapshotHash: GowmV061CommonSha256;
+  queryId: string;
+  referenceKey: GowmV061CommonReferenceKey;
+  resultHash: GowmV061CommonSha256;
+  resultSemantics: GowmV061WorldResultSemantics;
+  status: "COMPLETED" | "PARTIAL" | "NO_DATA" | "AMBIGUOUS" | "INDETERMINATE" | "NO_FEASIBLE_RESULT" | "STALE" | "FAILED";
+  validUntil?: GowmV061CommonDateTime;
 };
 
 export type GowmV061ReferenceValidity = {

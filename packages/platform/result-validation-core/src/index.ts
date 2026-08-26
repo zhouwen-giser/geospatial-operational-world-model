@@ -16,6 +16,7 @@ export interface ReferenceRecord {
   lastUpdatedAt?: string;
   snapshotStatus?: "CURRENT" | "STALE" | "UNKNOWN" | "NOT_APPLICABLE";
   validationEvidenceRefs?: string[];
+  validationReasons?: string[];
 }
 
 export function normalizeResultStatus(sourceStatus: string, mapping: Readonly<Record<string, NormalizedResultStatus>>): NormalizedResultStatus {
@@ -39,6 +40,7 @@ export function validateReferenceRecord(
   const freshness = expired ? "EXPIRED" : maximumAgeExceeded || snapshot === "STALE" ? "STALE" : "CURRENT";
   const usable = existence !== "AVAILABLE" || expired ? "NO" : maximumAgeExceeded || request.requireCurrentSnapshot === true && snapshot !== "CURRENT" ? "REVALIDATE" : snapshot === "STALE" || snapshot === "UNKNOWN" ? "REVALIDATE" : "YES";
   const reasons = [
+    ...(record.validationReasons ?? []),
     ...(record.retired ? ["Reference is retired"] : []),
     ...(expired ? ["Reference TTL expired"] : []),
     ...(maximumAgeExceeded ? ["Reference exceeds requested maximum age"] : []),

@@ -1,7 +1,7 @@
 {
   "goal": "GOWM+ v0.6.1 Platform Hardening",
   "targetVersion": "0.6.1",
-  "status": "COMPLETE",
+  "status": "AWAITING_DELIVERY_RECEIPT",
   "phase": "S03",
   "source": {
     "branch": "main",
@@ -28,7 +28,7 @@
     "roadCoverageCorrect": true,
     "capabilityContractsHardened": true,
     "publicDataFoundationHardened": true,
-    "stableCandidate": true
+    "stableCandidate": false
   },
   "cancelledGates": {
     "wsgsReadinessBlackBox": true,
@@ -36,21 +36,38 @@
     "mockElevationOnboarding": true
   },
   "acceptance": {
-    "required": 229,
-    "passed": 229,
+    "status": "EVIDENCE_PASS_DELIVERY_PENDING",
+    "originalRequired": 229,
+    "effectiveRequired": 227,
+    "passed": 224,
+    "pendingDelivery": 3,
+    "superseded": 2,
     "failed": 0,
-    "blocked": 0,
     "notRun": 0,
-    "caseMapping": "../../validation/gowm-v0.6.1/case-evidence.json",
-    "finalReceipt": "/tmp/gowm-v0.6.1-final-acceptance.json",
-    "verification": "Completion is valid only with a PASS final receipt naming the current exact candidate commit and OPEN Ready PR."
+    "scopeAmendment": "current-design-amendment.md",
+    "previousReceiptWithdrawn": true,
+    "previousCandidate": "5029bce7eb770014b817d1b2549999c2ce1166cd",
+    "openFindings": [],
+    "correctedFindings": [
+      "DUPLICATE_VALIDATION_OPERATION",
+      "STALE_QUERY_MARKED_CURRENT",
+      "REAL_GATE_AUTHORITY_TEST_DOUBLES",
+      "FAIL_OPEN_SCHEMA_HASH_GATE"
+    ]
   },
   "runtime": {
-    "database": "PASS",
-    "gateway": "PASS_150_CHECKS",
-    "securityRecovery": "PASS_72_BEFORE_5_AFTER_RESTART",
-    "compatibility": "PASS",
-    "providerConformance": "PASS_9_PROVIDERS"
+    "status": "PASS",
+    "sourceFingerprint": "e36a2c67eda8c6d6104ecf67b4de917d118ca31fb53bc009a0a9f20fa3d5bcda",
+    "sourceFiles": 947,
+    "evidence": {
+      "schema": "reports/gowm-v0.6.1/d00-runtime-v061-locked-d00.json",
+      "gateway": "reports/gowm-v0.6.1/g00-runtime-v061-locked-g00.json",
+      "recovery": "reports/gowm-v0.6.1/t00-runtime-v061-locked-t00.json"
+    },
+    "gatewayChecks": 160,
+    "recoveryBefore": 72,
+    "recoveryAfter": 5,
+    "providerConformance": "sha256:3b2e6d911b08ce1a5b378b7f33b868f053f5e1ee20eadd60d350a23d9175fdfa"
   },
   "protectedActions": {
     "merge": "NOT_RUN",
@@ -59,5 +76,5 @@
     "deploy": "NOT_RUN"
   },
   "blockers": [],
-  "next": "Review PR #6. No further protected publication action is authorized."
+  "next": "Commit/push this candidate; mark PR #6 Ready after evidence preflight; run final exact-SHA acceptance and publish its receipt. This committed status deliberately does not pretend to know its own commit SHA."
 }

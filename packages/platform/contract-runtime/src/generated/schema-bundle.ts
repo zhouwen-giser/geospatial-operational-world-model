@@ -10531,6 +10531,7 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
             "message": {
               "type": "string"
             },
+            "details": {},
             "evidenceRefs": {
               "type": "array",
               "items": {
@@ -10547,6 +10548,82 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       "reportHash": {
         "type": "string",
         "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "manifestHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "evidenceLevel": {
+        "enum": [
+          "CONTRACT_AND_UNIT_PROTOCOL",
+          "NATIVE_CONTRACT_AND_UNIT"
+        ]
+      },
+      "runtimeReadiness": {
+        "const": "NOT_CLAIMED"
+      },
+      "unitEvidenceRef": {
+        "type": "string"
+      }
+    }
+  },
+  "gowm-v0.6.1/query-result-reference.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.6.1:query-result-reference",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "referenceKey",
+      "queryId",
+      "resultHash",
+      "status",
+      "dataSnapshotHash",
+      "computeSnapshotHash",
+      "createdAt",
+      "resultSemantics"
+    ],
+    "properties": {
+      "referenceKey": {
+        "$ref": "common.schema.json#/$defs/referenceKey"
+      },
+      "queryId": {
+        "type": "string"
+      },
+      "resultHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "status": {
+        "enum": [
+          "COMPLETED",
+          "PARTIAL",
+          "NO_DATA",
+          "AMBIGUOUS",
+          "INDETERMINATE",
+          "NO_FEASIBLE_RESULT",
+          "STALE",
+          "FAILED"
+        ]
+      },
+      "dataSnapshotHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "computeSnapshotHash": {
+        "$ref": "common.schema.json#/$defs/sha256"
+      },
+      "createdAt": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "validUntil": {
+        "$ref": "common.schema.json#/$defs/dateTime"
+      },
+      "artifactRefs": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string"
+        }
+      },
+      "resultSemantics": {
+        "$ref": "world-result-semantics.schema.json"
       }
     }
   },

@@ -125,6 +125,14 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
           schemaHash: getContractSchemaHash("urn:gowm:v0.4:reference-key"),
           valueKind: "REFERENCE_KEY" as const,
           unitSemantics: "UNSPECIFIED" as const
+        }] : []),
+        ...(operationId === "world.get-geometry" ? [{
+          name: "geometry",
+          path: "/facts/0/geometry",
+          schemaUri: "urn:gowm:v0.2:value:object",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.2:value:object"),
+          valueKind: "GEOMETRY" as const,
+          unitSemantics: "ANGULAR_DEGREES" as const
         }] : [])
       ]
     }

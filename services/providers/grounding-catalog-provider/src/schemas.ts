@@ -8,7 +8,6 @@ import type { GroundingCatalogMode } from "./types.js";
 export const REFERENCE_OPERATION_IDS = [
   "reference.get",
   "reference.resolve",
-  "reference.validate",
   "reference.batch-get",
   "reference.search"
 ] as const;
@@ -37,7 +36,6 @@ export const EVIDENCE_OPERATION_IDS = [
   "world.get-event-timeline",
   "world.get-state-history",
   "result.get",
-  "result.validate",
   "reference-set.get-members"
 ] as const;
 
@@ -49,7 +47,6 @@ export type GroundingCatalogOperationId = ReferenceOperationId | DatasetOperatio
 const schemaNames: Record<GroundingCatalogOperationId, readonly [string, string]> = {
   "reference.get": ["catalog-query-request", "reference-descriptor"],
   "reference.resolve": ["reference-resolve-request", "reference-resolve-result"],
-  "reference.validate": ["reference-validate-request", "reference-validate-result"],
   "reference.batch-get": ["reference-validate-request", "catalog-result"],
   "reference.search": ["reference-resolve-request", "reference-resolve-result"],
   "dataset.get": ["catalog-query-request", "dataset-descriptor"],
@@ -72,7 +69,6 @@ const schemaNames: Record<GroundingCatalogOperationId, readonly [string, string]
   "world.get-event-timeline": ["catalog-query-request", "catalog-result"],
   "world.get-state-history": ["catalog-query-request", "catalog-result"],
   "result.get": ["catalog-query-request", "query-result-reference"],
-  "result.validate": ["catalog-query-request", "reference-validate-result"],
   "reference-set.get-members": ["catalog-query-request", "reference-set"]
 };
 
@@ -88,7 +84,7 @@ export interface OperationSchemas {
 export const GROUNDING_CATALOG_OPERATION_SCHEMAS = Object.fromEntries(
   Object.entries(schemaNames).map(([operationId, [inputName, outputName]]) => {
     const inputVersion = inputName.startsWith("catalog-search-") ? "v0.6.1" : "v0.4";
-    const outputVersion = ["data-product-descriptor", "catalog-search-result", "data-product-detail-result"].includes(outputName) ? "v0.6.1" : "v0.4";
+    const outputVersion = ["data-product-descriptor", "catalog-search-result", "data-product-detail-result", "query-result-reference"].includes(outputName) ? "v0.6.1" : "v0.4";
     const inputSchemaUri = `urn:gowm:${inputVersion}:${inputName}`;
     const outputSchemaUri = `urn:gowm:${outputVersion}:${outputName}`;
     return [operationId, {

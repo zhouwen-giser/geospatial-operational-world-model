@@ -25,6 +25,7 @@ describe("routing snapshot currentness", () => {
 
   it.each([
     ["GRAPH", { graphVersion: "graph/2" }],
+    ["GRAPH", { networkDatasetVersion: "roads/2" }],
     ["TRAVEL_PROFILE", { travelProfileVersion: "ugv/2" }],
     ["COST_PROFILE", { costProfileVersion: "cost/2" }],
     ["CONDITION", { conditionSnapshotId: "conditions/2" }],
