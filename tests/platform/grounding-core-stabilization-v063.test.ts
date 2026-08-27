@@ -2,6 +2,7 @@ import { createHash, generateKeyPairSync, sign } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import Fastify from "fastify";
 import {
   validateContract,
   type CapabilityDescriptor,
@@ -16,6 +17,7 @@ import {
   ProviderCircuitBreaker,
   QuerySnapshotCoordinator,
   SignedDelegationVerifier,
+  createGatewayAuthenticator,
   type GatewayPrincipal
 } from "../../services/gateway/world-capability-gateway/src/index.js";
 
@@ -23,6 +25,39 @@ const root = resolve(import.meta.dirname, "../..");
 const encoded = (value: unknown) => Buffer.from(JSON.stringify(value)).toString("base64url");
 
 describe("GOWM v0.6.3 grounding core stabilization", () => {
+  it("accepts a signed delegation fixture at the HTTP authentication boundary", async () => {
+    const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+    const now = Math.floor(Date.now() / 1_000);
+    const claims: DelegationTokenClaims = {
+      iss: "https://identity.example.test", sub: "service:wsgs", aud: "gowm-world-gateway",
+      iat: now - 1, nbf: now - 1, exp: now + 120, jti: "delegation-jti-http-0001",
+      act: { sub: "actor:planner" }, requestId: "request:http-bound", delegationDepth: 1,
+      dataScopes: ["tenant:a"], datasetScopes: ["dataset:roads"], allowedOperations: ["reference.get@1.0"]
+    };
+    const authenticate = createGatewayAuthenticator({
+      authenticationMode: "SIGNED_DELEGATION_V1",
+      delegationIssuer: claims.iss,
+      delegationAudience: claims.aud,
+      delegationPublicKey: publicKey.export({ type: "spki", format: "pem" }).toString(),
+      delegationMaximumTtlSeconds: 300,
+      sharedToken: "static-service-token-32-bytes-long",
+      principalRef: claims.sub,
+      dataScopeClaim: "tenant:a",
+      datasetScopeClaim: "dataset:roads",
+      allowExperimental: false
+    } as Parameters<typeof createGatewayAuthenticator>[0], () => ["reference.get@1.0"]);
+    const app = Fastify();
+    app.post("/probe", async (request) => authenticate(request));
+    const response = await app.inject({
+      method: "POST", url: "/probe",
+      headers: { authorization: "Bearer static-service-token-32-bytes-long", "x-gowm-delegation": compactJws(claims, privateKey) },
+      payload: { requestId: claims.requestId }
+    });
+    await app.close();
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({ mode: "SIGNED_DELEGATION_V1", actorRef: "actor:planner", allowedOperations: ["reference.get@1.0"] });
+  });
+
   it("accepts only correctly bound one-hop delegated identity and derives stable hash-only context", () => {
     const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
     const now = 1_787_763_600;
