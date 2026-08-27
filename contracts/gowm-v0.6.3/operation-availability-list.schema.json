@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.3:operation-availability-list",
+  "title": "OperationAvailabilityList",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "checkedAt", "operations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "checkedAt": { "type": "string", "format": "date-time" },
+    "operations": { "type": "array", "items": { "$ref": "operation-availability.schema.json" } }
+  }
+}

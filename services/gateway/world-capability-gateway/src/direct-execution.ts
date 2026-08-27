@@ -3,7 +3,8 @@ import type {
   CapabilityProviderManifest,
   CapabilityResultEnvelope,
   GatewayExecuteRequest,
-  ProviderExecutionRequest
+  ProviderExecutionRequest,
+  QuerySnapshotManifest
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import {
   validateCapabilityResultSemantics,
@@ -20,7 +21,7 @@ import { ProviderCircuitBreaker } from "./circuit-breaker.js";
 import type { GatewayIdempotencyStore } from "./idempotency.js";
 import type { GatewayRecordStore } from "./records.js";
 import { CapabilityRegistry } from "./registry.js";
-import { principalContextHash } from "./principal-context.js";
+import { operationAllowed, principalContextHash } from "./principal-context.js";
 
 const COST = { LOW: 0, MEDIUM: 1, HIGH: 2 } as const;
 
@@ -37,9 +38,10 @@ export interface DirectExecutionOptions {
 }
 
 export interface TrustedGatewayJobContext {
-  gatewayJobId: string;
+  gatewayJobId?: string;
   gatewayQueryId: string;
   gatewayNodeId: string;
+  requestedSnapshot?: QuerySnapshotManifest;
 }
 
 export class DirectExecutionService {
@@ -69,6 +71,9 @@ export class DirectExecutionService {
       this.#assertGatewayRequest(publicRequest);
       this.#assertPrincipal(principal);
       const route = this.options.registry.resolve(operationId, publicRequest.operationVersion, principal.allowExperimental ?? false);
+      if (!operationAllowed(principal, operationId, publicRequest.operationVersion)) {
+        throw new ProviderProtocolError("SCOPE_DENIED", "delegated principal is not allowed to execute this operation");
+      }
       const descriptor = route.descriptor;
       if (descriptor.inputSchemaHash !== publicRequest.inputSchemaHash || descriptor.outputSchemaHash !== publicRequest.outputSchemaHash) {
         throw new ProviderProtocolError("SCHEMA_MISMATCH", "public request schema lock differs from the approved registry");
@@ -118,7 +123,9 @@ export class DirectExecutionService {
         providerId: route.manifest.provider.providerId,
         outcome: idempotent.replayed ? "REPLAYED" : "COMPLETED",
         outputHash: sha256(idempotent.value),
-        elapsedMs: Math.max(0, performance.now() - started)
+        elapsedMs: Math.max(0, performance.now() - started),
+        ...(principal.delegationJtiHash === undefined ? {} : { delegationJtiHash: principal.delegationJtiHash }),
+        ...(principal.authorizationContextHash === undefined ? {} : { authorizationContextHash: principal.authorizationContextHash })
       });
       await this.options.records?.putResult(idempotent.value);
       return { result: idempotent.value, replayed: idempotent.replayed };
@@ -128,7 +135,9 @@ export class DirectExecutionService {
         ...eventBase,
         outcome: "REJECTED",
         errorCode: error instanceof ProviderProtocolError ? error.code : "INTERNAL_GATEWAY_ERROR",
-        elapsedMs: Math.max(0, performance.now() - started)
+        elapsedMs: Math.max(0, performance.now() - started),
+        ...(principal.delegationJtiHash === undefined ? {} : { delegationJtiHash: principal.delegationJtiHash }),
+        ...(principal.authorizationContextHash === undefined ? {} : { authorizationContextHash: principal.authorizationContextHash })
       });
       throw error;
     }
@@ -219,6 +228,12 @@ export class DirectExecutionService {
     const expiresAt = new Date(Math.min(Date.parse(request.executionPolicy.deadlineAt), issuedAt.getTime() + 300_000));
     const maximumRows = effectiveLimit(limits.maximumRows, request.executionPolicy.maximumRows);
     const maximumCandidates = effectiveLimit(limits.maximumCandidates, request.executionPolicy.maximumCandidates);
+    const requestedSnapshot = trustedJobContext?.requestedSnapshot;
+    const gatewayJobContext = trustedJobContext === undefined ? undefined : {
+      ...(trustedJobContext.gatewayJobId === undefined ? {} : { gatewayJobId: trustedJobContext.gatewayJobId }),
+      gatewayQueryId: trustedJobContext.gatewayQueryId,
+      gatewayNodeId: trustedJobContext.gatewayNodeId
+    };
     return {
       providerProtocolVersion: "1.0",
       requestId: newOpaqueId("provider-request"),
@@ -253,7 +268,7 @@ export class DirectExecutionService {
         gatewayId: this.options.gatewayId,
         registryVersion: this.options.registry.revision,
         policyVersion: this.options.policyVersion,
-        ...(trustedJobContext === undefined ? {} : trustedJobContext)
+        ...(gatewayJobContext === undefined ? {} : gatewayJobContext)
       },
       executionPolicy: {
         deadlineAt: request.executionPolicy.deadlineAt,
@@ -265,7 +280,8 @@ export class DirectExecutionService {
         ...(limits.maximumCells === undefined ? {} : { maximumCells: limits.maximumCells }),
         ...(limits.maximumBatchItems === undefined ? {} : { maximumBatchItems: limits.maximumBatchItems }),
         maximumCostClass: request.executionPolicy.maximumCostClass
-      }
+      },
+      ...(requestedSnapshot === undefined ? {} : { requestedSnapshot })
     };
   }
 

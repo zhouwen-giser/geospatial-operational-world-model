@@ -1,0 +1,33 @@
+{
+  "goal": "GOWM+ v0.6.3 Grounding Core Stabilization",
+  "status": "STABLE_CANDIDATE",
+  "phase": "F01",
+  "baseline": {
+    "branch": "main",
+    "commitAtGeneration": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee",
+    "fetchedCommit": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee",
+    "version": "0.6.2"
+  },
+  "candidate": {
+    "branch": "codex/gowm-grounding-core-stabilization-v0.6.3",
+    "version": "0.6.3",
+    "localSha": "f770bc3adf4f1d91890d9aecccd012601b922314",
+    "remoteSha": "f770bc3adf4f1d91890d9aecccd012601b922314",
+    "baseSha": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee"
+  },
+  "milestones": {
+    "groundingCoreStable": true,
+    "consumerContractArtifactReady": true,
+    "delegatedIdentitySkeletonReady": true,
+    "querySnapshotCoordinationReady": true,
+    "operationAvailabilityReady": true,
+    "stableCandidate": true
+  },
+  "acceptance": {
+    "passed": ["B00", "A00", "G00-G03", "C00", "I00-I01", "Q00-Q01", "O00-O01", "S00", "F00-F01"],
+    "failed": [],
+    "notRun": []
+  },
+  "blockers": [],
+  "next": "Confirm final commit SHA across local, origin, and PR; mark PR ready without merging."
+}

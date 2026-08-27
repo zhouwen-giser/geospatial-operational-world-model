@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.3:delegated-principal-context",
+  "title": "DelegatedPrincipalContext",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mode", "servicePrincipalRef", "actorRef", "authenticationMethod", "authenticatedAt", "effectiveDataScopes", "effectiveDatasetScopes", "allowedOperations", "authorizationContextHash"],
+  "properties": {
+    "mode": { "enum": ["STATIC_SERVICE", "SIGNED_DELEGATION_V1"] },
+    "servicePrincipalRef": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "actorRef": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "authenticationMethod": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "authenticatedAt": { "type": "string", "format": "date-time" },
+    "effectiveDataScopes": { "type": "array", "minItems": 1, "maxItems": 32, "uniqueItems": true, "items": { "type": "string" } },
+    "effectiveDatasetScopes": { "type": "array", "maxItems": 32, "uniqueItems": true, "items": { "type": "string" } },
+    "allowedOperations": { "type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true, "items": { "type": "string" } },
+    "delegationJtiHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "authorizationContextHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

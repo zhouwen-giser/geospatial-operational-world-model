@@ -53,7 +53,7 @@
       "providerId": "gowm.spatial-analysis.bridge",
       "providerVersion": "0.2.0",
       "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00",
-      "manifestHash": "sha256:bdf02a3574979d5df64760b86f701b76742b83d4328a59dc66b85fac45e7a7b5",
+      "manifestHash": "sha256:01355f94fbe31603afbb2c6d3d5c679cf3ae62effe483ff4f3810168dd76f7d3",
       "manifestPath": "contracts/manifests/providers/spatial-provider.json",
       "endpoint": "http://spatial-provider-bridge:8091",
       "approvalId": "compose-spatial-provider-v0.2",

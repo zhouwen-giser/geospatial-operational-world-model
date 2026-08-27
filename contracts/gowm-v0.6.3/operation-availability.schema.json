@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.3:operation-availability",
+  "title": "OperationAvailability",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["operationId", "operationVersion", "maturity", "availability", "reasonCodes", "checkedAt", "validUntil", "contractCatalogRevision", "bindingRevision"],
+  "properties": {
+    "operationId": { "type": "string", "pattern": "^[a-z][a-z0-9.-]{2,127}$" },
+    "operationVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "maturity": { "enum": ["PLANNED", "EXPERIMENTAL", "PREVIEW", "STABLE", "DEPRECATED", "RETIRED"] },
+    "availability": { "enum": ["AVAILABLE", "DEGRADED", "UNAVAILABLE", "DISABLED"] },
+    "reasonCodes": { "type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 64 } },
+    "checkedAt": { "type": "string", "format": "date-time" },
+    "validUntil": { "type": "string", "format": "date-time" },
+    "retryAfterMs": { "type": "integer", "minimum": 0 },
+    "contractCatalogRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "bindingRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

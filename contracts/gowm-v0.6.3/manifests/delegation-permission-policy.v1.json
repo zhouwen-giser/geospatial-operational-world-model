@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.0",
+  "mode": "EXACT_OPERATION_KEYS",
+  "format": "operationId@operationVersion",
+  "maximumEntries": 128,
+  "source": "wsgs-southbound-operation-lock-v2"
+}

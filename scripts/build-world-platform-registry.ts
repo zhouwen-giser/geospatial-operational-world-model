@@ -41,7 +41,11 @@ export function assembleWorldPlatformRegistry(deployments: readonly ControlledPr
   return { registryDocument, report, catalog: registry.catalog() };
 }
 
-export async function buildWorldPlatformRegistry(write = false, root = resolve(fileURLToPath(new URL("..", import.meta.url)))) {
+export async function buildWorldPlatformRegistry(
+  write = false,
+  root = resolve(fileURLToPath(new URL("..", import.meta.url))),
+  reportDirectory = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.6.2"
+) {
   const config = resolve(root, "config");
   const fragments = (await readdir(config)).filter((p) => p.endsWith("gateway-registry.json") && p !== "world-platform-gateway-registry.json").sort();
   if (!fragments.length) throw new Error("No controlled Registry fragments discovered");
@@ -50,8 +54,8 @@ export async function buildWorldPlatformRegistry(write = false, root = resolve(f
   const result = assembleWorldPlatformRegistry(deployments, policy);
   const artifacts = {
     "config/world-platform-gateway-registry.json": result.registryDocument,
-    "reports/gowm-v0.6.2/world-platform-registry-build-report.json": result.report,
-    "reports/gowm-v0.6.2/world-platform-catalog-summary.json": {
+    [`${reportDirectory}/world-platform-registry-build-report.json`]: result.report,
+    [`${reportDirectory}/world-platform-catalog-summary.json`]: {
       fragments, providerCount: result.report.providerCount, operationCount: result.report.operationCount,
       providers: deployments.map((p) => ({ providerId: p.providerId, manifestPath: p.manifestPath, manifestHash: p.manifestHash, operationCount: p.approvedManifest.capabilities.length })),
       maturities: Object.fromEntries(["STABLE", "PREVIEW", "EXPERIMENTAL", "DEPRECATED", "RETIRED"].map((m) => [m, result.catalog.filter((c) => c.maturity === m).length]))

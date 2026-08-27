@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "candidateVersion": "0.6.3",
+  "testedSourceCommit": "f770bc3adf4f1d91890d9aecccd012601b922314",
+  "semanticSourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+  "gates": {
+    "contractsAndTypes": "PASS",
+    "sqlAst": "PASS",
+    "realPostgresqlMigration061": "PASS",
+    "targetedTests": "PASS",
+    "sameGatewayGroundingCore": "PASS",
+    "delegatedIdentity": "PASS",
+    "querySnapshotRestartReplay": "PASS",
+    "operationAvailabilityIsolationRecovery": "PASS",
+    "consumerCleanBuildReproducibility": "PASS",
+    "consumerPackByteReproducibility": "PASS",
+    "documentationAndVersion": "PASS",
+    "secretAndTopologyBoundary": "PASS"
+  },
+  "historicalBaselineReused": "0.6.2 unchanged-operation evidence",
+  "mergePerformed": false,
+  "tagCreated": false,
+  "packagePublished": false,
+  "productionDeployed": false,
+  "status": "PASS"
+}

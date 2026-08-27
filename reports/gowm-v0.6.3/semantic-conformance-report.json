@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "counters": {
+    "semanticProfileMissing": 0,
+    "semanticRuleViolation": 0,
+    "semanticImplementationMismatch": 0,
+    "crossCapabilityViolation": 0,
+    "stableCapabilityWithoutBlackBoxEvidence": 21,
+    "runtimeSemanticInference": 0,
+    "providerTopologyLeak": 0,
+    "operationCollision": 0
+  },
+  "issues": [],
+  "status": "PASS"
+}

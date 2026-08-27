@@ -1,0 +1,2678 @@
+[
+  {
+    "operationId": "reference.resolve",
+    "label": "resolve-KestrelVehicleZX",
+    "inputHash": "sha256:22217caac516b377aa973bf861d6d3e324359ca689f18374b7fdc0fad5b5d710",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_12faab0e43c74c3fabf7f342203d4b9c",
+      "operation": {
+        "operationId": "reference.resolve",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.4:reference-resolve-result",
+        "schemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+        "value": {
+          "schemaVersion": "1.0",
+          "resolutions": [
+            {
+              "mentionId": "m1",
+              "status": "RESOLVED_EXACT",
+              "candidates": [
+                {
+                  "candidate": {
+                    "referenceKey": {
+                      "namespace": "gowm",
+                      "kind": "WORLD_OBJECT",
+                      "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+                      "version": "9"
+                    },
+                    "referenceType": "CANARY_VEHICLE",
+                    "displayName": "KestrelVehicleZX",
+                    "aliases": [],
+                    "version": {
+                      "referenceVersion": "9",
+                      "objectVersion": "1",
+                      "worldVersion": 1
+                    },
+                    "revalidationRequired": false,
+                    "provenance": []
+                  },
+                  "matchedBy": "EXACT_CANONICAL_NAME",
+                  "matchScore": 1
+                }
+              ]
+            }
+          ],
+          "worldVersion": 2,
+          "resolverVersion": "gowm-reference-v1/1.0"
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:52.918Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:9ed520592b9658102d9b54c37de0902cd6adb5c98eb92e1504d3112d4acac0c3"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.reference-catalog",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba"
+        },
+        "operation": {
+          "operationId": "reference.resolve",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "version": "gowm-reference-catalog-policy/1.0",
+          "digest": "sha256:7eb48c5ff72b08612ec3e85384fb0f669a6000d98ad9150d91ca9805ebf1dad3"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+          "outputSchemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_reference_v1",
+            "version": "migration-020"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_de6e5cddd7354fb38bdc32428e880387",
+          "operationId": "reference.resolve",
+          "operationVersion": "1.0",
+          "providerId": "gowm.reference-catalog",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:22217caac516b377aa973bf861d6d3e324359ca689f18374b7fdc0fad5b5d710",
+          "outputHash": "sha256:7ae2d8e3c0c1d0e69674aaa701cfc6379c895cace4ec06881381f6c4e47bc159",
+          "computeSnapshotHash": "sha256:1c343989fe5f14b1730e97a1863c784ac4d628a126621162fba7e470dc95e671",
+          "generatedAt": "2026-08-27T06:08:52.930Z",
+          "durationMs": 24.18470800004434,
+          "method": {
+            "engine": "PostgreSQL",
+            "engineVersion": "18",
+            "methodId": "gowm-reference-v1/reference.resolve",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "consumption": {
+        "inputBytes": 179,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 536
+      },
+      "execution": {
+        "providerId": "gowm.reference-catalog",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 24.18470800004434,
+        "resultHash": "sha256:7ae2d8e3c0c1d0e69674aaa701cfc6379c895cace4ec06881381f6c4e47bc159"
+      }
+    }
+  },
+  {
+    "operationId": "reference.get",
+    "label": "A-reference-get",
+    "inputHash": "sha256:1aac3d4bf3e71009680bf2aa92ea08728588056840c0a4b0e880a55171420ee6",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_51b59f05e1744de7b4d8678b79380974",
+      "operation": {
+        "operationId": "reference.get",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.4:reference-descriptor",
+        "schemaHash": "sha256:276d3d168e37dd13abfd705d308b16b128b6e6519daf00f98830bd570593a25c",
+        "value": {
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+            "version": "9"
+          },
+          "referenceType": "CANARY_VEHICLE",
+          "displayName": "KestrelVehicleZX",
+          "aliases": [],
+          "version": {
+            "referenceVersion": "9",
+            "objectVersion": "1",
+            "worldVersion": 1
+          },
+          "revalidationRequired": false,
+          "provenance": []
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:53.048Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:9ed520592b9658102d9b54c37de0902cd6adb5c98eb92e1504d3112d4acac0c3"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.reference-catalog",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba"
+        },
+        "operation": {
+          "operationId": "reference.get",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "version": "gowm-reference-catalog-policy/1.0",
+          "digest": "sha256:7eb48c5ff72b08612ec3e85384fb0f669a6000d98ad9150d91ca9805ebf1dad3"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+          "outputSchemaHash": "sha256:276d3d168e37dd13abfd705d308b16b128b6e6519daf00f98830bd570593a25c"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_reference_v1",
+            "version": "migration-020"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_60a4e4fe269e4e2c83afa704642024b9",
+          "operationId": "reference.get",
+          "operationVersion": "1.0",
+          "providerId": "gowm.reference-catalog",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:1aac3d4bf3e71009680bf2aa92ea08728588056840c0a4b0e880a55171420ee6",
+          "outputHash": "sha256:1a2d8a49380558fc139e7466b7eb83cd5070211da8ff8ee57a8625c05ccca493",
+          "computeSnapshotHash": "sha256:919566715e46c23048ec156beb08cabcb9eeeff7057c79d97e35ba70a85838ae",
+          "generatedAt": "2026-08-27T06:08:53.050Z",
+          "durationMs": 6.171052000019699,
+          "method": {
+            "engine": "PostgreSQL",
+            "engineVersion": "18",
+            "methodId": "gowm-reference-v1/reference.get",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "consumption": {
+        "inputBytes": 139,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 313
+      },
+      "execution": {
+        "providerId": "gowm.reference-catalog",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 6.171052000019699,
+        "resultHash": "sha256:1a2d8a49380558fc139e7466b7eb83cd5070211da8ff8ee57a8625c05ccca493"
+      }
+    }
+  },
+  {
+    "operationId": "world.get-current-state",
+    "label": "A-current",
+    "inputHash": "sha256:1aac3d4bf3e71009680bf2aa92ea08728588056840c0a4b0e880a55171420ee6",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_1c45c56c75ef461c9f47a1d58643d377",
+      "operation": {
+        "operationId": "world.get-current-state",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.4:world-fact-result",
+        "schemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
+        "value": {
+          "schemaVersion": "1.0",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+            "version": "1"
+          },
+          "worldVersion": 1,
+          "facts": [
+            {
+              "factKind": "CURRENT_PROJECTION",
+              "fields": {
+                "position": {
+                  "latitude": 0,
+                  "longitude": 0
+                }
+              },
+              "position": {
+                "type": "Point",
+                "coordinates": [
+                  0,
+                  0
+                ]
+              },
+              "objectType": "CANARY_VEHICLE",
+              "properties": {},
+              "confidence": 1,
+              "freshnessMs": 67437778,
+              "observedAt": "2026-08-26T11:24:55.404Z",
+              "receivedAt": "2026-08-26T11:24:55.404Z",
+              "source": "v062-acceptance",
+              "sourceObservationId": null,
+              "uncertainty": {}
+            }
+          ],
+          "evidence": [],
+          "unknowns": []
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:53.182Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:2b1d09b4bb873ff4b4f21b7d47fece812cbc08c9b120940cf9799966a13d0cee"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.world-evidence",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb"
+        },
+        "operation": {
+          "operationId": "world.get-current-state",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "version": "gowm-evidence-catalog-policy/1.0",
+          "digest": "sha256:4770fb5ae11f57deeb3fc45a9925433fafbb64fedb5a8aed93a227c6e1f58c72"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+          "outputSchemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_evidence_v1",
+            "version": "migration-023"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_2f100242949c40fabe17a7a3e44b2ab7",
+          "operationId": "world.get-current-state",
+          "operationVersion": "1.0",
+          "providerId": "gowm.world-evidence",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:1aac3d4bf3e71009680bf2aa92ea08728588056840c0a4b0e880a55171420ee6",
+          "outputHash": "sha256:4dff15fb4f55e96b36b5d8ff386dca6beabfbd0afa42ef917dd6992e224ca756",
+          "computeSnapshotHash": "sha256:9b036859415988b791f59f63ba0b83f2dafe156aed8d59c8c03d8ecf21c94fc7",
+          "generatedAt": "2026-08-27T06:08:53.185Z",
+          "durationMs": 25.442402999964543,
+          "method": {
+            "engine": "PostgreSQL",
+            "engineVersion": "18",
+            "methodId": "gowm-evidence-v1/world.get-current-state",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "consumption": {
+        "inputBytes": 139,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 562
+      },
+      "execution": {
+        "providerId": "gowm.world-evidence",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 25.442402999964543,
+        "resultHash": "sha256:4dff15fb4f55e96b36b5d8ff386dca6beabfbd0afa42ef917dd6992e224ca756"
+      }
+    }
+  },
+  {
+    "operationId": "world.get-provenance",
+    "label": "A-provenance",
+    "inputHash": "sha256:1aac3d4bf3e71009680bf2aa92ea08728588056840c0a4b0e880a55171420ee6",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_1d854d0a3f654558b0738c0465808f47",
+      "operation": {
+        "operationId": "world.get-provenance",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.4:world-fact-result",
+        "schemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
+        "value": {
+          "schemaVersion": "1.0",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+            "version": "1"
+          },
+          "worldVersion": 1,
+          "facts": [
+            {
+              "factKind": "PROVENANCE",
+              "source": "v062-acceptance",
+              "sourceObservationId": null,
+              "evidenceKind": "DECLARED",
+              "projectionPolicyVersion": "gowm-projection-v1.1",
+              "timeSolutionId": null,
+              "positionMeasurementId": null,
+              "uncertainty": {},
+              "confidence": 1,
+              "observedAt": "2026-08-26T11:24:55.404Z",
+              "receivedAt": "2026-08-26T11:24:55.404Z"
+            }
+          ],
+          "evidence": [],
+          "unknowns": []
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:53.297Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:2b1d09b4bb873ff4b4f21b7d47fece812cbc08c9b120940cf9799966a13d0cee"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.world-evidence",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb"
+        },
+        "operation": {
+          "operationId": "world.get-provenance",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "version": "gowm-evidence-catalog-policy/1.0",
+          "digest": "sha256:4770fb5ae11f57deeb3fc45a9925433fafbb64fedb5a8aed93a227c6e1f58c72"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+          "outputSchemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_evidence_v1",
+            "version": "migration-023"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_5588328817264b4893f2f43ef56ccd00",
+          "operationId": "world.get-provenance",
+          "operationVersion": "1.0",
+          "providerId": "gowm.world-evidence",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:1aac3d4bf3e71009680bf2aa92ea08728588056840c0a4b0e880a55171420ee6",
+          "outputHash": "sha256:4f075424d3973f1bd8a9ab09d0fef346c8c3cd3bca7423f2baa89992c6302948",
+          "computeSnapshotHash": "sha256:da88729731b1c782c53f61ce03fc92ec3b0f42394944dd5c0f66b1b13ed2cf25",
+          "generatedAt": "2026-08-27T06:08:53.299Z",
+          "durationMs": 9.756309999967925,
+          "method": {
+            "engine": "PostgreSQL",
+            "engineVersion": "18",
+            "methodId": "gowm-evidence-v1/world.get-provenance",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "consumption": {
+        "inputBytes": 139,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 512
+      },
+      "execution": {
+        "providerId": "gowm.world-evidence",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 9.756309999967925,
+        "resultHash": "sha256:4f075424d3973f1bd8a9ab09d0fef346c8c3cd3bca7423f2baa89992c6302948"
+      }
+    }
+  },
+  {
+    "operationId": "catalog.search",
+    "label": "A-catalog-search",
+    "inputHash": "sha256:0ddba0ef99eaf2eb9ccb5120ee7e8aeb5b5309e9d7357ccbf3771d1479489333",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_0467aba5a889473687f021f2db1e3f66",
+      "operation": {
+        "operationId": "catalog.search",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.6.1:catalog-search-result",
+        "schemaHash": "sha256:85c9b79082dca6abba93becc6ffca0bcb5a86934c61685a6e0a05863bd6430fc",
+        "value": {
+          "schemaVersion": "1.0",
+          "items": [
+            {
+              "schemaVersion": "1.0",
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "DATASET",
+                "id": "wrf_60000000000000000000000000000001",
+                "version": "dataset-v1"
+              },
+              "dataKind": "NETWORK",
+              "displayName": "Coverage Gateway roads",
+              "currentVersion": "dataset-v1",
+              "crs": "EPSG:4326",
+              "schemaRef": "urn:gowm:dataset-schema:1.0",
+              "schemaHash": "sha256:25dfef627915c779ee2feba03c09a85e7fffaf498a7a8cf19b0c70637c715f8e",
+              "source": {
+                "authority": "GOWM_DATASET",
+                "sourceRef": "urn:test:coverage-gateway-roads",
+                "sourceVersion": "1"
+              },
+              "lineage": [],
+              "quality": {
+                "validationStatus": "UNCHECKED",
+                "knownLimitations": []
+              },
+              "freshnessPolicy": {
+                "mode": "VERSIONED",
+                "currentVersion": "dataset-v1"
+              },
+              "supportedCapabilities": [
+                "coverage.road.expand-geojson",
+                "coverage.road.plan",
+                "coverage.road.select-obligations",
+                "coverage.road.validate",
+                "coverage.road.verify",
+                "network.connectivity.inspect",
+                "network.graph.diagnose",
+                "network.graph.get",
+                "network.graph.list",
+                "network.path.cost-matrix",
+                "network.path.expand",
+                "network.path.shortest",
+                "network.path.verify",
+                "network.reachability",
+                "network.snap.point",
+                "network.snap.points",
+                "route.plan",
+                "route.plan-alternatives",
+                "route.validate",
+                "route.verify"
+              ],
+              "access": {
+                "dataScopeRequired": true,
+                "datasetScopeRequired": true
+              }
+            },
+            {
+              "schemaVersion": "1.0",
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "DATASET",
+                "id": "wrf_60000000000000000000000000000002",
+                "version": "vector-v1"
+              },
+              "dataKind": "VECTOR",
+              "displayName": "Coverage Gateway vector",
+              "currentVersion": "vector-v1",
+              "spatialExtent": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      0.0028,
+                      -0.0002
+                    ],
+                    [
+                      0.0028,
+                      0.0002
+                    ],
+                    [
+                      0.0042,
+                      0.0002
+                    ],
+                    [
+                      0.0042,
+                      -0.0002
+                    ],
+                    [
+                      0.0028,
+                      -0.0002
+                    ]
+                  ]
+                ]
+              },
+              "temporalExtent": {
+                "from": "2026-08-01T00:00:00.000Z",
+                "to": "2026-09-01T00:00:00.000Z"
+              },
+              "crs": "EPSG:4326",
+              "schemaRef": "urn:gowm:dataset-schema:vector-schema-v1",
+              "schemaHash": "sha256:4736496038bfc1cff439d9863e8a524f2afa251d273239e10591bb4ffd99d5f3",
+              "source": {
+                "authority": "GOWM_DATASET",
+                "sourceRef": "urn:test:vector-source",
+                "sourceVersion": "1"
+              },
+              "lineage": [
+                "urn:test:vector-source:1"
+              ],
+              "quality": {
+                "completeness": 0.95,
+                "validationStatus": "VALIDATED",
+                "knownLimitations": [
+                  "G00 fixture extent only"
+                ]
+              },
+              "freshnessPolicy": {
+                "mode": "VERSIONED",
+                "currentVersion": "vector-v1"
+              },
+              "supportedCapabilities": [
+                "dataset.get",
+                "dataset.list",
+                "feature.get",
+                "layer.find-features",
+                "layer.get",
+                "layer.list"
+              ],
+              "access": {
+                "dataScopeRequired": true,
+                "datasetScopeRequired": true
+              }
+            },
+            {
+              "schemaVersion": "1.0",
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "DATASET",
+                "id": "wrf_60000000000000000000000000000003",
+                "version": "current-v1"
+              },
+              "dataKind": "CURRENT_PROJECTION",
+              "displayName": "Coverage Gateway current projection",
+              "currentVersion": "current-v1",
+              "crs": "EPSG:4326",
+              "schemaRef": "urn:gowm:dataset-schema:current-schema-v1",
+              "schemaHash": "sha256:ac4f7527ad989d48aebe43886deb0c854d9499f35cd978f7555e477fcf3fb035",
+              "source": {
+                "authority": "GOWM_DATASET",
+                "sourceRef": "urn:test:current-projection",
+                "sourceVersion": "1"
+              },
+              "lineage": [
+                "urn:test:world-state"
+              ],
+              "quality": {
+                "validationStatus": "VALIDATED",
+                "knownLimitations": []
+              },
+              "freshnessPolicy": {
+                "mode": "VERSIONED",
+                "currentVersion": "current-v1"
+              },
+              "supportedCapabilities": [
+                "world.get-current-state",
+                "world.get-event-timeline",
+                "world.get-geometry",
+                "world.get-observations",
+                "world.get-provenance",
+                "world.get-state-history"
+              ],
+              "access": {
+                "dataScopeRequired": true,
+                "datasetScopeRequired": true
+              }
+            }
+          ],
+          "truncated": false
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:53.422Z",
+        "scopeDigest": "sha256:84c181aff006b46fed0deff6585d4afef08ddc61b2a2879336d334f57dfe21d4",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:f0a277e65f06e64e1564703dc80b17a150c66330f358009cf0e55b1a122b17ac"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.dataset-catalog",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34"
+        },
+        "operation": {
+          "operationId": "catalog.search",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "version": "gowm-dataset-catalog-policy/1.0",
+          "digest": "sha256:8a52322f10218ff3dd1d2c20193a712e39b2e3da94dbb084fc88e830ec019fb3"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:d15fc90c9641712ef22d536c931bedf0a6f8e7af46a93172a48aec8f373e51aa",
+          "outputSchemaHash": "sha256:85c9b79082dca6abba93becc6ffca0bcb5a86934c61685a6e0a05863bd6430fc"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_catalog_v1",
+            "version": "migration-020"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_6bc6634a80174c95b09b3723f71f95fc",
+          "operationId": "catalog.search",
+          "operationVersion": "1.0",
+          "providerId": "gowm.dataset-catalog",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:0ddba0ef99eaf2eb9ccb5120ee7e8aeb5b5309e9d7357ccbf3771d1479489333",
+          "outputHash": "sha256:d96620f618cdb5e5af00baa444e6832483afda77b605d04dbd2d391c9431dee1",
+          "computeSnapshotHash": "sha256:f30c50c14a79e547a3ef8ea1c5a8b872a23a067b02a7b66ef56f206bc132697b",
+          "generatedAt": "2026-08-27T06:08:53.441Z",
+          "durationMs": 27.233843999914825,
+          "method": {
+            "engine": "PostgreSQL",
+            "engineVersion": "18",
+            "methodId": "gowm-catalog-v1/catalog.search",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "consumption": {
+        "inputBytes": 34,
+        "rows": 3,
+        "candidates": 3,
+        "outputBytes": 3268
+      },
+      "execution": {
+        "providerId": "gowm.dataset-catalog",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 27.233843999914825,
+        "resultHash": "sha256:d96620f618cdb5e5af00baa444e6832483afda77b605d04dbd2d391c9431dee1"
+      }
+    }
+  },
+  {
+    "operationId": "catalog.get",
+    "label": "A-catalog-get",
+    "inputHash": "sha256:0791391e246678da23f2120c822a35a6ea42d4b40d90ce0fb8c429546f4f99c4",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_d1a603f19efa48c584b23f2077c0e58b",
+      "operation": {
+        "operationId": "catalog.get",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.6.1:data-product-descriptor",
+        "schemaHash": "sha256:d3ed28efd4b24c21ed91fda200e656a9b492bac88e1fe8d8dd2488ee78c76cf4",
+        "value": {
+          "schemaVersion": "1.0",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "DATASET",
+            "id": "wrf_60000000000000000000000000000001",
+            "version": "dataset-v1"
+          },
+          "dataKind": "NETWORK",
+          "displayName": "Coverage Gateway roads",
+          "currentVersion": "dataset-v1",
+          "crs": "EPSG:4326",
+          "schemaRef": "urn:gowm:dataset-schema:1.0",
+          "schemaHash": "sha256:25dfef627915c779ee2feba03c09a85e7fffaf498a7a8cf19b0c70637c715f8e",
+          "source": {
+            "authority": "GOWM_DATASET",
+            "sourceRef": "urn:test:coverage-gateway-roads",
+            "sourceVersion": "1"
+          },
+          "lineage": [],
+          "quality": {
+            "validationStatus": "UNCHECKED",
+            "knownLimitations": []
+          },
+          "freshnessPolicy": {
+            "mode": "VERSIONED",
+            "currentVersion": "dataset-v1"
+          },
+          "supportedCapabilities": [
+            "coverage.road.expand-geojson",
+            "coverage.road.plan",
+            "coverage.road.select-obligations",
+            "coverage.road.validate",
+            "coverage.road.verify",
+            "network.connectivity.inspect",
+            "network.graph.diagnose",
+            "network.graph.get",
+            "network.graph.list",
+            "network.path.cost-matrix",
+            "network.path.expand",
+            "network.path.shortest",
+            "network.path.verify",
+            "network.reachability",
+            "network.snap.point",
+            "network.snap.points",
+            "route.plan",
+            "route.plan-alternatives",
+            "route.validate",
+            "route.verify"
+          ],
+          "access": {
+            "dataScopeRequired": true,
+            "datasetScopeRequired": true
+          }
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:53.535Z",
+        "scopeDigest": "sha256:84c181aff006b46fed0deff6585d4afef08ddc61b2a2879336d334f57dfe21d4",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:f0a277e65f06e64e1564703dc80b17a150c66330f358009cf0e55b1a122b17ac"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.dataset-catalog",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34"
+        },
+        "operation": {
+          "operationId": "catalog.get",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "version": "gowm-dataset-catalog-policy/1.0",
+          "digest": "sha256:8a52322f10218ff3dd1d2c20193a712e39b2e3da94dbb084fc88e830ec019fb3"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+          "outputSchemaHash": "sha256:d3ed28efd4b24c21ed91fda200e656a9b492bac88e1fe8d8dd2488ee78c76cf4"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_catalog_v1",
+            "version": "migration-020"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_73a71ae55ca0491db18d22d38244f1ca",
+          "operationId": "catalog.get",
+          "operationVersion": "1.0",
+          "providerId": "gowm.dataset-catalog",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:0791391e246678da23f2120c822a35a6ea42d4b40d90ce0fb8c429546f4f99c4",
+          "outputHash": "sha256:10b305e47c073e195d43c1cd775bb58771af361e06baa82d7558b6d27aa19db0",
+          "computeSnapshotHash": "sha256:6686f387e2113302984fc4c92c8b2bd4b688653ed3c912e58c869aa4095b2beb",
+          "generatedAt": "2026-08-27T06:08:53.542Z",
+          "durationMs": 9.655810999916866,
+          "method": {
+            "engine": "PostgreSQL",
+            "engineVersion": "18",
+            "methodId": "gowm-catalog-v1/catalog.get",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "consumption": {
+        "inputBytes": 143,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 1185
+      },
+      "execution": {
+        "providerId": "gowm.dataset-catalog",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 9.655810999916866,
+        "resultHash": "sha256:10b305e47c073e195d43c1cd775bb58771af361e06baa82d7558b6d27aa19db0"
+      }
+    }
+  },
+  {
+    "operationId": "spatial.find-nearby",
+    "label": "A-nearby",
+    "inputHash": "sha256:0766f27dceb00bc873d756f21f05989c69ad6b4ed1135cf7bcaae5bd8e03c303",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_8fe20849d0b94dc191365c241644f932",
+      "operation": {
+        "operationId": "spatial.find-nearby",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:capability:spatial.find-nearby:output:1.0",
+        "schemaHash": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23",
+        "value": {
+          "objects": [
+            {
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "WORLD_OBJECT",
+                "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+                "version": "1"
+              },
+              "objectType": "CANARY_VEHICLE",
+              "subtype": null,
+              "status": "ACTIVE",
+              "source": "v062-acceptance",
+              "properties": {},
+              "observedAt": "2026-08-26T11:24:55.404Z",
+              "receivedAt": "2026-08-26T11:24:55.404Z",
+              "updatedAt": "2026-08-26T11:24:55.405Z",
+              "worldVersion": 1,
+              "confidence": 1,
+              "freshnessMs": 67438223,
+              "provenance": {
+                "authority": "GOWM Foundation",
+                "sourceObservationId": null,
+                "summary": {
+                  "uncertainty": {},
+                  "evidenceKind": "DECLARED",
+                  "projectionPolicyVersion": "gowm-projection-v1.1"
+                }
+              },
+              "distanceM": 0
+            }
+          ],
+          "page": {
+            "count": 1,
+            "truncated": false
+          },
+          "context": {
+            "crs": "EPSG:4326",
+            "snapshotConsistency": "CONSISTENT_AT_START",
+            "candidateCount": 1,
+            "rowCount": 1,
+            "evidenceTruncated": false,
+            "distanceUnit": "meter"
+          }
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:53.623Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATASET",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:edcfab21b19f31bb702329eb63ed5c8b5f8ce0e97bb1b92a97a43a34c95bbe03"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.spatial-analysis.bridge",
+          "providerVersion": "0.2.0",
+          "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00"
+        },
+        "operation": {
+          "operationId": "spatial.find-nearby",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostGIS",
+          "version": "3.6.3"
+        },
+        "policy": {
+          "version": "gowm-spatial-read-policy/1.0",
+          "digest": "sha256:eeefd3d58e88f9a0c0f7abd9b0869825d25089cf9157788e54fd8ac9e21eb35b"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:17f7d021a954e30721adb28d02aae1803061455da9f153c1af019779d92ae846",
+          "outputSchemaHash": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_spatial_v1",
+            "version": "migration-012",
+            "digest": "sha256:a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_c27b32acb1d640139e05d0bff7095edf",
+          "operationId": "spatial.find-nearby",
+          "operationVersion": "1.0",
+          "providerId": "gowm.spatial-analysis.bridge",
+          "providerVersion": "0.2.0",
+          "inputHash": "sha256:0766f27dceb00bc873d756f21f05989c69ad6b4ed1135cf7bcaae5bd8e03c303",
+          "outputHash": "sha256:6438eb674c4218ec58cbace57c9af6e3089cdb6271ceeb258e940ddef0210ef5",
+          "computeSnapshotHash": "sha256:01eff9a27e673de6642b5b5e62b784ce9042419f67423fe5dd65afab85b9cbf3",
+          "generatedAt": "2026-08-27T06:08:53.642Z",
+          "durationMs": 19.38313999993261,
+          "method": {
+            "engine": "PostGIS",
+            "engineVersion": "3.6.3",
+            "methodId": "gowm-spatial-v1/find-nearby",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "spatial.scopeDigest=sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+            "spatial.readContract=gowm_spatial_v1",
+            "spatial.snapshot=CONSISTENT_AT_START",
+            "spatial.transaction=REPEATABLE_READ_READ_ONLY"
+          ]
+        }
+      ],
+      "evidenceReferences": [
+        {
+          "evidenceId": "wrf_1eb2264c33a12edd09b324e8073cc280",
+          "authority": "GOWM Foundation",
+          "evidenceType": "CURRENT_PROJECTION_SOURCE",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+            "version": "1"
+          },
+          "schemaUri": "urn:gowm:foundation:gowm_spatial_v1:current_object:1",
+          "schemaHash": "sha256:085b614575e3aef24c709b422767d010ab9e4b7b3b753317b1f092ef8f93529f",
+          "observedAt": "2026-08-26T11:24:55.404Z",
+          "worldVersion": 1
+        }
+      ],
+      "warnings": [
+        "spatial.scopeDigest=sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "spatial.readContract=gowm_spatial_v1",
+        "spatial.snapshot=CONSISTENT_AT_START",
+        "spatial.transaction=REPEATABLE_READ_READ_ONLY"
+      ],
+      "consumption": {
+        "inputBytes": 64,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 793
+      },
+      "execution": {
+        "providerId": "gowm.spatial-analysis.bridge",
+        "providerVersion": "0.2.0",
+        "elapsedMs": 19.38313999993261,
+        "resultHash": "sha256:6438eb674c4218ec58cbace57c9af6e3089cdb6271ceeb258e940ddef0210ef5"
+      }
+    }
+  },
+  {
+    "operationId": "world.get-current-state",
+    "label": "A-typed:world",
+    "inputHash": "sha256:1aac3d4bf3e71009680bf2aa92ea08728588056840c0a4b0e880a55171420ee6",
+    "status": 200,
+    "body": {
+      "output": {
+        "value": {
+          "facts": [
+            {
+              "fields": {
+                "position": {
+                  "latitude": 0,
+                  "longitude": 0
+                }
+              },
+              "source": "v062-acceptance",
+              "factKind": "CURRENT_PROJECTION",
+              "position": {
+                "type": "Point",
+                "coordinates": [
+                  0,
+                  0
+                ]
+              },
+              "confidence": 1,
+              "objectType": "CANARY_VEHICLE",
+              "observedAt": "2026-08-26T11:24:55.404Z",
+              "properties": {},
+              "receivedAt": "2026-08-26T11:24:55.404Z",
+              "freshnessMs": 67438886,
+              "uncertainty": {},
+              "sourceObservationId": null
+            }
+          ],
+          "evidence": [],
+          "unknowns": [],
+          "referenceKey": {
+            "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+            "kind": "WORLD_OBJECT",
+            "version": "1",
+            "namespace": "gowm"
+          },
+          "worldVersion": 1,
+          "schemaVersion": "1.0"
+        },
+        "schemaUri": "urn:gowm:v0.4:world-fact-result",
+        "schemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9"
+      },
+      "status": "COMPLETED",
+      "receipts": [
+        {
+          "method": {
+            "engine": "PostgreSQL",
+            "methodId": "gowm-evidence-v1/world.get-current-state",
+            "engineVersion": "18",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "typeChanged": false,
+            "repairApplied": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ],
+          "inputHash": "sha256:1aac3d4bf3e71009680bf2aa92ea08728588056840c0a4b0e880a55171420ee6",
+          "receiptId": "receipt_ca465d5206834bcb91cf1d7d3bb0b5c2",
+          "durationMs": 10.416736999992281,
+          "outputHash": "sha256:0ecef75ddbb066d26b0a42a10645d60ca79e6e8a1a7506d71e972c5e505442df",
+          "providerId": "gowm.world-evidence",
+          "generatedAt": "2026-08-27T06:08:54.291Z",
+          "operationId": "world.get-current-state",
+          "providerVersion": "1.0.0",
+          "operationVersion": "1.0",
+          "computeSnapshotHash": "sha256:9b036859415988b791f59f63ba0b83f2dafe156aed8d59c8c03d8ecf21c94fc7"
+        }
+      ],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "execution": {
+        "elapsedMs": 10.416736999992281,
+        "providerId": "gowm.world-evidence",
+        "resultHash": "sha256:0ecef75ddbb066d26b0a42a10645d60ca79e6e8a1a7506d71e972c5e505442df",
+        "providerVersion": "1.0.0"
+      },
+      "operation": {
+        "operationId": "world.get-current-state",
+        "operationVersion": "1.0"
+      },
+      "requestId": "provider_request_42abab29430c4378b2161d7dd0c600e3",
+      "consumption": {
+        "rows": 1,
+        "candidates": 1,
+        "inputBytes": 139,
+        "outputBytes": 562
+      },
+      "dataSnapshot": {
+        "resources": [
+          {
+            "digest": "sha256:2b1d09b4bb873ff4b4f21b7d47fece812cbc08c9b120940cf9799966a13d0cee",
+            "pinning": "AT_LEAST",
+            "authority": "GOWM Foundation",
+            "referenceKey": {
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "kind": "DATA_SCOPE",
+              "version": "1",
+              "namespace": "gowm"
+            }
+          }
+        ],
+        "capturedAt": "2026-08-27T06:08:54.290Z",
+        "consistency": "CONSISTENT_AT_START",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe"
+      },
+      "computeSnapshot": {
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "digest": "sha256:4770fb5ae11f57deeb3fc45a9925433fafbb64fedb5a8aed93a227c6e1f58c72",
+          "version": "gowm-evidence-catalog-policy/1.0"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+          "outputSchemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9"
+        },
+        "provider": {
+          "providerId": "gowm.world-evidence",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_evidence_v1",
+            "version": "migration-023"
+          }
+        ],
+        "operation": {
+          "operationId": "world.get-current-state",
+          "operationVersion": "1.0"
+        }
+      },
+      "evidenceReferences": [],
+      "providerProtocolVersion": "1.0"
+    }
+  },
+  {
+    "operationId": "spatial.find-nearby",
+    "label": "A-typed:nearby",
+    "inputHash": "sha256:0766f27dceb00bc873d756f21f05989c69ad6b4ed1135cf7bcaae5bd8e03c303",
+    "status": 200,
+    "body": {
+      "output": {
+        "value": {
+          "page": {
+            "count": 1,
+            "truncated": false
+          },
+          "context": {
+            "crs": "EPSG:4326",
+            "rowCount": 1,
+            "distanceUnit": "meter",
+            "candidateCount": 1,
+            "evidenceTruncated": false,
+            "snapshotConsistency": "CONSISTENT_AT_START"
+          },
+          "objects": [
+            {
+              "source": "v062-acceptance",
+              "status": "ACTIVE",
+              "subtype": null,
+              "distanceM": 0,
+              "updatedAt": "2026-08-26T11:24:55.405Z",
+              "confidence": 1,
+              "objectType": "CANARY_VEHICLE",
+              "observedAt": "2026-08-26T11:24:55.404Z",
+              "properties": {},
+              "provenance": {
+                "summary": {
+                  "uncertainty": {},
+                  "evidenceKind": "DECLARED",
+                  "projectionPolicyVersion": "gowm-projection-v1.1"
+                },
+                "authority": "GOWM Foundation",
+                "sourceObservationId": null
+              },
+              "receivedAt": "2026-08-26T11:24:55.404Z",
+              "freshnessMs": 67438989,
+              "referenceKey": {
+                "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+                "kind": "WORLD_OBJECT",
+                "version": "1",
+                "namespace": "gowm"
+              },
+              "worldVersion": 1
+            }
+          ]
+        },
+        "schemaUri": "urn:gowm:capability:spatial.find-nearby:output:1.0",
+        "schemaHash": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23"
+      },
+      "status": "COMPLETED",
+      "receipts": [
+        {
+          "method": {
+            "engine": "PostGIS",
+            "methodId": "gowm-spatial-v1/find-nearby",
+            "engineVersion": "3.6.3",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "typeChanged": false,
+            "repairApplied": false
+          },
+          "warnings": [
+            "spatial.scopeDigest=sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+            "spatial.readContract=gowm_spatial_v1",
+            "spatial.snapshot=CONSISTENT_AT_START",
+            "spatial.transaction=REPEATABLE_READ_READ_ONLY"
+          ],
+          "inputHash": "sha256:0766f27dceb00bc873d756f21f05989c69ad6b4ed1135cf7bcaae5bd8e03c303",
+          "receiptId": "receipt_a0d45dadbf1444e6af9b370efb868ddf",
+          "durationMs": 8.54560399998445,
+          "outputHash": "sha256:11dd099eea28a5822330a5d1a1c22b15567b7f31cd137f77b2c481f760083d2b",
+          "providerId": "gowm.spatial-analysis.bridge",
+          "generatedAt": "2026-08-27T06:08:54.394Z",
+          "operationId": "spatial.find-nearby",
+          "providerVersion": "0.2.0",
+          "operationVersion": "1.0",
+          "computeSnapshotHash": "sha256:01eff9a27e673de6642b5b5e62b784ce9042419f67423fe5dd65afab85b9cbf3"
+        }
+      ],
+      "warnings": [
+        "spatial.scopeDigest=sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "spatial.readContract=gowm_spatial_v1",
+        "spatial.snapshot=CONSISTENT_AT_START",
+        "spatial.transaction=REPEATABLE_READ_READ_ONLY"
+      ],
+      "execution": {
+        "elapsedMs": 8.54560399998445,
+        "providerId": "gowm.spatial-analysis.bridge",
+        "resultHash": "sha256:11dd099eea28a5822330a5d1a1c22b15567b7f31cd137f77b2c481f760083d2b",
+        "providerVersion": "0.2.0"
+      },
+      "operation": {
+        "operationId": "spatial.find-nearby",
+        "operationVersion": "1.0"
+      },
+      "requestId": "provider_request_e4b62cf46c834be9b569fb3b7b2b3b5c",
+      "consumption": {
+        "rows": 1,
+        "candidates": 1,
+        "inputBytes": 64,
+        "outputBytes": 793
+      },
+      "dataSnapshot": {
+        "resources": [
+          {
+            "digest": "sha256:edcfab21b19f31bb702329eb63ed5c8b5f8ce0e97bb1b92a97a43a34c95bbe03",
+            "pinning": "AT_LEAST",
+            "authority": "GOWM Foundation",
+            "referenceKey": {
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "kind": "DATASET",
+              "version": "1",
+              "namespace": "gowm"
+            }
+          }
+        ],
+        "capturedAt": "2026-08-27T06:08:54.386Z",
+        "consistency": "CONSISTENT_AT_START",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe"
+      },
+      "computeSnapshot": {
+        "engine": {
+          "name": "PostGIS",
+          "version": "3.6.3"
+        },
+        "policy": {
+          "digest": "sha256:eeefd3d58e88f9a0c0f7abd9b0869825d25089cf9157788e54fd8ac9e21eb35b",
+          "version": "gowm-spatial-read-policy/1.0"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:17f7d021a954e30721adb28d02aae1803061455da9f153c1af019779d92ae846",
+          "outputSchemaHash": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23"
+        },
+        "provider": {
+          "providerId": "gowm.spatial-analysis.bridge",
+          "providerVersion": "0.2.0",
+          "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_spatial_v1",
+            "digest": "sha256:a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10",
+            "version": "migration-012"
+          }
+        ],
+        "operation": {
+          "operationId": "spatial.find-nearby",
+          "operationVersion": "1.0"
+        }
+      },
+      "evidenceReferences": [
+        {
+          "authority": "GOWM Foundation",
+          "schemaUri": "urn:gowm:foundation:gowm_spatial_v1:current_object:1",
+          "evidenceId": "wrf_1eb2264c33a12edd09b324e8073cc280",
+          "observedAt": "2026-08-26T11:24:55.404Z",
+          "schemaHash": "sha256:085b614575e3aef24c709b422767d010ab9e4b7b3b753317b1f092ef8f93529f",
+          "evidenceType": "CURRENT_PROJECTION_SOURCE",
+          "referenceKey": {
+            "id": "wrf_1eb2264c33a12edd09b324e8073cc280",
+            "kind": "WORLD_OBJECT",
+            "version": "1",
+            "namespace": "gowm"
+          },
+          "worldVersion": 1
+        }
+      ],
+      "providerProtocolVersion": "1.0"
+    }
+  },
+  {
+    "operationId": "reference.resolve",
+    "label": "resolve-TundraZoneQK",
+    "inputHash": "sha256:2428c416f9bc864514a5c716bdbbd873170c9fe98fc3978ad261446643b1ad72",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_7be7aa8200b344e3ac8755c0eb2915f2",
+      "operation": {
+        "operationId": "reference.resolve",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.4:reference-resolve-result",
+        "schemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+        "value": {
+          "schemaVersion": "1.0",
+          "resolutions": [
+            {
+              "mentionId": "m1",
+              "status": "RESOLVED_EXACT",
+              "candidates": [
+                {
+                  "candidate": {
+                    "referenceKey": {
+                      "namespace": "gowm",
+                      "kind": "WORLD_OBJECT",
+                      "id": "wrf_c781e9c05ea54551c5b45bed70312b68",
+                      "version": "14"
+                    },
+                    "referenceType": "CANARY_AREA",
+                    "displayName": "TundraZoneQK",
+                    "aliases": [],
+                    "version": {
+                      "referenceVersion": "14",
+                      "objectVersion": "1",
+                      "worldVersion": 1
+                    },
+                    "revalidationRequired": false,
+                    "provenance": []
+                  },
+                  "matchedBy": "EXACT_CANONICAL_NAME",
+                  "matchScore": 1
+                }
+              ]
+            }
+          ],
+          "worldVersion": 2,
+          "resolverVersion": "gowm-reference-v1/1.0"
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:54.535Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:08a4a4918f3218d269475122ba3648e92d287cbbbf54c47f91029f45fb2c3284"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.reference-catalog",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba"
+        },
+        "operation": {
+          "operationId": "reference.resolve",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "version": "gowm-reference-catalog-policy/1.0",
+          "digest": "sha256:7eb48c5ff72b08612ec3e85384fb0f669a6000d98ad9150d91ca9805ebf1dad3"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+          "outputSchemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_reference_v1",
+            "version": "migration-020"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_94dcc4a427e54b0791e3cc6881ede667",
+          "operationId": "reference.resolve",
+          "operationVersion": "1.0",
+          "providerId": "gowm.reference-catalog",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:2428c416f9bc864514a5c716bdbbd873170c9fe98fc3978ad261446643b1ad72",
+          "outputHash": "sha256:b14c4765167989b08b1ee5483dfd569b636a6f7da4c0a7849800ad6a260ac7a3",
+          "computeSnapshotHash": "sha256:1c343989fe5f14b1730e97a1863c784ac4d628a126621162fba7e470dc95e671",
+          "generatedAt": "2026-08-27T06:08:54.539Z",
+          "durationMs": 7.515193999977782,
+          "method": {
+            "engine": "PostgreSQL",
+            "engineVersion": "18",
+            "methodId": "gowm-reference-v1/reference.resolve",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "consumption": {
+        "inputBytes": 175,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 531
+      },
+      "execution": {
+        "providerId": "gowm.reference-catalog",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 7.515193999977782,
+        "resultHash": "sha256:b14c4765167989b08b1ee5483dfd569b636a6f7da4c0a7849800ad6a260ac7a3"
+      }
+    }
+  },
+  {
+    "operationId": "world.get-geometry",
+    "label": "B-world-geometry",
+    "inputHash": "sha256:e871adea0b4f7989d66b22acbf60b23815319d9df30460d3670a02ec1c56f4a0",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_35a3cbf9b9b548baa97acb6c875cdedc",
+      "operation": {
+        "operationId": "world.get-geometry",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.4:world-fact-result",
+        "schemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
+        "value": {
+          "schemaVersion": "1.0",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_c781e9c05ea54551c5b45bed70312b68",
+            "version": "1"
+          },
+          "worldVersion": 1,
+          "facts": [
+            {
+              "factKind": "CURRENT_GEOMETRY",
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      0.019841391,
+                      0.019205841
+                    ],
+                    [
+                      0.020141391,
+                      0.019205841
+                    ],
+                    [
+                      0.019841391,
+                      0.019505841
+                    ],
+                    [
+                      0.019841391,
+                      0.019205841
+                    ]
+                  ]
+                ]
+              },
+              "geometryType": "POLYGON",
+              "bbox": [
+                0.019841391,
+                0.019205841,
+                0.020141391,
+                0.019505841
+              ],
+              "crs": "EPSG:4326",
+              "version": "1",
+              "observedAt": "2026-08-26T11:24:55.425Z"
+            }
+          ],
+          "evidence": [],
+          "unknowns": []
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:54.623Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:874156df525bff46957ee7a45a75879d0a13bef881ad4636dea9b4ff67f32c15"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.world-evidence",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb"
+        },
+        "operation": {
+          "operationId": "world.get-geometry",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostgreSQL",
+          "version": "18"
+        },
+        "policy": {
+          "version": "gowm-evidence-catalog-policy/1.0",
+          "digest": "sha256:4770fb5ae11f57deeb3fc45a9925433fafbb64fedb5a8aed93a227c6e1f58c72"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+          "outputSchemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_evidence_v1",
+            "version": "migration-023"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_2a738f6b3296434aa49d351b0dfc2912",
+          "operationId": "world.get-geometry",
+          "operationVersion": "1.0",
+          "providerId": "gowm.world-evidence",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:e871adea0b4f7989d66b22acbf60b23815319d9df30460d3670a02ec1c56f4a0",
+          "outputHash": "sha256:98c546094df91e1276aa9269a5930d57a0043fb7da66ff3794d437fd7407d09e",
+          "computeSnapshotHash": "sha256:7aab766476e2fce5ed147d493021050ba72fcf61819b0a81138711bf17561927",
+          "generatedAt": "2026-08-27T06:08:54.626Z",
+          "durationMs": 12.674051000038162,
+          "method": {
+            "engine": "PostgreSQL",
+            "engineVersion": "18",
+            "methodId": "gowm-evidence-v1/world.get-geometry",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "grounding.scopeAppliedBeforeQuery=true",
+            "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+            "grounding.snapshot=CONSISTENT_AT_START"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "grounding.scopeAppliedBeforeQuery=true",
+        "grounding.transaction=REPEATABLE_READ_READ_ONLY",
+        "grounding.snapshot=CONSISTENT_AT_START"
+      ],
+      "consumption": {
+        "inputBytes": 140,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 532
+      },
+      "execution": {
+        "providerId": "gowm.world-evidence",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 12.674051000038162,
+        "resultHash": "sha256:98c546094df91e1276aa9269a5930d57a0043fb7da66ff3794d437fd7407d09e"
+      }
+    }
+  },
+  {
+    "operationId": "h3.geometry.cover",
+    "label": "B-cover",
+    "inputHash": "sha256:6190bcf2a8d8d38eb1832765f0131824c78a8b0be96e107f3ce0abcaf312cd7f",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_52797c73a48347ed93de5a2fca440b9a",
+      "operation": {
+        "operationId": "h3.geometry.cover",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:capability:h3.geometry.cover:output:1.0",
+        "schemaHash": "sha256:c839420e4ea78331a8a0f5b18bc6c9fad5aee6248d25553e64d51699d3ef9c87",
+        "value": {
+          "schemaVersion": "1.0",
+          "resolution": 9,
+          "cells": [
+            "89754a936dbffff"
+          ],
+          "truncated": false,
+          "semantics": "CENTER_CONTAINMENT_COVER",
+          "candidateOnly": true,
+          "exactVerificationRequired": true
+        }
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.h3.interactive.bridge",
+          "providerVersion": "0.2.0",
+          "implementationDigest": "sha256:419f649959cbce5592538011d27bcc5be2628aa9819f69d7698f75383df341f3"
+        },
+        "operation": {
+          "operationId": "h3.geometry.cover",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "h3-js",
+          "version": "4.5.0"
+        },
+        "policy": {
+          "version": "gowm.h3.generic-resolution/1.0",
+          "digest": "sha256:f5359f1ced312f26a6a6b93d2c86799cb4402e76a9c1a72c8b93cb574080090a"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:195594da879bf7af10455b91ebc51ca11a0c21c81786e61d073f82fa8200fbbe",
+          "outputSchemaHash": "sha256:c839420e4ea78331a8a0f5b18bc6c9fad5aee6248d25553e64d51699d3ef9c87"
+        },
+        "artifacts": [
+          {
+            "kind": "PACKAGE",
+            "name": "h3-spatial-toolkit",
+            "version": "0.3.0"
+          },
+          {
+            "kind": "PACKAGE",
+            "name": "h3-js",
+            "version": "4.5.0"
+          },
+          {
+            "kind": "PACKAGE",
+            "name": "h3-toolkit-bindings",
+            "version": "0.3.0",
+            "digest": "sha256:fe1d48cf795e45d7004024a64efb1a792fa42de9a6f2f036ef92a1057ffc2a61"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_10800548eec14a0790e343d4011b693a",
+          "operationId": "h3.geometry.cover",
+          "operationVersion": "1.0",
+          "providerId": "gowm.h3.interactive.bridge",
+          "providerVersion": "0.2.0",
+          "inputHash": "sha256:6190bcf2a8d8d38eb1832765f0131824c78a8b0be96e107f3ce0abcaf312cd7f",
+          "outputHash": "sha256:7e8bc80d806dae5fef48c2f94276cb698bed762a5efe81352c5d468181bf55d0",
+          "computeSnapshotHash": "sha256:579c13202b3a444b2f5e1c6fd4b7399119e63e89882abe9b65bc86e5a0b6e964",
+          "generatedAt": "2026-08-27T06:08:54.703Z",
+          "durationMs": 3.1902879999252036,
+          "method": {
+            "engine": "h3-js",
+            "engineVersion": "4.5.0",
+            "methodId": "h3-spatial-toolkit/geometryToCells",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "h3.sourceGitCommit=74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+            "h3.toolkit=0.3.0",
+            "h3.engine=h3-js@4.5.0",
+            "h3.cover=CENTER_CONTAINMENT_COVER",
+            "h3.exactVerificationRequired=true"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "h3.sourceGitCommit=74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+        "h3.toolkit=0.3.0",
+        "h3.engine=h3-js@4.5.0",
+        "h3.cover=CENTER_CONTAINMENT_COVER",
+        "h3.exactVerificationRequired=true"
+      ],
+      "consumption": {
+        "inputBytes": 168,
+        "cells": 1,
+        "rows": 1,
+        "candidates": 1,
+        "vertices": 4,
+        "outputBytes": 177
+      },
+      "execution": {
+        "providerId": "gowm.h3.interactive.bridge",
+        "providerVersion": "0.2.0",
+        "elapsedMs": 3.1902879999252036,
+        "resultHash": "sha256:7e8bc80d806dae5fef48c2f94276cb698bed762a5efe81352c5d468181bf55d0"
+      }
+    }
+  },
+  {
+    "operationId": "h3.index.points",
+    "label": "B-candidate-points",
+    "inputHash": "sha256:c42d1b02d38bb9c113e9804313b63eab598159ec65c491e2006a12858dd74f6c",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_b6d49abd250e4d21b3b2be0a8fffa31c",
+      "operation": {
+        "operationId": "h3.index.points",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:capability:h3.index.points:output:1.0",
+        "schemaHash": "sha256:465764a8efd740dd30b3789ea341a2cac542a5732b8ee72a7ab34512dafac5bd",
+        "value": [
+          {
+            "index": "89754a936dbffff",
+            "resolution": 9
+          },
+          {
+            "index": "89754a936dbffff",
+            "resolution": 9
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.h3.interactive.bridge",
+          "providerVersion": "0.2.0",
+          "implementationDigest": "sha256:419f649959cbce5592538011d27bcc5be2628aa9819f69d7698f75383df341f3"
+        },
+        "operation": {
+          "operationId": "h3.index.points",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "h3-js",
+          "version": "4.5.0"
+        },
+        "policy": {
+          "version": "gowm.h3.generic-resolution/1.0",
+          "digest": "sha256:f5359f1ced312f26a6a6b93d2c86799cb4402e76a9c1a72c8b93cb574080090a"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:60323a543a0aa3008a8d9b30c92aa018911a2cb2be75630634d1f6373698d64f",
+          "outputSchemaHash": "sha256:465764a8efd740dd30b3789ea341a2cac542a5732b8ee72a7ab34512dafac5bd"
+        },
+        "artifacts": [
+          {
+            "kind": "PACKAGE",
+            "name": "h3-spatial-toolkit",
+            "version": "0.3.0"
+          },
+          {
+            "kind": "PACKAGE",
+            "name": "h3-js",
+            "version": "4.5.0"
+          },
+          {
+            "kind": "PACKAGE",
+            "name": "h3-toolkit-bindings",
+            "version": "0.3.0",
+            "digest": "sha256:fe1d48cf795e45d7004024a64efb1a792fa42de9a6f2f036ef92a1057ffc2a61"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_959a1e55fd954931825f29c422a159d4",
+          "operationId": "h3.index.points",
+          "operationVersion": "1.0",
+          "providerId": "gowm.h3.interactive.bridge",
+          "providerVersion": "0.2.0",
+          "inputHash": "sha256:c42d1b02d38bb9c113e9804313b63eab598159ec65c491e2006a12858dd74f6c",
+          "outputHash": "sha256:ce008f532ffde1b5840a7bcf1932654bcda5cf856cbbd45b222c00855de6d733",
+          "computeSnapshotHash": "sha256:c7b8c6533731d00c0332d25bdd2f78883ed5a087f5737e85865c665ca3dc0848",
+          "generatedAt": "2026-08-27T06:08:54.787Z",
+          "durationMs": 0.5423260000534356,
+          "method": {
+            "engine": "h3-js",
+            "engineVersion": "4.5.0",
+            "methodId": "h3-spatial-toolkit/pointToCell",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "h3.sourceGitCommit=74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+            "h3.toolkit=0.3.0",
+            "h3.engine=h3-js@4.5.0"
+          ]
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [
+        "h3.sourceGitCommit=74fc8657072dd58a2f8e4317c1caef8bfd10e024",
+        "h3.toolkit=0.3.0",
+        "h3.engine=h3-js@4.5.0"
+      ],
+      "consumption": {
+        "inputBytes": 125,
+        "cells": 2,
+        "rows": 2,
+        "candidates": 2,
+        "batchItems": 2,
+        "outputBytes": 87
+      },
+      "execution": {
+        "providerId": "gowm.h3.interactive.bridge",
+        "providerVersion": "0.2.0",
+        "elapsedMs": 0.5423260000534356,
+        "resultHash": "sha256:ce008f532ffde1b5840a7bcf1932654bcda5cf856cbbd45b222c00855de6d733"
+      }
+    }
+  },
+  {
+    "operationId": "spatial.find-intersections",
+    "label": "B-exact",
+    "inputHash": "sha256:3aab725e2d2c6b06d29f2112c177fa2eb2638e6347d83a0c623ef7ad8cf3202f",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_cc65f34789ee4d87bc0140ff7c5bb1b2",
+      "operation": {
+        "operationId": "spatial.find-intersections",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:capability:spatial.find-intersections:output:1.0",
+        "schemaHash": "sha256:3bbfc710db6a82e02592075ec75bafb648575242794dbfd3ff39c6df9c53979c",
+        "value": {
+          "objects": [
+            {
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "WORLD_OBJECT",
+                "id": "wrf_8a5efe5d0137779aa29b6332388040eb",
+                "version": "1"
+              },
+              "objectType": "CANARY_POINT",
+              "subtype": null,
+              "status": "ACTIVE",
+              "source": "v062-acceptance",
+              "properties": {},
+              "observedAt": "2026-08-26T11:24:55.414Z",
+              "receivedAt": "2026-08-26T11:24:55.414Z",
+              "updatedAt": "2026-08-26T11:24:55.415Z",
+              "worldVersion": 1,
+              "confidence": 1,
+              "freshnessMs": 67439467,
+              "provenance": {
+                "authority": "GOWM Foundation",
+                "sourceObservationId": null,
+                "summary": {
+                  "uncertainty": {},
+                  "evidenceKind": "DECLARED",
+                  "projectionPolicyVersion": "gowm-projection-v1.1"
+                }
+              }
+            },
+            {
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "WORLD_OBJECT",
+                "id": "wrf_e2f930670348b0162db9487c77905e71",
+                "version": "1"
+              },
+              "objectType": "CANARY_POINT",
+              "subtype": null,
+              "status": "ACTIVE",
+              "source": "v062-acceptance",
+              "properties": {},
+              "observedAt": "2026-08-26T11:24:55.421Z",
+              "receivedAt": "2026-08-26T11:24:55.421Z",
+              "updatedAt": "2026-08-26T11:24:55.421Z",
+              "worldVersion": 1,
+              "confidence": 1,
+              "freshnessMs": 67439460,
+              "provenance": {
+                "authority": "GOWM Foundation",
+                "sourceObservationId": null,
+                "summary": {
+                  "uncertainty": {},
+                  "evidenceKind": "DECLARED",
+                  "projectionPolicyVersion": "gowm-projection-v1.1"
+                }
+              }
+            }
+          ],
+          "page": {
+            "count": 2,
+            "truncated": false
+          },
+          "context": {
+            "crs": "EPSG:4326",
+            "snapshotConsistency": "CONSISTENT_AT_START",
+            "candidateCount": 2,
+            "rowCount": 2,
+            "evidenceTruncated": false
+          }
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:54.875Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATASET",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:edcfab21b19f31bb702329eb63ed5c8b5f8ce0e97bb1b92a97a43a34c95bbe03"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.spatial-analysis.bridge",
+          "providerVersion": "0.2.0",
+          "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00"
+        },
+        "operation": {
+          "operationId": "spatial.find-intersections",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostGIS",
+          "version": "3.6.3"
+        },
+        "policy": {
+          "version": "gowm-spatial-read-policy/1.0",
+          "digest": "sha256:eeefd3d58e88f9a0c0f7abd9b0869825d25089cf9157788e54fd8ac9e21eb35b"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:8f347f836dd9c299f16cb60d2fc22dcfc5b4addab9c77024f530a9bdd4d7bea0",
+          "outputSchemaHash": "sha256:3bbfc710db6a82e02592075ec75bafb648575242794dbfd3ff39c6df9c53979c"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_spatial_v1",
+            "version": "migration-012",
+            "digest": "sha256:a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_6b4ac9864b9f4141bb3dee5a57cf765c",
+          "operationId": "spatial.find-intersections",
+          "operationVersion": "1.0",
+          "providerId": "gowm.spatial-analysis.bridge",
+          "providerVersion": "0.2.0",
+          "inputHash": "sha256:3aab725e2d2c6b06d29f2112c177fa2eb2638e6347d83a0c623ef7ad8cf3202f",
+          "outputHash": "sha256:aef80a4eefb6b2bd5cc052eecb7239cc39ad5e51566b8f866b5029464eb358df",
+          "computeSnapshotHash": "sha256:6bfedb738e2b92b90598997475a4fcaa4de5ef9289481ed508d07e81934b7297",
+          "generatedAt": "2026-08-27T06:08:54.883Z",
+          "durationMs": 7.9572039999766275,
+          "method": {
+            "engine": "PostGIS",
+            "engineVersion": "3.6.3",
+            "methodId": "gowm-spatial-v1/find-intersections",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "spatial.scopeDigest=sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+            "spatial.readContract=gowm_spatial_v1",
+            "spatial.snapshot=CONSISTENT_AT_START",
+            "spatial.transaction=REPEATABLE_READ_READ_ONLY"
+          ]
+        }
+      ],
+      "evidenceReferences": [
+        {
+          "evidenceId": "wrf_8a5efe5d0137779aa29b6332388040eb",
+          "authority": "GOWM Foundation",
+          "evidenceType": "CURRENT_PROJECTION_SOURCE",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_8a5efe5d0137779aa29b6332388040eb",
+            "version": "1"
+          },
+          "schemaUri": "urn:gowm:foundation:gowm_spatial_v1:current_object:1",
+          "schemaHash": "sha256:085b614575e3aef24c709b422767d010ab9e4b7b3b753317b1f092ef8f93529f",
+          "observedAt": "2026-08-26T11:24:55.414Z",
+          "worldVersion": 1
+        },
+        {
+          "evidenceId": "wrf_e2f930670348b0162db9487c77905e71",
+          "authority": "GOWM Foundation",
+          "evidenceType": "CURRENT_PROJECTION_SOURCE",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_e2f930670348b0162db9487c77905e71",
+            "version": "1"
+          },
+          "schemaUri": "urn:gowm:foundation:gowm_spatial_v1:current_object:1",
+          "schemaHash": "sha256:085b614575e3aef24c709b422767d010ab9e4b7b3b753317b1f092ef8f93529f",
+          "observedAt": "2026-08-26T11:24:55.421Z",
+          "worldVersion": 1
+        }
+      ],
+      "warnings": [
+        "spatial.scopeDigest=sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "spatial.readContract=gowm_spatial_v1",
+        "spatial.snapshot=CONSISTENT_AT_START",
+        "spatial.transaction=REPEATABLE_READ_READ_ONLY"
+      ],
+      "consumption": {
+        "inputBytes": 511,
+        "rows": 2,
+        "candidates": 2,
+        "outputBytes": 1326
+      },
+      "execution": {
+        "providerId": "gowm.spatial-analysis.bridge",
+        "providerVersion": "0.2.0",
+        "elapsedMs": 7.9572039999766275,
+        "resultHash": "sha256:aef80a4eefb6b2bd5cc052eecb7239cc39ad5e51566b8f866b5029464eb358df"
+      }
+    }
+  },
+  {
+    "operationId": "spatial.find-in-area",
+    "label": "B-boundary",
+    "inputHash": "sha256:9f112d013a49156fe1429678c123b113bbd253a4e6d7eb6bab18c32197e33258",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_4275dca74de64c999ba8c342344d4163",
+      "operation": {
+        "operationId": "spatial.find-in-area",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:capability:spatial.find-in-area:output:1.0",
+        "schemaHash": "sha256:8aa8231c04110a4fcf235e759bcdd4f2e97db20097bbff62f9161b4ce6f4d161",
+        "value": {
+          "objects": [
+            {
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "WORLD_OBJECT",
+                "id": "wrf_8a5efe5d0137779aa29b6332388040eb",
+                "version": "1"
+              },
+              "objectType": "CANARY_POINT",
+              "subtype": null,
+              "status": "ACTIVE",
+              "source": "v062-acceptance",
+              "properties": {},
+              "observedAt": "2026-08-26T11:24:55.414Z",
+              "receivedAt": "2026-08-26T11:24:55.414Z",
+              "updatedAt": "2026-08-26T11:24:55.415Z",
+              "worldVersion": 1,
+              "confidence": 1,
+              "freshnessMs": 67439557,
+              "provenance": {
+                "authority": "GOWM Foundation",
+                "sourceObservationId": null,
+                "summary": {
+                  "uncertainty": {},
+                  "evidenceKind": "DECLARED",
+                  "projectionPolicyVersion": "gowm-projection-v1.1"
+                }
+              }
+            },
+            {
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "WORLD_OBJECT",
+                "id": "wrf_e2f930670348b0162db9487c77905e71",
+                "version": "1"
+              },
+              "objectType": "CANARY_POINT",
+              "subtype": null,
+              "status": "ACTIVE",
+              "source": "v062-acceptance",
+              "properties": {},
+              "observedAt": "2026-08-26T11:24:55.421Z",
+              "receivedAt": "2026-08-26T11:24:55.421Z",
+              "updatedAt": "2026-08-26T11:24:55.421Z",
+              "worldVersion": 1,
+              "confidence": 1,
+              "freshnessMs": 67439550,
+              "provenance": {
+                "authority": "GOWM Foundation",
+                "sourceObservationId": null,
+                "summary": {
+                  "uncertainty": {},
+                  "evidenceKind": "DECLARED",
+                  "projectionPolicyVersion": "gowm-projection-v1.1"
+                }
+              }
+            }
+          ],
+          "page": {
+            "count": 2,
+            "truncated": false
+          },
+          "context": {
+            "crs": "EPSG:4326",
+            "snapshotConsistency": "CONSISTENT_AT_START",
+            "candidateCount": 2,
+            "rowCount": 2,
+            "evidenceTruncated": false
+          }
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:54.964Z",
+        "scopeDigest": "sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATASET",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "GOWM Foundation",
+            "pinning": "AT_LEAST",
+            "digest": "sha256:edcfab21b19f31bb702329eb63ed5c8b5f8ce0e97bb1b92a97a43a34c95bbe03"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.spatial-analysis.bridge",
+          "providerVersion": "0.2.0",
+          "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00"
+        },
+        "operation": {
+          "operationId": "spatial.find-in-area",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "PostGIS",
+          "version": "3.6.3"
+        },
+        "policy": {
+          "version": "gowm-spatial-read-policy/1.0",
+          "digest": "sha256:eeefd3d58e88f9a0c0f7abd9b0869825d25089cf9157788e54fd8ac9e21eb35b"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:f902acdbe64e91474b7f3d2a94d8cad72a7a2d6182265981a770fb472a8914dd",
+          "outputSchemaHash": "sha256:8aa8231c04110a4fcf235e759bcdd4f2e97db20097bbff62f9161b4ce6f4d161"
+        },
+        "artifacts": [
+          {
+            "kind": "DATABASE",
+            "name": "gowm_spatial_v1",
+            "version": "migration-012",
+            "digest": "sha256:a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_ce105331f1eb49b688e35d70b3916781",
+          "operationId": "spatial.find-in-area",
+          "operationVersion": "1.0",
+          "providerId": "gowm.spatial-analysis.bridge",
+          "providerVersion": "0.2.0",
+          "inputHash": "sha256:9f112d013a49156fe1429678c123b113bbd253a4e6d7eb6bab18c32197e33258",
+          "outputHash": "sha256:30ee44eed144c7642123df55663646895560f1ec791a9564ab1486af88cd9fb7",
+          "computeSnapshotHash": "sha256:a99abae6ebdc38e445f04f5ea02a7c06829aba5bc4e43ad4afa89baa8f02ced8",
+          "generatedAt": "2026-08-27T06:08:54.977Z",
+          "durationMs": 13.3776610000059,
+          "method": {
+            "engine": "PostGIS",
+            "engineVersion": "3.6.3",
+            "methodId": "gowm-spatial-v1/find-in-area",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": [
+            "spatial.scopeDigest=sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+            "spatial.readContract=gowm_spatial_v1",
+            "spatial.snapshot=CONSISTENT_AT_START",
+            "spatial.transaction=REPEATABLE_READ_READ_ONLY"
+          ]
+        }
+      ],
+      "evidenceReferences": [
+        {
+          "evidenceId": "wrf_8a5efe5d0137779aa29b6332388040eb",
+          "authority": "GOWM Foundation",
+          "evidenceType": "CURRENT_PROJECTION_SOURCE",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_8a5efe5d0137779aa29b6332388040eb",
+            "version": "1"
+          },
+          "schemaUri": "urn:gowm:foundation:gowm_spatial_v1:current_object:1",
+          "schemaHash": "sha256:085b614575e3aef24c709b422767d010ab9e4b7b3b753317b1f092ef8f93529f",
+          "observedAt": "2026-08-26T11:24:55.414Z",
+          "worldVersion": 1
+        },
+        {
+          "evidenceId": "wrf_e2f930670348b0162db9487c77905e71",
+          "authority": "GOWM Foundation",
+          "evidenceType": "CURRENT_PROJECTION_SOURCE",
+          "referenceKey": {
+            "namespace": "gowm",
+            "kind": "WORLD_OBJECT",
+            "id": "wrf_e2f930670348b0162db9487c77905e71",
+            "version": "1"
+          },
+          "schemaUri": "urn:gowm:foundation:gowm_spatial_v1:current_object:1",
+          "schemaHash": "sha256:085b614575e3aef24c709b422767d010ab9e4b7b3b753317b1f092ef8f93529f",
+          "observedAt": "2026-08-26T11:24:55.421Z",
+          "worldVersion": 1
+        }
+      ],
+      "warnings": [
+        "spatial.scopeDigest=sha256:0aa0f97a56b183b0c486d46de4901b2da7e9cb538ec753df3beebbead3b4c7fe",
+        "spatial.readContract=gowm_spatial_v1",
+        "spatial.snapshot=CONSISTENT_AT_START",
+        "spatial.transaction=REPEATABLE_READ_READ_ONLY"
+      ],
+      "consumption": {
+        "inputBytes": 184,
+        "rows": 2,
+        "candidates": 2,
+        "outputBytes": 1326
+      },
+      "execution": {
+        "providerId": "gowm.spatial-analysis.bridge",
+        "providerVersion": "0.2.0",
+        "elapsedMs": 13.3776610000059,
+        "resultHash": "sha256:30ee44eed144c7642123df55663646895560f1ec791a9564ab1486af88cd9fb7"
+      }
+    }
+  },
+  {
+    "operationId": "result.validate",
+    "label": "B-reference-validation",
+    "inputHash": "sha256:dc358e9e61bf3a490c6a8bdbffd02d346c7b7319a64c80f4165dfb0c4cff8654",
+    "status": 200,
+    "body": {
+      "providerProtocolVersion": "1.0",
+      "requestId": "provider_request_1895c6ca95fe486eb5cc8f1cbf46c7c6",
+      "operation": {
+        "operationId": "result.validate",
+        "operationVersion": "1.0"
+      },
+      "status": "COMPLETED",
+      "output": {
+        "schemaUri": "urn:gowm:v0.6.1:result-validation-result",
+        "schemaHash": "sha256:e5f544f8d40c72dc1dc8039c4f5c83ed94b5d16624e05a68d47c65207941c75c",
+        "value": {
+          "schemaVersion": "1.0",
+          "results": [
+            {
+              "schemaVersion": "1.0",
+              "referenceKey": {
+                "namespace": "gowm",
+                "kind": "WORLD_OBJECT",
+                "id": "wrf_8a5efe5d0137779aa29b6332388040eb",
+                "version": "1"
+              },
+              "existence": "AVAILABLE",
+              "freshness": "CURRENT",
+              "snapshot": "CURRENT",
+              "usable": "YES",
+              "reasons": [],
+              "resultSemantics": {
+                "schemaVersion": "1.0",
+                "normalizedStatus": "COMPLETED",
+                "sourceStatus": "COMPLETED",
+                "sourceAuthority": "gowm.reference-catalog",
+                "reasons": []
+              },
+              "validationEvidenceRefs": [
+                "sha256:665f2f4156b8f1cddc5d79ba08d84cba11bc3ce93df3053e8edef3098f6ada0a"
+              ]
+            }
+          ]
+        }
+      },
+      "dataSnapshot": {
+        "consistency": "CONSISTENT_AT_START",
+        "capturedAt": "2026-08-27T06:08:55.343Z",
+        "scopeDigest": "sha256:84c181aff006b46fed0deff6585d4afef08ddc61b2a2879336d334f57dfe21d4",
+        "resources": [
+          {
+            "referenceKey": {
+              "namespace": "gowm",
+              "kind": "DATA_SCOPE",
+              "id": "wrf_933437e466b9489b8e8298a16feaf972",
+              "version": "1"
+            },
+            "authority": "gowm.foundation",
+            "pinning": "PINNED"
+          }
+        ]
+      },
+      "computeSnapshot": {
+        "provider": {
+          "providerId": "gowm.platform-validation",
+          "providerVersion": "1.0.0",
+          "implementationDigest": "sha256:6014ea778151bdebabb25e5cfe24ed4fca8983c00c3d28d77d2f597c25aa7677"
+        },
+        "operation": {
+          "operationId": "result.validate",
+          "operationVersion": "1.0"
+        },
+        "engine": {
+          "name": "GOWM Platform Validation",
+          "version": "1.0.0"
+        },
+        "policy": {
+          "version": "gowm-platform-validation-policy/1.0",
+          "digest": "sha256:ce64ae8d4f774e77b22171bc1c677b4da5a37547d187caa4c287f790e1939420"
+        },
+        "schemas": {
+          "inputSchemaHash": "sha256:02b86151775176b13aa80fc0a8c595621941ab6ca5b6ba777c78d300ec59fc4b",
+          "outputSchemaHash": "sha256:e5f544f8d40c72dc1dc8039c4f5c83ed94b5d16624e05a68d47c65207941c75c"
+        },
+        "artifacts": [
+          {
+            "kind": "PACKAGE",
+            "name": "result-validation-core",
+            "version": "0.6.1"
+          }
+        ]
+      },
+      "receipts": [
+        {
+          "receiptId": "receipt_f431479edfa541f8ab7e3179d48a9749",
+          "operationId": "result.validate",
+          "operationVersion": "1.0",
+          "providerId": "gowm.platform-validation",
+          "providerVersion": "1.0.0",
+          "inputHash": "sha256:dc358e9e61bf3a490c6a8bdbffd02d346c7b7319a64c80f4165dfb0c4cff8654",
+          "outputHash": "sha256:9eb52756449e4df62be5d19943533d4081e3469850e5ec02821f824577c8b6a8",
+          "computeSnapshotHash": "sha256:854dbcfd2bec6cc54a1ff20f42818e66276549fad2d77c4f8dbc45b307940ad0",
+          "generatedAt": "2026-08-27T06:08:55.356Z",
+          "durationMs": 12.820429000072181,
+          "method": {
+            "engine": "GOWM Platform Validation",
+            "engineVersion": "1.0.0",
+            "methodId": "gowm-platform-validation/result.validate",
+            "methodVersion": "1.0"
+          },
+          "changes": {
+            "repairApplied": false,
+            "typeChanged": false
+          },
+          "warnings": []
+        }
+      ],
+      "evidenceReferences": [],
+      "warnings": [],
+      "consumption": {
+        "inputBytes": 186,
+        "rows": 1,
+        "candidates": 1,
+        "outputBytes": 527
+      },
+      "execution": {
+        "providerId": "gowm.platform-validation",
+        "providerVersion": "1.0.0",
+        "elapsedMs": 12.820429000072181,
+        "resultHash": "sha256:9eb52756449e4df62be5d19943533d4081e3469850e5ec02821f824577c8b6a8"
+      }
+    }
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:evidence-reference",
+  "title": "EvidenceReference",
+  "description": "Reference to authoritative/versioned data, never a computation receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceId",
+    "authority",
+    "evidenceType",
+    "referenceKey",
+    "schemaUri",
+    "schemaHash"
+  ],
+  "properties": {
+    "evidenceId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "authority": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "evidenceType": {
+      "enum": [
+        "OBSERVATION",
+        "WORLD_EVENT",
+        "TRACKLET_VERSION",
+        "DATASET_VERSION",
+        "LAYER_VERSION",
+        "ANALYSIS_RECORD",
+        "CURRENT_PROJECTION_SOURCE"
+      ]
+    },
+    "referenceKey": {
+      "$ref": "common-definitions.schema.json#/$defs/referenceKey"
+    },
+    "schemaUri": { "$ref": "common-definitions.schema.json#/$defs/schemaUri" },
+    "schemaHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+    "payloadRef": { "type": "string", "format": "uri", "maxLength": 1024 },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "worldVersion": { "type": "integer", "minimum": 0 }
+  }
+}

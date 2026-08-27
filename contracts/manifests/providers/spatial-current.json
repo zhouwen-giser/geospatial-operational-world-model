@@ -47,7 +47,7 @@
         "VERSIONED_SQL_CONTRACT"
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
-      "maturity": "PREVIEW",
+      "maturity": "STABLE",
       "inputSchemaUri": "urn:gowm:capability:spatial.find-nearby:input:1.0",
       "inputSchemaHash": "sha256:17f7d021a954e30721adb28d02aae1803061455da9f153c1af019779d92ae846",
       "outputSchemaUri": "urn:gowm:capability:spatial.find-nearby:output:1.0",
@@ -199,7 +199,7 @@
         "VERSIONED_SQL_CONTRACT"
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
-      "maturity": "PREVIEW",
+      "maturity": "STABLE",
       "inputSchemaUri": "urn:gowm:capability:spatial.find-in-area:input:1.0",
       "inputSchemaHash": "sha256:f902acdbe64e91474b7f3d2a94d8cad72a7a2d6182265981a770fb472a8914dd",
       "outputSchemaUri": "urn:gowm:capability:spatial.find-in-area:output:1.0",
@@ -275,7 +275,7 @@
         "VERSIONED_SQL_CONTRACT"
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
-      "maturity": "PREVIEW",
+      "maturity": "STABLE",
       "inputSchemaUri": "urn:gowm:capability:spatial.find-intersections:input:1.0",
       "inputSchemaHash": "sha256:8f347f836dd9c299f16cb60d2fc22dcfc5b4addab9c77024f530a9bdd4d7bea0",
       "outputSchemaUri": "urn:gowm:capability:spatial.find-intersections:output:1.0",

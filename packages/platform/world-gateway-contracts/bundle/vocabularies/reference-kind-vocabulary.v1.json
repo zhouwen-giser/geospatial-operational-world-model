@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0",
+  "vocabularyId": "gowm-reference-kind",
+  "version": "1.0",
+  "terms": [
+    {
+      "id": "WORLD_OBJECT",
+      "definition": "A persistent object in the current or historical world model."
+    },
+    {
+      "id": "SPATIAL_OBJECT",
+      "definition": "A persistent spatial object with geometry and version semantics."
+    },
+    {
+      "id": "DATASET",
+      "definition": "A versioned data product dataset."
+    },
+    {
+      "id": "LAYER",
+      "definition": "A versioned layer within a dataset."
+    },
+    {
+      "id": "LAYER_FEATURE",
+      "definition": "A versioned feature identity within a layer."
+    },
+    {
+      "id": "OPERATIONAL_TASK",
+      "definition": "A GOWM operational reality task identity, not an SDAR planning task."
+    },
+    {
+      "id": "DERIVED_REFERENCE",
+      "definition": "A revalidatable reference derived by a capability execution."
+    },
+    {
+      "id": "REFERENCE_SET",
+      "definition": "An immutable, paged set of reference identities."
+    },
+    {
+      "id": "QUERY_RESULT",
+      "definition": "A public reference to an immutable query or plan result."
+    }
+  ],
+  "compatibilityPolicy": "ADD_ONLY"
+}

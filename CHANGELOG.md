@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.3 - 2026-08-27
+
+- Promoted exactly ten Reference, World Evidence, Catalog, and Spatial Grounding Core operations from Preview to Stable after same-Gateway qualification.
+- Added the reproducibly generated `@gowm/world-gateway-contracts@0.6.3` distribution and WSGS Southbound Operation Lock v2 without Provider topology or secrets.
+- Added optional one-hop RS256 delegated identity with request binding, bounded TTL, scope/operation intersection, and hash-only audit identity; static service authentication remains the default.
+- Added logical query snapshot policies, durable manifests, Provider snapshot requests, per-node adherence, strict fail-closed behavior, and restart/idempotent replay preservation.
+- Added authenticated operation-level availability projection with a five-second maximum cache, controlled reason codes, local failure isolation, and no Provider endpoint disclosure.
+- Added additive migration 061 and retained migrations 001–060 unchanged. No merge, tag, npm publish, release, or production deployment is part of this candidate.
+
 ## 0.6.2 - 2026-08-26
 
 - Added a unified World Platform registry and isolated runtime with one consumer Gateway endpoint.

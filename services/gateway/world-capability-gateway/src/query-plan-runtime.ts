@@ -4,6 +4,8 @@ import type {
   GatewayExecuteRequest,
   JobRecord,
   PlatformError,
+  QuerySnapshotAdherence,
+  QuerySnapshotManifest,
   WorldQueryPlanV2InputBinding,
   WorldQueryPlanV2Node,
   WorldQueryPlanV2SchemaPort,
@@ -32,6 +34,7 @@ import type { QueryJobContext, QueryPlanStore } from "./query-plan-store.js";
 import type { GatewayPrincipal, ResolvedCapability } from "./types.js";
 import { publicErrorMessage, redactPublicDetails } from "./redaction.js";
 import { principalContextHash } from "./principal-context.js";
+import { QuerySnapshotCoordinator } from "./query-snapshot-coordinator.js";
 
 export type WorldQueryExecutionMode = "SYNC" | "ASYNC";
 
@@ -47,16 +50,19 @@ export interface WorldQueryRuntimeOptions {
   store: QueryPlanStore;
   now?: () => Date;
   autoRunAsync?: boolean;
+  snapshotCoordinator?: QuerySnapshotCoordinator;
 }
 
 export class WorldQueryRuntime {
   readonly #now: () => Date;
   readonly #autoRunAsync: boolean;
+  readonly #snapshots: QuerySnapshotCoordinator;
   readonly #running = new Map<string, Promise<WorldQueryResult>>();
 
   constructor(private readonly options: WorldQueryRuntimeOptions) {
     this.#now = options.now ?? (() => new Date());
     this.#autoRunAsync = options.autoRunAsync ?? true;
+    this.#snapshots = options.snapshotCoordinator ?? new QuerySnapshotCoordinator(this.#now);
   }
 
   async submit(
@@ -66,6 +72,7 @@ export class WorldQueryRuntime {
   ): Promise<WorldQuerySubmitResult> {
     this.#assertParameterContract(submission);
     const validated = this.options.validator.validate(submission, principal);
+    const snapshotManifest = this.#snapshots.resolve(submission);
     const now = this.#now().toISOString();
     const job: JobRecord = {
       jobId: newOpaqueId("query_job"),
@@ -82,7 +89,8 @@ export class WorldQueryRuntime {
       submission: structuredClone(submission),
       principal: structuredClone(principal),
       requestHash: sha256(submission),
-      cancellationRequested: false
+      cancellationRequested: false,
+      snapshotManifest
     });
     if (created.replayed) {
       return {
@@ -178,6 +186,7 @@ export class WorldQueryRuntime {
       throw new ProviderProtocolError("DEADLINE_EXCEEDED", "world query deadline elapsed while queued");
     }
     const validated = this.options.validator.validate(context.submission, context.principal);
+    const snapshotManifest = context.snapshotManifest ?? this.#snapshots.resolve(context.submission);
     const startedAt = context.job.startedAt ?? this.#now().toISOString();
     const runningJob: JobRecord = {
       ...context.job,
@@ -215,6 +224,9 @@ export class WorldQueryRuntime {
       if (!route) throw new Error(`validated route for ${node.nodeId} disappeared`);
       let runningNode: WorldQueryResultNodeResult | undefined;
       try {
+        if (snapshotManifest.resources.length === 0 && context.submission.snapshotPolicy?.mode === "LATEST_AT_START" && route.descriptor.dataBinding !== "WORLD_INDEPENDENT") {
+          this.#snapshots.assertAdherence(context.submission.snapshotPolicy, this.#snapshots.adherence(node.nodeId, route.descriptor, snapshotManifest));
+        }
         if (this.#now().getTime() >= deadline) {
           throw new ProviderProtocolError("DEADLINE_EXCEEDED", "world query plan deadline elapsed");
         }
@@ -264,10 +276,11 @@ export class WorldQueryRuntime {
           node.operation.operationId,
           request,
           context.principal,
-          context.gatewayJobId === undefined ? undefined : {
-            gatewayJobId: context.gatewayJobId,
+          {
+            ...(context.gatewayJobId === undefined ? {} : { gatewayJobId: context.gatewayJobId }),
             gatewayQueryId: context.submission.plan.queryId,
-            gatewayNodeId: node.nodeId
+            gatewayNodeId: node.nodeId,
+            requestedSnapshot: snapshotManifest
           }
         );
         if (await this.options.store.cancellationRequested(jobId)) {
@@ -277,6 +290,11 @@ export class WorldQueryRuntime {
           break;
         }
         const envelope = executed.result;
+        const adherence = this.#snapshots.adherence(node.nodeId, route.descriptor, snapshotManifest, envelope);
+        this.#snapshots.assertAdherence(context.submission.snapshotPolicy, adherence);
+        if (["ADVANCED_COMPATIBLE", "MISMATCHED", "UNSUPPORTED"].includes(adherence.status)) {
+          warnings.push(`${node.nodeId}: snapshot ${adherence.status}`);
+        }
         if (envelope.output !== undefined) {
           this.#assertValue(
             route.descriptor.outputSchemaUri,
@@ -327,7 +345,7 @@ export class WorldQueryRuntime {
         nodeResults.set(node.nodeId, failed);
         await this.options.store.putNode(jobId, failed);
         warnings.push(`${node.nodeId}: ${mapped.code}`);
-        failFast = node.failurePolicy === "FAIL_FAST";
+        failFast = mapped.details?.stage === "SNAPSHOT" || node.failurePolicy === "FAIL_FAST";
       }
     }
 
@@ -349,6 +367,7 @@ export class WorldQueryRuntime {
     const failed = orderedResults.some((node) => node.status === "FAILED");
     const partial = orderedResults.some((node) => ["PARTIAL", "NO_DATA", "SKIPPED"].includes(node.status));
     const outputs = this.#assembleOutputs(context.submission, nodeResults, validated.routes, warnings);
+    const snapshotAdherence = this.#snapshotAdherence(context.submission, orderedResults, validated.routes, snapshotManifest);
     const finishedAt = this.#now().toISOString();
     const status: WorldQueryResult["status"] = cancelled
       ? "CANCELLED"
@@ -365,6 +384,8 @@ export class WorldQueryRuntime {
       nodes: orderedResults,
       outputs,
       warnings,
+      snapshotManifest,
+      snapshotAdherence,
       startedAt,
       finishedAt,
       outputHash: sha256(outputs)
@@ -550,10 +571,30 @@ export class WorldQueryRuntime {
       nodes: context.submission.plan.nodes.map((node) => cancelledNode(node, finishedAt, 0)),
       outputs: {},
       warnings: ["Query was cancelled before execution"],
+      snapshotManifest: context.snapshotManifest ?? this.#snapshots.resolve(context.submission),
+      snapshotAdherence: context.submission.plan.nodes.map((node) => ({
+        nodeId: node.nodeId,
+        status: "UNSUPPORTED" as const,
+        checkedResources: 0,
+        mismatches: [{ resourceKind: "SNAPSHOT", resourceId: node.nodeId, reason: "RESOURCE_MISSING" as const }]
+      })),
       startedAt: context.job.startedAt ?? context.job.createdAt,
       finishedAt,
       outputHash: sha256({})
     };
+  }
+
+  #snapshotAdherence(
+    _submission: WorldQuerySubmission,
+    results: readonly WorldQueryResultNodeResult[],
+    routes: ReadonlyMap<string, ResolvedCapability>,
+    manifest: QuerySnapshotManifest
+  ): QuerySnapshotAdherence[] {
+    return results.map((node) => {
+      const route = routes.get(node.nodeId);
+      if (!route) return { nodeId: node.nodeId, status: "UNSUPPORTED", checkedResources: 0 };
+      return this.#snapshots.adherence(node.nodeId, route.descriptor, manifest, node.result);
+    });
   }
 }
 

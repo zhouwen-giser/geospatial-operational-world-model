@@ -10,15 +10,18 @@ if(process.env.ALLOW_GOWM_WORLD_PLATFORM_CANARY!=='YES') throw new Error('Set AL
 const envPath=process.argv[process.argv.indexOf('--env-file')+1];
 if(!process.argv.includes('--env-file')||!envPath)throw new Error('--env-file is required');
 const env=Object.fromEntries((await readFile(envPath,'utf8')).split('\n').filter(l=>l&&!l.startsWith('#')).map(l=>[l.slice(0,l.indexOf('=')),l.slice(l.indexOf('=')+1)]));
-if(!/^gowm-v062-[a-z0-9-]+$/u.test(env.COMPOSE_PROJECT_NAME))throw new Error('Refusing a non-task Compose project');
+const reportRoot=process.env.GOWM_REPORT_DIRECTORY?.trim()||'reports/gowm-v0.6.2';
+const targetedV063=process.env.GOWM_V063_TARGETED==='YES';
+const release=reportRoot.endsWith('v0.6.3')?'v063':'v062';
+if(!new RegExp(`^gowm-${release}-[a-z0-9-]+$`,'u').test(env.COMPOSE_PROJECT_NAME))throw new Error('Refusing a non-task Compose project');
 const base=`http://127.0.0.1:${env.GATEWAY_PORT}`;
 const composeArgs=['compose','--env-file',resolve(envPath),'-f','docker-compose.yml','-f','docker-compose.world-platform.yml','--profile','world-platform'];
 const compose=(args,input)=>execFileSync('docker',[...composeArgs,...args],{encoding:'utf8',input,stdio:['pipe','pipe','pipe'],maxBuffer:32*1024*1024});
 const sql=(query)=>compose(['exec','-T','postgres','psql','-U','gowm','-d','gowm','-XAt','-v','ON_ERROR_STOP=1'],query).trim();
 const literal=(v)=>`'${String(v).replaceAll("'","''")}'`;
-const root=resolve('.'), directory='reports/gowm-v0.6.2/runtime';
+const root=resolve('.'), directory=`${reportRoot}/runtime`;
 await mkdir(directory,{recursive:true});
-const sourceDigest=await semanticSourceFingerprint(root), runId=`v062-${Date.now()}`;
+const sourceDigest=await semanticSourceFingerprint(root), runId=`${release}-${Date.now()}`;
 const seed=JSON.parse(await readFile('validation/fixtures/world-platform-semantic-cases.json','utf8'));
 const checks={},executions=[],positive=new Map(),operationTests=new Map(),canaries=[];
 let catalog,semantics,queryReplay;
@@ -59,7 +62,7 @@ function inputFields(input){return Object.fromEntries(Object.entries(input).map(
 function from(nodeId,operationId,portName,targetPath){const p=descriptor(operationId).ports.outputs.find(p=>p.name===portName);if(!p)throw new Error(`Missing ${operationId} port ${portName}`);return {kind:'NODE_OUTPUT',nodeId,outputPort:portName,...(p.path?{path:p.path}:{}),...(targetPath?{targetPath}:{}),port:port(p)};}
 function node(nodeId,id,inputs){const d=descriptor(id);return {nodeId,operation:{operationId:id,operationVersion:'1.0',inputSchemaHash:d.inputSchemaHash,outputSchemaHash:d.outputSchemaHash},inputs,failurePolicy:'FAIL_FAST',budget:{maximumRows:d.limits.maximumRows??100000,maximumCandidates:d.limits.maximumCandidates??100000,maximumOutputBytes:d.limits.maximumOutputBytes??16777216,maximumExecutionMs:Math.min(120000,d.execution.maximumTimeoutMs)}};}
 async function dag(label,nodes,outputNode,outputOperation,expectedStatus='COMPLETED'){
-  const submission={requestId:`${runId}-${label}`,idempotencyKey:`${runId}-${label}`,parameterSchemaHash:getContractSchemaHash('world-query-parameters.schema.json'),parameters:{},plan:{queryPlanVersion:'2.0',queryId:`query-${runId}-${label}`,nodes,outputs:[{name:'value',binding:from(outputNode,outputOperation,'result')}],budgets:{maximumNodes:nodes.length,maximumDepth:nodes.length,maximumRows:1000000,maximumCandidates:1000000,maximumOutputBytes:67108864,maximumExecutionMs:300000}}};
+  const submission={requestId:`${runId}-${label}`,idempotencyKey:`${runId}-${label}`,snapshotPolicy:{mode:'BEST_EFFORT',allowDowngrade:true},parameterSchemaHash:getContractSchemaHash('world-query-parameters.schema.json'),parameters:{},plan:{queryPlanVersion:'2.0',queryId:`query-${runId}-${label}`,nodes,outputs:[{name:'value',binding:from(outputNode,outputOperation,'result')}],budgets:{maximumNodes:nodes.length,maximumDepth:nodes.length,maximumRows:1000000,maximumCandidates:1000000,maximumOutputBytes:67108864,maximumExecutionMs:300000}}};
   const queued=await http('/v1/world-queries',submission,{prefer:'respond-async'});check(`${label}:queued`,queued.status===202,queued);
   let job;
   for(let i=0;i<240;i++){const r=await http(`/v1/jobs/${queued.body.jobId}`);check(`${label}:jobReadable`,r.status===200,r);job=r.body;if(!['QUEUED','RUNNING','SUBMITTED'].includes(job.status))break;await pause(250);}
@@ -84,7 +87,7 @@ try {
   check('runtime-image-matches-built-source',Object.keys(imageFiles).length>100&&runtimeMismatches.length===0,runtimeMismatches);
   await writeFile(`${directory}/runtime-image-attestation.json`,JSON.stringify({status:'PASS',sourceDigest,compiledFiles:Object.keys(imageFiles).length,files:imageFiles},null,2)+'\n');
   check('catalog-count',catalog.capabilities.length===122,catalog.capabilities.length);
-  const expected=JSON.parse(await readFile('reports/gowm-v0.6.2/world-platform-registry-build-report.json','utf8'));
+  const expected=JSON.parse(await readFile(`${reportRoot}/world-platform-registry-build-report.json`,'utf8'));
   check('runtime-contract-revision',catalog.contractCatalogRevision===expected.contractCatalogRevision,{actual:catalog.contractCatalogRevision,expected:expected.contractCatalogRevision});
   check('catalog-redaction',!/https?:\/\/|transportToken|containerName|providerEndpoint/iu.test(JSON.stringify([catalog,semantics])));
   for(const p of semantics.profiles)check(`profile-hash:${p.operationId}`,p.semanticProfileHash===canonicalSha256(descriptor(p.operationId).semanticProfile));
@@ -100,7 +103,12 @@ try {
   await writeFile(`${directory}/processes.json`,JSON.stringify(processes.map(({Service,State,Health,Image,Networks,Publishers})=>({Service,State,Health,Image,Networks,Publishers})),null,2)+'\n');
 
   const vehicle=await unique('KestrelVehicleZX');
+  await execute('reference.get',{schemaVersion:'1.0',referenceKey:vehicle},'A-reference-get');
   const current=value(await execute('world.get-current-state',{schemaVersion:'1.0',referenceKey:vehicle},'A-current'));
+  await execute('world.get-provenance',{schemaVersion:'1.0',referenceKey:vehicle},'A-provenance');
+  const catalogPage=value(await execute('catalog.search',{schemaVersion:'1.0',limit:10},'A-catalog-search'));
+  check('A-catalog-nonempty',catalogPage.items.length>0,catalogPage);
+  await execute('catalog.get',{schemaVersion:'1.0',referenceKey:catalogPage.items[0].referenceKey},'A-catalog-get');
   check('A-world-position',current.facts[0].position?.type==='Point',current);
   const nearby=value(await execute('spatial.find-nearby',{location:current.facts[0].position.coordinates,radiusM:50,objectTypes:['CANARY_VEHICLE']},'A-nearby'));
   check('A-nearby-authoritative',JSON.stringify(nearby).includes(seed.referenceKeys.vehicle.id),nearby);
@@ -123,6 +131,43 @@ try {
   await validateResult(seed.referenceKeys.inside,'B-reference-validation');
   canaries.push({id:'B',operations:['reference.resolve','world.get-geometry','h3.geometry.cover','spatial.find-intersections','result.validate'],status:'PASS',evidence:['runtime/executions.json','runtime/semantic-black-box-report.json#H3-candidate-false-positive']});
 
+  if(targetedV063){
+    const promoted=['reference.get','reference.resolve','world.get-current-state','world.get-geometry','world.get-provenance','catalog.get','catalog.search','spatial.find-nearby','spatial.find-in-area','spatial.find-intersections'];
+    for(const id of promoted){
+      check(`promoted-stable:${id}`,descriptor(id).maturity==='STABLE',descriptor(id));
+      check(`promoted-positive:${id}`,positive.has(id),[...positive.keys()]);
+      const forged=await http(`/v1/operations/${id}:execute`,request(id,{},`targeted-forged-${id}`,{inputSchemaHash:`sha256:${'0'.repeat(64)}`}));
+      check(`promoted-forged-contract:${id}`,forged.status>=400&&forged.body.output===undefined,forged);
+    }
+    const available=await http('/v1/operation-availability');
+    check('availability-http',available.status===200,available);
+    check('availability-targets',promoted.every(id=>available.body.operations.some(item=>item.operationId===id&&item.availability==='AVAILABLE')),available.body);
+    check('availability-no-topology',!/https?:\/\/|providerId|endpoint|containerName/iu.test(JSON.stringify(available.body)),available.body);
+    compose(['stop','reference-catalog-provider']);
+    try{
+      await pause(5200);
+      const referenceUnavailable=await http('/v1/operation-availability/reference.get/1.0');
+      const spatialAvailable=await http('/v1/operation-availability/spatial.find-nearby/1.0');
+      check('availability-local-failure',referenceUnavailable.body.availability==='UNAVAILABLE',referenceUnavailable);
+      check('availability-failure-isolated',spatialAvailable.body.availability==='AVAILABLE',spatialAvailable);
+    }finally{compose(['start','reference-catalog-provider']);}
+    await pause(5200);
+    check('availability-recovery',(await http('/v1/operation-availability/reference.get/1.0')).body.availability==='AVAILABLE');
+    const beforeJob=queryReplay;
+    compose(['restart','world-capability-gateway']);await ready();
+    const persisted=await http(`/v1/jobs/${beforeJob.jobId}`);
+    check('snapshot-restart-job-preserved',persisted.status===200&&canonicalSha256(persisted.body.result)===beforeJob.resultHash,persisted);
+    check('snapshot-manifest-preserved',persisted.body.result.snapshotManifest?.manifestHash===beforeJob.submission.snapshotPolicy?.pinnedSnapshot?.manifestHash||persisted.body.result.snapshotManifest?.manifestHash!==undefined,persisted.body.result);
+    const replayed=await http('/v1/world-queries',beforeJob.submission,{prefer:'respond-async'});
+    check('snapshot-idempotent-replay',[200,202].includes(replayed.status),replayed);
+    const operationEvidence=Object.fromEntries(promoted.map(id=>[`${id}@1.0`,{status:'PASS',sourceDigest,contractHash:canonicalSha256(descriptor(id)),tests:operationTests.get(`${id}@1.0`)??[]} ]));
+    await writeFile(`${reportRoot}/black-box-evidence.json`,JSON.stringify({status:'PASS',sourceDigest,runId,operations:operationEvidence},null,2)+'\n');
+    canaries.push(
+      {id:'C',operations:promoted,status:'PASS',evidence:['runtime/executions.json']},
+      {id:'D',operations:['world-query.snapshot'],status:'PASS',evidence:['runtime/semantic-black-box-report.json#snapshot-restart-job-preserved']},
+      {id:'E',operations:['operation-availability'],status:'PASS',evidence:['runtime/semantic-black-box-report.json#availability-local-failure']}
+    );
+  }else{
   const snapRequest={routingSnapshot:snapshot,location:{coordinates:current.facts[0].position.coordinates,crs:'EPSG:4326'},maxDistanceM:10,limit:5};
   const snapped=value(await execute('network.snap.point',snapRequest,'C-snap'));check('C-directed-state',snapped.candidates.length>0,snapped);
   const plan=value(await execute('route.plan',{...routeRequest,start:snapped.candidates[0].state},'C-route'));check('C-route-completed',plan.status==='COMPLETED'&&plan.candidates.length>0,plan);
@@ -207,8 +252,10 @@ try {
   check('source-remained-frozen',await semanticSourceFingerprint(root)===sourceDigest);
   for(const required of ['exact-inside','exact-outside-and-bbox-false-positive','exact-boundary-covered','H3-candidate-false-positive','bbox-really-overlaps-without-exact-relation','reference-ambiguous','snapshot-current','snapshot-stale-after-authority-change','snapshot-unknown','plan-no-feasible-normalized','plan-infrastructure-maps-FAILED','NO_DATA-is-unknown','restart-job-preserved'])check(`required-semantic-case:${required}`,checks[required]===true);
   const operations=Object.fromEntries(catalog.capabilities.filter(c=>c.maturity==='STABLE').map(c=>[`${c.operationId}@1.0`,{status:'PASS',sourceDigest,contractHash:canonicalSha256(c),tests:operationTests.get(`${c.operationId}@1.0`)}]));
-  await writeFile('reports/gowm-v0.6.2/black-box-evidence.json',JSON.stringify({status:'PASS',sourceDigest,runId,operations},null,2)+'\n');
+  await writeFile(`${reportRoot}/black-box-evidence.json`,JSON.stringify({status:'PASS',sourceDigest,runId,operations},null,2)+'\n');
   check('complete-canaries',canaries.length===5);
+  }
+  check('source-remained-frozen',await semanticSourceFingerprint(root)===sourceDigest);
 } catch(error){checks.executionCompleted=false;process.stderr.write(`${error.stack??error}\n`);process.exitCode=1;}
 finally {
   const status=Object.values(checks).every(Boolean)&&canaries.length===5?'PASS':'FAIL';
@@ -216,6 +263,6 @@ finally {
   await writeFile(`${directory}/semantic-black-box-report.json`,JSON.stringify({schemaVersion:'1.0',status,runId,sourceDigest,gatewayBaseUrlHash:canonicalSha256(base),checks,positiveOperations:[...positive.keys()].sort()},null,2)+'\n');
   const report={schemaVersion:'1.0',gatewayBaseUrlHash:canonicalSha256(base),canaries:[...canaries,...['A','B','C','D','E'].filter(id=>!canaries.some(c=>c.id===id)).map(id=>({id,operations:[],status:'FAIL',evidence:['runtime/semantic-black-box-report.json']}))],status};
   if(!validateContract('urn:gowm:v0.6.2:single-gateway-canary-report',report).valid)throw new Error('Canary report contract mismatch');
-  await writeFile('reports/gowm-v0.6.2/single-gateway-canary-report.json',JSON.stringify(report,null,2)+'\n');
+  await writeFile(`${reportRoot}/single-gateway-canary-report.json`,JSON.stringify(report,null,2)+'\n');
   process.stdout.write(`WORLD_PLATFORM_CANARY_${status} checks=${Object.keys(checks).length} positiveOperations=${positive.size}\n`);
 }

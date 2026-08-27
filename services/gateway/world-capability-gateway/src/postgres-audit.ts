@@ -22,7 +22,12 @@ export class PostgresAuditSink implements AuditSink {
         event.outputHash ?? null,
         event.requestId,
         event.errorCode ?? null,
-        JSON.stringify({ elapsedMs: event.elapsedMs ?? null, replayed: event.outcome === "REPLAYED" }),
+        JSON.stringify({
+          elapsedMs: event.elapsedMs ?? null,
+          replayed: event.outcome === "REPLAYED",
+          ...(event.delegationJtiHash === undefined ? {} : { delegationJtiHash: event.delegationJtiHash }),
+          ...(event.authorizationContextHash === undefined ? {} : { authorizationContextHash: event.authorizationContextHash })
+        }),
         event.occurredAt
       ]
     );

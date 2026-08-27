@@ -52,6 +52,11 @@ export interface GatewayServerConfig {
   dataScopeClaim?: string;
   datasetScopeClaim?: string;
   allowExperimental: boolean;
+  authenticationMode: "STATIC_SERVICE" | "SIGNED_DELEGATION_V1";
+  delegationIssuer?: string;
+  delegationAudience?: string;
+  delegationPublicKey?: string;
+  delegationMaximumTtlSeconds: number;
   queryWorkerPollMs: number;
   queryWorkerLeaseSeconds: number;
   queryWorkerMaximumClaimsPerTick: number;
@@ -74,6 +79,13 @@ export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.e
   if (!["postgres:", "postgresql:"].includes(database.protocol)) throw new Error("DATABASE_URL must use PostgreSQL");
   const dataScopeClaim = optional(env, "GATEWAY_DATA_SCOPE_CLAIM");
   const datasetScopeClaim = optional(env, "GATEWAY_DATASET_SCOPE_CLAIM");
+  const authenticationMode = authenticationModeValue(env.GATEWAY_AUTH_MODE);
+  const delegationIssuer = optional(env, "GATEWAY_DELEGATION_ISSUER");
+  const delegationAudience = optional(env, "GATEWAY_DELEGATION_AUDIENCE");
+  const delegationPublicKey = optional(env, "GATEWAY_DELEGATION_PUBLIC_KEY");
+  if (authenticationMode === "SIGNED_DELEGATION_V1" && (!delegationIssuer || !delegationAudience || !delegationPublicKey)) {
+    throw new Error("SIGNED_DELEGATION_V1 requires GATEWAY_DELEGATION_ISSUER, GATEWAY_DELEGATION_AUDIENCE and GATEWAY_DELEGATION_PUBLIC_KEY");
+  }
   return {
     registryProfile: document.registryProfile ?? "legacy",
     host: env.GATEWAY_HOST?.trim() || "0.0.0.0",
@@ -87,12 +99,25 @@ export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.e
     ...(dataScopeClaim === undefined ? {} : { dataScopeClaim }),
     ...(datasetScopeClaim === undefined ? {} : { datasetScopeClaim }),
     allowExperimental: env.GATEWAY_ALLOW_EXPERIMENTAL === "true",
+    authenticationMode,
+    ...(delegationIssuer === undefined ? {} : { delegationIssuer }),
+    ...(delegationAudience === undefined ? {} : { delegationAudience }),
+    ...(delegationPublicKey === undefined ? {} : { delegationPublicKey: delegationPublicKey.replaceAll("\\n", "\n") }),
+    delegationMaximumTtlSeconds: boundedInteger(env.GATEWAY_DELEGATION_MAX_TTL_SECONDS, 300, 1, 300, "GATEWAY_DELEGATION_MAX_TTL_SECONDS"),
     queryWorkerPollMs: boundedInteger(env.GATEWAY_QUERY_WORKER_POLL_MS, 1_000, 100, 60_000, "GATEWAY_QUERY_WORKER_POLL_MS"),
     queryWorkerLeaseSeconds: boundedInteger(env.GATEWAY_QUERY_WORKER_LEASE_SECONDS, 600, 1, 3_600, "GATEWAY_QUERY_WORKER_LEASE_SECONDS"),
     queryWorkerMaximumClaimsPerTick: boundedInteger(env.GATEWAY_QUERY_WORKER_MAX_CLAIMS, 8, 1, 64, "GATEWAY_QUERY_WORKER_MAX_CLAIMS"),
     providers,
     registryConfigPath
   };
+}
+
+function authenticationModeValue(raw: string | undefined): "STATIC_SERVICE" | "SIGNED_DELEGATION_V1" {
+  const value = raw?.trim() || "STATIC_SERVICE";
+  if (value !== "STATIC_SERVICE" && value !== "SIGNED_DELEGATION_V1") {
+    throw new Error("GATEWAY_AUTH_MODE must be STATIC_SERVICE or SIGNED_DELEGATION_V1");
+  }
+  return value;
 }
 
 export async function loadControlledProviderDeployments(

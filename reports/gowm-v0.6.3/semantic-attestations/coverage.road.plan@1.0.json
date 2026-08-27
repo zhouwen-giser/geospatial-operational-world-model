@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.road-coverage-planning",
+  "operationId": "coverage.road.plan",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:733c634a3dd7d695e804f4fec096e7be7bc4c77f456ac0c0f87dd4aa08eff78b",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/road-coverage-provider.json",
+      "sha256": "0b332d370c557011b5693386f81a054372b13007b4c7dbddccf0fce85ab07b79"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/road-coverage-provider.json",
+      "sha256": "0b332d370c557011b5693386f81a054372b13007b4c7dbddccf0fce85ab07b79"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6/road-coverage-request.schema.json",
+      "sha256": "01a1ff79cfdb0277f25e500c4fd6662564e25e15ad03be7f241d03047cc2100e"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6/coverage-result-set.schema.json",
+      "sha256": "6780705366b28bf95ee1868b48587839f50acbe5aa950b3ed256b7d64bd30c50"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/road-coverage-provider/src/provider.ts",
+      "sha256": "641167d3f0eb74bb8854299407515096b15ac5b6e43c9cee786f4b89f98795a3",
+      "symbol": "createRoadCoverageProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/unit/coverage-provider-protocol.test.ts",
+      "sha256": "fc76141f2036cf8d9d98f9a4c1d3a4b5081ec1170062bb414224b810c03db321"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/059_coverage_area_reference_read_contract.sql",
+      "sha256": "eb95dd08ef93cf18e3e85fc4353fc851ace004d1e4689b4194bb9537a7797d15"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "packages/road-coverage-verifier-core/src/verification.ts",
+      "sha256": "74517207a87215381c695371a7edb95753f3486ecfb2730f746ccbdf69912afe",
+      "symbol": "verifyCoverageRoute"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Plans are derived against pinned graph/currentness inputs and independently verified by the named implementation; no live-world guarantee follows from mathematical validity.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

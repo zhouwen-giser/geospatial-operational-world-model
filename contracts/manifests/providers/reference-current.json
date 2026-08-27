@@ -61,7 +61,7 @@
         "VERSIONED_SQL_CONTRACT"
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
-      "maturity": "PREVIEW",
+      "maturity": "STABLE",
       "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
       "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
       "outputSchemaUri": "urn:gowm:v0.4:reference-descriptor",
@@ -159,7 +159,7 @@
         "VERSIONED_SQL_CONTRACT"
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
-      "maturity": "PREVIEW",
+      "maturity": "STABLE",
       "inputSchemaUri": "urn:gowm:v0.4:reference-resolve-request",
       "inputSchemaHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
       "outputSchemaUri": "urn:gowm:v0.4:reference-resolve-result",

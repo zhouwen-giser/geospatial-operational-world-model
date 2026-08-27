@@ -8,11 +8,18 @@ import type { GatewayPrincipal } from "./types.js";
  */
 export function principalContextHash(principal: Pick<
   GatewayPrincipal,
-  "principalRef" | "dataScopeClaim" | "datasetScopeClaim"
+  "principalRef" | "servicePrincipalRef" | "actorRef" | "dataScopeClaim" | "datasetScopeClaim" | "allowedOperations"
 >): `sha256:${string}` {
   return sha256({
     principalRef: principal.principalRef,
+    servicePrincipalRef: principal.servicePrincipalRef ?? principal.principalRef,
+    actorRef: principal.actorRef ?? principal.principalRef,
     dataScopeClaim: principal.dataScopeClaim ?? null,
-    datasetScopeClaim: principal.datasetScopeClaim ?? null
+    datasetScopeClaim: principal.datasetScopeClaim ?? null,
+    allowedOperationSetHash: sha256([...(principal.allowedOperations ?? [])].sort())
   });
+}
+
+export function operationAllowed(principal: GatewayPrincipal, operationId: string, operationVersion: string): boolean {
+  return principal.allowedOperations === undefined || principal.allowedOperations.includes(`${operationId}@${operationVersion}`);
 }
