@@ -1,0 +1,33 @@
+{
+  "goal": "GOWM+ v0.6.3 Grounding Core Stabilization",
+  "status": "IN_PROGRESS",
+  "phase": "A00",
+  "baseline": {
+    "branch": "main",
+    "commitAtGeneration": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee",
+    "fetchedCommit": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee",
+    "version": "0.6.2"
+  },
+  "candidate": {
+    "branch": "codex/gowm-grounding-core-stabilization-v0.6.3",
+    "version": "0.6.3",
+    "localSha": null,
+    "remoteSha": null,
+    "baseSha": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee"
+  },
+  "milestones": {
+    "groundingCoreStable": false,
+    "consumerContractArtifactReady": false,
+    "delegatedIdentitySkeletonReady": false,
+    "querySnapshotCoordinationReady": false,
+    "operationAvailabilityReady": false,
+    "stableCandidate": false
+  },
+  "acceptance": {
+    "passed": ["AC-B001", "AC-B002", "AC-B003", "AC-B004", "AC-B005", "AC-B006", "AC-B007", "AC-B008"],
+    "failed": [],
+    "notRun": ["A00", "G00-G03", "C00", "I00-I01", "Q00-Q01", "O00-O01", "S00", "F00-F01"]
+  },
+  "blockers": [],
+  "next": "Freeze v0.6.3 contracts and build the grounding qualification harness."
+}

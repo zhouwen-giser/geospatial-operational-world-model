@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "repository": "zhouwen-giser/geospatial-operational-world-model",
+  "observedAt": "2026-08-27T05:05:21Z",
+  "packageGenerationSha": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee",
+  "fetchedMainSha": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee",
+  "baseVersion": "0.6.2",
+  "targetVersion": "0.6.3",
+  "branch": "codex/gowm-grounding-core-stabilization-v0.6.3",
+  "forwardDrift": false,
+  "baselineVerification": {
+    "verify": "PASS",
+    "worldPlatformRegression": "PASS"
+  }
+}

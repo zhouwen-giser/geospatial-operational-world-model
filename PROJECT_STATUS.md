@@ -1,19 +1,17 @@
 # Project status
 
-Last updated: 2026-08-26
+Last updated: 2026-08-27
 
 ## Current candidate
 
-GOWM+ **0.6.2 — Unified World Gateway & Explicit Capability Semantics**.
-Baseline: `main@55ebd33ce1f75537fa7a95c9f0dc538bf6d430c1` (0.6.1).
-Work is isolated on `codex/gowm-world-platform-gateway-semantics-v0.6.2`.
-[PR #7](https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/7).
+GOWM+ **0.6.3 — Grounding Core Stabilization & Consumer Integration Surface**.
+Baseline: merged `main@537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee`
+(0.6.2). Work is isolated on
+`codex/gowm-grounding-core-stabilization-v0.6.3`.
 
-The final decision is bound to the exact commit in
-`/tmp/gowm-v062-final-delivery.json` and the PR completion comment. The committed
-preflight keeps three delivery checks pending until local/remote SHA equality,
-OPEN Ready PR state, and completion markers are verified. It must not be read as
-an independent final delivery receipt.
+The 0.6.2 Unified World Gateway & Explicit Capability Semantics work was merged
+by PR #7. Its reports remain historical evidence; the 0.6.3 decision is bound
+to fresh evidence under `reports/gowm-v0.6.3` and the exact candidate SHA.
 
 ## Scope and authority
 

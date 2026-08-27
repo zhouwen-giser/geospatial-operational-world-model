@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "phase": "B00",
+  "status": "PASS",
+  "sourceSha": "537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee",
+  "cases": [
+    { "id": "AC-B001", "status": "PASS", "evidence": "reports/gowm-v0.6.3/source-lock.json" },
+    { "id": "AC-B002", "status": "PASS", "evidence": "isolated worktree and untouched primary checkout" },
+    { "id": "AC-B003", "status": "PASS", "evidence": "npm run verify; npm run validate:world-platform-regression" },
+    { "id": "AC-B004", "status": "PASS", "evidence": "PROJECT_STATUS.md" },
+    { "id": "AC-B005", "status": "PASS", "evidence": "world-platform boundary regression" },
+    { "id": "AC-B006", "status": "PASS", "evidence": "source diff from base" },
+    { "id": "AC-B007", "status": "PASS", "evidence": "world-platform boundary regression" },
+    { "id": "AC-B008", "status": "PASS", "evidence": "world-platform boundary regression" }
+  ],
+  "commands": [
+    { "command": "npm run verify", "status": "PASS" },
+    { "command": "npm run validate:world-platform-regression", "status": "PASS" }
+  ]
+}
