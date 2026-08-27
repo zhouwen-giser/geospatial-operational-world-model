@@ -59,7 +59,7 @@
         "VERSIONED_SQL_CONTRACT"
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
-      "maturity": "PREVIEW",
+      "maturity": "STABLE",
       "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
       "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
       "outputSchemaUri": "urn:gowm:v0.4:world-fact-result",
@@ -163,7 +163,7 @@
         "VERSIONED_SQL_CONTRACT"
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
-      "maturity": "PREVIEW",
+      "maturity": "STABLE",
       "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
       "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
       "outputSchemaUri": "urn:gowm:v0.4:world-fact-result",
@@ -257,7 +257,7 @@
         "VERSIONED_SQL_CONTRACT"
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
-      "maturity": "PREVIEW",
+      "maturity": "STABLE",
       "inputSchemaUri": "urn:gowm:v0.4:catalog-query-request",
       "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
       "outputSchemaUri": "urn:gowm:v0.4:world-fact-result",

@@ -89,6 +89,10 @@
         "maximumCostClass": { "enum": ["LOW", "MEDIUM", "HIGH"] }
       }
     },
-    "dataSnapshot": { "$ref": "data-snapshot-context.schema.json" }
+    "dataSnapshot": { "$ref": "data-snapshot-context.schema.json" },
+    "requestedSnapshot": {
+      "description": "Gateway-resolved logical resource-version constraints. This is not a shared database transaction snapshot.",
+      "$ref": "../gowm-v0.6.3/query-snapshot-manifest.schema.json"
+    }
   }
 }

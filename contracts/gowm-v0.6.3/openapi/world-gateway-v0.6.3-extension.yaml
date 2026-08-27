@@ -1,0 +1,46 @@
+openapi: 3.1.0
+info:
+  title: GOWM World Gateway v0.6.3 Extension
+  version: 0.6.3
+paths:
+  /v1/operation-availability:
+    get:
+      operationId: listOperationAvailability
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Operation-level runtime availability without Provider topology
+          content:
+            application/json:
+              schema:
+                $ref: ../operation-availability-list.schema.json
+  /v1/operation-availability/{operationId}/{operationVersion}:
+    get:
+      operationId: getOperationAvailability
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: operationId
+          required: true
+          schema: { type: string }
+        - in: path
+          name: operationVersion
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: One operation availability
+          content:
+            application/json:
+              schema:
+                $ref: ../operation-availability.schema.json
+        "404": { description: Operation/version not registered }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer }
+  schemas:
+    DelegationTokenClaims: { $ref: ../delegation-token-claims.schema.json }
+    DelegatedPrincipalContext: { $ref: ../delegated-principal-context.schema.json }
+    QuerySnapshotPolicy: { $ref: ../query-snapshot-policy.schema.json }
+    QuerySnapshotManifest: { $ref: ../query-snapshot-manifest.schema.json }
+    QuerySnapshotAdherence: { $ref: ../query-snapshot-adherence.schema.json }

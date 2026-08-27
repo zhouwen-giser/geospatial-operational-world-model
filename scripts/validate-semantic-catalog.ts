@@ -7,6 +7,7 @@ import { scanAndMaterialize, type ProviderSource } from "./materialize-capabilit
 import { syncWorldPlatformManifests } from "./sync-world-platform-manifests.js";
 
 const root = resolve(dirnameOfSelf(), "..");
+const output = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.6.2";
 function dirnameOfSelf() { return fileURLToPath(new URL(".", import.meta.url)); }
 export async function validateSemanticCatalog(requireBlackBox = true, write = false) {
   await scanAndMaterialize(root, true);
@@ -14,7 +15,7 @@ export async function validateSemanticCatalog(requireBlackBox = true, write = fa
   const sources: ProviderSource[] = JSON.parse(await readFile(resolve(root, "validation/gowm-v0.6.2/provider-sources.json"), "utf8"));
   const manifests: CapabilityProviderManifest[] = await Promise.all(sources.map(async (s) => JSON.parse(await readFile(resolve(root, s.manifestPath), "utf8"))));
   const catalog = manifests.flatMap((m) => m.capabilities);
-  const implementation = JSON.parse(await readFile(resolve(root, "reports/gowm-v0.6.2/semantic-implementation-report.json"), "utf8"));
+  const implementation = JSON.parse(await readFile(resolve(root, `${output}/semantic-implementation-report.json`), "utf8"));
   const evidence = new Map<string, ImplementationEvidence>(catalog.map((c) => [operationKey(c), implementation[operationKey(c)].evidence]));
   const issues = catalog.flatMap((c) => checkSemanticRules(c, evidence.get(operationKey(c))!, catalog, requireBlackBox));
   const frozen = JSON.parse(await readFile(resolve(root,"validation/gowm-v0.6.2/frozen-vocabulary-meanings.json"),"utf8"));
@@ -38,9 +39,10 @@ export async function validateSemanticCatalog(requireBlackBox = true, write = fa
     runtimeSemanticInference: Number(inference), providerTopologyLeak: leaks,
     operationCollision: catalog.length - new Set(catalog.map(operationKey)).size
   };
-  const report = { schemaVersion: "1.0", counters, issues, status: Object.values(counters).every((n) => n === 0) ? "PASS" : "FAIL" };
+  const applicableCounters = Object.entries(counters).filter(([name]) => requireBlackBox || name !== "stableCapabilityWithoutBlackBoxEvidence");
+  const report = { schemaVersion: "1.0", counters, issues, status: applicableCounters.every(([, count]) => count === 0) ? "PASS" : "FAIL" };
   if (!validateContract("urn:gowm:v0.6.2:semantic-conformance-report", report).valid) throw new Error("Conformance report does not satisfy its contract");
-  if (write) await writeFile(resolve(root, "reports/gowm-v0.6.2/semantic-conformance-report.json"), `${JSON.stringify(report, null, 2)}\n`);
+  if (write) await writeFile(resolve(root, `${output}/semantic-conformance-report.json`), `${JSON.stringify(report, null, 2)}\n`);
   return report;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

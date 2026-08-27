@@ -12,6 +12,7 @@ import type { GatewayPrincipal } from "./types.js";
 import type { WorldQueryRuntime } from "./query-plan-runtime.js";
 import { publicErrorMessage, redactPublicDetails } from "./redaction.js";
 import { projectCapabilitySemantics } from "./capability-semantics.js";
+import type { OperationAvailabilityService } from "./operation-availability.js";
 
 export interface GatewayAppOptions {
   registry: CapabilityRegistry;
@@ -19,6 +20,7 @@ export interface GatewayAppOptions {
   authenticate(request: FastifyRequest): Promise<GatewayPrincipal>;
   records?: GatewayRecordStore;
   worldQueries?: WorldQueryRuntime;
+  availability?: OperationAvailabilityService;
   readiness?: () => Promise<boolean>;
   logger?: boolean;
 }
@@ -98,6 +100,25 @@ export function buildGatewayApp(options: GatewayAppOptions): FastifyInstance {
       .find((candidate) => candidate.operationId === operationId && candidate.operationVersion === operationVersion);
     return profile ?? reply.code(404).send(platformError(normalizeRequestId(request.id), "VERSION_NOT_FOUND", "semantic profile is not registered", "REGISTRY_RESOLUTION"));
   });
+
+  if (options.availability) {
+    app.get("/v1/operation-availability", async (request) => {
+      const principal = await options.authenticate(request);
+      return options.availability!.list(principal);
+    });
+
+    app.get("/v1/operation-availability/:operationId/:operationVersion", async (request, reply) => {
+      const principal = await options.authenticate(request);
+      const { operationId, operationVersion } = request.params as { operationId: string; operationVersion: string };
+      const availability = await options.availability!.get(operationId, operationVersion, principal);
+      return availability ?? reply.code(404).send(platformError(
+        normalizeRequestId(request.id),
+        "VERSION_NOT_FOUND",
+        "operation availability is not registered",
+        "REGISTRY_RESOLUTION"
+      ));
+    });
+  }
 
   app.post("/v1/operations/*", async (request, reply) => {
     const suffix = (request.params as { "*": string })["*"];

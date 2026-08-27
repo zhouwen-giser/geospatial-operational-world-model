@@ -16,6 +16,8 @@ import { QueryPlanValidator } from "./query-plan-validation.js";
 import { CapabilityRegistry } from "./registry.js";
 import type { GatewayPrincipal } from "./types.js";
 import { PostgresWorldQueryWorker } from "./world-query-worker.js";
+import { createGatewayAuthenticator } from "./delegated-identity.js";
+import { OperationAvailabilityService } from "./operation-availability.js";
 
 export interface GatewayRuntime {
   app: ReturnType<typeof buildGatewayApp>;
@@ -59,9 +61,10 @@ export async function createGatewayRuntime(config: GatewayServerConfig): Promise
     }
 
     const records = new PostgresGatewayRecordStore(pool);
+    const circuits = new ProviderCircuitBreaker();
     const directExecution = new DirectExecutionService({
       registry,
-      circuits: new ProviderCircuitBreaker(),
+      circuits,
       idempotency: new PostgresGatewayIdempotencyStore(pool, {
         leaseOwner: `${config.gatewayId}:${process.pid}`
       }),
@@ -87,9 +90,10 @@ export async function createGatewayRuntime(config: GatewayServerConfig): Promise
     const app = buildGatewayApp({
       registry,
       directExecution,
-      authenticate: createStaticBearerAuthenticator(config),
+      authenticate: createGatewayAuthenticator(config, () => registry.catalog().map((descriptor) => `${descriptor.operationId}@${descriptor.operationVersion}`)),
       records,
       worldQueries,
+      availability: new OperationAvailabilityService({ registry, circuits }),
       readiness: async () => {
         let timer: NodeJS.Timeout | undefined;
         const timeout = new Promise<boolean>((resolve) => {

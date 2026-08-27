@@ -12,6 +12,9 @@
     "parameters": { "type": "object", "maxProperties": 256 },
     "parameterSchemaHash": {
       "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+    },
+    "snapshotPolicy": {
+      "$ref": "../gowm-v0.6.3/query-snapshot-policy.schema.json"
     }
   }
 }

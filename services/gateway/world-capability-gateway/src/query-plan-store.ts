@@ -1,5 +1,6 @@
 import type {
   JobRecord,
+  QuerySnapshotManifest,
   WorldQueryResultNodeResult,
   WorldQuerySubmission
 } from "../../../../packages/platform/contract-runtime/src/index.js";
@@ -16,6 +17,7 @@ export interface QueryJobContext {
   /** Internal PostgreSQL Gateway Job identity; never accepted from a public request. */
   gatewayJobId?: string;
   executionFence?: QueryExecutionFence;
+  snapshotManifest?: QuerySnapshotManifest;
 }
 
 export interface QueryExecutionFence {

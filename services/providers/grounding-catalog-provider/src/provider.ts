@@ -91,6 +91,16 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
   };
 }
 
+const STABLE_GROUNDING_OPERATIONS = new Set<GroundingCatalogOperationId>([
+  "reference.get",
+  "reference.resolve",
+  "world.get-current-state",
+  "world.get-geometry",
+  "world.get-provenance",
+  "catalog.get",
+  "catalog.search"
+]);
+
 function operation(operationId: GroundingCatalogOperationId, repository: GroundingCatalogRepository): ProviderOperation {
   const schemas = GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId];
   const datasetOperation = operationId.startsWith("dataset.") || operationId.startsWith("layer.") || operationId.startsWith("feature.") || operationId.startsWith("catalog.");
@@ -105,7 +115,7 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
     resultSemantics: "DATA_QUERY",
     executionBindings: ["SYNC_HTTP", "VERSIONED_SQL_CONTRACT"],
     criticalPathPolicy: "REMOTE_ONLY",
-    maturity: "PREVIEW",
+    maturity: STABLE_GROUNDING_OPERATIONS.has(operationId) ? "STABLE" : "PREVIEW",
     inputSchemaUri: schemas.inputSchemaUri,
     inputSchemaHash: schemas.inputSchemaHash,
     outputSchemaUri: schemas.outputSchemaUri,

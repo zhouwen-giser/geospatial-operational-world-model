@@ -96,6 +96,12 @@ export function createSpatialProviderBridge(options: SpatialProviderBridgeOption
   };
 }
 
+const STABLE_GROUNDING_OPERATIONS = new Set<SpatialOperationId>([
+  "spatial.find-nearby",
+  "spatial.find-in-area",
+  "spatial.find-intersections"
+]);
+
 function operation(
   operationId: SpatialOperationId,
   repository: GowmSpatialV1Repository,
@@ -110,7 +116,11 @@ function operation(
     resultSemantics: "DATA_QUERY",
     executionBindings: ["SYNC_HTTP", "VERSIONED_SQL_CONTRACT"],
     criticalPathPolicy: "REMOTE_ONLY",
-    maturity: operationId === "spatial.join" || operationId === "spatial.aggregate" ? "EXPERIMENTAL" : "PREVIEW",
+    maturity: STABLE_GROUNDING_OPERATIONS.has(operationId)
+      ? "STABLE"
+      : operationId === "spatial.join" || operationId === "spatial.aggregate"
+        ? "EXPERIMENTAL"
+        : "PREVIEW",
     inputSchemaUri: schemas.inputSchemaUri,
     inputSchemaHash: schemas.inputSchemaHash,
     outputSchemaUri: schemas.outputSchemaUri,

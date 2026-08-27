@@ -2,6 +2,7 @@ import type pg from "pg";
 import type {
   JobRecord,
   PlatformError,
+  QuerySnapshotManifest,
   WorldQueryResult,
   WorldQueryResultNodeResult,
   WorldQuerySubmission
@@ -13,6 +14,7 @@ import type {
   QueryPlanStore
 } from "./query-plan-store.js";
 import { principalContextHash } from "./principal-context.js";
+import type { GatewayPrincipal } from "./types.js";
 
 interface QueryRow {
   query_id: string;
@@ -24,6 +26,8 @@ interface QueryRow {
   idempotency_key: string;
   request_hash: `sha256:${string}`;
   submission: WorldQuerySubmission;
+  query_snapshot_manifest: QuerySnapshotManifest;
+  principal_context: GatewayPrincipal;
   authentication_method: string;
   authenticated_at: Date | string;
   data_scope_claim: string | null;
@@ -52,6 +56,8 @@ SELECT query_job.query_id,
        query_job.idempotency_key,
        query_job.request_hash,
        query_job.submission,
+       query_job.query_snapshot_manifest,
+       query_job.principal_context,
        query_job.authentication_method,
        query_job.authenticated_at,
        query_job.data_scope_claim,
@@ -126,10 +132,10 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
            query_id, job_id, public_job_id, request_id, principal_ref, principal_hash,
            idempotency_key, request_hash, parameter_schema_hash, plan_hash, submission,
            authentication_method, authenticated_at, data_scope_claim, dataset_scope_claim,
-           allow_experimental
+           allow_experimental, query_snapshot_manifest, principal_context
          ) VALUES (
            $1, $2::uuid, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb,
-           $12, $13::timestamptz, $14, $15, $16
+           $12, $13::timestamptz, $14, $15, $16, $17::jsonb, $18::jsonb
          )`,
         [
           context.submission.plan.queryId,
@@ -147,7 +153,9 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
           context.principal.authenticatedAt,
           context.principal.dataScopeClaim ?? null,
           context.principal.datasetScopeClaim ?? null,
-          context.principal.allowExperimental ?? false
+          context.principal.allowExperimental ?? false,
+          JSON.stringify(context.snapshotManifest),
+          JSON.stringify(context.principal)
         ]
       );
       await client.query(
@@ -485,14 +493,8 @@ function fromRow(row: QueryRow): QueryJobContext {
     job,
     gatewayJobId: row.internal_job_id,
     submission: structuredClone(row.submission),
-    principal: {
-      principalRef: row.principal_ref,
-      authenticationMethod: row.authentication_method,
-      authenticatedAt: iso(row.authenticated_at),
-      ...(row.data_scope_claim === null ? {} : { dataScopeClaim: row.data_scope_claim }),
-      ...(row.dataset_scope_claim === null ? {} : { datasetScopeClaim: row.dataset_scope_claim }),
-      allowExperimental: row.allow_experimental
-    },
+    snapshotManifest: structuredClone(row.query_snapshot_manifest),
+    principal: structuredClone(row.principal_context),
     requestHash: row.request_hash,
     cancellationRequested: row.cancellation_requested_at !== null
   };

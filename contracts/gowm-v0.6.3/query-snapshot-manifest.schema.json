@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.3:query-snapshot-manifest",
+  "title": "QuerySnapshotManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["querySnapshotId", "mode", "consistency", "capturedAt", "resources", "manifestHash"],
+  "properties": {
+    "querySnapshotId": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "mode": { "enum": ["LATEST_AT_START", "PINNED", "AT_LEAST_WORLD_VERSION", "BEST_EFFORT"] },
+    "consistency": { "enum": ["PINNED", "CONSISTENT_AT_START", "BEST_EFFORT"] },
+    "capturedAt": { "type": "string", "format": "date-time" },
+    "resources": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resourceKind", "resourceId", "version", "pinning"],
+        "properties": {
+          "resourceKind": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "resourceId": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "version": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "worldVersion": { "type": "integer", "minimum": 0 },
+          "pinning": { "enum": ["PINNED", "AT_LEAST", "BEST_EFFORT"] }
+        }
+      }
+    },
+    "minimumWorldVersion": { "type": "integer", "minimum": 0 },
+    "manifestHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

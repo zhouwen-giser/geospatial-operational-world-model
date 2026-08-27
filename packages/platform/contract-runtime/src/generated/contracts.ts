@@ -2907,6 +2907,161 @@ export type WsgsSouthboundOperationLockOperationLock = {
   semanticProfileHash: string;
 };
 
+export type ConsumerContractBundleManifest = {
+  builtAtSourceCommit?: string;
+  contractCatalogRevision: string;
+  files: Array<{
+  bytes: number;
+  path: string;
+  sha256: string;
+}>;
+  packageIntegrity: string;
+  packageName: "@gowm/world-gateway-contracts";
+  packageVersion: "0.6.3";
+  schemaVersion: "1.0";
+  semanticCatalogHash: string;
+};
+
+export type DelegatedPrincipalContext = {
+  actorRef: string;
+  allowedOperations: Array<string>;
+  authenticatedAt: string;
+  authenticationMethod: string;
+  authorizationContextHash: string;
+  delegationJtiHash?: string;
+  effectiveDataScopes: Array<string>;
+  effectiveDatasetScopes: Array<string>;
+  mode: "STATIC_SERVICE" | "SIGNED_DELEGATION_V1";
+  servicePrincipalRef: string;
+};
+
+export type DelegationTokenClaims = {
+  act: {
+  sub: string;
+  type?: string;
+};
+  allowedOperations: Array<string>;
+  aud: string;
+  dataScopes: Array<string>;
+  datasetScopes: Array<string>;
+  delegationDepth: 1;
+  exp: number;
+  iat: number;
+  iss: string;
+  jti: string;
+  nbf: number;
+  requestId: string;
+  sub: string;
+};
+
+export type GroundingCorePromotionPolicy = {
+  operations: Array<{
+  fromMaturity: "PREVIEW";
+  operationId: string;
+  operationVersion: "1.0";
+  toMaturity: "STABLE";
+}>;
+  requiredGates: Array<string>;
+  schemaVersion: "1.0";
+  targetVersion: "0.6.3";
+};
+
+export type GroundingCoreQualificationReport = {
+  operations: Array<{
+  gates: Record<string, "PASS" | "FAIL" | "NOT_RUN">;
+  operationId: string;
+  operationVersion: string;
+  status: "PASS" | "FAIL" | "BLOCKED";
+}>;
+  schemaVersion: "1.0";
+  sourceCommit: string;
+  status: "PASS" | "FAIL" | "BLOCKED";
+};
+
+export type OperationAvailabilityList = {
+  checkedAt: string;
+  operations: Array<OperationAvailability>;
+  schemaVersion: "1.0";
+};
+
+export type OperationAvailability = {
+  availability: "AVAILABLE" | "DEGRADED" | "UNAVAILABLE" | "DISABLED";
+  bindingRevision: string;
+  checkedAt: string;
+  contractCatalogRevision: string;
+  maturity: "PLANNED" | "EXPERIMENTAL" | "PREVIEW" | "STABLE" | "DEPRECATED" | "RETIRED";
+  operationId: string;
+  operationVersion: string;
+  reasonCodes: Array<string>;
+  retryAfterMs?: number;
+  validUntil: string;
+};
+
+export type QuerySnapshotAdherence = {
+  checkedResources: number;
+  mismatches?: Array<{
+  actualVersion?: string;
+  expectedVersion?: string;
+  reason: "VERSION_MISMATCH" | "CONTENT_HASH_MISMATCH" | "WORLD_VERSION_TOO_OLD" | "RESOURCE_MISSING" | "PINNING_UNSUPPORTED";
+  resourceId: string;
+  resourceKind: string;
+}>;
+  nodeId: string;
+  status: "MATCHED" | "ADVANCED_COMPATIBLE" | "MISMATCHED" | "UNSUPPORTED" | "NOT_APPLICABLE";
+};
+
+export type QuerySnapshotManifest = {
+  capturedAt: string;
+  consistency: "PINNED" | "CONSISTENT_AT_START" | "BEST_EFFORT";
+  manifestHash: string;
+  minimumWorldVersion?: number;
+  mode: "LATEST_AT_START" | "PINNED" | "AT_LEAST_WORLD_VERSION" | "BEST_EFFORT";
+  querySnapshotId: string;
+  resources: Array<{
+  contentHash?: string;
+  pinning: "PINNED" | "AT_LEAST" | "BEST_EFFORT";
+  resourceId: string;
+  resourceKind: string;
+  version: string;
+  worldVersion?: number;
+}>;
+};
+
+export type QuerySnapshotPolicy = ({
+  allowDowngrade?: boolean;
+  minimumWorldVersion?: number;
+  mode: "LATEST_AT_START" | "PINNED" | "AT_LEAST_WORLD_VERSION" | "BEST_EFFORT";
+  pinnedSnapshot?: QuerySnapshotManifest;
+}) & ((Record<string, unknown>) & (Record<string, unknown>));
+
+export type WsgsSouthboundOperationLockV2 = {
+  availabilityContractHash: string;
+  consumerContractPackage: {
+  integrity: string;
+  name: "@gowm/world-gateway-contracts";
+  version: "0.6.3";
+};
+  contractCatalogRevision: string;
+  defaultOperations: WsgsSouthboundOperationLockV2OperationList;
+  delegationContractHash: string;
+  gatewayContractVersion: "0.6.3";
+  previewOperations: WsgsSouthboundOperationLockV2OperationList;
+  schemaVersion: "2.0";
+  semanticCatalogHash: string;
+  snapshotContractHash: string;
+};
+
+export type WsgsSouthboundOperationLockV2OperationList = Array<{
+  inputSchemaHash: string;
+  maturity: "STABLE" | "PREVIEW";
+  operationId: string;
+  operationVersion: string;
+  outputSchemaHash: string;
+  requiredPermissions: Array<string>;
+  semanticProfileHash: string;
+  snapshotSupport: "NONE" | "BEST_EFFORT" | "CONSISTENT_AT_START" | "PINNED";
+}>;
+
 export type GowmV06CoverageAlternativePolicy = {
   maximumGenerationCandidates?: number;
   maximumWeightedArcOverlapPpm: number;
@@ -3581,6 +3736,7 @@ export type ProviderExecutionRequest = {
   operation: PlatformCommonDefinitionsOperationRef;
   providerProtocolVersion: "1.0";
   requestId: PlatformCommonDefinitionsIdentifier;
+  requestedSnapshot?: QuerySnapshotManifest;
   securityContext: {
   authenticatedAt: string;
   authenticationMethod: string;
@@ -3737,6 +3893,8 @@ export type WorldQueryResult = {
   outputs: Record<string, unknown>;
   queryId: PlatformCommonDefinitionsIdentifier;
   queryPlanVersion: "2.0";
+  snapshotAdherence: Array<QuerySnapshotAdherence>;
+  snapshotManifest: QuerySnapshotManifest;
   startedAt: string;
   status: "COMPLETED" | "PARTIAL" | "FAILED" | "CANCELLED";
   warnings: Array<string>;
@@ -3762,4 +3920,5 @@ export type WorldQuerySubmission = {
   parameters: Record<string, unknown>;
   plan: WorldQueryPlanV2;
   requestId: PlatformCommonDefinitionsIdentifier;
+  snapshotPolicy?: QuerySnapshotPolicy;
 };

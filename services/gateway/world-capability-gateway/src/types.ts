@@ -42,10 +42,18 @@ export interface ResolvedCapability {
 
 export interface GatewayPrincipal {
   principalRef: string;
+  mode?: "STATIC_SERVICE" | "SIGNED_DELEGATION_V1";
+  servicePrincipalRef?: string;
+  actorRef?: string;
   authenticationMethod: string;
   authenticatedAt: string;
   dataScopeClaim?: string;
   datasetScopeClaim?: string;
+  effectiveDataScopes?: string[];
+  effectiveDatasetScopes?: string[];
+  allowedOperations?: string[];
+  delegationJtiHash?: `sha256:${string}`;
+  authorizationContextHash?: `sha256:${string}`;
   allowExperimental?: boolean;
 }
 
@@ -62,6 +70,8 @@ export interface AuditEvent {
   outputHash?: string;
   errorCode?: string;
   elapsedMs?: number;
+  delegationJtiHash?: `sha256:${string}`;
+  authorizationContextHash?: `sha256:${string}`;
 }
 
 export interface AuditSink {
