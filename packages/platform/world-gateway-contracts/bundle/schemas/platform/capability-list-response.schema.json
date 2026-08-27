@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:capability-list-response",
+  "title": "CapabilityListResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["registryVersion", "capabilities"],
+  "properties": {
+    "registryVersion": {
+      "type": "string",
+      "pattern": "^(registry-[0-9]+|sha256:[0-9a-f]{64})$"
+    },
+    "registryRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "contractCatalogRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "bindingRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "capabilities": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": { "$ref": "capability-descriptor.schema.json" }
+    }
+  }
+}

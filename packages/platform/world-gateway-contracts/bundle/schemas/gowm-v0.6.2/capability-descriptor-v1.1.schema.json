@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.2:capability-descriptor-v1.1",
+  "title": "CapabilityDescriptorV1_1",
+  "allOf": [
+    {
+      "$ref": "../platform/capability-descriptor.schema.json"
+    },
+    {
+      "type": "object",
+      "required": [
+        "semanticProfile"
+      ]
+    }
+  ]
+}

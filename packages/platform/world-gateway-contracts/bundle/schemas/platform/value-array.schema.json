@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:value:array",
+  "title": "PlatformValueArray",
+  "type": "array",
+  "maxItems": 100000,
+  "items": true
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:world-query-result",
+  "title": "WorldQueryResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "queryPlanVersion",
+    "queryId",
+    "jobId",
+    "status",
+    "nodes",
+    "outputs",
+    "warnings",
+    "snapshotManifest",
+    "snapshotAdherence",
+    "startedAt",
+    "finishedAt"
+  ],
+  "properties": {
+    "queryPlanVersion": { "const": "2.0" },
+    "queryId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "jobId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "status": { "enum": ["COMPLETED", "PARTIAL", "FAILED", "CANCELLED"] },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": { "$ref": "#/$defs/nodeResult" }
+    },
+    "outputs": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": { "pattern": "^[a-z][A-Za-z0-9_]{0,63}$" },
+      "additionalProperties": true
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+    },
+    "snapshotManifest": {
+      "$ref": "../gowm-v0.6.3/query-snapshot-manifest.schema.json"
+    },
+    "snapshotAdherence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "../gowm-v0.6.3/query-snapshot-adherence.schema.json"
+      }
+    },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": "string", "format": "date-time" },
+    "outputHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" }
+  },
+  "$defs": {
+    "nodeResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeId", "operation", "status", "attempt"],
+      "properties": {
+        "nodeId": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$" },
+        "operation": { "$ref": "common-definitions.schema.json#/$defs/operationRef" },
+        "providerId": { "$ref": "common-definitions.schema.json#/$defs/providerId" },
+        "status": {
+          "enum": ["QUEUED", "RUNNING", "COMPLETED", "PARTIAL", "NO_DATA", "SKIPPED", "FAILED", "CANCELLED"]
+        },
+        "attempt": { "type": "integer", "minimum": 0 },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "finishedAt": { "type": "string", "format": "date-time" },
+        "inputHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+        "outputHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+        "result": { "$ref": "capability-result-envelope.schema.json" },
+        "error": { "$ref": "platform-error.schema.json" }
+      }
+    }
+  }
+}

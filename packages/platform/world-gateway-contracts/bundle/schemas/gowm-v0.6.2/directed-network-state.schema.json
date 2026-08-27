@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.2:directed-network-state",
+  "title": "PinnedDirectedNetworkStatePort",
+  "$ref": "../gowm-v0.5/network-common.schema.json#/$defs/directedState"
+}

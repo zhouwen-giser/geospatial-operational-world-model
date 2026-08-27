@@ -1,0 +1,312 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:capability-descriptor",
+  "title": "CapabilityDescriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "operationId",
+    "operationVersion",
+    "semanticRole",
+    "dataBinding",
+    "resultSemantics",
+    "executionBindings",
+    "criticalPathPolicy",
+    "maturity",
+    "inputSchemaUri",
+    "inputSchemaHash",
+    "outputSchemaUri",
+    "outputSchemaHash",
+    "scopePolicy",
+    "execution",
+    "limits",
+    "snapshotPolicy",
+    "ports"
+  ],
+  "properties": {
+    "operationId": {
+      "$ref": "common-definitions.schema.json#/$defs/operationId"
+    },
+    "operationVersion": {
+      "$ref": "common-definitions.schema.json#/$defs/operationVersion"
+    },
+    "semanticRole": {
+      "enum": [
+        "FOUNDATION_PRIMITIVE",
+        "FOUNDATION_DATA_QUERY",
+        "GENERIC_ANALYSIS",
+        "DOMAIN_ANALYSIS",
+        "PROJECTION_QUERY"
+      ]
+    },
+    "dataBinding": {
+      "enum": [
+        "WORLD_INDEPENDENT",
+        "CALLER_DATA_BOUND",
+        "WORLD_SNAPSHOT_BOUND",
+        "DATASET_VERSION_BOUND"
+      ]
+    },
+    "resultSemantics": {
+      "enum": [
+        "TRANSFORMATION",
+        "VALIDATION",
+        "DERIVED_INDEX",
+        "DATA_QUERY",
+        "DERIVED_ANALYSIS",
+        "WORLD_PROJECTION"
+      ]
+    },
+    "executionBindings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "EMBEDDED_SDK",
+          "LOCAL_SIDECAR",
+          "SYNC_HTTP",
+          "ASYNC_JOB",
+          "VERSIONED_SQL_CONTRACT"
+        ]
+      }
+    },
+    "criticalPathPolicy": {
+      "enum": [
+        "EMBEDDED_REQUIRED",
+        "LOCAL_PREFERRED",
+        "REMOTE_ALLOWED",
+        "REMOTE_ONLY"
+      ]
+    },
+    "maturity": {
+      "enum": [
+        "PLANNED",
+        "EXPERIMENTAL",
+        "PREVIEW",
+        "STABLE",
+        "DEPRECATED",
+        "RETIRED"
+      ]
+    },
+    "inputSchemaUri": {
+      "$ref": "common-definitions.schema.json#/$defs/schemaUri"
+    },
+    "inputSchemaHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+    },
+    "outputSchemaUri": {
+      "$ref": "common-definitions.schema.json#/$defs/schemaUri"
+    },
+    "outputSchemaHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+    },
+    "scopePolicy": {
+      "enum": [
+        "IDENTITY_ONLY",
+        "REQUEST_CONTEXT",
+        "DATA_SCOPE_REQUIRED",
+        "DATASET_SCOPE_REQUIRED"
+      ]
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "defaultTimeoutMs",
+        "maximumTimeoutMs",
+        "costClass"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "SYNC",
+            "ASYNC",
+            "SYNC_OR_ASYNC"
+          ]
+        },
+        "defaultTimeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumTimeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "costClass": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "maximumInputBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumOutputBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumRows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumVertices": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumCells": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumCandidates": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumBatchItems": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximumQueueDepth": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "snapshotPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataSnapshot",
+        "computeSnapshot"
+      ],
+      "properties": {
+        "dataSnapshot": {
+          "enum": [
+            "NONE",
+            "OPTIONAL",
+            "REQUIRED"
+          ]
+        },
+        "computeSnapshot": {
+          "const": "REQUIRED"
+        }
+      }
+    },
+    "ports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputs",
+        "outputs"
+      ],
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/port"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/port"
+          }
+        }
+      }
+    },
+    "deprecation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "replacementOperationId": {
+          "$ref": "common-definitions.schema.json#/$defs/operationId"
+        },
+        "retireAfter": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "semanticProfile": {
+      "$ref": "../gowm-v0.6.2/capability-semantic-profile-v1.schema.json"
+    }
+  },
+  "$defs": {
+    "port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "schemaUri",
+        "schemaHash",
+        "valueKind",
+        "unitSemantics"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][A-Za-z0-9_]{0,63}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512,
+          "pattern": "^/(?:[^~/]|~[01])+(?:/(?:[^~/]|~[01])+)*$"
+        },
+        "schemaUri": {
+          "$ref": "common-definitions.schema.json#/$defs/schemaUri"
+        },
+        "schemaHash": {
+          "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+        },
+        "valueKind": {
+          "enum": [
+            "ANY",
+            "SCALAR",
+            "POSITION",
+            "POSITIONS",
+            "GEOMETRY",
+            "FEATURE",
+            "FEATURE_COLLECTION",
+            "H3_CELL",
+            "H3_CELL_SET",
+            "REFERENCE_KEY",
+            "DATASET_VERSION",
+            "ROW_SET",
+            "ARTIFACT_REFERENCE"
+          ]
+        },
+        "unitSemantics": {
+          "enum": [
+            "UNSPECIFIED",
+            "DIMENSIONLESS",
+            "ANGULAR_DEGREES",
+            "LINEAR_METERS",
+            "DISCRETE"
+          ]
+        }
+      }
+    }
+  }
+}

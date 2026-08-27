@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.2:capability-provider-manifest-v1.1",
+  "title": "CapabilityProviderManifestV1_1",
+  "allOf": [
+    {
+      "$ref": "../platform/capability-provider-manifest.schema.json"
+    },
+    {
+      "type": "object",
+      "required": [
+        "manifestSchemaVersion"
+      ],
+      "properties": {
+        "manifestSchemaVersion": {
+          "const": "1.1"
+        }
+      }
+    }
+  ]
+}

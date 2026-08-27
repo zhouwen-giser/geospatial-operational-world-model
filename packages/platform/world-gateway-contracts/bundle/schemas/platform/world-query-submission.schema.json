@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.2:world-query-submission",
+  "title": "WorldQuerySubmission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["requestId", "idempotencyKey", "plan", "parameters", "parameterSchemaHash"],
+  "properties": {
+    "requestId": { "$ref": "common-definitions.schema.json#/$defs/identifier" },
+    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "plan": { "$ref": "world-query-plan-v2.schema.json" },
+    "parameters": { "type": "object", "maxProperties": 256 },
+    "parameterSchemaHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+    },
+    "snapshotPolicy": {
+      "$ref": "../gowm-v0.6.3/query-snapshot-policy.schema.json"
+    }
+  }
+}
