@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "1.0",
+  "gatewayBaseUrlHash": "sha256:e9e2782c6b15e99073ad391d1dda613f9d4d90aaf011a8070c0d073748a7d75b",
+  "canaries": [
+    {
+      "id": "A",
+      "operations": [
+        "reference.resolve",
+        "world.get-current-state",
+        "spatial.find-nearby"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/executions.json",
+        "runtime/semantic-black-box-report.json#A-world-position"
+      ]
+    },
+    {
+      "id": "B",
+      "operations": [
+        "reference.resolve",
+        "world.get-geometry",
+        "h3.geometry.cover",
+        "spatial.find-intersections",
+        "result.validate"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/executions.json",
+        "runtime/semantic-black-box-report.json#H3-candidate-false-positive"
+      ]
+    },
+    {
+      "id": "C",
+      "operations": [
+        "reference.get",
+        "reference.resolve",
+        "world.get-current-state",
+        "world.get-geometry",
+        "world.get-provenance",
+        "catalog.get",
+        "catalog.search",
+        "spatial.find-nearby",
+        "spatial.find-in-area",
+        "spatial.find-intersections"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/executions.json"
+      ]
+    },
+    {
+      "id": "D",
+      "operations": [
+        "world-query.snapshot"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/semantic-black-box-report.json#snapshot-restart-job-preserved"
+      ]
+    },
+    {
+      "id": "E",
+      "operations": [
+        "operation-availability"
+      ],
+      "status": "PASS",
+      "evidence": [
+        "runtime/semantic-black-box-report.json#availability-local-failure"
+      ]
+    }
+  ],
+  "status": "PASS"
+}

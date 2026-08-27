@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.reference-catalog",
+  "operationId": "reference.get",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:50dd04d66852777d5bd7d5312aab402e4124a90b86ef2ac93e824add0161db48",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/reference-catalog-provider.json",
+      "sha256": "6cfd3272c6e2492db9a8cce994e0f21b2d2fe6f671208af239bc7d623c926d05"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/reference-catalog-provider.json",
+      "sha256": "6cfd3272c6e2492db9a8cce994e0f21b2d2fe6f671208af239bc7d623c926d05"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/catalog-query-request.schema.json",
+      "sha256": "6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/reference-descriptor.schema.json",
+      "sha256": "59393bb6bd298bea40e3598d3d69c67fb4bd92de9953fc76ef1b0658e2d19218"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/provider.ts",
+      "sha256": "37c663d878704f46241faae32f6e9e20f5ccc61d1210c26cb89302baf23cde63",
+      "symbol": "createGroundingCatalogProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/repository.ts",
+      "sha256": "aecd84888fc2301b8998e52fafd63dc7cd1002674f5a5ef659d33069094cf218"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/grounding-catalog-provider.test.ts",
+      "sha256": "45372873116f2ca23229aa994d121fcda459a6cfc05fab83fa484f97593b704d"
+    },
+    {
+      "kind": "BLACK_BOX_TEST",
+      "path": "reports/gowm-v0.6.3/black-box-evidence.json",
+      "sha256": "646c4cf54ef99420ec4fe40c55e2052d36156642beb6a3d9f237f4cfe5a27e5a",
+      "symbol": "reference.get@1.0"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

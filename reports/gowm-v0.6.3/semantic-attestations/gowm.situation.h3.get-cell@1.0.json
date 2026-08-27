@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.situation.h3",
+  "operationId": "gowm.situation.h3.get-cell",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:a61e0e78cb448462ea655fd5ba64b350de0a89d8c4344a2e4b4116167e5cce37",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/gowm-situation-provider.json",
+      "sha256": "9ef24bc88e048f18d59a700b36993316040af9f53649d810270fdebde3a056c7"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/gowm-situation-provider.json",
+      "sha256": "9ef24bc88e048f18d59a700b36993316040af9f53649d810270fdebde3a056c7"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/gowm.situation.h3.get-cell/input-1.0.schema.json",
+      "sha256": "276fa3b6a0f37def7365953e2fe96f29410548720e46f30345ae26bf94b49d31"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/gowm.situation.h3.get-cell/output-1.0.schema.json",
+      "sha256": "44d77552086a19b397c57ff25298fb4198601efb095206601f8167bfe8275c97"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/gowm-situation-provider/src/provider.ts",
+      "sha256": "66bfc57bd7dc0b379523bb2abac77a3de453bd2b4d3d70df1b2b02b3a09700ee",
+      "symbol": "createGowmSituationProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/compatibility-migration.test.ts",
+      "sha256": "62f03ef8f4e3502a6a3ac71beb6b5ca3fb4df99bb4bb1f0770b5ef7268d2f362"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/gowm-situation-provider/src/repository-adapter.ts",
+      "sha256": "d59bc24e9110379ab9bede8540a44a5ac350d7990f793489d69c0f183306fc71"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
+  ]
+}

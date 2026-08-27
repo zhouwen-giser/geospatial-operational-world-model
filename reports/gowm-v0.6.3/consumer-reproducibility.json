@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "package": "@gowm/world-gateway-contracts@0.6.3",
+  "cleanBuilds": 2,
+  "cleanBuildHashComparison": "BYTE_IDENTICAL",
+  "packs": 2,
+  "packComparison": "BYTE_IDENTICAL",
+  "tarballSha256": "67ef3d039883a03db368facdb5d783613d39ab4c119c3cca9143200bb8f0ce07",
+  "logicalPackageIntegrity": "sha512-Z2mLu+us4NM8hqthMSo48H33cFpzxK9zxyx8UeB04F7LdWN0e6Vz5q++fB7ohyRikbXdgYCrT8+SMqwcuWEBLA==",
+  "published": false,
+  "status": "PASS"
+}

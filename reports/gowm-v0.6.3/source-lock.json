@@ -7,6 +7,8 @@
   "baseVersion": "0.6.2",
   "targetVersion": "0.6.3",
   "branch": "codex/gowm-grounding-core-stabilization-v0.6.3",
+  "testedCandidateSha": "f770bc3adf4f1d91890d9aecccd012601b922314",
+  "semanticSourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
   "forwardDrift": false,
   "baselineVerification": {
     "verify": "PASS",

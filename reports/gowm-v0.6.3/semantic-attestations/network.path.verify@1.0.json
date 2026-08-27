@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.network",
+  "operationId": "network.path.verify",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:041a33be2d8833bd58e5685e76a73c17a22e1843bb3a7ec6682c73bdddac1021",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/network-provider.json",
+      "sha256": "64970ecfb360b9add757ccca1c9adf8b6f6964b6a0e793285f3b1f29efbea9d6"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/network-provider.json",
+      "sha256": "64970ecfb360b9add757ccca1c9adf8b6f6964b6a0e793285f3b1f29efbea9d6"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/network-shortest-path-result.schema.json",
+      "sha256": "c4bc84c55f7f67266f99ee799bb8c826d45df2d80ff9ad902e8d1a5669db7794"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/route-verification-report.schema.json",
+      "sha256": "76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/network-provider/src/provider.ts",
+      "sha256": "7acf21998b589490430ea8cac70dbef37de4293a8e00c58a3c7439f65964b527",
+      "symbol": "createNetworkProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/network-provider/src/repository.ts",
+      "sha256": "ea3727d5e7d786c403f067c9a14962c80240fef02fd2d63568c2d3c56a953357"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/network-provider.test.ts",
+      "sha256": "34f5761606bf85a5ba9b0bc265567d002fcdf8c011a23cbbf7411d3a900aa663"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "packages/network-query-core/src/engine.ts",
+      "sha256": "0d076717c6af5df10e71f1ef46a416dc936601549029593ccd33d5021810f74d",
+      "symbol": "verifyPath"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

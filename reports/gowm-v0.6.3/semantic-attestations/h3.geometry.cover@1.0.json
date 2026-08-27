@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.h3.interactive.bridge",
+  "operationId": "h3.geometry.cover",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:0683b1446463bd19a22f729c604f094171af5f49c46113aaf7cb2b5fa6abe143",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/h3-interactive-provider.json",
+      "sha256": "e6dd4bb36b125ef6756c9a4f6fd2a7209b27e0f3935e65df842f548760c1495b"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/h3-interactive-provider.json",
+      "sha256": "e6dd4bb36b125ef6756c9a4f6fd2a7209b27e0f3935e65df842f548760c1495b"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/h3.geometry.cover/input-1.0.schema.json",
+      "sha256": "a212115008e98d6d8519da93be5664f6265d363c07c6d3bd1e4415dad4a124d7"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/h3.geometry.cover/output-1.0.schema.json",
+      "sha256": "262d8b3c4142363ce013613131f883bc0148e08e7062eefd9131c29ae1566294"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+      "sha256": "f007111ef01b14c67c5ae44bb44a28799ccc489039121982e386aa63bc9b18dd",
+      "symbol": "createH3InteractiveProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "validation/h3-bridge/h3-provider-bridges.test.ts",
+      "sha256": "7a210073782fd7f6b5c650a3bdc506283e664d03cf83386190293f2b3d116ff8"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/h3-toolkit-source-lock.json",
+      "sha256": "b0a0a547df9d52b6f29fb38ed39d9e8aedc8498ab956863f92e223a2acf7e22a"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning."
+  ]
+}

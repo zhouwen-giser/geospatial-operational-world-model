@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.platform-validation",
+  "operationId": "reference.validate",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:a79f3acf2cb9a825b367a63da65b63ed0f59746f0847ae30f9fb173082be79fc",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/platform-validation-provider.json",
+      "sha256": "bab4d7d385f36fbef6f3bbc9ba7f43fa52a5ae7f300f766dd5072a5082d3d6de"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/platform-validation-provider.json",
+      "sha256": "bab4d7d385f36fbef6f3bbc9ba7f43fa52a5ae7f300f766dd5072a5082d3d6de"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/result-validation-request.schema.json",
+      "sha256": "fdc3ce803b7228fa4b08b7d8ef6d96a3a8ced205d00c649df5bde206caf76182"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/result-validation-result.schema.json",
+      "sha256": "cda27eb598c329fa6706b1a1ccd29da5f2f396590f44dd2cde21d00847c0f693"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/platform-validation-provider/src/index.ts",
+      "sha256": "62fe167f3eaa5e3a87669f2bb4b07ebbf7fac45c645c53c80896929e91a79cdb",
+      "symbol": "createPlatformValidationProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/platform-validation-provider.test.ts",
+      "sha256": "cc24619b52266ff87ee7dbb3c84cb3f5d754969a17790b5e148d1da47e94c7b7"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/platform-validation-provider/src/postgres-authority.ts",
+      "sha256": "ed496922157363806e3bd0259f8aa9ea83c21e2ed68b4f2b70c1a18a2427c749"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/058_platform_validation_authority.sql",
+      "sha256": "00b5057dc641f58b4477aab1ef874d9a1590f4067210feca3b5dff4feceed98e"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}
