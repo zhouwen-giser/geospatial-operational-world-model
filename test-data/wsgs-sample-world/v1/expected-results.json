@@ -1,0 +1,214 @@
+[
+  {
+    "caseId": "REF-UNIQUE-2",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "surfaceText": "2号车"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ],
+    "expectedCandidateCount": 1,
+    "forbiddenFixtureKeys": [
+      "hidden-ugv-002"
+    ]
+  },
+  {
+    "caseId": "REF-ALIAS-2",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "surfaceText": "二号车"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ],
+    "expectedCandidateCount": 1
+  },
+  {
+    "caseId": "REF-CODE-UGV2",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "surfaceText": "UGV-002"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ],
+    "expectedCandidateCount": 1
+  },
+  {
+    "caseId": "REF-AMBIGUOUS-RIVER-ROAD",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "surfaceText": "滨河路"
+    },
+    "expectedStatus": "AMBIGUOUS",
+    "expectedFixtureKeys": [
+      "road-river-east",
+      "road-river-west"
+    ],
+    "expectedCandidateCount": 2,
+    "forbiddenFixtureKeys": [
+      "hidden-river-road"
+    ]
+  },
+  {
+    "caseId": "REF-CODE-EAST-ROAD",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "surfaceText": "RD-BH-E"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "road-river-east"
+    ],
+    "expectedCandidateCount": 1
+  },
+  {
+    "caseId": "REF-NO-DATA",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "surfaceText": "4号车"
+    },
+    "expectedStatus": "NO_DATA",
+    "expectedCandidateCount": 0
+  },
+  {
+    "caseId": "WORLD-STATE-UGV2",
+    "operationId": "world.get-current-state",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "referenceFixtureKey": "ugv-002"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ]
+  },
+  {
+    "caseId": "WORLD-GEOMETRY-ZONE-A",
+    "operationId": "world.get-geometry",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "referenceFixtureKey": "zone-a"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "zone-a"
+    ]
+  },
+  {
+    "caseId": "WORLD-PROVENANCE-UGV2",
+    "operationId": "world.get-provenance",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "referenceFixtureKey": "ugv-002"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ]
+  },
+  {
+    "caseId": "CATALOG-NETWORK",
+    "operationId": "catalog.search",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "dataKinds": [
+        "NETWORK"
+      ],
+      "currentOnly": true
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "sample-road-network"
+    ],
+    "forbiddenFixtureKeys": [
+      "hidden-base-vector"
+    ]
+  },
+  {
+    "caseId": "SPATIAL-NEARBY-UGV2",
+    "operationId": "spatial.find-nearby",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "centerReferenceFixtureKey": "ugv-002",
+      "maximumDistanceM": 250,
+      "objectTypes": [
+        "UGV",
+        "CAMERA",
+        "TASK_TARGET"
+      ]
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-001",
+      "camera-01",
+      "target-01"
+    ],
+    "forbiddenFixtureKeys": [
+      "sensor-01",
+      "ugv-003",
+      "hidden-ugv-002"
+    ]
+  },
+  {
+    "caseId": "SPATIAL-IN-ZONE-A",
+    "operationId": "spatial.find-in-area",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "areaReferenceFixtureKey": "zone-a",
+      "objectTypes": [
+        "UGV"
+      ]
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-001",
+      "ugv-002"
+    ],
+    "forbiddenFixtureKeys": [
+      "ugv-003",
+      "hidden-ugv-002"
+    ]
+  },
+  {
+    "caseId": "SPATIAL-ROADS-INTERSECT-ZONE-A",
+    "operationId": "spatial.find-intersections",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "geometryReferenceFixtureKey": "zone-a",
+      "layerFixtureKey": "sample-roads"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "road-axis",
+      "road-river-west"
+    ],
+    "forbiddenFixtureKeys": [
+      "road-river-east",
+      "hidden-river-road"
+    ]
+  }
+]

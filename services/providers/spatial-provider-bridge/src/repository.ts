@@ -5,6 +5,7 @@ import type {
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { dataScopeDigest, decodeSpatialCursor, encodeSpatialCursor, type SpatialCursorPayload } from "./cursor.js";
 import {
+  CATALOG_FEATURE_EVIDENCE_SCHEMA_SHA256,
   CURRENT_OBJECT_EVIDENCE_SCHEMA_SHA256,
   LAYER_FEATURE_EVIDENCE_SCHEMA_SHA256,
   type SpatialOperationId
@@ -23,9 +24,11 @@ import type {
 const DATASET_SNAPSHOT_SQL = `/* gowm_spatial_v1 snapshot */
 SELECT dataset_reference_key,
        current_world_version,
+       catalog_snapshot_version,
        snapshot_consistency,
        transaction_timestamp() AS captured_at
 FROM gowm_spatial_v1.dataset_descriptor
+CROSS JOIN gowm_spatial_v1.catalog_snapshot
 LIMIT 1`;
 
 interface DatasetSnapshot {
@@ -60,7 +63,8 @@ export class GowmSpatialV1Repository {
     operationId: SpatialOperationId,
     input: unknown,
     dataScopeKey: string,
-    deadlineRemainingMs: number
+    deadlineRemainingMs: number,
+    datasetScopeKey?: string
   ): Promise<SpatialQueryResult> {
     const client = await this.options.pool.connect().catch((error: unknown) => {
       throw new ProviderProtocolError("PROVIDER_NOT_READY", "spatial read pool is unavailable", {
@@ -77,10 +81,11 @@ export class GowmSpatialV1Repository {
       await client.query("SELECT set_config('statement_timeout', $1::text, true)", [`${statementTimeout}ms`]);
       await client.query("SELECT set_config('lock_timeout', $1::text, true)", [`${lockTimeout}ms`]);
       await client.query("SELECT gowm_spatial_v1.set_data_scope($1::text)", [dataScopeKey]);
+      await client.query("SELECT set_config('gowm.dataset_scope_key', $1::text, true)", [datasetScopeKey?.trim() ?? ""]);
 
       const snapshotResult = await client.query<DatasetSnapshotRow>(DATASET_SNAPSHOT_SQL);
       const snapshot = mapDatasetSnapshot(snapshotResult.rows[0]);
-      const scopeDigest = dataScopeDigest(dataScopeKey);
+      const scopeDigest = dataScopeDigest(dataScopeKey, datasetScopeKey?.trim() || undefined);
       const record = asRecord(input);
       const sort = distanceOperation(operationId) ? "distance" : "id";
       const cursor = decodeSpatialCursor(
@@ -114,6 +119,9 @@ export class GowmSpatialV1Repository {
       await client.query("SELECT * FROM gowm_spatial_v1.current_object LIMIT 0");
       await client.query("SELECT * FROM gowm_spatial_v1.current_geometry LIMIT 0");
       await client.query("SELECT * FROM gowm_spatial_v1.layer_feature LIMIT 0");
+      await client.query("SELECT * FROM gowm_spatial_v1.catalog_feature LIMIT 0");
+      await client.query("SELECT * FROM gowm_spatial_v1.catalog_feature_reference LIMIT 0");
+      await client.query("SELECT * FROM gowm_spatial_v1.catalog_snapshot LIMIT 0");
       await client.query("SELECT * FROM gowm_spatial_v1.dataset_descriptor LIMIT 0");
       await client.query("ROLLBACK");
       return { ready: true, reasons: [] };
@@ -174,7 +182,7 @@ export class GowmSpatialV1Repository {
           ...(query.sort === "distance" ? { distanceM: finiteNumber(last.distance_m, "distance_m") } : {})
         }, this.options.cursorSecret)
       : undefined;
-    const allEvidence = dedupeEvidence(visibleRows.map((row) => evidenceFromObjectRow(row)));
+    const allEvidence = dedupeEvidence(visibleRows.map((row) => evidenceFromObjectRow(row, operationId)));
     const evidence = allEvidence.slice(0, this.limits.maximumEvidenceReferences);
     const evidenceTruncated = allEvidence.length > evidence.length;
     const context = queryContext(candidateCount, objects.length, evidenceTruncated, nextCursor, query.sort === "distance");
@@ -318,9 +326,10 @@ function mapDatasetSnapshot(row: DatasetSnapshotRow | undefined): DatasetSnapsho
   if (reference.kind !== "DATASET" || reference.version !== String(row.current_world_version)) {
     throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "dataset descriptor reference is inconsistent");
   }
+  const catalogSnapshotVersion = requiredString(row.catalog_snapshot_version, "catalog_snapshot_version");
   return {
     referenceKey: reference,
-    currentWorldVersion: String(row.current_world_version),
+    currentWorldVersion: `${String(row.current_world_version)}:${catalogSnapshotVersion}`,
     capturedAt: requiredDate(row.captured_at, "captured_at")
   };
 }
@@ -337,6 +346,7 @@ function buildDataSnapshot(snapshot: DatasetSnapshot, scopeDigest: `sha256:${str
       digest: sha256({
         contract: "gowm_spatial_v1",
         referenceKey: snapshot.referenceKey,
+        snapshotVersion: snapshot.currentWorldVersion,
         consistency: "CONSISTENT_AT_START"
       })
     }]
@@ -368,11 +378,11 @@ function mapObjectRow(row: Record<string, unknown>): SpatialObjectResult {
   return value;
 }
 
-function evidenceFromObjectRow(row: Record<string, unknown>): EvidenceReference {
+function evidenceFromObjectRow(row: Record<string, unknown>, operationId: SpatialOperationId): EvidenceReference {
   return evidenceForReference(referenceKey(row.reference_key), {
     worldVersion: safeInteger(row.world_version, "world_version"),
     observedAt: optionalDate(row.observed_at)
-  });
+  }, operationId === "spatial.find-intersections");
 }
 
 function evidenceFromAggregateRow(row: Record<string, unknown>): EvidenceReference {
@@ -384,7 +394,8 @@ function evidenceFromAggregateRow(row: Record<string, unknown>): EvidenceReferen
 
 function evidenceForReference(
   key: ReferenceKey,
-  metadata: { worldVersion?: number; observedAt?: string | null } = {}
+  metadata: { worldVersion?: number; observedAt?: string | null } = {},
+  catalogFeature = false
 ): EvidenceReference {
   const layer = key.kind === "LAYER_FEATURE";
   return {
@@ -393,9 +404,13 @@ function evidenceForReference(
     evidenceType: layer ? "LAYER_VERSION" : "CURRENT_PROJECTION_SOURCE",
     referenceKey: key,
     schemaUri: layer
-      ? "urn:gowm:foundation:gowm_spatial_v1:layer_feature:1"
+      ? catalogFeature
+        ? "urn:gowm:foundation:gowm_spatial_v1:catalog_feature_reference:1"
+        : "urn:gowm:foundation:gowm_spatial_v1:layer_feature:1"
       : "urn:gowm:foundation:gowm_spatial_v1:current_object:1",
-    schemaHash: layer ? LAYER_FEATURE_EVIDENCE_SCHEMA_SHA256 : CURRENT_OBJECT_EVIDENCE_SCHEMA_SHA256,
+    schemaHash: layer
+      ? catalogFeature ? CATALOG_FEATURE_EVIDENCE_SCHEMA_SHA256 : LAYER_FEATURE_EVIDENCE_SCHEMA_SHA256
+      : CURRENT_OBJECT_EVIDENCE_SCHEMA_SHA256,
     ...(metadata.observedAt ? { observedAt: metadata.observedAt } : {}),
     ...(metadata.worldVersion === undefined ? {} : { worldVersion: metadata.worldVersion })
   };

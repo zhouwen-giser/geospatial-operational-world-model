@@ -5,6 +5,8 @@ import {
 import type { JsonSchema } from "../../../../packages/platform/provider-sdk/src/index.js";
 import type { GroundingCatalogMode } from "./types.js";
 
+export const GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 = "sha256:7b8a606e3258baa2f3e68c88e81abacb289615cf960a1af20c8a9f4c2074539c" as `sha256:${string}`;
+
 export const REFERENCE_OPERATION_IDS = [
   "reference.get",
   "reference.resolve",

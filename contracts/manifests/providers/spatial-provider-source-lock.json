@@ -12,6 +12,8 @@
   "readContract": "gowm_spatial_v1",
   "readContractMigration": "database/migrations/012_gowm_spatial_v1_read_contract.sql",
   "readContractMigrationSha256": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10",
+  "catalogFeatureReadContractMigration": "database/migrations/062_catalog_feature_geometry_read_contract.sql",
+  "catalogFeatureReadContractMigrationSha256": "f326587b36a23d13fe29de02514affc3a248153f4bbc4194fc4ed4fd94713581",
   "licenseStatus": "APPROVED",
   "license": "Apache-2.0",
   "redistributionAllowed": true,
@@ -22,6 +24,7 @@
   "deploymentAttestationRequired": [
     "PostGIS library version exact match",
     "migration 012 SHA-256",
+    "migration 062 SHA-256",
     "spatial_provider read-only role and contract grants"
   ],
   "publishableArtifacts": [

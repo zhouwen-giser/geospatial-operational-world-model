@@ -1,89 +1,104 @@
 {
   "status": "PASS",
-  "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
-  "runId": "v063-1787810930749",
+  "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
+  "runId": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777-sample-canary",
+  "evidence": {
+    "canaryPath": ".runtime/wsgs-sample/output/CANARY_EVIDENCE_REPORT.json",
+    "canaryHash": "sha256:17a184590e5a1d684351e1d4b7673ee1cb2579c22510ebd34da20cdbe8fed6dd",
+    "realizationId": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777",
+    "loadedStateHash": "7ccb293a43de508b719011b46d63534fface1962a57f54c4cd6afa0d6f053ce6",
+    "contractCatalogRevision": "sha256:efd0395dbd05c884c781f964b22147efcb38c4cef91704597706ec4b8332075a",
+    "semanticCatalogHash": "sha256:418fc328861e846801c6e8109bf6d48b876c7814c650a391b84076f71e588b61"
+  },
   "operations": {
     "reference.get@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
       "contractHash": "sha256:1bd953038be68d94d2b2d45308eba7ea38a618ddf7eec986a418817ed965a29d",
+      "evidenceDigest": "sha256:9245c577ebf23872ad68912d20208183d747e924e1021fe202eeae7be8df6c2b",
       "tests": [
-        "A-reference-get"
+        "REFERENCE-GET"
       ]
     },
     "reference.resolve@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
       "contractHash": "sha256:755741b8a57d612ac3a7db8b52f639e3bf0730c9ec02a7a76407da9295f09649",
+      "evidenceDigest": "sha256:e17a8aec1993cc072d03772f80a700fb8bba3ffe75517c9298d61b774ac74a61",
       "tests": [
-        "resolve-KestrelVehicleZX",
-        "resolve-TundraZoneQK"
+        "REF-ALIAS-2"
       ]
     },
     "world.get-current-state@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
       "contractHash": "sha256:2f5e78d177a71349b61d9f326da83233b88c2643e00e13ec81d18a6a89b1f472",
+      "evidenceDigest": "sha256:36e0ca93c97f80e1029c01fa5c98b154afcca9c71b9eec428606cec9c50712e1",
       "tests": [
-        "A-current",
-        "A-typed:world"
+        "WORLD-STATE-UGV2"
       ]
     },
     "world.get-geometry@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
-      "contractHash": "sha256:10afccb751905f2d863039fcfed4d5ec463792be846519501e16179fc901fefe",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
+      "contractHash": "sha256:a72ab5a6cbd33303cff21364a23c940cddec513e137df0163e7b85f6c863d718",
+      "evidenceDigest": "sha256:c7cada327e796767ad99a4da233e9342f16eb698558c893c9be31573af666131",
       "tests": [
-        "B-world-geometry"
+        "WORLD-GEOMETRY-ZONE-A"
       ]
     },
     "world.get-provenance@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
       "contractHash": "sha256:da495973a4244e5ac97bb61586987faf6df331ed2a5921f31ea4d18875456136",
+      "evidenceDigest": "sha256:36e0ca93c97f80e1029c01fa5c98b154afcca9c71b9eec428606cec9c50712e1",
       "tests": [
-        "A-provenance"
+        "WORLD-PROVENANCE-UGV2"
       ]
     },
     "catalog.get@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
       "contractHash": "sha256:eeabc67d48d2e987e0348403acff783e7e81d6a4ab65241bef4eefb194099864",
+      "evidenceDigest": "sha256:fee7eab8557af5bc28082e9e811407339b6a2443ec09b531706e04e878fcdf2a",
       "tests": [
-        "A-catalog-get"
+        "CATALOG-GET"
       ]
     },
     "catalog.search@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
       "contractHash": "sha256:1baad329d82fb656cdddf3b2ce758ac99b9189d214a01338618eb5a9e67e085c",
+      "evidenceDigest": "sha256:06553d48fa584279b228eaff22f700a15773a3b27bb20d11471659eb07bba5d4",
       "tests": [
-        "A-catalog-search"
+        "CATALOG-NETWORK"
       ]
     },
     "spatial.find-nearby@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
       "contractHash": "sha256:95693f4131a702f4b009a99810fd2282d8d94fc4ac4417ce834d17a5bae0cbf7",
+      "evidenceDigest": "sha256:0e8323754c2746b0adce6b5a694ac5c3ca43134edc42cfc2404f531e908dae7b",
       "tests": [
-        "A-nearby",
-        "A-typed:nearby"
+        "SPATIAL-NEARBY-UGV2"
       ]
     },
     "spatial.find-in-area@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
       "contractHash": "sha256:50803d622ad0df8dfd2e486fbdb9691734de14dc0128af3881825d413f7cba7d",
+      "evidenceDigest": "sha256:e5c53a59c2396e7b5241f49afe10691dc41e8bc47b92d4a1751c0ce1e746bee5",
       "tests": [
-        "B-boundary"
+        "SPATIAL-IN-ZONE-A"
       ]
     },
     "spatial.find-intersections@1.0": {
       "status": "PASS",
-      "sourceDigest": "sha256:78cc436e73a8a494c8f1ced08c7af7b5699bdd1118174f9de4ab7984fd60c059",
-      "contractHash": "sha256:3298192661941ee745a5b180240aa9f78331e2672058dd136f8c3248f68189d0",
+      "sourceDigest": "sha256:e9efcc66eeb4f7147235270f7e05bd517ee0c323644c677e824dde44fc8ca1d7",
+      "contractHash": "sha256:9a250484024692041b664688334c80e7c826295ebd0398927ab1d0925bd2b2f6",
+      "evidenceDigest": "sha256:ebd583d1ae5a1817b4a4b988059a8ca1caeb9ed9c9ca7ba1b4fa3b9f1c94d66b",
       "tests": [
-        "B-exact"
+        "SPATIAL-ROADS-INTERSECT-ZONE-A"
       ]
     }
   }

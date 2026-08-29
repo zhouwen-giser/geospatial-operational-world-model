@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:wsgs-sample-expected-case:1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "caseId",
+    "operationId",
+    "operationVersion",
+    "principal",
+    "inputTemplate",
+    "expectedStatus"
+  ],
+  "properties": {
+    "caseId": {
+      "type": "string"
+    },
+    "operationId": {
+      "type": "string"
+    },
+    "operationVersion": {
+      "const": "1.0"
+    },
+    "principal": {
+      "enum": [
+        "VISIBLE",
+        "HIDDEN",
+        "UNAUTHORIZED"
+      ]
+    },
+    "inputTemplate": {
+      "type": "object"
+    },
+    "expectedStatus": {
+      "type": "string"
+    },
+    "expectedReferenceKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expectedFixtureKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expectedCandidateCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "forbiddenFixtureKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

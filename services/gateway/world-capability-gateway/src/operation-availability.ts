@@ -14,6 +14,7 @@ interface CachedHealth {
 
 export class OperationAvailabilityService {
   readonly #cache = new Map<string, CachedHealth>();
+  readonly #pendingHealth = new Map<string, Promise<ProviderHealth>>();
 
   constructor(private readonly options: {
     registry: CapabilityRegistry;
@@ -66,20 +67,30 @@ export class OperationAvailabilityService {
   }
 
   async #health(operationId: string, operationVersion: string): Promise<ProviderHealth> {
-    const key = `${operationId}@${operationVersion}`;
-    const now = this.#now().getTime();
-    const cached = this.#cache.get(key);
-    if (cached && cached.expiresAt > now) return cached.health;
     const route = this.options.registry.get(operationId, operationVersion);
     if (!route) throw new Error("availability route disappeared");
-    let health: ProviderHealth;
+    const providerId = route.manifest.provider.providerId;
+    const now = this.#now().getTime();
+    const cached = this.#cache.get(providerId);
+    if (cached && cached.expiresAt > now) return cached.health;
+    const pending = this.#pendingHealth.get(providerId);
+    if (pending) return pending;
+    const healthCheck = (async (): Promise<ProviderHealth> => {
+      let health: ProviderHealth;
+      try {
+        health = await route.client.health(new Date(now + this.#ttl()).toISOString());
+      } catch {
+        health = { live: false, ready: false, checkedAt: this.#now().toISOString() };
+      }
+      this.#cache.set(providerId, { health, expiresAt: now + this.#ttl() });
+      return health;
+    })();
+    this.#pendingHealth.set(providerId, healthCheck);
     try {
-      health = await route.client.health(new Date(now + this.#ttl()).toISOString());
-    } catch {
-      health = { live: false, ready: false, checkedAt: this.#now().toISOString() };
+      return await healthCheck;
+    } finally {
+      this.#pendingHealth.delete(providerId);
     }
-    this.#cache.set(key, { health, expiresAt: now + this.#ttl() });
-    return health;
   }
 
   #now(): Date {

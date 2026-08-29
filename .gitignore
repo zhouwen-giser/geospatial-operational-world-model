@@ -6,6 +6,7 @@ dist/
 .docker-config/
 coverage/
 output/runtime/
+.runtime/
 *.log
 *.pid
 geospatial-world-model-poc-v*.zip

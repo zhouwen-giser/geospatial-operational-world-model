@@ -16,6 +16,7 @@ import {
 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { GroundingCatalogRepository } from "./repository.js";
 import {
+  GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256,
   GROUNDING_CATALOG_OPERATION_SCHEMAS,
   operationsForMode,
   type GroundingCatalogOperationId
@@ -48,7 +49,8 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
       implementationDigest: sha256({
         providerId,
         version: "1.0.0",
-        readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1",
+        readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1+reference-geometry-composability@062",
+        ...(options.mode === "evidence" ? { catalogFeatureMigrationDigest: GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 } : {}),
         operations: operationIds.map((operationId) => ({
           operationId,
           inputSchemaHash: GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId].inputSchemaHash,
@@ -68,7 +70,7 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
   };
   const policy = {
     version: `gowm-${options.mode}-catalog-policy/1.0`,
-    readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1",
+    readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1+reference-geometry-composability@062",
     scopeBeforeQuery: true,
     baseTableAccess: false,
     readOnlyTransaction: true,
@@ -176,7 +178,12 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
         kind: "DATABASE",
         name: datasetOperation ? "gowm_catalog_v1" : resultOperation ? "gowm_result_v1" : evidenceOperation ? "gowm_evidence_v1" : "gowm_reference_v1",
         version: resultOperation ? "migration-022" : evidenceOperation ? "migration-023" : "migration-020"
-      }]
+      }, ...(operationId === "world.get-geometry" ? [{
+        kind: "DATABASE" as const,
+        name: "gowm_evidence_v1.current_geometry",
+        version: "migration-062",
+        digest: GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256
+      }] : [])]
     },
     async handle(input, context) {
       const dataScopeKey = context.security.dataScopeClaim;

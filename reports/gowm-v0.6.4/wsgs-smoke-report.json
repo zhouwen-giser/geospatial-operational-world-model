@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0",
+  "consumer": "WSGS",
+  "consumerCommit": "00ab906afc4857b9c6f369ce3751d485e4d40ab9",
+  "cases": [
+    {
+      "id": "R1",
+      "status": "PASS"
+    },
+    {
+      "id": "R2",
+      "status": "PASS"
+    },
+    {
+      "id": "R3",
+      "status": "PASS"
+    },
+    {
+      "id": "R4",
+      "status": "PASS"
+    },
+    {
+      "id": "R5",
+      "status": "PASS"
+    }
+  ],
+  "realResolverOutputConsumed": true,
+  "gatewayReady": true,
+  "requiredAvailability": "12/12",
+  "resultHashes": {
+    "initial": "sha256:56c13d7413bb9a4f1cb1052864b7aa570bde41446ec237c859d6c6cc84e714e4",
+    "validated": "sha256:1a47ef76d05dd48301fef01dfed49d3cb980715cb2bc62ce2c16397fe4a8af05",
+    "evidence": "sha256:3c5638a2eab2fad89a3f4e49e447c22d2f5661a232babf2eef3371f68f2923aa"
+  },
+  "status": "PASS"
+}

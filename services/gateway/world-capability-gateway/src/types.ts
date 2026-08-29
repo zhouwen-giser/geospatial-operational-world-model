@@ -68,6 +68,7 @@ export interface AuditEvent {
   outcome: "ACCEPTED" | "REPLAYED" | "COMPLETED" | "REJECTED" | "FAILED";
   inputHash: string;
   outputHash?: string;
+  dataScopeHash?: `sha256:${string}`;
   errorCode?: string;
   elapsedMs?: number;
   delegationJtiHash?: `sha256:${string}`;

@@ -14,6 +14,7 @@ COPY tests ./tests
 COPY validation ./validation
 COPY contracts ./contracts
 COPY config ./config
+COPY test-data ./test-data
 RUN npm run build
 
 FROM ${NODE_BASE_IMAGE} AS runtime
@@ -29,5 +30,6 @@ COPY database ./database
 COPY config ./config
 COPY contracts ./contracts
 COPY scripts ./scripts
+COPY test-data ./test-data
 USER node
 CMD ["node", "dist/services/world-api/src/index.js"]

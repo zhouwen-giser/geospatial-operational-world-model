@@ -5,7 +5,7 @@
     "providerId": "gowm.spatial-analysis.bridge",
     "providerVersion": "0.2.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00",
+    "implementationDigest": "sha256:d257d2e9d46f379b0b9a6343fcc4830edb5c7168d2237dba38da3e5b1984ece7",
     "sourceRef": "urn:gowm:source:zip:spatial-analysis-service:1.0.0"
   },
   "endpoints": {
@@ -250,9 +250,11 @@
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [
+          "LAYER_FEATURE",
           "WORLD_OBJECT"
         ],
         "producedReferenceKinds": [
+          "LAYER_FEATURE",
           "WORLD_OBJECT"
         ],
         "relationSemantics": [
@@ -264,6 +266,7 @@
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
         "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
         "notes": [
+          "Exact-version catalog LAYER_FEATURE geometries and current WORLD_OBJECT geometries participate in the same ST_Intersects predicate.",
           "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
         ]
       },

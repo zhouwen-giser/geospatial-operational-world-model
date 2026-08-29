@@ -47,7 +47,11 @@ export async function buildWorldPlatformRegistry(
   reportDirectory = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.6.2"
 ) {
   const config = resolve(root, "config");
-  const fragments = (await readdir(config)).filter((p) => p.endsWith("gateway-registry.json") && p !== "world-platform-gateway-registry.json").sort();
+  const fragments = (await readdir(config)).filter((p) =>
+    p.endsWith("gateway-registry.json") &&
+    p !== "world-platform-gateway-registry.json" &&
+    p !== "wsgs-sample-gateway-registry.json"
+  ).sort();
   if (!fragments.length) throw new Error("No controlled Registry fragments discovered");
   const deployments = (await Promise.all(fragments.map((p) => loadControlledProviderDeployments(resolve(config, p))))).flat();
   const policy: WorldPlatformProviderSet = JSON.parse(await readFile(resolve(config, "world-platform-provider-set.json"), "utf8"));

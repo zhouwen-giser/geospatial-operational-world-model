@@ -82,7 +82,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "FACT",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "WORLD_OBJECT reads current projection geometry. LAYER_FEATURE reads active catalog geometry by immutable feature-version or matching descriptor-version pin and requires DatasetScope."
+        ]
       },
       "implementation": [
         {
@@ -96,7 +99,11 @@
       "tests": [
         "tests/platform/grounding-catalog-provider.test.ts"
       ],
-      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+      "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Migration 023 remains authoritative for WORLD_OBJECT geometry; migration 062 adds scoped exact-pin LAYER_FEATURE geometry. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+      "referenceAuthorities": [
+        "database/migrations/023_world_evidence_read_contract.sql",
+        "database/migrations/062_reference_geometry_composability.sql"
+      ]
     },
     "world.get-provenance@1.0": {
       "profile": {

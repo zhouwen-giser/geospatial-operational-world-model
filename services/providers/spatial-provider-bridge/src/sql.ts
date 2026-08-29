@@ -122,6 +122,16 @@ function geometryObjectPage(
   const candidateLimit = parameters.add(limits.maximumCandidates + 1, "integer");
   const rowLimit = requestedLimit(input, limits.maximumRows);
   const fetchLimit = parameters.add(rowLimit + 1, "integer");
+  const catalogFeatureView = input.candidateReferences === undefined
+    ? "gowm_spatial_v1.catalog_feature"
+    : "gowm_spatial_v1.catalog_feature_reference";
+  const candidateSource = operationId === "spatial.find-intersections"
+    ? `(SELECT ${intersectionSourceColumns("object_source")}
+       FROM gowm_spatial_v1.current_object object_source
+       UNION
+       SELECT ${intersectionSourceColumns("feature_source")}
+       FROM ${catalogFeatureView} feature_source) co`
+    : "gowm_spatial_v1.current_object co";
   return {
     kind: "OBJECT_PAGE",
     sort: "id",
@@ -133,7 +143,7 @@ WITH q AS (
 ), candidates AS MATERIALIZED (
   SELECT ${currentObjectColumns("co", includeGeometry)},
          co.reference_key->>'id' AS reference_id
-  FROM gowm_spatial_v1.current_object co CROSS JOIN q
+  FROM ${candidateSource} CROSS JOIN q
   ${where(clauses)}
   ORDER BY co.reference_key->>'id'
   LIMIT ${candidateLimit}
@@ -459,6 +469,26 @@ function currentObjectColumns(alias: string, includeGeometryParameter: string): 
          ${alias}.source_observation_id,
          ${alias}.provenance_summary,
          CASE WHEN ${includeGeometryParameter} THEN ST_AsGeoJSON(${alias}.geometry_wgs84)::jsonb ELSE NULL END AS geometry`;
+}
+
+function intersectionSourceColumns(alias: string): string {
+  return `${alias}.data_scope_key,
+         ${alias}.reference_key,
+         ${alias}.object_type,
+         ${alias}.subtype,
+         ${alias}.geometry_wgs84,
+         ${alias}.geography_wgs84,
+         ${alias}.status,
+         ${alias}.source,
+         ${alias}.properties,
+         ${alias}.observed_at,
+         ${alias}.received_at,
+         ${alias}.updated_at,
+         ${alias}.world_version,
+         ${alias}.confidence,
+         ${alias}.freshness_ms,
+         ${alias}.source_observation_id,
+         ${alias}.provenance_summary`;
 }
 
 function layerColumns(alias: string, includeGeometryParameter: string): string {

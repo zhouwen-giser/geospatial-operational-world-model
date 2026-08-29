@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:wsgs-sample-canary-evidence-report:1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "gatewayBaseUrlHash",
+    "fixtureHash",
+    "realizationId",
+    "loadedStateHash",
+    "contractCatalogRevision",
+    "semanticCatalogHash",
+    "sourceDigest",
+    "promotedOperationPassCases",
+    "cases",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "gatewayBaseUrlHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "fixtureHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "realizationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "loadedStateHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "contractCatalogRevision": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "semanticCatalogHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "sourceDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "promotedOperationPassCases": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operationId", "operationVersion", "caseId"],
+        "properties": {
+          "operationId": { "type": "string", "minLength": 3 },
+          "operationVersion": { "const": "1.0" },
+          "caseId": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "required": ["caseId", "operationId", "operationVersion", "principal", "status", "evidenceSource"],
+        "properties": {
+          "caseId": { "type": "string", "minLength": 1 },
+          "operationId": { "type": "string", "minLength": 3 },
+          "operationVersion": { "type": "string", "minLength": 1 },
+          "principal": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["PASS", "FAIL"] },
+          "evidenceSource": {
+            "enum": ["GATEWAY_ENVELOPE", "HTTP_RESPONSE", "GATEWAY_HTTP", "WORLD_QUERY"]
+          },
+          "normalizedStatus": { "type": "string", "minLength": 1 },
+          "responseStatus": { "type": "string", "minLength": 1 },
+          "inputHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "outputHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "submittedRequestHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "httpResponseHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "dataSnapshot": { "type": ["object", "null"] },
+          "computeSnapshot": { "type": "object" },
+          "receipts": { "type": "array", "minItems": 1 },
+          "evidenceReferences": { "type": "array" },
+          "elapsedMs": { "type": "number", "minimum": 0 },
+          "clientElapsedMs": { "type": "number", "minimum": 0 },
+          "httpStatus": { "type": "integer", "minimum": 100, "maximum": 599 },
+          "errorCategory": { "type": "string", "minLength": 1 },
+          "errorStage": { "type": "string", "minLength": 1 },
+          "attackVector": { "type": "string", "minLength": 1 }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "evidenceSource": { "enum": ["GATEWAY_ENVELOPE", "WORLD_QUERY"] }
+              },
+              "required": ["evidenceSource"]
+            },
+            "then": {
+              "required": [
+                "normalizedStatus",
+                "responseStatus",
+                "inputHash",
+                "outputHash",
+                "dataSnapshot",
+                "computeSnapshot",
+                "receipts",
+                "evidenceReferences",
+                "elapsedMs"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "evidenceSource": { "const": "HTTP_RESPONSE" }
+              },
+              "required": ["evidenceSource"]
+            },
+            "then": {
+              "required": [
+                "normalizedStatus",
+                "responseStatus",
+                "submittedRequestHash",
+                "httpResponseHash",
+                "clientElapsedMs",
+                "httpStatus",
+                "errorCategory",
+                "errorStage",
+                "attackVector"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "evidenceSource": { "const": "GATEWAY_HTTP" }
+              },
+              "required": ["evidenceSource"]
+            },
+            "then": {
+              "required": ["normalizedStatus", "outputHash", "elapsedMs", "clientElapsedMs", "httpStatus"]
+            }
+          }
+        ]
+      }
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ]
+    }
+  }
+}

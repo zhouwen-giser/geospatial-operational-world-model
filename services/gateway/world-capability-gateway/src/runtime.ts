@@ -4,6 +4,7 @@ import type { FastifyRequest } from "fastify";
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { PostgresAuditSink } from "./postgres-audit.js";
 import { buildGatewayApp } from "./app.js";
+import { loadCanonicalSchemaLock } from "./canonical-schema-lock.js";
 import { ProviderCircuitBreaker } from "./circuit-breaker.js";
 import type { GatewayServerConfig } from "./config.js";
 import { DirectExecutionService } from "./direct-execution.js";
@@ -12,7 +13,7 @@ import { PostgresGatewayIdempotencyStore } from "./postgres-idempotency.js";
 import { PostgresQueryPlanStore } from "./postgres-query-plan-store.js";
 import { PostgresGatewayRecordStore } from "./postgres-records.js";
 import { WorldQueryRuntime } from "./query-plan-runtime.js";
-import { QueryPlanValidator } from "./query-plan-validation.js";
+import { DEFAULT_QUERY_PLAN_POLICY, QueryPlanValidator } from "./query-plan-validation.js";
 import { CapabilityRegistry } from "./registry.js";
 import type { GatewayPrincipal } from "./types.js";
 import { PostgresWorldQueryWorker } from "./world-query-worker.js";
@@ -28,6 +29,10 @@ export interface GatewayRuntime {
 }
 
 export async function createGatewayRuntime(config: GatewayServerConfig): Promise<GatewayRuntime> {
+  const canonicalSchemaLock = loadCanonicalSchemaLock(
+    process.env.GATEWAY_CANONICAL_SCHEMA_LOCK_PATH,
+    process.env.GATEWAY_CANONICAL_SCHEMA_ROOT_PATH
+  );
   const pool = new pg.Pool({
     connectionString: config.databaseUrl,
     application_name: "gowm-capability-gateway",
@@ -76,10 +81,11 @@ export async function createGatewayRuntime(config: GatewayServerConfig): Promise
     });
     const queryStore = new PostgresQueryPlanStore(pool);
     const worldQueries = new WorldQueryRuntime({
-      validator: new QueryPlanValidator(registry),
+      validator: new QueryPlanValidator(registry, DEFAULT_QUERY_PLAN_POLICY, canonicalSchemaLock.schemaHashes),
       directExecution,
       store: queryStore,
-      autoRunAsync: false
+      autoRunAsync: false,
+      canonicalSchemaLock
     });
     const worker = new PostgresWorldQueryWorker(queryStore, worldQueries, {
       workerId: `gateway_worker_${sha256({ gatewayId: config.gatewayId, pid: process.pid }).slice("sha256:".length, "sha256:".length + 32)}`,

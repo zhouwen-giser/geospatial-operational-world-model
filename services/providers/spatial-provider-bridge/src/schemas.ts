@@ -52,11 +52,16 @@ export const SPATIAL_OPENAPI_SHA256 = "sha256:ab22b8fd16adf48d91e8c5ed477a88a362
 export const SPATIAL_CONTRACT_TREE_SHA256 = "sha256:e04d74689caec0fee2bbdb2eb970ca43e2c22bbab3dc97d966c6471d1a711ae4";
 export const SPATIAL_DEFINITIONS_SCHEMA_SHA256 = getContractSchemaHash("urn:gowm:capability:spatial-provider:operations:1.0");
 export const GOWM_SPATIAL_V1_MIGRATION_SHA256 = "sha256:a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10";
+export const GOWM_SPATIAL_V1_CATALOG_FEATURE_MIGRATION_SHA256 = "sha256:f326587b36a23d13fe29de02514affc3a248153f4bbc4194fc4ed4fd94713581";
 export const CURRENT_OBJECT_EVIDENCE_SCHEMA_SHA256 = sha256({
   contract: "gowm_spatial_v1.current_object",
   version: "1"
 });
 export const LAYER_FEATURE_EVIDENCE_SCHEMA_SHA256 = sha256({
   contract: "gowm_spatial_v1.layer_feature",
+  version: "1"
+});
+export const CATALOG_FEATURE_EVIDENCE_SCHEMA_SHA256 = sha256({
+  contract: "gowm_spatial_v1.catalog_feature_reference",
   version: "1"
 });

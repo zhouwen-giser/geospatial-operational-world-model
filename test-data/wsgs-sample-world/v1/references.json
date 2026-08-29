@@ -1,0 +1,203 @@
+[
+  {
+    "fixtureReferenceKey": "object:ugv-001",
+    "targetFixtureKey": "ugv-001",
+    "targetKind": "WORLD_OBJECT",
+    "scope": "wsgs-demo",
+    "canonicalName": "1号车",
+    "aliases": [
+      "一号车"
+    ],
+    "codes": [
+      "UGV-001"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "object:ugv-002",
+    "targetFixtureKey": "ugv-002",
+    "targetKind": "WORLD_OBJECT",
+    "scope": "wsgs-demo",
+    "canonicalName": "2号车",
+    "aliases": [
+      "二号车",
+      "北门巡逻车"
+    ],
+    "codes": [
+      "UGV-002",
+      "UGV-02"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "object:ugv-003",
+    "targetFixtureKey": "ugv-003",
+    "targetKind": "WORLD_OBJECT",
+    "scope": "wsgs-demo",
+    "canonicalName": "3号车",
+    "aliases": [
+      "三号车"
+    ],
+    "codes": [
+      "UGV-003"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "object:camera-01",
+    "targetFixtureKey": "camera-01",
+    "targetKind": "WORLD_OBJECT",
+    "scope": "wsgs-demo",
+    "canonicalName": "1号摄像机",
+    "aliases": [
+      "北区摄像机"
+    ],
+    "codes": [
+      "CAM-01"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "object:sensor-01",
+    "targetFixtureKey": "sensor-01",
+    "targetKind": "WORLD_OBJECT",
+    "scope": "wsgs-demo",
+    "canonicalName": "1号环境传感器",
+    "aliases": [
+      "环境传感器01"
+    ],
+    "codes": [
+      "SENSOR-01"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "object:target-01",
+    "targetFixtureKey": "target-01",
+    "targetKind": "WORLD_OBJECT",
+    "scope": "wsgs-demo",
+    "canonicalName": "任务目标01",
+    "aliases": [
+      "目标01"
+    ],
+    "codes": [
+      "TARGET-01"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "object:hidden-ugv-002",
+    "targetFixtureKey": "hidden-ugv-002",
+    "targetKind": "WORLD_OBJECT",
+    "scope": "wsgs-hidden",
+    "canonicalName": "2号车",
+    "aliases": [
+      "二号车"
+    ],
+    "codes": [
+      "H-UGV-002"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:zone-a",
+    "targetFixtureKey": "zone-a",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-demo",
+    "canonicalName": "A区",
+    "displayName": "A区",
+    "aliases": [],
+    "codes": [
+      "ZONE-A"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:zone-b",
+    "targetFixtureKey": "zone-b",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-demo",
+    "canonicalName": "B区",
+    "displayName": "B区",
+    "aliases": [],
+    "codes": [
+      "ZONE-B"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:road-river-west",
+    "targetFixtureKey": "road-river-west",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-demo",
+    "canonicalName": "滨河路",
+    "displayName": "滨河路（西段）",
+    "aliases": [],
+    "codes": [
+      "RD-BH-W"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:road-river-east",
+    "targetFixtureKey": "road-river-east",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-demo",
+    "canonicalName": "滨河路",
+    "displayName": "滨河路（东段）",
+    "aliases": [],
+    "codes": [
+      "RD-BH-E"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:road-axis",
+    "targetFixtureKey": "road-axis",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-demo",
+    "canonicalName": "中轴路",
+    "displayName": "中轴路",
+    "aliases": [],
+    "codes": [
+      "RD-ZX-01"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:north-gate",
+    "targetFixtureKey": "north-gate",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-demo",
+    "canonicalName": "北门",
+    "displayName": "北门",
+    "aliases": [],
+    "codes": [
+      "GATE-N"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:command-center",
+    "targetFixtureKey": "command-center",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-demo",
+    "canonicalName": "指挥中心",
+    "displayName": "指挥中心",
+    "aliases": [],
+    "codes": [
+      "FAC-CMD"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:hidden-zone-a",
+    "targetFixtureKey": "hidden-zone-a",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-hidden",
+    "canonicalName": "A区",
+    "displayName": "A区",
+    "aliases": [],
+    "codes": [
+      "H-ZONE-A"
+    ]
+  },
+  {
+    "fixtureReferenceKey": "feature:hidden-river-road",
+    "targetFixtureKey": "hidden-river-road",
+    "targetKind": "LAYER_FEATURE",
+    "scope": "wsgs-hidden",
+    "canonicalName": "滨河路",
+    "displayName": "滨河路",
+    "aliases": [],
+    "codes": [
+      "H-RD-BH"
+    ]
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "baselineCommit": "17dd221330d9af540ec815a39eca96550690299a",
+  "producerOperation": "reference.resolve",
+  "consumerOperation": "world.get-geometry",
+  "referenceKind": "LAYER_FEATURE",
+  "identityPreserved": true,
+  "producerReferenceHash": "sha256:598046a793490141eda1d8259f1414dcfd172b4b9d53dccc10f692f115e95dc5",
+  "consumerReferenceHash": "sha256:598046a793490141eda1d8259f1414dcfd172b4b9d53dccc10f692f115e95dc5",
+  "status": "PASS",
+  "evidenceIds": [
+    "CHAIN-REFERENCE-ZONE-A",
+    "CHAIN-GEOMETRY-ZONE-A",
+    "CHAIN-SPATIAL-ZONE-A"
+  ]
+}

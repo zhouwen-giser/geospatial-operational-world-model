@@ -21,6 +21,7 @@ const bundleOutput = resolve(generatedDirectory, "schema-bundle.ts");
 const hashesOutput = resolve(generatedDirectory, "schema-hashes.ts");
 
 const toPosix = (value) => value.replaceAll("\\", "/");
+const normalizeLineEndings = (value) => value.replaceAll("\r\n", "\n");
 const canonicalJson = (value) => {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
@@ -211,7 +212,11 @@ if (check) {
   const currentContracts = await readFile(contractsOutput, "utf8").catch(() => "");
   const currentBundle = await readFile(bundleOutput, "utf8").catch(() => "");
   const currentHashes = await readFile(hashesOutput, "utf8").catch(() => "");
-  if (currentContracts !== contractsSource || currentBundle !== bundleSource || currentHashes !== hashesSource) {
+  if (
+    normalizeLineEndings(currentContracts) !== contractsSource ||
+    normalizeLineEndings(currentBundle) !== bundleSource ||
+    normalizeLineEndings(currentHashes) !== hashesSource
+  ) {
     process.stderr.write("Generated contract artifacts are stale. Run generate-contract-types.mjs.\n");
     process.exitCode = 1;
   }

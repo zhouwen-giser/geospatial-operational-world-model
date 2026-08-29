@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "profile": "grounding-core",
+  "requiredProviders": [
+    "gowm.reference-catalog",
+    "gowm.dataset-catalog",
+    "gowm.world-evidence",
+    "gowm.spatial-analysis.bridge",
+    "gowm.platform-validation"
+  ],
+  "optionalProviders": [],
+  "excludedClasses": [
+    "OBSERVATION_WRITE",
+    "DEVICE_COMMAND",
+    "SDAR_A2A",
+    "DYNAMIC_MCP_DISCOVERY",
+    "ARBITRARY_SQL"
+  ],
+  "publishedHostServices": [
+    "world-capability-gateway"
+  ]
+}

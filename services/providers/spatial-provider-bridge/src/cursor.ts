@@ -12,8 +12,8 @@ export interface SpatialCursorPayload {
   distanceM?: number;
 }
 
-export function dataScopeDigest(dataScopeKey: string): `sha256:${string}` {
-  return sha256({ dataScopeKey });
+export function dataScopeDigest(dataScopeKey: string, datasetScopeKey?: string): `sha256:${string}` {
+  return sha256({ dataScopeKey, ...(datasetScopeKey === undefined ? {} : { datasetScopeKey }) });
 }
 
 export function encodeSpatialCursor(payload: SpatialCursorPayload, secret: string): string {

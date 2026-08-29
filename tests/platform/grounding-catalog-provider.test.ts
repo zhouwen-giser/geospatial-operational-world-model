@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { getContractSchemaHash } from "../../packages/platform/contract-runtime/src/index.js";
@@ -5,7 +7,12 @@ import { ProviderProtocolError, sha256 } from "../../packages/platform/provider-
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "../../services/providers/grounding-catalog-provider/src/cursor.js";
 import { decodeEvidenceCursor, encodeEvidenceCursor } from "../../services/providers/grounding-catalog-provider/src/evidence-cursor.js";
 import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
-import { GroundingCatalogRepository, projectedPosition } from "../../services/providers/grounding-catalog-provider/src/repository.js";
+import {
+  GroundingCatalogRepository,
+  preferExactResolutionRows,
+  projectedPosition
+} from "../../services/providers/grounding-catalog-provider/src/repository.js";
+import { GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 } from "../../services/providers/grounding-catalog-provider/src/schemas.js";
 import type { CatalogSqlClient, CatalogSqlPool } from "../../services/providers/grounding-catalog-provider/src/types.js";
 import { loadControlledProviderDeployments } from "../../services/gateway/world-capability-gateway/src/config.js";
 
@@ -17,6 +24,15 @@ const pool: CatalogSqlPool = {
 const cursorSecret = "GowmCatalogCursorSecret_2026_Alpha_Bravo";
 
 describe("grounding catalog providers", () => {
+  it("locks the catalog feature geometry migration bytes used by provider receipts", () => {
+    const migration = readFileSync(
+      new URL("../../database/migrations/062_reference_geometry_composability.sql", import.meta.url),
+      "utf8"
+    ).replace(/\r\n/gu, "\n");
+    expect(`sha256:${createHash("sha256").update(migration, "utf8").digest("hex")}`)
+      .toBe(GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256);
+  });
+
   it("packs only authoritative projected coordinates for the typed Point port", () => {
     expect(projectedPosition({position:{longitude:121,latitude:31,altitude:12}})).toEqual({type:"Point",coordinates:[121,31,12]});
     for (const state of [{}, {position:{longitude:0}}, {position:{longitude:181,latitude:0}}, {position:{longitude:0,latitude:NaN}}]) {
@@ -49,6 +65,72 @@ describe("grounding catalog providers", () => {
     expect(output.status).toBe("COMPLETED");
     expect(output.receipts[0]?.outputHash).toBe(sha256(output.output?.value));
     expect(output.output?.value).toEqual(JSON.parse(JSON.stringify(output.output?.value)));
+    if (operationId === "world.get-current-state" || operationId === "world.get-geometry") {
+      expect(output.dataSnapshot?.resources).toContainEqual({
+        referenceKey,
+        authority: "GOWM Foundation",
+        pinning: "PINNED",
+        digest: expect.stringMatching(/^sha256:[0-9a-f]{64}$/u)
+      });
+    }
+  });
+  it("returns all exact reference matches while suppressing fuzzy alternatives", () => {
+    const exactEast = { reference_key: "east", matched_by: "CODE", match_score: 1 };
+    const exactWest = { reference_key: "west", matched_by: "CANONICAL_NAME", match_score: 1 };
+    const fuzzyWest = { reference_key: "west", matched_by: "FUZZY_NAME", match_score: 0.8 };
+    expect(preferExactResolutionRows([exactEast, fuzzyWest])).toEqual([exactEast]);
+    expect(preferExactResolutionRows([exactEast, exactWest, fuzzyWest])).toEqual([exactEast, exactWest]);
+    expect(preferExactResolutionRows([fuzzyWest])).toEqual([fuzzyWest]);
+  });
+
+  it("reads LAYER_FEATURE geometry through the unified current geometry contract", async () => {
+    const featureReference = { namespace: "gowm", kind: "LAYER_FEATURE", id: `wrf_${"2".repeat(32)}`, version: "42" };
+    const currentFeatureReference = { ...featureReference, version: "road-v1" };
+    const calls: Array<{ text: string; values: readonly unknown[] }> = [];
+    const client: CatalogSqlClient = {
+      async query<Row extends Record<string, unknown> = Record<string, unknown>>(text: string, values: readonly unknown[] = []) {
+        calls.push({ text, values });
+        let rows: Record<string, unknown>[] = [];
+        if (text.includes("scope_resource")) rows = [{ reference_key_value: { ...featureReference, kind: "DATA_SCOPE", version: "1" } }];
+        else if (text.includes("GREATEST")) rows = [{ world_version: "11" }];
+        else if (text.startsWith("SELECT * FROM gowm_evidence_v1.current_geometry WHERE")) {
+          rows = [{
+            reference_key_value: currentFeatureReference,
+            world_version: "11",
+            geometry: { type: "LineString", coordinates: [[116.4, 39.9], [116.5, 39.9]] },
+            geometry_type: "LINESTRING",
+            bbox: [116.4, 39.9, 116.5, 39.9],
+            crs: "EPSG:4326",
+            observed_at: "2026-08-27T00:00:00.000Z"
+          }];
+        }
+        return { rows: rows as Row[], rowCount: rows.length };
+      },
+      release() {}
+    };
+    const repository = new GroundingCatalogRepository({
+      pool: { async connect() { return client; } },
+      cursorSecret
+    });
+    const execution = await repository.execute(
+      "world.get-geometry",
+      { schemaVersion: "1.0", referenceKey: featureReference },
+      { dataScopeKey: "scope", datasetScopeKey: "roads" },
+      5_000
+    );
+    expect(execution.output).toMatchObject({
+      referenceKey: currentFeatureReference,
+      worldVersion: 11,
+      facts: [{
+        factKind: "CURRENT_GEOMETRY",
+        geometryType: "LINESTRING",
+        version: "road-v1"
+      }]
+    });
+    expect(calls).toContainEqual({
+      text: "SELECT * FROM gowm_evidence_v1.current_geometry WHERE reference_key=$1::text",
+      values: [featureReference.id]
+    });
   });
 
   it("registers Reference read operations with canonical hashes and delegates validation to the platform", () => {

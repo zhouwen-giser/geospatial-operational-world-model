@@ -107,5 +107,27 @@ if (check) {
   }
 } else await writeFile(registryPath,registryExpected,"utf8");
 
+const sampleRegistryPath=resolve(repositoryRoot,"config","wsgs-sample-gateway-registry.json");
+const sampleRegistry=JSON.parse(await readFile(sampleRegistryPath,"utf8")) as {configVersion:string;providers:Array<Record<string,unknown>>};
+const sampleProviders=new Map([
+  ...[...catalogProviders.values()].map((provider) => [provider.runtime.manifest.provider.providerId, provider.runtime.manifest] as const),
+  [validationProvider.runtime.manifest.provider.providerId, validationProvider.runtime.manifest] as const
+]);
+sampleRegistry.providers=sampleRegistry.providers.map((entry) => {
+  const manifest=sampleProviders.get(String(entry.providerId));
+  return manifest===undefined ? entry : {
+    ...entry,
+    providerVersion:manifest.provider.providerVersion,
+    implementationDigest:manifest.provider.implementationDigest,
+    manifestHash:sha256(manifest)
+  };
+});
+const sampleRegistryExpected=`${JSON.stringify(sampleRegistry,null,2)}\n`;
+if (check) {
+  if (await readFile(sampleRegistryPath,"utf8")!==sampleRegistryExpected) {
+    process.stderr.write(`Stale Sample World Gateway registry artifact: ${sampleRegistryPath}\n`);stale=true;
+  }
+} else await writeFile(sampleRegistryPath,sampleRegistryExpected,"utf8");
+
 if (stale) process.exitCode = 1;
 else process.stdout.write(check ? "GROUNDING_PROVIDER_CONTRACTS_CURRENT\n" : "GROUNDING_PROVIDER_CONTRACTS_SYNCED\n");

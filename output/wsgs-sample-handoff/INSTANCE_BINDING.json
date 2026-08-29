@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "1.0",
+  "instanceId": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777",
+  "fixtureId": "gowm-wsgs-sample-world",
+  "fixtureVersion": "1.0.0",
+  "fixtureHash": "sha256:8a1ae55b407db37d086e034f17bac9660f52c15d3f4a850a6020349883c6e942",
+  "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025",
+  "realizationId": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777",
+  "realizationHash": "sha256:b988ff9f163ebb5a4e4cecb167f88f53ad0222820418e9ee753e38238f851e07",
+  "realizationT0": "2026-08-27T13:03:46.516Z",
+  "loadedStateHash": "7ccb293a43de508b719011b46d63534fface1962a57f54c4cd6afa0d6f053ce6",
+  "bindingRevision": "sha256:1d59337bcbd8cb8dd76d0241d08b8c7618f61daa6e9c43d25db45c11994f1394",
+  "operationContracts": [
+    {
+      "operationId": "reference.get",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaHash": "sha256:276d3d168e37dd13abfd705d308b16b128b6e6519daf00f98830bd570593a25c",
+      "semanticProfileHash": "sha256:50dd04d66852777d5bd7d5312aab402e4124a90b86ef2ac93e824add0161db48",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "reference.resolve",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+      "outputSchemaHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+      "semanticProfileHash": "sha256:2345427b162f36cc0792116f20cd337f1e95e0e8284b000ab556b876c45328ad",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "world.get-current-state",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
+      "semanticProfileHash": "sha256:d41323fdb7bb22db3100e45a3024b978e9325504ab865c5b08852a3caf91a12a",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "world.get-geometry",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
+      "semanticProfileHash": "sha256:cc8df371406aff181616832bf4b6824e30d2cbc50186164b21c1a55e61680d11",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "world.get-provenance",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
+      "semanticProfileHash": "sha256:d41323fdb7bb22db3100e45a3024b978e9325504ab865c5b08852a3caf91a12a",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "catalog.get",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+      "outputSchemaHash": "sha256:d3ed28efd4b24c21ed91fda200e656a9b492bac88e1fe8d8dd2488ee78c76cf4",
+      "semanticProfileHash": "sha256:76736ff33a0568e7ba253b29c210a92cd7ee09f7780856de9c9faa8cb8fa8e00",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "catalog.search",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:d15fc90c9641712ef22d536c931bedf0a6f8e7af46a93172a48aec8f373e51aa",
+      "outputSchemaHash": "sha256:85c9b79082dca6abba93becc6ffca0bcb5a86934c61685a6e0a05863bd6430fc",
+      "semanticProfileHash": "sha256:384d9f9fdd83f9c6799148478e12955385b3d4adca375ab2e2399f6d2fa8c33a",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "spatial.find-nearby",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:17f7d021a954e30721adb28d02aae1803061455da9f153c1af019779d92ae846",
+      "outputSchemaHash": "sha256:d62bb6f78c53bdd5f7a714682edb91b18a90c9e520f6e642ee5a43d92d61fe23",
+      "semanticProfileHash": "sha256:80e56fb4f234644890de458056d66b78903f1f458460b8a066da75a4a2f18eff",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "spatial.find-in-area",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:f902acdbe64e91474b7f3d2a94d8cad72a7a2d6182265981a770fb472a8914dd",
+      "outputSchemaHash": "sha256:8aa8231c04110a4fcf235e759bcdd4f2e97db20097bbff62f9161b4ce6f4d161",
+      "semanticProfileHash": "sha256:fecded8fb9803f556acd8030ab05b52e377ab6a95121c9007273f2735233422b",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "spatial.find-intersections",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:8f347f836dd9c299f16cb60d2fc22dcfc5b4addab9c77024f530a9bdd4d7bea0",
+      "outputSchemaHash": "sha256:3bbfc710db6a82e02592075ec75bafb648575242794dbfd3ff39c6df9c53979c",
+      "semanticProfileHash": "sha256:3ff34f5452a95f91988e3dce183a83e27b4ea80ac5995dc92cf1764957b21024",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "reference.validate",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:02b86151775176b13aa80fc0a8c595621941ab6ca5b6ba777c78d300ec59fc4b",
+      "outputSchemaHash": "sha256:e5f544f8d40c72dc1dc8039c4f5c83ed94b5d16624e05a68d47c65207941c75c",
+      "semanticProfileHash": "sha256:a79f3acf2cb9a825b367a63da65b63ed0f59746f0847ae30f9fb173082be79fc",
+      "maturity": "STABLE"
+    },
+    {
+      "operationId": "result.validate",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:02b86151775176b13aa80fc0a8c595621941ab6ca5b6ba777c78d300ec59fc4b",
+      "outputSchemaHash": "sha256:e5f544f8d40c72dc1dc8039c4f5c83ed94b5d16624e05a68d47c65207941c75c",
+      "semanticProfileHash": "sha256:a79f3acf2cb9a825b367a63da65b63ed0f59746f0847ae30f9fb173082be79fc",
+      "maturity": "STABLE"
+    }
+  ],
+  "canaryEvidencePath": "CANARY_EVIDENCE_REPORT.json",
+  "consumerConnectivityReportPath": "CONSUMER_CONNECTIVITY_REPORT.json"
+}

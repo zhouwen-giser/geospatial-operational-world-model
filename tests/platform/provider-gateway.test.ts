@@ -28,6 +28,7 @@ const principal: GatewayPrincipal = {
   principalRef: "principal:test",
   authenticationMethod: "TEST_ATTESTED",
   authenticatedAt: new Date(Date.now() - 1_000).toISOString(),
+  dataScopeClaim: "tenant:test",
   allowExperimental: true
 };
 
@@ -221,6 +222,7 @@ describe("Capability Registry and direct execution", () => {
     expect(replay.replayed).toBe(true);
     expect(replay.result).toEqual(first.result);
     expect(audit.events().map((event) => event.outcome)).toEqual(["COMPLETED", "REPLAYED"]);
+    expect(audit.events().every((event) => event.dataScopeHash === sha256("tenant:test"))).toBe(true);
   });
 
   it("enforces the caller output budget even when a nonconforming provider ignores it", async () => {

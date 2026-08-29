@@ -1,0 +1,76 @@
+{
+  "type": "FeatureCollection",
+  "name": "gowm-wsgs-sample-hidden",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "EPSG:4326"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "hidden-zone-a",
+      "properties": {
+        "fixtureFeatureKey": "hidden-zone-a",
+        "scope": "wsgs-hidden",
+        "layer": "hidden-zones",
+        "objectType": "ZONE",
+        "name": "A区",
+        "code": "H-ZONE-A"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              114.1,
+              22.7
+            ],
+            [
+              114.104,
+              22.7
+            ],
+            [
+              114.104,
+              22.704
+            ],
+            [
+              114.1,
+              22.704
+            ],
+            [
+              114.1,
+              22.7
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hidden-river-road",
+      "properties": {
+        "fixtureFeatureKey": "hidden-river-road",
+        "scope": "wsgs-hidden",
+        "layer": "hidden-roads",
+        "objectType": "ROAD",
+        "name": "滨河路",
+        "code": "H-RD-BH"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            114.101,
+            22.699
+          ],
+          [
+            114.101,
+            22.705
+          ]
+        ]
+      }
+    }
+  ]
+}

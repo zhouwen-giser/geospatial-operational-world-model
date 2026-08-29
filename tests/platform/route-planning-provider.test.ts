@@ -6,6 +6,7 @@ import { createRoutePlanningProvider } from "../../services/providers/route-plan
 import type { NetworkSqlPool } from "../../services/providers/network-provider/src/types.js";
 
 const pool:NetworkSqlPool={async connect(){throw new Error("manifest test must not connect");}};
+const canonicalSourceBytes=(path:string):Buffer=>Buffer.from(readFileSync(path,"utf8").replace(/\r\n/gu,"\n"),"utf8");
 describe("gowm.route-planning provider",()=>{
   it("registers the frozen stable and preview operation locks",()=>{
     const provider=createRoutePlanningProvider({pool});
@@ -15,7 +16,7 @@ describe("gowm.route-planning provider",()=>{
     expect(provider.runtime.manifest.capabilities.find((item)=>item.operationId==="route.plan-alternatives")?.maturity).toBe("PREVIEW");
     for(const [index,descriptor] of provider.runtime.manifest.capabilities.entries()){
       const lock=frozen.operations[index]!;expect(descriptor).toMatchObject({operationId:lock.operationId,operationVersion:lock.operationVersion,maturity:lock.maturity,inputSchemaHash:lock.inputSchemaHash,outputSchemaHash:lock.outputSchemaHash,scopePolicy:"DATA_SCOPE_REQUIRED"});
-      for(const direction of ["input","output"] as const){const file=lock[`${direction}SchemaFile`]!;expect(lock[`${direction}SchemaHash`]).toBe(`sha256:${createHash("sha256").update(readFileSync(resolve(file))).digest("hex")}`);}
+      for(const direction of ["input","output"] as const){const file=lock[`${direction}SchemaFile`]!;expect(lock[`${direction}SchemaHash`]).toBe(`sha256:${createHash("sha256").update(canonicalSourceBytes(resolve(file))).digest("hex")}`);}
     }
   });
 });

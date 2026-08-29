@@ -8,9 +8,10 @@ const repositoryRoot = resolve(packageRoot, "../../..");
 const defaultOutputRoot = resolve(process.argv[2] || join(packageRoot, "bundle"));
 const reportRoot = resolve(repositoryRoot, "reports/gowm-v0.6.3");
 
+const compareCanonicalText = (left, right) => left < right ? -1 : left > right ? 1 : 0;
 const canonical = (value) => JSON.stringify(value, (_key, item) => {
   if (!item || typeof item !== "object" || Array.isArray(item)) return item;
-  return Object.fromEntries(Object.entries(item).sort(([a], [b]) => a.localeCompare(b)));
+  return Object.fromEntries(Object.entries(item).sort(([a], [b]) => compareCanonicalText(a, b)));
 });
 const sha256 = (value) => `sha256:${createHash("sha256").update(typeof value === "string" ? value : canonical(value)).digest("hex")}`;
 const sha512Integrity = (value) => `sha512-${createHash("sha512").update(value).digest("base64")}`;
@@ -26,7 +27,7 @@ const copy = async (source, destination) => {
 const walk = async (root) => {
   const entries = await readdir(root, { withFileTypes: true });
   const files = [];
-  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+  for (const entry of entries.sort((a, b) => compareCanonicalText(a.name, b.name))) {
     const path = join(root, entry.name);
     if (entry.isDirectory()) files.push(...await walk(path));
     else files.push(path);
@@ -38,7 +39,8 @@ async function copySchemas(outputRoot) {
   for (const sourceRoot of ["contracts/platform", "contracts/gowm-v0.6.2", "contracts/gowm-v0.6.3"]) {
     const absolute = resolve(repositoryRoot, sourceRoot);
     for (const path of await walk(absolute)) {
-      if (!path.endsWith(".json") || path.includes("/vocabularies/") || path.includes("/manifests/") || path.includes("/rules/")) continue;
+      const portablePath = path.replaceAll("\\", "/");
+      if (!path.endsWith(".json") || portablePath.includes("/vocabularies/") || portablePath.includes("/manifests/") || portablePath.includes("/rules/")) continue;
       const prefix = basename(absolute);
       const destinationName = basename(path) === "delegation-token-claims.schema.json"
         ? "delegated-identity-claims.schema.json"
@@ -55,7 +57,10 @@ async function loadCatalog() {
     const manifest = await json(resolve(repositoryRoot, provider.manifestPath));
     operations.push(...manifest.capabilities);
   }
-  return operations.sort((a, b) => `${a.operationId}@${a.operationVersion}`.localeCompare(`${b.operationId}@${b.operationVersion}`));
+  return operations.sort((a, b) => compareCanonicalText(
+    `${a.operationId}@${a.operationVersion}`,
+    `${b.operationId}@${b.operationVersion}`
+  ));
 }
 
 function operationProjection(operation) {
@@ -80,7 +85,7 @@ async function fileRecords(root) {
     const bytes = await readFile(path);
     records.push({ path: relative(root, path).replaceAll("\\", "/"), bytes: bytes.length, sha256: createHash("sha256").update(bytes).digest("hex") });
   }
-  return records.sort((a, b) => a.path.localeCompare(b.path));
+  return records.sort((a, b) => compareCanonicalText(a.path, b.path));
 }
 
 export async function buildConsumerContracts(destination = defaultOutputRoot) {

@@ -108,12 +108,13 @@ export function inspectTypeScript(source: string, filename: string, repositoryRo
   const tree = ts.createSourceFile(filename, source, ts.ScriptTarget.Latest, true);
   const symbols = new Set<string>(), calls = new Set<string>(), imports = new Set<string>();
   const strings = new Set<string>(), properties = new Set<string>(), siblings = new Set<string>();
-  const providerRoot = resolve(repositoryRoot, "services/providers");
-  const own = filename.startsWith(`${providerRoot}/`) ? filename.slice(providerRoot.length + 1).split("/")[0] : undefined;
+  const portable = (path: string) => path.replaceAll("\\", "/");
+  const portableFilename = portable(filename);
+  const own = portableFilename.match(/(?:^|\/)services\/providers\/([^/]+)/u)?.[1];
   const collectImport = (node: ts.Node | undefined) => {
     if (!node || !ts.isStringLiteralLike(node)) return;
     imports.add(node.text);
-    const absolute = node.text.startsWith(".") ? resolve(dirname(filename), node.text) : node.text;
+    const absolute = portable(node.text.startsWith(".") ? resolve(dirname(filename), node.text) : node.text);
     const parts = absolute.split("/");
     const at = parts.findIndex((part, i) => part === "services" && parts[i + 1] === "providers");
     if (at >= 0 && parts[at + 2] !== own) siblings.add(node.text);
@@ -203,11 +204,17 @@ export async function semanticSourceFingerprint(root: string): Promise<string> {
       // invalidate the evidence that admits Stable entries into this very lock.
       if (path === "contracts/consumers/wsgs-southbound-operation-lock-v1.json") continue;
       if (entry.isDirectory()) await scan(path);
-      else if (/\.(ts|mjs|js|json|sql|yaml|yml|py)$/u.test(entry.name)) hashes[path] = byteHash(await readFile(resolve(root, path)));
+      else if (/\.(ts|mjs|js|json|sql|yaml|yml|py)$/u.test(entry.name)) {
+        const bytes = await readFile(resolve(root, path));
+        hashes[path] = byteHash(Buffer.from(bytes.toString("utf8").replace(/\r\n/gu, "\n"), "utf8"));
+      }
     }
   };
-  for (const directory of ["packages", "services", "contracts", "config", "database", "scripts", "tests", "validation"]) await scan(directory);
-  for (const path of ["package.json", "package-lock.json", "tsconfig.json"]) hashes[path] = byteHash(await readFile(resolve(root, path)));
+  for (const directory of ["packages", "services", "contracts", "config", "database", "scripts", "test-data", "tests", "validation"]) await scan(directory);
+  for (const path of ["package.json", "package-lock.json", "tsconfig.json"]) {
+    const bytes = await readFile(resolve(root, path));
+    hashes[path] = byteHash(Buffer.from(bytes.toString("utf8").replace(/\r\n/gu, "\n"), "utf8"));
+  }
   return canonicalSha256(hashes);
 }
 

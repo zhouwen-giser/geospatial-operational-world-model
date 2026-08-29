@@ -20,6 +20,9 @@ import {
   createGatewayAuthenticator,
   type GatewayPrincipal
 } from "../../services/gateway/world-capability-gateway/src/index.js";
+import { redactPublicDetails } from "../../services/gateway/world-capability-gateway/src/redaction.js";
+import { projectCapabilitySemantics } from "../../services/gateway/world-capability-gateway/src/capability-semantics.js";
+import { ProviderProtocolError } from "../../packages/platform/provider-sdk/src/index.js";
 
 const root = resolve(import.meta.dirname, "../..");
 const encoded = (value: unknown) => Buffer.from(JSON.stringify(value)).toString("base64url");
@@ -119,25 +122,53 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
     expect(() => coordinator.assertManifestHash({ ...manifest, capturedAt: "2026-08-27T00:00:01.000Z" })).toThrow(/hash/u);
   });
 
+  it("retains the non-sensitive snapshot adherence category in public errors", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    let captured: ProviderProtocolError | undefined;
+    try {
+      coordinator.assertAdherence(
+        { mode: "PINNED", allowDowngrade: false, pinnedSnapshot: snapshotSubmission().snapshotPolicy?.pinnedSnapshot! },
+        { nodeId: "current", status: "MISMATCHED", checkedResources: 1, mismatches: [] }
+      );
+    } catch (error) {
+      captured = error as ProviderProtocolError;
+    }
+    expect(captured?.code).toBe("SCHEMA_MISMATCH");
+    expect(redactPublicDetails(captured?.details)).toMatchObject({
+      stage: "SNAPSHOT",
+      nodeId: "current",
+      adherenceStatus: "MISMATCHED"
+    });
+  });
+
   it("projects authorized availability with bounded cache and no provider topology", async () => {
     const runtime = createElevationMockProvider();
     const client = new InProcessProviderClient(runtime);
+    const manifest = structuredClone(runtime.manifest);
+    manifest.capabilities.push({
+      ...structuredClone(manifest.capabilities[0]!),
+      operationId: "elevation.sample.mock-secondary"
+    });
     let healthCalls = 0;
     const registry = new CapabilityRegistry();
     registry.register({
       approvalId: "availability-test", approved: true, endpoint: new URL("http://127.0.0.1:39090/"),
-      manifest: runtime.manifest,
+      manifest,
       client: { ...client, providerId: client.providerId, manifest: () => client.manifest(), execute: (...args) => client.execute(...args), health: async () => { healthCalls += 1; return client.health(); } }
     });
     const service = new OperationAvailabilityService({ registry, circuits: new ProviderCircuitBreaker(), cacheTtlMs: 4_000 });
     const principal: GatewayPrincipal = {
       principalRef: "service:test", authenticationMethod: "TEST", authenticatedAt: new Date().toISOString(),
-      allowExperimental: true, allowedOperations: ["elevation.sample.mock@1.0"]
+      allowExperimental: true,
+      allowedOperations: ["elevation.sample.mock@1.0", "elevation.sample.mock-secondary@1.0"]
     };
     const first = await service.list(principal);
     const second = await service.list(principal);
-    expect(first.operations).toEqual([expect.objectContaining({ availability: "AVAILABLE", reasonCodes: ["READY"] })]);
-    expect(second.operations).toHaveLength(1);
+    expect(first.operations).toHaveLength(2);
+    expect(first.operations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ availability: "AVAILABLE", reasonCodes: ["READY"] })
+    ]));
+    expect(second.operations).toHaveLength(2);
     expect(healthCalls).toBe(1);
     expect(JSON.stringify(first)).not.toMatch(/127\.0\.0\.1|providerId|endpoint/u);
     await expect(service.get("elevation.sample.mock", "1.0", { ...principal, allowedOperations: [] })).resolves.toBeUndefined();
@@ -165,10 +196,22 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
     }
     const lock = JSON.parse(await readFile(join(root, "contracts/consumers/wsgs-southbound-operation-lock-v2.json"), "utf8"));
     const manifest = JSON.parse(await readFile(join(root, "packages/platform/world-gateway-contracts/bundle/MANIFEST.json"), "utf8"));
+    const semanticProjection = projectCapabilitySemantics(catalog, manifest.contractCatalogRevision);
     expect(validateContract("urn:gowm:v0.6.3:wsgs-southbound-operation-lock-v2", lock)).toMatchObject({ valid: true });
     expect(validateContract("urn:gowm:v0.6.3:consumer-contract-bundle-manifest", manifest)).toMatchObject({ valid: true });
     expect(lock.defaultOperations).toHaveLength(31);
     expect(lock.consumerContractPackage.integrity).toBe(manifest.packageIntegrity);
+    expect(lock.semanticCatalogHash).toBe(semanticProjection.catalogHash);
+    expect(manifest.semanticCatalogHash).toBe(semanticProjection.catalogHash);
+    const semanticHashes = new Map(semanticProjection.profiles.map((profile) => [
+      `${profile.operationId}@${profile.operationVersion}`,
+      profile.semanticProfileHash
+    ]));
+    for (const operation of [...lock.defaultOperations, ...lock.previewOperations]) {
+      expect(operation.semanticProfileHash).toBe(
+        semanticHashes.get(`${operation.operationId}@${operation.operationVersion}`)
+      );
+    }
     const bundleNames = await walk(join(root, "packages/platform/world-gateway-contracts/bundle"));
     expect(bundleNames.some((path) => /provider-registry|\.env|token/iu.test(path))).toBe(false);
   });

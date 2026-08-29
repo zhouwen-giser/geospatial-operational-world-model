@@ -1,6 +1,7 @@
 const SENSITIVE_DETAIL_KEY = /(?:authorization|token|secret|password|credential|cookie|api[-_]?key|geometry|coordinates|payload|input|output|sql|query|body|request|response)/iu;
 
 const PUBLIC_DETAIL_KEYS = new Set([
+  "adherenceStatus",
   "allowed",
   "canonicalHash",
   "consumed",

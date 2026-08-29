@@ -1,0 +1,17 @@
+{
+  "counts": {
+    "datasets": 4,
+    "features": 9,
+    "objects": 7,
+    "observations": 7,
+    "references": 26
+  },
+  "databaseMarker": "gowm_wsgs_sample/gowm-wsgs-sample-world/1.0",
+  "fixtureId": "gowm-wsgs-sample-world",
+  "fixtureVersion": "1.0.0",
+  "idempotent": true,
+  "realizationHash": "sha256:b988ff9f163ebb5a4e4cecb167f88f53ad0222820418e9ee753e38238f851e07",
+  "schemaVersion": "1.0",
+  "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025",
+  "status": "PASS"
+}

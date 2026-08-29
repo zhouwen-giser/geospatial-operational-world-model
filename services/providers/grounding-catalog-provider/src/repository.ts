@@ -38,6 +38,9 @@ export class GroundingCatalogRepository {
     const isEvidence = operationId.startsWith("world.") || operationId.startsWith("result.") || operationId.startsWith("reference-set.");
     const datasetScopeKey = security.datasetScopeKey?.trim();
     if (isDataset && !datasetScopeKey) throw new ProviderProtocolError("SCOPE_DENIED", "dataset scope is required");
+    if (operationId === "world.get-geometry" && referenceKeyValue(asRecord(input).referenceKey).kind === "LAYER_FEATURE" && !datasetScopeKey) {
+      throw new ProviderProtocolError("SCOPE_DENIED", "dataset scope is required for LAYER_FEATURE geometry");
+    }
     const client = await this.options.pool.connect().catch((cause: unknown) => {
       throw new ProviderProtocolError("PROVIDER_NOT_READY", "catalog read pool is unavailable", { retryable: true, cause });
     });
@@ -56,7 +59,7 @@ export class GroundingCatalogRepository {
       } else {
         await client.query("SELECT gowm_reference_v1.set_data_scope($1::text)", [dataScopeKey]);
       }
-      const snapshot = await this.snapshot(client, dataScopeKey, isDataset ? datasetScopeKey : undefined, isDataset ? "dataset" : isEvidence ? "evidence" : "reference");
+      const snapshot = await this.snapshot(client, dataScopeKey, isDataset || isEvidence ? datasetScopeKey : undefined, isDataset ? "dataset" : isEvidence ? "evidence" : "reference");
       const result = isDataProduct
         ? await this.dataProductOperation(client, operationId, asRecord(input), snapshot)
         : isDataset ? await this.datasetOperation(client, operationId, asRecord(input), snapshot)
@@ -80,6 +83,10 @@ export class GroundingCatalogRepository {
       const schema = mode === "reference" ? "gowm_reference_v1" : mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1";
       const view = mode === "reference" ? "current_descriptor" : mode === "dataset" ? "dataset" : "current_state";
       await client.query(`SELECT * FROM ${schema}.${view} LIMIT 0`);
+      if (mode === "evidence") {
+        await client.query("SELECT * FROM gowm_evidence_v1.current_geometry LIMIT 0");
+        await client.query("SELECT * FROM gowm_evidence_v1.current_feature_geometry LIMIT 0");
+      }
       await client.query(`SELECT * FROM ${schema}.scope_resource LIMIT 0`);
       return { ready: true, reasons: [] };
     } catch {
@@ -107,6 +114,9 @@ export class GroundingCatalogRepository {
             UNION ALL SELECT 'event:' || reference_key,
               count(*)::text || ':' || max(created_at)::text || ':' || max(event_id)
               FROM gowm_evidence_v1.world_event GROUP BY reference_key
+            UNION ALL SELECT 'catalog-feature:' || reference_key || ':' || reference_version,
+              feature_version || ':' || content_hash
+              FROM gowm_evidence_v1.current_feature_geometry
             UNION ALL SELECT reference_key,result_hash FROM gowm_result_v1.query_result
             UNION ALL SELECT reference_key,data_snapshot_hash || ':' || compute_snapshot_hash FROM gowm_result_v1.derived_reference
             UNION ALL SELECT reference_key,member_count::text FROM gowm_result_v1.reference_set
@@ -118,9 +128,10 @@ export class GroundingCatalogRepository {
     const worldVersion = mode === "reference"
       ? safeInteger(versionResult.rows[0]?.world_version, "snapshot.world_version")
       : mode === "evidence"
-        ? safeInteger((await client.query(`SELECT GREATEST(
+          ? safeInteger((await client.query(`SELECT GREATEST(
             COALESCE((SELECT max(world_version) FROM gowm_evidence_v1.current_state),0),
-            COALESCE((SELECT max(world_version) FROM gowm_evidence_v1.world_event),0)
+            COALESCE((SELECT max(world_version) FROM gowm_evidence_v1.world_event),0),
+            COALESCE((SELECT max(world_version) FROM gowm_evidence_v1.current_feature_geometry),0)
           ) AS world_version`)).rows[0]?.world_version, "snapshot.world_version")
         : 0;
     const scopeDigest = catalogScopeDigest(dataScopeKey, datasetScopeKey);
@@ -164,10 +175,11 @@ export class GroundingCatalogRepository {
           "SELECT * FROM gowm_reference_v1.resolve($1::text,$2::text[],$3::integer,0.3,$4::integer)",
           [requiredString(mention.surfaceText, "surfaceText"), stringArrayOrNull(mention.expectedKinds), limit, this.maximumCandidates]
         );
-        candidateCount += query.rows.length;
+        const resolutionRows = preferExactResolutionRows(query.rows);
+        candidateCount += resolutionRows.length;
         if (candidateCount > this.maximumCandidates) throw budgetExceeded(this.maximumCandidates);
         const candidates = [];
-        for (const row of query.rows) {
+        for (const row of resolutionRows) {
           const descriptor = await this.descriptor(client, requiredString(row.reference_key, "reference_key"));
           if (descriptor) candidates.push({
             candidate: descriptor,
@@ -434,6 +446,7 @@ export class GroundingCatalogRepository {
       const row = query.rows[0];
       if (!row) return worldNoData(inputKey, snapshot, "CURRENT_STATE_UNAVAILABLE");
       const worldVersion = safeInteger(row.world_version, "world_version");
+      const currentReferenceKey = referenceKeyValue(row.reference_key_value);
       const evidence = typeof row.source_observation_id === "string" ? [{
         evidenceId: row.source_observation_id,
         authority: "GOWM Foundation",
@@ -441,9 +454,9 @@ export class GroundingCatalogRepository {
         worldVersion,
         ...(finiteDate(row.observed_at) ? { observedAt: finiteDate(row.observed_at) } : {})
       }] : [];
-      return result({
+      const output = {
         schemaVersion: "1.0",
-        referenceKey: referenceKeyValue(row.reference_key_value),
+        referenceKey: currentReferenceKey,
         worldVersion,
         facts: [compact({
           factKind: "CURRENT_PROJECTION",
@@ -462,20 +475,50 @@ export class GroundingCatalogRepository {
         })],
         evidence,
         unknowns: []
-      }, snapshot.context, 1, 1);
+      };
+      return result(
+        output,
+        withSnapshotResource(snapshot.context, currentReferenceKey, sha256({
+          contract: "gowm_evidence_v1.current_state",
+          output
+        })),
+        1,
+        1
+      );
     }
     if (operationId === "world.get-geometry") {
-      const query = await client.query("SELECT * FROM gowm_evidence_v1.current_geometry WHERE reference_key=$1::text", [inputKey.id]);
+      const query = await client.query(
+        "SELECT * FROM gowm_evidence_v1.current_geometry WHERE reference_key=$1::text",
+        [inputKey.id]
+      );
       const row = query.rows[0];
       if (!row) return worldNoData(inputKey, snapshot, "GEOMETRY_UNAVAILABLE");
-      return result({
+      const currentReferenceKey = referenceKeyValue(row.reference_key_value);
+      const output = {
         schemaVersion: "1.0",
-        referenceKey: referenceKeyValue(row.reference_key_value),
+        referenceKey: currentReferenceKey,
         worldVersion: safeInteger(row.world_version, "world_version"),
-        facts: [compact({ factKind: "CURRENT_GEOMETRY", geometry: row.geometry, geometryType: row.geometry_type, bbox: row.bbox, crs: row.crs, version: String(row.world_version), observedAt: finiteDate(row.observed_at) })],
+        facts: [compact({
+          factKind: "CURRENT_GEOMETRY",
+          geometry: row.geometry,
+          geometryType: row.geometry_type,
+          bbox: row.bbox,
+          crs: row.crs,
+          version: currentReferenceKey.version,
+          observedAt: finiteDate(row.observed_at)
+        })],
         evidence: [],
         unknowns: []
-      }, snapshot.context, 1, 1);
+      };
+      return result(
+        output,
+        withSnapshotResource(snapshot.context, currentReferenceKey, sha256({
+          contract: "gowm_evidence_v1.current_geometry",
+          output
+        })),
+        1,
+        1
+      );
     }
     if (operationId === "world.get-provenance") {
       const query = await client.query("SELECT * FROM gowm_evidence_v1.provenance WHERE reference_key=$1::text", [inputKey.id]);
@@ -564,6 +607,31 @@ function result(output: unknown | undefined, dataSnapshot: DataSnapshotContext, 
     candidates,
     warnings: ["grounding.scopeAppliedBeforeQuery=true", "grounding.transaction=REPEATABLE_READ_READ_ONLY", "grounding.snapshot=CONSISTENT_AT_START"]
   };
+}
+
+function withSnapshotResource(
+  dataSnapshot: DataSnapshotContext,
+  referenceKey: ReferenceKey,
+  digest: `sha256:${string}`
+): DataSnapshotContext {
+  const resourceIdentity = (candidate: DataSnapshotContext["resources"][number]): string =>
+    `${candidate.referenceKey.namespace}\u0000${candidate.referenceKey.kind}\u0000${candidate.referenceKey.id}`;
+  const identity = `${referenceKey.namespace}\u0000${referenceKey.kind}\u0000${referenceKey.id}`;
+  const resources = [
+    ...dataSnapshot.resources.filter((candidate) => resourceIdentity(candidate) !== identity),
+    {
+      referenceKey,
+      authority: "GOWM Foundation",
+      pinning: "PINNED" as const,
+      digest
+    }
+  ].sort((left, right) => resourceIdentity(left).localeCompare(resourceIdentity(right)));
+  return { ...dataSnapshot, resources };
+}
+
+export function preferExactResolutionRows<T extends Row>(rows: readonly T[]): T[] {
+  const exact = rows.filter((row) => row.matched_by !== "FUZZY_NAME");
+  return exact.length === 0 ? [...rows] : exact;
 }
 
 function mapReferenceDescriptor(row: Row): Row {

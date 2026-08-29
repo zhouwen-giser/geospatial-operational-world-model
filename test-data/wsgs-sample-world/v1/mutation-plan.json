@@ -1,0 +1,27 @@
+[
+  {
+    "scenarioId": "move-ugv-002-to-zone-b",
+    "idempotencyKey": "sample-mutation-ugv-002-v2",
+    "subjectFixtureKey": "ugv-002",
+    "observedOffsetMs": 60000,
+    "receivedOffsetMs": 60010,
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        113.9355,
+        22.545
+      ]
+    },
+    "value": {
+      "status": "PATROLLING",
+      "batteryPct": 73,
+      "headingDeg": 45,
+      "speedMps": 1.0
+    },
+    "expectedEffects": [
+      "ugv-002 no longer inside zone-a",
+      "ugv-002 inside zone-b",
+      "prior snapshot stale or mismatched"
+    ]
+  }
+]

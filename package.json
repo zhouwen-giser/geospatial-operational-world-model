@@ -1,6 +1,6 @@
 {
   "name": "geospatial-operational-world-model",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "private": true,
   "description": "GOWM+ unified geospatial data foundation with independently deployable STAS analysis service",
   "type": "module",
@@ -94,6 +94,9 @@
     "acceptance": "bash scripts/acceptance.sh",
     "materialize:semantics": "node --import tsx scripts/materialize-capability-semantic-profiles.ts --write",
     "validate:semantic-materializer": "node --import tsx scripts/materialize-capability-semantic-profiles.ts",
+    "materialize:semantics:v0.6.3": "node --import tsx scripts/run-v063-semantic-command.ts materialize",
+    "validate:semantic-materializer:v0.6.3": "node --import tsx scripts/run-v063-semantic-command.ts validate-materializer",
+    "validate:world-platform-registry:v0.6.3": "node --import tsx scripts/run-v063-semantic-command.ts validate-registry",
     "validate:semantic-catalog": "node --import tsx scripts/validate-semantic-catalog.ts --write",
     "sync:world-platform-manifests": "node --import tsx scripts/sync-world-platform-manifests.ts --write",
     "build:world-platform-registry": "node --import tsx scripts/build-world-platform-registry.ts --write",
@@ -107,7 +110,18 @@
     "validate:stas-contracts": "python3 scripts/export-stas-provider-contracts.py --check",
     "validate:world-platform-canary": "node --import tsx validation/scripts/world-platform-semantic-canary.mjs",
     "validate:world-platform-regression": "node --import tsx validation/scripts/world-platform-regression.mjs",
-    "validate:world-platform-final": "node --import tsx validation/scripts/world-platform-final-candidate.mjs"
+    "validate:world-platform-final": "node --import tsx validation/scripts/world-platform-final-candidate.mjs",
+    "sample-world:generate": "node --import tsx scripts/sample-world/cli.ts generate",
+    "sample-world:up": "node --import tsx scripts/sample-world/cli.ts up",
+    "sample-world:wait": "node --import tsx scripts/sample-world/cli.ts wait",
+    "sample-world:load": "node --import tsx scripts/sample-world/cli.ts load",
+    "sample-world:verify": "node --import tsx scripts/sample-world/cli.ts verify",
+    "sample-world:mutate": "node --import tsx scripts/sample-world/cli.ts mutate",
+    "sample-world:reset": "node --import tsx scripts/sample-world/cli.ts reset",
+    "sample-world:down": "node --import tsx scripts/sample-world/cli.ts down",
+    "sample-world:status": "node --import tsx scripts/sample-world/cli.ts status",
+    "sample-world:handoff": "node --import tsx scripts/sample-world/cli.ts handoff",
+    "sample-world:all": "node --import tsx scripts/sample-world/cli.ts all"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",
