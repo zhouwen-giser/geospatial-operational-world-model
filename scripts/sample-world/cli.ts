@@ -607,8 +607,10 @@ async function waitForGateway(runtime: SampleRuntimeEnvironment): Promise<void> 
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  runSampleWorldCommand(process.argv[2] ?? "status").catch((error: unknown) => {
+  try {
+    await runSampleWorldCommand(process.argv[2] ?? "status");
+  } catch (error: unknown) {
     process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`);
     process.exitCode = 1;
-  });
+  }
 }

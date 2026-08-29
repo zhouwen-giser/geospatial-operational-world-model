@@ -29,4 +29,11 @@ describe("Sample World upgrade proof packaging", () => {
     expect(probe).toContain("INSERT INTO public.data_scope");
     expect(probe).not.toContain("INSERT INTO data_scope(");
   });
+
+  it("keeps the multi-stage CLI alive until its command promise settles", async () => {
+    const cli = await readFile("scripts/sample-world/cli.ts", "utf8");
+
+    expect(cli).toContain("await runSampleWorldCommand(process.argv[2] ?? \"status\")");
+    expect(cli).not.toContain("runSampleWorldCommand(process.argv[2] ?? \"status\").catch");
+  });
 });
