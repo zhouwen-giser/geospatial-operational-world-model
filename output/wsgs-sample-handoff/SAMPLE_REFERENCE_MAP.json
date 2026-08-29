@@ -1,0 +1,554 @@
+{
+  "entries": [
+    {
+      "currentWorldReferenceKey": {
+        "id": "wrf_2154fe4107ce17e877378569a5cd3dbe",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "54"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "c0155acd-6f9f-5c2d-b1fc-cad4b529d749",
+      "fixtureKey": "camera-01",
+      "fixtureReferenceKey": "object:camera-01",
+      "identityReferenceKey": {
+        "id": "wrf_2154fe4107ce17e877378569a5cd3dbe",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "705"
+      },
+      "referenceId": "wrf_2154fe4107ce17e877378569a5cd3dbe",
+      "scope": "wsgs-demo",
+      "targetKind": "WORLD_OBJECT"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_b4cea805739956af45f40b55703caf3d",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "5fdb1327-6784-5558-afc6-b86b69ad6d4b",
+      "fixtureKey": "command-center",
+      "fixtureReferenceKey": "feature:command-center",
+      "identityReferenceKey": {
+        "id": "wrf_b4cea805739956af45f40b55703caf3d",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "688"
+      },
+      "referenceId": "wrf_b4cea805739956af45f40b55703caf3d",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER_FEATURE"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_905ae54b476580ee89f0654f17d00c1a",
+        "kind": "DATASET",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-hidden-main",
+      "entityId": "0ccba6c0-2900-519f-9f92-1527660034c0",
+      "fixtureKey": "hidden-base-vector",
+      "fixtureReferenceKey": "dataset:hidden-base-vector",
+      "identityReferenceKey": {
+        "id": "wrf_905ae54b476580ee89f0654f17d00c1a",
+        "kind": "DATASET",
+        "namespace": "gowm",
+        "version": "668"
+      },
+      "referenceId": "wrf_905ae54b476580ee89f0654f17d00c1a",
+      "scope": "wsgs-hidden",
+      "targetKind": "DATASET"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_6b783cf1cc214ed53e9d922f15c014e7",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-hidden-main",
+      "entityId": "e9f9323e-5853-5ab2-89d5-b44af435651f",
+      "fixtureKey": "hidden-river-road",
+      "fixtureReferenceKey": "feature:hidden-river-road",
+      "identityReferenceKey": {
+        "id": "wrf_6b783cf1cc214ed53e9d922f15c014e7",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "702"
+      },
+      "referenceId": "wrf_6b783cf1cc214ed53e9d922f15c014e7",
+      "scope": "wsgs-hidden",
+      "targetKind": "LAYER_FEATURE"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_c1436f072dd2e2d18cbc9a5a724677f7",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-hidden-main",
+      "entityId": "7d3d9e68-9d36-5eac-9a23-ea08435214be",
+      "fixtureKey": "hidden-roads",
+      "fixtureReferenceKey": "layer:hidden-roads",
+      "identityReferenceKey": {
+        "id": "wrf_c1436f072dd2e2d18cbc9a5a724677f7",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "676"
+      },
+      "referenceId": "wrf_c1436f072dd2e2d18cbc9a5a724677f7",
+      "scope": "wsgs-hidden",
+      "targetKind": "LAYER"
+    },
+    {
+      "currentWorldReferenceKey": {
+        "id": "wrf_608c51847a1cbf56ac5da3901a615eed",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "55"
+      },
+      "datasetScope": "wsgs-hidden-main",
+      "entityId": "94050f17-dffb-56a5-a0d9-417ee7d325f9",
+      "fixtureKey": "hidden-ugv-002",
+      "fixtureReferenceKey": "object:hidden-ugv-002",
+      "identityReferenceKey": {
+        "id": "wrf_608c51847a1cbf56ac5da3901a615eed",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "706"
+      },
+      "referenceId": "wrf_608c51847a1cbf56ac5da3901a615eed",
+      "scope": "wsgs-hidden",
+      "targetKind": "WORLD_OBJECT"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_e73428aa586fca816cd8e56507e19aeb",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-hidden-main",
+      "entityId": "fc32b977-d941-589f-9f10-b35e232779f8",
+      "fixtureKey": "hidden-zone-a",
+      "fixtureReferenceKey": "feature:hidden-zone-a",
+      "identityReferenceKey": {
+        "id": "wrf_e73428aa586fca816cd8e56507e19aeb",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "704"
+      },
+      "referenceId": "wrf_e73428aa586fca816cd8e56507e19aeb",
+      "scope": "wsgs-hidden",
+      "targetKind": "LAYER_FEATURE"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_56735cd4a73b378bbe5b572980930eb8",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-hidden-main",
+      "entityId": "866d4fb0-0d6d-573d-9c5c-24ed4bdcf5d5",
+      "fixtureKey": "hidden-zones",
+      "fixtureReferenceKey": "layer:hidden-zones",
+      "identityReferenceKey": {
+        "id": "wrf_56735cd4a73b378bbe5b572980930eb8",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "678"
+      },
+      "referenceId": "wrf_56735cd4a73b378bbe5b572980930eb8",
+      "scope": "wsgs-hidden",
+      "targetKind": "LAYER"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_49186b17f78aaff30607c7a39a1f6d15",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "d4b60220-6aae-50be-8fb0-6c510d07b232",
+      "fixtureKey": "north-gate",
+      "fixtureReferenceKey": "feature:north-gate",
+      "identityReferenceKey": {
+        "id": "wrf_49186b17f78aaff30607c7a39a1f6d15",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "690"
+      },
+      "referenceId": "wrf_49186b17f78aaff30607c7a39a1f6d15",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER_FEATURE"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_e08ab66576affdcc50ac6f89e09fd9e4",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "dee85d63-d9ba-56fb-b89a-bd50d1bc552e",
+      "fixtureKey": "road-axis",
+      "fixtureReferenceKey": "feature:road-axis",
+      "identityReferenceKey": {
+        "id": "wrf_e08ab66576affdcc50ac6f89e09fd9e4",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "692"
+      },
+      "referenceId": "wrf_e08ab66576affdcc50ac6f89e09fd9e4",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER_FEATURE"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_300d85e55c303d731b5e632831794704",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "b9501930-d247-5fd1-9c0e-07d81e3af06c",
+      "fixtureKey": "road-river-east",
+      "fixtureReferenceKey": "feature:road-river-east",
+      "identityReferenceKey": {
+        "id": "wrf_300d85e55c303d731b5e632831794704",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "717"
+      },
+      "referenceId": "wrf_300d85e55c303d731b5e632831794704",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER_FEATURE"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_b4f6a25cefd04ff657fe88b9d3f461d7",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "6c0f8da5-4a21-50b3-ba27-f8f37d9f775f",
+      "fixtureKey": "road-river-west",
+      "fixtureReferenceKey": "feature:road-river-west",
+      "identityReferenceKey": {
+        "id": "wrf_b4f6a25cefd04ff657fe88b9d3f461d7",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "718"
+      },
+      "referenceId": "wrf_b4f6a25cefd04ff657fe88b9d3f461d7",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER_FEATURE"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_82664650a20ed49a315d09f6abef5c28",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "59fe6a77-8d78-501d-b1fa-c87b06f492bb",
+      "fixtureKey": "sample-assets-current",
+      "fixtureReferenceKey": "layer:sample-assets-current",
+      "identityReferenceKey": {
+        "id": "wrf_82664650a20ed49a315d09f6abef5c28",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "680"
+      },
+      "referenceId": "wrf_82664650a20ed49a315d09f6abef5c28",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_85e8db18b5fba9e2afb2118f9898c9c4",
+        "kind": "DATASET",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "63dfe3ee-0828-5003-8f92-ac2f2b31edda",
+      "fixtureKey": "sample-base-vector",
+      "fixtureReferenceKey": "dataset:sample-base-vector",
+      "identityReferenceKey": {
+        "id": "wrf_85e8db18b5fba9e2afb2118f9898c9c4",
+        "kind": "DATASET",
+        "namespace": "gowm",
+        "version": "670"
+      },
+      "referenceId": "wrf_85e8db18b5fba9e2afb2118f9898c9c4",
+      "scope": "wsgs-demo",
+      "targetKind": "DATASET"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_6a305a92132c6c5931a9b74507633055",
+        "kind": "DATASET",
+        "namespace": "gowm",
+        "version": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "072df6c0-48fb-5ab7-bc47-ce93050308f5",
+      "fixtureKey": "sample-current-world",
+      "fixtureReferenceKey": "dataset:sample-current-world",
+      "identityReferenceKey": {
+        "id": "wrf_6a305a92132c6c5931a9b74507633055",
+        "kind": "DATASET",
+        "namespace": "gowm",
+        "version": "672"
+      },
+      "referenceId": "wrf_6a305a92132c6c5931a9b74507633055",
+      "scope": "wsgs-demo",
+      "targetKind": "DATASET"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_06aacfd285b432798ab6e92afb2e3869",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "b4646d94-b792-5ae3-a522-e64c66a7a96a",
+      "fixtureKey": "sample-landmarks",
+      "fixtureReferenceKey": "layer:sample-landmarks",
+      "identityReferenceKey": {
+        "id": "wrf_06aacfd285b432798ab6e92afb2e3869",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "682"
+      },
+      "referenceId": "wrf_06aacfd285b432798ab6e92afb2e3869",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_e75c656d0541dbbd986b0b260bce810a",
+        "kind": "DATASET",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "c4905606-1405-5d90-8c34-3b1c10f0b4f2",
+      "fixtureKey": "sample-road-network",
+      "fixtureReferenceKey": "dataset:sample-road-network",
+      "identityReferenceKey": {
+        "id": "wrf_e75c656d0541dbbd986b0b260bce810a",
+        "kind": "DATASET",
+        "namespace": "gowm",
+        "version": "674"
+      },
+      "referenceId": "wrf_e75c656d0541dbbd986b0b260bce810a",
+      "scope": "wsgs-demo",
+      "targetKind": "DATASET"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_ac554178b4091166831d25d2bbb063d0",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "3b67f2e1-5fe5-5531-860e-4bc2ce2faee4",
+      "fixtureKey": "sample-roads",
+      "fixtureReferenceKey": "layer:sample-roads",
+      "identityReferenceKey": {
+        "id": "wrf_ac554178b4091166831d25d2bbb063d0",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "684"
+      },
+      "referenceId": "wrf_ac554178b4091166831d25d2bbb063d0",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_0099c850e56e5390ba8f97df2b6bf3d6",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "20362cb5-92cb-5a56-87b1-17d25de42425",
+      "fixtureKey": "sample-zones",
+      "fixtureReferenceKey": "layer:sample-zones",
+      "identityReferenceKey": {
+        "id": "wrf_0099c850e56e5390ba8f97df2b6bf3d6",
+        "kind": "LAYER",
+        "namespace": "gowm",
+        "version": "686"
+      },
+      "referenceId": "wrf_0099c850e56e5390ba8f97df2b6bf3d6",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER"
+    },
+    {
+      "currentWorldReferenceKey": {
+        "id": "wrf_7d113f425d4790723dc92b0534716b19",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "56"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "8ef8e743-3ac8-542c-bcd7-ee7ff635031d",
+      "fixtureKey": "sensor-01",
+      "fixtureReferenceKey": "object:sensor-01",
+      "identityReferenceKey": {
+        "id": "wrf_7d113f425d4790723dc92b0534716b19",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "707"
+      },
+      "referenceId": "wrf_7d113f425d4790723dc92b0534716b19",
+      "scope": "wsgs-demo",
+      "targetKind": "WORLD_OBJECT"
+    },
+    {
+      "currentWorldReferenceKey": {
+        "id": "wrf_d25d13c4e704bd2d1d6383a84479772f",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "57"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "058c7a04-75dd-5e7c-abe4-613ce88d4e77",
+      "fixtureKey": "target-01",
+      "fixtureReferenceKey": "object:target-01",
+      "identityReferenceKey": {
+        "id": "wrf_d25d13c4e704bd2d1d6383a84479772f",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "708"
+      },
+      "referenceId": "wrf_d25d13c4e704bd2d1d6383a84479772f",
+      "scope": "wsgs-demo",
+      "targetKind": "WORLD_OBJECT"
+    },
+    {
+      "currentWorldReferenceKey": {
+        "id": "wrf_35ed8fdd3f60f550f36731de2a0ac27f",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "58"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "e78936c2-d320-53ca-9c08-4444360fc5dd",
+      "fixtureKey": "ugv-001",
+      "fixtureReferenceKey": "object:ugv-001",
+      "identityReferenceKey": {
+        "id": "wrf_35ed8fdd3f60f550f36731de2a0ac27f",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "709"
+      },
+      "referenceId": "wrf_35ed8fdd3f60f550f36731de2a0ac27f",
+      "scope": "wsgs-demo",
+      "targetKind": "WORLD_OBJECT"
+    },
+    {
+      "currentWorldReferenceKey": {
+        "id": "wrf_e58cfcb4ec17585465d17859be67d101",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "59"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "e4a445d6-c3af-565f-8bb5-57f2f2a428ef",
+      "fixtureKey": "ugv-002",
+      "fixtureReferenceKey": "object:ugv-002",
+      "identityReferenceKey": {
+        "id": "wrf_e58cfcb4ec17585465d17859be67d101",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "710"
+      },
+      "referenceId": "wrf_e58cfcb4ec17585465d17859be67d101",
+      "scope": "wsgs-demo",
+      "targetKind": "WORLD_OBJECT"
+    },
+    {
+      "currentWorldReferenceKey": {
+        "id": "wrf_19f86964d383a389c6755cae1a6e6d9e",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "60"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "8bb8d4a3-b104-53dc-aae0-5429bcabf5fb",
+      "fixtureKey": "ugv-003",
+      "fixtureReferenceKey": "object:ugv-003",
+      "identityReferenceKey": {
+        "id": "wrf_19f86964d383a389c6755cae1a6e6d9e",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "711"
+      },
+      "referenceId": "wrf_19f86964d383a389c6755cae1a6e6d9e",
+      "scope": "wsgs-demo",
+      "targetKind": "WORLD_OBJECT"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_3d5c29083a3449e7343cf29011379133",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "6eb668df-d1e6-5b11-88b0-2958c083ebc8",
+      "fixtureKey": "zone-a",
+      "fixtureReferenceKey": "feature:zone-a",
+      "identityReferenceKey": {
+        "id": "wrf_3d5c29083a3449e7343cf29011379133",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "698"
+      },
+      "referenceId": "wrf_3d5c29083a3449e7343cf29011379133",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER_FEATURE"
+    },
+    {
+      "currentCatalogReferenceKey": {
+        "id": "wrf_4377c8d3e77d9ac6f94c7121d98faa08",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      },
+      "datasetScope": "wsgs-demo-main",
+      "entityId": "298a17fe-4b0d-5f98-9ef5-4beac0e51c95",
+      "fixtureKey": "zone-b",
+      "fixtureReferenceKey": "feature:zone-b",
+      "identityReferenceKey": {
+        "id": "wrf_4377c8d3e77d9ac6f94c7121d98faa08",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "700"
+      },
+      "referenceId": "wrf_4377c8d3e77d9ac6f94c7121d98faa08",
+      "scope": "wsgs-demo",
+      "targetKind": "LAYER_FEATURE"
+    }
+  ],
+  "fixtureId": "gowm-wsgs-sample-world",
+  "fixtureVersion": "1.0.0",
+  "realizationId": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777",
+  "schemaVersion": "1.0"
+}

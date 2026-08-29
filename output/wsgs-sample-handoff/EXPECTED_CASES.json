@@ -1,0 +1,418 @@
+[
+  {
+    "caseId": "CATALOG-NETWORK",
+    "operationId": "catalog.search",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "dataKinds": [
+        "NETWORK"
+      ],
+      "currentOnly": true,
+      "limit": 100
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "sample-road-network"
+    ],
+    "forbiddenFixtureKeys": [
+      "hidden-base-vector"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_e75c656d0541dbbd986b0b260bce810a"
+    ]
+  },
+  {
+    "caseId": "REF-ALIAS-2",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "mentions": [
+        {
+          "mentionId": "REF-ALIAS-2",
+          "surfaceText": "二号车"
+        }
+      ],
+      "context": {
+        "anchorReferenceKeys": []
+      },
+      "limitPerMention": 20
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ],
+    "expectedCandidateCount": 1,
+    "expectedReferenceKeys": [
+      "wrf_e58cfcb4ec17585465d17859be67d101"
+    ]
+  },
+  {
+    "caseId": "REF-AMBIGUOUS-RIVER-ROAD",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "mentions": [
+        {
+          "mentionId": "REF-AMBIGUOUS-RIVER-ROAD",
+          "surfaceText": "滨河路"
+        }
+      ],
+      "context": {
+        "anchorReferenceKeys": []
+      },
+      "limitPerMention": 20
+    },
+    "expectedStatus": "AMBIGUOUS",
+    "expectedFixtureKeys": [
+      "road-river-east",
+      "road-river-west"
+    ],
+    "expectedCandidateCount": 2,
+    "forbiddenFixtureKeys": [
+      "hidden-river-road"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_300d85e55c303d731b5e632831794704",
+      "wrf_b4f6a25cefd04ff657fe88b9d3f461d7"
+    ]
+  },
+  {
+    "caseId": "REF-CODE-EAST-ROAD",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "mentions": [
+        {
+          "mentionId": "REF-CODE-EAST-ROAD",
+          "surfaceText": "RD-BH-E"
+        }
+      ],
+      "context": {
+        "anchorReferenceKeys": []
+      },
+      "limitPerMention": 20
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "road-river-east"
+    ],
+    "expectedCandidateCount": 1,
+    "expectedReferenceKeys": [
+      "wrf_300d85e55c303d731b5e632831794704"
+    ]
+  },
+  {
+    "caseId": "REF-CODE-UGV2",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "mentions": [
+        {
+          "mentionId": "REF-CODE-UGV2",
+          "surfaceText": "UGV-002"
+        }
+      ],
+      "context": {
+        "anchorReferenceKeys": []
+      },
+      "limitPerMention": 20
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ],
+    "expectedCandidateCount": 1,
+    "expectedReferenceKeys": [
+      "wrf_e58cfcb4ec17585465d17859be67d101"
+    ]
+  },
+  {
+    "caseId": "REF-NO-DATA",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "mentions": [
+        {
+          "mentionId": "REF-NO-DATA",
+          "surfaceText": "4号车"
+        }
+      ],
+      "context": {
+        "anchorReferenceKeys": []
+      },
+      "limitPerMention": 20
+    },
+    "expectedStatus": "NO_DATA",
+    "expectedCandidateCount": 0
+  },
+  {
+    "caseId": "REF-UNIQUE-2",
+    "operationId": "reference.resolve",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "mentions": [
+        {
+          "mentionId": "REF-UNIQUE-2",
+          "surfaceText": "2号车"
+        }
+      ],
+      "context": {
+        "anchorReferenceKeys": []
+      },
+      "limitPerMention": 20
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ],
+    "expectedCandidateCount": 1,
+    "forbiddenFixtureKeys": [
+      "hidden-ugv-002"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_e58cfcb4ec17585465d17859be67d101"
+    ]
+  },
+  {
+    "caseId": "SPATIAL-IN-ZONE-A",
+    "operationId": "spatial.find-in-area",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              113.93,
+              22.54
+            ],
+            [
+              113.934,
+              22.54
+            ],
+            [
+              113.934,
+              22.544
+            ],
+            [
+              113.93,
+              22.544
+            ],
+            [
+              113.93,
+              22.54
+            ]
+          ]
+        ]
+      },
+      "objectTypes": [
+        "UGV"
+      ],
+      "limit": 1000,
+      "includeGeometry": true,
+      "crs": "EPSG:4326"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-001",
+      "ugv-002"
+    ],
+    "forbiddenFixtureKeys": [
+      "hidden-ugv-002",
+      "ugv-003"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_35ed8fdd3f60f550f36731de2a0ac27f",
+      "wrf_e58cfcb4ec17585465d17859be67d101"
+    ]
+  },
+  {
+    "caseId": "SPATIAL-NEARBY-UGV2",
+    "operationId": "spatial.find-nearby",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "location": [
+        113.932,
+        22.542
+      ],
+      "radiusM": 250,
+      "objectTypes": [
+        "CAMERA",
+        "TASK_TARGET",
+        "UGV"
+      ],
+      "limit": 1000,
+      "includeGeometry": true,
+      "crs": "EPSG:4326"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "camera-01",
+      "target-01",
+      "ugv-001"
+    ],
+    "forbiddenFixtureKeys": [
+      "hidden-ugv-002",
+      "sensor-01",
+      "ugv-003"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_2154fe4107ce17e877378569a5cd3dbe",
+      "wrf_35ed8fdd3f60f550f36731de2a0ac27f",
+      "wrf_d25d13c4e704bd2d1d6383a84479772f"
+    ]
+  },
+  {
+    "caseId": "SPATIAL-ROADS-INTERSECT-ZONE-A",
+    "operationId": "spatial.find-intersections",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              113.93,
+              22.54
+            ],
+            [
+              113.934,
+              22.54
+            ],
+            [
+              113.934,
+              22.544
+            ],
+            [
+              113.93,
+              22.544
+            ],
+            [
+              113.93,
+              22.54
+            ]
+          ]
+        ]
+      },
+      "candidateReferences": [
+        {
+          "id": "wrf_300d85e55c303d731b5e632831794704",
+          "kind": "LAYER_FEATURE",
+          "namespace": "gowm",
+          "version": "1.0.0"
+        },
+        {
+          "id": "wrf_b4f6a25cefd04ff657fe88b9d3f461d7",
+          "kind": "LAYER_FEATURE",
+          "namespace": "gowm",
+          "version": "1.0.0"
+        },
+        {
+          "id": "wrf_e08ab66576affdcc50ac6f89e09fd9e4",
+          "kind": "LAYER_FEATURE",
+          "namespace": "gowm",
+          "version": "1.0.0"
+        }
+      ],
+      "limit": 1000,
+      "includeGeometry": true,
+      "crs": "EPSG:4326"
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "road-axis",
+      "road-river-west"
+    ],
+    "forbiddenFixtureKeys": [
+      "hidden-river-road",
+      "road-river-east"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_b4f6a25cefd04ff657fe88b9d3f461d7",
+      "wrf_e08ab66576affdcc50ac6f89e09fd9e4"
+    ]
+  },
+  {
+    "caseId": "WORLD-GEOMETRY-ZONE-A",
+    "operationId": "world.get-geometry",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "referenceKey": {
+        "id": "wrf_3d5c29083a3449e7343cf29011379133",
+        "kind": "LAYER_FEATURE",
+        "namespace": "gowm",
+        "version": "1.0.0"
+      }
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "zone-a"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_3d5c29083a3449e7343cf29011379133"
+    ]
+  },
+  {
+    "caseId": "WORLD-PROVENANCE-UGV2",
+    "operationId": "world.get-provenance",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "referenceKey": {
+        "id": "wrf_e58cfcb4ec17585465d17859be67d101",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "59"
+      }
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_e58cfcb4ec17585465d17859be67d101"
+    ]
+  },
+  {
+    "caseId": "WORLD-STATE-UGV2",
+    "operationId": "world.get-current-state",
+    "operationVersion": "1.0",
+    "principal": "VISIBLE",
+    "inputTemplate": {
+      "schemaVersion": "1.0",
+      "referenceKey": {
+        "id": "wrf_e58cfcb4ec17585465d17859be67d101",
+        "kind": "WORLD_OBJECT",
+        "namespace": "gowm",
+        "version": "59"
+      }
+    },
+    "expectedStatus": "COMPLETED",
+    "expectedFixtureKeys": [
+      "ugv-002"
+    ],
+    "expectedReferenceKeys": [
+      "wrf_e58cfcb4ec17585465d17859be67d101"
+    ]
+  }
+]

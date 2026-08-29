@@ -5,7 +5,7 @@
     "providerId": "gowm.world-evidence",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb",
+    "implementationDigest": "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317",
     "sourceRef": "urn:gowm:source:in-tree:grounding-catalog:1.0.0"
   },
   "endpoints": {
@@ -153,7 +153,10 @@
         "timeSemantics": "SNAPSHOT",
         "resultNature": "FACT",
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-        "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "notes": [
+          "WORLD_OBJECT reads current projection geometry. LAYER_FEATURE reads active catalog geometry by immutable feature-version or matching descriptor-version pin and requires DatasetScope."
+        ]
       },
       "semanticRole": "FOUNDATION_DATA_QUERY",
       "dataBinding": "WORLD_SNAPSHOT_BOUND",

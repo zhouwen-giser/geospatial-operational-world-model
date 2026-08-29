@@ -12,13 +12,14 @@ export function schemaMatches(uri: unknown, digest: unknown, index: ReadonlyMap<
 
 /** Resolve relative imports as well as absolute imports; inspect dynamic import/require too. */
 export function siblingImports(source: string, filename: string, repositoryRoot: string): string[] {
-  const providerRoot = resolve(repositoryRoot, "services/providers");
-  const own = filename.startsWith(`${providerRoot}/`) ? filename.slice(providerRoot.length + 1).split("/")[0] : undefined;
+  const portable = (path: string) => path.replaceAll("\\", "/");
+  const portableFilename = portable(filename);
+  const own = portableFilename.match(/(?:^|\/)services\/providers\/([^/]+)/u)?.[1];
   const imports: string[] = [];
   const tree = ts.createSourceFile(filename, source, ts.ScriptTarget.Latest, true);
   const check = (specifier: ts.Node | undefined) => {
     if (!specifier || !ts.isStringLiteralLike(specifier)) return;
-    const target = specifier.text.startsWith(".") ? resolve(dirname(filename), specifier.text) : specifier.text;
+    const target = portable(specifier.text.startsWith(".") ? resolve(dirname(filename), specifier.text) : specifier.text);
     const match = target.match(/(?:^|\/)services\/providers\/([^/]+)/u);
     if (match && match[1] !== own) imports.push(specifier.text);
   };

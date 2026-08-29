@@ -8,19 +8,20 @@ export class PostgresAuditSink implements AuditSink {
 
   async append(event: Readonly<AuditEvent>): Promise<void> {
     await this.pool.query(
-      `INSERT INTO gowm_capability.gateway_audit_event (
+       `INSERT INTO gowm_capability.gateway_audit_event (
          event_type, outcome, principal_hash, operation_id, operation_version,
-         provider_id, request_hash, response_hash, trace_id, reason_code, metrics, occurred_at
-       ) VALUES ('DIRECT_EXECUTION',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11)`,
-      [
+         provider_id, request_hash, response_hash, data_scope_hash, trace_id, reason_code, metrics, occurred_at
+       ) VALUES ('DIRECT_EXECUTION',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12)`,
+       [
         auditOutcome(event.outcome),
         sha256(event.principalRef),
         event.operationId,
         event.operationVersion,
         event.providerId ?? null,
-        event.inputHash,
-        event.outputHash ?? null,
-        event.requestId,
+         event.inputHash,
+         event.outputHash ?? null,
+         event.dataScopeHash ?? null,
+         event.requestId,
         event.errorCode ?? null,
         JSON.stringify({
           elapsedMs: event.elapsedMs ?? null,

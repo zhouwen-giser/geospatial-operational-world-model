@@ -1,0 +1,121 @@
+{
+  "datasets": [
+    {
+      "fixtureDatasetKey": "sample-base-vector",
+      "scope": "wsgs-demo",
+      "kind": "VECTOR",
+      "name": "启明园区基础矢量数据",
+      "version": "1.0.0",
+      "crs": "EPSG:4326",
+      "layers": [
+        "sample-zones",
+        "sample-roads",
+        "sample-landmarks"
+      ],
+      "quality": {
+        "validationStatus": "VALIDATED",
+        "positionalAccuracyM": 0.1,
+        "knownLimitations": [
+          "SYNTHETIC_TEST_DATA"
+        ]
+      },
+      "provenance": {
+        "source": "gowm-wsgs-sample-world-generator",
+        "methodVersion": "1.0"
+      }
+    },
+    {
+      "fixtureDatasetKey": "sample-road-network",
+      "scope": "wsgs-demo",
+      "kind": "NETWORK",
+      "name": "启明园区道路网络目录项",
+      "version": "1.0.0",
+      "crs": "EPSG:4326",
+      "layers": [
+        "sample-roads"
+      ],
+      "quality": {
+        "validationStatus": "VALIDATED",
+        "knownLimitations": [
+          "CATALOG_ONLY_IN_REQUIRED_PROFILE"
+        ]
+      },
+      "provenance": {
+        "source": "sample-base-vector",
+        "methodVersion": "catalog-projection/1.0"
+      }
+    },
+    {
+      "fixtureDatasetKey": "sample-current-world",
+      "scope": "wsgs-demo",
+      "kind": "CURRENT_PROJECTION",
+      "name": "启明园区当前世界投影",
+      "version": "REALIZATION",
+      "crs": "EPSG:4326",
+      "layers": [
+        "sample-assets-current"
+      ],
+      "quality": {
+        "validationStatus": "VALIDATED",
+        "knownLimitations": [
+          "LOAD_TIME_RELATIVE_TIMESTAMPS"
+        ]
+      },
+      "provenance": {
+        "source": "synthetic-observations",
+        "methodVersion": "projection/1.0"
+      }
+    },
+    {
+      "fixtureDatasetKey": "hidden-base-vector",
+      "scope": "wsgs-hidden",
+      "kind": "VECTOR",
+      "name": "隐藏测试数据",
+      "version": "1.0.0",
+      "crs": "EPSG:4326",
+      "layers": [
+        "hidden-zones",
+        "hidden-roads"
+      ],
+      "quality": {
+        "validationStatus": "VALIDATED"
+      },
+      "provenance": {
+        "source": "hidden-fixture",
+        "methodVersion": "1.0"
+      }
+    }
+  ],
+  "layers": [
+    {
+      "fixtureLayerKey": "sample-zones",
+      "dataset": "sample-base-vector",
+      "geometryType": "Polygon"
+    },
+    {
+      "fixtureLayerKey": "sample-roads",
+      "dataset": "sample-base-vector",
+      "geometryType": "LineString"
+    },
+    {
+      "fixtureLayerKey": "sample-landmarks",
+      "dataset": "sample-base-vector",
+      "geometryType": "Point"
+    },
+    {
+      "fixtureLayerKey": "sample-assets-current",
+      "dataset": "sample-current-world",
+      "geometryType": "Point"
+    },
+    {
+      "fixtureLayerKey": "hidden-zones",
+      "dataset": "hidden-base-vector",
+      "geometryType": "Polygon"
+    },
+    {
+      "fixtureLayerKey": "hidden-roads",
+      "dataset": "hidden-base-vector",
+      "geometryType": "LineString"
+    }
+  ]
+}

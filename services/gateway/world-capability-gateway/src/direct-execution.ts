@@ -65,7 +65,8 @@ export class DirectExecutionService {
       principalRef: principal.principalRef,
       operationId,
       operationVersion: publicRequest.operationVersion,
-      inputHash: requestHash
+      inputHash: requestHash,
+      ...(principal.dataScopeClaim === undefined ? {} : { dataScopeHash: sha256(principal.dataScopeClaim) })
     };
     try {
       this.#assertGatewayRequest(publicRequest);

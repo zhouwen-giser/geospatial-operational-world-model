@@ -60,6 +60,7 @@ export interface SpatialRepositoryExecutionContext {
 export interface DatasetSnapshotRow extends Record<string, unknown> {
   dataset_reference_key: unknown;
   current_world_version: unknown;
+  catalog_snapshot_version: unknown;
   snapshot_consistency: unknown;
   captured_at: unknown;
 }

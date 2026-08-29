@@ -201,9 +201,11 @@
         "profileVersion": "1.0",
         "domain": "SPATIAL",
         "acceptedReferenceKinds": [
+          "LAYER_FEATURE",
           "WORLD_OBJECT"
         ],
         "producedReferenceKinds": [
+          "LAYER_FEATURE",
           "WORLD_OBJECT"
         ],
         "relationSemantics": [
@@ -215,6 +217,7 @@
         "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
         "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
         "notes": [
+          "Exact-version catalog LAYER_FEATURE geometries and current WORLD_OBJECT geometries participate in the same ST_Intersects predicate.",
           "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
         ]
       },
@@ -230,7 +233,7 @@
       "tests": [
         "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts"
       ],
-      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+      "rationale": "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true WORLD_OBJECT and exact-version catalog LAYER_FEATURE geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
       "bridgeLocks": [
         "contracts/manifests/providers/spatial-provider-source-lock.json"
       ],
@@ -265,7 +268,8 @@
         ]
       },
       "referenceAuthorities": [
-        "database/migrations/012_gowm_spatial_v1_read_contract.sql"
+        "database/migrations/012_gowm_spatial_v1_read_contract.sql",
+        "database/migrations/062_reference_geometry_composability.sql"
       ]
     },
     "spatial.find-near-route@1.0": {

@@ -1,0 +1,66 @@
+{
+  "configVersion": "1.0",
+  "registryProfile": "world-platform",
+  "providers": [
+    {
+      "providerId": "gowm.dataset-catalog",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",
+      "manifestHash": "sha256:1a8b5fa45040875e97d5667b1f30483f2c55f2851ece70faf39ddb34f28c6ed2",
+      "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
+      "endpoint": "http://dataset-catalog-provider:8091",
+      "approvalId": "grounding-dataset-catalog-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "DATASET_CATALOG_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.platform-validation",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:6014ea778151bdebabb25e5cfe24ed4fca8983c00c3d28d77d2f597c25aa7677",
+      "manifestHash": "sha256:820a10dd38788e4686b503259fed113df736ba42caf27c70b81b19b0d7ac7e84",
+      "manifestPath": "contracts/manifests/providers/platform-validation-provider.json",
+      "endpoint": "http://platform-validation-provider:8095",
+      "approvalId": "platform-validation-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.reference-catalog",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba",
+      "manifestHash": "sha256:b8bc8e309b23af59f88708110387f8e7ed077c272fcea82ff35e242f914b6d2b",
+      "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
+      "endpoint": "http://reference-catalog-provider:8090",
+      "approvalId": "grounding-reference-catalog-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "providerVersion": "0.2.0",
+      "implementationDigest": "sha256:d257d2e9d46f379b0b9a6343fcc4830edb5c7168d2237dba38da3e5b1984ece7",
+      "manifestHash": "sha256:837c4a212b4ff0e302e400d8d6b0f14d104bc2c9f92e1290400339c7d8544239",
+      "manifestPath": "contracts/manifests/providers/spatial-provider.json",
+      "endpoint": "http://spatial-provider-bridge:8091",
+      "approvalId": "compose-spatial-provider-v0.2",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "SPATIAL_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
+      "providerId": "gowm.world-evidence",
+      "providerVersion": "1.0.0",
+      "implementationDigest": "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317",
+      "manifestHash": "sha256:73da6d7e828aab047270db2a4da314ff6300a1fb0d6947876f45e98e1627d2f8",
+      "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
+      "endpoint": "http://world-evidence-provider:8093",
+      "approvalId": "grounding-world-evidence-v1.0",
+      "approvedBy": "gowm-release-operator",
+      "transportTokenEnv": "WORLD_EVIDENCE_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    }
+  ]
+}

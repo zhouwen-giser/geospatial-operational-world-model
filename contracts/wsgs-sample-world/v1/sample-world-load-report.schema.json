@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:wsgs-sample-load-report:1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "fixtureId",
+    "fixtureVersion",
+    "databaseMarker",
+    "sourceFixtureHash",
+    "realizationHash",
+    "counts",
+    "idempotent",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "fixtureId": {
+      "const": "gowm-wsgs-sample-world"
+    },
+    "fixtureVersion": {
+      "const": "1.0.0"
+    },
+    "databaseMarker": {
+      "type": "string"
+    },
+    "sourceFixtureHash": {
+      "type": "string"
+    },
+    "realizationHash": {
+      "type": "string"
+    },
+    "counts": {
+      "type": "object"
+    },
+    "idempotent": {
+      "type": "boolean"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ]
+    }
+  }
+}

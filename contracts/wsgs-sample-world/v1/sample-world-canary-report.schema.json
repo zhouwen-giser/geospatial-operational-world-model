@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:wsgs-sample-canary-report:1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "gatewayBaseUrlHash",
+    "fixtureHash",
+    "cases",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "gatewayBaseUrlHash": {
+      "type": "string"
+    },
+    "fixtureHash": {
+      "type": "string"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 10
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ]
+    }
+  }
+}

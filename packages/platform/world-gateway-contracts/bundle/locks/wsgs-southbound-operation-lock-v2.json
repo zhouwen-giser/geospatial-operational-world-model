@@ -4,10 +4,10 @@
   "consumerContractPackage": {
     "name": "@gowm/world-gateway-contracts",
     "version": "0.6.3",
-    "integrity": "sha512-Z2mLu+us4NM8hqthMSo48H33cFpzxK9zxyx8UeB04F7LdWN0e6Vz5q++fB7ohyRikbXdgYCrT8+SMqwcuWEBLA=="
+    "integrity": "sha512-KekpsVw943+iWwWcKepSxl408uBqH6oQ/ZzHcsrQrq2EjP+r2zYtljOfFekP6Vksxx1oSbE66rqaHE2rUGv6xw=="
   },
-  "contractCatalogRevision": "sha256:1f49cdec6b5568c9ad57967f0b111e437c873e90b1213f17cc4006824a04c5d0",
-  "semanticCatalogHash": "sha256:540e9b169cfefa5707e7ba7bd59d304c7671d8d0f2f1f0f4f16d5c5210b08b3e",
+  "contractCatalogRevision": "sha256:efd0395dbd05c884c781f964b22147efcb38c4cef91704597706ec4b8332075a",
+  "semanticCatalogHash": "sha256:418fc328861e846801c6e8109bf6d48b876c7814c650a391b84076f71e588b61",
   "availabilityContractHash": "sha256:66d6cfe2679d6bdd0cf6f22cb7153d1f5f4c934ebc286f6bac33ab6bd7eb4036",
   "snapshotContractHash": "sha256:350044225667ce00c2850e9a9d7c86762fc2e042793b6a8666c724c763135ca0",
   "delegationContractHash": "sha256:6edf49002dc75e6701c9c56b8795539b3512884d31b66f7f12f122abdee9344b",
@@ -329,7 +329,7 @@
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:8f347f836dd9c299f16cb60d2fc22dcfc5b4addab9c77024f530a9bdd4d7bea0",
       "outputSchemaHash": "sha256:3bbfc710db6a82e02592075ec75bafb648575242794dbfd3ff39c6df9c53979c",
-      "semanticProfileHash": "sha256:2fc7946a9eee31a7d6d0fbb435cf0e4e737b344095742f6d986d121f79ae5f0e",
+      "semanticProfileHash": "sha256:3ff34f5452a95f91988e3dce183a83e27b4ea80ac5995dc92cf1764957b21024",
       "maturity": "STABLE",
       "requiredPermissions": [
         "data:read"
@@ -365,7 +365,7 @@
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
       "outputSchemaHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
-      "semanticProfileHash": "sha256:de483d463f1056e9a1696e24bf4d606239513647e7e60d576065c66acf8c7c1c",
+      "semanticProfileHash": "sha256:cc8df371406aff181616832bf4b6824e30d2cbc50186164b21c1a55e61680d11",
       "maturity": "STABLE",
       "requiredPermissions": [
         "data:read"
@@ -1099,7 +1099,7 @@
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:0984ec76a743e801438529a25295577cbca1c80c9a4e82ef17c0c18f46b07c81",
       "outputSchemaHash": "sha256:618cf9f9e257084cb84e7acc0f8fff37a7a033c2008f3d503f00740ee88833c5",
-      "semanticProfileHash": "sha256:8d88e76d7518a05650705508b5a968f9140ed2f5f36196448c89bed8d13618bf",
+      "semanticProfileHash": "sha256:61b04699fbafd5f5dfdbaac6beabcdc5ddd533bb07305c4a5f14ceddf8a33c52",
       "maturity": "PREVIEW",
       "requiredPermissions": [
         "data:read"

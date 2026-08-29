@@ -56,7 +56,12 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
              JOIN gowm_catalog_v1.${relation} current USING(reference_key)
              LEFT JOIN gowm_platform_validation_v1.reference_lifecycle lifecycle USING(reference_key)
              LEFT JOIN gowm_reference_v1.current_descriptor descriptor USING(reference_key)
-             WHERE version.reference_key=$1 AND version.version=$2`, [key.id, key.version]
+             WHERE version.reference_key=$1 AND (
+               version.version=$2 OR (
+                 descriptor.descriptor_version::text=$2 AND
+                 descriptor.object_version=version.version
+               )
+             )`, [key.id, key.version]
           )).rows[0];
           if (!row) { records.push(undefined); continue; }
           records.push({
@@ -76,7 +81,7 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
           referenceKey: key, available: true, retired: row.retired === true,
           sourceStatus: "COMPLETED", sourceAuthority: "gowm.reference-catalog",
           ...timestamps(row.valid_to, row.created_at),
-          snapshotStatus: row.current_version === null ? "UNKNOWN" : row.current_version !== key.version || row.stale === true || row.revalidation_required === true ? "STALE" : "CURRENT",
+          snapshotStatus: worldReferenceSnapshotStatus(row, key.version),
           validationEvidenceRefs: typeof row.content_hash === "string" ? [row.content_hash] : []
         });
       }
@@ -203,6 +208,23 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
 }
 
 function resourceMapKey(value: SnapshotResource): string { return `${value.resourceKind}\u0000${value.resourceId}`; }
+function worldReferenceSnapshotStatus(
+  row: Row,
+  requestedVersion: string
+): NonNullable<ReferenceRecord["snapshotStatus"]> {
+  if (row.current_version === null || row.current_version === undefined) return "UNKNOWN";
+  if (row.stale === true || row.revalidation_required === true) return "STALE";
+  const currentVersion = String(row.current_version);
+  if (currentVersion === requestedVersion) return "CURRENT";
+  const descriptorVersion = row.descriptor_version === null || row.descriptor_version === undefined
+    ? undefined
+    : String(row.descriptor_version);
+  const descriptorObjectVersion = text(row.descriptor_object_version);
+  return (descriptorVersion === requestedVersion && descriptorObjectVersion === currentVersion) ||
+    (descriptorVersion === currentVersion && descriptorObjectVersion === requestedVersion)
+    ? "CURRENT"
+    : "STALE";
+}
 function resource(requested: SnapshotResource, version: string, contentHash?: string): SnapshotResource {
   // Do not copy requested hashes/world versions into an authoritative response.
   return { resourceKind: requested.resourceKind, resourceId: requested.resourceId, version,

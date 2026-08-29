@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0",
+  "canaryId": "C3",
+  "steps": [
+    {
+      "operationId": "reference.resolve",
+      "status": "PASS",
+      "requestId": "provider_request_792b3abd76ec40a1bd3744775f8e63f2",
+      "referenceHash": "sha256:6c04fb12ed88361614ddeddabdee7ec13ae9909c0cc0f7d0fb04668270fc43fb",
+      "snapshotId": "sha256:303304fa5bf45772aebd241dc4f209647af7a92f3bb87d92d20e09078aea3b0c",
+      "resultHash": "sha256:8d598f4c1a12828c2abcfcb16471d6c27ba7a021e3db885bf6b79646a00e75ed",
+      "timestamp": "2026-08-29T03:49:32.028Z"
+    },
+    {
+      "operationId": "reference.validate",
+      "status": "PASS",
+      "requestId": "provider_request_648cc29ab7ac45ef95abbdb89e08c04f",
+      "referenceHash": "sha256:6c04fb12ed88361614ddeddabdee7ec13ae9909c0cc0f7d0fb04668270fc43fb",
+      "snapshotId": "sha256:6b00d2dbafc6de82542e708ae9a15a60034655c92f66d75c8d90c63c1b84bee2",
+      "resultHash": "sha256:0710cec3ab35ad5d53806c52c99cd169c03e1eaec52b7cf315d2d46abbac40d1",
+      "timestamp": "2026-08-29T03:49:32.069Z"
+    },
+    {
+      "operationId": "world.get-current-state",
+      "status": "PASS",
+      "requestId": "provider_request_58c55783a0c34c23ba8212f911d6f341",
+      "referenceHash": "sha256:6c04fb12ed88361614ddeddabdee7ec13ae9909c0cc0f7d0fb04668270fc43fb",
+      "snapshotId": "sha256:425d5a9c0a8fd50a3dd1911e59cd1e80f2785413ad29e423021f2e19c73e5b9a",
+      "resultHash": "sha256:4f8a6b9c178c66ac9cc3225509762b2e1de1a6747e63696015142dffc715081c",
+      "timestamp": "2026-08-29T03:49:32.127Z"
+    },
+    {
+      "operationId": "spatial.find-nearby",
+      "status": "PASS",
+      "requestId": "provider_request_dce8a0ff38704447b6ded51e61067d22",
+      "referenceHash": "sha256:6c04fb12ed88361614ddeddabdee7ec13ae9909c0cc0f7d0fb04668270fc43fb",
+      "snapshotId": "sha256:b49b56ddc5ccc46432cf5423b8313b82b374c8f3b8ebb7c7093fcf29752da823",
+      "resultHash": "sha256:3728187ba3cdc5f344849552445c9ff4e7648e8d4bcc197fdec6918c89dcb479",
+      "timestamp": "2026-08-29T03:49:32.186Z"
+    }
+  ],
+  "status": "PASS",
+  "hardcodedReferenceUsed": false,
+  "notes": [
+    "The current-state position was passed directly to the 1000 metre nearby query."
+  ]
+}

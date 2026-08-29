@@ -23,9 +23,15 @@ const root=resolve('.'), directory=`${reportRoot}/runtime`;
 await mkdir(directory,{recursive:true});
 const sourceDigest=await semanticSourceFingerprint(root), runId=`${release}-${Date.now()}`;
 const seed=JSON.parse(await readFile('validation/fixtures/world-platform-semantic-cases.json','utf8'));
+const implementationReport=JSON.parse(await readFile(`${reportRoot}/semantic-implementation-report.json`,'utf8'));
 const checks={},executions=[],positive=new Map(),operationTests=new Map(),canaries=[];
 let catalog,semantics,queryReplay;
 const check=(name,condition,detail)=>{checks[name]=Boolean(condition);if(!condition)throw new Error(`${name}: ${JSON.stringify(detail??null)}`);};
+const evidenceDigestFor=(id)=>{
+  const key=`${id}@1.0`, digest=implementationReport[key]?.operationEvidenceDigest;
+  check(`operation-evidence-digest:${id}`,typeof digest==='string'&&/^sha256:[0-9a-f]{64}$/u.test(digest),digest);
+  return digest;
+};
 const pause=(ms)=>new Promise(r=>setTimeout(r,ms));
 async function http(path,body,headers={}) {
   const response=await fetch(`${base}${path}`,{method:body===undefined?'GET':'POST',headers:{authorization:`Bearer ${env.GATEWAY_AUTH_SHARED_TOKEN}`,...(body===undefined?{}:{'content-type':'application/json'}),...headers},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(120000)});
@@ -160,7 +166,7 @@ try {
     check('snapshot-manifest-preserved',persisted.body.result.snapshotManifest?.manifestHash===beforeJob.submission.snapshotPolicy?.pinnedSnapshot?.manifestHash||persisted.body.result.snapshotManifest?.manifestHash!==undefined,persisted.body.result);
     const replayed=await http('/v1/world-queries',beforeJob.submission,{prefer:'respond-async'});
     check('snapshot-idempotent-replay',[200,202].includes(replayed.status),replayed);
-    const operationEvidence=Object.fromEntries(promoted.map(id=>[`${id}@1.0`,{status:'PASS',sourceDigest,contractHash:canonicalSha256(descriptor(id)),tests:operationTests.get(`${id}@1.0`)??[]} ]));
+    const operationEvidence=Object.fromEntries(promoted.map(id=>[`${id}@1.0`,{status:'PASS',sourceDigest,contractHash:canonicalSha256(descriptor(id)),evidenceDigest:evidenceDigestFor(id),tests:operationTests.get(`${id}@1.0`)??[]} ]));
     await writeFile(`${reportRoot}/black-box-evidence.json`,JSON.stringify({status:'PASS',sourceDigest,runId,operations:operationEvidence},null,2)+'\n');
     canaries.push(
       {id:'C',operations:promoted,status:'PASS',evidence:['runtime/executions.json']},
@@ -251,7 +257,7 @@ try {
   const replayed=await http('/v1/world-queries',beforeJob.submission,{prefer:'respond-async'});check('restart-idempotent-replay',[200,202].includes(replayed.status)&&((replayed.body.queryId===beforeJob.submission.plan.queryId)||(replayed.body.jobId===beforeJob.jobId)),replayed);
   check('source-remained-frozen',await semanticSourceFingerprint(root)===sourceDigest);
   for(const required of ['exact-inside','exact-outside-and-bbox-false-positive','exact-boundary-covered','H3-candidate-false-positive','bbox-really-overlaps-without-exact-relation','reference-ambiguous','snapshot-current','snapshot-stale-after-authority-change','snapshot-unknown','plan-no-feasible-normalized','plan-infrastructure-maps-FAILED','NO_DATA-is-unknown','restart-job-preserved'])check(`required-semantic-case:${required}`,checks[required]===true);
-  const operations=Object.fromEntries(catalog.capabilities.filter(c=>c.maturity==='STABLE').map(c=>[`${c.operationId}@1.0`,{status:'PASS',sourceDigest,contractHash:canonicalSha256(c),tests:operationTests.get(`${c.operationId}@1.0`)}]));
+  const operations=Object.fromEntries(catalog.capabilities.filter(c=>c.maturity==='STABLE').map(c=>[`${c.operationId}@1.0`,{status:'PASS',sourceDigest,contractHash:canonicalSha256(c),evidenceDigest:evidenceDigestFor(c.operationId),tests:operationTests.get(`${c.operationId}@1.0`)}]));
   await writeFile(`${reportRoot}/black-box-evidence.json`,JSON.stringify({status:'PASS',sourceDigest,runId,operations},null,2)+'\n');
   check('complete-canaries',canaries.length===5);
   }

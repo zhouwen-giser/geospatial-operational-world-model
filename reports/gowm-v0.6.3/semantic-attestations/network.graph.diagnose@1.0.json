@@ -55,7 +55,7 @@
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/network-provider.test.ts",
-      "sha256": "34f5761606bf85a5ba9b0bc265567d002fcdf8c011a23cbbf7411d3a900aa663"
+      "sha256": "43aebea0c8bc9737703a2340fc5d233d4d4b1547116202396bbf642551dd7ab5"
     }
   ],
   "status": "BLOCKED",

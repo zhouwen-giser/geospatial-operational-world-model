@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { readFile, readdir, mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,10 +22,90 @@ export interface OperationDeclaration {
   rationale: string;
 }
 export interface ProviderSource { providerId: string; manifestPath: string; aliases?: string[]; declarationPath: string; generatedPath: string }
+export interface OperationEvidenceRecord { kind: string; path: string; sha256: string; symbol?: string }
+export interface BlackBoxReceipt {
+  status?: string;
+  sourceDigest?: string;
+  contractHash?: string;
+  evidenceDigest?: string;
+  tests?: unknown[];
+}
+export interface LegacySemanticAttestation {
+  status?: string;
+  evidence?: OperationEvidenceRecord[];
+}
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const output = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.6.2";
 const readJson = async (path: string): Promise<any> => JSON.parse(await readFile(path, "utf8"));
 const render = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
+const portablePath = (path: string): string => path.replaceAll("\\", "/");
+const canonicalTextBytes = (bytes: Buffer): Buffer => Buffer.from(bytes.toString("utf8").replace(/\r\n/gu, "\n"), "utf8");
+
+export function operationEvidenceDigest(records: readonly OperationEvidenceRecord[]): string {
+  const normalized = records
+    .filter((record) => record.kind !== "BLACK_BOX_TEST")
+    .map((record) => ({
+      kind: record.kind,
+      path: portablePath(record.path),
+      sha256: record.sha256,
+      ...(record.symbol ? { symbol: record.symbol } : {})
+    }))
+    .sort((left, right) => canonicalJson(left).localeCompare(canonicalJson(right)));
+  return canonicalSha256(normalized);
+}
+
+export function isCurrentBlackBoxReceipt(input: {
+  reportStatus?: string;
+  reportSourceDigest?: string;
+  receipt?: BlackBoxReceipt | undefined;
+  contractHash: string;
+  evidenceDigest: string;
+  legacyAttestation?: LegacySemanticAttestation | undefined;
+}): boolean {
+  const { receipt } = input;
+  if (
+    input.reportStatus !== "PASS" ||
+    typeof input.reportSourceDigest !== "string" ||
+    receipt?.status !== "PASS" ||
+    receipt.contractHash !== input.contractHash ||
+    !Array.isArray(receipt.tests) ||
+    receipt.tests.length === 0 ||
+    receipt.sourceDigest !== input.reportSourceDigest
+  ) return false;
+  if (typeof receipt.evidenceDigest === "string") return receipt.evidenceDigest === input.evidenceDigest;
+  return input.legacyAttestation?.status === "PROVEN" &&
+    Array.isArray(input.legacyAttestation.evidence) &&
+    operationEvidenceDigest(input.legacyAttestation.evidence) === input.evidenceDigest;
+}
+
+function readCommittedAttestations(repositoryRoot: string, paths: readonly string[]): Map<string, LegacySemanticAttestation> {
+  const attestations = new Map<string, LegacySemanticAttestation>();
+  if (paths.length === 0) return attestations;
+  try {
+    const input = `${paths.map((path) => `HEAD:${portablePath(path)}`).join("\n")}\n`;
+    const batch = execFileSync("git", ["cat-file", "--batch"], { cwd: repositoryRoot, input, maxBuffer: 32 * 1024 * 1024 });
+    let offset = 0;
+    for (const path of paths) {
+      const lineEnd = batch.indexOf(0x0a, offset);
+      if (lineEnd < 0) break;
+      const header = batch.subarray(offset, lineEnd).toString("utf8");
+      offset = lineEnd + 1;
+      if (header.endsWith(" missing")) continue;
+      const size = Number(header.split(" ").at(-1));
+      if (!Number.isSafeInteger(size) || size < 0 || offset + size > batch.length) break;
+      try {
+        attestations.set(path, JSON.parse(batch.subarray(offset, offset + size).toString("utf8")) as LegacySemanticAttestation);
+      } catch {
+        // A malformed or unavailable legacy attestation is deliberately fail-closed.
+      }
+      offset += size;
+      if (batch[offset] === 0x0a) offset += 1;
+    }
+  } catch {
+    // Legacy migration is optional. New evidence-digest receipts remain usable without Git history.
+  }
+  return attestations;
+}
 
 async function files(path: string): Promise<string[]> {
   const entries = await readdir(path, { withFileTypes: true });
@@ -77,32 +158,50 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
     for (const op of Object.keys(declared.operations)) if (!actual.has(op)) throw new Error(`Orphan semantic declaration ${op}`);
   }
   const catalog = [...manifests.values()].flatMap((m) => m.capabilities.map((c) => ({ ...c, ...(declarations.get(operationKey(c)) ? { semanticProfile: declarations.get(operationKey(c))!.profile } : {}) })));
-  const blackBox = await readJson(resolve(repositoryRoot, `${output}/black-box-evidence.json`)).catch(() => ({ operations: {} }));
-  const sourceDigest = await semanticSourceFingerprint(repositoryRoot);
+  const blackBoxPath = `${output}/black-box-evidence.json`;
+  const blackBoxBytes = await readFile(resolve(repositoryRoot, blackBoxPath)).catch(() => undefined);
+  const blackBox = blackBoxBytes ? JSON.parse(blackBoxBytes.toString("utf8")) : { operations: {} };
+  const currentSourceDigest = await semanticSourceFingerprint(repositoryRoot);
+  const blackBoxSourceIsCurrent = blackBox.sourceDigest === currentSourceDigest;
+  const attestationPaths = [...manifests.values()].flatMap((manifest) => manifest.capabilities.map((descriptor) =>
+    `${output}/semantic-attestations/${operationKey(descriptor)}.json`
+  ));
+  const committedAttestations = readCommittedAttestations(repositoryRoot, attestationPaths);
   const resolved: string[] = [], conflicts: object[] = [], insufficient: object[] = [];
   const artifacts = new Map<string, string>();
   const implementationReport: Record<string, unknown> = {};
-  const attestations: unknown[] = [];
+  const attestations: any[] = [];
+  const pendingAdmission = new Map<string, {
+    contractHash: string;
+    descriptor: CapabilityDescriptor;
+    evidence: ImplementationEvidence;
+    implementationEntry: Record<string, unknown>;
+    rationale: string;
+    receipt?: BlackBoxReceipt | undefined;
+    legacyAttestation?: LegacySemanticAttestation | undefined;
+  }>();
   for (const source of [...sources].sort((a, b) => a.providerId.localeCompare(b.providerId))) {
     const manifest = manifests.get(source.providerId)!;
     const generated: Record<string, SemanticProfile> = {};
     const authority = authorities.authorities.find((a: any) => a.providerId === source.providerId);
     for (const descriptor of [...manifest.capabilities].sort((a, b) => operationKey(a).localeCompare(operationKey(b)))) {
       const op = operationKey(descriptor), declaration = declarations.get(op);
-      const evidenceRecords: { kind: string; path: string; sha256: string; symbol?: string }[] = [];
+      const evidenceRecords: OperationEvidenceRecord[] = [];
       const record = async (kind: string, path: string, symbol?: string) => {
-        const bytes = await readFile(resolve(repositoryRoot, path));
-        evidenceRecords.push({ kind, path, sha256: byteHash(bytes), ...(symbol ? { symbol } : {}) });
+        const normalizedPath = portablePath(path);
+        const bytes = await readFile(resolve(repositoryRoot, normalizedPath));
+        evidenceRecords.push({ kind, path: normalizedPath, sha256: byteHash(canonicalTextBytes(bytes)), ...(symbol ? { symbol } : {}) });
         return bytes.toString();
       };
       await record("DESCRIPTOR", source.manifestPath);
       await record("PORTS", source.manifestPath);
       const input = resolveSchema(descriptor.inputSchemaUri), result = resolveSchema(descriptor.outputSchemaUri);
       for (const [kind, schema] of [["INPUT_SCHEMA", input], ["OUTPUT_SCHEMA", result]] as const) {
-        const path = relative(repositoryRoot, locations.get(schema)!);
+        const path = portablePath(relative(repositoryRoot, locations.get(schema)!));
         await record(kind, path);
         const expected = kind === "INPUT_SCHEMA" ? descriptor.inputSchemaHash : descriptor.outputSchemaHash;
-        const rawHash = `sha256:${byteHash(await readFile(resolve(repositoryRoot, path)))}`;
+        const rawBytes = await readFile(resolve(repositoryRoot, path));
+        const rawHash = `sha256:${byteHash(canonicalTextBytes(rawBytes))}`;
         if (expected !== canonicalSha256(schema) && expected !== rawHash) conflicts.push({ operation: op, reason: `${kind} hash mismatch` });
       }
       const inputShape = inspectSchema(input, resolveSchema), outputShape = inspectSchema(result, resolveSchema);
@@ -140,8 +239,6 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
       const primaryStatuses = outputShape.statusPaths[declaration?.profile.domainStatus?.path ?? "/status"] ?? [];
       const receipt = blackBox.operations[op];
       const contractHash = canonicalSha256({ ...descriptor, semanticProfile: declaration?.profile ?? null });
-      const currentBlackBox = Boolean(blackBox.status === "PASS" && blackBox.sourceDigest === sourceDigest && receipt?.status === "PASS" && receipt.contractHash === contractHash && Array.isArray(receipt.tests) && receipt.tests.length > 0 && receipt.sourceDigest === sourceDigest);
-      if (currentBlackBox) await record("BLACK_BOX_TEST", `${output}/black-box-evidence.json`, op);
       const evidence: ImplementationEvidence = {
         referenceInput: inputShape.referencePaths.length > 0 || descriptor.ports.inputs.some((p) => p.valueKind === "REFERENCE_KEY"),
         referenceOutput: outputShape.referencePaths.length > 0 || descriptor.ports.outputs.some((p) => p.valueKind === "REFERENCE_KEY"),
@@ -150,7 +247,7 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
         candidateOnly: declaration?.candidateOnly === true || sql?.bboxOnly === true,
         distanceUnit: declaration?.distance?.unit === "METERS" && inputShape.paths.some((p) => ["/radiusM", "/maxDistanceM", "/distanceM"].includes(p)),
         distanceModel: declaration?.distance?.model === "WGS84_GEOGRAPHY_SPHEROID" && sql?.geographyDistance === true,
-        implementation, blackBox: currentBlackBox, verificationPorts: false
+        implementation, blackBox: false, verificationPorts: false
       };
       if (declaration?.verificationMapping && declaration.profile.exactVerification) {
         const target = catalog.find((c) => operationKey(c) === operationKey(declaration.profile.exactVerification!));
@@ -161,7 +258,8 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
           evidence.verificationPorts = retained.length>0 && retained.every((type)=>accepted.includes(type));
         }
       }
-      implementationReport[op] = { contractHash, inputShape, outputShape, evidence, ...(sql ? { sql } : {}), inspections: inspections.map(({ path, inspection }) => ({ path, symbols: inspection.symbols, calls: inspection.calls, siblingImports: inspection.siblingImports, diagnostics: inspection.diagnostics })) };
+      const implementationEntry: Record<string, unknown> = { contractHash, inputShape, outputShape, evidence, ...(sql ? { sql } : {}), inspections: inspections.map(({ path, inspection }) => ({ path, symbols: inspection.symbols, calls: inspection.calls, siblingImports: inspection.siblingImports, diagnostics: inspection.diagnostics })) };
+      implementationReport[op] = implementationEntry;
       const outcome = materializeProfile({ descriptor, ...(declaration ? { declaration: declaration.profile } : {}), evidence, catalog });
       if (declaration && !authority?.allowedDomains.includes(declaration.profile.domain)) outcome.issues.push({ rule: "AUTHORITY", operation: op, message: "Domain outside explicit provider authority" });
       if (outcome.status !== "RESOLVED" || outcome.issues.length) {
@@ -174,12 +272,19 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
         schemaVersion: "1.0", providerId: source.providerId, operationId: descriptor.operationId, operationVersion: descriptor.operationVersion,
         semanticProfileHash: outcome.profileHash,
         rulesApplied: rules.rules.map((r: any) => r.id), evidence: evidenceRecords,
-        status: descriptor.maturity === "STABLE" && !currentBlackBox ? "BLOCKED" : "PROVEN",
-        notes: [declaration!.rationale, ...(descriptor.maturity === "STABLE" && !currentBlackBox ? ["Static profile resolved; current real black-box execution remains required for Stable admission."] : [])]
+        status: descriptor.maturity === "STABLE" ? "BLOCKED" : "PROVEN",
+        notes: [declaration!.rationale]
       };
-      if (!validateContract("urn:gowm:v0.6.2:semantic-attestation", attestation).valid) throw new Error(`Invalid attestation ${op}`);
       attestations.push(attestation);
-      artifacts.set(`${output}/semantic-attestations/${op}.json`, render(attestation));
+      pendingAdmission.set(op, {
+        contractHash,
+        descriptor,
+        evidence,
+        implementationEntry,
+        rationale: declaration!.rationale,
+        receipt,
+        legacyAttestation: committedAttestations.get(`${output}/semantic-attestations/${op}.json`)
+      });
     }
     artifacts.set(source.generatedPath, render(generated));
     manifest.manifestSchemaVersion = "1.1";
@@ -187,9 +292,38 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
     for (const alias of source.aliases ?? []) artifacts.set(alias, render(manifest));
   }
   // Rebind descriptor/ports byte evidence to the final manifest; otherwise pass two would differ.
-  for (const attestation of attestations as any[]) {
+  for (const attestation of attestations) {
     for (const record of attestation.evidence) if (artifacts.has(record.path)) record.sha256 = byteHash(artifacts.get(record.path)!);
-    artifacts.set(`${output}/semantic-attestations/${attestation.operationId}@${attestation.operationVersion}.json`, render(attestation));
+    const op = `${attestation.operationId}@${attestation.operationVersion}`;
+    const pending = pendingAdmission.get(op)!;
+    const evidenceDigest = operationEvidenceDigest(attestation.evidence);
+    const currentBlackBox = isCurrentBlackBoxReceipt({
+      reportStatus: blackBoxSourceIsCurrent ? blackBox.status : "STALE",
+      reportSourceDigest: currentSourceDigest,
+      receipt: pending.receipt,
+      contractHash: pending.contractHash,
+      evidenceDigest,
+      legacyAttestation: pending.legacyAttestation
+    });
+    pending.evidence.blackBox = currentBlackBox;
+    pending.implementationEntry.operationEvidenceDigest = evidenceDigest;
+    if (currentBlackBox && blackBoxBytes) {
+      attestation.evidence.push({
+        kind: "BLACK_BOX_TEST",
+        path: blackBoxPath,
+        sha256: byteHash(canonicalTextBytes(blackBoxBytes)),
+        symbol: op
+      });
+    }
+    attestation.status = pending.descriptor.maturity === "STABLE" && !currentBlackBox ? "BLOCKED" : "PROVEN";
+    attestation.notes = [
+      pending.rationale,
+      ...(pending.descriptor.maturity === "STABLE" && !currentBlackBox
+        ? ["Static profile resolved; current real black-box execution remains required for Stable admission."]
+        : [])
+    ];
+    if (!validateContract("urn:gowm:v0.6.2:semantic-attestation", attestation).valid) throw new Error(`Invalid attestation ${op}`);
+    artifacts.set(`${output}/semantic-attestations/${op}.json`, render(attestation));
   }
   const report = { schemaVersion: "1.0", resolved: resolved.sort(), conflicts, insufficient,
     determinismHash: canonicalSha256({ declarations: [...declarations].sort(([a], [b]) => a.localeCompare(b)), profiles: catalog.map((c) => ({ operation: operationKey(c), profile: c.semanticProfile ?? null })).sort((a,b) => a.operation.localeCompare(b.operation)), attestations }),

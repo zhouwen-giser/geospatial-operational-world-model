@@ -34,7 +34,7 @@
     {
       "providerId": "gowm.spatial-analysis.bridge",
       "manifestPath": "contracts/manifests/providers/spatial-provider.json",
-      "manifestHash": "sha256:01355f94fbe31603afbb2c6d3d5c679cf3ae62effe483ff4f3810168dd76f7d3",
+      "manifestHash": "sha256:837c4a212b4ff0e302e400d8d6b0f14d104bc2c9f92e1290400339c7d8544239",
       "operationCount": 10
     },
     {
@@ -58,7 +58,7 @@
     {
       "providerId": "gowm.world-evidence",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
-      "manifestHash": "sha256:fcc32bb130ad961e399273a7343d9490e97d6b45d23a803af8bc5988b0bdf527",
+      "manifestHash": "sha256:1960bc1e30ba9799219fc4c31b90c4746f0f034b329f0ffccedd459779ca9940",
       "operationCount": 8
     },
     {

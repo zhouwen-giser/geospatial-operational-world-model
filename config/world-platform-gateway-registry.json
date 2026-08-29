@@ -149,8 +149,8 @@
     {
       "providerId": "gowm.spatial-analysis.bridge",
       "providerVersion": "0.2.0",
-      "implementationDigest": "sha256:6ae5b17f125378d3b8a78a1b7cbcd2d091c3251ff03a9156364ecba14e6eaf00",
-      "manifestHash": "sha256:01355f94fbe31603afbb2c6d3d5c679cf3ae62effe483ff4f3810168dd76f7d3",
+      "implementationDigest": "sha256:d257d2e9d46f379b0b9a6343fcc4830edb5c7168d2237dba38da3e5b1984ece7",
+      "manifestHash": "sha256:837c4a212b4ff0e302e400d8d6b0f14d104bc2c9f92e1290400339c7d8544239",
       "manifestPath": "contracts/manifests/providers/spatial-provider.json",
       "endpoint": "http://spatial-provider-bridge:8091",
       "approvalId": "compose-spatial-provider-v0.2",
@@ -173,8 +173,8 @@
     {
       "providerId": "gowm.world-evidence",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb",
-      "manifestHash": "sha256:fcc32bb130ad961e399273a7343d9490e97d6b45d23a803af8bc5988b0bdf527",
+      "implementationDigest": "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317",
+      "manifestHash": "sha256:73da6d7e828aab047270db2a4da314ff6300a1fb0d6947876f45e98e1627d2f8",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
       "endpoint": "http://world-evidence-provider:8093",
       "approvalId": "grounding-world-evidence-v1.0",

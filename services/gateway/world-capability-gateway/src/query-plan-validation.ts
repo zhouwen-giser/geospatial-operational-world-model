@@ -59,7 +59,8 @@ const UNSAFE_TARGET_SEGMENTS = new Set(["__proto__", "prototype", "constructor"]
 export class QueryPlanValidator {
   constructor(
     private readonly registry: CapabilityRegistry,
-    private readonly policy: Readonly<QueryPlanPolicy> = DEFAULT_QUERY_PLAN_POLICY
+    private readonly policy: Readonly<QueryPlanPolicy> = DEFAULT_QUERY_PLAN_POLICY,
+    private readonly canonicalSchemaHashes: ReadonlyMap<string, `sha256:${string}`> = new Map()
   ) {}
 
   validate(submission: WorldQuerySubmission, principal: GatewayPrincipal): ValidatedQueryPlan {
@@ -183,7 +184,17 @@ export class QueryPlanValidator {
       });
     } catch (error) {
       if (error instanceof ProviderProtocolError) throw error;
-      this.fail("Registry references a schema outside the committed contract bundle", {
+      const configuredHash = this.canonicalSchemaHashes.get(schemaUri);
+      if (configuredHash !== undefined) {
+        if (schemaHash !== configuredHash) this.fail("Registry schema hash differs from the operator-configured canonical schema lock", {
+          nodeId,
+          schemaUri,
+          registeredHash: schemaHash,
+          canonicalHash: configuredHash
+        });
+        return;
+      }
+      this.fail("Registry references a schema outside the committed contract bundle and canonical schema lock", {
         nodeId,
         schemaUri,
         reason: error instanceof Error ? error.message : String(error)

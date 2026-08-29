@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:wsgs-sample-instance-manifest:1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "instanceId",
+    "fixtureId",
+    "fixtureVersion",
+    "gatewayBaseUrl",
+    "authMode",
+    "tokenEnvironmentVariable",
+    "dataScope",
+    "datasetScope",
+    "consumerContract",
+    "contractCatalogRevision",
+    "semanticCatalogHash",
+    "operationLockHash",
+    "stableOperations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "instanceId": {
+      "type": "string"
+    },
+    "fixtureId": {
+      "const": "gowm-wsgs-sample-world"
+    },
+    "fixtureVersion": {
+      "const": "1.0.0"
+    },
+    "gatewayBaseUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "authMode": {
+      "enum": [
+        "STATIC_SERVICE",
+        "SIGNED_DELEGATION_V1"
+      ]
+    },
+    "tokenEnvironmentVariable": {
+      "type": "string"
+    },
+    "dataScope": {
+      "type": "string"
+    },
+    "datasetScope": {
+      "type": "string"
+    },
+    "consumerContract": {
+      "type": "object"
+    },
+    "contractCatalogRevision": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "semanticCatalogHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "operationLockHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "stableOperations": {
+      "type": "array",
+      "minItems": 10
+    },
+    "referenceMapPath": {
+      "type": "string"
+    },
+    "expectedCasesPath": {
+      "type": "string"
+    }
+  }
+}

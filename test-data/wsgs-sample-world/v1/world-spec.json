@@ -1,0 +1,157 @@
+{
+  "schemaVersion": "gowm-wsgs-sample-world/1.0",
+  "fixtureId": "gowm-wsgs-sample-world",
+  "fixtureVersion": "1.0.0",
+  "namespace": "sample://gowm/wsgs/v1",
+  "coordinateReferenceSystem": "EPSG:4326",
+  "epochPolicy": "LOAD_TIME_ANCHORED",
+  "scopes": [
+    {
+      "name": "VISIBLE",
+      "dataScope": "wsgs-demo",
+      "datasetScope": "wsgs-demo-main"
+    },
+    {
+      "name": "HIDDEN",
+      "dataScope": "wsgs-hidden",
+      "datasetScope": "wsgs-hidden-main"
+    }
+  ],
+  "datasets": [
+    {
+      "fixtureDatasetKey": "sample-base-vector",
+      "scope": "wsgs-demo",
+      "kind": "VECTOR",
+      "name": "启明园区基础矢量数据",
+      "version": "1.0.0",
+      "crs": "EPSG:4326",
+      "layers": [
+        "sample-zones",
+        "sample-roads",
+        "sample-landmarks"
+      ],
+      "quality": {
+        "validationStatus": "VALIDATED",
+        "positionalAccuracyM": 0.1,
+        "knownLimitations": [
+          "SYNTHETIC_TEST_DATA"
+        ]
+      },
+      "provenance": {
+        "source": "gowm-wsgs-sample-world-generator",
+        "methodVersion": "1.0"
+      }
+    },
+    {
+      "fixtureDatasetKey": "sample-road-network",
+      "scope": "wsgs-demo",
+      "kind": "NETWORK",
+      "name": "启明园区道路网络目录项",
+      "version": "1.0.0",
+      "crs": "EPSG:4326",
+      "layers": [
+        "sample-roads"
+      ],
+      "quality": {
+        "validationStatus": "VALIDATED",
+        "knownLimitations": [
+          "CATALOG_ONLY_IN_REQUIRED_PROFILE"
+        ]
+      },
+      "provenance": {
+        "source": "sample-base-vector",
+        "methodVersion": "catalog-projection/1.0"
+      }
+    },
+    {
+      "fixtureDatasetKey": "sample-current-world",
+      "scope": "wsgs-demo",
+      "kind": "CURRENT_PROJECTION",
+      "name": "启明园区当前世界投影",
+      "version": "REALIZATION",
+      "crs": "EPSG:4326",
+      "layers": [
+        "sample-assets-current"
+      ],
+      "quality": {
+        "validationStatus": "VALIDATED",
+        "knownLimitations": [
+          "LOAD_TIME_RELATIVE_TIMESTAMPS"
+        ]
+      },
+      "provenance": {
+        "source": "synthetic-observations",
+        "methodVersion": "projection/1.0"
+      }
+    },
+    {
+      "fixtureDatasetKey": "hidden-base-vector",
+      "scope": "wsgs-hidden",
+      "kind": "VECTOR",
+      "name": "隐藏测试数据",
+      "version": "1.0.0",
+      "crs": "EPSG:4326",
+      "layers": [
+        "hidden-zones",
+        "hidden-roads"
+      ],
+      "quality": {
+        "validationStatus": "VALIDATED"
+      },
+      "provenance": {
+        "source": "hidden-fixture",
+        "methodVersion": "1.0"
+      }
+    }
+  ],
+  "features": [
+    "zone-a",
+    "zone-b",
+    "road-river-west",
+    "road-river-east",
+    "road-axis",
+    "north-gate",
+    "command-center",
+    "hidden-zone-a",
+    "hidden-river-road"
+  ],
+  "objects": [
+    "ugv-001",
+    "ugv-002",
+    "ugv-003",
+    "camera-01",
+    "sensor-01",
+    "target-01",
+    "hidden-ugv-002"
+  ],
+  "references": [
+    "object:ugv-001",
+    "object:ugv-002",
+    "object:ugv-003",
+    "object:camera-01",
+    "object:sensor-01",
+    "object:target-01",
+    "object:hidden-ugv-002",
+    "feature:zone-a",
+    "feature:zone-b",
+    "feature:road-river-west",
+    "feature:road-river-east",
+    "feature:road-axis",
+    "feature:north-gate",
+    "feature:command-center",
+    "feature:hidden-zone-a",
+    "feature:hidden-river-road"
+  ],
+  "observationTemplates": [
+    "obs:ugv-001:v1",
+    "obs:ugv-002:v1",
+    "obs:ugv-003:v1",
+    "obs:camera-01:v1",
+    "obs:sensor-01:v1",
+    "obs:target-01:v1",
+    "obs:hidden-ugv-002:v1"
+  ],
+  "mutations": [
+    "move-ugv-002-to-zone-b"
+  ]
+}

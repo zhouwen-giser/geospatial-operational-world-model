@@ -13,6 +13,7 @@ import {
 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { GowmSpatialV1Repository } from "./repository.js";
 import {
+  GOWM_SPATIAL_V1_CATALOG_FEATURE_MIGRATION_SHA256,
   GOWM_SPATIAL_V1_MIGRATION_SHA256,
   SPATIAL_CONTRACT_TREE_SHA256,
   SPATIAL_DEFINITIONS_SCHEMA_SHA256,
@@ -50,6 +51,7 @@ export function createSpatialProviderBridge(options: SpatialProviderBridgeOption
         version: "0.2.0",
         readContract: "gowm_spatial_v1",
         migrationDigest: GOWM_SPATIAL_V1_MIGRATION_SHA256,
+        catalogFeatureMigrationDigest: GOWM_SPATIAL_V1_CATALOG_FEATURE_MIGRATION_SHA256,
         sourceZipDigest: SPATIAL_SOURCE_ZIP_SHA256,
         sourceOpenApiDigest: SPATIAL_OPENAPI_SHA256,
         sourceContractTreeDigest: SPATIAL_CONTRACT_TREE_SHA256,
@@ -173,14 +175,20 @@ function operation(
         name: "gowm_spatial_v1",
         version: "migration-012",
         digest: GOWM_SPATIAL_V1_MIGRATION_SHA256
-      }]
+      }, ...(operationId === "spatial.find-intersections" ? [{
+        kind: "DATABASE" as const,
+        name: "gowm_spatial_v1.catalog_feature",
+        version: "migration-062",
+        digest: GOWM_SPATIAL_V1_CATALOG_FEATURE_MIGRATION_SHA256 as `sha256:${string}`
+      }] : [])]
     },
     async handle(input, context) {
       const result = await repository.execute(
         operationId,
         input,
         context.security.dataScopeClaim as string,
-        context.deadline.remainingMs()
+        context.deadline.remainingMs(),
+        context.security.datasetScopeClaims?.[0]
       );
       return {
         status: "COMPLETED",

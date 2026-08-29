@@ -4,6 +4,7 @@ import { validateReferenceRecord } from "../../packages/platform/result-validati
 import type { RoutingSnapshot } from "../../packages/network-query-core/src/index.js";
 
 const key = { namespace: "gowm" as const, kind: "QUERY_RESULT", id: `wrf_${"1".repeat(32)}`, version: "1" };
+const worldKey = { namespace: "gowm" as const, kind: "WORLD_OBJECT", id: `wrf_${"2".repeat(32)}`, version: "710" };
 const scope = { dataScopeKey: "validation-test", datasetScopeKey: "tenant-a" };
 const hash = (character: string) => `sha256:${character.repeat(64)}` as const;
 const pinned: RoutingSnapshot = {
@@ -26,6 +27,13 @@ function fixture(options: { current?: Partial<RoutingSnapshot>; stored?: Record<
         valid_until: new Date("2100-01-01T00:00:00Z"), created_at: new Date("2026-08-25T00:00:00Z"),
         data_snapshot_hash: hash("d"), content_hash: hash("e"), descriptor_stale: false, retired: false,
         result_record: options.stored ?? { routingSnapshot: pinned }, ...options.record
+      }] };
+      if (sql.includes("SELECT * FROM gowm_platform_validation_v1.world_reference_version")) return { rows: [{
+        reference_key: worldKey.id, entity_kind: worldKey.kind,
+        descriptor_version: "710", descriptor_object_version: "59",
+        current_version: "710", object_version: "59", world_version: "59",
+        stale: false, revalidation_required: false, retired: false,
+        content_hash: hash("f"), created_at: new Date("2026-08-29T00:00:00Z")
       }] };
       if (sql.includes("SELECT graph_key,graph_version_id")) return { rows: options.missingGraph ? [] : [{ graph_key: "roads", graph_version_id: "00000000-0000-0000-0000-000000000001" }] };
       if (sql.includes("FROM gowm_network_v1.resolve_active_graph")) return { rows: [{ graph_version_id: "00000000-0000-0000-0000-000000000002", graph_version: current.graphVersion, content_hash: current.graphContentHash, dataset_version: current.networkDatasetVersion }] };
@@ -93,6 +101,30 @@ describe("PostgreSQL platform validation authority", () => {
     const requested = { resourceKind: "QUERY_RESULT", resourceId: key.id, version: "1", contentHash: hash("d") };
     const resources = await authority.currentResources([requested], scope);
     expect(resources.get(`QUERY_RESULT\0${key.id}`)).toMatchObject({ contentHash: hash("e") });
+  });
+
+  it("accepts both current descriptor and authority pins only for the exact WORLD_OBJECT binding", async () => {
+    const { authority } = fixture();
+    const [descriptorPin, authorityPin, prior] = await authority.resolveReferences([
+      { referenceKey: worldKey },
+      { referenceKey: { ...worldKey, version: "59" } },
+      { referenceKey: { ...worldKey, version: "709" } }
+    ], scope);
+    expect(validateReferenceRecord(
+      descriptorPin,
+      { referenceKey: worldKey, requireCurrentSnapshot: true },
+      { COMPLETED: "COMPLETED" }
+    )).toMatchObject({ snapshot: "CURRENT", usable: "YES" });
+    expect(validateReferenceRecord(
+      authorityPin,
+      { referenceKey: { ...worldKey, version: "59" }, requireCurrentSnapshot: true },
+      { COMPLETED: "COMPLETED" }
+    )).toMatchObject({ snapshot: "CURRENT", usable: "YES" });
+    expect(validateReferenceRecord(
+      prior,
+      { referenceKey: { ...worldKey, version: "709" }, requireCurrentSnapshot: true },
+      { COMPLETED: "COMPLETED" }
+    )).toMatchObject({ snapshot: "STALE", usable: "REVALIDATE" });
   });
 
   it("never echoes a claimed world version when the authority does not have it", async () => {

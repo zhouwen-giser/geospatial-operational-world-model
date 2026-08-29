@@ -9,6 +9,7 @@ import { createNetworkProvider } from "../../services/providers/network-provider
 import type { LoadedNetwork, NetworkArc, NetworkSqlPool, RoutingSnapshot, TurnRule } from "../../services/providers/network-provider/src/types.js";
 
 const unavailablePool: NetworkSqlPool = { async connect() { throw new Error("manifest test must not connect"); } };
+const canonicalSourceBytes = (path: string): Buffer => Buffer.from(readFileSync(path, "utf8").replace(/\r\n/gu, "\n"), "utf8");
 const snapshot: RoutingSnapshot = {
   networkDatasetVersion: "dataset-v1", graphVersion: "graph-v1", travelProfileVersion: "road-v1", costProfileVersion: "balanced-v1",
   graphContentHash: `sha256:${"1".repeat(64)}`, costContentHash: `sha256:${"2".repeat(64)}`, capturedAt: "2026-08-25T00:00:00.000Z"
@@ -28,7 +29,7 @@ const network = (arcs: NetworkArc[], turnRules: TurnRule[] = []): LoadedNetwork 
 });
 
 describe("gowm.network provider", () => {
-  it("registers the frozen operation set and raw schema-byte hashes", () => {
+  it("registers the frozen operation set and canonical schema-byte hashes", () => {
     const provider = createNetworkProvider({ pool: unavailablePool });
     const frozen = JSON.parse(readFileSync(resolve("contracts/gowm-v0.5/manifests/providers/network-provider.json"), "utf8")) as { operations: Array<Record<string, string>> };
     expect(provider.runtime.manifest.provider.providerId).toBe("gowm.network");
@@ -39,7 +40,7 @@ describe("gowm.network provider", () => {
       expect(descriptor).toMatchObject({ operationId: lock.operationId, operationVersion: lock.operationVersion, maturity: lock.maturity, inputSchemaHash: lock.inputSchemaHash, outputSchemaHash: lock.outputSchemaHash, scopePolicy: "DATA_SCOPE_REQUIRED" });
       for (const direction of ["input", "output"] as const) {
         const file = lock[`${direction}SchemaFile`];
-        const expected = `sha256:${createHash("sha256").update(readFileSync(resolve(file!))).digest("hex")}`;
+        const expected = `sha256:${createHash("sha256").update(canonicalSourceBytes(resolve(file!))).digest("hex")}`;
         expect(lock[`${direction}SchemaHash`]).toBe(expected);
       }
     }

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "fixtureId": "gowm-wsgs-sample-world",
+  "fixtureVersion": "1.0.0",
+  "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025",
+  "realizationId": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777",
+  "epoch": "2026-08-27T13:03:46.516Z",
+  "generatedAt": "2026-08-27T13:03:46.516Z",
+  "artifacts": [
+    {
+      "path": "generated/catalog.json",
+      "bytes": 8111,
+      "sha256": "sha256:303e675f01863ac594d99d9ba2f4e35fc301a841d624b683c12c9a0035790b19"
+    },
+    {
+      "path": "generated/expected-cases.json",
+      "bytes": 6311,
+      "sha256": "sha256:a8aea19ffd5a6c080ca4b4d156a251b4773b31b0e4463fb1a19baa19f214bf2e"
+    },
+    {
+      "path": "generated/hidden-features.geojson",
+      "bytes": 1633,
+      "sha256": "sha256:048f199ae38037fdb8f306fbfe6c3aec701627266f00ac3d74429fb954add688"
+    },
+    {
+      "path": "generated/mutations.json",
+      "bytes": 1294,
+      "sha256": "sha256:315baf810074f7cfac52f9d27c5b566875df75616ec73fc5822b942a6c148e7f"
+    },
+    {
+      "path": "generated/objects.json",
+      "bytes": 4719,
+      "sha256": "sha256:7c1d8e34746ac058827a7bf8cd92e2911d960bbc94efc235c0b71381ccfcc5e2"
+    },
+    {
+      "path": "generated/observations.json",
+      "bytes": 9407,
+      "sha256": "sha256:1fea648bb27e84eeac750fd447b0c9aa50ddf7764267b3185ace4047d3f048f2"
+    },
+    {
+      "path": "generated/references.json",
+      "bytes": 10104,
+      "sha256": "sha256:1978e563ce009ffafea51adc7b3690b4fca7c698399f574c2945ee86312a3f70"
+    },
+    {
+      "path": "generated/visible-features.geojson",
+      "bytes": 5392,
+      "sha256": "sha256:124770bdc1701ad95442a235e88f37234b06ab36501a204b0cc70b4c37d5173e"
+    },
+    {
+      "path": "generated/world-spec.json",
+      "bytes": 2643,
+      "sha256": "sha256:33236e6ebaa64d2f56cb0c00f893fe49774485e7a8954cf10681244f2b2800d7"
+    },
+    {
+      "path": "sample-world-reference-map.json",
+      "bytes": 13616,
+      "sha256": "sha256:9eda11f723736f678f6d4d6f0e8785e0e7bfaec28284fb29c6d72568adad0017"
+    }
+  ],
+  "realizationHash": "sha256:b988ff9f163ebb5a4e4cecb167f88f53ad0222820418e9ee753e38238f851e07"
+}

@@ -34,7 +34,7 @@
     {
       "providerId": "gowm.spatial-analysis.bridge",
       "manifestPath": "contracts/manifests/providers/spatial-provider.json",
-      "manifestHash": "sha256:bdf02a3574979d5df64760b86f701b76742b83d4328a59dc66b85fac45e7a7b5",
+      "manifestHash": "sha256:837c4a212b4ff0e302e400d8d6b0f14d104bc2c9f92e1290400339c7d8544239",
       "operationCount": 10
     },
     {
@@ -46,19 +46,19 @@
     {
       "providerId": "gowm.reference-catalog",
       "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
-      "manifestHash": "sha256:75a7af4c36b2662a1ceb30f77a1d9143cb158a94a103083c5efad1b17d4291e6",
+      "manifestHash": "sha256:b8bc8e309b23af59f88708110387f8e7ed077c272fcea82ff35e242f914b6d2b",
       "operationCount": 4
     },
     {
       "providerId": "gowm.dataset-catalog",
       "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
-      "manifestHash": "sha256:9fdab41d6865c6d4cfb8a0d1eccae5041a1589808092a3f35bc9817d4ecc3f08",
+      "manifestHash": "sha256:1a8b5fa45040875e97d5667b1f30483f2c55f2851ece70faf39ddb34f28c6ed2",
       "operationCount": 13
     },
     {
       "providerId": "gowm.world-evidence",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
-      "manifestHash": "sha256:925b860b6246fa3ee1451a874dbed6759d715847d5ef7c2376c22ff0e8e3c63f",
+      "manifestHash": "sha256:73da6d7e828aab047270db2a4da314ff6300a1fb0d6947876f45e98e1627d2f8",
       "operationCount": 8
     },
     {
@@ -99,8 +99,8 @@
     }
   ],
   "maturities": {
-    "STABLE": 21,
-    "PREVIEW": 99,
+    "STABLE": 31,
+    "PREVIEW": 89,
     "EXPERIMENTAL": 2,
     "DEPRECATED": 0,
     "RETIRED": 0

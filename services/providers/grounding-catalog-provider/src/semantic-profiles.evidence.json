@@ -159,7 +159,10 @@
     "timeSemantics": "SNAPSHOT",
     "resultNature": "FACT",
     "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
-    "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "notes": [
+      "WORLD_OBJECT reads current projection geometry. LAYER_FEATURE reads active catalog geometry by immutable feature-version or matching descriptor-version pin and requires DatasetScope."
+    ]
   },
   "world.get-observations@1.0": {
     "profileVersion": "1.0",

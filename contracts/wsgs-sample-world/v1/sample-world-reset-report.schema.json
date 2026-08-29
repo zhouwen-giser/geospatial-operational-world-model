@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:wsgs-sample-reset-report:1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "fixtureId",
+    "dryRun",
+    "databaseMarker",
+    "deletedCounts",
+    "nonFixtureRowsAffected",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "fixtureId": {
+      "const": "gowm-wsgs-sample-world"
+    },
+    "dryRun": {
+      "type": "boolean"
+    },
+    "databaseMarker": {
+      "type": "string"
+    },
+    "deletedCounts": {
+      "type": "object"
+    },
+    "nonFixtureRowsAffected": {
+      "const": 0
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ]
+    }
+  }
+}

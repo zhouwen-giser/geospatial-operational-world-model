@@ -28,6 +28,7 @@ import {
   ProviderProtocolError,
   sha256
 } from "../../../../packages/platform/provider-sdk/src/index.js";
+import type { CanonicalSchemaLock } from "./canonical-schema-lock.js";
 import type { DirectExecutionService } from "./direct-execution.js";
 import { QueryPlanValidator } from "./query-plan-validation.js";
 import type { QueryJobContext, QueryPlanStore } from "./query-plan-store.js";
@@ -51,6 +52,7 @@ export interface WorldQueryRuntimeOptions {
   now?: () => Date;
   autoRunAsync?: boolean;
   snapshotCoordinator?: QuerySnapshotCoordinator;
+  canonicalSchemaLock?: CanonicalSchemaLock;
 }
 
 export class WorldQueryRuntime {
@@ -528,7 +530,32 @@ export class WorldQueryRuntime {
     nodeId: string,
     role: string
   ): void {
-    const canonicalHash = getContractSchemaHash(schemaUri);
+    let canonicalHash: string;
+    try {
+      canonicalHash = getContractSchemaHash(schemaUri);
+    } catch {
+      const configured = this.options.canonicalSchemaLock?.schemas.get(schemaUri);
+      if (configured === undefined) {
+        throw new ProviderProtocolError("SCHEMA_MISMATCH", "DAG value schema is outside the canonical resolver", {
+          details: { stage: "DAG_EXECUTION", nodeId, role, schemaUri }
+        });
+      }
+      if (configured.schemaHash !== schemaHash) {
+        throw new ProviderProtocolError("SCHEMA_MISMATCH", "DAG value schema attestation differs from the canonical schema lock", {
+          details: { stage: "DAG_EXECUTION", nodeId, role, schemaUri, canonicalHash: configured.schemaHash, schemaHash }
+        });
+      }
+      const externalValidation = validateAgainstSchema(configured.schema, value, {
+        schemaName: schemaUri,
+        schemas: { ...this.options.canonicalSchemaLock?.documents }
+      });
+      if (!externalValidation.valid) {
+        throw new ProviderProtocolError("SCHEMA_MISMATCH", "DAG value does not match its operator-configured canonical schema", {
+          details: { stage: "DAG_EXECUTION", nodeId, role, issues: externalValidation.issues }
+        });
+      }
+      return;
+    }
     if (!isContractSchemaHash(schemaUri, schemaHash)) {
       throw new ProviderProtocolError("SCHEMA_MISMATCH", "DAG value schema attestation is stale", {
         details: { stage: "DAG_EXECUTION", nodeId, role, schemaUri, canonicalHash, schemaHash }

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "canaryId": "C4",
+  "steps": [
+    {
+      "operationId": "reference.resolve",
+      "status": "PASS",
+      "requestId": "provider_request_8638e7421023401b8e2c7ae3638ce086",
+      "snapshotId": "sha256:fc9a5e818544fd4a07c22e0a1dbc0e2f8cb3e00203c42793dc67a75d2aeb431a",
+      "resultHash": "sha256:2df49f2a3cb7160653f4e65374693435fec279041b171ff285b7a713b9c178a5",
+      "timestamp": "2026-08-29T03:49:32.253Z",
+      "candidateCount": 2,
+      "downstreamExecutionCount": 0
+    }
+  ],
+  "status": "PASS",
+  "hardcodedReferenceUsed": false,
+  "notes": [
+    "Ambiguity returned two candidates and stopped before downstream execution."
+  ]
+}

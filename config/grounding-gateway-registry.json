@@ -28,8 +28,8 @@
     {
       "providerId": "gowm.world-evidence",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb",
-      "manifestHash": "sha256:fcc32bb130ad961e399273a7343d9490e97d6b45d23a803af8bc5988b0bdf527",
+      "implementationDigest": "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317",
+      "manifestHash": "sha256:73da6d7e828aab047270db2a4da314ff6300a1fb0d6947876f45e98e1627d2f8",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
       "endpoint": "http://world-evidence-provider:8093",
       "approvalId": "grounding-world-evidence-v1.0",

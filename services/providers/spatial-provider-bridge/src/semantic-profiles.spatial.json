@@ -79,9 +79,11 @@
     "profileVersion": "1.0",
     "domain": "SPATIAL",
     "acceptedReferenceKinds": [
+      "LAYER_FEATURE",
       "WORLD_OBJECT"
     ],
     "producedReferenceKinds": [
+      "LAYER_FEATURE",
       "WORLD_OBJECT"
     ],
     "relationSemantics": [
@@ -93,6 +95,7 @@
     "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
     "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
     "notes": [
+      "Exact-version catalog LAYER_FEATURE geometries and current WORLD_OBJECT geometries participate in the same ST_Intersects predicate.",
       "Reference kinds describe supported public references, including validated/returned identities; validation echoes do not create new identities. Legacy generic ReferenceKey syntax is not an authority for additional kinds."
     ]
   },

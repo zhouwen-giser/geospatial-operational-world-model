@@ -44,18 +44,18 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/provider.ts",
-      "sha256": "37c663d878704f46241faae32f6e9e20f5ccc61d1210c26cb89302baf23cde63",
+      "sha256": "cdd12e87c8210dc521364788d0e2f3bc37f85d2273536f6901415aa941ca6b8e",
       "symbol": "createGroundingCatalogProvider"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/repository.ts",
-      "sha256": "aecd84888fc2301b8998e52fafd63dc7cd1002674f5a5ef659d33069094cf218"
+      "sha256": "ed1ab8ef0e44941a051ee01db7973adbdf538b37d4bb31e8191983d005f7913b"
     },
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/grounding-catalog-provider.test.ts",
-      "sha256": "45372873116f2ca23229aa994d121fcda459a6cfc05fab83fa484f97593b704d"
+      "sha256": "20a96fcf92abcf5a8be85a07f213572c7998c6f51d9d4b4ce344c617858626b4"
     }
   ],
   "status": "PROVEN",

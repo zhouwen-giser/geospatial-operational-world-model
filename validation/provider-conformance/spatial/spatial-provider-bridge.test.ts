@@ -9,6 +9,7 @@ import { buildSpatialQuery } from "../../../services/providers/spatial-provider-
 import { dataScopeDigest, encodeSpatialCursor } from "../../../services/providers/spatial-provider-bridge/src/cursor.js";
 import { createSpatialProviderBridge } from "../../../services/providers/spatial-provider-bridge/src/provider.js";
 import {
+  GOWM_SPATIAL_V1_CATALOG_FEATURE_MIGRATION_SHA256,
   GOWM_SPATIAL_V1_MIGRATION_SHA256,
   SPATIAL_CONTRACT_TREE_SHA256,
   SPATIAL_DEFINITIONS_SCHEMA_SHA256,
@@ -41,8 +42,12 @@ describe("Spatial provider bridge", () => {
   it("locks the ten formal operations, maturity, source, and generated manifest", () => {
     const bridge = createSpatialProviderBridge(options(new MockPool()));
     expect(bridge.runtime.manifest.capabilities.map((capability) => capability.operationId)).toEqual(SPATIAL_OPERATION_IDS);
-    expect(bridge.runtime.manifest.capabilities.slice(0, 8).every((capability) => capability.maturity === "PREVIEW")).toBe(true);
-    expect(bridge.runtime.manifest.capabilities.slice(8).every((capability) => capability.maturity === "EXPERIMENTAL")).toBe(true);
+    expect(bridge.runtime.manifest.capabilities.filter((capability) => capability.maturity === "STABLE").map((capability) => capability.operationId)).toEqual([
+      "spatial.find-nearby", "spatial.find-in-area", "spatial.find-intersections"
+    ]);
+    expect(bridge.runtime.manifest.capabilities.filter((capability) => capability.maturity === "EXPERIMENTAL").map((capability) => capability.operationId)).toEqual([
+      "spatial.join", "spatial.aggregate"
+    ]);
     expect(bridge.runtime.manifest.capabilities.every((capability) =>
       capability.scopePolicy === "DATA_SCOPE_REQUIRED" &&
       capability.dataBinding === "WORLD_SNAPSHOT_BOUND" &&
@@ -69,7 +74,8 @@ describe("Spatial provider bridge", () => {
       openApiSha256: SPATIAL_OPENAPI_SHA256.slice("sha256:".length),
       contractTreeSha256: SPATIAL_CONTRACT_TREE_SHA256.slice("sha256:".length),
       canonicalDefinitionsSha256: SPATIAL_DEFINITIONS_SCHEMA_SHA256.slice("sha256:".length),
-      readContractMigrationSha256: GOWM_SPATIAL_V1_MIGRATION_SHA256.slice("sha256:".length)
+      readContractMigrationSha256: GOWM_SPATIAL_V1_MIGRATION_SHA256.slice("sha256:".length),
+      catalogFeatureReadContractMigrationSha256: GOWM_SPATIAL_V1_CATALOG_FEATURE_MIGRATION_SHA256.slice("sha256:".length)
     });
   });
 
@@ -106,7 +112,7 @@ describe("Spatial provider bridge", () => {
         ...request,
         requestId: "request-spatial-deadline",
         idempotencyKey: "idempotency-spatial-deadline",
-        executionPolicy: { ...request.executionPolicy, deadlineAt: new Date(Date.now() - 1_000).toISOString() }
+        executionPolicy: { ...request.executionPolicy, deadlineAt: "2026-08-22T23:59:59.000Z" }
       }
     });
     expect(report, JSON.stringify(report, null, 2)).toMatchObject({ passed: true });
@@ -138,7 +144,7 @@ describe("Spatial provider bridge", () => {
       });
       expect(mismatch.statusCode).toBe(422);
       expect(mismatch.json()).toMatchObject({ error: { code: "SCHEMA_MISMATCH", stage: "REQUEST_VALIDATION" } });
-      expect(pool.calls.filter((call) => call.text.includes("LIMIT 0"))).toHaveLength(4);
+      expect(pool.calls.filter((call) => call.text.includes("LIMIT 0"))).toHaveLength(7);
       expect(pool.calls.every((call) => !call.text.includes("public."))).toBe(true);
     } finally {
       await app.close();
@@ -178,7 +184,7 @@ describe("Spatial provider bridge", () => {
       });
       expect(result.computeSnapshot, operationId).toMatchObject({
         engine: { name: "PostGIS", version: "3.6.4" },
-        artifacts: [{ kind: "DATABASE", name: "gowm_spatial_v1", version: "migration-012", digest: GOWM_SPATIAL_V1_MIGRATION_SHA256 }]
+        artifacts: expect.arrayContaining([{ kind: "DATABASE", name: "gowm_spatial_v1", version: "migration-012", digest: GOWM_SPATIAL_V1_MIGRATION_SHA256 }])
       });
       expect(result.receipts).toHaveLength(1);
       expect(result.receipts[0]?.warnings).toContain("spatial.snapshot=CONSISTENT_AT_START");
@@ -223,6 +229,46 @@ describe("Spatial provider bridge", () => {
     expect(pool.operationQueries()[0]?.values.slice(0, 2)).toEqual([116.4, 39.9]);
   });
 
+  it("returns exact catalog LAYER_FEATURE references from intersection queries while retaining WORLD_OBJECT support", async () => {
+    const pool = new MockPool({ layerFeatureIntersections: true });
+    const bridge = createSpatialProviderBridge(options(pool));
+    const descriptor = descriptorFor(bridge.runtime.manifest.capabilities, "spatial.find-intersections");
+    const request = providerRequest(descriptor, {
+      geometry: { type: "Point", coordinates: [116.4, 39.9] },
+      candidateReferences: [LAYER_REFERENCE],
+      includeGeometry: true,
+      limit: 10
+    });
+    request.securityContext.datasetScopeClaim = "roads";
+    const result = await bridge.runtime.execute(request);
+    const output = result.output?.value as { objects: Array<Record<string, unknown>> };
+    expect(output.objects[0]).toMatchObject({
+      referenceKey: LAYER_REFERENCE,
+      objectType: "road",
+      worldVersion: 3,
+      geometry: { type: "Point", coordinates: [116.4, 39.9] }
+    });
+    expect(result.evidenceReferences[0]).toMatchObject({
+      evidenceId: LAYER_REFERENCE.id,
+      evidenceType: "LAYER_VERSION",
+      referenceKey: LAYER_REFERENCE,
+      worldVersion: 3,
+      schemaUri: "urn:gowm:foundation:gowm_spatial_v1:catalog_feature_reference:1"
+    });
+    expect(descriptor.semanticProfile).toMatchObject({
+      acceptedReferenceKinds: ["LAYER_FEATURE", "WORLD_OBJECT"],
+      producedReferenceKinds: ["LAYER_FEATURE", "WORLD_OBJECT"]
+    });
+    const query = pool.operationQueries()[0];
+    expect(query?.text).toContain("gowm_spatial_v1.catalog_feature_reference");
+    expect(query?.text).toMatch(/FROM gowm_spatial_v1\.current_object object_source[\s\S]*?UNION[\s\S]*?FROM gowm_spatial_v1\.catalog_feature_reference feature_source/u);
+    expect(query?.values).toContain(JSON.stringify([LAYER_REFERENCE]));
+    expect(pool.calls).toContainEqual({
+      text: "SELECT set_config('gowm.dataset_scope_key', $1::text, true)",
+      values: ["roads"]
+    });
+  });
+
   it("opens a read-only repeatable-read transaction and establishes SQL-level scope before querying", async () => {
     const pool = new MockPool();
     const bridge = createSpatialProviderBridge(options(pool));
@@ -244,7 +290,7 @@ describe("Spatial provider bridge", () => {
     expect(pool.calls.some((call) => call.text.includes("public."))).toBe(false);
   });
 
-  it("binds signed keyset cursors to operation, DataScope, and current projection version", async () => {
+  it("binds signed keyset cursors to operation, scopes, and world plus catalog snapshots", async () => {
     const pool = new MockPool({ objectPageRows: 2 });
     const bridge = createSpatialProviderBridge(options(pool));
     const descriptor = descriptorFor(bridge.runtime.manifest.capabilities, "spatial.find-in-area");
@@ -291,6 +337,21 @@ describe("Spatial provider bridge", () => {
       { ...validInput("spatial.find-in-area"), cursor: stale },
       "request-stale-cursor",
       "idempotency-stale-cursor"
+    ))).rejects.toMatchObject({ code: "INVALID_REQUEST" });
+
+    const staleCatalog = encodeSpatialCursor({
+      v: 1,
+      operationId: "spatial.find-in-area",
+      scopeDigest: dataScopeDigest("scope-a"),
+      snapshotVersion: `7:sha256:${"d".repeat(64)}`,
+      sort: "id",
+      id: WORLD_REFERENCE.id
+    }, CURSOR_SECRET);
+    await expect(bridge.runtime.execute(providerRequest(
+      descriptor,
+      { ...validInput("spatial.find-in-area"), cursor: staleCatalog },
+      "request-stale-catalog-cursor",
+      "idempotency-stale-catalog-cursor"
     ))).rejects.toMatchObject({ code: "INVALID_REQUEST" });
   });
 
@@ -359,6 +420,7 @@ interface MockPoolOptions {
   objectPageRows?: number;
   candidateCount?: number;
   scopeError?: Error & { code?: string };
+  layerFeatureIntersections?: boolean;
 }
 
 interface SqlCall {
@@ -396,6 +458,7 @@ class MockPool implements SpatialSqlPool {
       return [{
         dataset_reference_key: DATASET_REFERENCE,
         current_world_version: "7",
+        catalog_snapshot_version: `sha256:${"e".repeat(64)}`,
         snapshot_consistency: "CONSISTENT_AT_START",
         captured_at: "2026-08-23T00:00:00.000Z"
       }];
@@ -446,7 +509,9 @@ class MockPool implements SpatialSqlPool {
       return Array.from({ length: count }, (_, index) => objectRow(
         index === 0 ? WORLD_REFERENCE : WORLD_REFERENCE_2,
         candidateCount,
-        text.includes("find-containing-area") ? LAYER_REFERENCE : undefined
+        text.includes("find-containing-area") || text.includes("find-intersections") && this.settings.layerFeatureIntersections
+          ? LAYER_REFERENCE
+          : undefined
       ));
     }
     return [];
@@ -461,7 +526,7 @@ function objectRow(
   const selected = layerReference ?? worldReference;
   return {
     reference_key: selected,
-    object_type: layerReference ? "administrative-area" : "vehicle",
+    object_type: layerReference ? "road" : "vehicle",
     subtype: "test",
     status: "ACTIVE",
     source: layerReference ? null : "fixture",
@@ -475,7 +540,7 @@ function objectRow(
     source_observation_id: layerReference ? null : "observation:test",
     provenance_summary: { evidenceKind: "OBSERVED" },
     distance_m: layerReference ? null : 12.5,
-    geometry: null,
+    geometry: layerReference ? { type: "Point", coordinates: [116.4, 39.9] } : null,
     candidate_count: candidateCount
   };
 }

@@ -3,7 +3,7 @@
   "providerId": "gowm.spatial-analysis.bridge",
   "operationId": "spatial.find-intersections",
   "operationVersion": "1.0",
-  "semanticProfileHash": "sha256:2fc7946a9eee31a7d6d0fbb435cf0e4e737b344095742f6d986d121f79ae5f0e",
+  "semanticProfileHash": "sha256:3ff34f5452a95f91988e3dce183a83e27b4ea80ac5995dc92cf1764957b21024",
   "rulesApplied": [
     "S001",
     "S002",
@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/spatial-provider.json",
-      "sha256": "ce3eefd7db68c89a2b4bebde86d429896a08d7ec76afbc023ae7fbb832d37b5f"
+      "sha256": "8d20a19768f7c1f314da91d32a905e8b933e9a4e2d6fa38adc08d6772db05315"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/spatial-provider.json",
-      "sha256": "ce3eefd7db68c89a2b4bebde86d429896a08d7ec76afbc023ae7fbb832d37b5f"
+      "sha256": "8d20a19768f7c1f314da91d32a905e8b933e9a4e2d6fa38adc08d6772db05315"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,18 +44,18 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/spatial-provider-bridge/src/provider.ts",
-      "sha256": "898e888fd4e395111e24b639fec1869d5677d394f02de34c4ba491f64c20885d",
+      "sha256": "ea4ae2e51796243a9330a610e1bf2a6b8deaa2b1885cffcfbdd6498657fe6791",
       "symbol": "createSpatialProviderBridge"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/spatial-provider-bridge/src/repository.ts",
-      "sha256": "4b28215df12f8dcbee7b0f7bf76bc820644f77006d0162556a880d34bf51da08"
+      "sha256": "10bc6c4038ee405243a37876ab51575fd6f9da20e3924b68d0853c1b71b8f76f"
     },
     {
       "kind": "UNIT_TEST",
       "path": "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts",
-      "sha256": "30cdcad58f73906609d1d365672d0afb34935c56585888bdf32358d0ca98572a"
+      "sha256": "db1b3a3875fde44b12368187ab7ce112758101345b0699fa014ee4fe0d9cb531"
     },
     {
       "kind": "SQL_IMPLEMENTATION",
@@ -63,25 +63,25 @@
       "sha256": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10"
     },
     {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/062_reference_geometry_composability.sql",
+      "sha256": "7b8a606e3258baa2f3e68c88e81abacb289615cf960a1af20c8a9f4c2074539c"
+    },
+    {
       "kind": "SOURCE_LOCK",
       "path": "contracts/manifests/providers/spatial-provider-source-lock.json",
-      "sha256": "4c4e9cf94cec643c70db8acb17a162dd6f8fe3a55c79f90565b039b463367615"
+      "sha256": "91ce88a93ae04714b99e5062451e8a7b1517d3ea327e947c5d2e4b038b14bcb1"
     },
     {
       "kind": "SQL_IMPLEMENTATION",
       "path": "services/providers/spatial-provider-bridge/src/sql.ts",
-      "sha256": "41576cebc19217cabe2a4d7e18356831f8a430e83b15c01681bfef90e2795775",
+      "sha256": "24dabedcf4f187bea7270bf2e4db9f4f9918b7a16833991f8c29ace9ca6e4db9",
       "symbol": "buildSpatialQuery"
-    },
-    {
-      "kind": "BLACK_BOX_TEST",
-      "path": "reports/gowm-v0.6.3/black-box-evidence.json",
-      "sha256": "646c4cf54ef99420ec4fe40c55e2052d36156642beb6a3d9f237f4cfe5a27e5a",
-      "symbol": "spatial.find-intersections@1.0"
     }
   ],
-  "status": "PROVEN",
+  "status": "BLOCKED",
   "notes": [
-    "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
+    "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true WORLD_OBJECT and exact-version catalog LAYER_FEATURE geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
   ]
 }

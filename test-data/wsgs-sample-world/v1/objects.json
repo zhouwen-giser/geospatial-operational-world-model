@@ -1,0 +1,170 @@
+[
+  {
+    "fixtureObjectKey": "ugv-001",
+    "scope": "wsgs-demo",
+    "objectType": "UGV",
+    "canonicalName": "1号车",
+    "aliases": [
+      "一号车"
+    ],
+    "codes": [
+      "UGV-001"
+    ],
+    "initialGeometry": {
+      "type": "Point",
+      "coordinates": [
+        113.931,
+        22.5412
+      ]
+    },
+    "initialState": {
+      "status": "PATROLLING",
+      "batteryPct": 65,
+      "headingDeg": 45,
+      "speedMps": 1.2
+    }
+  },
+  {
+    "fixtureObjectKey": "ugv-002",
+    "scope": "wsgs-demo",
+    "objectType": "UGV",
+    "canonicalName": "2号车",
+    "aliases": [
+      "二号车",
+      "北门巡逻车"
+    ],
+    "codes": [
+      "UGV-002",
+      "UGV-02"
+    ],
+    "initialGeometry": {
+      "type": "Point",
+      "coordinates": [
+        113.932,
+        22.542
+      ]
+    },
+    "initialState": {
+      "status": "AVAILABLE",
+      "batteryPct": 78,
+      "headingDeg": 90,
+      "speedMps": 0
+    }
+  },
+  {
+    "fixtureObjectKey": "ugv-003",
+    "scope": "wsgs-demo",
+    "objectType": "UGV",
+    "canonicalName": "3号车",
+    "aliases": [
+      "三号车"
+    ],
+    "codes": [
+      "UGV-003"
+    ],
+    "initialGeometry": {
+      "type": "Point",
+      "coordinates": [
+        113.936,
+        22.545
+      ]
+    },
+    "initialState": {
+      "status": "CHARGING",
+      "batteryPct": 42,
+      "headingDeg": 180,
+      "speedMps": 0
+    }
+  },
+  {
+    "fixtureObjectKey": "camera-01",
+    "scope": "wsgs-demo",
+    "objectType": "CAMERA",
+    "canonicalName": "1号摄像机",
+    "aliases": [
+      "北区摄像机"
+    ],
+    "codes": [
+      "CAM-01"
+    ],
+    "initialGeometry": {
+      "type": "Point",
+      "coordinates": [
+        113.9332,
+        22.5422
+      ]
+    },
+    "initialState": {
+      "status": "ONLINE"
+    }
+  },
+  {
+    "fixtureObjectKey": "sensor-01",
+    "scope": "wsgs-demo",
+    "objectType": "SENSOR",
+    "canonicalName": "1号环境传感器",
+    "aliases": [
+      "环境传感器01"
+    ],
+    "codes": [
+      "SENSOR-01"
+    ],
+    "initialGeometry": {
+      "type": "Point",
+      "coordinates": [
+        113.9355,
+        22.5415
+      ]
+    },
+    "initialState": {
+      "status": "ONLINE",
+      "temperatureC": 26
+    }
+  },
+  {
+    "fixtureObjectKey": "target-01",
+    "scope": "wsgs-demo",
+    "objectType": "TASK_TARGET",
+    "canonicalName": "任务目标01",
+    "aliases": [
+      "目标01"
+    ],
+    "codes": [
+      "TARGET-01"
+    ],
+    "initialGeometry": {
+      "type": "Point",
+      "coordinates": [
+        113.9325,
+        22.543
+      ]
+    },
+    "initialState": {
+      "status": "ACTIVE",
+      "priority": "HIGH"
+    }
+  },
+  {
+    "fixtureObjectKey": "hidden-ugv-002",
+    "scope": "wsgs-hidden",
+    "objectType": "UGV",
+    "canonicalName": "2号车",
+    "aliases": [
+      "二号车"
+    ],
+    "codes": [
+      "H-UGV-002"
+    ],
+    "initialGeometry": {
+      "type": "Point",
+      "coordinates": [
+        114.102,
+        22.702
+      ]
+    },
+    "initialState": {
+      "status": "AVAILABLE",
+      "batteryPct": 99
+    }
+  }
+]

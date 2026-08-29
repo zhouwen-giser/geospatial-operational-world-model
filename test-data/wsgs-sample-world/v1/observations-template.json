@@ -1,0 +1,224 @@
+[
+  {
+    "observationKey": "obs:ugv-001:v1",
+    "subjectFixtureKey": "ugv-001",
+    "scope": "wsgs-demo",
+    "observer": {
+      "type": "Agent",
+      "id": "wsgs-sample-loader"
+    },
+    "observationType": "position",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        113.931,
+        22.5412
+      ]
+    },
+    "value": {
+      "status": "PATROLLING",
+      "batteryPct": 65,
+      "headingDeg": 45,
+      "speedMps": 1.2
+    },
+    "confidence": 0.99,
+    "observedOffsetMs": -5000,
+    "receivedOffsetMs": -4990,
+    "source": "synthetic-gps",
+    "correlationId": "gowm-wsgs-sample-v1",
+    "metadata": {
+      "fixtureId": "gowm-wsgs-sample-world",
+      "fixtureVersion": "1.0.0",
+      "methodVersion": "wsgs-sample-world-loader/1.0"
+    }
+  },
+  {
+    "observationKey": "obs:ugv-002:v1",
+    "subjectFixtureKey": "ugv-002",
+    "scope": "wsgs-demo",
+    "observer": {
+      "type": "Agent",
+      "id": "wsgs-sample-loader"
+    },
+    "observationType": "position",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        113.932,
+        22.542
+      ]
+    },
+    "value": {
+      "status": "AVAILABLE",
+      "batteryPct": 78,
+      "headingDeg": 90,
+      "speedMps": 0
+    },
+    "confidence": 0.99,
+    "observedOffsetMs": -5000,
+    "receivedOffsetMs": -4990,
+    "source": "synthetic-gps",
+    "correlationId": "gowm-wsgs-sample-v1",
+    "metadata": {
+      "fixtureId": "gowm-wsgs-sample-world",
+      "fixtureVersion": "1.0.0",
+      "methodVersion": "wsgs-sample-world-loader/1.0"
+    }
+  },
+  {
+    "observationKey": "obs:ugv-003:v1",
+    "subjectFixtureKey": "ugv-003",
+    "scope": "wsgs-demo",
+    "observer": {
+      "type": "Agent",
+      "id": "wsgs-sample-loader"
+    },
+    "observationType": "position",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        113.936,
+        22.545
+      ]
+    },
+    "value": {
+      "status": "CHARGING",
+      "batteryPct": 42,
+      "headingDeg": 180,
+      "speedMps": 0
+    },
+    "confidence": 0.99,
+    "observedOffsetMs": -5000,
+    "receivedOffsetMs": -4990,
+    "source": "synthetic-gps",
+    "correlationId": "gowm-wsgs-sample-v1",
+    "metadata": {
+      "fixtureId": "gowm-wsgs-sample-world",
+      "fixtureVersion": "1.0.0",
+      "methodVersion": "wsgs-sample-world-loader/1.0"
+    }
+  },
+  {
+    "observationKey": "obs:camera-01:v1",
+    "subjectFixtureKey": "camera-01",
+    "scope": "wsgs-demo",
+    "observer": {
+      "type": "Agent",
+      "id": "wsgs-sample-loader"
+    },
+    "observationType": "position",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        113.9332,
+        22.5422
+      ]
+    },
+    "value": {
+      "status": "ONLINE"
+    },
+    "confidence": 0.99,
+    "observedOffsetMs": -5000,
+    "receivedOffsetMs": -4990,
+    "source": "synthetic-gps",
+    "correlationId": "gowm-wsgs-sample-v1",
+    "metadata": {
+      "fixtureId": "gowm-wsgs-sample-world",
+      "fixtureVersion": "1.0.0",
+      "methodVersion": "wsgs-sample-world-loader/1.0"
+    }
+  },
+  {
+    "observationKey": "obs:sensor-01:v1",
+    "subjectFixtureKey": "sensor-01",
+    "scope": "wsgs-demo",
+    "observer": {
+      "type": "Agent",
+      "id": "wsgs-sample-loader"
+    },
+    "observationType": "position",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        113.9355,
+        22.5415
+      ]
+    },
+    "value": {
+      "status": "ONLINE",
+      "temperatureC": 26
+    },
+    "confidence": 0.99,
+    "observedOffsetMs": -5000,
+    "receivedOffsetMs": -4990,
+    "source": "synthetic-gps",
+    "correlationId": "gowm-wsgs-sample-v1",
+    "metadata": {
+      "fixtureId": "gowm-wsgs-sample-world",
+      "fixtureVersion": "1.0.0",
+      "methodVersion": "wsgs-sample-world-loader/1.0"
+    }
+  },
+  {
+    "observationKey": "obs:target-01:v1",
+    "subjectFixtureKey": "target-01",
+    "scope": "wsgs-demo",
+    "observer": {
+      "type": "Agent",
+      "id": "wsgs-sample-loader"
+    },
+    "observationType": "position",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        113.9325,
+        22.543
+      ]
+    },
+    "value": {
+      "status": "ACTIVE",
+      "priority": "HIGH"
+    },
+    "confidence": 0.99,
+    "observedOffsetMs": -5000,
+    "receivedOffsetMs": -4990,
+    "source": "synthetic-gps",
+    "correlationId": "gowm-wsgs-sample-v1",
+    "metadata": {
+      "fixtureId": "gowm-wsgs-sample-world",
+      "fixtureVersion": "1.0.0",
+      "methodVersion": "wsgs-sample-world-loader/1.0"
+    }
+  },
+  {
+    "observationKey": "obs:hidden-ugv-002:v1",
+    "subjectFixtureKey": "hidden-ugv-002",
+    "scope": "wsgs-hidden",
+    "observer": {
+      "type": "Agent",
+      "id": "wsgs-sample-loader"
+    },
+    "observationType": "position",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        114.102,
+        22.702
+      ]
+    },
+    "value": {
+      "status": "AVAILABLE",
+      "batteryPct": 99
+    },
+    "confidence": 0.99,
+    "observedOffsetMs": -5000,
+    "receivedOffsetMs": -4990,
+    "source": "synthetic-gps",
+    "correlationId": "gowm-wsgs-sample-v1",
+    "metadata": {
+      "fixtureId": "gowm-wsgs-sample-world",
+      "fixtureVersion": "1.0.0",
+      "methodVersion": "wsgs-sample-world-loader/1.0"
+    }
+  }
+]

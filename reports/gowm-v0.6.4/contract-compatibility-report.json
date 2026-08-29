@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "baselineVersion": "0.6.3",
+  "targetVersion": "0.6.4",
+  "publicSchemaBreak": false,
+  "referenceKeySchemaHashChanged": false,
+  "operations": [
+    {
+      "operationId": "reference.resolve",
+      "schemaCompatible": true,
+      "beforeHash": "sha256:87e71afe6dd638869fb4e7b4176c7ec212657573ac36493f223e094f22b2beee",
+      "afterHash": "sha256:87e71afe6dd638869fb4e7b4176c7ec212657573ac36493f223e094f22b2beee"
+    },
+    {
+      "operationId": "world.get-geometry",
+      "schemaCompatible": true,
+      "beforeHash": "sha256:31dd5e93107a2f0a4c963e720fd7eee877a511f02dcae5722d9a9eb03d4d0f92",
+      "afterHash": "sha256:31dd5e93107a2f0a4c963e720fd7eee877a511f02dcae5722d9a9eb03d4d0f92"
+    }
+  ],
+  "status": "PASS"
+}

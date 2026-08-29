@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "instanceId": "sample-realization-b24a5c48-e1f0-5031-90df-29d21d068777",
+  "fixtureId": "gowm-wsgs-sample-world",
+  "fixtureVersion": "1.0.0",
+  "gatewayBaseUrl": "http://127.0.0.1:18063",
+  "authMode": "SIGNED_DELEGATION_V1",
+  "tokenEnvironmentVariable": "GOWM_WSGS_SAMPLE_TOKEN",
+  "dataScope": "wsgs-demo",
+  "datasetScope": "wsgs-demo-main",
+  "consumerContract": {
+    "name": "@gowm/world-gateway-contracts",
+    "version": "0.6.3",
+    "integrity": "sha512-KekpsVw943+iWwWcKepSxl408uBqH6oQ/ZzHcsrQrq2EjP+r2zYtljOfFekP6Vksxx1oSbE66rqaHE2rUGv6xw==",
+    "bundlePath": "packages/platform/world-gateway-contracts/bundle",
+    "delegationPrivateKeyEnvironmentVariable": "GOWM_WSGS_DELEGATION_PRIVATE_KEY_PATH",
+    "delegationIssuer": "https://gowm.local/wsgs-sample",
+    "delegationAudience": "gowm-world-gateway",
+    "servicePrincipalRef": "service:wsgs",
+    "maximumDelegationTtlSeconds": 300
+  },
+  "contractCatalogRevision": "sha256:efd0395dbd05c884c781f964b22147efcb38c4cef91704597706ec4b8332075a",
+  "semanticCatalogHash": "sha256:418fc328861e846801c6e8109bf6d48b876c7814c650a391b84076f71e588b61",
+  "operationLockHash": "sha256:765714690fc2192138f925526cc6bf0215c2481fa234c566756c26b891649686",
+  "stableOperations": [
+    "reference.get@1.0",
+    "reference.resolve@1.0",
+    "world.get-current-state@1.0",
+    "world.get-geometry@1.0",
+    "world.get-provenance@1.0",
+    "catalog.get@1.0",
+    "catalog.search@1.0",
+    "spatial.find-nearby@1.0",
+    "spatial.find-in-area@1.0",
+    "spatial.find-intersections@1.0",
+    "reference.validate@1.0",
+    "result.validate@1.0"
+  ],
+  "referenceMapPath": "SAMPLE_REFERENCE_MAP.json",
+  "expectedCasesPath": "EXPECTED_CASES.json"
+}

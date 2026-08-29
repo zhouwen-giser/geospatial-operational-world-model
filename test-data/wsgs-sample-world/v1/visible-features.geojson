@@ -1,0 +1,205 @@
+{
+  "type": "FeatureCollection",
+  "name": "gowm-wsgs-sample-visible",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "EPSG:4326"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "sample-zone-a",
+      "properties": {
+        "fixtureFeatureKey": "zone-a",
+        "scope": "wsgs-demo",
+        "layer": "sample-zones",
+        "objectType": "ZONE",
+        "name": "A区",
+        "code": "ZONE-A"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              113.93,
+              22.54
+            ],
+            [
+              113.934,
+              22.54
+            ],
+            [
+              113.934,
+              22.544
+            ],
+            [
+              113.93,
+              22.544
+            ],
+            [
+              113.93,
+              22.54
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sample-zone-b",
+      "properties": {
+        "fixtureFeatureKey": "zone-b",
+        "scope": "wsgs-demo",
+        "layer": "sample-zones",
+        "objectType": "ZONE",
+        "name": "B区",
+        "code": "ZONE-B"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              113.933,
+              22.542
+            ],
+            [
+              113.937,
+              22.542
+            ],
+            [
+              113.937,
+              22.546
+            ],
+            [
+              113.933,
+              22.546
+            ],
+            [
+              113.933,
+              22.542
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sample-road-river-west",
+      "properties": {
+        "fixtureFeatureKey": "road-river-west",
+        "scope": "wsgs-demo",
+        "layer": "sample-roads",
+        "objectType": "ROAD",
+        "name": "滨河路",
+        "displayName": "滨河路（西段）",
+        "code": "RD-BH-W"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            113.9308,
+            22.5395
+          ],
+          [
+            113.9308,
+            22.5445
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sample-road-river-east",
+      "properties": {
+        "fixtureFeatureKey": "road-river-east",
+        "scope": "wsgs-demo",
+        "layer": "sample-roads",
+        "objectType": "ROAD",
+        "name": "滨河路",
+        "displayName": "滨河路（东段）",
+        "code": "RD-BH-E"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            113.9355,
+            22.5415
+          ],
+          [
+            113.9355,
+            22.5465
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sample-road-axis",
+      "properties": {
+        "fixtureFeatureKey": "road-axis",
+        "scope": "wsgs-demo",
+        "layer": "sample-roads",
+        "objectType": "ROAD",
+        "name": "中轴路",
+        "code": "RD-ZX-01"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            113.9295,
+            22.5425
+          ],
+          [
+            113.9375,
+            22.5425
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sample-landmark-north-gate",
+      "properties": {
+        "fixtureFeatureKey": "north-gate",
+        "scope": "wsgs-demo",
+        "layer": "sample-landmarks",
+        "objectType": "GATE",
+        "name": "北门",
+        "code": "GATE-N"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          113.932,
+          22.544
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sample-landmark-command",
+      "properties": {
+        "fixtureFeatureKey": "command-center",
+        "scope": "wsgs-demo",
+        "layer": "sample-landmarks",
+        "objectType": "FACILITY",
+        "name": "指挥中心",
+        "code": "FAC-CMD"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          113.9305,
+          22.5445
+        ]
+      }
+    }
+  ]
+}
