@@ -6,6 +6,8 @@ An exact, clean, local-only qualification candidate at `c00cf03f1f51c18a0b1cf867
 
 The disposable qualification containers, networks, volumes, and image were removed after their ownership labels were checked. The shared 18063 instance was then reverified at 12/12 availability and 36/36 canaries.
 
+A subsequent shared-runtime regression showed that the LAYER_FEATURE descriptor pin was correctly bound to the active catalog version, but the validation provider compared only the two exposed version strings and reported STALE. The provider now recognizes the exact descriptor-to-active-catalog binding while preserving STALE for historical bindings. Shared 18063 was reverified at 12/12 availability and 37/37 canaries, including the unchanged `reference.resolve(A区)` candidate through `reference.validate`, geometry, and spatial operations.
+
 WSGS R1-R5 consumer smoke also passed against the shared 18063 instance. Both the A-zone chain and vehicle chain consumed the actual `reference.resolve` candidate key unchanged.
 
 Overall status is `DEVELOPMENT_READY`. Implementation commit `b6d5f65dde5e58ba620d1e0a40d3e2323908d588` is published on branch `codex/gowm-v0.6.4-reference-composability`, and Draft PR #9 carries the qualification evidence. The runtime-qualified local candidate is blob-identical to that implementation commit outside the three final qualification report files.

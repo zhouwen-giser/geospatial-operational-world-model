@@ -233,6 +233,30 @@ async function verifyBaseline(
     comparison: { referenceHash: zoneReferenceHash }
   });
 
+  const zoneValidateInput = {
+    schemaVersion: "1.0",
+    references: [{ referenceKey: candidateReferenceKey, requireCurrentSnapshot: true }]
+  };
+  const zoneValidate = await client.execute(
+    "reference.validate",
+    zoneValidateInput,
+    "CHAIN-VALIDATE-ZONE-A"
+  );
+  if (!validationIsCurrent(zoneValidate.output?.value)) {
+    throw new Error("Zone-A resolver descriptor pin was not CURRENT at the validation authority");
+  }
+  cases.push({
+    ...envelopeCaseReport({
+      caseId: "CHAIN-VALIDATE-ZONE-A",
+      operationId: "reference.validate",
+      principal: "VISIBLE",
+      input: zoneValidateInput,
+      result: zoneValidate,
+      descriptor: client.descriptor("reference.validate")
+    }),
+    comparison: { referenceHash: zoneReferenceHash }
+  });
+
   const chainGeometryInput = { schemaVersion: "1.0", referenceKey: candidateReferenceKey };
   const chainGeometry = await client.execute("world.get-geometry", chainGeometryInput, "CHAIN-GEOMETRY-ZONE-A");
   const geometry = currentGeometryFact(chainGeometry.output?.value);

@@ -5,6 +5,7 @@ import type { RoutingSnapshot } from "../../packages/network-query-core/src/inde
 
 const key = { namespace: "gowm" as const, kind: "QUERY_RESULT", id: `wrf_${"1".repeat(32)}`, version: "1" };
 const worldKey = { namespace: "gowm" as const, kind: "WORLD_OBJECT", id: `wrf_${"2".repeat(32)}`, version: "710" };
+const featureKey = { namespace: "gowm" as const, kind: "LAYER_FEATURE", id: `wrf_${"3".repeat(32)}`, version: "698" };
 const scope = { dataScopeKey: "validation-test", datasetScopeKey: "tenant-a" };
 const hash = (character: string) => `sha256:${character.repeat(64)}` as const;
 const pinned: RoutingSnapshot = {
@@ -15,7 +16,7 @@ const pinned: RoutingSnapshot = {
 
 // These are explicitly unit-level SQL boundary doubles. Required authority and
 // scope evidence comes from 043 SQL assertions and PostgreSQL/Gateway gates.
-function fixture(options: { current?: Partial<RoutingSnapshot>; stored?: Record<string, unknown>; record?: Record<string, unknown>; missingGraph?: boolean } = {}) {
+function fixture(options: { current?: Partial<RoutingSnapshot>; stored?: Record<string, unknown>; record?: Record<string, unknown>; catalogRecord?: Record<string, unknown>; missingGraph?: boolean } = {}) {
   const current = { ...pinned, ...options.current };
   const calls: Array<{ sql: string; values?: unknown[] }> = [];
   let releases = 0;
@@ -34,6 +35,13 @@ function fixture(options: { current?: Partial<RoutingSnapshot>; stored?: Record<
         current_version: "710", object_version: "59", world_version: "59",
         stale: false, revalidation_required: false, retired: false,
         content_hash: hash("f"), created_at: new Date("2026-08-29T00:00:00Z")
+      }] };
+      if (sql.includes("FROM gowm_catalog_v1.feature_version")) return { rows: [{
+        version: "1.0.0", current_version: "1.0.0",
+        descriptor_version: "698", descriptor_object_version: "1.0.0",
+        stale: false, revalidation_required: false, identity_retired: false,
+        content_hash: hash("9"), published_at: new Date("2026-08-29T00:00:00Z"),
+        ...options.catalogRecord
       }] };
       if (sql.includes("SELECT graph_key,graph_version_id")) return { rows: options.missingGraph ? [] : [{ graph_key: "roads", graph_version_id: "00000000-0000-0000-0000-000000000001" }] };
       if (sql.includes("FROM gowm_network_v1.resolve_active_graph")) return { rows: [{ graph_version_id: "00000000-0000-0000-0000-000000000002", graph_version: current.graphVersion, content_hash: current.graphContentHash, dataset_version: current.networkDatasetVersion }] };
@@ -123,6 +131,38 @@ describe("PostgreSQL platform validation authority", () => {
     expect(validateReferenceRecord(
       prior,
       { referenceKey: { ...worldKey, version: "709" }, requireCurrentSnapshot: true },
+      { COMPLETED: "COMPLETED" }
+    )).toMatchObject({ snapshot: "STALE", usable: "REVALIDATE" });
+  });
+
+  it("accepts a current LAYER_FEATURE descriptor pin only when it binds to the active catalog version", async () => {
+    const { authority } = fixture();
+    const [descriptorPin, authorityPin] = await authority.resolveReferences([
+      { referenceKey: featureKey },
+      { referenceKey: { ...featureKey, version: "1.0.0" } }
+    ], scope);
+    expect(validateReferenceRecord(
+      descriptorPin,
+      { referenceKey: featureKey, requireCurrentSnapshot: true },
+      { COMPLETED: "COMPLETED" }
+    )).toMatchObject({ snapshot: "CURRENT", usable: "YES" });
+    expect(validateReferenceRecord(
+      authorityPin,
+      { referenceKey: { ...featureKey, version: "1.0.0" }, requireCurrentSnapshot: true },
+      { COMPLETED: "COMPLETED" }
+    )).toMatchObject({ snapshot: "CURRENT", usable: "YES" });
+  });
+
+  it("keeps a LAYER_FEATURE descriptor pin stale when its object version is not active", async () => {
+    const { authority } = fixture({ catalogRecord: {
+      version: "0.9.0", current_version: "1.0.0",
+      descriptor_version: "697", descriptor_object_version: "0.9.0"
+    } });
+    const staleKey = { ...featureKey, version: "697" };
+    const [record] = await authority.resolveReferences([{ referenceKey: staleKey }], scope);
+    expect(validateReferenceRecord(
+      record,
+      { referenceKey: staleKey, requireCurrentSnapshot: true },
       { COMPLETED: "COMPLETED" }
     )).toMatchObject({ snapshot: "STALE", usable: "REVALIDATE" });
   });
