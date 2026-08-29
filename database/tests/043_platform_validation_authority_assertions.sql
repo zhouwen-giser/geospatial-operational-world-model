@@ -49,12 +49,23 @@ BEGIN
     VALUES ('WORLD_QUERY','sha256:'||repeat('1',64),'validation-authority-test','sha256:'||repeat('2',64),'SUCCEEDED',clock_timestamp(),clock_timestamp())
     RETURNING job_id INTO job_key;
     INSERT INTO gowm_capability.world_query_job(query_id,job_id,public_job_id,request_id,principal_ref,principal_hash,
-      idempotency_key,request_hash,parameter_schema_hash,plan_hash,submission,authentication_method,authenticated_at,data_scope_claim,dataset_scope_claim)
+      idempotency_key,request_hash,parameter_schema_hash,plan_hash,submission,authentication_method,authenticated_at,data_scope_claim,dataset_scope_claim,
+      query_snapshot_manifest,principal_context)
     VALUES (query_key,job_key,'job-'||query_key,'request-'||query_key,'principal:validation','sha256:'||repeat('1',64),
       'idempotency-'||query_key,'sha256:'||repeat('2',64),'sha256:'||repeat('3',64),'sha256:'||repeat('4',64),
       jsonb_build_object('requestId','request-'||query_key,'idempotencyKey','idempotency-'||query_key,
         'parameterSchemaHash','sha256:'||repeat('3',64),'plan',jsonb_build_object('queryId',query_key)),
-      'SQL_ASSERTION',clock_timestamp(),'validation-authority-test','tenant-'||tenant);
+      'SQL_ASSERTION',clock_timestamp(),'validation-authority-test','tenant-'||tenant,
+      jsonb_build_object(
+        'querySnapshotId','snapshot-'||query_key,'mode','PINNED','consistency','SNAPSHOT',
+        'capturedAt','2026-08-24T00:00:00.000Z','resources','[]'::jsonb,
+        'manifestHash','sha256:'||repeat('5',64)
+      ),
+      jsonb_build_object(
+        'mode','STATIC_SERVICE','principalRef','principal:validation',
+        'authenticationMethod','SQL_ASSERTION','dataScopeClaim','validation-authority-test',
+        'datasetScopeClaim','tenant-'||tenant
+      ));
     UPDATE gowm_capability.world_query_job SET result='{"status":"COMPLETED","nodes":[]}' WHERE query_id=query_key;
     IF tenant='a' THEN
       SELECT reference_key INTO STRICT result_key FROM world_query_result_reference WHERE query_id=query_key;
