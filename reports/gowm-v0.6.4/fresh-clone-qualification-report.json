@@ -70,10 +70,14 @@
     "sharedInstanceRequiredAvailability": "12/12",
     "sharedInstanceCanary": "36/36"
   },
+  "delivery": {
+    "implementationCommit": "b6d5f65dde5e58ba620d1e0a40d3e2323908d588",
+    "branch": "codex/gowm-v0.6.4-reference-composability",
+    "draftPullRequest": 9,
+    "status": "PUBLISHED_DRAFT"
+  },
   "status": "PASS",
   "nonClaims": [
-    "PUBLISHED_CANDIDATE",
-    "DRAFT_PR_CREATED",
     "PRODUCTION_READY",
     "RELEASE_ACCEPTED"
   ]
