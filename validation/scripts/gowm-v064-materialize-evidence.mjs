@@ -254,7 +254,9 @@ function buildReports({ candidateCommit, baseline, generatedAt, provenance, runt
     },
     identity: {
       referenceKind: "LAYER_FEATURE",
-      referenceHash: runtime.snapshot.layerFeatureReferenceHash,
+      descriptorReferenceHash: runtime.snapshot.descriptorReferenceHash,
+      pinnedCatalogReferenceHash: runtime.snapshot.pinnedCatalogReferenceHash,
+      sameEntity: runtime.snapshot.sameEntity,
       descriptorVersionHash: upgrade.descriptorVersionHash,
       featureVersionHash: upgrade.featureVersionHash,
       sourceFixtureHash: upgrade.sourceFixtureHash
@@ -486,6 +488,7 @@ function assertRuntime(value, candidateCommit, upgrade) {
   }
   [value.sourceIdentity.semanticSourceDigest, value.database.migrationSetHash,
     value.canary.evidenceSha256, value.snapshot?.layerFeatureReferenceHash,
+    value.snapshot?.descriptorReferenceHash, value.snapshot?.pinnedCatalogReferenceHash,
     value.snapshot?.layerFeatureDigest, value.snapshot?.migration062Digest,
     value.canary?.c1?.referenceHash, value.canary?.c2?.geometryHash,
     value.canary?.c2?.expectedVehicleReferenceHash, value.canary?.c3?.referenceHash,
@@ -493,7 +496,9 @@ function assertRuntime(value, candidateCommit, upgrade) {
     .forEach((entry, index) => requiredDigest(entry, `runtime digest ${index + 1}`));
   if (value.snapshot.migration062Digest !== MIGRATION_062_DIGEST ||
       value.snapshot.layerFeaturePinned !== true ||
-      value.snapshot.layerFeatureReferenceHash !== value.canary.c1.referenceHash ||
+      value.snapshot.sameEntity !== true ||
+      value.snapshot.layerFeatureReferenceHash !== value.snapshot.descriptorReferenceHash ||
+      value.snapshot.descriptorReferenceHash !== value.canary.c1.referenceHash ||
       value.canary.c1.status !== "PASS" || value.canary.c1.chain !== "resolve->validate->geometry" ||
       value.canary.c1.referenceHash !== value.canary.c1.zoneReferenceHash ||
       value.canary.c2.status !== "PASS" || value.canary.c2.chain !== "geometry->spatial.find-in-area" ||

@@ -241,8 +241,11 @@ async function evaluate(contract, paths) {
   const snapshotRuntime =
     runtime.snapshot?.status === "PASS" &&
     runtime.snapshot?.layerFeaturePinned === true &&
+    runtime.snapshot?.sameEntity === true &&
     runtime.snapshot?.migration062Digest === MIGRATION_062_DIGEST &&
     DIGEST.test(String(runtime.snapshot?.layerFeatureReferenceHash)) &&
+    DIGEST.test(String(runtime.snapshot?.descriptorReferenceHash)) &&
+    DIGEST.test(String(runtime.snapshot?.pinnedCatalogReferenceHash)) &&
     DIGEST.test(String(runtime.snapshot?.layerFeatureDigest));
   const handoffRuntime =
     runtime.handoff?.status === "PASS" &&
@@ -367,7 +370,9 @@ async function evaluate(contract, paths) {
   put("A019", upgradeIdentity && fixtureMatches && upgrade.descriptorPinComposes === true,
     ["upgrade#zoneReferenceHash", "runtime#fixture"], "Fresh seed A-zone resolution is not candidate-bound.");
   put("A020", runtimeIdentity && c1 && snapshotRuntime &&
-    runtime.canary.c1.referenceHash === runtime.snapshot.layerFeatureReferenceHash,
+    runtime.canary.c1.referenceHash === runtime.snapshot.descriptorReferenceHash &&
+    runtime.snapshot.layerFeatureReferenceHash === runtime.snapshot.descriptorReferenceHash &&
+    runtime.snapshot.sameEntity === true,
   ["runtime#canary.c1", "runtime#snapshot"], "A-zone LAYER_FEATURE kind is not proven.");
   put("A021", upgradeIdentity && ["POLYGON", "MULTIPOLYGON"].includes(upgrade.geometryType) && c2,
     ["upgrade#geometryType", "runtime#canary.c2"], "A-zone geometry is not Polygon/MultiPolygon.");

@@ -150,7 +150,7 @@ export async function writeGowmV064RuntimeEvidence(
   const c2 = assertZoneSpatialChain(cases, realization);
   const c3 = assertVehicleChain(cases);
   const c4 = assertAmbiguityStop(cases);
-  const snapshot = assertPinnedGeometrySnapshot(cases);
+  const snapshot = assertPinnedGeometrySnapshot(cases, realization);
   const scope = assertScopeAndReadOnlyReceipts(cases);
   const providers = assertProviderIdentities(cases);
   const hiddenGeometry = caseById(cases, "SECURITY-DIRECT-HIDDEN-FEATURE", "world.get-geometry");
@@ -460,13 +460,27 @@ function assertAmbiguityStop(cases: Map<string, AnyRecord>): Record<string, unkn
   return { status: "PASS", candidateCount: 2, downstreamExecutionCount: 0 };
 }
 
-function assertPinnedGeometrySnapshot(cases: Map<string, AnyRecord>): Record<string, unknown> {
+function assertPinnedGeometrySnapshot(
+  cases: Map<string, AnyRecord>,
+  realization: AnyRecord
+): Record<string, unknown> {
   const geometry = caseById(cases, "CHAIN-GEOMETRY-ZONE-A", "world.get-geometry");
-  const referenceHash = comparisonDigest(geometry, "referenceHash");
+  const descriptorReferenceHash = comparisonDigest(geometry, "referenceHash");
+  const zone = (realization.referenceMap?.entries as AnyRecord[] | undefined)?.find((entry) =>
+    entry.fixtureKey === "zone-a"
+  );
+  const descriptorReferenceKey = zone?.identityReferenceKey as AnyRecord | undefined;
+  const currentCatalogReferenceKey = zone?.currentCatalogReferenceKey as AnyRecord | undefined;
+  if (!descriptorReferenceKey || !currentCatalogReferenceKey ||
+      canonicalSha256(descriptorReferenceKey) !== descriptorReferenceHash ||
+      !sameReferenceEntity(descriptorReferenceKey, currentCatalogReferenceKey)) {
+    throw new Error("Zone-A descriptor is not bound to its current catalog reference entity");
+  }
+  const pinnedCatalogReferenceHash = canonicalSha256(currentCatalogReferenceKey);
   const resources = geometry.dataSnapshot?.resources;
   const pinned = Array.isArray(resources) ? resources.find((resource: AnyRecord) =>
     resource?.referenceKey?.kind === "LAYER_FEATURE" && resource.pinning === "PINNED" &&
-    canonicalSha256(resource.referenceKey) === referenceHash && DIGEST.test(String(resource.digest))
+    canonicalSha256(resource.referenceKey) === pinnedCatalogReferenceHash && DIGEST.test(String(resource.digest))
   ) : undefined;
   const artifacts = geometry.computeSnapshot?.artifacts;
   const migration = Array.isArray(artifacts) ? artifacts.find((artifact: AnyRecord) =>
@@ -478,10 +492,19 @@ function assertPinnedGeometrySnapshot(cases: Map<string, AnyRecord>): Record<str
   }
   return {
     layerFeaturePinned: true,
-    layerFeatureReferenceHash: referenceHash,
+    layerFeatureReferenceHash: descriptorReferenceHash,
+    descriptorReferenceHash,
+    pinnedCatalogReferenceHash,
+    sameEntity: true,
     layerFeatureDigest: pinned.digest,
     migration062Digest: MIGRATION_062_DIGEST
   };
+}
+
+function sameReferenceEntity(left: AnyRecord, right: AnyRecord): boolean {
+  return typeof left.namespace === "string" && left.namespace === right.namespace &&
+    typeof left.kind === "string" && left.kind === right.kind &&
+    typeof left.id === "string" && left.id === right.id;
 }
 
 function assertScopeAndReadOnlyReceipts(cases: Map<string, AnyRecord>): {
