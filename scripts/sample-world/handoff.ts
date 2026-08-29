@@ -49,11 +49,7 @@ export async function buildSampleHandoff(runtime: SampleRuntimeEnvironment): Pro
   const bundledLockEntry = (bundleManifest.files as AnyRecord[] | undefined)?.find((entry) =>
     entry.path === "locks/wsgs-southbound-operation-lock-v2.json"
   );
-  if (!lockBytes.equals(bundledLockBytes) || !bundledLockEntry ||
-      bundledLockEntry.bytes !== lockBytes.byteLength ||
-      bundledLockEntry.sha256 !== createHash("sha256").update(lockBytes).digest("hex")) {
-    throw new Error("Root lock, bundled lock and bundle manifest bytes differ");
-  }
+  assertBundledLockIntegrity(lockBytes, bundledLockBytes, bundledLockEntry);
   const lockedPackage = lock.consumerContractPackage as AnyRecord | undefined;
   if (!lockedPackage || lockedPackage.name !== bundleManifest.packageName ||
       lockedPackage.version !== bundleManifest.packageVersion ||
@@ -181,6 +177,23 @@ export async function buildSampleHandoff(runtime: SampleRuntimeEnvironment): Pro
   await rm(handoffDirectory, { recursive: true, force: true });
   await rename(stagingDirectory, handoffDirectory);
   process.stdout.write(`WSGS_TEST_HANDOFF_READY path=${handoffDirectory}\n`);
+}
+
+export function assertBundledLockIntegrity(
+  lockBytes: Buffer,
+  bundledLockBytes: Buffer,
+  bundledLockEntry: AnyRecord | undefined
+): void {
+  // Git may materialize text files as CRLF on Windows even though the bundle
+  // manifest records the repository's canonical LF bytes. The two checked-out
+  // lock copies must still be byte-identical; only the manifest comparison is
+  // normalized to the repository representation.
+  const canonicalLockBytes = Buffer.from(lockBytes.toString("utf8").replace(/\r\n/gu, "\n"), "utf8");
+  if (!lockBytes.equals(bundledLockBytes) || !bundledLockEntry ||
+      bundledLockEntry.bytes !== canonicalLockBytes.byteLength ||
+      bundledLockEntry.sha256 !== createHash("sha256").update(canonicalLockBytes).digest("hex")) {
+    throw new Error("Root lock, bundled lock and bundle manifest bytes differ");
+  }
 }
 
 export function sampleHandoffPaths(runtime: SampleRuntimeEnvironment): {

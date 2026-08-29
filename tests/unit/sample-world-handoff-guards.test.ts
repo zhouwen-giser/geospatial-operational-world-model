@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import {
@@ -9,6 +10,7 @@ import {
   type WorldQuerySubmission
 } from "../../packages/platform/contract-runtime/src/index.js";
 import {
+  assertBundledLockIntegrity,
   lockedHandoffOperationContracts,
   sampleHandoffPaths,
   sampleHandoffReadme
@@ -220,6 +222,19 @@ describe("sample-world handoff lock binding", () => {
       { defaultOperations: [locked] },
       ["reference.get"]
     )).toThrow(/differs from the WSGS lock/u);
+  });
+
+  it("compares the checked-out locks exactly while accepting the manifest's canonical LF bytes", () => {
+    const canonical = Buffer.from("{\n  \"schemaVersion\": \"1.0\"\n}\n", "utf8");
+    const windowsCheckout = Buffer.from(canonical.toString("utf8").replace(/\n/gu, "\r\n"), "utf8");
+    const entry = {
+      bytes: canonical.byteLength,
+      sha256: createHash("sha256").update(canonical).digest("hex")
+    };
+
+    expect(() => assertBundledLockIntegrity(windowsCheckout, windowsCheckout, entry)).not.toThrow();
+    expect(() => assertBundledLockIntegrity(windowsCheckout, canonical, entry))
+      .toThrow(/bytes differ/u);
   });
 });
 
