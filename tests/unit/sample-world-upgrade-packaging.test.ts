@@ -35,5 +35,7 @@ describe("Sample World upgrade proof packaging", () => {
 
     expect(cli).toContain("await runSampleWorldCommand(process.argv[2] ?? \"status\")");
     expect(cli).not.toContain("runSampleWorldCommand(process.argv[2] ?? \"status\").catch");
+    expect(cli).toContain("const commandLifecycleGuard = setInterval");
+    expect(cli).toContain("clearInterval(commandLifecycleGuard)");
   });
 });
