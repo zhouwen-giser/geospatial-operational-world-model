@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  resolveSampleRuntimeIdentity,
   sampleGatewayBaseUrl,
   samplePostgresEndpoint,
   type SampleRuntimeEnvironment
@@ -36,5 +37,46 @@ describe("sample-world isolated runtime overrides", () => {
     expect(() => sampleGatewayBaseUrl(runtime, { GATEWAY_BIND_ADDRESS: "0.0.0.0" })).toThrow(/loopback-only/u);
     expect(() => sampleGatewayBaseUrl(runtime, { GATEWAY_PORT: "70000" })).toThrow(/TCP port range/u);
     expect(() => samplePostgresEndpoint(runtime, { POSTGRES_PORT: "not-a-port" })).toThrow(/decimal TCP port/u);
+  });
+
+  it("derives every mutable Docker resource from one bounded qualification identity", () => {
+    const identity = resolveSampleRuntimeIdentity({
+      SAMPLE_WORLD_INSTANCE_ID: "q-9313668-a1",
+      SAMPLE_WORLD_GATEWAY_PORT: "28064",
+      SAMPLE_WORLD_POSTGRES_PORT: "65464"
+    });
+    expect(identity).toEqual({
+      instanceId: "q-9313668-a1",
+      composeProjectName: "gowm-wsgs-sample-q-9313668-a1",
+      databaseName: "gowm_wsgs_sample_q_9313668_a1",
+      gatewayPort: 28064,
+      postgresPort: 65464,
+      databaseVolumeName: "gowm-wsgs-sample-q-9313668-a1-db",
+      runtimeVolumeName: "gowm-wsgs-sample-q-9313668-a1-runtime",
+      applicationImage: "gowm-wsgs-sample:0.6.4-q-9313668-a1",
+      databaseImage: "gowm-wsgs-sample-db:q-9313668-a1-18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1"
+    });
+  });
+
+  it("rejects unbounded identities, missing ports and shared-port reuse", () => {
+    expect(() => resolveSampleRuntimeIdentity({ SAMPLE_WORLD_INSTANCE_ID: "foreign" }))
+      .toThrow(/bounded q-/u);
+    expect(() => resolveSampleRuntimeIdentity({ SAMPLE_WORLD_INSTANCE_ID: "q-safe" }))
+      .toThrow(/SAMPLE_WORLD_GATEWAY_PORT is required/u);
+    expect(() => resolveSampleRuntimeIdentity({
+      SAMPLE_WORLD_INSTANCE_ID: "q-safe",
+      SAMPLE_WORLD_GATEWAY_PORT: "18063",
+      SAMPLE_WORLD_POSTGRES_PORT: "65464"
+    })).toThrow(/must not reuse/u);
+    expect(() => resolveSampleRuntimeIdentity({
+      SAMPLE_WORLD_INSTANCE_ID: "q-safe",
+      SAMPLE_WORLD_GATEWAY_PORT: "55463",
+      SAMPLE_WORLD_POSTGRES_PORT: "65464"
+    })).toThrow(/must not reuse/u);
+    expect(() => resolveSampleRuntimeIdentity({
+      SAMPLE_WORLD_INSTANCE_ID: "q-safe",
+      SAMPLE_WORLD_GATEWAY_PORT: "28064",
+      SAMPLE_WORLD_POSTGRES_PORT: "18063"
+    })).toThrow(/must not reuse/u);
   });
 });

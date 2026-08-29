@@ -4,19 +4,41 @@ import pg from "pg";
 import { migrate } from "./migrate.js";
 import { persistControlledRegistry } from "./provision-world-platform-registry.js";
 import { loadControlledProviderDeployments } from "../services/gateway/world-capability-gateway/src/config.js";
+import {
+  assertSampleDatabaseConnection,
+  sampleDatabaseMarker,
+  sampleRuntimeInstanceIdForDatabaseName,
+  validatedSampleDatabaseName
+} from "./sample-world/database.js";
 
 const { Pool } = pg;
 
-export async function bootstrapWsgsSample(): Promise<void> {
-  assertSampleDatabase(process.env.DATABASE_URL);
-  await migrate();
+export interface BootstrapWsgsSampleOptions {
+  maximumMigrationNumber?: number;
+}
+
+export async function bootstrapWsgsSample(options: BootstrapWsgsSampleOptions = {}): Promise<void> {
+  const databaseName = assertSampleDatabase(
+    process.env.DATABASE_URL,
+    process.env.POSTGRES_DB,
+    "DATABASE_URL"
+  );
+  const runtimeInstanceId = sampleRuntimeInstanceIdForDatabaseName(databaseName);
+  if (process.env.SAMPLE_WORLD_INSTANCE_ID !== undefined &&
+      process.env.SAMPLE_WORLD_INSTANCE_ID !== runtimeInstanceId) {
+    throw new Error("SAMPLE_WORLD_INSTANCE_ID differs from the validated qualification database");
+  }
+  await migrate(options.maximumMigrationNumber === undefined
+    ? {}
+    : { maximumMigrationNumber: options.maximumMigrationNumber });
   const registryConnection = required("GATEWAY_REGISTRY_DATABASE_URL");
+  assertSampleDatabase(registryConnection, databaseName, "GATEWAY_REGISTRY_DATABASE_URL");
   const admin = new Pool({ connectionString: required("DATABASE_URL"), max: 1 });
   const registry = new Pool({ connectionString: registryConnection, max: 1 });
   try {
-    await installInstanceMarker(admin);
+    await installInstanceMarker(admin, databaseName, runtimeInstanceId);
     await provisionLoader(admin);
-    await installResetFunction(admin);
+    await installResetFunction(admin, databaseName, runtimeInstanceId);
     await persistControlledRegistry(
       registry,
       await loadControlledProviderDeployments("config/world-platform-gateway-registry.json")
@@ -26,11 +48,23 @@ export async function bootstrapWsgsSample(): Promise<void> {
   }
 }
 
-async function installResetFunction(pool: pg.Pool): Promise<void> {
-  await pool.query(SAMPLE_RESET_FUNCTION_SQL);
+async function installResetFunction(pool: pg.Pool, databaseName: string, runtimeInstanceId: string): Promise<void> {
+  await pool.query(sampleResetFunctionSql(databaseName, runtimeInstanceId));
 }
 
-export const SAMPLE_RESET_FUNCTION_SQL = String.raw`
+export function sampleResetFunctionSql(
+  expectedDatabaseName: string,
+  expectedRuntimeInstanceId = sampleRuntimeInstanceIdForDatabaseName(expectedDatabaseName)
+): string {
+  const databaseName = validatedSampleDatabaseName(expectedDatabaseName, "expected database name");
+  const derivedRuntimeInstanceId = sampleRuntimeInstanceIdForDatabaseName(databaseName);
+  if (expectedRuntimeInstanceId !== derivedRuntimeInstanceId) {
+    throw new Error("Expected runtime instance identity differs from the qualification database");
+  }
+  const databaseLiteral = sqlLiteral(databaseName);
+  const runtimeInstanceLiteral = sqlLiteral(derivedRuntimeInstanceId);
+  const databaseMarkerLiteral = sqlLiteral(sampleDatabaseMarker(databaseName));
+  return String.raw`
     CREATE OR REPLACE FUNCTION gowm_sample_fixture.reset_sample_world(p_dry_run boolean DEFAULT false)
     RETURNS jsonb
     LANGUAGE plpgsql
@@ -66,10 +100,12 @@ export const SAMPLE_RESET_FUNCTION_SQL = String.raw`
       relation_proven boolean;
       fixture_counts jsonb;
     BEGIN
-      IF current_database() <> 'gowm_wsgs_sample' OR NOT EXISTS (
+      IF current_database() <> ${databaseLiteral} OR NOT EXISTS (
         SELECT 1 FROM gowm_sample_fixture.instance_marker
         WHERE fixture_id='gowm-wsgs-sample-world'
           AND schema_version='gowm-wsgs-sample-world/1.0'
+          AND runtime_instance_id=${runtimeInstanceLiteral}
+          AND database_name=${databaseLiteral}
           AND allowed_data_scopes=ARRAY['wsgs-demo','wsgs-hidden']::text[]
       ) THEN
         RAISE EXCEPTION 'sample reset database marker mismatch';
@@ -550,7 +586,7 @@ export const SAMPLE_RESET_FUNCTION_SQL = String.raw`
         'schemaVersion','1.0',
         'fixtureId','gowm-wsgs-sample-world',
         'dryRun',p_dry_run,
-        'databaseMarker','gowm_wsgs_sample/gowm-wsgs-sample-world/1.0',
+        'databaseMarker',${databaseMarkerLiteral},
         'deletedCounts',fixture_counts,
         'nonFixtureRowsAffected',abs(protected_rows_before-protected_rows_after)+
           abs(migration_rows_before-migration_rows_after)+abs(marker_rows_before-marker_rows_after),
@@ -562,15 +598,28 @@ export const SAMPLE_RESET_FUNCTION_SQL = String.raw`
     GRANT EXECUTE ON FUNCTION gowm_sample_fixture.reset_sample_world(boolean)
       TO gowm_sample_loader_service;
   `;
-
-function assertSampleDatabase(connectionString: string | undefined): void {
-  const parsed = new URL(requiredValue(connectionString, "DATABASE_URL"));
-  if (parsed.pathname !== "/gowm_wsgs_sample") {
-    throw new Error("Refusing to bootstrap outside the isolated gowm_wsgs_sample database");
-  }
 }
 
-async function installInstanceMarker(pool: pg.Pool): Promise<void> {
+export function assertSampleDatabase(
+  connectionString: string | undefined,
+  expectedDatabaseName: string | undefined,
+  connectionName = "DATABASE_URL"
+): string {
+  return assertSampleDatabaseConnection(
+    requiredValue(connectionString, connectionName),
+    expectedDatabaseName
+  );
+}
+
+function sqlLiteral(value: string): string {
+  return `'${value.replaceAll("'", "''")}'`;
+}
+
+async function installInstanceMarker(
+  pool: pg.Pool,
+  databaseName: string,
+  runtimeInstanceId: string
+): Promise<void> {
   await pool.query(`
     CREATE SCHEMA IF NOT EXISTS gowm_sample_fixture;
     REVOKE ALL ON SCHEMA gowm_sample_fixture FROM PUBLIC;
@@ -578,15 +627,48 @@ async function installInstanceMarker(pool: pg.Pool): Promise<void> {
       fixture_id text PRIMARY KEY,
       schema_version text NOT NULL,
       allowed_data_scopes text[] NOT NULL,
+      runtime_instance_id text NOT NULL,
+      database_name text NOT NULL,
       installed_at timestamptz NOT NULL DEFAULT clock_timestamp(),
       CHECK (fixture_id = 'gowm-wsgs-sample-world'),
       CHECK (schema_version = 'gowm-wsgs-sample-world/1.0'),
       CHECK (allowed_data_scopes = ARRAY['wsgs-demo','wsgs-hidden']::text[])
     );
-    INSERT INTO gowm_sample_fixture.instance_marker(fixture_id,schema_version,allowed_data_scopes)
-    VALUES ('gowm-wsgs-sample-world','gowm-wsgs-sample-world/1.0',ARRAY['wsgs-demo','wsgs-hidden'])
-    ON CONFLICT (fixture_id) DO NOTHING;
+    ALTER TABLE gowm_sample_fixture.instance_marker
+      ADD COLUMN IF NOT EXISTS runtime_instance_id text,
+      ADD COLUMN IF NOT EXISTS database_name text;
   `);
+  await pool.query(`
+    UPDATE gowm_sample_fixture.instance_marker
+    SET runtime_instance_id=COALESCE(runtime_instance_id,$1),
+        database_name=COALESCE(database_name,$2)
+    WHERE fixture_id='gowm-wsgs-sample-world';
+  `, [runtimeInstanceId, databaseName]);
+  await pool.query(`
+    ALTER TABLE gowm_sample_fixture.instance_marker
+      ALTER COLUMN runtime_instance_id SET NOT NULL,
+      ALTER COLUMN database_name SET NOT NULL;
+  `);
+  await pool.query(`
+    INSERT INTO gowm_sample_fixture.instance_marker(
+      fixture_id,schema_version,allowed_data_scopes,runtime_instance_id,database_name
+    )
+    VALUES ('gowm-wsgs-sample-world','gowm-wsgs-sample-world/1.0',
+            ARRAY['wsgs-demo','wsgs-hidden'],$1,$2)
+    ON CONFLICT (fixture_id) DO NOTHING;
+  `, [runtimeInstanceId, databaseName]);
+  const marker = await pool.query<{
+    runtime_instance_id: string;
+    database_name: string;
+  }>(`
+    SELECT runtime_instance_id,database_name
+    FROM gowm_sample_fixture.instance_marker
+    WHERE fixture_id='gowm-wsgs-sample-world'
+  `);
+  if (marker.rows.length !== 1 || marker.rows[0]?.runtime_instance_id !== runtimeInstanceId ||
+      marker.rows[0]?.database_name !== databaseName) {
+    throw new Error("Existing sample marker belongs to a different runtime identity or database");
+  }
 }
 
 export const SAMPLE_LOADER_REQUIRED_ACL_SQL = String.raw`
@@ -661,8 +743,21 @@ function requiredValue(value: string | undefined, name: string): string {
   return value;
 }
 
+export function parseMaximumMigrationNumber(value: string | undefined): number | undefined {
+  if (value === undefined) return undefined;
+  if (!/^[0-9]{3}$/u.test(value)) {
+    throw new Error("GOWM_MAXIMUM_MIGRATION_NUMBER must be exactly three decimal digits");
+  }
+  const maximumMigrationNumber = Number.parseInt(value, 10);
+  if (maximumMigrationNumber < 1 || maximumMigrationNumber > 999) {
+    throw new Error("GOWM_MAXIMUM_MIGRATION_NUMBER must be between 001 and 999");
+  }
+  return maximumMigrationNumber;
+}
+
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  bootstrapWsgsSample().then(
+  const maximumMigrationNumber = parseMaximumMigrationNumber(process.env.GOWM_MAXIMUM_MIGRATION_NUMBER);
+  bootstrapWsgsSample(maximumMigrationNumber === undefined ? {} : { maximumMigrationNumber }).then(
     () => process.stdout.write("WSGS_SAMPLE_BOOTSTRAP_READY\n"),
     (error: unknown) => {
       process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`);

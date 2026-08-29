@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import {
   canonicalSha256,
   validateContract,
@@ -7,7 +8,11 @@ import {
   type WorldQueryPlanV2,
   type WorldQuerySubmission
 } from "../../packages/platform/contract-runtime/src/index.js";
-import { lockedHandoffOperationContracts } from "../../scripts/sample-world/handoff.js";
+import {
+  lockedHandoffOperationContracts,
+  sampleHandoffPaths,
+  sampleHandoffReadme
+} from "../../scripts/sample-world/handoff.js";
 import {
   assertSampleAvailabilityProjection,
   buildSampleAvailabilityProbePlan,
@@ -22,22 +27,30 @@ import { loadControlledProviderDeployments } from "../../services/gateway/world-
 import { QuerySnapshotCoordinator } from "../../services/gateway/world-capability-gateway/src/query-snapshot-coordinator.js";
 import {
   SAMPLE_RUNTIME_SECRET_NAMES,
+  resolveSampleRuntimeIdentity,
   sampleRuntimePaths,
   validateRuntimeEnvironment
 } from "../../scripts/sample-world/runtime.js";
 
-function validRuntimeValues(root: string): {
+function validRuntimeValues(root: string, environment: Record<string, string> = {}): {
   paths: ReturnType<typeof sampleRuntimePaths>;
   values: Record<string, string>;
 } {
-  const paths = sampleRuntimePaths(root);
+  const identity = resolveSampleRuntimeIdentity(environment);
+  const paths = sampleRuntimePaths(root, environment);
   const values: Record<string, string> = {
-    COMPOSE_PROJECT_NAME: "gowm-wsgs-sample",
+    SAMPLE_WORLD_INSTANCE_ID: identity.instanceId,
+    COMPOSE_PROJECT_NAME: identity.composeProjectName,
     GATEWAY_BIND_ADDRESS: "127.0.0.1",
-    GATEWAY_PORT: "18063",
+    GATEWAY_PORT: String(identity.gatewayPort),
     POSTGRES_BIND_ADDRESS: "127.0.0.1",
-    POSTGRES_PORT: "55463",
-    POSTGRES_DB: "gowm_wsgs_sample",
+    POSTGRES_PORT: String(identity.postgresPort),
+    POSTGRES_DB: identity.databaseName,
+    GOWM_WSGS_SAMPLE_DB_VOLUME: identity.databaseVolumeName,
+    GOWM_WSGS_SAMPLE_RUNTIME_VOLUME: identity.runtimeVolumeName,
+    GOWM_WSGS_SAMPLE_IMAGE: identity.applicationImage,
+    GOWM_WSGS_SAMPLE_DB_IMAGE: identity.databaseImage,
+    SAMPLE_WORLD_RUNTIME_DIRECTORY: paths.runtimeDirectory,
     GATEWAY_AUTH_MODE: "SIGNED_DELEGATION_V1",
     GATEWAY_RUNTIME_PRINCIPAL_REF: "service:wsgs",
     GATEWAY_DATA_SCOPE_CLAIM: "wsgs-demo",
@@ -67,6 +80,8 @@ describe("sample-world fixed runtime environment", () => {
     ["GATEWAY_BIND_ADDRESS", "0.0.0.0"],
     ["GATEWAY_PORT", "8080"],
     ["POSTGRES_PORT", "5432"],
+    ["GOWM_WSGS_SAMPLE_DB_VOLUME", "foreign-db"],
+    ["GOWM_WSGS_SAMPLE_IMAGE", "foreign:latest"],
     ["GATEWAY_RUNTIME_PRINCIPAL_REF", "service:other"],
     ["GATEWAY_DATA_SCOPE_CLAIM", "other"],
     ["GATEWAY_DELEGATION_MAX_TTL_SECONDS", "301"]
@@ -81,9 +96,78 @@ describe("sample-world fixed runtime environment", () => {
     foreign.values.GOWM_WSGS_DELEGATION_PRIVATE_KEY_PATH = "foreign/private.pem";
     expect(() => validateRuntimeEnvironment(foreign.values, foreign.paths)).toThrow(/private-key path mismatch/u);
 
+    const foreignBind = validRuntimeValues("sample-runtime-test");
+    foreignBind.values.SAMPLE_WORLD_RUNTIME_DIRECTORY = "foreign/runtime";
+    expect(() => validateRuntimeEnvironment(foreignBind.values, foreignBind.paths)).toThrow(/bind directory mismatch/u);
+
     const duplicate = validRuntimeValues("sample-runtime-test");
     duplicate.values[SAMPLE_RUNTIME_SECRET_NAMES[1]] = duplicate.values[SAMPLE_RUNTIME_SECRET_NAMES[0]]!;
     expect(() => validateRuntimeEnvironment(duplicate.values, duplicate.paths)).toThrow(/unique/u);
+  });
+});
+
+describe("sample-world qualification handoff identity", () => {
+  const qualificationEnvironment = {
+    SAMPLE_WORLD_INSTANCE_ID: "q-9313668-a1",
+    SAMPLE_WORLD_GATEWAY_PORT: "28064",
+    SAMPLE_WORLD_POSTGRES_PORT: "65464"
+  };
+
+  it("isolates qualification final and staging directories while retaining shared compatibility", () => {
+    const qualification = validRuntimeValues("sample-runtime-test", qualificationEnvironment);
+    expect(sampleHandoffPaths(qualification)).toEqual({
+      handoffDirectory: resolve("sample-runtime-test/.runtime/wsgs-sample-q-9313668-a1/output/handoff"),
+      stagingDirectory: resolve("sample-runtime-test/.runtime/wsgs-sample-q-9313668-a1/output/.handoff.staging")
+    });
+
+    const shared = validRuntimeValues("sample-runtime-test");
+    expect(sampleHandoffPaths(shared)).toEqual({
+      handoffDirectory: resolve("sample-runtime-test/output/wsgs-sample-handoff"),
+      stagingDirectory: resolve("sample-runtime-test/output/.wsgs-sample-handoff.staging")
+    });
+  });
+
+  it("renders the exact non-secret qualification selectors into every lifecycle session", () => {
+    const runtime = validRuntimeValues("sample-runtime-test", qualificationEnvironment);
+    const readme = sampleHandoffReadme(runtime, {
+      gatewayBaseUrl: "http://127.0.0.1:28064",
+      authMode: "SIGNED_DELEGATION_V1",
+      tokenEnvironmentVariable: "GOWM_WSGS_SAMPLE_TOKEN",
+      dataScope: "wsgs-demo",
+      datasetScope: "wsgs-demo-main",
+      runtimeInstanceId: "q-9313668-a1",
+      fixtureId: "gowm-wsgs-sample-world",
+      fixtureVersion: "1.0.0",
+      consumerContract: {
+        delegationPrivateKeyEnvironmentVariable: "GOWM_WSGS_DELEGATION_PRIVATE_KEY_PATH",
+        servicePrincipalRef: "service:wsgs"
+      }
+    }, { realizationId: "sample-realization-unit-test" });
+
+    expect(readme).toContain("$env:SAMPLE_WORLD_INSTANCE_ID = 'q-9313668-a1'");
+    expect(readme).toContain("$env:SAMPLE_WORLD_GATEWAY_PORT = '28064'");
+    expect(readme).toContain("$env:SAMPLE_WORLD_POSTGRES_PORT = '65464'");
+    expect(readme).toContain("omitting them selects the shared instance instead");
+    for (const name of SAMPLE_RUNTIME_SECRET_NAMES) {
+      expect(readme).not.toContain(runtime.values[name]!);
+    }
+  });
+
+  it("requires the bounded runtime instance identity in both handoff contracts", async () => {
+    for (const path of [
+      "contracts/wsgs-sample-world/v1/sample-world-instance-manifest.schema.json",
+      "contracts/wsgs-sample-world/v1/sample-world-instance-binding.schema.json"
+    ]) {
+      const schema = JSON.parse(await readFile(path, "utf8")) as {
+        required: string[];
+        properties: { runtimeInstanceId?: { pattern?: string } };
+      };
+      expect(schema.required).toContain("runtimeInstanceId");
+      const pattern = new RegExp(schema.properties.runtimeInstanceId!.pattern!, "u");
+      expect(pattern.test("shared")).toBe(true);
+      expect(pattern.test("q-9313668-a1")).toBe(true);
+      expect(pattern.test("foreign")).toBe(false);
+    }
   });
 });
 

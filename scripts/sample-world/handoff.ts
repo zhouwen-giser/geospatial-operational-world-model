@@ -9,19 +9,27 @@ import {
   probeLiveSampleInstance,
   REQUIRED_SAMPLE_OPERATIONS
 } from "./readiness.js";
-import { SAMPLE_RUNTIME_SECRET_NAMES, type SampleRuntimeEnvironment } from "./runtime.js";
+import {
+  SAMPLE_RUNTIME_SECRET_NAMES,
+  sampleContainerGatewayBaseUrl,
+  sampleGatewayBaseUrl,
+  sampleRuntimeIdentityFromValues,
+  type SampleRuntimeEnvironment
+} from "./runtime.js";
 
 type AnyRecord = Record<string, any>;
 
 export async function buildSampleHandoff(runtime: SampleRuntimeEnvironment): Promise<void> {
+  const runtimeIdentity = sampleRuntimeIdentityFromValues(runtime.values);
   await probeLiveSampleInstance(runtime, { expectedRevision: "v1" });
   const live = await probeLiveSampleInstance(runtime, { expectedRevision: "v1" });
   const realization = await loadRuntimeSampleWorld(runtime);
   await assertCurrentV1Artifacts(runtime, realization, live);
   await assertPromotedAttestationsProven(runtime);
+  const gatewayBaseUrl = sampleGatewayBaseUrl(runtime, {});
   const [catalogResponse, semanticResponse] = await Promise.all([
-    fetch("http://127.0.0.1:18063/v1/capabilities", { signal: AbortSignal.timeout(30_000) }),
-    fetch("http://127.0.0.1:18063/v1/capability-semantics", { signal: AbortSignal.timeout(30_000) })
+    fetch(`${gatewayBaseUrl}/v1/capabilities`, { signal: AbortSignal.timeout(30_000) }),
+    fetch(`${gatewayBaseUrl}/v1/capability-semantics`, { signal: AbortSignal.timeout(30_000) })
   ]);
   if (!catalogResponse.ok || !semanticResponse.ok) throw new Error("Live Gateway contract discovery failed during handoff");
   const catalog = await catalogResponse.json() as AnyRecord;
@@ -66,16 +74,16 @@ export async function buildSampleHandoff(runtime: SampleRuntimeEnvironment): Pro
   }
   const operationContracts = lockedHandoffOperationContracts(catalog, semantics, lock);
 
-  const handoffDirectory = resolve(runtime.paths.root, "output/wsgs-sample-handoff");
-  const stagingDirectory = resolve(runtime.paths.root, "output/.wsgs-sample-handoff.staging");
+  const { handoffDirectory, stagingDirectory } = sampleHandoffPaths(runtime);
   await rm(stagingDirectory, { recursive: true, force: true });
   await mkdir(stagingDirectory, { recursive: true });
   const instanceManifest = {
     schemaVersion: "1.0",
+    runtimeInstanceId: runtimeIdentity.instanceId,
     instanceId: realization.fixture.realizationId,
     fixtureId: realization.fixture.id,
     fixtureVersion: realization.fixture.version,
-    gatewayBaseUrl: "http://127.0.0.1:18063",
+    gatewayBaseUrl,
     authMode: "SIGNED_DELEGATION_V1",
     tokenEnvironmentVariable: "GOWM_WSGS_SAMPLE_TOKEN",
     dataScope: "wsgs-demo",
@@ -100,6 +108,7 @@ export async function buildSampleHandoff(runtime: SampleRuntimeEnvironment): Pro
   };
   const instanceBinding = {
     schemaVersion: "1.0",
+    runtimeInstanceId: runtimeIdentity.instanceId,
     instanceId: realization.fixture.realizationId,
     fixtureId: realization.fixture.id,
     fixtureVersion: realization.fixture.version,
@@ -151,7 +160,11 @@ export async function buildSampleHandoff(runtime: SampleRuntimeEnvironment): Pro
       resolve(stagingDirectory, "CANARY_EVIDENCE_REPORT.json")
     )
   ]);
-  await writeFile(resolve(stagingDirectory, "README.md"), readme(instanceManifest, instanceBinding), "utf8");
+  await writeFile(
+    resolve(stagingDirectory, "README.md"),
+    sampleHandoffReadme(runtime, instanceManifest, instanceBinding),
+    "utf8"
+  );
   await runIndependentConsumerConnectivitySmoke(runtime, stagingDirectory, instanceBinding);
   const serialized = await Promise.all((await readdir(stagingDirectory))
     .map(async (file) => [file, await readFile(resolve(stagingDirectory, file), "utf8")] as const));
@@ -168,6 +181,23 @@ export async function buildSampleHandoff(runtime: SampleRuntimeEnvironment): Pro
   await rm(handoffDirectory, { recursive: true, force: true });
   await rename(stagingDirectory, handoffDirectory);
   process.stdout.write(`WSGS_TEST_HANDOFF_READY path=${handoffDirectory}\n`);
+}
+
+export function sampleHandoffPaths(runtime: SampleRuntimeEnvironment): {
+  handoffDirectory: string;
+  stagingDirectory: string;
+} {
+  const { instanceId } = sampleRuntimeIdentityFromValues(runtime.values);
+  if (instanceId !== "shared") {
+    return {
+      handoffDirectory: resolve(runtime.paths.outputDirectory, "handoff"),
+      stagingDirectory: resolve(runtime.paths.outputDirectory, ".handoff.staging")
+    };
+  }
+  return {
+    handoffDirectory: resolve(runtime.paths.root, "output/wsgs-sample-handoff"),
+    stagingDirectory: resolve(runtime.paths.root, "output/.wsgs-sample-handoff.staging")
+  };
 }
 
 export function lockedHandoffOperationContracts(
@@ -217,18 +247,34 @@ export function lockedHandoffOperationContracts(
   });
 }
 
-function readme(manifest: AnyRecord, binding: AnyRecord): string {
+export function sampleHandoffReadme(
+  runtime: SampleRuntimeEnvironment,
+  manifest: AnyRecord,
+  binding: AnyRecord
+): string {
+  const runtimeIdentity = sampleRuntimeIdentityFromValues(runtime.values);
+  const containerBaseUrl = manifest.gatewayBaseUrl.replace("127.0.0.1", "host.docker.internal");
+  const qualificationEnvironment = runtimeIdentity.instanceId === "shared"
+    ? ""
+    : `# Keep these non-secret qualification selectors in this PowerShell session.\n` +
+      `$env:SAMPLE_WORLD_INSTANCE_ID = '${runtimeIdentity.instanceId}'\n` +
+      `$env:SAMPLE_WORLD_GATEWAY_PORT = '${runtimeIdentity.gatewayPort}'\n` +
+      `$env:SAMPLE_WORLD_POSTGRES_PORT = '${runtimeIdentity.postgresPort}'\n\n`;
+  const qualificationReminder = runtimeIdentity.instanceId === "shared"
+    ? ""
+    : " This qualification handoff must always be operated with the three non-secret selector variables above; omitting them selects the shared instance instead.";
   return `# GOWM WSGS Sample World handoff
 
 This handoff describes the running, synthetic v1 sample world for WSGS Grounding Core integration.
 
 - Gateway Base URL from the host: \`${manifest.gatewayBaseUrl}\`
-- Gateway Base URL from a WSGS container on the same host: \`http://host.docker.internal:18063\`
+- Gateway Base URL from a WSGS container on the same host: \`${containerBaseUrl}\`
 - Final authentication mode: \`${manifest.authMode}\`
 - Bearer token environment variable: \`${manifest.tokenEnvironmentVariable}\`
 - Delegation signing-key path environment variable: \`${manifest.consumerContract.delegationPrivateKeyEnvironmentVariable}\`
 - Service principal: \`${manifest.consumerContract.servicePrincipalRef}\`
 - Visible data/dataset scopes: \`${manifest.dataScope}\` / \`${manifest.datasetScope}\`
+- Runtime instance: \`${manifest.runtimeInstanceId}\`
 - Fixture/realization: \`${manifest.fixtureId}@${manifest.fixtureVersion}\` / \`${binding.realizationId}\`
 
 Use only the single Gateway Base URL. Provider endpoints, container topology, database credentials, bearer values and signing-key bytes are deliberately absent. Build requests from \`CONSUMER_CONTRACT_LOCK.json\`, resolve fixture identities through \`SAMPLE_REFERENCE_MAP.json\`, and run \`EXPECTED_CASES.json\` plus \`reference.validate@1.0\` and \`result.validate@1.0\`.
@@ -238,7 +284,7 @@ Use only the single Gateway Base URL. Provider endpoints, container topology, da
 From the repository root on the host:
 
 \`\`\`powershell
-# Build, start, qualify, reset and leave the instance at v1.
+${qualificationEnvironment}# Build, start, qualify, reset and leave the instance at v1.
 npm.cmd run sample-world:all
 
 # Read live signed availability plus the database marker, realization and revision.
@@ -251,7 +297,7 @@ npm.cmd run sample-world:reset
 npm.cmd run sample-world:down
 \`\`\`
 
-For a manual start, run \`npm.cmd run sample-world:up\`, then \`npm.cmd run sample-world:load\`, and finish with \`npm.cmd run sample-world:status\`. The handoff command refuses to publish artifacts unless the live instance is on the current realization's v1 baseline and all required operations are available.
+For a manual start in the same PowerShell session, run \`npm.cmd run sample-world:up\`, then \`npm.cmd run sample-world:load\`, and finish with \`npm.cmd run sample-world:status\`. The handoff command refuses to publish artifacts unless the live instance is on the current realization's v1 baseline and all required operations are available.${qualificationReminder}
 
 The instance is left at the v1 baseline after mutation/reset/restart qualification. North-gate boundary membership follows PostGIS \`ST_Covers\` semantics, so boundary points are included. Nearby results may include the center object; expected references are required members rather than an undocumented filtered set.
 
@@ -279,7 +325,7 @@ async function runIndependentConsumerConnectivitySmoke(
   handoffDirectory: string,
   binding: AnyRecord
 ): Promise<void> {
-  const containerBaseUrl = "http://host.docker.internal:18063";
+  const containerBaseUrl = sampleContainerGatewayBaseUrl(runtime);
   const output = execFileSync("docker", [
     "run",
     "--rm",
@@ -295,7 +341,7 @@ async function runIndependentConsumerConnectivitySmoke(
     "-e", "SAMPLE_WORLD_OUTPUT_DIRECTORY",
     "-v", `${handoffDirectory}:/handoff:ro`,
     "-v", `${runtime.paths.privateKeyPath}:/run/secrets/delegation-private.pem:ro`,
-    "gowm-wsgs-sample:0.6.4",
+    runtime.values.GOWM_WSGS_SAMPLE_IMAGE!,
     "node",
     "dist/scripts/sample-world/consumer-smoke.js"
   ], {

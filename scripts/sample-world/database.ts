@@ -11,7 +11,10 @@ import { realizeSampleWorld, type SampleWorldRealization } from "./model.js";
 const { Pool } = pg;
 const FIXTURE_ID = "gowm-wsgs-sample-world";
 const FIXTURE_VERSION = "1.0.0";
+const FIXTURE_SCHEMA_VERSION = "gowm-wsgs-sample-world/1.0";
 const SCOPES = ["wsgs-demo", "wsgs-hidden"] as const;
+const SAMPLE_DATABASE_NAME = /^gowm_wsgs_sample(?:_q_[a-z0-9](?:[a-z0-9_]{0,29}[a-z0-9])?)?$/u;
+const SAMPLE_RUNTIME_INSTANCE_ID = /^(?:shared|q-[a-z0-9](?:[a-z0-9-]{0,29}[a-z0-9])?)$/u;
 
 type JsonObject = Record<string, unknown>;
 type AnyRecord = Record<string, any>;
@@ -74,7 +77,7 @@ export async function loadSampleWorldDatabase(options: {
   outputDirectory?: string;
 } = {}): Promise<SampleLoadReport> {
   const connectionString = options.connectionString ?? required("SAMPLE_LOADER_DATABASE_URL");
-  assertSampleConnection(connectionString);
+  const databaseName = assertSampleDatabaseConnection(connectionString, process.env.POSTGRES_DB);
   process.env.DATABASE_URL = connectionString;
   const epoch = normalizedEpoch(options.epoch ?? required("SAMPLE_WORLD_EPOCH"));
   const realization = await realizeSampleWorld({
@@ -85,7 +88,7 @@ export async function loadSampleWorldDatabase(options: {
   const outputDirectory = resolve(options.outputDirectory ?? process.env.SAMPLE_WORLD_OUTPUT_DIRECTORY ?? ".runtime/wsgs-sample/output");
   const pool = new Pool({ connectionString, max: 4 });
   try {
-    await assertMarker(pool);
+    await assertMarker(pool, databaseName);
     const beforeCounts = await fixtureCounts(pool);
     const initialFixtureWasEmpty = fixtureIsEmpty(beforeCounts);
     const fault = sampleFaultInjectionFromEnvironment();
@@ -142,7 +145,7 @@ export async function loadSampleWorldDatabase(options: {
         schemaVersion: "1.0",
         fixtureId: FIXTURE_ID,
         fixtureVersion: FIXTURE_VERSION,
-        databaseMarker: "gowm_wsgs_sample/gowm-wsgs-sample-world/1.0",
+        databaseMarker: sampleDatabaseMarker(databaseName),
         sourceFixtureHash: String((realization as AnyRecord).fixture.sourceFixtureHash),
         realizationHash: String((realization as AnyRecord).fixture.realizationHash),
         idempotent: true,
@@ -381,7 +384,7 @@ export async function mutateSampleWorldDatabase(options: {
   outputDirectory?: string;
 } = {}): Promise<Record<string, unknown>> {
   const connectionString = options.connectionString ?? required("SAMPLE_LOADER_DATABASE_URL");
-  assertSampleConnection(connectionString);
+  const databaseName = assertSampleDatabaseConnection(connectionString, process.env.POSTGRES_DB);
   process.env.DATABASE_URL = connectionString;
   const epoch = normalizedEpoch(options.epoch ?? required("SAMPLE_WORLD_EPOCH"));
   const realization = await realizeSampleWorld({
@@ -391,7 +394,7 @@ export async function mutateSampleWorldDatabase(options: {
   });
   const pool = new Pool({ connectionString, max: 4 });
   try {
-    await assertMarker(pool);
+    await assertMarker(pool, databaseName);
     const projectionWorldVersions = await loadObservations(pool, realization, "v2");
     await bindWorldObjectDescriptors(pool, realization);
     const state = await sampleState(pool);
@@ -432,10 +435,10 @@ export async function resetSampleWorldDatabase(options: {
     throw new Error("Sample reset is never authorized for a production environment");
   }
   const connectionString = options.connectionString ?? required("SAMPLE_LOADER_DATABASE_URL");
-  assertSampleConnection(connectionString);
+  const databaseName = assertSampleDatabaseConnection(connectionString, process.env.POSTGRES_DB);
   const pool = new Pool({ connectionString, max: 1 });
   try {
-    await assertMarker(pool);
+    await assertMarker(pool, databaseName);
     const report = await invokeProtectedReset(pool, options.dryRun ?? false);
     const outputDirectory = resolve(options.outputDirectory ?? process.env.SAMPLE_WORLD_OUTPUT_DIRECTORY ?? ".runtime/wsgs-sample/output");
     await mkdir(outputDirectory, { recursive: true });
@@ -1112,21 +1115,70 @@ function normalizedEpoch(value: string): string {
   return timestamp.toISOString();
 }
 
-function assertSampleConnection(connectionString: string): void {
-  const parsed = new URL(connectionString);
-  if (parsed.pathname !== "/gowm_wsgs_sample") {
-    throw new Error("Refusing sample writes outside the isolated gowm_wsgs_sample database");
+export function validatedSampleDatabaseName(
+  value: string | undefined,
+  name = "POSTGRES_DB"
+): string {
+  if (!value) throw new Error(`${name} is required`);
+  if (value !== value.trim() || !SAMPLE_DATABASE_NAME.test(value)) {
+    throw new Error(`${name} must identify the shared sample database or a bounded q-* qualification database`);
   }
+  return value;
 }
 
-async function assertMarker(pool: pg.Pool): Promise<void> {
+export function assertSampleDatabaseConnection(
+  connectionString: string,
+  expectedDatabaseName: string | undefined
+): string {
+  const expected = validatedSampleDatabaseName(expectedDatabaseName);
+  const parsed = new URL(connectionString);
+  if (parsed.protocol !== "postgres:" && parsed.protocol !== "postgresql:") {
+    throw new Error("Sample database connection must use PostgreSQL");
+  }
+  let actual: string;
+  try {
+    actual = decodeURIComponent(parsed.pathname.slice(1));
+  } catch {
+    throw new Error("Sample database connection contains an invalid database name");
+  }
+  if (actual !== expected) {
+    throw new Error("Refusing sample writes because the database URL differs from validated POSTGRES_DB");
+  }
+  return expected;
+}
+
+export function sampleDatabaseMarker(databaseName: string): string {
+  return `${validatedSampleDatabaseName(databaseName, "database name")}/${FIXTURE_SCHEMA_VERSION}`;
+}
+
+export function sampleRuntimeInstanceIdForDatabaseName(databaseName: string): string {
+  const validated = validatedSampleDatabaseName(databaseName, "database name");
+  if (validated === "gowm_wsgs_sample") return "shared";
+  const instanceId = validated.slice("gowm_wsgs_sample_".length).replaceAll("_", "-");
+  if (!SAMPLE_RUNTIME_INSTANCE_ID.test(instanceId)) {
+    throw new Error("Qualification database does not map to a bounded runtime instance identity");
+  }
+  return instanceId;
+}
+
+async function assertMarker(pool: pg.Pool, expectedDatabaseName: string): Promise<void> {
   const database = await pool.query<{ database_name: string }>("SELECT current_database() AS database_name");
-  if (database.rows[0]?.database_name !== "gowm_wsgs_sample") throw new Error("Sample database marker name mismatch");
-  const marker = await pool.query<{ fixture_id: string; schema_version: string; allowed_data_scopes: string[] }>(
-    "SELECT fixture_id,schema_version,allowed_data_scopes FROM gowm_sample_fixture.instance_marker"
+  if (database.rows.length !== 1 || database.rows[0]?.database_name !== expectedDatabaseName) {
+    throw new Error("Sample database marker name differs from validated POSTGRES_DB");
+  }
+  const marker = await pool.query<{
+    fixture_id: string;
+    schema_version: string;
+    allowed_data_scopes: string[];
+    runtime_instance_id: string;
+    database_name: string;
+  }>(
+    "SELECT fixture_id,schema_version,allowed_data_scopes,runtime_instance_id,database_name FROM gowm_sample_fixture.instance_marker"
   );
   const row = marker.rows[0];
-  if (row?.fixture_id !== FIXTURE_ID || row.schema_version !== "gowm-wsgs-sample-world/1.0" ||
+  if (row?.fixture_id !== FIXTURE_ID || row.schema_version !== FIXTURE_SCHEMA_VERSION ||
+      row.runtime_instance_id !== sampleRuntimeInstanceIdForDatabaseName(expectedDatabaseName) ||
+      row.database_name !== expectedDatabaseName ||
       canonicalJson(row.allowed_data_scopes) !== canonicalJson([...SCOPES])) {
     throw new Error("Sample instance marker mismatch");
   }

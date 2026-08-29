@@ -9,7 +9,8 @@ const serviceRoot = join(root, "services", "providers", "spatial-provider-bridge
 const sqlPath = join(serviceRoot, "src", "sql.ts");
 const repositoryPath = join(serviceRoot, "src", "repository.ts");
 const migrationPath = join(root, "database", "migrations", "012_gowm_spatial_v1_read_contract.sql");
-const catalogFeatureMigrationPath = join(root, "database", "migrations", "062_catalog_feature_geometry_read_contract.sql");
+const catalogFeatureMigrationRelativePath = "database/migrations/062_reference_geometry_composability.sql";
+const catalogFeatureMigrationPath = join(root, ...catalogFeatureMigrationRelativePath.split("/"));
 const sourceLockPath = join(root, "contracts", "manifests", "providers", "spatial-provider-source-lock.json");
 const findings = [];
 
@@ -75,17 +76,22 @@ if (!/GRANT SELECT ON[\s\S]*?gowm_spatial_v1\.current_object[\s\S]*?gowm_spatial
 
 const catalogFeatureMigration = readFileSync(catalogFeatureMigrationPath, "utf8");
 for (const required of [
-  "CREATE VIEW gowm_spatial_v1.catalog_feature",
-  "CREATE VIEW gowm_spatial_v1.catalog_feature_reference",
-  "CREATE VIEW gowm_spatial_v1.catalog_snapshot",
-  "CREATE VIEW gowm_evidence_v1.catalog_feature_geometry",
+  "CREATE OR REPLACE VIEW gowm_spatial_v1.catalog_feature",
+  "CREATE OR REPLACE VIEW gowm_spatial_v1.catalog_feature_reference",
+  "CREATE OR REPLACE VIEW gowm_spatial_v1.catalog_snapshot",
+  "CREATE OR REPLACE VIEW gowm_evidence_v1.catalog_feature_geometry",
   "WITH (security_barrier = true, security_invoker = false)",
-  "GRANT SELECT ON gowm_evidence_v1.catalog_feature_geometry TO gowm_evidence_reader",
   "gowm_spatial_v1.catalog_feature_reference",
   "gowm_spatial_v1.catalog_snapshot",
   "TO spatial_provider"
 ]) {
   if (!catalogFeatureMigration.includes(required)) findings.push(`${relative(root, catalogFeatureMigrationPath)}: missing catalog feature boundary ${required}`);
+}
+if (!/GRANT SELECT ON[\s\S]*?gowm_evidence_v1\.catalog_feature_geometry[\s\S]*?TO gowm_evidence_reader;/u.test(catalogFeatureMigration)) {
+  findings.push(`${relative(root, catalogFeatureMigrationPath)}: evidence contract-view grant is missing`);
+}
+if (!/GRANT SELECT ON[\s\S]*?gowm_spatial_v1\.catalog_feature[\s\S]*?gowm_spatial_v1\.catalog_feature_reference[\s\S]*?gowm_spatial_v1\.catalog_snapshot[\s\S]*?TO spatial_provider;/u.test(catalogFeatureMigration)) {
+  findings.push(`${relative(root, catalogFeatureMigrationPath)}: spatial contract-view grant is missing`);
 }
 if (!/REVOKE ALL ON TABLE[\s\S]*?spatial_feature_identity[\s\S]*?spatial_feature_version[\s\S]*?FROM gowm_evidence_reader, spatial_provider;/u.test(catalogFeatureMigration)) {
   findings.push(`${relative(root, catalogFeatureMigrationPath)}: explicit catalog base-table revocation is missing`);
@@ -99,6 +105,9 @@ if (sourceLock.readContractMigrationSha256 !== migrationHash) {
 }
 if (sourceLock.catalogFeatureReadContractMigrationSha256 !== catalogFeatureMigrationHash) {
   findings.push(`${relative(root, sourceLockPath)}: migration digest does not match migration 062 bytes`);
+}
+if (sourceLock.catalogFeatureReadContractMigration !== catalogFeatureMigrationRelativePath) {
+  findings.push(`${relative(root, sourceLockPath)}: migration 062 path does not match the authoritative file`);
 }
 if (sourceLock.sourceCopiedIntoGowm !== false || sourceLock.license !== "Apache-2.0") {
   findings.push(`${relative(root, sourceLockPath)}: source/license boundary is not locked`);

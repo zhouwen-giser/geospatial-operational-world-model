@@ -22,7 +22,9 @@ async function main(): Promise<void> {
   const semantics = await semanticsResponse.json() as AnyRecord;
   const instanceManifest = JSON.parse(await readFile(resolve(outputDirectory, "INSTANCE_MANIFEST.json"), "utf8")) as AnyRecord;
   const instanceBinding = JSON.parse(await readFile(resolve(outputDirectory, "INSTANCE_BINDING.json"), "utf8")) as AnyRecord;
-  if (catalog.contractCatalogRevision !== instanceManifest.contractCatalogRevision ||
+  if (instanceManifest.runtimeInstanceId !== instanceBinding.runtimeInstanceId ||
+      instanceManifest.instanceId !== instanceBinding.instanceId ||
+      catalog.contractCatalogRevision !== instanceManifest.contractCatalogRevision ||
       semantics.contractCatalogRevision !== instanceManifest.contractCatalogRevision ||
       semantics.catalogHash !== instanceManifest.semanticCatalogHash ||
       catalog.bindingRevision !== instanceBinding.bindingRevision) {

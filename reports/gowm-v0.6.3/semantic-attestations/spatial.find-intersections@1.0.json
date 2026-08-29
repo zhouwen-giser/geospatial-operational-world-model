@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/spatial-provider.json",
-      "sha256": "8d20a19768f7c1f314da91d32a905e8b933e9a4e2d6fa38adc08d6772db05315"
+      "sha256": "a1331b94281b4cbad4125f4d4582690ee085ad9e38146c6e1ab97b7398b2b2e4"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/spatial-provider.json",
-      "sha256": "8d20a19768f7c1f314da91d32a905e8b933e9a4e2d6fa38adc08d6772db05315"
+      "sha256": "a1331b94281b4cbad4125f4d4582690ee085ad9e38146c6e1ab97b7398b2b2e4"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -70,7 +70,7 @@
     {
       "kind": "SOURCE_LOCK",
       "path": "contracts/manifests/providers/spatial-provider-source-lock.json",
-      "sha256": "91ce88a93ae04714b99e5062451e8a7b1517d3ea327e947c5d2e4b038b14bcb1"
+      "sha256": "7a1eeb357034ea22054c5f43c484922d7ea78e2860f6e72890f950577bccf5c0"
     },
     {
       "kind": "SQL_IMPLEMENTATION",
