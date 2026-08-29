@@ -23,11 +23,106 @@ import {
 import { redactPublicDetails } from "../../services/gateway/world-capability-gateway/src/redaction.js";
 import { projectCapabilitySemantics } from "../../services/gateway/world-capability-gateway/src/capability-semantics.js";
 import { ProviderProtocolError } from "../../packages/platform/provider-sdk/src/index.js";
+import { resolveGatewayAllowedDataScopes } from "../../services/gateway/world-capability-gateway/src/config.js";
 
 const root = resolve(import.meta.dirname, "../..");
 const encoded = (value: unknown) => Buffer.from(JSON.stringify(value)).toString("base64url");
 
 describe("GOWM v0.6.3 grounding core stabilization", () => {
+  it("parses an exact multi-data-scope delegation allowlist and preserves the legacy default", () => {
+    expect(resolveGatewayAllowedDataScopes(undefined, "tenant:a")).toEqual(["tenant:a"]);
+    expect(resolveGatewayAllowedDataScopes(
+      JSON.stringify(["tenant:a", "scope-gdps-v021-baseline"]),
+      "tenant:a"
+    )).toEqual(["scope-gdps-v021-baseline", "tenant:a"]);
+    for (const invalid of [
+      "[]",
+      JSON.stringify(["tenant:a", "tenant:a"]),
+      JSON.stringify(["tenant:a", "scope:*"]),
+      JSON.stringify(["scope-gdps-v021-baseline"]),
+      JSON.stringify(["tenant:a", ""]),
+      "not-json"
+    ]) {
+      expect(() => resolveGatewayAllowedDataScopes(invalid, "tenant:a")).toThrow();
+    }
+    expect(() => resolveGatewayAllowedDataScopes(JSON.stringify(["tenant:a"]), undefined)).toThrow();
+  });
+
+  it("accepts only delegated data scopes in the configured exact allowlist", async () => {
+    const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+    const now = Math.floor(Date.now() / 1_000);
+    const baseClaims: DelegationTokenClaims = {
+      iss: "https://identity.example.test", sub: "service:wsgs", aud: "gowm-world-gateway",
+      iat: now - 1, nbf: now - 1, exp: now + 120, jti: "delegation-jti-multi-scope",
+      act: { sub: "actor:planner" }, requestId: "request:multi-scope", delegationDepth: 1,
+      dataScopes: ["tenant:a"], datasetScopes: ["dataset:roads"], allowedOperations: ["reference.get@1.0"]
+    };
+    const authenticate = createGatewayAuthenticator({
+      authenticationMode: "SIGNED_DELEGATION_V1",
+      delegationIssuer: baseClaims.iss,
+      delegationAudience: baseClaims.aud,
+      delegationPublicKey: publicKey.export({ type: "spki", format: "pem" }).toString(),
+      delegationMaximumTtlSeconds: 300,
+      sharedToken: "static-service-token-32-bytes-long",
+      principalRef: baseClaims.sub,
+      dataScopeClaim: "tenant:a",
+      allowedDataScopes: ["tenant:a", "scope-gdps-v021-baseline"],
+      datasetScopeClaim: "dataset:roads",
+      allowExperimental: false
+    } as Parameters<typeof createGatewayAuthenticator>[0], () => ["reference.get@1.0"]);
+    const app = Fastify();
+    app.post("/probe", async (request) => {
+      try {
+        return await authenticate(request);
+      } catch (error) {
+        return { code: (error as ProviderProtocolError).code };
+      }
+    });
+    const invoke = async (dataScope: string) => app.inject({
+      method: "POST", url: "/probe",
+      headers: {
+        authorization: "Bearer static-service-token-32-bytes-long",
+        "x-gowm-delegation": compactJws({ ...baseClaims, dataScopes: [dataScope] }, privateKey)
+      },
+      payload: { requestId: baseClaims.requestId }
+    });
+    const legacy = await invoke("tenant:a");
+    const gdps = await invoke("scope-gdps-v021-baseline");
+    const foreign = await invoke("tenant:foreign");
+    await app.close();
+    expect(legacy.json()).toMatchObject({ dataScopeClaim: "tenant:a", effectiveDataScopes: ["tenant:a"] });
+    expect(gdps.json()).toMatchObject({
+      dataScopeClaim: "scope-gdps-v021-baseline",
+      effectiveDataScopes: ["scope-gdps-v021-baseline"]
+    });
+    expect(foreign.json()).toEqual({ code: "SCOPE_DENIED" });
+  });
+
+  it("keeps static-service principals pinned to the primary data scope", async () => {
+    const authenticate = createGatewayAuthenticator({
+      authenticationMode: "STATIC_SERVICE",
+      sharedToken: "static-service-token-32-bytes-long",
+      principalRef: "service:legacy",
+      dataScopeClaim: "tenant:a",
+      allowedDataScopes: ["tenant:a", "scope-gdps-v021-baseline"],
+      datasetScopeClaim: "dataset:roads",
+      allowExperimental: false
+    } as Parameters<typeof createGatewayAuthenticator>[0], () => ["reference.get@1.0"]);
+    const app = Fastify();
+    app.post("/probe", async (request) => authenticate(request));
+    const response = await app.inject({
+      method: "POST", url: "/probe",
+      headers: { authorization: "Bearer static-service-token-32-bytes-long" }
+    });
+    await app.close();
+    expect(response.json()).toMatchObject({
+      mode: "STATIC_SERVICE",
+      dataScopeClaim: "tenant:a",
+      effectiveDataScopes: ["tenant:a"]
+    });
+    expect(JSON.stringify(response.json())).not.toContain("scope-gdps-v021-baseline");
+  });
+
   it("accepts a signed delegation fixture at the HTTP authentication boundary", async () => {
     const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
     const now = Math.floor(Date.now() / 1_000);

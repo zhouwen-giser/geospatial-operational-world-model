@@ -21,6 +21,15 @@ TTL no greater than 300 seconds. Rotate keys by deploying a new Gateway config;
 never place private keys or signed fixtures in the repository. A delegation
 failure is non-retryable and must not fall back to static actor identity.
 
+`GATEWAY_DATA_SCOPE_CLAIM` remains the primary scope used by static-service and
+legacy principals. To authorize more than one data scope for signed delegation,
+set `GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS` to a JSON string array containing the
+primary scope and every additional exact scope. The array must be non-empty,
+contain unique trimmed platform identifiers, and contain no wildcard. When the
+variable is absent or empty, signed delegation retains the legacy single-scope
+behavior. Invalid JSON, duplicates, an omitted primary scope, empty values, and
+wildcards fail Gateway configuration loading.
+
 ## Snapshot and availability diagnosis
 
 Inspect `snapshotManifest` and `snapshotAdherence` in the World Query result.

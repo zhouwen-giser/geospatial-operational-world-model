@@ -110,13 +110,19 @@ export function createGatewayAuthenticator(
     maximumTtlSeconds: config.delegationMaximumTtlSeconds
   });
   return async (request) => {
-    const service = await authenticateService(request);
+    const authenticatedService = await authenticateService(request);
+    const service = {
+      ...authenticatedService,
+      allowedDataScopes: config.allowedDataScopes ?? (
+        authenticatedService.dataScopeClaim === undefined ? [] : [authenticatedService.dataScopeClaim]
+      )
+    };
     const raw = request.headers["x-gowm-delegation"];
     if (typeof raw !== "string" || !raw.trim()) throw denied("signed delegation header is required");
     return verifier.verify(raw, {
       servicePrincipalRef: service.principalRef,
       requestId: requestIdentity(request),
-      allowedDataScopes: service.dataScopeClaim === undefined ? [] : [service.dataScopeClaim],
+      allowedDataScopes: service.allowedDataScopes,
       allowedDatasetScopes: service.datasetScopeClaim === undefined ? [] : [service.datasetScopeClaim],
       registeredOperations: registeredOperations(),
       allowExperimental: service.allowExperimental ?? false

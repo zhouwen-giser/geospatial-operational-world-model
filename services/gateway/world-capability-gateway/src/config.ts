@@ -50,6 +50,7 @@ export interface GatewayServerConfig {
   sharedToken: string;
   principalRef: string;
   dataScopeClaim?: string;
+  allowedDataScopes: string[];
   datasetScopeClaim?: string;
   allowExperimental: boolean;
   authenticationMode: "STATIC_SERVICE" | "SIGNED_DELEGATION_V1";
@@ -78,6 +79,7 @@ export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.e
   const database = new URL(databaseUrl);
   if (!["postgres:", "postgresql:"].includes(database.protocol)) throw new Error("DATABASE_URL must use PostgreSQL");
   const dataScopeClaim = optional(env, "GATEWAY_DATA_SCOPE_CLAIM");
+  const allowedDataScopes = resolveGatewayAllowedDataScopes(env.GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS, dataScopeClaim);
   const datasetScopeClaim = optional(env, "GATEWAY_DATASET_SCOPE_CLAIM");
   const authenticationMode = authenticationModeValue(env.GATEWAY_AUTH_MODE);
   const delegationIssuer = optional(env, "GATEWAY_DELEGATION_ISSUER");
@@ -97,6 +99,7 @@ export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.e
     sharedToken,
     principalRef: identifier(required(env, "GATEWAY_RUNTIME_PRINCIPAL_REF"), "GATEWAY_RUNTIME_PRINCIPAL_REF"),
     ...(dataScopeClaim === undefined ? {} : { dataScopeClaim }),
+    allowedDataScopes,
     ...(datasetScopeClaim === undefined ? {} : { datasetScopeClaim }),
     allowExperimental: env.GATEWAY_ALLOW_EXPERIMENTAL === "true",
     authenticationMode,
@@ -110,6 +113,36 @@ export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.e
     providers,
     registryConfigPath
   };
+}
+
+export function resolveGatewayAllowedDataScopes(raw: string | undefined, primaryDataScope: string | undefined): string[] {
+  if (raw === undefined || raw.trim() === "") return primaryDataScope === undefined ? [] : [primaryDataScope];
+  if (primaryDataScope === undefined) {
+    throw new Error("GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS requires GATEWAY_DATA_SCOPE_CLAIM");
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error("GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS must be a JSON string array");
+  }
+  if (!Array.isArray(parsed) || parsed.length === 0) {
+    throw new Error("GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS must be a non-empty JSON string array");
+  }
+  const scopes = parsed.map((value, index) => {
+    if (typeof value !== "string" || value === "" || value !== value.trim()) {
+      throw new Error(`GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS[${index}] must be a non-empty trimmed string`);
+    }
+    if (value.includes("*")) throw new Error("GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS must not contain wildcards");
+    return identifier(value, `GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS[${index}]`);
+  });
+  if (new Set(scopes).size !== scopes.length) {
+    throw new Error("GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS must contain unique values");
+  }
+  if (!scopes.includes(primaryDataScope)) {
+    throw new Error("GATEWAY_ALLOWED_DATA_SCOPE_CLAIMS must include GATEWAY_DATA_SCOPE_CLAIM");
+  }
+  return [...scopes].sort();
 }
 
 function authenticationModeValue(raw: string | undefined): "STATIC_SERVICE" | "SIGNED_DELEGATION_V1" {
