@@ -73,8 +73,10 @@
   "delivery": {
     "implementationCommit": "b6d5f65dde5e58ba620d1e0a40d3e2323908d588",
     "branch": "codex/gowm-v0.6.4-reference-composability",
-    "draftPullRequest": 9,
-    "status": "PUBLISHED_DRAFT"
+    "pullRequest": 9,
+    "mergedHead": "fae9e436f2dc2c5be95c1a47462472e3fe0ca464",
+    "status": "MERGED_EXTERNALLY",
+    "mergePerformedByThisTask": false
   },
   "status": "PASS",
   "nonClaims": [

@@ -71,9 +71,18 @@
     "sqlAst": "PASS",
     "build": "PASS"
   },
+  "delivery": {
+    "repairCommit": "351ac05e4ba7b75fc203ebfc079e60e98118e419",
+    "branch": "codex/gowm-v0.6.4-reference-composability",
+    "draftPullRequest": 10,
+    "repairCommitInMain": false,
+    "priorPullRequest": 9,
+    "priorPullRequestMergedHead": "fae9e436f2dc2c5be95c1a47462472e3fe0ca464",
+    "mergePerformedByThisTask": false
+  },
   "status": "PASS",
   "nonClaims": [
-    "MERGED",
+    "REPAIR_MERGED",
     "RELEASED",
     "PRODUCTION_READY"
   ]
