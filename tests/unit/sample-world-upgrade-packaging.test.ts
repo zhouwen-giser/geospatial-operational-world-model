@@ -22,4 +22,11 @@ describe("Sample World upgrade proof packaging", () => {
     expect(probe).toContain("set_config('gowm.data_scope_key','wsgs-hidden',false)");
     expect(probe.match(/gowm_evidence_v1\.set_data_scope/gu)).toHaveLength(1);
   });
+
+  it("tests read-only writes against an explicitly qualified Foundation table", async () => {
+    const probe = await readFile("validation/scripts/gowm-v064-upgrade-probe.ts", "utf8");
+
+    expect(probe).toContain("INSERT INTO public.data_scope");
+    expect(probe).not.toContain("INSERT INTO data_scope(");
+  });
 });

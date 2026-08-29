@@ -326,7 +326,7 @@ async function verifyProviderReadOnly(pool: pg.Pool): Promise<Record<string, unk
     await client.query("BEGIN");
     await client.query("SET LOCAL ROLE gowm_evidence_reader");
     try {
-      await client.query("INSERT INTO data_scope(scope_key,operational_domain) VALUES ('qualification-write-probe','TEST')");
+      await client.query("INSERT INTO public.data_scope(scope_key,operational_domain) VALUES ('qualification-write-probe','TEST')");
     } catch (error) {
       const databaseError = error as { code?: string };
       if (databaseError.code !== "42501") throw error;
