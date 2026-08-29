@@ -1,4 +1,8 @@
 contracts/gowm-v0.6/*.json text eol=lf
 contracts/gowm-v0.6/**/*.json text eol=lf
 contracts/gowm-v0.6/**/*.yaml text eol=lf
+contracts/manifests/providers/*.json text eol=lf
+packages/integrations/**/semantic-profiles*.json text eol=lf
+services/providers/**/semantic-profiles*.json text eol=lf
+reports/gowm-v0.6.3/** text eol=lf
 database/migrations/*.sql text eol=lf
