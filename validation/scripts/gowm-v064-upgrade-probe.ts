@@ -89,7 +89,7 @@ export async function probeReferenceGeometryUpgrade(
       throw new Error("A-zone immutable descriptor or geometry invariants are invalid");
     }
 
-    await pool.query("SELECT gowm_evidence_v1.set_data_scope('wsgs-demo')");
+    await pool.query("SELECT set_config('gowm.data_scope_key','wsgs-demo',false)");
     await pool.query("SELECT set_config('gowm.dataset_scope_key','wsgs-demo-main',false)");
     const unified = await pool.query<{ world_objects: string; zone_features: string }>(`
       SELECT count(*) FILTER (WHERE reference_key_value->>'kind'='WORLD_OBJECT')::text AS world_objects,
@@ -240,12 +240,12 @@ function assertQualificationPreflight(preflight: Record<string, any>, candidateC
 }
 
 async function verifyScopeIsolation(pool: pg.Pool, zoneReference: string): Promise<Record<string, unknown>> {
-  await pool.query("SELECT gowm_evidence_v1.set_data_scope('wsgs-demo')");
+  await pool.query("SELECT set_config('gowm.data_scope_key','wsgs-demo',false)");
   await pool.query("SELECT set_config('gowm.dataset_scope_key','wsgs-demo-main',false)");
   const authorized = await countRows(pool, zoneReference);
   await pool.query("SELECT set_config('gowm.dataset_scope_key','missing',false)");
   const wrongDataset = await countRows(pool, zoneReference);
-  await pool.query("SELECT gowm_evidence_v1.set_data_scope('wsgs-hidden')");
+  await pool.query("SELECT set_config('gowm.data_scope_key','wsgs-hidden',false)");
   await pool.query("SELECT set_config('gowm.dataset_scope_key','wsgs-hidden-main',false)");
   const wrongData = await countRows(pool, zoneReference);
   await pool.query("RESET gowm.data_scope_key");

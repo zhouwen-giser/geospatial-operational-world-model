@@ -14,4 +14,12 @@ describe("Sample World upgrade proof packaging", () => {
     expect(includes).toContain(sourceEntrypoint);
     expect(cli.match(new RegExp(compiledEntrypoint.replaceAll(".", "\\."), "gu"))).toHaveLength(2);
   });
+
+  it("keeps read-contract scopes alive across autonomous Pool queries", async () => {
+    const probe = await readFile("validation/scripts/gowm-v064-upgrade-probe.ts", "utf8");
+
+    expect(probe).toContain("set_config('gowm.data_scope_key','wsgs-demo',false)");
+    expect(probe).toContain("set_config('gowm.data_scope_key','wsgs-hidden',false)");
+    expect(probe.match(/gowm_evidence_v1\.set_data_scope/gu)).toHaveLength(1);
+  });
 });
