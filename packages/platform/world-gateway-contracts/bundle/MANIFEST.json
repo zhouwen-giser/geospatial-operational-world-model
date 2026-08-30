@@ -13,7 +13,7 @@
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
       "bytes": 65721,
-      "sha256": "588665b5fc93aa3c24a263a298bf35582451c9e11669946ad2437bb8ad705b38"
+      "sha256": "ad972e153559ed8df240d9f766894e75bc9d2e039382345bf819472eee3af295"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -22,8 +22,8 @@
     },
     {
       "path": "openapi/world-gateway-v0.6.3.yaml",
-      "bytes": 1796,
-      "sha256": "3a907cdba47acdb3171bdce7d099cc4b9c72db72b02dab8a5c505c3dff8dc2d4"
+      "bytes": 1750,
+      "sha256": "e26e542dc927acb512f25cc32075d0933be3cd0c65ba115fc5db67bf4c28a7ee"
     },
     {
       "path": "revisions/contract-catalog.json",
@@ -471,5 +471,5 @@
       "sha256": "5d21c0213e291939e9cbfce2cb3aa65f739d69a486d270dc4725bffe7f208428"
     }
   ],
-  "packageIntegrity": "sha512-NmF5oYTSxg9hbwPSCowIv7U+JUR0q9gD5JPS0BwKwCPyTBLSfR+K3zybZkNi80oPMozxvmQ63kZZjfNS7ZfeMg=="
+  "packageIntegrity": "sha512-Ne5DezQ3C5fL7BzJ4NgzIwIEmrylHQpEyU0rBAfeIl6bfnp5Z8J9n8tPujkXUMNDGw+g8EShrfuoo0tjqOCvIA=="
 }

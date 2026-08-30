@@ -118,7 +118,10 @@ export async function buildConsumerContracts(destination = defaultOutputRoot, op
     .replaceAll("../query-snapshot-manifest.schema.json", "../schemas/gowm-v0.6.3/query-snapshot-manifest.schema.json")
     .replaceAll("../query-snapshot-adherence.schema.json", "../schemas/gowm-v0.6.3/query-snapshot-adherence.schema.json");
   await mkdir(join(outputRoot, "openapi"), { recursive: true });
-  await writeFile(join(outputRoot, "openapi/world-gateway-v0.6.3.yaml"), extension);
+  await writeFile(
+    join(outputRoot, "openapi/world-gateway-v0.6.3.yaml"),
+    canonicalArtifactBytes("world-gateway-v0.6.3.yaml", extension)
+  );
   await copy(resolve(repositoryRoot, "packages/platform/contract-runtime/src/generated/contracts.ts"), join(outputRoot, "types/contracts.ts"));
   for (const path of await walk(resolve(repositoryRoot, "contracts/gowm-v0.6.2/vocabularies"))) {
     await copy(path, join(outputRoot, "vocabularies", basename(path)));
