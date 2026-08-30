@@ -311,10 +311,14 @@ async function runPerformanceSample(
         [trackletVersionId, previewIndexes]
       )
     };
+    const taskEventHotPathIndexes = [
+      "operational_task_event_deterministic_history_idx",
+      "operational_task_event_timeline_idx"
+    ] as const;
     const requiredIndexes = [
       "world_observation_tracklet_selection_idx",
       "world_observation_head_current_idx",
-      "operational_task_event_deterministic_history_idx",
+      ...taskEventHotPathIndexes,
       "mobility_tracklet_segment_pkey",
       "mobility_tracklet_version_pkey"
     ] as const;
@@ -329,15 +333,17 @@ async function runPerformanceSample(
       assert(presentIndexes.has(name), `required index is absent: ${name}`);
     }
     // At 10k observations the selection and head indexes must be chosen by the
-    // planner. The one-row Tracklet tables may truthfully prefer a sequential
-    // scan, so their primary keys are catalog-gated without forcing the planner.
+    // planner. For 1k task events PostgreSQL may prefer either the compact
+    // timeline index plus incremental sort or the full deterministic index.
+    // The one-row Tracklet tables may truthfully prefer a sequential scan, so
+    // their primary keys are catalog-gated without forcing the planner.
     requireIndex(plans.trackletSelection, "world_observation_tracklet_selection_idx");
     requireIndex(plans.trackletSelection, "world_observation_head_current_idx");
-    requireIndex(plans.taskEventHistory, "operational_task_event_deterministic_history_idx");
+    requireAnyIndex(plans.taskEventHistory, taskEventHotPathIndexes);
     const hotPathIndexesObservedInExplain = [
       plans.trackletSelection.indexes.has("world_observation_tracklet_selection_idx"),
       plans.trackletSelection.indexes.has("world_observation_head_current_idx"),
-      plans.taskEventHistory.indexes.has("operational_task_event_deterministic_history_idx")
+      taskEventHotPathIndexes.some((name) => plans.taskEventHistory.indexes.has(name))
     ].every(Boolean);
     assert(hotPathIndexesObservedInExplain);
     const planEvidence = Object.fromEntries(Object.entries(plans).map(([name, plan]) => [name, {
@@ -735,6 +741,13 @@ function walkPlan(value: unknown, visit: (record: JsonRecord) => void): void {
 
 function requireIndex(evidence: ExplainEvidence, name: string): void {
   assert(evidence.indexes.has(name), `EXPLAIN did not use required index ${name}: ${JSON.stringify(evidence.plan)}`);
+}
+
+function requireAnyIndex(evidence: ExplainEvidence, names: readonly string[]): void {
+  assert(
+    names.some((name) => evidence.indexes.has(name)),
+    `EXPLAIN did not use any required index (${names.join(", ")}): ${JSON.stringify(evidence.plan)}`
+  );
 }
 
 function evenlySpacedIndexes(sampleCount: number, limit: number): number[] {
