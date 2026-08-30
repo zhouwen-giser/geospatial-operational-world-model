@@ -417,14 +417,14 @@ describe("Capability Registry and direct execution", () => {
 
 describe("controlled World Platform registry build", () => {
   async function sources() {
-    const entries = (await Promise.all(["capability", "grounding", "planning"].map((p) => loadControlledProviderDeployments(`config/${p}-gateway-registry.json`)))).flat();
+    const entries = (await Promise.all(["capability", "grounding", "history", "planning"].map((p) => loadControlledProviderDeployments(`config/${p}-gateway-registry.json`)))).flat();
     const policy = JSON.parse(await readFile("config/world-platform-provider-set.json", "utf8"));
     return { entries, policy };
   }
-  it("combines discovered canonical fragments deterministically with 15 providers and no collision", async () => {
+  it("combines discovered canonical fragments deterministically with 16 providers and no collision", async () => {
     const { entries, policy } = await sources();
     const built = assembleWorldPlatformRegistry(entries, policy);
-    expect(built.report).toMatchObject({ providerCount: 15, operationCount: 122, missingRequiredProviders: [], operationCollisions: [], status: "PASS" });
+    expect(built.report).toMatchObject({ providerCount: 16, operationCount: 124, missingRequiredProviders: [], operationCollisions: [], status: "PASS" });
     expect(assembleWorldPlatformRegistry([...entries].reverse(), policy)).toEqual(built);
     expect(built.registryDocument.registryProfile).toBe("world-platform");
   });
@@ -444,7 +444,7 @@ describe("controlled World Platform registry build", () => {
     const { entries, policy } = await sources();
     const required = entries.filter((e) => policy.requiredProviders.includes(e.providerId));
     const built = assembleWorldPlatformRegistry(required, policy);
-    expect(built.report.providerCount).toBe(13);
+    expect(built.report.providerCount).toBe(14);
     expect(built.report.warnings).toHaveLength(2);
     expect(built.report.status).toBe("PASS");
   });

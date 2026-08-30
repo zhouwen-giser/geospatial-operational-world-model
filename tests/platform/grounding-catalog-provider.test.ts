@@ -308,7 +308,7 @@ describe("grounding catalog providers", () => {
       "gowm.reference-catalog", "gowm.dataset-catalog", "gowm.world-evidence", "gowm.operational-reality", "gowm.platform-validation"
     ]);
     const capabilities = deployments.flatMap((deployment) => deployment.approvedManifest.capabilities);
-    expect(capabilities).toHaveLength(37);
+    expect(capabilities).toHaveLength(38);
     expect(new Set(capabilities.map((capability) => `${capability.operationId}@${capability.operationVersion}`)).size).toBe(capabilities.length);
     expect(deployments.every((deployment) =>
       deployment.approvedManifest.provider.implementationDigest === deployment.implementationDigest

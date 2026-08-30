@@ -1,3 +1,6 @@
 contracts/gowm-v0.6/*.json text eol=lf
 contracts/gowm-v0.6/**/*.json text eol=lf
 contracts/gowm-v0.6/**/*.yaml text eol=lf
+contracts/gowm-v0.4/*.json text eol=lf
+contracts/gowm-v0.4/**/*.json text eol=lf
+contracts/gowm-v0.4/**/*.yaml text eol=lf

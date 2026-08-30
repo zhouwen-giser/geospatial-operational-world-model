@@ -8,7 +8,7 @@ import type { ProviderSource } from "./materialize-capability-semantic-profiles.
 const sources: ProviderSource[] = JSON.parse(await readFile("validation/gowm-v0.6.2/provider-sources.json", "utf8"));
 export async function syncWorldPlatformManifests(write = false) {
   const runtimes = formalProviderRuntimes();
-  if (runtimes.length !== 15 || new Set(runtimes.map((r) => r.manifest.provider.providerId)).size !== 15) throw new Error("Expected 15 unique actual runtime providers");
+  if (runtimes.length !== 16 || new Set(runtimes.map((r) => r.manifest.provider.providerId)).size !== 16) throw new Error("Expected 16 unique actual runtime providers");
   for (const source of sources) {
     const runtime = runtimes.find((r) => r.manifest.provider.providerId === source.providerId);
     if (!runtime) throw new Error(`Missing actual provider runtime ${source.providerId}`);
@@ -18,7 +18,7 @@ export async function syncWorldPlatformManifests(write = false) {
       else if (await readFile(path, "utf8") !== rendered) throw new Error(`Manifest differs from executable runtime: ${path}`);
     }
   }
-  for (const path of ["config/capability-gateway-registry.json", "config/grounding-gateway-registry.json", "config/planning-gateway-registry.json"]) {
+  for (const path of ["config/capability-gateway-registry.json", "config/grounding-gateway-registry.json", "config/history-gateway-registry.json", "config/planning-gateway-registry.json"]) {
     const config = JSON.parse(await readFile(path, "utf8"));
     const prior = JSON.stringify(config);
     for (const entry of config.providers) {

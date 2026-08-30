@@ -7,6 +7,7 @@ services:
     ports: !reset []
     profiles:
     - foundation-admin
+    - world-platform
   world-api:
     ports: !reset []
     profiles:
@@ -30,7 +31,7 @@ services:
     profiles:
     - foundation-admin
   world-platform-bootstrap:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: &id001
       context: .
       dockerfile: Dockerfile
@@ -64,6 +65,8 @@ services:
       CATALOG_DB_PASSWORD: ${CATALOG_DB_PASSWORD:?set distinct CATALOG_DB_PASSWORD}
       EVIDENCE_DB_PASSWORD: ${EVIDENCE_DB_PASSWORD:?set distinct EVIDENCE_DB_PASSWORD}
       OPERATIONAL_DB_PASSWORD: ${OPERATIONAL_DB_PASSWORD:?set distinct OPERATIONAL_DB_PASSWORD}
+      HISTORICAL_DB_PASSWORD: ${HISTORICAL_DB_PASSWORD:?set distinct HISTORICAL_DB_PASSWORD}
+      HISTORICAL_WORKER_DB_PASSWORD: ${HISTORICAL_WORKER_DB_PASSWORD:?set distinct HISTORICAL_WORKER_DB_PASSWORD}
       VALIDATION_DB_PASSWORD: ${VALIDATION_DB_PASSWORD:?set distinct VALIDATION_DB_PASSWORD}
       NETWORK_DB_PASSWORD: ${NETWORK_DB_PASSWORD:?set distinct NETWORK_DB_PASSWORD}
       ROUTE_DB_PASSWORD: ${ROUTE_DB_PASSWORD:?set distinct ROUTE_DB_PASSWORD}
@@ -72,8 +75,41 @@ services:
       DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/gowm
       GATEWAY_REGISTRY_DATABASE_URL: postgresql://gowm_gateway_registry_service:${GATEWAY_REGISTRY_DB_PASSWORD}@postgres:5432/gowm
       ANALYSIS_SRID: '32650'
+  world-platform-projection-worker:
+    image: gowm-world-platform:0.7.0
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on:
+      world-platform-bootstrap:
+        condition: service_completed_successfully
+      mqtt:
+        condition: service_started
+    command:
+    - node
+    - dist/services/projection-worker/src/index.js
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/gowm
+      HISTORICAL_WORKER_DATABASE_URL: postgresql://gowm_history_worker_service:${HISTORICAL_WORKER_DB_PASSWORD:?set HISTORICAL_WORKER_DB_PASSWORD}@postgres:5432/gowm
+      MQTT_URL: mqtt://mqtt:1883
+      MQTT_CONNECT_TIMEOUT_MS: '3000'
+      MQTT_MESSAGE_EXPIRY_SEC: '86400'
+      PROJECTION_BATCH_SIZE: ${PROJECTION_BATCH_SIZE:-200}
+      PROJECTION_POLL_MS: ${PROJECTION_POLL_MS:-250}
+      ANALYSIS_SRID: '32650'
+      ANALYSIS_SPACE_KEY: ${ANALYSIS_SPACE_KEY:-default}
+      TRACKLET_MAX_TIME_GAP_MS: ${TRACKLET_MAX_TIME_GAP_MS:-10000}
+      TRACKLET_MAX_DISTANCE_GAP_M: ${TRACKLET_MAX_DISTANCE_GAP_M:-250}
+      TRACKLET_MAX_REQUIRED_SPEED_MPS: ${TRACKLET_MAX_REQUIRED_SPEED_MPS:-80}
   crs-provider-bridge:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles:
@@ -114,7 +150,7 @@ services:
       CRS_BRIDGE_UPSTREAM_BASE_URL: ${CRS_BRIDGE_UPSTREAM_BASE_URL:-}
       CRS_BRIDGE_ENDPOINT_ID: ${CRS_BRIDGE_ENDPOINT_ID:-}
   dataset-catalog-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -137,7 +173,7 @@ services:
       GROUNDING_CATALOG_DATABASE_URL: postgresql://gowm_catalog_service:${CATALOG_DB_PASSWORD}@postgres:5432/gowm
       GROUNDING_CATALOG_CURSOR_HMAC_SECRET: ${GROUNDING_CURSOR_HMAC_SECRET:?set cursor secret}
   geometry-provider-bridge:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles:
@@ -166,7 +202,7 @@ services:
       GEOMETRY_BRIDGE_ENDPOINT_APPROVAL_STATUS: ${GEOMETRY_BRIDGE_ENDPOINT_APPROVAL_STATUS:-}
       GEOMETRY_BRIDGE_ENDPOINT_ID: ${GEOMETRY_BRIDGE_ENDPOINT_ID:-}
   h3-analysis-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -191,7 +227,7 @@ services:
     volumes:
     - ${H3_TOOLKIT_BINDINGS_HOST_PATH:?build verified H3 artifact}:/opt/gowm/h3-bindings.mjs:ro
   h3-interactive-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -216,7 +252,7 @@ services:
     volumes:
     - ${H3_TOOLKIT_BINDINGS_HOST_PATH:?build verified H3 artifact}:/opt/gowm/h3-bindings.mjs:ro
   network-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -237,7 +273,7 @@ services:
       NETWORK_PROVIDER_DATABASE_URL: postgresql://network_provider:${NETWORK_DB_PASSWORD}@postgres:5432/gowm
       NETWORK_PROVIDER_PORT: '8096'
   operational-reality-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -257,8 +293,29 @@ services:
       PROVIDER_HEALTH_PORT: '8094'
       OPERATIONAL_REALITY_DATABASE_URL: postgresql://gowm_operational_service:${OPERATIONAL_DB_PASSWORD}@postgres:5432/gowm
       OPERATIONAL_REALITY_PORT: '8094'
+  historical-trace-provider:
+    image: gowm-world-platform:0.7.0
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/historical-trace-provider/src/server.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN:?set HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8100'
+      HISTORICAL_TRACE_DATABASE_URL: postgresql://gowm_history_service:${HISTORICAL_DB_PASSWORD}@postgres:5432/gowm
+      HISTORICAL_TRACE_PORT: '8100'
   platform-validation-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -279,7 +336,7 @@ services:
       PLATFORM_VALIDATION_DATABASE_URL: postgresql://platform_validation_provider:${VALIDATION_DB_PASSWORD}@postgres:5432/gowm
       PLATFORM_VALIDATION_PORT: '8095'
   reference-catalog-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -302,7 +359,7 @@ services:
       GROUNDING_CATALOG_DATABASE_URL: postgresql://gowm_reference_service:${REFERENCE_DB_PASSWORD}@postgres:5432/gowm
       GROUNDING_CATALOG_CURSOR_HMAC_SECRET: ${GROUNDING_CURSOR_HMAC_SECRET:?set cursor secret}
   road-coverage-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -323,7 +380,7 @@ services:
       COVERAGE_PROVIDER_DATABASE_URL: postgresql://coverage_planner_provider:${COVERAGE_DB_PASSWORD}@postgres:5432/gowm
       COVERAGE_PROVIDER_PORT: '8098'
   route-planning-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -344,7 +401,7 @@ services:
       ROUTE_PROVIDER_DATABASE_URL: postgresql://route_planner_provider:${ROUTE_DB_PASSWORD}@postgres:5432/gowm
       ROUTE_PROVIDER_PORT: '8097'
   gowm-situation-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -366,7 +423,7 @@ services:
       GOWM_SITUATION_PROVIDER_PORT: '8092'
       GOWM_SITUATION_ACCEPTED_DATA_SCOPE: ${GATEWAY_DATA_SCOPE_CLAIM:?set data scope}
   spatial-provider-bridge:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -389,7 +446,7 @@ services:
       SPATIAL_CURSOR_HMAC_SECRET: ${SPATIAL_CURSOR_HMAC_SECRET:?set cursor secret}
       SPATIAL_POSTGIS_VERSION: ${SPATIAL_POSTGIS_VERSION:-3.6.4}
   stas-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -410,7 +467,7 @@ services:
       DATABASE_URL: postgresql://stas_app:${STAS_DB_PASSWORD}@postgres:5432/gowm
       STAS_PROVIDER_PORT: '8099'
   world-evidence-provider:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks: *id002
     profiles: *id006
@@ -433,7 +490,7 @@ services:
       GROUNDING_CATALOG_DATABASE_URL: postgresql://gowm_evidence_service:${EVIDENCE_DB_PASSWORD}@postgres:5432/gowm
       GROUNDING_CATALOG_CURSOR_HMAC_SECRET: ${GROUNDING_CURSOR_HMAC_SECRET:?set cursor secret}
   world-capability-gateway:
-    image: gowm-world-platform:0.6.3
+    image: gowm-world-platform:0.7.0
     build: *id001
     networks:
     - default
@@ -458,6 +515,7 @@ services:
       H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN: ${H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       NETWORK_PROVIDER_TRANSPORT_TOKEN: ${NETWORK_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN: ${OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN: ${HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN: ${PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN: ${REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       COVERAGE_PROVIDER_TRANSPORT_TOKEN: ${COVERAGE_PROVIDER_TRANSPORT_TOKEN:?set transport token}

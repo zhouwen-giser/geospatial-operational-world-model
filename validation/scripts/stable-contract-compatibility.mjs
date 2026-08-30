@@ -20,7 +20,8 @@ for (const [sourcePath, expected] of Object.entries(lock.artifacts)) {
       ? resolve(root, "contracts/gowm-v0.4", sourcePath)
       : resolve(root, "contracts/platform", sourcePath);
   const bytes = await readFile(installedPath);
-  const actual = createHash("sha256").update(bytes).digest("hex");
+  const canonicalBytes = Buffer.from(bytes.toString("utf8").replaceAll("\r\n", "\n"));
+  const actual = createHash("sha256").update(canonicalBytes).digest("hex");
   assert.equal(actual, expected, `${sourcePath} differs from the source-package lock`);
 }
 

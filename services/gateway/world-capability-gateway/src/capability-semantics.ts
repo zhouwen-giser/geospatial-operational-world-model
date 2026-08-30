@@ -2,16 +2,10 @@ import {
   canonicalSha256,
   validateContract,
   type CapabilityDescriptor,
-  type CapabilitySemanticCatalogV1,
-  type GowmV07CapabilitySemanticProfileV11
+  type CapabilitySemanticCatalogV1_1
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 
-type LegacySemanticCatalogEntry = CapabilitySemanticCatalogV1["profiles"][number];
-export type CapabilitySemanticCatalogV07 = Omit<CapabilitySemanticCatalogV1, "profiles"> & {
-  profiles: Array<Omit<LegacySemanticCatalogEntry, "semanticProfile"> & {
-    semanticProfile: GowmV07CapabilitySemanticProfileV11;
-  }>;
-};
+export type CapabilitySemanticCatalogV07 = CapabilitySemanticCatalogV1_1;
 
 /** Pure projection of explicit provider contracts. Legacy descriptors are omitted, never inferred. */
 export function projectCapabilitySemantics(

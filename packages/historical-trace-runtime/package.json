@@ -1,0 +1,15 @@
+{
+  "name": "@gowm/historical-trace-runtime",
+  "version": "0.7.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "@gowm/historical-trace-core": "*",
+    "@gowm/historical-trace-model": "*",
+    "pg": "8.23.0"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

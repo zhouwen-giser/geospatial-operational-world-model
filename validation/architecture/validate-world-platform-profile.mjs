@@ -11,7 +11,7 @@ const checks={
  gatewaySeparateEdge:Object.hasOwn(compose.services['world-capability-gateway'].networks,'world-edge'),
  providerPortsAbsent:providers.every(([,s])=>!s.ports?.length),
  providerNetworkIsolated:providers.every(([,s])=>Object.keys(s.networks).join(',')==='default'),
- requiredProcesses:providers.length===13,
+ requiredProcesses:providers.length===14,
  gatewayNoProviderHealthDependency:Object.keys(compose.services['world-capability-gateway'].depends_on).every((n)=>!n.includes('provider')),
  privilegedBootstrapSeparate:!Object.keys(compose.services['world-capability-gateway'].environment).some((k)=>/REGISTRY_DATABASE_URL|POSTGRES_PASSWORD/u.test(k)),
  oneConsumerEndpoint:(await readFile('config/consumers/wsgs.env.example','utf8')).split('\n').filter((l)=>l&&!l.startsWith('#')).every((l)=>l.startsWith('GOWM_GATEWAY_BASE_URL='))

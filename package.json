@@ -1,6 +1,6 @@
 {
   "name": "geospatial-operational-world-model",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "private": true,
   "description": "GOWM+ unified geospatial data foundation with independently deployable STAS analysis service",
   "type": "module",
@@ -8,6 +8,7 @@
   "workspaces": [
     "packages/platform/*",
     "packages/integrations/*",
+    "packages/historical-trace-*",
     "services/gateway/*",
     "services/providers/*"
   ],
@@ -68,6 +69,16 @@
     "validate:v07-effective-snapshot": "node --import tsx validation/scripts/gowm-v07-effective-snapshot-e2e.ts",
     "validate:v07-analysis-inputs": "node --import tsx validation/scripts/gowm-v07-analysis-resource-inputs-e2e.ts",
     "validate:v07-pr1": "node validation/scripts/gowm-v07-pr1-final-candidate.mjs",
+    "validate:v07-task-intervals": "node --import tsx validation/scripts/gowm-v07-task-interval-e2e.ts",
+    "validate:v07-tracklet-finalization": "node --import tsx validation/scripts/gowm-v07-tracklet-finalization-e2e.ts",
+    "validate:v07-history-trajectory": "node --import tsx validation/scripts/gowm-v07-history-trajectory-e2e.ts",
+    "validate:v07-history-queue-worker": "node --import tsx validation/scripts/gowm-v07-history-queue-worker-e2e.ts",
+    "validate:v07-history-late-data": "node --import tsx validation/scripts/gowm-v07-history-late-data-e2e.ts",
+    "validate:v07-history-gateway": "node --import tsx validation/scripts/gowm-v07-history-gateway-e2e.ts",
+    "validate:v07-history-security": "node --import tsx validation/scripts/gowm-v07-history-security-e2e.ts",
+    "validate:v07-history-performance": "node --import tsx validation/scripts/gowm-v07-history-performance.ts",
+    "validate:v07-database-regression": "node --import tsx validation/scripts/gowm-v07-database-regression-e2e.ts",
+    "validate:v07-pr2": "node --import tsx validation/scripts/gowm-v07-pr2-final-candidate.mjs",
     "sbom:service": "node scripts/generate-service-sbom.mjs",
     "validate:stable-contracts": "node validation/scripts/stable-contract-compatibility.mjs",
     "validate:stable-migrations": "node --import tsx validation/scripts/stable-migration-replay-e2e.ts",

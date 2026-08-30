@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "pr": "PR-1",
+  "branch": "codex/gowm-v0.7-pr1-effective-snapshot",
+  "baseSha": "f2894d86eeca121f9cea76c70797ece3b091d51f",
+  "headSha": "835074d2aaf9b0eb58f03d381269f2610a624d13",
+  "phase": "FINAL",
+  "completedWorkPackages": [
+    "CONTRACTS",
+    "PROVIDER_SNAPSHOT_CONTEXT",
+    "EFFECTIVE_SNAPSHOT_MERGE",
+    "ATOMIC_PERSISTENCE_AND_RESTART",
+    "WORLD_QUERY_RUNTIME",
+    "ANALYSIS_RESOURCE_INPUTS",
+    "TECHNICAL_FINAL_GATE"
+  ],
+  "activeWorkPackage": null,
+  "pendingWorkPackages": [
+    "REFRESH_EXACT_HEAD_STRUCTURED_EVIDENCE_IF_REQUESTED",
+    "PUSH_DRAFT_PR_REVIEW_AND_MERGE_WHEN_AUTHORIZED"
+  ],
+  "lastSuccessfulCommand": {
+    "command": "npm.cmd run validate:v07-pr1",
+    "workingDirectory": "<local-worktree>/gowm-v07-pr1",
+    "startedAt": null,
+    "finishedAt": null,
+    "exitCode": 0,
+    "commit": "835074d2aaf9b0eb58f03d381269f2610a624d13",
+    "evidenceNote": "Technical result observed; exact timestamps/raw final artifact not retained."
+  },
+  "knownFailures": [],
+  "evidenceConditions": [
+    "Exact-head command timestamps and complete World Platform final artifact are absent.",
+    "PR-1 has not been pushed or merged."
+  ],
+  "uncommittedPaths": ["reports/gowm-v0.7/pr1/"],
+  "nextAction": "When publication is authorized, refresh exact-head structured gates as needed, push a Draft PR, review and merge before restacking PR-2.",
+  "updatedAt": "2026-08-30T09:48:36.8258645Z"
+}

@@ -63,6 +63,18 @@
       "allowPlaintextPrivateNetwork": true
     },
     {
+      "providerId": "gowm.historical-trace",
+      "providerVersion": "0.7.0",
+      "implementationDigest": "sha256:5558e64bc2c4f187c851543bc7a3bd2cdc0284dbd7565cc1fdfe700e8b22800c",
+      "manifestHash": "sha256:7e45851dd3def3209daf4ae1c1bb568db28ae946cec45cfa5559dc27b4513fce",
+      "manifestPath": "contracts/manifests/providers/historical-trace-provider.json",
+      "endpoint": "http://historical-trace-provider:8100",
+      "approvalId": "historical-trace-v0.7",
+      "approvedBy": "gowm-v0.7-task-package",
+      "transportTokenEnv": "HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    },
+    {
       "providerId": "gowm.network",
       "providerVersion": "1.0.0",
       "implementationDigest": "sha256:4d7bdd4fd84fe922734954c1cf12c76e3073e8b3fb360456d8785327e71eb5f6",
@@ -77,8 +89,8 @@
     {
       "providerId": "gowm.operational-reality",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:d98bf63ef7326eb10c5e20f3b7a5fe224ede3aa429dd8d75cda876109f528930",
-      "manifestHash": "sha256:445cc4ff07bad110a9f602c1182e8fb502b9f3b0bba04c7348ee6fe79d0461a9",
+      "implementationDigest": "sha256:e2e17f588a279843e1b79005fe3437e97c90407dc05915aaf1bbb6eafe081321",
+      "manifestHash": "sha256:979f36d17637eb7ba5f6109500a41eabd61e73ae14fdaf4b0847bdb54addeded",
       "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
       "endpoint": "http://operational-reality-provider:8094",
       "approvalId": "operational-reality-v1.0",

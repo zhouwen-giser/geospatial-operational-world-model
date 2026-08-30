@@ -16,7 +16,8 @@ describe("operational reality provider",()=>{
     expect(provider.runtime.manifest.capabilities.map((item)=>item.operationId)).toEqual([
       "operational-task.find","operational-task.get","operational-task.get-timeline",
       "operational-task.find-by-correlation","world-event.find-by-correlation",
-      "correlation.resolve","predicate.evaluate","observability.evaluate"
+      "correlation.resolve","predicate.evaluate","observability.evaluate",
+      "operational-task.get-execution-intervals"
     ]);
     for(const capability of provider.runtime.manifest.capabilities){
       expect(capability.scopePolicy).toBe("DATA_SCOPE_REQUIRED");
@@ -27,6 +28,14 @@ describe("operational reality provider",()=>{
     }
     expect(provider.runtime.manifest.capabilities.find((item)=>item.operationId==="correlation.resolve")?.ports.outputs)
       .toEqual(expect.arrayContaining([expect.objectContaining({name:"operationalTaskReferenceKey",path:"/operationalTaskReferenceKey",valueKind:"REFERENCE_KEY"})]));
+    expect(provider.runtime.manifest.capabilities.find((item)=>item.operationId==="operational-task.get-execution-intervals")?.ports.outputs)
+      .toEqual(expect.arrayContaining([expect.objectContaining({
+        name:"executionIntervalReferenceKey",
+        path:"/intervals/0/executionIntervalReferenceKey",
+        schemaUri:"urn:gowm:v0.7:reference-key",
+        schemaHash:getContractSchemaHash("urn:gowm:v0.7:reference-key"),
+        valueKind:"REFERENCE_KEY"
+      })]));
     for(const operationId of ["predicate.evaluate","observability.evaluate"]){
       expect(provider.runtime.manifest.capabilities.find((item)=>item.operationId===operationId)?.ports.outputs)
         .toEqual(expect.arrayContaining([expect.objectContaining({name:"status",path:"/status",valueKind:"SCALAR"})]));

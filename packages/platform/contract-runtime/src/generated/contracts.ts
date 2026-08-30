@@ -3425,6 +3425,20 @@ export type GowmV07AnalysisResourceReference = {
   worldVersion?: number;
 };
 
+export type CapabilitySemanticCatalogV1_1 = {
+  bindingRevision: string;
+  catalogHash: string;
+  contractCatalogRevision: string;
+  profiles: Array<{
+  operationId: string;
+  operationVersion: string;
+  semanticProfile: GowmV07CapabilitySemanticProfileV11;
+  semanticProfileHash: string;
+}>;
+  registryRevision?: string;
+  schemaVersion: "1.1";
+};
+
 export type GowmV07CapabilitySemanticProfileV11 = ({
   acceptedReferenceKinds: Array<GowmV07CapabilitySemanticProfileV11ReferenceKindV11>;
   domain: "REFERENCE" | "CATALOG" | "WORLD_STATE" | "SPATIAL" | "TEMPORAL" | "H3" | "NETWORK" | "ROUTING" | "COVERAGE" | "ANALYSIS" | "PLATFORM";
@@ -3450,6 +3464,21 @@ export type GowmV07CapabilitySemanticProfileV11 = ({
 export type GowmV07CapabilitySemanticProfileV11ReferenceKindV1 = "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT";
 
 export type GowmV07CapabilitySemanticProfileV11ReferenceKindV11 = "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT" | "TASK_EXECUTION_INTERVAL" | "TASK_EXECUTION_EVENT_SET" | "TRACKLET_VERSION" | "TRACKLET_FINALIZATION" | "HISTORICAL_TRAJECTORY" | "HISTORY_INPUT_SET" | "HISTORY_METHOD_PROFILE";
+
+export type ConsumerContractBundleManifestV07 = {
+  builtAtSourceCommit?: string;
+  contractCatalogRevision: string;
+  files: Array<{
+  bytes: number;
+  path: string;
+  sha256: string;
+}>;
+  packageIntegrity: string;
+  packageName: "@gowm/world-gateway-contracts";
+  packageVersion: "0.7.0";
+  schemaVersion: "1.0";
+  semanticCatalogHash: string;
+};
 
 export type GowmV07HistoricalGap = {
   details?: string;
@@ -3576,6 +3605,31 @@ export type GowmV07HistoricalTrajectoryResultTrajectoryReferenceKey = {
   version: string;
 };
 
+export type GowmV07OperationalEventTimeline = {
+  events: Array<GowmV07OperationalTaskEvent>;
+  nextCursor?: string;
+  operationalTaskReferenceKey?: GowmV04CommonReferenceKey;
+  schemaVersion: "1.0";
+  truncated: boolean;
+};
+
+export type GowmV07OperationalTaskEvent = {
+  actorReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  confidence?: number;
+  correlationClaims?: Array<GowmV04ExternalCorrelationClaim>;
+  eventId: string;
+  eventTime: GowmV04CommonDateTime;
+  eventType: "CONTROL_REQUEST_OBSERVED" | "CONTROL_ACCEPTED_OBSERVED" | "CONTROL_REJECTED_OBSERVED" | "EXECUTION_STARTED_OBSERVED" | "EXECUTION_PROGRESS_OBSERVED" | "EXECUTION_PAUSED_OBSERVED" | "EXECUTION_RESUMED_OBSERVED" | "EXECUTION_STOPPED_OBSERVED" | "CONTROL_COMPLETED_REPORTED" | "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED" | "PHYSICAL_EFFECT_CONFIRMED" | "PHYSICAL_EFFECT_CONTRADICTED" | "EXECUTION_FAILED_OBSERVED" | "EXECUTION_CANCELLED_OBSERVED" | "OBSERVATION_GAP_OPENED" | "OBSERVATION_GAP_CLOSED";
+  geometryRef?: string;
+  operationalTaskId: string;
+  payload: Record<string, unknown>;
+  provenance: Array<GowmV04CommonEvidenceRef>;
+  receivedTime: GowmV04CommonDateTime;
+  subjectReferenceKey?: GowmV04CommonReferenceKey;
+  targetReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  worldVersion: number;
+};
+
 export type GowmV07QuerySnapshotAdherence = {
   checkedResources: number;
   mismatches?: Array<{
@@ -3612,6 +3666,8 @@ export type GowmV07QuerySnapshotPolicy = ({
   mode: "LATEST_AT_START" | "PINNED" | "AT_LEAST_WORLD_VERSION" | "BEST_EFFORT";
   pinnedSnapshot?: GowmV07QuerySnapshotManifest;
 }) & ((Record<string, unknown>) & (Record<string, unknown>));
+
+export type GowmV07ReferenceKey = PlatformCommonDefinitionsReferenceKey;
 
 export type GowmV07TaskExecutionIntervalQuery = {
   phaseScope: "EXECUTION_ENVELOPE" | "ACTIVE_PHASES_ONLY";
@@ -3669,6 +3725,34 @@ export type GowmV07TaskExecutionIntervalResultTimeRange = {
   end: string;
   start: string;
 };
+
+export type WsgsSouthboundOperationLockV2V07 = {
+  availabilityContractHash: string;
+  consumerContractPackage: {
+  integrity: string;
+  name: "@gowm/world-gateway-contracts";
+  version: "0.7.0";
+};
+  contractCatalogRevision: string;
+  defaultOperations: WsgsSouthboundOperationLockV2V07OperationList;
+  delegationContractHash: string;
+  gatewayContractVersion: "0.7.0";
+  previewOperations: WsgsSouthboundOperationLockV2V07OperationList;
+  schemaVersion: "2.0";
+  semanticCatalogHash: string;
+  snapshotContractHash: string;
+};
+
+export type WsgsSouthboundOperationLockV2V07OperationList = Array<{
+  inputSchemaHash: string;
+  maturity: "STABLE" | "PREVIEW";
+  operationId: string;
+  operationVersion: string;
+  outputSchemaHash: string;
+  requiredPermissions: Array<string>;
+  semanticProfileHash: string;
+  snapshotSupport: "NONE" | "BEST_EFFORT" | "CONSISTENT_AT_START" | "PINNED";
+}>;
 
 export type CapabilityCatalog = {
   catalogVersion: string;

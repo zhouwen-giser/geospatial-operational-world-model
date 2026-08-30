@@ -67,7 +67,9 @@ services:
 
   migrate:
     build: .
-    environment: *app-environment
+    environment:
+      <<: *app-environment
+      HISTORICAL_WORKER_DB_PASSWORD: ${HISTORICAL_WORKER_DB_PASSWORD:?set a distinct HISTORICAL_WORKER_DB_PASSWORD in .env}
     command: ["node", "dist/scripts/migrate.js"]
     depends_on:
       postgres:
@@ -142,7 +144,9 @@ services:
 
   projection-worker:
     build: .
-    environment: *app-environment
+    environment:
+      <<: *app-environment
+      HISTORICAL_WORKER_DATABASE_URL: postgresql://gowm_history_worker_service:${HISTORICAL_WORKER_DB_PASSWORD:?set a distinct HISTORICAL_WORKER_DB_PASSWORD in .env}@postgres:5432/gowm
     command: ["node", "dist/services/projection-worker/src/index.js"]
     depends_on:
       migrate:

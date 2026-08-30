@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 - 2026-08-30
+
+- Added runtime-discovered effective query snapshots, generic analysis-resource inputs, and exact pinned replay without rewriting Provider reference keys.
+- Added immutable task execution intervals, generation-fenced Tracklet finalization and historical trajectory revisions with explicit gaps, exclusions, lineage, and late-data supersession.
+- Added the Preview `operational-task.get-execution-intervals` and `history.get-trajectory` capabilities, including one-submission Gateway DAG composition and bounded inline trajectory previews.
+- Added migrations 063–067, controlled scoped write functions, cross-scope negative gates, fresh and 064→067 database regression, restart/reclaim checks, and real PostgreSQL/PostGIS/MobilityDB qualification.
+- Advanced the repository and current consumer contract bundle/lock to 0.7.0 while retaining frozen v0.6.3 contracts and the existing sample-world compatibility surface. Historical operations remain Preview; this is not production deployment acceptance.
+
 ## 0.6.3 - 2026-08-27
 
 - Promoted exactly ten Reference, World Evidence, Catalog, and Spatial Grounding Core operations from Preview to Stable after same-Gateway qualification.
