@@ -508,7 +508,7 @@ async function evaluate(contract, paths) {
       branch,
       head,
       compatibilityBoundToCandidate: compatibilityBound,
-      postCandidateSourceChanges,
+      postCandidateSourceChanges: postCandidateChanges.length,
       trackedWorktreeChanges: trackedChanges.length,
       runtimeInstanceClass: runtime.runtime?.class,
       runtimeInstanceIdHash: canonicalSha256(runtime.runtimeInstanceId),
