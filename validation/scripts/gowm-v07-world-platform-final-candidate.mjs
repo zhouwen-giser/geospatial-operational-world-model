@@ -17,7 +17,7 @@ const verify = (name, condition) => {
   if (!condition) throw new Error(`GOWM v0.7 World Platform final gate failed: ${name}`);
 };
 
-await run(process.execPath, [resolve(root, pr2
+await run(process.execPath, ["--import", "tsx", resolve(root, pr2
   ? "validation/scripts/gowm-v07-pr2-final-candidate.mjs"
   : "validation/scripts/gowm-v07-pr1-final-candidate.mjs")]);
 
