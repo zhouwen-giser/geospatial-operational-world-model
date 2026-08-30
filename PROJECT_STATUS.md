@@ -1,19 +1,19 @@
 # Project status
 
-Last updated: 2026-08-30
+Last updated: 2026-08-31
 
-## Current candidate
+## v0.7.1 source and qualification state
 
-GOWM+ **0.7.1 — Protocol and Runtime Closure** is under local development on
-`codex/gowm-v0.7.1-snapshot-scope-determinism` and the stacked
-`codex/gowm-v0.7.1-runtime-evidence-closure`. Publication, merge, static source
-verification and runtime qualification are separate states.
+GOWM+ **0.7.1 — Protocol and Runtime Closure** separates source integration,
+static verification, runtime qualification and publication. This document
+records repository capabilities; it does not infer a transient branch, pull
+request or qualification state.
 
-Current status is `GOWM_V0_7_FUNCTIONALLY_IMPLEMENTED`,
-`GOWM_V0_7_PROTOCOL_CLOSURE_INCOMPLETE`, and
-`GOWM_V0_7_EXACT_HEAD_RUNTIME_NOT_QUALIFIED`. Exact-head reports must be
-generated after publication by CI at `GITHUB_SHA`; local candidate reports and
-a running shared sample instance do not prove the current candidate.
+The authoritative integration state is the repository ref and pull-request
+metadata. Exact-head qualification is authoritative only when the post-merge
+workflow runs at `GITHUB_SHA` and publishes an immutable artifact bound to that
+commit and tree. Local candidate reports and a running shared sample instance
+do not prove the current source revision.
 
 ## Historical v0.6.4 baseline
 
@@ -118,6 +118,7 @@ fact/job-table mutation privilege.
 One existing optional external-database Vitest test remains skipped. Required
 PostgreSQL behavior is verified by the dedicated schema gate and actual
 provider processes, not inferred from that skip or metadata-only unit tests.
-No merge, tag, release, production deployment or other-repository change is
-part of this task. See [operator guide](docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md)
-and [execution record](execplans/EP-gowm-v0.6.2-world-gateway-semantics.md).
+Tagging, release, package publication, production deployment, production SLO or
+HA claims, and other-repository changes remain outside this task. See
+[operator guide](docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md) and
+[execution record](execplans/EP-gowm-v0.6.2-world-gateway-semantics.md).
