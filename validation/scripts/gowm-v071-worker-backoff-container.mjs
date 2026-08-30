@@ -55,7 +55,6 @@ try {
     "node", "dist/services/projection-worker/src/index.js"
   ]);
   workerCreated = true;
-  const failedWindowStartedAt = Date.now();
   docker(["start", workerContainer]);
   workerRunning = true;
   docker(["network", "connect", recoveryNetwork, workerContainer]);
@@ -67,10 +66,24 @@ try {
   }
 
   const initialIdentity = await waitForRunningIdentity(workerContainer, 5_000);
-  const remainingFailureWindowMs = 3_200 - (Date.now() - failedWindowStartedAt);
-  if (remainingFailureWindowMs > 0) await delay(remainingFailureWindowMs);
-  const failedWindowElapsedMs = Date.now() - failedWindowStartedAt;
-  const failedWindowEvents = containerBackoffEvents(workerContainer);
+  const backoffRampEvents = (await waitForBackoffEventCount(
+    workerContainer,
+    5,
+    60_000
+  )).slice(0, 5);
+  verifyBackoffRamp(backoffRampEvents, intervalToleranceMs);
+
+  // Docker Desktop can spend several seconds resolving the deliberately
+  // unavailable Historical database before the first structured failure is
+  // emitted. Anchor the bounded observation to a real capped-backoff event so
+  // container/bootstrap latency is readiness time, not retry-window time.
+  const failedWindowElapsedMs = 3_200;
+  const failedWindowStartedAt = backoffRampEvents.at(-1).timestampMs;
+  const failedWindowEndedAt = failedWindowStartedAt + failedWindowElapsedMs;
+  await delay(failedWindowElapsedMs);
+  const eventsAtFailedWindowEnd = containerBackoffEvents(workerContainer);
+  const failedWindowEvents = eventsAtFailedWindowEnd.filter((event) =>
+    event.timestampMs >= failedWindowStartedAt && event.timestampMs <= failedWindowEndedAt);
   verifyFailedWindow(failedWindowEvents, failedWindowElapsedMs, intervalToleranceMs);
 
   // Seed immediately after a logged failure decision, while the worker is in
@@ -78,8 +91,8 @@ try {
   // the operational and historical stages of an already-running tick.
   const recoverySyncEvent = await waitForNewBackoffEvent(
     workerContainer,
-    failedWindowEvents.length,
-    2_000
+    eventsAtFailedWindowEnd.length,
+    30_000
   );
   if (recoverySyncEvent.delayMs !== 800) {
     throw new Error("worker was not at its capped delay before the recovery transition");
@@ -89,7 +102,7 @@ try {
   const queuedOutageEvent = await waitForNewBackoffEvent(
     workerContainer,
     eventsAfterQueueSeed,
-    5_000
+    30_000
   );
   const queuedOutageState = projectionQueueState(databaseContainer, queue);
   if (queuedOutageEvent.delayMs !== 800
@@ -204,6 +217,14 @@ try {
     gate: "GOWM_V071_HISTORICAL_WORKER_BACKOFF_READY",
     candidateCommit,
     imageCommit: imageCommit.toLowerCase(),
+    initialBackoffRamp: {
+      observedBackoffEvents: backoffRampEvents.length,
+      consecutiveStageFailures: backoffRampEvents.map((item) => item.consecutiveStageFailures),
+      delayMs: backoffRampEvents.map((item) => item.delayMs),
+      adjacentEventIntervalsMs: backoffRampEvents.slice(1).map((item, index) =>
+        item.timestampMs - backoffRampEvents[index].timestampMs),
+      intervalToleranceMs
+    },
     failedWindow: {
       observationWindowMs: failedWindowElapsedMs,
       observedBackoffEvents: failedWindowEvents.length,
@@ -212,7 +233,7 @@ try {
       adjacentEventIntervalsMs: failedWindowEvents.slice(1).map((item, index) =>
         item.timestampMs - failedWindowEvents[index].timestampMs),
       intervalToleranceMs,
-      maximumAllowedEvents: 7,
+      maximumAllowedEvents: maximumCappedEvents(failedWindowElapsedMs, 800, intervalToleranceMs),
       cappedDelayObserved: true,
       failedHistoricalStagesPerTick: 4,
       failureKind: "DATABASE_UNAVAILABLE",
@@ -294,13 +315,12 @@ function workerEnvironment(databaseUrl, historicalUrl, options) {
   ];
 }
 
-function verifyFailedWindow(events, elapsedMs, toleranceMs) {
-  if (elapsedMs < 3_000) throw new Error("worker failure observation window was shorter than three seconds");
-  if (events.length < 5) throw new Error("worker did not reach its capped backoff delay");
-  if (events.length > 7) throw new Error("worker emitted too many retries during the bounded failure window");
-  const expectedDelays = [100, 200, 400, 800];
-  const firstFourDelays = events.slice(0, 4).map((item) => item.delayMs);
-  if (JSON.stringify(firstFourDelays) !== JSON.stringify(expectedDelays)) {
+function verifyBackoffRamp(events, toleranceMs) {
+  const expectedDelays = [100, 200, 400, 800, 800];
+  if (events.length !== expectedDelays.length) {
+    throw new Error("worker did not emit the required backoff ramp");
+  }
+  if (JSON.stringify(events.map((item) => item.delayMs)) !== JSON.stringify(expectedDelays)) {
     throw new Error("worker backoff sequence is not the expected capped exponential series");
   }
   for (const [index, event] of events.entries()) {
@@ -310,9 +330,6 @@ function verifyFailedWindow(events, elapsedMs, toleranceMs) {
     if (event.consecutiveStageFailures !== index + 1) {
       throw new Error("worker consecutive stage-failure counters are not monotonic");
     }
-    if (index >= 3 && event.delayMs !== 800) {
-      throw new Error("worker backoff delay did not remain at the configured cap");
-    }
     if (index === 0) continue;
     const previous = events[index - 1];
     const intervalMs = event.timestampMs - previous.timestampMs;
@@ -320,6 +337,35 @@ function verifyFailedWindow(events, elapsedMs, toleranceMs) {
       throw new Error("worker emitted a retry before its prior backoff delay elapsed");
     }
   }
+}
+
+function verifyFailedWindow(events, elapsedMs, toleranceMs) {
+  if (elapsedMs < 3_000) throw new Error("worker failure observation window was shorter than three seconds");
+  if (events.length < 1) throw new Error("worker emitted no capped backoff event in the bounded failure window");
+  if (events.length > maximumCappedEvents(elapsedMs, 800, toleranceMs)) {
+    throw new Error("worker emitted too many retries during the bounded failure window");
+  }
+  for (const [index, event] of events.entries()) {
+    if (!isHistoricalDatabaseUnavailable(event)) {
+      throw new Error("worker failure window was not caused by the isolated historical database");
+    }
+    if (event.delayMs !== 800) {
+      throw new Error("worker backoff delay did not remain at the configured cap");
+    }
+    if (index === 0) continue;
+    const previous = events[index - 1];
+    if (event.consecutiveStageFailures !== previous.consecutiveStageFailures + 1) {
+      throw new Error("worker consecutive stage-failure counters are not monotonic");
+    }
+    const intervalMs = event.timestampMs - previous.timestampMs;
+    if (intervalMs < previous.delayMs - toleranceMs) {
+      throw new Error("worker emitted a retry before its prior backoff delay elapsed");
+    }
+  }
+}
+
+function maximumCappedEvents(elapsedMs, cappedDelayMs, toleranceMs) {
+  return 1 + Math.floor(elapsedMs / (cappedDelayMs - toleranceMs));
 }
 
 function isHistoricalDatabaseUnavailable(event) {
@@ -444,6 +490,21 @@ async function waitForNewBackoffEvent(container, priorCount, timeoutMs) {
     await delay(100);
   }
   throw new Error("worker did not emit the expected backoff event before the deadline");
+}
+
+async function waitForBackoffEventCount(container, requiredCount, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = [];
+  while (Date.now() < deadline) {
+    latest = containerBackoffEvents(container);
+    if (latest.length >= requiredCount) return latest;
+    const identity = inspectContainer(container);
+    if (!identity.running) throw new Error("worker exited before emitting the required backoff ramp");
+    await delay(100);
+  }
+  throw new Error(
+    `worker emitted ${latest.length} of ${requiredCount} required backoff events before the deadline`
+  );
 }
 
 function containerBackoffEvents(container) {
