@@ -2,6 +2,22 @@
 
 BEGIN;
 
+CREATE FUNCTION pg_temp.gowm_assertion_snapshot(p_query_id text)
+RETURNS jsonb LANGUAGE sql AS $snapshot$
+  WITH seed AS (
+    SELECT jsonb_build_object(
+      'querySnapshotId','snapshot_legacy_' || substr(encode(public.digest(p_query_id,'sha256'),'hex'),1,32),
+      'mode','BEST_EFFORT','consistency','BEST_EFFORT',
+      'capturedAt','2026-08-24T00:00:00.000Z','resources','[]'::jsonb,
+      'manifestHash','sha256:' || repeat('0',64)
+    ) AS value
+  )
+  SELECT jsonb_set(
+    value,'{manifestHash}',
+    to_jsonb(gowm_capability.canonical_legacy_query_snapshot_hash(value)),false
+  ) FROM seed
+$snapshot$;
+
 INSERT INTO data_scope(scope_key,operational_domain,description) VALUES
   ('grounding-replay-a','TEST','Grounding replay A'),
   ('grounding-replay-b','TEST','Grounding replay B');
@@ -53,13 +69,16 @@ WITH job AS (
 INSERT INTO gowm_capability.world_query_job(
   query_id,job_id,public_job_id,request_id,principal_ref,principal_hash,
   idempotency_key,request_hash,parameter_schema_hash,plan_hash,submission,
-  authentication_method,authenticated_at,data_scope_claim
+  authentication_method,authenticated_at,data_scope_claim,
+  query_snapshot_manifest,effective_snapshot_manifest,principal_context
 )
 SELECT 'g07-query',job_id,'g07-job','g07-request','principal:g07',
        'sha256:' || repeat('1',64),'g07-idempotency','sha256:' || repeat('2',64),
        'sha256:' || repeat('3',64),'sha256:' || repeat('4',64),
        '{"requestId":"g07-request","idempotencyKey":"g07-idempotency","parameterSchemaHash":"sha256:3333333333333333333333333333333333333333333333333333333333333333","plan":{"queryId":"g07-query"}}',
-       'TEST_ATTESTED',clock_timestamp(),'grounding-replay-a'
+       'TEST_ATTESTED',clock_timestamp(),'grounding-replay-a',
+       pg_temp.gowm_assertion_snapshot('g07-query'),pg_temp.gowm_assertion_snapshot('g07-query'),
+       '{"mode":"STATIC_SERVICE","principalRef":"principal:g07","authenticationMethod":"TEST_ATTESTED"}'::jsonb
 FROM job;
 
 UPDATE gowm_capability.world_query_job

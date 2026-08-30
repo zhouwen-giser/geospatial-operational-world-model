@@ -65,7 +65,7 @@ function snapshot(version: "v1" | "v2"): DataSnapshotContext {
   return {
     consistency: "PINNED",
     capturedAt: "2026-08-30T00:00:00.000Z",
-    scopeDigest: sha256({ dataScopeClaim: "scope-a" }),
+    scopeDigest: sha256({ dataScopeKey: "scope-a" }),
     resources: [{
       referenceKey: {
         namespace: "scope-a",

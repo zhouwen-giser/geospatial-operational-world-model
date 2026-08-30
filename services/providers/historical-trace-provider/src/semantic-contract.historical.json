@@ -40,7 +40,8 @@
         },
         "notes": [
           "The operation returns one stored source-selected trajectory revision and never performs hidden multi-source fusion.",
-          "Every interval, tracklet, finalization, watermark, profile, and analysis-space input is frozen by the returned snapshot or its HISTORY_INPUT_SET resource."
+          "Every interval, tracklet, finalization, watermark, profile, and analysis-space input is frozen by the returned snapshot or its HISTORY_INPUT_SET resource.",
+          "When no as-of revision or outcome exists, the Provider only idempotently enqueues the exact frozen request and returns PROJECTION_PENDING; construction remains worker-owned."
         ]
       },
       "implementation": [
@@ -52,10 +53,16 @@
           "path": "services/providers/historical-trace-provider/src/repository.ts"
         }
       ],
+      "exactAlgorithm": [
+        {
+          "path": "services/providers/historical-trace-provider/src/repository.ts",
+          "symbol": "HistoricalTraceRepository"
+        }
+      ],
       "tests": [
         "tests/platform/historical-trace-provider.test.ts"
       ],
-      "rationale": "The preview provider performs only scoped, head-free reads of immutable trajectory revisions and their complete persisted lineage. Source selection and trajectory construction remain projection-owned."
+      "rationale": "The preview provider performs scoped, head-free reads of immutable trajectory revisions and their complete persisted lineage. A missing result can cause only a bounded, scope-checked enqueue of the exact effective snapshot; source selection and trajectory construction remain worker projection-owned."
     }
   }
 }

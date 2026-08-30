@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const reportRoot = process.env.GOWM_REPORT_DIRECTORY?.trim() ?? "reports/gowm-v0.6.2";
-const script = reportRoot?.replaceAll("\\", "/").includes("reports/gowm-v0.7/pr1/world-platform")
+const script = reportRoot?.replaceAll("\\", "/").includes("reports/gowm-v0.7/")
   ? "gowm-v07-world-platform-final-candidate.mjs"
   : "world-platform-final-candidate.mjs";
 

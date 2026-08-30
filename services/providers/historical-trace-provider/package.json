@@ -1,0 +1,19 @@
+{
+  "name": "@gowm/historical-trace-provider",
+  "version": "0.7.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/services/providers/historical-trace-provider/src/server.js"
+  },
+  "dependencies": {
+    "@gowm/historical-trace-core": "*",
+    "@gowm/platform-contract-runtime": "*",
+    "@gowm/provider-sdk": "*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

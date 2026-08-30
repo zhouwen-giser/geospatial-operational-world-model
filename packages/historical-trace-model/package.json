@@ -1,0 +1,10 @@
+{
+  "name": "@gowm/historical-trace-model",
+  "version": "0.7.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

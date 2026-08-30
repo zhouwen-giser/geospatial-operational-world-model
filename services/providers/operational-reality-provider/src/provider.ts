@@ -65,6 +65,11 @@ function operation(operationId:OperationalRealityOperationId,repository:Operatio
 }
 
 function selectedOutputs(operationId:OperationalRealityOperationId):CapabilityDescriptor["ports"]["outputs"] {
+  if (operationId==="operational-task.get-execution-intervals") return [{
+    name:"executionIntervalReferenceKey",path:"/intervals/0/executionIntervalReferenceKey",
+    schemaUri:"urn:gowm:v0.7:reference-key",schemaHash:getContractSchemaHash("urn:gowm:v0.7:reference-key"),
+    valueKind:"REFERENCE_KEY",unitSemantics:"UNSPECIFIED"
+  }];
   if (operationId==="correlation.resolve") return [{
     name:"operationalTaskReferenceKey",path:"/operationalTaskReferenceKey",
     schemaUri:"urn:gowm:v0.4:reference-key",schemaHash:getContractSchemaHash("urn:gowm:v0.4:reference-key"),

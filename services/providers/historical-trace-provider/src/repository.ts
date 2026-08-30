@@ -16,6 +16,10 @@ import { HISTORICAL_TRACE_SCHEMAS } from "./schemas.js";
 
 export const HISTORICAL_TRACE_SQL={
   setScope:"SELECT gowm_history_v1.set_data_scope($1::text)",
+  enqueueProjection:`SELECT gowm_history.enqueue_historical_trajectory_projection(
+      $1::text,$2::text,$3::text,$4::integer,$5::text,$6::text,$7::text,
+      $8::timestamptz,$9::jsonb,$10::jsonb
+    ) AS queue_id`,
   intervalAsOf:`SELECT * FROM gowm_history_v1.task_execution_interval_revision_by_reference_as_of($1::text,$2::integer,$3::timestamptz)`,
   outcomeAsOf:`SELECT * FROM gowm_history_v1.historical_trajectory_outcome_as_of($1::text,$2::text,$3::text,$4::text,$5::timestamptz)`,
   trajectoryAsOf:`SELECT candidate.*,
@@ -47,14 +51,22 @@ export const HISTORICAL_TRACE_SQL={
     ) matched ON true
     ORDER BY requested.ordinality`,
   preview:`WITH selected AS (
-      SELECT candidate.trajectory
+      SELECT candidate.trajectory,candidate.requested_time
       FROM gowm_history_v1.historical_trajectory_revision_by_reference_as_of($1::text,$2::integer,$3::timestamptz) candidate
     ), requested AS (
       SELECT sample_index,ordinality FROM unnest($4::integer[]) WITH ORDINALITY sample(sample_index,ordinality)
     )
-    SELECT requested.ordinality,timestampN(selected.trajectory,requested.sample_index) AS observed_at,
-      ST_AsGeoJSON(ST_Transform(valueAtTimestamp(selected.trajectory,timestampN(selected.trajectory,requested.sample_index)),4326))::jsonb AS position
-    FROM selected CROSS JOIN requested ORDER BY requested.ordinality`
+    SELECT requested.ordinality,sample.observed_at,
+      ST_AsGeoJSON(ST_Transform(valueN(selected.trajectory,requested.sample_index),4326))::jsonb AS position
+    FROM selected
+    CROSS JOIN requested
+    CROSS JOIN LATERAL (
+      SELECT timestampN(selected.trajectory,requested.sample_index) AS observed_at
+    ) sample
+    WHERE sample.observed_at IS NOT NULL
+      AND selected.requested_time @> sample.observed_at
+      AND valueN(selected.trajectory,requested.sample_index) IS NOT NULL
+    ORDER BY requested.ordinality`
 } as const;
 
 interface HistoricalTraceRepositoryOptions {
@@ -151,18 +163,39 @@ export class HistoricalTraceRepository {
       const trajectory=await this.readTrajectory(client,input,effective,capturedAt,semanticRequestHash);
       if (!trajectory) {
         await client.query("COMMIT");transactionOpen=false;
-        const absent=outcomeStatus(outcome);
-        return emptyHistoricalResult(input,effective,dataScopeKey,capturedAt,semanticRequestHash,absent.status,absent.reasonCode,interval);
+        if (outcome) {
+          const absent=outcomeStatus(outcome);
+          return emptyHistoricalResult(input,effective,dataScopeKey,capturedAt,semanticRequestHash,absent.status,absent.reasonCode,interval);
+        }
+
+        await client.query("BEGIN ISOLATION LEVEL READ COMMITTED");
+        transactionOpen=true;
+        // The controlled enqueue is a separate, bounded transaction. Scope remains
+        // the first statement and the frozen read snapshot is copied verbatim.
+        await client.query(HISTORICAL_TRACE_SQL.setScope,[dataScopeKey]);
+        await client.query("SELECT set_config('statement_timeout',$1::text,true)",[`${timeout}ms`]);
+        await client.query("SELECT set_config('lock_timeout',$1::text,true)",[`${Math.min(timeout,this.lockTimeoutMs)}ms`]);
+        await client.query(HISTORICAL_TRACE_SQL.enqueueProjection,[
+          dataScopeKey,input.subjectReferenceKey.id,input.executionIntervalReferenceKey.id,
+          exactIntervalRevision,input.phaseScope,semanticRequestHash,effective.manifestHash,
+          capturedAt,JSON.stringify(input),JSON.stringify(effective)
+        ]);
+        await client.query("COMMIT");transactionOpen=false;
+        return emptyHistoricalResult(
+          input,effective,dataScopeKey,capturedAt,semanticRequestHash,
+          "PARTIAL","PROJECTION_PENDING",interval
+        );
       }
       verifyTrajectoryIdentity(trajectory,input,semanticRequestHash);
 
       const revisionId=String(trajectory.trajectory_revision_id);
-      const [segmentsResult,gapsResult,exclusionsResult,inputsResult]=await Promise.all([
-        client.query<Record<string,unknown>>(HISTORICAL_TRACE_SQL.segments,[revisionId]),
-        client.query<Record<string,unknown>>(HISTORICAL_TRACE_SQL.gaps,[revisionId]),
-        client.query<Record<string,unknown>>(HISTORICAL_TRACE_SQL.exclusions,[revisionId]),
-        client.query<ChildInputRow>(HISTORICAL_TRACE_SQL.inputs,[revisionId])
-      ]);
+      // A pg Client serializes one wire protocol stream. Keep these snapshot reads
+      // explicitly ordered instead of relying on concurrent query queuing, which is
+      // deprecated and can make transaction behavior driver-version dependent.
+      const segmentsResult=await client.query<Record<string,unknown>>(HISTORICAL_TRACE_SQL.segments,[revisionId]);
+      const gapsResult=await client.query<Record<string,unknown>>(HISTORICAL_TRACE_SQL.gaps,[revisionId]);
+      const exclusionsResult=await client.query<Record<string,unknown>>(HISTORICAL_TRACE_SQL.exclusions,[revisionId]);
+      const inputsResult=await client.query<ChildInputRow>(HISTORICAL_TRACE_SQL.inputs,[revisionId]);
       const childInputs=inputsResult.rows;
       verifyIntervalInput(childInputs,input,interval,trajectory);
       const trackletInputs=childInputs.filter((row)=>String(row.resource_kind)==="TRACKLET_VERSION");
@@ -261,7 +294,9 @@ export class HistoricalTraceRepository {
     const matches:TrajectoryRow[]=[];
     for (const pin of pins) {
       const revision=positiveInteger(pin.version,"pinned historical trajectory version");
-      const rows=await client.query<TrajectoryRow>(HISTORICAL_TRACE_SQL.trajectoryPinnedAsOf,[pin.resourceId,revision,capturedAt]);
+      const rows=await client.query<TrajectoryRow>(HISTORICAL_TRACE_SQL.trajectoryPinnedAsOf,[
+        snapshotReferenceId(pin.resourceId,"gowm"),revision,capturedAt
+      ]);
       const row=rows.rows[0];
       if (!row) {
         if (pins.length===1) throw resourceMismatch("pinned historical trajectory revision is unavailable",pin.resourceId);
@@ -307,7 +342,7 @@ function emptyHistoricalResult(
     worldVersion:nonNegativeInteger(interval.world_version,"world_version")
   });
   return {output,status,dataSnapshot:{
-    consistency:effective.consistency,capturedAt,scopeDigest:sha256({dataScopeKey,resources}),resources
+    consistency:effective.consistency,capturedAt,scopeDigest:sha256({dataScopeKey}),resources
   },evidenceReferences:[],rows:0,candidates:0,warnings};
 }
 
@@ -351,8 +386,15 @@ function verifyTrajectoryIdentity(
 function verifyIntervalInput(
   inputs:ChildInputRow[],input:GowmV07HistoricalTrajectoryQuery,interval:IntervalRow,trajectory:TrajectoryRow
 ):void {
+  if (String(interval.reference_key)!==input.executionIntervalReferenceKey.id
+      || String(interval.revision_no)!==input.executionIntervalReferenceKey.version) {
+    throw resourceMismatch("resolved interval does not match the requested reference revision",input.executionIntervalReferenceKey.id);
+  }
   const pinned=inputs.find((row)=>String(row.input_kind)==="TASK_INTERVAL_REVISION"||String(row.resource_kind)==="TASK_EXECUTION_INTERVAL");
-  if (!pinned||String(pinned.resource_id)!==input.executionIntervalReferenceKey.id||String(pinned.resource_version)!==input.executionIntervalReferenceKey.version) {
+  if (!pinned||String(pinned.resource_namespace)!=="gowm"
+      ||String(pinned.resource_kind)!=="TASK_EXECUTION_INTERVAL"
+      ||String(pinned.resource_id)!==String(interval.reference_key)
+      ||String(pinned.resource_version)!==String(interval.revision_no)) {
     throw resourceMismatch("trajectory revision does not consume the requested interval revision",input.executionIntervalReferenceKey.id);
   }
   const expectedHash=String(pinned.resource_content_hash??"");
@@ -454,7 +496,7 @@ function trajectorySnapshot(
     ...(input.resource_content_hash===null||input.resource_content_hash===undefined?{}:{digest:digest(input.resource_content_hash,{inputNo:input.input_no,resourceId:input.resource_id})})
   }));
   const resources=root.length+detailed.length<=256?[...root,...detailed]:root;
-  return {consistency:effective.consistency,capturedAt,scopeDigest:sha256({dataScopeKey,resources}),resources};
+  return {consistency:effective.consistency,capturedAt,scopeDigest:sha256({dataScopeKey}),resources};
 }
 
 function trajectoryEvidence(
@@ -516,8 +558,15 @@ function range(value:unknown,name:string):GowmV07HistoricalTrajectoryResultTimeR
 }
 
 function jsonRecord(value:unknown,name:string):Record<string,unknown> {
-  const parsed=typeof value==="string"?JSON.parse(value) as unknown:value;
-  if (typeof parsed!=="object"||parsed===null||Array.isArray(parsed)) throw new ProviderProtocolError("SCHEMA_MISMATCH",`${name} is not an object`);
+  let parsed=value;
+  for (let depth=0;depth<2&&typeof parsed==="string";depth+=1) {
+    try { parsed=JSON.parse(parsed) as unknown; }
+    catch { throw new ProviderProtocolError("SCHEMA_MISMATCH",`${name} is not valid JSON`); }
+  }
+  if (typeof parsed!=="object"||parsed===null||Array.isArray(parsed)) {
+    const shape=parsed===null?"null":Array.isArray(parsed)?"array":typeof parsed;
+    throw new ProviderProtocolError("SCHEMA_MISMATCH",`${name} is not an object (${shape})`);
+  }
   return parsed as Record<string,unknown>;
 }
 
@@ -528,6 +577,14 @@ function stringArray(value:unknown):string[] {
 
 function resourceMismatch(message:string,resourceId:string):ProviderProtocolError {
   return new ProviderProtocolError("SCHEMA_MISMATCH",message,{details:{reason:"RESOURCE_MISSING",resourceId}});
+}
+
+function snapshotReferenceId(resourceId:string,expectedNamespace:string):string {
+  const prefix=`${expectedNamespace}:`;
+  if (!resourceId.startsWith(prefix)||resourceId.length===prefix.length) {
+    throw resourceMismatch("pinned historical trajectory resource id is not canonical",resourceId);
+  }
+  return resourceId.slice(prefix.length);
 }
 
 function reasonCode(value:unknown,name:string):string {

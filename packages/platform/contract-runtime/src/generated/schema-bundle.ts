@@ -9121,6 +9121,7 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
           "EXECUTION_STARTED_OBSERVED",
           "EXECUTION_PROGRESS_OBSERVED",
           "EXECUTION_PAUSED_OBSERVED",
+          "EXECUTION_RESUMED_OBSERVED",
           "EXECUTION_STOPPED_OBSERVED",
           "CONTROL_COMPLETED_REPORTED",
           "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED",
@@ -16407,6 +16408,77 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     }
   },
+  "gowm-v0.7/consumer-contract-bundle-manifest.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7:consumer-contract-bundle-manifest",
+    "title": "ConsumerContractBundleManifestV07",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "packageName",
+      "packageVersion",
+      "contractCatalogRevision",
+      "semanticCatalogHash",
+      "files",
+      "packageIntegrity"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "packageName": {
+        "const": "@gowm/world-gateway-contracts"
+      },
+      "packageVersion": {
+        "const": "0.7.0"
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "semanticCatalogHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "files": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      },
+      "packageIntegrity": {
+        "type": "string",
+        "pattern": "^sha512-[A-Za-z0-9+/=]+$"
+      },
+      "builtAtSourceCommit": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+      }
+    }
+  },
   "gowm-v0.7/historical-gap.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.7:historical-gap",
@@ -17212,6 +17284,12 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     ]
   },
+  "gowm-v0.7/reference-key.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7:reference-key",
+    "title": "GowmV07ReferenceKey",
+    "$ref": "../platform/common-definitions.schema.json#/$defs/referenceKey"
+  },
   "gowm-v0.7/task-execution-interval-query.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.7:task-execution-interval-query",
@@ -17490,6 +17568,140 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.7/wsgs-southbound-operation-lock-v2.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7:wsgs-southbound-operation-lock-v2",
+    "title": "WsgsSouthboundOperationLockV2V07",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "gatewayContractVersion",
+      "consumerContractPackage",
+      "contractCatalogRevision",
+      "semanticCatalogHash",
+      "availabilityContractHash",
+      "snapshotContractHash",
+      "delegationContractHash",
+      "defaultOperations",
+      "previewOperations"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "2.0"
+      },
+      "gatewayContractVersion": {
+        "const": "0.7.0"
+      },
+      "consumerContractPackage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "version",
+          "integrity"
+        ],
+        "properties": {
+          "name": {
+            "const": "@gowm/world-gateway-contracts"
+          },
+          "version": {
+            "const": "0.7.0"
+          },
+          "integrity": {
+            "type": "string",
+            "pattern": "^sha512-[A-Za-z0-9+/=]+$"
+          }
+        }
+      },
+      "contractCatalogRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "semanticCatalogHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "availabilityContractHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "snapshotContractHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "delegationContractHash": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "defaultOperations": {
+        "$ref": "#/$defs/operationList"
+      },
+      "previewOperations": {
+        "$ref": "#/$defs/operationList"
+      }
+    },
+    "$defs": {
+      "operationList": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operationId",
+            "operationVersion",
+            "inputSchemaHash",
+            "outputSchemaHash",
+            "semanticProfileHash",
+            "maturity",
+            "requiredPermissions",
+            "snapshotSupport"
+          ],
+          "properties": {
+            "operationId": {
+              "type": "string"
+            },
+            "operationVersion": {
+              "type": "string"
+            },
+            "inputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "outputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "semanticProfileHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "maturity": {
+              "enum": [
+                "STABLE",
+                "PREVIEW"
+              ]
+            },
+            "requiredPermissions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string"
+              }
+            },
+            "snapshotSupport": {
+              "enum": [
+                "NONE",
+                "BEST_EFFORT",
+                "CONSISTENT_AT_START",
+                "PINNED"
+              ]
+            }
           }
         }
       }

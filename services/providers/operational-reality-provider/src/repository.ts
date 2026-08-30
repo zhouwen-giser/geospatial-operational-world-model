@@ -269,7 +269,7 @@ function mapExecutionInterval(
     revisionNo:positiveInteger(row.revision_no,"revision_no"),
     ...(range?{start:range.start,...(lifecycleState==="OPEN"?{}:{end:range.end})}:{}),
     lifecycleState,activePeriods,pausedPeriods,
-    derivationKind:enumValue(row.derivation_kind,["OBSERVED","INFERRED","MIXED"] as const,"derivation_kind"),
+    derivationKind:publicDerivationKind(row.derivation_kind),
     stabilityState:enumValue(row.stability_state,["PROVISIONAL","SEALED","CONFLICTED"] as const,"stability_state"),
     ...(row.confidence===null||row.confidence===undefined?{}:{confidence:unitNumber(row.confidence,"confidence")}),
     reasonCodes
@@ -356,10 +356,7 @@ function executionIntervalSnapshot(
   if (resources.length>256) throw new ProviderProtocolError("BUDGET_EXCEEDED","execution interval snapshot resource budget exceeded");
   return {
     consistency:effective.consistency,capturedAt,
-    scopeDigest:sha256({dataScopeKey,resources:resources.map((item)=>({
-      referenceKey:item.referenceKey,...(item.digest===undefined?{}:{digest:item.digest}),
-      ...(item.worldVersion===undefined?{}:{worldVersion:item.worldVersion})
-    }))}),
+    scopeDigest:sha256({dataScopeKey}),
     resources
   };
 }
@@ -406,6 +403,15 @@ function jsonRecord(value:unknown):Record<string,unknown>|undefined {
 function stringArray(value:unknown):string[] {
   const parsed=typeof value==="string"&&value.trim().startsWith("[")?JSON.parse(value) as unknown:value;
   return Array.isArray(parsed)?parsed.map((item)=>String(item)):[];
+}
+
+function publicDerivationKind(value:unknown):"OBSERVED"|"INFERRED"|"MIXED" {
+  const stored=enumValue(value,["OBSERVED_ONLY","MIXED","CONFLICTED"] as const,"derivation_kind");
+  // The persisted projection distinguishes a conflicted derivation from an
+  // observed-only one.  The public contract carries conflict separately in
+  // lifecycleState/stabilityState, so only the non-conflicted semantic is
+  // normalized here.
+  return stored==="OBSERVED_ONLY"?"OBSERVED":"MIXED";
 }
 
 function enumValue<const T extends readonly string[]>(value:unknown,allowed:T,name:string):T[number] {

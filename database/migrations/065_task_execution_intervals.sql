@@ -13,6 +13,142 @@ ALTER TABLE public.operational_task_event
     'EXECUTION_CANCELLED_OBSERVED','OBSERVATION_GAP_OPENED','OBSERVATION_GAP_CLOSED'
   ));
 
+-- Keep the current Operational Task projection composable with the newly
+-- accepted explicit resume event. Historical interval reconstruction remains
+-- authoritative for phase boundaries; this projection only exposes the latest
+-- observed activity state.
+CREATE OR REPLACE FUNCTION public.compute_operational_task_snapshot(
+  p_data_scope_key text,
+  p_operational_task_id text,
+  p_policy_version text
+)
+RETURNS jsonb LANGUAGE sql STABLE PARALLEL SAFE
+AS $fn$
+  WITH event_rows AS (
+    SELECT event.*,
+           operational_source_priority(event.source_authority,p_policy_version) AS source_priority,
+           COALESCE(event.confidence,0) AS effective_confidence
+    FROM operational_task_event event
+    WHERE event.data_scope_key=p_data_scope_key
+      AND event.operational_task_id=p_operational_task_id
+  ),
+  summary AS (
+    SELECT min(event_time) AS first_observed_at,max(event_time) AS last_observed_at,
+           max(received_time) AS last_received_at,count(*) AS event_count
+    FROM event_rows
+  ),
+  control AS (
+    SELECT CASE event_type
+      WHEN 'CONTROL_REQUEST_OBSERVED' THEN 'REQUESTED_OBSERVED'
+      WHEN 'CONTROL_ACCEPTED_OBSERVED' THEN 'ACCEPTED_OBSERVED'
+      WHEN 'CONTROL_REJECTED_OBSERVED' THEN 'REJECTED_OBSERVED'
+      WHEN 'CONTROL_COMPLETED_REPORTED' THEN 'COMPLETED_REPORTED'
+      WHEN 'EXECUTION_FAILED_OBSERVED' THEN 'FAILED_REPORTED'
+      WHEN 'EXECUTION_CANCELLED_OBSERVED' THEN 'CANCELLED_REPORTED'
+    END AS value
+    FROM event_rows
+    WHERE event_type IN (
+      'CONTROL_REQUEST_OBSERVED','CONTROL_ACCEPTED_OBSERVED','CONTROL_REJECTED_OBSERVED',
+      'CONTROL_COMPLETED_REPORTED','EXECUTION_FAILED_OBSERVED','EXECUTION_CANCELLED_OBSERVED'
+    )
+    ORDER BY event_time DESC,source_priority DESC,effective_confidence DESC,event_id DESC LIMIT 1
+  ),
+  activity AS (
+    SELECT CASE event_type
+      WHEN 'EXECUTION_STARTED_OBSERVED' THEN 'STARTED_OBSERVED'
+      WHEN 'EXECUTION_PROGRESS_OBSERVED' THEN 'ACTIVE_OBSERVED'
+      WHEN 'EXECUTION_PAUSED_OBSERVED' THEN 'PAUSED_OBSERVED'
+      WHEN 'EXECUTION_RESUMED_OBSERVED' THEN 'ACTIVE_OBSERVED'
+      WHEN 'EXECUTION_STOPPED_OBSERVED' THEN 'STOPPED_OBSERVED'
+    END AS value
+    FROM event_rows
+    WHERE event_type IN (
+      'EXECUTION_STARTED_OBSERVED','EXECUTION_PROGRESS_OBSERVED',
+      'EXECUTION_PAUSED_OBSERVED','EXECUTION_RESUMED_OBSERVED','EXECUTION_STOPPED_OBSERVED'
+    )
+    ORDER BY event_time DESC,source_priority DESC,effective_confidence DESC,event_id DESC LIMIT 1
+  ),
+  physical_outcome AS (
+    SELECT CASE event_type
+      WHEN 'PHYSICAL_EFFECT_PARTIALLY_CONFIRMED' THEN 'PARTIALLY_VERIFIED'
+      WHEN 'PHYSICAL_EFFECT_CONFIRMED' THEN 'VERIFIED'
+      WHEN 'PHYSICAL_EFFECT_CONTRADICTED' THEN 'CONTRADICTED'
+    END AS value
+    FROM event_rows
+    WHERE event_type IN (
+      'PHYSICAL_EFFECT_PARTIALLY_CONFIRMED','PHYSICAL_EFFECT_CONFIRMED','PHYSICAL_EFFECT_CONTRADICTED'
+    )
+    ORDER BY event_time DESC,source_priority DESC,effective_confidence DESC,event_id DESC LIMIT 1
+  ),
+  gap AS (
+    SELECT CASE event_type WHEN 'OBSERVATION_GAP_OPENED' THEN 'OBSERVATION_GAP' ELSE 'FRESH' END AS value
+    FROM event_rows WHERE event_type IN ('OBSERVATION_GAP_OPENED','OBSERVATION_GAP_CLOSED')
+    ORDER BY event_time DESC,source_priority DESC,effective_confidence DESC,event_id DESC LIMIT 1
+  ),
+  task_type AS (
+    SELECT NULLIF(payload->>'taskType','') AS value FROM event_rows
+    WHERE NULLIF(payload->>'taskType','') IS NOT NULL
+    ORDER BY event_time DESC,source_priority DESC,effective_confidence DESC,event_id DESC LIMIT 1
+  ),
+  actors AS (
+    SELECT COALESCE(jsonb_agg(item ORDER BY item::text),'[]'::jsonb) AS value FROM (
+      SELECT DISTINCT actor.item FROM event_rows
+      CROSS JOIN LATERAL jsonb_array_elements(actor_reference_keys) actor(item)
+    ) unique_actors
+  ),
+  targets AS (
+    SELECT COALESCE(jsonb_agg(item ORDER BY item::text),'[]'::jsonb) AS value FROM (
+      SELECT DISTINCT target.item FROM event_rows
+      CROSS JOIN LATERAL jsonb_array_elements(target_reference_keys) target(item)
+    ) unique_targets
+  ),
+  evidence AS (
+    SELECT COALESCE(jsonb_agg(event_id ORDER BY event_time,source_priority,effective_confidence,event_id),'[]'::jsonb) AS value
+    FROM (
+      SELECT * FROM event_rows
+      ORDER BY event_time,source_priority,effective_confidence,event_id LIMIT 1000
+    ) bounded
+  ),
+  claim_summary AS (
+    SELECT COALESCE(jsonb_object_agg(external_kind,claim_count ORDER BY external_kind),'{}'::jsonb) AS value
+    FROM (
+      SELECT claim.external_kind,count(*) AS claim_count
+      FROM external_correlation_claim claim
+      JOIN event_rows event ON event.event_id=claim.source_id
+      WHERE claim.data_scope_key=p_data_scope_key AND claim.source_kind='OPERATIONAL_EVENT'
+      GROUP BY claim.external_kind
+    ) counts
+  )
+  SELECT CASE WHEN summary.event_count=0 THEN NULL ELSE jsonb_strip_nulls(jsonb_build_object(
+    'referenceKey',jsonb_build_object(
+      'namespace','gowm','kind','OPERATIONAL_TASK','id',task.reference_key,'version','1'
+    ),
+    'operationalTaskId',p_operational_task_id,
+    'taskType',COALESCE(task_type.value,'OPERATIONAL_TASK'),
+    'controlState',COALESCE(control.value,'NO_CONTROL_EVENT'),
+    'activityState',COALESCE(activity.value,'NOT_OBSERVED'),
+    'outcomeVerification',COALESCE(
+      physical_outcome.value,
+      CASE WHEN summary.event_count>0 THEN 'UNVERIFIED' ELSE 'NOT_APPLICABLE' END
+    ),
+    'observability',COALESCE(gap.value,CASE WHEN summary.event_count>0 THEN 'FRESH' ELSE 'NO_DATA' END),
+    'actorReferenceKeys',actors.value,
+    'targetReferenceKeys',targets.value,
+    'firstObservedAt',summary.first_observed_at,
+    'lastObservedAt',summary.last_observed_at,
+    'lastReceivedAt',summary.last_received_at,
+    'evidenceIds',evidence.value,
+    'correlationClaimSummary',claim_summary.value,
+    'projectionPolicyVersion',p_policy_version
+  )) END
+  FROM summary
+  JOIN operational_task task
+    ON task.data_scope_key=p_data_scope_key AND task.operational_task_id=p_operational_task_id
+  CROSS JOIN actors CROSS JOIN targets CROSS JOIN evidence CROSS JOIN claim_summary
+  LEFT JOIN control ON true LEFT JOIN activity ON true LEFT JOIN physical_outcome ON true
+  LEFT JOIN gap ON true LEFT JOIN task_type ON true
+$fn$;
+
 ALTER TABLE public.world_reference_identity
   DROP CONSTRAINT world_reference_entity_kind,
   ADD CONSTRAINT world_reference_entity_kind CHECK (entity_kind IN (
@@ -431,6 +567,7 @@ BEGIN
     SELECT queue.queue_id
     FROM gowm_history.task_interval_projection_queue queue
     WHERE queue.available_at <= clock_timestamp()
+      AND queue.attempts < 10
       AND (
         queue.state IN ('QUEUED','FAILED')
         OR (queue.state = 'RUNNING' AND queue.lease_until <= clock_timestamp())
@@ -446,8 +583,7 @@ BEGIN
       locked_at = clock_timestamp(),
       lease_until = clock_timestamp() + p_lease,
       locked_by = p_worker_id,
-      processed_at = NULL,
-      last_error = NULL
+      processed_at = NULL
   FROM candidates
   WHERE queue.queue_id = candidates.queue_id
   RETURNING queue.*;
@@ -954,6 +1090,9 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'gowm_history_service') THEN
     CREATE ROLE gowm_history_service NOLOGIN INHERIT;
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'gowm_history_worker_service') THEN
+    CREATE ROLE gowm_history_worker_service NOLOGIN INHERIT;
+  END IF;
 END
 $roles$;
 
@@ -985,11 +1124,18 @@ GRANT EXECUTE ON FUNCTION gowm_history.complete_task_interval_projection(uuid, t
 GRANT EXECUTE ON FUNCTION gowm_history.fail_task_interval_projection(uuid, text, bigint, text, timestamptz)
   TO gowm_history_worker;
 
+-- The dedicated worker assembles MobilityDB/PostGIS values in client-issued SQL
+-- before calling the SECURITY DEFINER registration functions.  Schema USAGE is
+-- required to resolve those public extension types without granting table DML.
+GRANT USAGE ON SCHEMA public TO gowm_history_reader, gowm_history_worker;
 GRANT gowm_history_writer TO gowm_history_worker;
+GRANT gowm_history_worker TO gowm_history_worker_service;
 GRANT gowm_history_reader TO gowm_history_service;
 GRANT gowm_history_reader TO gowm_operational_service;
 ALTER ROLE gowm_history_service SET statement_timeout = '30s';
 ALTER ROLE gowm_history_worker SET statement_timeout = '30s';
+ALTER ROLE gowm_history_worker_service SET statement_timeout = '30s';
+ALTER ROLE gowm_history_worker_service SET lock_timeout = '5s';
 
 COMMENT ON SCHEMA gowm_history IS
   'Append-only task interval, tracklet finalization, and historical trajectory evidence.';

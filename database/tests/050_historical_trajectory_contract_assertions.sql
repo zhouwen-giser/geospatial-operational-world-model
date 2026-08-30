@@ -157,7 +157,7 @@ DECLARE
   resource_row jsonb;
 BEGIN
   FOR resource_row IN SELECT value FROM jsonb_array_elements(jsonb_build_array(
-    jsonb_build_array('TASK_EXECUTION_INTERVAL','50000000-0000-0000-0000-000000000002'),
+    jsonb_build_array('TASK_EXECUTION_INTERVAL','wrf_50000000000000000000000000000003'),
     jsonb_build_array('MOBILITY_TRACKLET_VERSION','50000000-0000-0000-0000-000000000011'),
     jsonb_build_array('TRACKLET_FINALIZATION_REVISION','50000000-0000-0000-0000-000000000012'),
     jsonb_build_array('METHOD_PROFILE','trajectory-single-authoritative-v1'),
@@ -177,7 +177,8 @@ BEGIN
     END IF;
     PERFORM public.register_analysis_resource_input(
       '50000000-0000-0000-0000-000000000020',input_no,resource_kind,
-      'gowm.history',resource_kind,resource_id,resource_version,resource_hash,NULL,'PINNED',
+      CASE WHEN resource_kind='TASK_EXECUTION_INTERVAL' THEN 'gowm' ELSE 'gowm.history' END,
+      resource_kind,resource_id,resource_version,resource_hash,NULL,'PINNED',
       'history-trajectory-assertion',NULL,NULL
     );
     input_no := input_no + 1;
@@ -289,7 +290,7 @@ BEGIN
     resource_id,resource_version,resource_content_hash,pinning,authority,
     analysis_input_no,analysis_input_set_kind
   ) VALUES
-    ('50000000-0000-0000-0000-000000000005',1,'TASK_INTERVAL_REVISION','gowm.history','TASK_EXECUTION_INTERVAL','50000000-0000-0000-0000-000000000002','1',NULL,'PINNED','history-trajectory-assertion',1,NULL),
+    ('50000000-0000-0000-0000-000000000005',1,'TASK_INTERVAL_REVISION','gowm','TASK_EXECUTION_INTERVAL','wrf_50000000000000000000000000000003','1',NULL,'PINNED','history-trajectory-assertion',1,NULL),
     ('50000000-0000-0000-0000-000000000005',2,'TRACKLET_VERSION','gowm.history','MOBILITY_TRACKLET_VERSION','50000000-0000-0000-0000-000000000011','1',NULL,'PINNED','history-trajectory-assertion',2,NULL),
     ('50000000-0000-0000-0000-000000000005',3,'TRACKLET_FINALIZATION_REVISION','gowm.history','TRACKLET_FINALIZATION_REVISION','50000000-0000-0000-0000-000000000012','1',NULL,'PINNED','history-trajectory-assertion',3,NULL),
     ('50000000-0000-0000-0000-000000000005',4,'METHOD_PROFILE','gowm.history','METHOD_PROFILE','trajectory-single-authoritative-v1','1.0',profile_hash,'PINNED','history-trajectory-assertion',4,NULL),
@@ -503,6 +504,150 @@ BEGIN
 END
 $as_of_and_lineage$;
 
+CREATE TEMP TABLE trajectory_queue_assertion_state(
+  queue_id uuid PRIMARY KEY,
+  old_generation bigint,
+  new_generation bigint,
+  other_queue_id uuid,
+  captured_at timestamptz NOT NULL,
+  revision_id uuid
+);
+GRANT SELECT,INSERT,UPDATE ON trajectory_queue_assertion_state
+  TO gowm_history_service,gowm_history_worker_service;
+
+SET LOCAL ROLE gowm_history_service;
+SELECT gowm_history_v1.set_data_scope('history-trajectory-a');
+DO $enqueue_projection$
+DECLARE
+  request_captured_at timestamptz := clock_timestamp();
+  queue_id uuid;
+  replay_queue_id uuid;
+  query_payload jsonb;
+  requested_snapshot jsonb;
+BEGIN
+  query_payload := jsonb_build_object(
+      'subjectReferenceKey',jsonb_build_object('namespace','gowm','kind','WORLD_OBJECT','id','wrf_50000000000000000000000000000002','version','1'),
+      'executionIntervalReferenceKey',jsonb_build_object('namespace','gowm','kind','TASK_EXECUTION_INTERVAL','id','wrf_50000000000000000000000000000003','version','1'),
+      'phaseScope','EXECUTION_ENVELOPE',
+      'sourceSelection',jsonb_build_object('mode','EXPLICIT_SOURCE','sourceKey','history-trajectory-source','trackerSessionKey','session-50'),
+      'sourceSelectionProfileReferenceKey',jsonb_build_object('namespace','gowm','kind','HISTORY_METHOD_PROFILE','id','trajectory-single-authoritative-v1','version','1.0')
+    );
+  requested_snapshot := jsonb_build_object(
+      'querySnapshotId','history-trajectory-queue-1','mode','PINNED','consistency','PINNED',
+      'capturedAt',request_captured_at,'resources',jsonb_build_array(),
+      'manifestHash','sha256:abababababababababababababababababababababababababababababababab'
+    );
+  queue_id := gowm_history.enqueue_historical_trajectory_projection(
+    'history-trajectory-a','wrf_50000000000000000000000000000002',
+    'wrf_50000000000000000000000000000003',1,'EXECUTION_ENVELOPE',
+    'sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+    'sha256:abababababababababababababababababababababababababababababababab',
+    request_captured_at,query_payload,requested_snapshot
+  );
+  replay_queue_id := gowm_history.enqueue_historical_trajectory_projection(
+    'history-trajectory-a','wrf_50000000000000000000000000000002',
+    'wrf_50000000000000000000000000000003',1,'EXECUTION_ENVELOPE',
+    'sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+    'sha256:abababababababababababababababababababababababababababababababab',
+    request_captured_at,query_payload,requested_snapshot
+  );
+  IF replay_queue_id IS DISTINCT FROM queue_id THEN
+    RAISE EXCEPTION 'historical trajectory enqueue was not idempotent';
+  END IF;
+  INSERT INTO trajectory_queue_assertion_state(queue_id,captured_at)
+  VALUES (queue_id,request_captured_at);
+END
+$enqueue_projection$;
+RESET ROLE;
+
+SET LOCAL ROLE gowm_history_worker_service;
+DO $first_projection_claim$
+DECLARE
+  claimed gowm_history.historical_trajectory_projection_queue%ROWTYPE;
+BEGIN
+  SELECT * INTO STRICT claimed
+  FROM gowm_history.claim_historical_trajectory_projection(
+    'history-worker-old',1,interval '5 minutes'
+  );
+  UPDATE trajectory_queue_assertion_state
+  SET old_generation=claimed.generation
+  WHERE queue_id=claimed.queue_id;
+END
+$first_projection_claim$;
+RESET ROLE;
+
+UPDATE gowm_history.historical_trajectory_projection_queue queue
+SET locked_at=clock_timestamp()-interval '2 seconds',
+    lease_until=clock_timestamp()-interval '1 second',
+    last_error='retained restart diagnostic'
+WHERE queue.queue_id=(SELECT state.queue_id FROM trajectory_queue_assertion_state state);
+
+SET LOCAL ROLE gowm_history_service;
+SELECT gowm_history_v1.set_data_scope('history-trajectory-a');
+DO $enqueue_other_projection$
+DECLARE
+  request_captured_at timestamptz := clock_timestamp();
+  enqueued_queue_id uuid;
+BEGIN
+  enqueued_queue_id := gowm_history.enqueue_historical_trajectory_projection(
+    'history-trajectory-a',
+    'wrf_50000000000000000000000000000002',
+    'wrf_50000000000000000000000000000003',
+    1,
+    'ACTIVE_PHASES_ONLY',
+    'sha256:dededededededededededededededededededededededededededededededede',
+    'sha256:bcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbc',
+    request_captured_at,
+    jsonb_build_object(
+      'subjectReferenceKey',jsonb_build_object('id','wrf_50000000000000000000000000000002'),
+      'executionIntervalReferenceKey',jsonb_build_object('id','wrf_50000000000000000000000000000003','version','1'),
+      'phaseScope','ACTIVE_PHASES_ONLY'
+    ),
+    jsonb_build_object(
+      'querySnapshotId','history-trajectory-queue-2','mode','PINNED','consistency','PINNED',
+      'capturedAt',request_captured_at,'resources',jsonb_build_array(),
+      'manifestHash','sha256:bcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbc'
+    )
+  );
+  UPDATE trajectory_queue_assertion_state
+  SET other_queue_id=enqueued_queue_id;
+END
+$enqueue_other_projection$;
+RESET ROLE;
+
+SET LOCAL ROLE gowm_history_worker_service;
+DO $reclaim_projection$
+DECLARE
+  claimed gowm_history.historical_trajectory_projection_queue%ROWTYPE;
+  reclaimed_count integer := 0;
+  other_count integer := 0;
+BEGIN
+  FOR claimed IN
+    SELECT * FROM gowm_history.claim_historical_trajectory_projection(
+      'history-worker-new',2,interval '5 minutes'
+    )
+  LOOP
+    IF claimed.queue_id=(SELECT state.queue_id FROM trajectory_queue_assertion_state state) THEN
+      reclaimed_count := reclaimed_count+1;
+      IF claimed.last_error IS DISTINCT FROM 'retained restart diagnostic' THEN
+        RAISE EXCEPTION 'historical projection reclaim discarded last_error';
+      END IF;
+      UPDATE trajectory_queue_assertion_state
+      SET new_generation=claimed.generation
+      WHERE queue_id=claimed.queue_id;
+    ELSIF claimed.queue_id=(SELECT state.other_queue_id FROM trajectory_queue_assertion_state state) THEN
+      other_count := other_count+1;
+    END IF;
+  END LOOP;
+  IF reclaimed_count<>1 OR other_count<>1 THEN
+    RAISE EXCEPTION 'expired historical projection blocked another queue key';
+  END IF;
+END
+$reclaim_projection$;
+RESET ROLE;
+
+SET LOCAL ROLE gowm_history_worker_service;
+SELECT gowm_history_v1.set_data_scope('history-trajectory-a');
 DO $controlled_historical_write$
 DECLARE
   sequence_set tgeompoint;
@@ -513,7 +658,7 @@ DECLARE
   input_hash text;
   segments jsonb;
   gaps jsonb;
-  revision_id uuid;
+  created_revision_id uuid;
 BEGIN
   SELECT version.trajectory,version.extent_box
   INTO STRICT sequence_set,extent_value
@@ -525,7 +670,7 @@ BEGIN
     AND profile.profile_version='1.0';
 
   resources := jsonb_build_array(
-    jsonb_build_object('inputKind','TASK_INTERVAL_REVISION','analysisInputNo',1,'inputRole','TASK_EXECUTION_INTERVAL','resourceNamespace','gowm.history','resourceKind','TASK_EXECUTION_INTERVAL','resourceId','50000000-0000-0000-0000-000000000002','resourceVersion','1','resourceContentHash','','resourceWorldVersion','','authority','history-trajectory-assertion','worldReferenceKey','','sourceAnalysisId',''),
+    jsonb_build_object('inputKind','TASK_INTERVAL_REVISION','analysisInputNo',1,'inputRole','TASK_EXECUTION_INTERVAL','resourceNamespace','gowm','resourceKind','TASK_EXECUTION_INTERVAL','resourceId','wrf_50000000000000000000000000000003','resourceVersion','1','resourceContentHash','','resourceWorldVersion','','authority','history-trajectory-assertion','worldReferenceKey','','sourceAnalysisId',''),
     jsonb_build_object('inputKind','TRACKLET_VERSION','analysisInputNo',2,'inputRole','MOBILITY_TRACKLET_VERSION','resourceNamespace','gowm.history','resourceKind','MOBILITY_TRACKLET_VERSION','resourceId','50000000-0000-0000-0000-000000000011','resourceVersion','1','resourceContentHash','','resourceWorldVersion','','authority','history-trajectory-assertion','worldReferenceKey','','sourceAnalysisId',''),
     jsonb_build_object('inputKind','TRACKLET_FINALIZATION_REVISION','analysisInputNo',3,'inputRole','TRACKLET_FINALIZATION_REVISION','resourceNamespace','gowm.history','resourceKind','TRACKLET_FINALIZATION_REVISION','resourceId','50000000-0000-0000-0000-000000000012','resourceVersion','1','resourceContentHash','','resourceWorldVersion','','authority','history-trajectory-assertion','worldReferenceKey','','sourceAnalysisId',''),
     jsonb_build_object('inputKind','METHOD_PROFILE','analysisInputNo',4,'inputRole','METHOD_PROFILE','resourceNamespace','gowm.history','resourceKind','METHOD_PROFILE','resourceId','trajectory-single-authoritative-v1','resourceVersion','1.0','resourceContentHash',profile_hash,'resourceWorldVersion','','authority','history-trajectory-assertion','worldReferenceKey','','sourceAnalysisId',''),
@@ -561,7 +706,7 @@ BEGIN
     'sourceTrackletGapNo',1,'reasonCodes',jsonb_build_array('SOURCE_COVERAGE_GAP')
   ));
 
-  revision_id := gowm_history.register_historical_trajectory_revision(
+  created_revision_id := gowm_history.register_historical_trajectory_revision(
     'history-trajectory-a','wrf_50000000000000000000000000000002',
     '50000000-0000-0000-0000-000000000001','EXECUTION_ENVELOPE',
     'EXPLICIT_SOURCE','history-trajectory-source','session-50','default',
@@ -577,10 +722,45 @@ BEGIN
     'sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
     '50000000-0000-0000-0000-000000000020',NULL,segments,gaps,'[]',resources,input_sets
   );
+  IF gowm_history.complete_historical_trajectory_projection(
+    (SELECT state.queue_id FROM trajectory_queue_assertion_state state),
+    'history-worker-old',
+    (SELECT state.old_generation FROM trajectory_queue_assertion_state state),
+    created_revision_id,NULL
+  ) THEN
+    RAISE EXCEPTION 'stale historical trajectory worker completed';
+  END IF;
+  IF NOT gowm_history.complete_historical_trajectory_projection(
+    (SELECT state.queue_id FROM trajectory_queue_assertion_state state),
+    'history-worker-new',
+    (SELECT state.new_generation FROM trajectory_queue_assertion_state state),
+    created_revision_id,NULL
+  ) THEN
+    RAISE EXCEPTION 'current historical trajectory projection fence was rejected';
+  END IF;
+  UPDATE trajectory_queue_assertion_state SET revision_id=created_revision_id;
   IF NOT EXISTS (
     SELECT 1 FROM gowm_history.historical_trajectory_revision revision
-    WHERE revision.trajectory_revision_id=revision_id
-  ) OR NOT EXISTS (
+    WHERE revision.trajectory_revision_id=created_revision_id
+  ) OR (SELECT count(*) FROM gowm_history.historical_trajectory_revision revision
+        JOIN gowm_history.historical_trajectory identity USING (historical_trajectory_id)
+        WHERE identity.data_scope_key='history-trajectory-a'
+          AND identity.subject_reference_key='wrf_50000000000000000000000000000002'
+          AND identity.phase_scope='EXECUTION_ENVELOPE'
+          AND identity.semantic_request_hash='sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc')<>1 THEN
+    RAISE EXCEPTION 'controlled worker trajectory write was not exactly-once';
+  END IF;
+END
+$controlled_historical_write$;
+RESET ROLE;
+
+DO $controlled_historical_validation$
+DECLARE
+  revision_id uuid;
+BEGIN
+  SELECT state.revision_id INTO STRICT revision_id
+  FROM trajectory_queue_assertion_state state;
+  IF NOT EXISTS (
     SELECT 1 FROM public.world_reference_descriptor_version descriptor
     JOIN gowm_history.historical_trajectory identity
       ON identity.reference_key=descriptor.reference_key
@@ -611,7 +791,43 @@ BEGIN
     RAISE EXCEPTION 'v0.7 interval/trajectory references are absent from validation authority';
   END IF;
 END
-$controlled_historical_write$;
+$controlled_historical_validation$;
+
+SET LOCAL ROLE gowm_history_worker_service;
+SELECT gowm_history_v1.set_data_scope('history-trajectory-a');
+DO $worker_write_boundaries$
+BEGIN
+  BEGIN
+    UPDATE gowm_history.historical_trajectory_projection_queue
+    SET available_at=clock_timestamp();
+    RAISE EXCEPTION 'history worker received direct queue mutation';
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL;
+  END;
+  BEGIN
+    UPDATE gowm_history.historical_trajectory_head
+    SET updated_at=clock_timestamp();
+    RAISE EXCEPTION 'history worker received direct trajectory head mutation';
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL;
+  END;
+  BEGIN
+    INSERT INTO public.analysis_record(
+      data_scope_key,service_name,tool_name,tool_version,algorithm,
+      algorithm_version,status,analysis_as_of,query_payload,result_payload,
+      method_snapshot,snapshot_hash
+    ) VALUES (
+      'history-trajectory-b','gowm.historical-trace','history.get-trajectory','1.0',
+      'scope-escape-probe','1.0','FAILED',clock_timestamp(),'{}','{}','{}',
+      'sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    );
+    RAISE EXCEPTION 'history worker wrote analysis outside selected scope';
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL;
+  END;
+END
+$worker_write_boundaries$;
+RESET ROLE;
 
 DO $append_only$
 BEGIN

@@ -82,6 +82,15 @@
     "generatedPath": "services/providers/operational-reality-provider/src/semantic-profiles.operational.json"
   },
   {
+    "providerId": "gowm.historical-trace",
+    "manifestPath": "contracts/manifests/providers/historical-trace-provider.json",
+    "aliases": [
+      "contracts/manifests/providers/historical-trace-current.json"
+    ],
+    "declarationPath": "services/providers/historical-trace-provider/src/semantic-contract.historical.json",
+    "generatedPath": "services/providers/historical-trace-provider/src/semantic-profiles.historical.json"
+  },
+  {
     "providerId": "gowm.platform-validation",
     "manifestPath": "contracts/manifests/providers/platform-validation-provider.json",
     "aliases": [

@@ -246,6 +246,61 @@ CREATE INDEX historical_trajectory_outcome_as_of_idx
     semantic_request_hash, created_at DESC, outcome_revision_no DESC
   );
 
+CREATE TABLE gowm_history.historical_trajectory_projection_queue (
+  queue_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  data_scope_key text NOT NULL REFERENCES public.data_scope(scope_key),
+  subject_reference_key text NOT NULL REFERENCES public.world_reference_identity(reference_key),
+  interval_reference_key text NOT NULL REFERENCES public.world_reference_identity(reference_key),
+  interval_revision_no integer NOT NULL CHECK (interval_revision_no > 0),
+  phase_scope text NOT NULL CHECK (phase_scope IN (
+    'EXECUTION_ENVELOPE','ACTIVE_PHASES_ONLY'
+  )),
+  semantic_request_hash text NOT NULL CHECK (semantic_request_hash ~ '^sha256:[0-9a-f]{64}$'),
+  snapshot_hash text NOT NULL CHECK (snapshot_hash ~ '^sha256:[0-9a-f]{64}$'),
+  captured_at timestamptz NOT NULL,
+  query_payload jsonb NOT NULL CHECK (jsonb_typeof(query_payload) = 'object'),
+  requested_snapshot jsonb NOT NULL CHECK (jsonb_typeof(requested_snapshot) = 'object'),
+  request_hash text NOT NULL CHECK (request_hash ~ '^sha256:[0-9a-f]{64}$'),
+  state text NOT NULL DEFAULT 'QUEUED' CHECK (state IN (
+    'QUEUED','RUNNING','COMPLETED','FAILED'
+  )),
+  generation bigint NOT NULL DEFAULT 0 CHECK (generation >= 0),
+  available_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  locked_at timestamptz,
+  lease_until timestamptz,
+  locked_by text,
+  attempts integer NOT NULL DEFAULT 0 CHECK (attempts BETWEEN 0 AND 10),
+  trajectory_revision_id uuid
+    REFERENCES gowm_history.historical_trajectory_revision(trajectory_revision_id),
+  outcome_id uuid REFERENCES gowm_history.historical_trajectory_outcome(outcome_id),
+  processed_at timestamptz,
+  last_error text,
+  created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  UNIQUE (data_scope_key, request_hash),
+  CHECK ((state = 'RUNNING') = (
+    locked_by IS NOT NULL AND locked_at IS NOT NULL AND lease_until IS NOT NULL
+  )),
+  CHECK (lease_until IS NULL OR locked_at IS NULL OR lease_until > locked_at),
+  CHECK (
+    (state = 'COMPLETED' AND processed_at IS NOT NULL
+      AND num_nonnulls(trajectory_revision_id, outcome_id) = 1)
+    OR
+    (state <> 'COMPLETED' AND processed_at IS NULL
+      AND num_nonnulls(trajectory_revision_id, outcome_id) = 0)
+  )
+);
+
+CREATE INDEX historical_trajectory_projection_queue_claim_idx
+  ON gowm_history.historical_trajectory_projection_queue(
+    available_at, created_at, queue_id
+  )
+  WHERE state IN ('QUEUED','FAILED','RUNNING');
+CREATE INDEX historical_trajectory_projection_queue_request_idx
+  ON gowm_history.historical_trajectory_projection_queue(
+    data_scope_key, subject_reference_key, interval_reference_key,
+    phase_scope, semantic_request_hash, captured_at DESC
+  );
+
 CREATE TRIGGER historical_trajectory_immutable
   BEFORE UPDATE OR DELETE ON gowm_history.historical_trajectory
   FOR EACH ROW EXECUTE FUNCTION gowm_history.reject_append_only_mutation();
@@ -285,6 +340,406 @@ $fn$;
 CREATE TRIGGER historical_trajectory_head_projection_owned
   BEFORE INSERT OR UPDATE OR DELETE ON gowm_history.historical_trajectory_head
   FOR EACH ROW EXECUTE FUNCTION gowm_history.protect_historical_trajectory_head_write();
+
+CREATE FUNCTION gowm_history.protect_historical_trajectory_projection_queue_payload()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = pg_catalog
+AS $fn$
+BEGIN
+  IF TG_OP = 'DELETE' THEN
+    RAISE EXCEPTION 'historical trajectory projection queue evidence cannot be deleted'
+      USING ERRCODE = '55000';
+  END IF;
+  IF (to_jsonb(NEW) - ARRAY[
+        'state','generation','available_at','locked_at','lease_until','locked_by',
+        'attempts','trajectory_revision_id','outcome_id','processed_at','last_error'
+      ]) IS DISTINCT FROM
+     (to_jsonb(OLD) - ARRAY[
+        'state','generation','available_at','locked_at','lease_until','locked_by',
+        'attempts','trajectory_revision_id','outcome_id','processed_at','last_error'
+      ]) THEN
+    RAISE EXCEPTION 'historical trajectory projection queue request is immutable'
+      USING ERRCODE = '55000';
+  END IF;
+  RETURN NEW;
+END
+$fn$;
+
+CREATE TRIGGER historical_trajectory_projection_queue_payload_immutable
+  BEFORE UPDATE OR DELETE ON gowm_history.historical_trajectory_projection_queue
+  FOR EACH ROW EXECUTE FUNCTION gowm_history.protect_historical_trajectory_projection_queue_payload();
+
+CREATE FUNCTION gowm_history.enqueue_historical_trajectory_projection(
+  p_data_scope_key text,
+  p_subject_reference_key text,
+  p_interval_reference_key text,
+  p_interval_revision_no integer,
+  p_phase_scope text,
+  p_semantic_request_hash text,
+  p_snapshot_hash text,
+  p_captured_at timestamptz,
+  p_query_payload jsonb,
+  p_requested_snapshot jsonb
+)
+RETURNS uuid
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public, gowm_history, gowm_history_v1
+AS $fn$
+DECLARE
+  subject_scope text;
+  interval_scope text;
+  interval_kind text;
+  snapshot_resource jsonb;
+  snapshot_resource_scope text;
+  request_digest text;
+  result_id uuid;
+  result_state text;
+  result_attempts integer;
+BEGIN
+  IF gowm_history_v1.current_data_scope_key() IS DISTINCT FROM p_data_scope_key THEN
+    RAISE EXCEPTION 'historical trajectory enqueue scope was not selected first'
+      USING ERRCODE = '42501';
+  END IF;
+  IF p_interval_revision_no IS NULL OR p_interval_revision_no <= 0
+     OR p_phase_scope NOT IN ('EXECUTION_ENVELOPE','ACTIVE_PHASES_ONLY')
+     OR p_semantic_request_hash !~ '^sha256:[0-9a-f]{64}$'
+     OR p_snapshot_hash !~ '^sha256:[0-9a-f]{64}$'
+     OR p_captured_at IS NULL
+     OR jsonb_typeof(p_query_payload) IS DISTINCT FROM 'object'
+     OR jsonb_typeof(p_requested_snapshot) IS DISTINCT FROM 'object'
+     OR jsonb_typeof(p_requested_snapshot->'resources') IS DISTINCT FROM 'array'
+     OR jsonb_array_length(p_requested_snapshot->'resources') > 512 THEN
+    RAISE EXCEPTION 'historical trajectory enqueue request is invalid'
+      USING ERRCODE = '22023';
+  END IF;
+
+  SELECT identity.data_scope_key
+  INTO subject_scope
+  FROM public.world_reference_identity identity
+  WHERE identity.reference_key = p_subject_reference_key;
+  IF NOT FOUND OR subject_scope IS DISTINCT FROM p_data_scope_key THEN
+    RAISE EXCEPTION 'historical trajectory subject is unavailable or cross-scope'
+      USING ERRCODE = '42501';
+  END IF;
+
+  SELECT identity.data_scope_key, identity.entity_kind
+  INTO interval_scope, interval_kind
+  FROM public.world_reference_identity identity
+  WHERE identity.reference_key = p_interval_reference_key;
+  IF NOT FOUND OR interval_scope IS DISTINCT FROM p_data_scope_key
+     OR interval_kind <> 'TASK_EXECUTION_INTERVAL' THEN
+    RAISE EXCEPTION 'historical trajectory interval is unavailable or cross-scope'
+      USING ERRCODE = '42501';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM gowm_history.task_execution_interval interval
+    JOIN gowm_history.task_execution_interval_revision revision USING (interval_id)
+    WHERE interval.data_scope_key = p_data_scope_key
+      AND interval.reference_key = p_interval_reference_key
+      AND revision.revision_no = p_interval_revision_no
+      AND revision.created_at <= p_captured_at
+  ) THEN
+    RAISE EXCEPTION 'historical trajectory interval revision is unavailable at capturedAt'
+      USING ERRCODE = '23503';
+  END IF;
+
+  IF p_query_payload #>> '{subjectReferenceKey,id}' IS DISTINCT FROM p_subject_reference_key
+     OR p_query_payload #>> '{executionIntervalReferenceKey,id}' IS DISTINCT FROM p_interval_reference_key
+     OR p_query_payload #>> '{executionIntervalReferenceKey,version}' IS DISTINCT FROM p_interval_revision_no::text
+     OR p_query_payload->>'phaseScope' IS DISTINCT FROM p_phase_scope
+     OR p_requested_snapshot->>'manifestHash' IS DISTINCT FROM p_snapshot_hash
+     OR (p_requested_snapshot->>'capturedAt')::timestamptz IS DISTINCT FROM p_captured_at THEN
+    RAISE EXCEPTION 'historical trajectory frozen request identity conflicts with queue columns'
+      USING ERRCODE = '23514';
+  END IF;
+
+  FOR snapshot_resource IN
+    SELECT value FROM jsonb_array_elements(p_requested_snapshot->'resources')
+  LOOP
+    snapshot_resource_scope := NULL;
+    CASE snapshot_resource->>'resourceKind'
+      WHEN 'TASK_EXECUTION_INTERVAL' THEN
+        SELECT identity.data_scope_key
+        INTO snapshot_resource_scope
+        FROM public.world_reference_identity identity
+        WHERE identity.reference_key = snapshot_resource->>'resourceId'
+          AND identity.entity_kind = 'TASK_EXECUTION_INTERVAL';
+      WHEN 'TRACKLET_VERSION' THEN
+        SELECT tracklet.data_scope_key
+        INTO snapshot_resource_scope
+        FROM public.mobility_tracklet_version version
+        JOIN public.mobility_tracklet tracklet USING (tracklet_id)
+        WHERE version.tracklet_version_id = (snapshot_resource->>'resourceId')::uuid;
+      WHEN 'TRACKLET_FINALIZATION' THEN
+        SELECT tracklet.data_scope_key
+        INTO snapshot_resource_scope
+        FROM gowm_history.tracklet_finalization_revision finalization
+        JOIN public.mobility_tracklet_version version USING (tracklet_version_id)
+        JOIN public.mobility_tracklet tracklet USING (tracklet_id)
+        WHERE finalization.finalization_revision_id =
+              (snapshot_resource->>'resourceId')::uuid;
+      WHEN 'WATERMARK_REVISION' THEN
+        SELECT stream.data_scope_key
+        INTO snapshot_resource_scope
+        FROM public.pipeline_watermark_revision watermark
+        JOIN public.datastream stream USING (datastream_key)
+        WHERE watermark.watermark_revision_id = (snapshot_resource->>'resourceId')::uuid;
+      WHEN 'WATERMARK' THEN
+        SELECT stream.data_scope_key
+        INTO snapshot_resource_scope
+        FROM public.pipeline_watermark_revision watermark
+        JOIN public.datastream stream USING (datastream_key)
+        WHERE watermark.watermark_revision_id = (snapshot_resource->>'resourceId')::uuid;
+      ELSE
+        CONTINUE;
+    END CASE;
+
+    IF snapshot_resource_scope IS NULL THEN
+      RAISE EXCEPTION 'historical trajectory snapshot resource is unavailable'
+        USING ERRCODE = '23503';
+    END IF;
+    IF snapshot_resource_scope IS DISTINCT FROM p_data_scope_key THEN
+      RAISE EXCEPTION 'historical trajectory snapshot resource crosses data scope'
+        USING ERRCODE = '42501';
+    END IF;
+  END LOOP;
+
+  request_digest := public.grounding_sha256(jsonb_build_array(
+    p_data_scope_key, p_subject_reference_key, p_interval_reference_key,
+    p_interval_revision_no, p_phase_scope, p_semantic_request_hash,
+    p_snapshot_hash, p_captured_at
+  )::text);
+  PERFORM pg_advisory_xact_lock(hashtextextended(
+    p_data_scope_key || E'\u001f' || request_digest,
+    0
+  ));
+
+  INSERT INTO gowm_history.historical_trajectory_projection_queue(
+    data_scope_key, subject_reference_key, interval_reference_key,
+    interval_revision_no, phase_scope, semantic_request_hash, snapshot_hash,
+    captured_at, query_payload, requested_snapshot, request_hash
+  ) VALUES (
+    p_data_scope_key, p_subject_reference_key, p_interval_reference_key,
+    p_interval_revision_no, p_phase_scope, p_semantic_request_hash,
+    p_snapshot_hash, p_captured_at, p_query_payload, p_requested_snapshot,
+    request_digest
+  ) ON CONFLICT (data_scope_key, request_hash) DO UPDATE SET
+    state = CASE
+      WHEN gowm_history.historical_trajectory_projection_queue.state = 'FAILED'
+       AND gowm_history.historical_trajectory_projection_queue.attempts < 10
+      THEN 'QUEUED'
+      ELSE gowm_history.historical_trajectory_projection_queue.state
+    END,
+    available_at = CASE
+      WHEN gowm_history.historical_trajectory_projection_queue.state = 'FAILED'
+       AND gowm_history.historical_trajectory_projection_queue.attempts < 10
+      THEN clock_timestamp()
+      ELSE gowm_history.historical_trajectory_projection_queue.available_at
+    END,
+    last_error = CASE
+      WHEN gowm_history.historical_trajectory_projection_queue.state = 'FAILED'
+       AND gowm_history.historical_trajectory_projection_queue.attempts < 10
+      THEN NULL
+      ELSE gowm_history.historical_trajectory_projection_queue.last_error
+    END
+  RETURNING queue_id, state, attempts
+  INTO result_id, result_state, result_attempts;
+
+  IF result_state = 'FAILED' AND result_attempts >= 10 THEN
+    RAISE EXCEPTION 'historical trajectory projection retry budget is exhausted'
+      USING ERRCODE = '55000';
+  END IF;
+  RETURN result_id;
+END
+$fn$;
+
+CREATE FUNCTION gowm_history.claim_historical_trajectory_projection(
+  p_worker_id text,
+  p_batch_size integer DEFAULT 100,
+  p_lease interval DEFAULT interval '30 seconds'
+)
+RETURNS SETOF gowm_history.historical_trajectory_projection_queue
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public, gowm_history
+AS $fn$
+BEGIN
+  IF length(btrim(p_worker_id)) NOT BETWEEN 1 AND 128
+     OR p_batch_size NOT BETWEEN 1 AND 1000
+     OR p_lease <= interval '0'
+     OR p_lease > interval '15 minutes' THEN
+    RAISE EXCEPTION 'historical trajectory projection claim is invalid'
+      USING ERRCODE = '22023';
+  END IF;
+
+  WITH exhausted AS (
+    SELECT queue.queue_id
+    FROM gowm_history.historical_trajectory_projection_queue queue
+    WHERE queue.state = 'RUNNING'
+      AND queue.lease_until <= clock_timestamp()
+      AND queue.attempts >= 10
+    FOR UPDATE SKIP LOCKED
+  )
+  UPDATE gowm_history.historical_trajectory_projection_queue queue
+  SET state = 'FAILED',
+      locked_at = NULL,
+      lease_until = NULL,
+      locked_by = NULL,
+      last_error = COALESCE(queue.last_error, 'historical trajectory projection retry budget exhausted')
+  FROM exhausted
+  WHERE queue.queue_id = exhausted.queue_id;
+
+  RETURN QUERY
+  WITH candidates AS (
+    SELECT queue.queue_id
+    FROM gowm_history.historical_trajectory_projection_queue queue
+    WHERE queue.available_at <= clock_timestamp()
+      AND queue.attempts < 10
+      AND (
+        queue.state IN ('QUEUED','FAILED')
+        OR (queue.state = 'RUNNING' AND queue.lease_until <= clock_timestamp())
+      )
+    ORDER BY queue.available_at, queue.created_at, queue.queue_id
+    FOR UPDATE SKIP LOCKED
+    LIMIT p_batch_size
+  )
+  UPDATE gowm_history.historical_trajectory_projection_queue queue
+  SET state = 'RUNNING',
+      generation = queue.generation + 1,
+      attempts = queue.attempts + 1,
+      locked_at = clock_timestamp(),
+      lease_until = clock_timestamp() + p_lease,
+      locked_by = p_worker_id,
+      trajectory_revision_id = NULL,
+      outcome_id = NULL,
+      processed_at = NULL
+  FROM candidates
+  WHERE queue.queue_id = candidates.queue_id
+  RETURNING queue.*;
+END
+$fn$;
+
+CREATE FUNCTION gowm_history.complete_historical_trajectory_projection(
+  p_queue_id uuid,
+  p_worker_id text,
+  p_generation bigint,
+  p_trajectory_revision_id uuid,
+  p_outcome_id uuid
+)
+RETURNS boolean
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public, gowm_history
+AS $fn$
+DECLARE
+  projection_record gowm_history.historical_trajectory_projection_queue%ROWTYPE;
+BEGIN
+  IF num_nonnulls(p_trajectory_revision_id, p_outcome_id) <> 1 THEN
+    RAISE EXCEPTION 'historical trajectory completion requires exactly one result'
+      USING ERRCODE = '22023';
+  END IF;
+
+  SELECT queue.*
+  INTO projection_record
+  FROM gowm_history.historical_trajectory_projection_queue queue
+  WHERE queue.queue_id = p_queue_id
+  FOR UPDATE;
+  IF NOT FOUND
+     OR projection_record.state <> 'RUNNING'
+     OR projection_record.locked_by IS DISTINCT FROM p_worker_id
+     OR projection_record.generation <> p_generation
+     OR projection_record.lease_until <= clock_timestamp() THEN
+    RETURN false;
+  END IF;
+
+  IF p_trajectory_revision_id IS NOT NULL AND NOT EXISTS (
+    SELECT 1
+    FROM gowm_history.historical_trajectory_revision revision
+    JOIN gowm_history.historical_trajectory trajectory USING (historical_trajectory_id)
+    JOIN gowm_history.task_execution_interval interval USING (interval_id)
+    JOIN gowm_history.task_execution_interval_revision interval_revision
+      ON interval_revision.interval_revision_id = revision.interval_revision_id
+    WHERE revision.trajectory_revision_id = p_trajectory_revision_id
+      AND trajectory.data_scope_key = projection_record.data_scope_key
+      AND trajectory.subject_reference_key = projection_record.subject_reference_key
+      AND interval.reference_key = projection_record.interval_reference_key
+      AND interval_revision.revision_no = projection_record.interval_revision_no
+      AND trajectory.phase_scope = projection_record.phase_scope
+      AND trajectory.semantic_request_hash = projection_record.semantic_request_hash
+      AND revision.created_at > projection_record.captured_at
+  ) THEN
+    RAISE EXCEPTION 'historical trajectory completion result conflicts with queued request'
+      USING ERRCODE = '23514';
+  END IF;
+
+  IF p_outcome_id IS NOT NULL AND NOT EXISTS (
+    SELECT 1
+    FROM gowm_history.historical_trajectory_outcome outcome
+    WHERE outcome.outcome_id = p_outcome_id
+      AND outcome.data_scope_key = projection_record.data_scope_key
+      AND outcome.subject_reference_key = projection_record.subject_reference_key
+      AND outcome.interval_reference_key = projection_record.interval_reference_key
+      AND outcome.phase_scope = projection_record.phase_scope
+      AND outcome.semantic_request_hash = projection_record.semantic_request_hash
+      AND outcome.evaluated_as_of = projection_record.captured_at
+      AND outcome.created_at > projection_record.captured_at
+  ) THEN
+    RAISE EXCEPTION 'historical trajectory outcome conflicts with queued request'
+      USING ERRCODE = '23514';
+  END IF;
+
+  UPDATE gowm_history.historical_trajectory_projection_queue queue
+  SET state = 'COMPLETED',
+      trajectory_revision_id = p_trajectory_revision_id,
+      outcome_id = p_outcome_id,
+      processed_at = clock_timestamp(),
+      locked_at = NULL,
+      lease_until = NULL,
+      locked_by = NULL,
+      last_error = NULL
+  WHERE queue.queue_id = p_queue_id;
+  RETURN true;
+END
+$fn$;
+
+CREATE FUNCTION gowm_history.fail_historical_trajectory_projection(
+  p_queue_id uuid,
+  p_worker_id text,
+  p_generation bigint,
+  p_error text,
+  p_retry_at timestamptz DEFAULT clock_timestamp()
+)
+RETURNS boolean
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public, gowm_history
+AS $fn$
+DECLARE
+  changed integer;
+BEGIN
+  UPDATE gowm_history.historical_trajectory_projection_queue queue
+  SET state = 'FAILED',
+      available_at = greatest(COALESCE(p_retry_at, clock_timestamp()), clock_timestamp()),
+      locked_at = NULL,
+      lease_until = NULL,
+      locked_by = NULL,
+      trajectory_revision_id = NULL,
+      outcome_id = NULL,
+      processed_at = NULL,
+      last_error = left(COALESCE(p_error, 'historical trajectory projection failed'), 2048)
+  WHERE queue.queue_id = p_queue_id
+    AND queue.state = 'RUNNING'
+    AND queue.locked_by = p_worker_id
+    AND queue.generation = p_generation
+    AND queue.lease_until > clock_timestamp();
+  GET DIAGNOSTICS changed = ROW_COUNT;
+  RETURN changed = 1;
+END
+$fn$;
 
 CREATE FUNCTION gowm_history.record_historical_trajectory_outcome(
   p_data_scope_key text,
@@ -446,6 +901,8 @@ DECLARE
   set_row jsonb;
   next_input_no integer := 1;
   required_kind text;
+  artifact_scope text;
+  artifact_match_count integer;
 BEGIN
   IF jsonb_typeof(p_segments) <> 'array'
      OR jsonb_typeof(p_gaps) <> 'array'
@@ -524,7 +981,9 @@ BEGIN
   LOOP
     CASE input_row->>'inputKind'
       WHEN 'TASK_INTERVAL_REVISION' THEN
-        IF (input_row->>'resourceId')::uuid IS DISTINCT FROM p_interval_revision_id
+        IF input_row->>'resourceNamespace' IS DISTINCT FROM 'gowm'
+           OR input_row->>'resourceKind' IS DISTINCT FROM 'TASK_EXECUTION_INTERVAL'
+           OR input_row->>'resourceId' IS DISTINCT FROM interval_record.reference_key
            OR (input_row->>'resourceVersion')::integer IS DISTINCT FROM
               interval_revision_record.revision_no
            OR (NULLIF(input_row->>'resourceContentHash', '') IS NOT NULL
@@ -586,6 +1045,57 @@ BEGIN
       ELSE
         NULL;
     END CASE;
+  END LOOP;
+
+  FOR segment_row IN SELECT value FROM jsonb_array_elements(p_segments)
+  LOOP
+    IF NOT EXISTS (
+      SELECT 1
+      FROM public.mobility_tracklet_segment segment
+      JOIN public.mobility_tracklet_version version
+        ON version.tracklet_version_id = segment.tracklet_version_id
+      JOIN public.mobility_tracklet tracklet USING (tracklet_id)
+      WHERE segment.tracklet_version_id =
+            (segment_row->>'sourceTrackletVersionId')::uuid
+        AND segment.segment_no = (segment_row->>'sourceSegmentNo')::integer
+        AND tracklet.data_scope_key = p_data_scope_key
+        AND EXISTS (
+          SELECT 1
+          FROM jsonb_array_elements(p_resource_inputs) tracklet_input
+          WHERE tracklet_input->>'inputKind' = 'TRACKLET_VERSION'
+            AND (tracklet_input->>'resourceId')::uuid = segment.tracklet_version_id
+            AND (tracklet_input->>'resourceVersion')::integer = version.version_no
+        )
+    ) THEN
+      RAISE EXCEPTION 'historical trajectory segment crosses scope or is not pinned'
+        USING ERRCODE = '42501';
+    END IF;
+  END LOOP;
+
+  FOR gap_row IN SELECT value FROM jsonb_array_elements(p_gaps)
+  LOOP
+    IF NULLIF(gap_row->>'sourceTrackletVersionId', '') IS NOT NULL
+       AND NOT EXISTS (
+         SELECT 1
+         FROM public.mobility_tracklet_gap gap
+         JOIN public.mobility_tracklet_version version
+           ON version.tracklet_version_id = gap.tracklet_version_id
+         JOIN public.mobility_tracklet tracklet USING (tracklet_id)
+         WHERE gap.tracklet_version_id =
+               (gap_row->>'sourceTrackletVersionId')::uuid
+           AND gap.gap_no = (gap_row->>'sourceTrackletGapNo')::integer
+           AND tracklet.data_scope_key = p_data_scope_key
+           AND EXISTS (
+             SELECT 1
+             FROM jsonb_array_elements(p_resource_inputs) tracklet_input
+             WHERE tracklet_input->>'inputKind' = 'TRACKLET_VERSION'
+               AND (tracklet_input->>'resourceId')::uuid = gap.tracklet_version_id
+               AND (tracklet_input->>'resourceVersion')::integer = version.version_no
+           )
+       ) THEN
+      RAISE EXCEPTION 'historical trajectory gap crosses scope or is not pinned'
+        USING ERRCODE = '42501';
+    END IF;
   END LOOP;
 
   FOREACH required_kind IN ARRAY ARRAY[
@@ -804,6 +1314,27 @@ BEGIN
 
   FOR set_row IN SELECT value FROM jsonb_array_elements(p_input_sets)
   LOOP
+    IF NULLIF(set_row->>'manifestArtifactRef', '') IS NOT NULL THEN
+      SELECT count(*)::integer, min(reference.data_scope_key)
+      INTO artifact_match_count, artifact_scope
+      FROM public.world_query_artifact artifact
+      JOIN public.world_query_result_reference reference USING (result_reference_id)
+      WHERE artifact.artifact_ref = set_row->>'manifestArtifactRef';
+
+      IF artifact_match_count = 0 THEN
+        RAISE EXCEPTION 'historical trajectory input artifact is unavailable'
+          USING ERRCODE = '23503';
+      END IF;
+      IF artifact_match_count <> 1 THEN
+        RAISE EXCEPTION 'historical trajectory input artifact identity is ambiguous'
+          USING ERRCODE = '23514';
+      END IF;
+      IF artifact_scope IS DISTINCT FROM p_data_scope_key THEN
+        RAISE EXCEPTION 'historical trajectory input artifact crosses data scope'
+          USING ERRCODE = '42501';
+      END IF;
+    END IF;
+
     PERFORM public.register_analysis_input_set(
       p_analysis_id,
       set_row->>'inputSetKind',
@@ -1170,6 +1701,31 @@ AS $fn$
     AND revision.created_at <= p_captured_at
 $fn$;
 
+CREATE FUNCTION gowm_history.enforce_history_worker_analysis_scope()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = pg_catalog
+AS $fn$
+BEGIN
+  IF current_user IN ('gowm_history_worker','gowm_history_worker_service') THEN
+    IF current_setting('gowm.data_scope_key', true) IS NULL
+       OR current_setting('gowm.data_scope_key', true) = ''
+       OR NEW.data_scope_key IS DISTINCT FROM current_setting('gowm.data_scope_key', true)
+       OR NEW.service_name <> 'gowm.historical-trace'
+       OR NEW.tool_name <> 'history.get-trajectory'
+       OR NEW.tool_version <> '1.0' THEN
+      RAISE EXCEPTION 'history worker analysis write is outside its selected scope or contract'
+        USING ERRCODE = '42501';
+    END IF;
+  END IF;
+  RETURN NEW;
+END
+$fn$;
+
+CREATE TRIGGER analysis_record_history_worker_scope
+  BEFORE INSERT ON public.analysis_record
+  FOR EACH ROW EXECUTE FUNCTION gowm_history.enforce_history_worker_analysis_scope();
+
 CREATE OR REPLACE VIEW gowm_platform_validation_v1.world_reference_version
 WITH (security_barrier = true)
 AS
@@ -1246,6 +1802,59 @@ GRANT EXECUTE ON FUNCTION gowm_history.record_historical_trajectory_outcome(
   text, text, text, text, text, text, text, text[], boolean, uuid, timestamptz, text
 ) TO gowm_history_writer;
 
+GRANT USAGE ON SCHEMA gowm_history TO gowm_history_service;
+GRANT EXECUTE ON FUNCTION gowm_history.enqueue_historical_trajectory_projection(
+  text, text, text, integer, text, text, text, timestamptz, jsonb, jsonb
+) TO gowm_history_service;
+GRANT EXECUTE ON FUNCTION gowm_history.claim_historical_trajectory_projection(
+  text, integer, interval
+) TO gowm_history_worker;
+GRANT EXECUTE ON FUNCTION gowm_history.complete_historical_trajectory_projection(
+  uuid, text, bigint, uuid, uuid
+) TO gowm_history_worker;
+GRANT EXECUTE ON FUNCTION gowm_history.fail_historical_trajectory_projection(
+  uuid, text, bigint, text, timestamptz
+) TO gowm_history_worker;
+
+GRANT gowm_history_reader TO gowm_history_worker;
+GRANT SELECT ON
+  public.operational_task_event,
+  public.world_reference_identity,
+  public.world_observation,
+  public.mobility_tracklet,
+  public.mobility_tracklet_version,
+  public.mobility_tracklet_segment,
+  public.mobility_tracklet_gap,
+  public.mobility_tracklet_input,
+  public.entity_binding,
+  public.analysis_space,
+  public.measurement,
+  public.observation_time_solution,
+  public.pipeline_watermark_revision,
+  public.analysis_record,
+  gowm_history.method_profile,
+  gowm_history.task_execution_interval,
+  gowm_history.task_execution_interval_revision,
+  gowm_history.task_execution_phase,
+  gowm_history.task_execution_interval_input,
+  gowm_history.task_execution_interval_head,
+  gowm_history.task_interval_projection_queue,
+  gowm_history.tracklet_projection_queue,
+  gowm_history.tracklet_finalization_revision,
+  gowm_history.tracklet_finalization_watermark_input,
+  gowm_history.tracklet_finalization_head,
+  gowm_history.historical_trajectory,
+  gowm_history.historical_trajectory_revision,
+  gowm_history.historical_trajectory_head,
+  gowm_history.historical_trajectory_outcome
+TO gowm_history_worker;
+GRANT INSERT (
+  data_scope_key, service_name, tool_name, tool_version, algorithm,
+  algorithm_version, status, analysis_as_of, query_payload, result_payload,
+  method_snapshot, snapshot_hash, supersedes_analysis_id
+) ON public.analysis_record TO gowm_history_worker;
+GRANT EXECUTE ON FUNCTION public.grounding_sha256(text) TO gowm_history_worker;
+
 COMMENT ON TABLE gowm_history.historical_trajectory_revision IS
   'Append-only, gap-preserving trajectory derived from exact interval, tracklet, finalization, watermark, profile, and analysis inputs.';
 COMMENT ON TABLE gowm_history.historical_trajectory_excluded_period IS
@@ -1260,5 +1869,11 @@ COMMENT ON FUNCTION gowm_history_v1.historical_trajectory_outcome_as_of(
   text, text, text, text, timestamptz
 ) IS
   'Returns the latest scoped outcome created at or before capturedAt for a stable historical request identity; no current head is consulted.';
+COMMENT ON TABLE gowm_history.historical_trajectory_projection_queue IS
+  'Controlled immutable request queue freezing the exact query and effective snapshot. Workers use bounded leases and generation fences; results become visible only to later capturedAt reads.';
+COMMENT ON FUNCTION gowm_history.enqueue_historical_trajectory_projection(
+  text, text, text, integer, text, text, text, timestamptz, jsonb, jsonb
+) IS
+  'Scope-first idempotent enqueue for one frozen historical trajectory request; no trajectory computation occurs in the Provider transaction.';
 
 COMMIT;

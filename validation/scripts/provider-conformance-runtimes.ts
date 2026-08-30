@@ -6,6 +6,7 @@ import { createNetworkProvider } from "../../services/providers/network-provider
 import { createRoutePlanningProvider } from "../../services/providers/route-planning-provider/src/provider.js";
 import { createRoadCoverageProvider, PostgresRoadCoverageEngine } from "../../services/providers/road-coverage-provider/src/provider.js";
 import { createPlatformValidationProvider, PostgresPlatformValidationAuthority } from "../../services/providers/platform-validation-provider/src/index.js";
+import { createHistoricalTraceProvider } from "../../services/providers/historical-trace-provider/src/provider.js";
 
 /** Manifest and fail-closed protocol inspection only: never connects or claims readiness. */
 export function currentProviderRuntimes() {
@@ -24,6 +25,7 @@ export function currentProviderRuntimes() {
     { slug: "network", sourceRoot: "services/providers/network-provider/src", runtime: createNetworkProvider({ pool }).runtime },
     { slug: "route", sourceRoot: "services/providers/route-planning-provider/src", runtime: createRoutePlanningProvider({ pool }).runtime },
     { slug: "road-coverage", sourceRoot: "services/providers/road-coverage-provider/src", runtime: createRoadCoverageProvider(new PostgresRoadCoverageEngine({ pool })).runtime },
-    { slug: "platform-validation", sourceRoot: "services/providers/platform-validation-provider/src", runtime: createPlatformValidationProvider(new PostgresPlatformValidationAuthority(pool)).runtime }
+    { slug: "platform-validation", sourceRoot: "services/providers/platform-validation-provider/src", runtime: createPlatformValidationProvider(new PostgresPlatformValidationAuthority(pool)).runtime },
+    { slug: "historical-trace", sourceRoot: "services/providers/historical-trace-provider/src", runtime: createHistoricalTraceProvider({ pool }).runtime }
   ];
 }

@@ -5,7 +5,7 @@
     "providerId": "gowm.operational-reality",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:d98bf63ef7326eb10c5e20f3b7a5fe224ede3aa429dd8d75cda876109f528930",
+    "implementationDigest": "sha256:2919af05d0dbe1517b523126fa6dfdea5573bfbeaedba4fb432b7b4d73adc6a2",
     "sourceRef": "urn:gowm:source:in-tree:operational-reality:1.0.0"
   },
   "endpoints": {
@@ -733,6 +733,100 @@
             "schemaUri": "urn:gowm:v0.2:value:string",
             "schemaHash": "sha256:a71d355802de7ff21b9c9d9214a1ba71b3648866bcf1b7c0f4ff3b656485c6d5",
             "valueKind": "SCALAR",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "operational-task.get-execution-intervals",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.1",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [
+          "OPERATIONAL_TASK"
+        ],
+        "producedReferenceKinds": [
+          "TASK_EXECUTION_INTERVAL",
+          "TASK_EXECUTION_EVENT_SET",
+          "HISTORY_METHOD_PROFILE"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "PROJECTION",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETED": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        },
+        "notes": [
+          "Intervals are immutable as-of projections over scoped Operational Task Events.",
+          "Open database ranges are rendered only through the effective snapshot capturedAt."
+        ]
+      },
+      "semanticRole": "PROJECTION_QUERY",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "WORLD_PROJECTION",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.7:task-execution-interval-query",
+      "inputSchemaHash": "sha256:7cd0e8b57d49bfb073e1f3c37626230b81a55bc66854db3642728a34e290a2d4",
+      "outputSchemaUri": "urn:gowm:v0.7:task-execution-interval-result",
+      "outputSchemaHash": "sha256:f95e9c45c7c7e2dadd683b36d133e1fb1e5785f03e9245c67bc391e48a3ad4ee",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 10000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED",
+        "resourceResolution": "DISCOVER_RESOURCES"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.7:task-execution-interval-query",
+            "schemaHash": "sha256:7cd0e8b57d49bfb073e1f3c37626230b81a55bc66854db3642728a34e290a2d4",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.7:task-execution-interval-result",
+            "schemaHash": "sha256:f95e9c45c7c7e2dadd683b36d133e1fb1e5785f03e9245c67bc391e48a3ad4ee",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          },
+          {
+            "name": "executionIntervalReferenceKey",
+            "path": "/intervals/0/executionIntervalReferenceKey",
+            "schemaUri": "urn:gowm:v0.7:reference-key",
+            "schemaHash": "sha256:7e343abf625147fba0cec228a88c640ee630f6c3a1a22b5e4bcf90e56190c861",
+            "valueKind": "REFERENCE_KEY",
             "unitSemantics": "UNSPECIFIED"
           }
         ]

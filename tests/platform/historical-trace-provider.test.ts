@@ -3,6 +3,7 @@ import type pg from "pg";
 import { validateContract,type GowmV07HistoricalTrajectoryQuery,type GowmV07QuerySnapshotManifest } from "../../packages/platform/contract-runtime/src/index.js";
 import { createHistoricalTraceProvider } from "../../services/providers/historical-trace-provider/src/provider.js";
 import { HistoricalTraceRepository,historicalSemanticRequestHash } from "../../services/providers/historical-trace-provider/src/repository.js";
+import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 
 const HASH=`sha256:${"b".repeat(64)}` as const;
 const CAPTURED_AT="2026-08-30T10:00:00.000Z";
@@ -19,7 +20,7 @@ describe("historical trace provider",()=>{
     const semanticHash=historicalSemanticRequestHash(input);
     const effective:satisfiesManifest={
       querySnapshotId:"snapshot-history-pinned",mode:"PINNED",consistency:"PINNED",capturedAt:CAPTURED_AT,
-      resources:[{resourceKind:"HISTORICAL_TRAJECTORY",resourceId:"trajectory-ref-1",version:"2",contentHash:HASH,pinning:"PINNED"}],
+      resources:[{resourceKind:"HISTORICAL_TRAJECTORY",resourceId:"gowm:trajectory-ref-1",version:"2",contentHash:HASH,pinning:"PINNED"}],
       manifestHash:HASH
     };
     const {pool,queries}=fakePool((sql)=>{
@@ -70,6 +71,7 @@ describe("historical trace provider",()=>{
     expect(result.output.artifactReference).toMatchObject({digest:HASH,mediaType:"application/vnd.gowm.historical-trajectory+mfjson"});
     expect(result.output.inputTrackletVersions).toEqual([expect.objectContaining({sourceKey:"gps-a",trackerSessionKey:"session-a",versionNo:3})]);
     expect(result.dataSnapshot.capturedAt).toBe(CAPTURED_AT);
+    expect(result.dataSnapshot.scopeDigest).toBe(sha256({dataScopeKey:"scope-a"}));
     expect(result.dataSnapshot.resources.map((item)=>item.referenceKey.kind)).toEqual(expect.arrayContaining([
       "HISTORICAL_TRAJECTORY","HISTORY_INPUT_SET","TASK_EXECUTION_INTERVAL","TRACKLET_VERSION","HISTORY_METHOD_PROFILE"
     ]));
@@ -89,7 +91,7 @@ describe("historical trace provider",()=>{
       querySnapshotId:"snapshot-history-latest",mode:"LATEST_AT_START",consistency:"CONSISTENT_AT_START",
       capturedAt:CAPTURED_AT,resources:[],manifestHash:HASH
     };
-    const {pool}=fakePool((sql)=>{
+    const {pool,queries}=fakePool((sql)=>{
       if (sql.includes("task_execution_interval_revision_by_reference_as_of")) return [intervalRow()];
       if (sql.includes("historical_trajectory_outcome_as_of")) return [{
         outcome_status:"INDETERMINATE",reason_code:"MULTIPLE_TRACKLETS_AMBIGUOUS",
@@ -101,6 +103,42 @@ describe("historical trace provider",()=>{
     const result=await new HistoricalTraceRepository(pool).execute(input,"scope-a",effective,5_000);
     expect(result).toMatchObject({status:"INDETERMINATE",output:{status:"INDETERMINATE",reasonCode:"MULTIPLE_TRACKLETS_AMBIGUOUS"}});
     expect(result.output.trajectoryReferenceKey).toBeUndefined();
+    expect(queries.some((item)=>item.sql.includes("enqueue_historical_trajectory_projection"))).toBe(false);
+  });
+
+  it("idempotently enqueues the exact effective snapshot when no revision or outcome exists",async()=>{
+    const effective:satisfiesManifest={
+      querySnapshotId:"snapshot-history-enqueue",mode:"LATEST_AT_START",consistency:"CONSISTENT_AT_START",
+      capturedAt:CAPTURED_AT,
+      resources:[{
+        resourceKind:"TASK_EXECUTION_INTERVAL",resourceId:"interval-ref-1",version:"1",
+        contentHash:HASH,pinning:"PINNED",worldVersion:50
+      }],manifestHash:HASH
+    };
+    const {pool,queries}=fakePool((sql)=>{
+      if (sql.includes("task_execution_interval_revision_by_reference_as_of")) return [intervalRow()];
+      if (sql.includes("enqueue_historical_trajectory_projection")) return [{queue_id:"00000000-0000-4000-8000-000000000099"}];
+      return [];
+    });
+
+    const result=await new HistoricalTraceRepository(pool).execute(input,"scope-a",effective,5_000);
+    expect(result).toMatchObject({
+      status:"PARTIAL",output:{status:"PARTIAL",reasonCode:"PROJECTION_PENDING"},
+      rows:0,candidates:0
+    });
+    const enqueue=queries.find((item)=>item.sql.includes("enqueue_historical_trajectory_projection"));
+    expect(enqueue?.values?.slice(0,8)).toEqual([
+      "scope-a","vehicle-2","interval-ref-1",1,"EXECUTION_ENVELOPE",
+      historicalSemanticRequestHash(input),HASH,CAPTURED_AT
+    ]);
+    expect(JSON.parse(String(enqueue?.values?.[8]))).toEqual(input);
+    expect(JSON.parse(String(enqueue?.values?.[9]))).toEqual(effective);
+    const enqueueIndex=queries.indexOf(enqueue!);
+    expect(queries[enqueueIndex-4]?.sql).toBe("BEGIN ISOLATION LEVEL READ COMMITTED");
+    expect(queries[enqueueIndex-3]).toEqual(expect.objectContaining({
+      sql:expect.stringContaining("gowm_history_v1.set_data_scope"),values:["scope-a"]
+    }));
+    expect(queries.filter((item)=>item.sql.includes("enqueue_historical_trajectory_projection"))).toHaveLength(1);
   });
 });
 

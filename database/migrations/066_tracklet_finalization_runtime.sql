@@ -1,5 +1,17 @@
 BEGIN;
 
+CREATE INDEX IF NOT EXISTS world_observation_tracklet_selection_idx
+  ON public.world_observation(
+    data_scope_key,
+    source,
+    source_local_target_id,
+    (COALESCE(tracker_session_id, '__UNSCOPED__')),
+    observation_id
+  );
+
+CREATE INDEX IF NOT EXISTS world_observation_head_current_idx
+  ON public.world_observation_head(current_observation_id);
+
 CREATE TABLE gowm_history.tracklet_projection_queue (
   queue_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   data_scope_key text NOT NULL REFERENCES public.data_scope(scope_key),
@@ -355,6 +367,7 @@ BEGIN
     SELECT queue.queue_id
     FROM gowm_history.tracklet_projection_queue queue
     WHERE queue.available_at <= clock_timestamp()
+      AND queue.attempts < 10
       AND (
         queue.state IN ('QUEUED','FAILED')
         OR (queue.state = 'RUNNING' AND queue.lease_until <= clock_timestamp())
@@ -371,8 +384,7 @@ BEGIN
       lease_until = clock_timestamp() + p_lease,
       locked_by = p_worker_id,
       rebuilt_tracklet_version_id = NULL,
-      processed_at = NULL,
-      last_error = NULL
+      processed_at = NULL
   FROM candidates
   WHERE queue.queue_id = candidates.queue_id
   RETURNING queue.*;
@@ -672,6 +684,7 @@ BEGIN
     SELECT queue.queue_id
     FROM gowm_history.tracklet_finalization_queue queue
     WHERE queue.available_at <= clock_timestamp()
+      AND queue.attempts < 10
       AND (
         queue.state IN ('QUEUED','FAILED')
         OR (queue.state = 'RUNNING' AND queue.lease_until <= clock_timestamp())
@@ -688,8 +701,7 @@ BEGIN
       lease_until = clock_timestamp() + p_lease,
       locked_by = p_worker_id,
       finalization_revision_id = NULL,
-      processed_at = NULL,
-      last_error = NULL
+      processed_at = NULL
   FROM candidates
   WHERE queue.queue_id = candidates.queue_id
   RETURNING queue.*;
@@ -725,6 +737,7 @@ DECLARE
   existing_revision uuid;
   input_row jsonb;
   watermark_record public.pipeline_watermark_revision%ROWTYPE;
+  watermark_scope text;
   computed_state text;
   missing_stream_count integer;
   stale_solution_count integer;
@@ -864,6 +877,23 @@ BEGIN
 
   FOR input_row IN SELECT value FROM jsonb_array_elements(p_watermark_inputs)
   LOOP
+    SELECT stream.data_scope_key
+    INTO watermark_scope
+    FROM public.pipeline_watermark_revision watermark
+    JOIN public.datastream stream
+      ON stream.datastream_key = watermark.datastream_key
+    WHERE watermark.watermark_revision_id = (input_row->>'watermarkRevisionId')::uuid
+      AND watermark.datastream_key = input_row->>'datastreamKey'
+      AND watermark.created_at <= p_finalization_as_of;
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'watermark input is unavailable at finalization as-of'
+        USING ERRCODE = '23503';
+    END IF;
+    IF watermark_scope IS DISTINCT FROM version_record.data_scope_key THEN
+      RAISE EXCEPTION 'watermark input crosses data scope'
+        USING ERRCODE = '42501';
+    END IF;
+
     SELECT watermark.*
     INTO STRICT watermark_record
     FROM public.pipeline_watermark_revision watermark
@@ -871,8 +901,7 @@ BEGIN
       ON stream.datastream_key = watermark.datastream_key
     WHERE watermark.watermark_revision_id = (input_row->>'watermarkRevisionId')::uuid
       AND watermark.datastream_key = input_row->>'datastreamKey'
-      AND watermark.created_at <= p_finalization_as_of
-      AND stream.data_scope_key = version_record.data_scope_key;
+      AND watermark.created_at <= p_finalization_as_of;
 
     IF watermark_record.closed_through_event_time IS DISTINCT FROM
          NULLIF(input_row->>'closedThroughEventTime', '')::timestamptz
@@ -1053,7 +1082,10 @@ SELECT
   version.end_event_time,
   version.sample_count,
   version.sequence_count,
-  version.content_hash,
+  CASE
+    WHEN version.content_hash ~ '^[0-9a-f]{64}$' THEN 'sha256:' || version.content_hash
+    ELSE version.content_hash
+  END AS content_hash,
   version.created_at
 FROM public.mobility_tracklet tracklet
 JOIN public.mobility_tracklet_version version USING (tracklet_id)
@@ -1097,7 +1129,10 @@ AS $fn$
     version.end_event_time,
     version.sample_count,
     version.sequence_count,
-    version.content_hash,
+    CASE
+      WHEN version.content_hash ~ '^[0-9a-f]{64}$' THEN 'sha256:' || version.content_hash
+      ELSE version.content_hash
+    END AS content_hash,
     version.created_at
   FROM public.mobility_tracklet tracklet
   JOIN public.mobility_tracklet_version version USING (tracklet_id)

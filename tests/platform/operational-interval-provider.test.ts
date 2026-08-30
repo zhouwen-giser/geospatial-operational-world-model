@@ -3,6 +3,7 @@ import type pg from "pg";
 import { validateContract,type GowmV07QuerySnapshotManifest,type GowmV07TaskExecutionIntervalResult } from "../../packages/platform/contract-runtime/src/index.js";
 import { createOperationalRealityProvider } from "../../services/providers/operational-reality-provider/src/provider.js";
 import { OperationalRealityProviderRepository } from "../../services/providers/operational-reality-provider/src/repository.js";
+import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 
 const HASH=`sha256:${"a".repeat(64)}` as const;
 const CAPTURED_AT="2026-08-30T10:00:00.000Z";
@@ -22,7 +23,7 @@ describe("operational task execution interval provider",()=>{
         interval_id:"00000000-0000-4000-8000-000000000001",task_reference_key:"task-ref-1",execution_no:1,
         reference_key:"task-interval-ref-1",interval_revision_id:"00000000-0000-4000-8000-000000000002",revision_no:2,
         execution_range:'["2026-08-30 08:00:00+00","2026-08-30 09:00:00+00")',lifecycle_state:"CLOSED",
-        derivation_kind:"OBSERVED",stability_state:"SEALED",start_event_id:"event-start",terminal_event_id:"event-stop",
+        derivation_kind:"OBSERVED_ONLY",stability_state:"SEALED",start_event_id:"event-start",terminal_event_id:"event-stop",
         input_event_set_hash:HASH,profile_key:"task-interval-observed-v1",profile_version:"1.0",profile_hash:HASH,
         confidence:0.95,reason_codes:["INTERVALS_AVAILABLE"],world_version:"41",content_hash:HASH,
         created_at:"2026-08-30T09:01:00.000Z"
@@ -44,6 +45,10 @@ describe("operational task execution interval provider",()=>{
       maturity:"PREVIEW",scopePolicy:"DATA_SCOPE_REQUIRED",
       snapshotPolicy:{dataSnapshot:"REQUIRED",computeSnapshot:"REQUIRED",resourceResolution:"DISCOVER_RESOURCES"}
     });
+    expect(capability?.ports.outputs).toEqual(expect.arrayContaining([expect.objectContaining({
+      name:"executionIntervalReferenceKey",path:"/intervals/0/executionIntervalReferenceKey",
+      schemaUri:"urn:gowm:v0.7:reference-key",valueKind:"REFERENCE_KEY"
+    })]));
 
     const repository=new OperationalRealityProviderRepository(pool);
     const result=await repository.execute("operational-task.get-execution-intervals",input,"scope-a",effective,5_000);
@@ -51,9 +56,11 @@ describe("operational task execution interval provider",()=>{
     expect(output).toMatchObject({status:"COMPLETED",reasonCode:"INTERVALS_AVAILABLE",truncated:false});
     expect(validateContract("urn:gowm:v0.7:task-execution-interval-result",output)).toMatchObject({valid:true});
     expect(output.intervals[0]).toMatchObject({
-      executionNo:1,revisionNo:2,lifecycleState:"CLOSED",start:"2026-08-30T08:00:00.000Z",end:"2026-08-30T09:00:00.000Z"
+      executionNo:1,revisionNo:2,lifecycleState:"CLOSED",derivationKind:"OBSERVED",
+      start:"2026-08-30T08:00:00.000Z",end:"2026-08-30T09:00:00.000Z"
     });
     expect(result.dataSnapshot.capturedAt).toBe(CAPTURED_AT);
+    expect(result.dataSnapshot.scopeDigest).toBe(sha256({dataScopeKey:"scope-a"}));
     expect(result.dataSnapshot.resources.map((item)=>item.referenceKey.kind)).toEqual(expect.arrayContaining([
       "OPERATIONAL_TASK","TASK_EXECUTION_INTERVAL","TASK_EXECUTION_EVENT_SET","HISTORY_METHOD_PROFILE"
     ]));

@@ -23,7 +23,7 @@ export function createHistoricalTraceProvider(options:{
       providerId:"gowm.historical-trace",providerVersion:"0.7.0",owner:"gowm-platform",
       implementationDigest:sha256({
         providerId:"gowm.historical-trace",providerVersion:"0.7.0",readContract:"gowm_history_v1",
-        capability:operation.descriptor,policy:"historical-trace-read-only-v1"
+        capability:operation.descriptor,policy:"historical-trace-read-and-controlled-enqueue-v1"
       }),sourceRef:"urn:gowm:source:in-tree:historical-trace:0.7.0"
     },
     endpoints:{
@@ -33,7 +33,8 @@ export function createHistoricalTraceProvider(options:{
   };
   const policy={
     version:"gowm-historical-trace-policy/1.0",scopeBeforeRead:true,asOfEffectiveSnapshot:true,
-    providerToProviderCalls:false,naturalLanguageParsing:false,multiSourceFusion:false,projectionWrites:false
+    providerToProviderCalls:false,naturalLanguageParsing:false,multiSourceFusion:false,
+    projectionWrites:"CONTROLLED_QUEUE_ONLY"
   };
   return {
     repository,

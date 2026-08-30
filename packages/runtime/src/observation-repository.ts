@@ -143,20 +143,6 @@ export class ObservationRepository {
          bundle.entityBindingStatus,"CANONICAL_OBSERVATION_SUBJECT",observation.observationId,observation.confidence]
       );
 
-      let trackletVersionId: string | undefined;
-      const positionMeasurements = bundle.measurements.filter((measurement) => measurement.resultKind === "POSITION");
-      if (positionMeasurements.length) {
-        const spaces = [...new Set(positionMeasurements.map((measurement) => measurement.analysisSpaceKey ?? this.config.analysisSpaceKey))];
-        for (const space of spaces) {
-          const rebuilt = await client.query<{ version_id: string | null }>(
-            `SELECT gowm_rebuild_mobility_tracklet($1,$2,$3,$4,$5) AS version_id`,
-            [bundle.dataScopeKey,observation.source,bundle.sourceLocalTargetId,
-             bundle.trackerSessionId ?? "__UNSCOPED__",space]
-          );
-          trackletVersionId = rebuilt.rows[0]?.version_id ?? trackletVersionId;
-        }
-      }
-
       if (disposition.project !== false && bundle.entityBindingStatus !== "CANDIDATE") {
         await client.query("INSERT INTO projection_queue(observation_id) VALUES ($1)", [observation.observationId]);
       }
@@ -181,7 +167,6 @@ export class ObservationRepository {
           phenomenonTime: observation.observedAt,
           timeSolutionId,
           measurementIds: [...measurementIds.values()],
-          trackletVersionId,
           inputSchemaVersion: observation.schemaVersion,
           canonicalContractVersion: "1.2"
         }
@@ -192,8 +177,7 @@ export class ObservationRepository {
         observation,
         event,
         timeSolutionId,
-        measurementIds: [...measurementIds.values()],
-        ...(trackletVersionId ? { trackletVersionId } : {})
+        measurementIds: [...measurementIds.values()]
       };
     });
   }

@@ -32,7 +32,8 @@ function eventInput() {
 
 describe("v0.4 operational event ingest",() => {
   it("accepts every frozen event type and rejects boundary-owned output fields",() => {
-    expect(OPERATIONAL_EVENT_TYPES).toHaveLength(15);
+    expect(OPERATIONAL_EVENT_TYPES).toHaveLength(16);
+    expect(OPERATIONAL_EVENT_TYPES).toContain("EXECUTION_RESUMED_OBSERVED");
     for (const eventType of OPERATIONAL_EVENT_TYPES) {
       expect(OperationalEventIngestSchema.safeParse({ ...eventInput(),eventType }).success).toBe(true);
     }

@@ -1,0 +1,115 @@
+{
+  "providerProtocolVersion": "1.0",
+  "manifestSchemaVersion": "1.1",
+  "provider": {
+    "providerId": "gowm.historical-trace",
+    "providerVersion": "0.7.0",
+    "owner": "gowm-platform",
+    "implementationDigest": "sha256:bf0ad8f730ec3062cc76ce42b6f2c3bfd5419195daaea196622e1bcd61f17b58",
+    "sourceRef": "urn:gowm:source:in-tree:historical-trace:0.7.0"
+  },
+  "endpoints": {
+    "manifest": "/v1/manifest",
+    "liveness": "/health/live",
+    "readiness": "/health/ready",
+    "execute": "/v1/operations/{operationId}:execute",
+    "job": "/v1/jobs/{jobId}"
+  },
+  "capabilities": [
+    {
+      "operationId": "history.get-trajectory",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.1",
+        "domain": "ANALYSIS",
+        "acceptedReferenceKinds": [
+          "WORLD_OBJECT",
+          "SPATIAL_OBJECT",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "DERIVED_REFERENCE",
+          "TASK_EXECUTION_INTERVAL",
+          "HISTORY_METHOD_PROFILE"
+        ],
+        "producedReferenceKinds": [
+          "HISTORICAL_TRAJECTORY",
+          "TRACKLET_VERSION",
+          "TRACKLET_FINALIZATION",
+          "HISTORY_INPUT_SET"
+        ],
+        "relationSemantics": [
+          "TEMPORALLY_OVERLAPS"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "HISTORICAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETED": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        },
+        "notes": [
+          "The operation returns one stored source-selected trajectory revision and never performs hidden multi-source fusion.",
+          "Every interval, tracklet, finalization, watermark, profile, and analysis-space input is frozen by the returned snapshot or its HISTORY_INPUT_SET resource."
+        ]
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.7:historical-trajectory-query",
+      "inputSchemaHash": "sha256:cbdbe331192d1e78d3b525a47a5db40f4fbaac477bab2fc37bc700ad9f4ed464",
+      "outputSchemaUri": "urn:gowm:v0.7:historical-trajectory-result",
+      "outputSchemaHash": "sha256:3a7775d3099c6d63ab548c12db91d1b41cc920c6d4bcec8d9704b92eeaa9e3c2",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 16777216,
+        "maximumRows": 1000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED",
+        "resourceResolution": "DISCOVER_RESOURCES"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.7:historical-trajectory-query",
+            "schemaHash": "sha256:cbdbe331192d1e78d3b525a47a5db40f4fbaac477bab2fc37bc700ad9f4ed464",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.7:historical-trajectory-result",
+            "schemaHash": "sha256:3a7775d3099c6d63ab548c12db91d1b41cc920c6d4bcec8d9704b92eeaa9e3c2",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    }
+  ]
+}

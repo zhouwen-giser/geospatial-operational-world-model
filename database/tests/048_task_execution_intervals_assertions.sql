@@ -286,19 +286,123 @@ RESET ROLE;
 
 DO $queue_and_grants$
 DECLARE
-  claimed gowm_history.task_interval_projection_queue%ROWTYPE;
+  initial_claim gowm_history.task_interval_projection_queue%ROWTYPE;
+  crashed_claim gowm_history.task_interval_projection_queue%ROWTYPE;
+  candidate gowm_history.task_interval_projection_queue%ROWTYPE;
+  reclaimed_claim gowm_history.task_interval_projection_queue%ROWTYPE;
+  other_claim gowm_history.task_interval_projection_queue%ROWTYPE;
+  restart_error constant text := 'task interval restart diagnostic';
 BEGIN
-  SELECT * INTO STRICT claimed
-  FROM gowm_history.claim_task_interval_projection('history-worker', 1, interval '30 seconds');
+  SELECT * INTO STRICT initial_claim
+  FROM gowm_history.claim_task_interval_projection(
+    'history-worker-first', 1, interval '30 seconds'
+  );
+  IF NOT gowm_history.fail_task_interval_projection(
+       initial_claim.queue_id,
+       'history-worker-first',
+       initial_claim.generation,
+       restart_error,
+       clock_timestamp()
+     ) THEN
+    RAISE EXCEPTION 'task interval worker could not persist its pre-restart error';
+  END IF;
+
+  SELECT * INTO STRICT crashed_claim
+  FROM gowm_history.claim_task_interval_projection(
+    'history-worker-crashed', 1, interval '30 seconds'
+  );
+  IF crashed_claim.queue_id IS DISTINCT FROM initial_claim.queue_id
+     OR crashed_claim.generation <> initial_claim.generation + 1
+     OR crashed_claim.last_error IS DISTINCT FROM restart_error THEN
+    RAISE EXCEPTION 'task interval retry did not preserve queue identity, generation, or last_error';
+  END IF;
+
+  UPDATE gowm_history.task_interval_projection_queue queue
+  SET locked_at = clock_timestamp() - interval '2 seconds',
+      lease_until = clock_timestamp() - interval '1 second'
+  WHERE queue.queue_id = crashed_claim.queue_id;
+
+  INSERT INTO public.world_reference_identity(
+    reference_key, entity_kind, internal_id, data_scope_key
+  ) VALUES (
+    'wrf_48000000000000000000000000000002',
+    'OPERATIONAL_TASK',
+    'history-interval-task-b',
+    'history-interval-a'
+  );
+  INSERT INTO public.operational_task(
+    data_scope_key, operational_task_id, reference_key
+  ) VALUES (
+    'history-interval-a',
+    'history-interval-task-b',
+    'wrf_48000000000000000000000000000002'
+  );
+  INSERT INTO public.operational_task_event(
+    data_scope_key, event_id, operational_task_id, event_type, event_time,
+    received_time, subject_reference_key, actor_reference_keys,
+    target_reference_keys, payload, confidence, provenance, world_version,
+    source_authority, source_event_key, source_revision_no,
+    arrival_classification, projection_disposition, content_hash
+  ) VALUES (
+    'history-interval-a', 'history-event-other-task', 'history-interval-task-b',
+    'EXECUTION_STARTED_OBSERVED', '2026-01-01T00:00:07Z',
+    '2026-01-01T00:00:08Z', NULL, '[]', '[]', '{}', 1,
+    '[{"authority":"history-assertion"}]', 4805,
+    'history-assertion', 'history-other-task', 1, 'CURRENT', 'PENDING',
+    'sha256:7777777777777777777777777777777777777777777777777777777777777777'
+  );
+
+  FOR candidate IN
+    SELECT *
+    FROM gowm_history.claim_task_interval_projection(
+      'history-worker-restarted', 2, interval '30 seconds'
+    )
+  LOOP
+    IF candidate.queue_id = crashed_claim.queue_id THEN
+      reclaimed_claim := candidate;
+    ELSIF candidate.operational_task_id = 'history-interval-task-b' THEN
+      other_claim := candidate;
+    END IF;
+  END LOOP;
+
+  IF reclaimed_claim.queue_id IS NULL
+     OR reclaimed_claim.generation <> crashed_claim.generation + 1
+     OR reclaimed_claim.last_error IS DISTINCT FROM restart_error THEN
+    RAISE EXCEPTION 'expired task interval Lease was not reclaimed with its last_error intact';
+  END IF;
+  IF other_claim.queue_id IS NULL THEN
+    RAISE EXCEPTION 'expired task interval reclaim blocked another Task Key';
+  END IF;
+
   IF gowm_history.complete_task_interval_projection(
-       claimed.queue_id, 'history-worker', claimed.generation - 1
+       reclaimed_claim.queue_id,
+       'history-worker-restarted',
+       crashed_claim.generation
      ) THEN
     RAISE EXCEPTION 'stale task interval worker generation completed a queue item';
   END IF;
   IF NOT gowm_history.complete_task_interval_projection(
-       claimed.queue_id, 'history-worker', claimed.generation
+       reclaimed_claim.queue_id,
+       'history-worker-restarted',
+       reclaimed_claim.generation
      ) THEN
     RAISE EXCEPTION 'current task interval worker could not complete a queue item';
+  END IF;
+  IF NOT gowm_history.complete_task_interval_projection(
+       other_claim.queue_id,
+       'history-worker-restarted',
+       other_claim.generation
+     ) THEN
+    RAISE EXCEPTION 'task interval restart could not complete the independent Task Key';
+  END IF;
+  IF (SELECT count(*) FROM gowm_history.task_execution_interval_revision) <> 2
+     OR EXISTS (
+       SELECT revision.content_hash
+       FROM gowm_history.task_execution_interval_revision revision
+       GROUP BY revision.content_hash
+       HAVING count(*) > 1
+     ) THEN
+    RAISE EXCEPTION 'task interval restart duplicated an existing content Revision';
   END IF;
   IF NOT pg_has_role('gowm_operational_service', 'gowm_history_reader', 'member') THEN
     RAISE EXCEPTION 'operational provider did not inherit scoped history reader';

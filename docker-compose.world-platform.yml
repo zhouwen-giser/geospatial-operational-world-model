@@ -7,6 +7,7 @@ services:
     ports: !reset []
     profiles:
     - foundation-admin
+    - world-platform
   world-api:
     ports: !reset []
     profiles:
@@ -64,6 +65,8 @@ services:
       CATALOG_DB_PASSWORD: ${CATALOG_DB_PASSWORD:?set distinct CATALOG_DB_PASSWORD}
       EVIDENCE_DB_PASSWORD: ${EVIDENCE_DB_PASSWORD:?set distinct EVIDENCE_DB_PASSWORD}
       OPERATIONAL_DB_PASSWORD: ${OPERATIONAL_DB_PASSWORD:?set distinct OPERATIONAL_DB_PASSWORD}
+      HISTORICAL_DB_PASSWORD: ${HISTORICAL_DB_PASSWORD:?set distinct HISTORICAL_DB_PASSWORD}
+      HISTORICAL_WORKER_DB_PASSWORD: ${HISTORICAL_WORKER_DB_PASSWORD:?set distinct HISTORICAL_WORKER_DB_PASSWORD}
       VALIDATION_DB_PASSWORD: ${VALIDATION_DB_PASSWORD:?set distinct VALIDATION_DB_PASSWORD}
       NETWORK_DB_PASSWORD: ${NETWORK_DB_PASSWORD:?set distinct NETWORK_DB_PASSWORD}
       ROUTE_DB_PASSWORD: ${ROUTE_DB_PASSWORD:?set distinct ROUTE_DB_PASSWORD}
@@ -72,6 +75,39 @@ services:
       DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/gowm
       GATEWAY_REGISTRY_DATABASE_URL: postgresql://gowm_gateway_registry_service:${GATEWAY_REGISTRY_DB_PASSWORD}@postgres:5432/gowm
       ANALYSIS_SRID: '32650'
+  world-platform-projection-worker:
+    image: gowm-world-platform:0.6.3
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on:
+      world-platform-bootstrap:
+        condition: service_completed_successfully
+      mqtt:
+        condition: service_started
+    command:
+    - node
+    - dist/services/projection-worker/src/index.js
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/gowm
+      HISTORICAL_WORKER_DATABASE_URL: postgresql://gowm_history_worker_service:${HISTORICAL_WORKER_DB_PASSWORD:?set HISTORICAL_WORKER_DB_PASSWORD}@postgres:5432/gowm
+      MQTT_URL: mqtt://mqtt:1883
+      MQTT_CONNECT_TIMEOUT_MS: '3000'
+      MQTT_MESSAGE_EXPIRY_SEC: '86400'
+      PROJECTION_BATCH_SIZE: ${PROJECTION_BATCH_SIZE:-200}
+      PROJECTION_POLL_MS: ${PROJECTION_POLL_MS:-250}
+      ANALYSIS_SRID: '32650'
+      ANALYSIS_SPACE_KEY: ${ANALYSIS_SPACE_KEY:-default}
+      TRACKLET_MAX_TIME_GAP_MS: ${TRACKLET_MAX_TIME_GAP_MS:-10000}
+      TRACKLET_MAX_DISTANCE_GAP_M: ${TRACKLET_MAX_DISTANCE_GAP_M:-250}
+      TRACKLET_MAX_REQUIRED_SPEED_MPS: ${TRACKLET_MAX_REQUIRED_SPEED_MPS:-80}
   crs-provider-bridge:
     image: gowm-world-platform:0.6.3
     build: *id001
@@ -257,6 +293,27 @@ services:
       PROVIDER_HEALTH_PORT: '8094'
       OPERATIONAL_REALITY_DATABASE_URL: postgresql://gowm_operational_service:${OPERATIONAL_DB_PASSWORD}@postgres:5432/gowm
       OPERATIONAL_REALITY_PORT: '8094'
+  historical-trace-provider:
+    image: gowm-world-platform:0.6.3
+    build: *id001
+    networks: *id002
+    profiles: *id006
+    restart: unless-stopped
+    init: true
+    security_opt: *id003
+    cap_drop: *id004
+    read_only: true
+    tmpfs: *id005
+    depends_on: *id007
+    healthcheck: *id008
+    command:
+    - node
+    - dist/services/providers/historical-trace-provider/src/server.js
+    environment:
+      PROVIDER_TRANSPORT_SHARED_TOKEN: ${HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN:?set HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN}
+      PROVIDER_HEALTH_PORT: '8100'
+      HISTORICAL_TRACE_DATABASE_URL: postgresql://gowm_history_service:${HISTORICAL_DB_PASSWORD}@postgres:5432/gowm
+      HISTORICAL_TRACE_PORT: '8100'
   platform-validation-provider:
     image: gowm-world-platform:0.6.3
     build: *id001
@@ -458,6 +515,7 @@ services:
       H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN: ${H3_INTERACTIVE_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       NETWORK_PROVIDER_TRANSPORT_TOKEN: ${NETWORK_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN: ${OPERATIONAL_REALITY_PROVIDER_TRANSPORT_TOKEN:?set transport token}
+      HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN: ${HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN: ${PLATFORM_VALIDATION_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN: ${REFERENCE_CATALOG_PROVIDER_TRANSPORT_TOKEN:?set transport token}
       COVERAGE_PROVIDER_TRANSPORT_TOKEN: ${COVERAGE_PROVIDER_TRANSPORT_TOKEN:?set transport token}

@@ -6,6 +6,7 @@
     "gowm.world-evidence",
     "gowm.platform-validation",
     "gowm.operational-reality",
+    "gowm.historical-trace",
     "gowm.spatial-analysis.bridge",
     "gowm.h3.interactive.bridge",
     "gowm.h3.analysis.bridge",

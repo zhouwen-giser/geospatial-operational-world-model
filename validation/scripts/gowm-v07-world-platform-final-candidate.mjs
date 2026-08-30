@@ -5,8 +5,10 @@ import { semanticSourceFingerprint } from "../../packages/platform/semantic-conf
 
 const root = resolve(".");
 const reportRoot = process.env.GOWM_REPORT_DIRECTORY?.trim();
-if (reportRoot?.replaceAll("\\", "/") !== "reports/gowm-v0.7/pr1/world-platform") {
-  throw new Error("GOWM_REPORT_DIRECTORY must select reports/gowm-v0.7/pr1/world-platform");
+const normalizedReportRoot = reportRoot?.replaceAll("\\", "/");
+const pr2 = normalizedReportRoot === "reports/gowm-v0.7/pr2/world-platform";
+if (!pr2 && normalizedReportRoot !== "reports/gowm-v0.7/pr1/world-platform") {
+  throw new Error("GOWM_REPORT_DIRECTORY must select a governed v0.7 PR1 or PR2 World Platform report root");
 }
 const read = async (path) => JSON.parse(await readFile(path, "utf8"));
 const checks = {};
@@ -15,7 +17,9 @@ const verify = (name, condition) => {
   if (!condition) throw new Error(`GOWM v0.7 World Platform final gate failed: ${name}`);
 };
 
-await run(process.execPath, [resolve(root, "validation/scripts/gowm-v07-pr1-final-candidate.mjs")]);
+await run(process.execPath, [resolve(root, pr2
+  ? "validation/scripts/gowm-v07-pr2-final-candidate.mjs"
+  : "validation/scripts/gowm-v07-pr1-final-candidate.mjs")]);
 
 const sourceDigest = await semanticSourceFingerprint(root);
 const regression = await read(`${reportRoot}/regression/report.json`);
@@ -35,12 +39,14 @@ verify("vitest", vitest.success === true && vitest.numFailedTests === 0 && vites
 verify("fresh-black-box", blackBox.status === "PASS" && blackBox.sourceDigest === sourceDigest && runtime.status === "PASS" && runtime.sourceDigest === sourceDigest && Object.values(runtime.checks).every(Boolean));
 verify("runtime-image", image.status === "PASS" && image.sourceDigest === sourceDigest && image.compiledFiles > 100 && Object.keys(image.files).length === image.compiledFiles);
 verify("canaries", canary.status === "PASS" && canary.canaries.length === 5 && canary.canaries.every((item) => item.status === "PASS"));
-verify("materializer", materializer.status === "PASS" && materializer.resolved.length === 122 && materializer.conflicts.length === 0 && materializer.insufficient.length === 0);
+verify("materializer", materializer.status === "PASS" && materializer.resolved.length === (pr2 ? 124 : 122) && materializer.conflicts.length === 0 && materializer.insufficient.length === 0);
 verify("semantic-conformance", semantics.status === "PASS" && Object.values(semantics.counters).every((value) => value === 0));
-verify("registry", registry.status === "PASS" && registry.providerCount === 15 && registry.operationCount === 122 && registry.missingRequiredProviders.length === 0 && registry.operationCollisions.length === 0);
+verify("registry", registry.status === "PASS" && registry.providerCount === (pr2 ? 16 : 15) && registry.operationCount === (pr2 ? 124 : 122) && registry.missingRequiredProviders.length === 0 && registry.operationCollisions.length === 0);
 verify("profile", profile.status === "PASS" && Object.values(profile.checks).every(Boolean));
 verify("provider-conformance", providers.status === "PASS" && providers.checks.every((item) => item.status === "PASS") && providers.providers.every((item) => item.status === "PASS"));
-verify("pr1-version-boundary", (await readFile("VERSION", "utf8")).trim() === "0.6.3" && (await read("package.json")).version === "0.6.4");
+verify(pr2 ? "pr2-version" : "pr1-version-boundary", pr2
+  ? (await readFile("VERSION", "utf8")).trim() === "0.7.0" && (await read("package.json")).version === "0.7.0"
+  : (await readFile("VERSION", "utf8")).trim() === "0.6.3" && (await read("package.json")).version === "0.6.4");
 
 const report = {
   status: "PASS",

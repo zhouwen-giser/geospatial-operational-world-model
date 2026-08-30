@@ -15,10 +15,25 @@ export interface V07DatabaseEvidence {
   mobilityDbVersion: string;
 }
 
+export interface V07UpgradeDatabaseEvidence extends V07DatabaseEvidence {
+  upgradeBaseMigrationCount: number;
+  upgradeBaseHead: string;
+}
+
 export async function withMigratedV07Database<T>(
   label: string,
   action: (databaseUrl: string, evidence: V07DatabaseEvidence, runId: string) => Promise<T>
 ): Promise<T> {
+  const reusedUrl = process.env.GOWM_V07_REUSE_DATABASE_URL;
+  if (reusedUrl !== undefined && reusedUrl.length > 0) {
+    const runId = randomUUID().replaceAll("-", "").slice(0, 20);
+    const database = new pg.Pool({ connectionString: reusedUrl, max: 1 });
+    try {
+      return await action(reusedUrl, await inspectMigratedDatabase(database), runId);
+    } finally {
+      await database.end();
+    }
+  }
   const sourceUrl = process.env.DATABASE_ADMIN_URL ?? process.env.DATABASE_URL;
   if (sourceUrl === undefined || sourceUrl.length === 0) {
     throw new Error("DATABASE_ADMIN_URL or DATABASE_URL is required for the real PostgreSQL v0.7 gate");
@@ -85,14 +100,22 @@ async function runProcess(
   });
 }
 
-async function applyMigrations(pool: pg.Pool): Promise<V07DatabaseEvidence> {
-  const migrationDirectory = resolve(repositoryRoot, "database/migrations");
-  const files = (await readdir(migrationDirectory))
+async function migrationFiles(): Promise<string[]> {
+  return (await readdir(resolve(repositoryRoot, "database/migrations")))
     .filter((name) => /^\d{3}_.+\.sql$/u.test(name))
     .sort();
-  const migrationHead = files.at(-1);
-  if (migrationHead !== "064_analysis_resource_inputs.sql") {
-    throw new Error(`unexpected PR-1 migration head: ${String(migrationHead)}`);
+}
+
+async function applyMigrations(
+  pool: pg.Pool,
+  files: readonly string[] | undefined = undefined,
+  expectedHead = "067_historical_trajectory_contract.sql"
+): Promise<V07DatabaseEvidence> {
+  const selectedFiles = files ?? await migrationFiles();
+  const migrationDirectory = resolve(repositoryRoot, "database/migrations");
+  const migrationHead = selectedFiles.at(-1);
+  if (migrationHead !== expectedHead) {
+    throw new Error(`unexpected v0.7 migration head: ${String(migrationHead)}`);
   }
   await pool.query(
     `CREATE TABLE IF NOT EXISTS schema_migration(
@@ -101,7 +124,7 @@ async function applyMigrations(pool: pg.Pool): Promise<V07DatabaseEvidence> {
        applied_at timestamptz NOT NULL DEFAULT clock_timestamp()
      )`
   );
-  for (const file of files) {
+  for (const file of selectedFiles) {
     const template = await readFile(resolve(migrationDirectory, file), "utf8");
     const sql = template
       .replaceAll(":ANALYSIS_SRID", "32650")
@@ -115,6 +138,70 @@ async function applyMigrations(pool: pg.Pool): Promise<V07DatabaseEvidence> {
       [file, checksum]
     );
   }
+  return inspectMigratedDatabase(pool, expectedHead);
+}
+
+export async function withUpgradedV07Database<T>(
+  label: string,
+  action: (databaseUrl: string, evidence: V07UpgradeDatabaseEvidence, runId: string) => Promise<T>
+): Promise<T> {
+  const sourceUrl = process.env.DATABASE_ADMIN_URL ?? process.env.DATABASE_URL;
+  if (sourceUrl === undefined || sourceUrl.length === 0) {
+    throw new Error("DATABASE_ADMIN_URL or DATABASE_URL is required for the real PostgreSQL v0.7 upgrade gate");
+  }
+  const runId = randomUUID().replaceAll("-", "").slice(0, 20);
+  const databaseName = `gowm_v07_upgrade_${label}_${runId}`;
+  if (!/^[a-z0-9_]+$/u.test(databaseName)) throw new Error("invalid ephemeral upgrade database name");
+  const adminUrl = new URL(sourceUrl);
+  adminUrl.pathname = "/postgres";
+  const targetUrl = new URL(sourceUrl);
+  targetUrl.pathname = `/${databaseName}`;
+  const admin = new pg.Pool({ connectionString: adminUrl.toString(), max: 1 });
+  let created = false;
+  try {
+    await admin.query(`CREATE DATABASE "${databaseName}"`);
+    created = true;
+    const database = new pg.Pool({ connectionString: targetUrl.toString(), max: 1 });
+    try {
+      const files = await migrationFiles();
+      const baseHead = "064_analysis_resource_inputs.sql";
+      const base = await applyMigrations(
+        database,
+        files.filter((file) => file <= baseHead),
+        baseHead
+      );
+      const upgraded = await applyMigrations(
+        database,
+        files.filter((file) => file > baseHead),
+        "067_historical_trajectory_contract.sql"
+      );
+      return await action(targetUrl.toString(), {
+        ...upgraded,
+        upgradeBaseMigrationCount: base.migrationCount,
+        upgradeBaseHead: base.migrationHead
+      }, runId);
+    } finally {
+      await database.end();
+    }
+  } finally {
+    if (created) await admin.query(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+    await admin.end();
+  }
+}
+
+async function inspectMigratedDatabase(
+  pool: pg.Pool,
+  expectedHead = "067_historical_trajectory_contract.sql"
+): Promise<V07DatabaseEvidence> {
+  const migration = await pool.query<{ migration_count: number; migration_head: string }>(
+    `SELECT count(*)::integer AS migration_count, max(version) AS migration_head
+     FROM public.schema_migration`
+  );
+  const migrationRow = migration.rows[0];
+  if (migrationRow === undefined
+      || migrationRow.migration_head !== expectedHead) {
+    throw new Error(`unexpected v0.7 migration head: ${String(migrationRow?.migration_head)}`);
+  }
   const versions = await pool.query<{
     postgres_version: string;
     postgis_version: string;
@@ -127,8 +214,8 @@ async function applyMigrations(pool: pg.Pool): Promise<V07DatabaseEvidence> {
   const version = versions.rows[0];
   if (version === undefined) throw new Error("database did not return extension versions");
   return {
-    migrationCount: files.length,
-    migrationHead,
+    migrationCount: migrationRow.migration_count,
+    migrationHead: migrationRow.migration_head,
     postgresVersion: version.postgres_version,
     postgisVersion: version.postgis_version,
     mobilityDbVersion: version.mobilitydb_version
