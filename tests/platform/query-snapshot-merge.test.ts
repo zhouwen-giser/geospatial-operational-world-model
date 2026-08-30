@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import type {
   CapabilityDescriptor,
   DataSnapshotContext,
-  GowmV07QuerySnapshotManifest as QuerySnapshotManifest,
-  GowmV07QuerySnapshotPolicy as QuerySnapshotPolicy
+  GowmV071QuerySnapshotManifest as QuerySnapshotManifest,
+  GowmV071QuerySnapshotPolicy as QuerySnapshotPolicy
 } from "../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 import { QuerySnapshotCoordinator } from "../../services/gateway/world-capability-gateway/src/query-snapshot-coordinator.js";
@@ -73,12 +73,17 @@ function providerResource(
   };
 }
 
-function providerSnapshot(resources: ProviderResource[], scopeDigest: `sha256:${string}` = digest("9")): DataSnapshotContext {
+function providerSnapshot(
+  resources: ProviderResource[],
+  scopeDigest: `sha256:${string}` = digest("9"),
+  overrides: Partial<Pick<DataSnapshotContext, "consistency" | "capturedAt">> = {}
+): DataSnapshotContext {
   return {
     consistency: "PINNED",
     capturedAt,
     scopeDigest,
-    resources
+    resources,
+    ...overrides
   };
 }
 
@@ -107,6 +112,75 @@ function protocolError(action: () => unknown): ProviderProtocolError {
 }
 
 describe("v0.7 effective snapshot merge", () => {
+  it("rejects a later BEST_EFFORT provider snapshot for strict LATEST_AT_START", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([], { mode: "LATEST_AT_START", consistency: "CONSISTENT_AT_START" });
+    const error = protocolError(() => coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("tracklet-late")], digest("9"), {
+        consistency: "BEST_EFFORT",
+        capturedAt: "2026-08-31T00:00:00.000Z"
+      }),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: strictLatestPolicy,
+      nodeId: "resolver-late"
+    }));
+
+    expect(error).toMatchObject({
+      code: "SCHEMA_MISMATCH",
+      details: { stage: "SNAPSHOT", reason: "CAPTURED_AT_AFTER_QUERY_BOUNDARY" }
+    });
+  });
+
+  it("downgrades the effective snapshot and reports mismatch evidence when allowed", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([], { mode: "LATEST_AT_START", consistency: "CONSISTENT_AT_START" });
+    const result = coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("tracklet-late")], digest("9"), {
+        consistency: "BEST_EFFORT",
+        capturedAt: "2026-08-31T00:00:00.000Z"
+      }),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "LATEST_AT_START", allowDowngrade: true },
+      nodeId: "resolver-late"
+    });
+
+    expect(result.effective).toMatchObject({ consistency: "BEST_EFFORT", resources: [] });
+    expect(result.adherence).toMatchObject({
+      status: "MISMATCHED",
+      expectedConsistency: "CONSISTENT_AT_START",
+      actualConsistency: "BEST_EFFORT",
+      expectedCapturedAt: capturedAt,
+      actualCapturedAt: "2026-08-31T00:00:00.000Z"
+    });
+    expect(result.adherence.mismatches?.map((entry) => entry.reason)).toEqual([
+      "CAPTURED_AT_AFTER_QUERY_BOUNDARY",
+      "CONSISTENCY_LEVEL_TOO_WEAK"
+    ]);
+    expect(result.effective.manifestHash).not.toBe(requested.manifestHash);
+  });
+
+  it("marks later BEST_EFFORT data as advanced compatible under BEST_EFFORT", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest();
+    const result = coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("tracklet-late")], digest("9"), {
+        consistency: "BEST_EFFORT",
+        capturedAt: "2026-08-31T00:00:00.000Z"
+      }),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "BEST_EFFORT", allowDowngrade: true },
+      nodeId: "resolver-late"
+    });
+
+    expect(result.adherence.status).toBe("ADVANCED_COMPATIBLE");
+  });
+
   it("maps and pins a newly discovered resource without mutating the requested snapshot", () => {
     const coordinator = new QuerySnapshotCoordinator();
     const requested = manifest();
@@ -354,6 +428,66 @@ describe("v0.7 effective snapshot merge", () => {
       pinning: "PINNED"
     });
     expect(result.adherence.status).toBe("MATCHED");
+  });
+
+  it.each([10, 11])("discovers a new AT_LEAST resource at or above the world-version floor (%s)", (worldVersion) => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([], {
+      mode: "AT_LEAST_WORLD_VERSION",
+      consistency: "CONSISTENT_AT_START",
+      minimumWorldVersion: 10
+    });
+    const result = coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("new-tracklet", { worldVersion })]),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "AT_LEAST_WORLD_VERSION", minimumWorldVersion: 10, allowDowngrade: false },
+      nodeId: "resolver-at-least-new"
+    });
+
+    expect(result.adherence.status).toBe("MATCHED");
+    expect(result.effective.resources).toEqual([expect.objectContaining({ worldVersion, pinning: "PINNED" })]);
+  });
+
+  it("rejects a newly discovered AT_LEAST resource below the world-version floor", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([], {
+      mode: "AT_LEAST_WORLD_VERSION",
+      consistency: "CONSISTENT_AT_START",
+      minimumWorldVersion: 10
+    });
+    const error = protocolError(() => coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("new-tracklet", { worldVersion: 9 })]),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "AT_LEAST_WORLD_VERSION", minimumWorldVersion: 10, allowDowngrade: false },
+      nodeId: "resolver-at-least-new"
+    }));
+
+    expect(error).toMatchObject({
+      code: "SCHEMA_MISMATCH",
+      details: { stage: "SNAPSHOT", reason: "WORLD_VERSION_TOO_OLD" }
+    });
+  });
+
+  it("rejects an unexpected resource under an exact PINNED snapshot", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([], { mode: "PINNED", consistency: "PINNED" });
+    const error = protocolError(() => coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("unexpected")]),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "PINNED", allowDowngrade: false },
+      nodeId: "resolver-pinned-extra"
+    }));
+
+    expect(error).toMatchObject({
+      code: "SCHEMA_MISMATCH",
+      details: { stage: "SNAPSHOT", reason: "RESOURCE_MISSING" }
+    });
   });
 
   it("rejects an AT_LEAST upgrade below the world-version floor", () => {

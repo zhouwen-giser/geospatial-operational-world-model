@@ -64,6 +64,14 @@ export interface GatewayServerConfig {
   registryConfigPath: string;
 }
 
+export interface SignedDelegationGatewayConfig extends GatewayServerConfig {
+  authenticationMode: "SIGNED_DELEGATION_V1";
+  dataScopeClaim: string;
+  delegationIssuer: string;
+  delegationAudience: string;
+  delegationPublicKey: string;
+}
+
 export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.env): Promise<GatewayServerConfig> {
   const registryConfigPath = resolve(env.GATEWAY_PROVIDER_REGISTRY_PATH?.trim() || "config/capability-gateway-registry.json");
   const document = parseControlledProviderRegistryDocument(JSON.parse(await readFile(registryConfigPath, "utf8")) as unknown);
@@ -83,8 +91,11 @@ export async function loadGatewayServerConfig(env: NodeJS.ProcessEnv = process.e
   const delegationIssuer = optional(env, "GATEWAY_DELEGATION_ISSUER");
   const delegationAudience = optional(env, "GATEWAY_DELEGATION_AUDIENCE");
   const delegationPublicKey = optional(env, "GATEWAY_DELEGATION_PUBLIC_KEY");
-  if (authenticationMode === "SIGNED_DELEGATION_V1" && (!delegationIssuer || !delegationAudience || !delegationPublicKey)) {
-    throw new Error("SIGNED_DELEGATION_V1 requires GATEWAY_DELEGATION_ISSUER, GATEWAY_DELEGATION_AUDIENCE and GATEWAY_DELEGATION_PUBLIC_KEY");
+  if (
+    authenticationMode === "SIGNED_DELEGATION_V1"
+    && (!dataScopeClaim || !delegationIssuer || !delegationAudience || !delegationPublicKey)
+  ) {
+    throw new Error("SIGNED_DELEGATION_V1 requires GATEWAY_DATA_SCOPE_CLAIM, GATEWAY_DELEGATION_ISSUER, GATEWAY_DELEGATION_AUDIENCE and GATEWAY_DELEGATION_PUBLIC_KEY");
   }
   return {
     registryProfile: document.registryProfile ?? "legacy",

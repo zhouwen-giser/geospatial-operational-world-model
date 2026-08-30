@@ -1,3 +1,4 @@
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../platform/provider-sdk/src/index.js";
 import type { DirectedState, LoadedNetwork, NetworkArc, RoutingSnapshot, Row, TurnRule } from "./types.js";
 
@@ -48,7 +49,7 @@ export function shortestPath(
     values.push(arc);
     outgoing.set(arc.source, values);
   }
-  for (const values of outgoing.values()) values.sort((a, b) => a.key.localeCompare(b.key));
+  for (const values of outgoing.values()) values.sort((a, b) => compareUnicodeCodePoints(a.key, b.key));
 
   const initialFraction = 1_000_000 - start.fractionPpm;
   const initialHistory=priorArcKeys.at(-1)===startArc.key?[...priorArcKeys]:[...priorArcKeys,startArc.key];
@@ -65,7 +66,7 @@ export function shortestPath(
 
   while (queue.length > 0) {
     assertDeadline(nowMs, deadlineAtMs);
-    queue.sort((a, b) => a.objectiveCost - b.objectiveCost || a.arcKeys.join("\0").localeCompare(b.arcKeys.join("\0")));
+    queue.sort((a, b) => a.objectiveCost - b.objectiveCost || compareUnicodeCodePoints(a.arcKeys.join("\0"), b.arcKeys.join("\0")));
     const current = queue.shift();
     if (!current) break;
     if (current.arcKeys.length > maximumSegments) throw new ProviderProtocolError("BUDGET_EXCEEDED", "network segment budget exceeded", { details: { maximumSegments } });

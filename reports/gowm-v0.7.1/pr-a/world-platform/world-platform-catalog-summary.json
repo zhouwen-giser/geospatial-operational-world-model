@@ -1,0 +1,115 @@
+{
+  "fragments": [
+    "capability-gateway-registry.json",
+    "grounding-gateway-registry.json",
+    "history-gateway-registry.json",
+    "planning-gateway-registry.json"
+  ],
+  "providerCount": 16,
+  "operationCount": 124,
+  "providers": [
+    {
+      "providerId": "gowm.crs-normalization.bridge",
+      "manifestPath": "contracts/manifests/providers/crs-provider.json",
+      "manifestHash": "sha256:bf6a411829c2a1326aefbdda166438ebde69768f3de7e68d32a4d67c540d88d9",
+      "operationCount": 6
+    },
+    {
+      "providerId": "gowm.geometry.bridge",
+      "manifestPath": "contracts/manifests/providers/geometry-provider.json",
+      "manifestHash": "sha256:9ab71a6700fa582ccd09880db525e7f57fe0b1973404efbb0688c757ca711c6c",
+      "operationCount": 19
+    },
+    {
+      "providerId": "gowm.h3.interactive.bridge",
+      "manifestPath": "contracts/manifests/providers/h3-interactive-provider.json",
+      "manifestHash": "sha256:248446504d5abaa5103839ab6c56e0af280e0f6aa3e4a193ca589cf799b148fc",
+      "operationCount": 8
+    },
+    {
+      "providerId": "gowm.h3.analysis.bridge",
+      "manifestPath": "contracts/manifests/providers/h3-analysis-provider.json",
+      "manifestHash": "sha256:4f2b2d5d341e58f9c9a74ba90c0f7f4ee571914903cd8e558fb6b1c26db6918a",
+      "operationCount": 3
+    },
+    {
+      "providerId": "gowm.spatial-analysis.bridge",
+      "manifestPath": "contracts/manifests/providers/spatial-provider.json",
+      "manifestHash": "sha256:6fcbaed7fd34478131f287d901d5189b0d2a2595f934edfd70490da2c559165c",
+      "operationCount": 10
+    },
+    {
+      "providerId": "gowm.situation.h3",
+      "manifestPath": "contracts/manifests/providers/gowm-situation-provider.json",
+      "manifestHash": "sha256:31e7db4cf03724f7ddbe3d48119d3ed2ed5df483a622a488116afda335e94bcb",
+      "operationCount": 4
+    },
+    {
+      "providerId": "gowm.reference-catalog",
+      "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
+      "manifestHash": "sha256:cf41ac533a7e266fc5534baf7f32b123097d6364a49d4a83f19e08096e96ac29",
+      "operationCount": 4
+    },
+    {
+      "providerId": "gowm.dataset-catalog",
+      "manifestPath": "contracts/manifests/providers/dataset-catalog-provider.json",
+      "manifestHash": "sha256:1a8b5fa45040875e97d5667b1f30483f2c55f2851ece70faf39ddb34f28c6ed2",
+      "operationCount": 13
+    },
+    {
+      "providerId": "gowm.world-evidence",
+      "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
+      "manifestHash": "sha256:73da6d7e828aab047270db2a4da314ff6300a1fb0d6947876f45e98e1627d2f8",
+      "operationCount": 8
+    },
+    {
+      "providerId": "gowm.operational-reality",
+      "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
+      "manifestHash": "sha256:96fbc0a103adce7b6da11b3ec93b9b38d91352fe76ac842484ed64558c19e1cf",
+      "operationCount": 9
+    },
+    {
+      "providerId": "gowm.platform-validation",
+      "manifestPath": "contracts/manifests/providers/platform-validation-provider.json",
+      "manifestHash": "sha256:820a10dd38788e4686b503259fed113df736ba42caf27c70b81b19b0d7ac7e84",
+      "operationCount": 4
+    },
+    {
+      "providerId": "gowm.historical-trace",
+      "manifestPath": "contracts/manifests/providers/historical-trace-provider.json",
+      "manifestHash": "sha256:7e45851dd3def3209daf4ae1c1bb568db28ae946cec45cfa5559dc27b4513fce",
+      "operationCount": 1
+    },
+    {
+      "providerId": "gowm.network",
+      "manifestPath": "contracts/manifests/providers/network-provider.json",
+      "manifestHash": "sha256:e771cad36d3cca5fa988e6744e26eb78fd16cec2aa3ad0b4991f022e0bbbe0a0",
+      "operationCount": 11
+    },
+    {
+      "providerId": "gowm.route-planning",
+      "manifestPath": "contracts/manifests/providers/route-provider.json",
+      "manifestHash": "sha256:e564d48d2dd31cedc8deb10e361af62caeeb9edcd744d1b2e5b51e07b15738c8",
+      "operationCount": 4
+    },
+    {
+      "providerId": "gowm.road-coverage-planning",
+      "manifestPath": "contracts/manifests/providers/road-coverage-provider.json",
+      "manifestHash": "sha256:fb38889116bc6d313592fd1beb0add5acef75cfba8815551b2277f298cbf5dc4",
+      "operationCount": 5
+    },
+    {
+      "providerId": "gowm.stas",
+      "manifestPath": "contracts/manifests/providers/stas-provider.json",
+      "manifestHash": "sha256:087d9f7a574388702aa79c78e7e3de145d77641d3c54f823b1b2bd8016e93880",
+      "operationCount": 15
+    }
+  ],
+  "maturities": {
+    "STABLE": 31,
+    "PREVIEW": 91,
+    "EXPERIMENTAL": 2,
+    "DEPRECATED": 0,
+    "RETIRED": 0
+  }
+}

@@ -27,7 +27,9 @@ export class PostgresAuditSink implements AuditSink {
           elapsedMs: event.elapsedMs ?? null,
           replayed: event.outcome === "REPLAYED",
           ...(event.delegationJtiHash === undefined ? {} : { delegationJtiHash: event.delegationJtiHash }),
-          ...(event.authorizationContextHash === undefined ? {} : { authorizationContextHash: event.authorizationContextHash })
+          ...(event.authorizationContextHash === undefined ? {} : { authorizationContextHash: event.authorizationContextHash }),
+          dataScopeSetHash: event.dataScopeSetHash ?? null,
+          datasetScopeSetHash: event.datasetScopeSetHash ?? null
         }),
         event.occurredAt
       ]

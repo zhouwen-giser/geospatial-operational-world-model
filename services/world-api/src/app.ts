@@ -1,4 +1,5 @@
 import Fastify, { type FastifyInstance } from "fastify";
+import { compareUnicodeCodePoints } from "../../../packages/platform/contract-runtime/src/index.js";
 import type { Geometry, LineStringGeometry, PointGeometry, WorldEvent } from "../../../packages/world-model-core/src/types.js";
 import {
   AreaQuerySchema,
@@ -327,7 +328,7 @@ export function buildWorldApi(): FastifyInstance {
     initial.forEach(send);
     replayingBacklog = false;
     [...buffered.values()]
-      .sort((left, right) => left.worldVersion - right.worldVersion || left.timestamp.localeCompare(right.timestamp))
+      .sort((left, right) => left.worldVersion - right.worldVersion || compareUnicodeCodePoints(left.timestamp, right.timestamp))
       .forEach(send);
     buffered.clear();
     const heartbeat = setInterval(() => reply.raw.write(": heartbeat\n\n"), 15_000);

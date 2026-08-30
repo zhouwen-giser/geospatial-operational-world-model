@@ -1,4 +1,5 @@
 import type { CurrentProjection, ObservationEnvelope, ProjectionDecision } from "../../world-model-core/src/types.js";
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 
 export interface FusionPolicy {
   sourcePriorities: Record<string, number>;
@@ -44,7 +45,7 @@ export function decideProjection(
       : { apply: false, reason: "out-of-order" };
   }
 
-  return observation.observationId.localeCompare(current.sourceObservationId) > 0
+  return compareUnicodeCodePoints(observation.observationId, current.sourceObservationId) > 0
     ? { apply: true, reason: "tie-break" }
     : { apply: false, reason: "superseded" };
 }

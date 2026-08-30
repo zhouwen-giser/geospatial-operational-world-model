@@ -1,5 +1,6 @@
 import type { CapabilityDescriptor } from "../../../../packages/platform/contract-runtime/src/index.js";
 import {
+  compareUnicodeCodePoints,
   validateContract,
   catalogRevisions,
   validateProviderManifestSemantics
@@ -104,7 +105,7 @@ export class CapabilityRegistry {
   catalog(): CapabilityDescriptor[] {
     return [...this.#routes.values()]
       .map(({ descriptor }) => structuredClone(descriptor))
-      .sort((left, right) => operationKey(left.operationId, left.operationVersion).localeCompare(operationKey(right.operationId, right.operationVersion)));
+      .sort((left, right) => compareUnicodeCodePoints(operationKey(left.operationId, left.operationVersion), operationKey(right.operationId, right.operationVersion)));
   }
 
   async health(): Promise<Record<string, ProviderHealth>> {

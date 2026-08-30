@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { CoveragePlanningError } from "./errors.js";
 import type {
   CoverageEndpointPolicy,
@@ -200,5 +200,5 @@ async function resolveBoundary(
 
 function canonicalCandidates(candidates: readonly EndpointCandidate[]): EndpointCandidate[] {
   return [...new Map(candidates.map((candidate) => [directedStateKey(candidate.state), candidate])).values()]
-    .sort((left, right) => left.distanceMm - right.distanceMm || directedStateKey(left.state).localeCompare(directedStateKey(right.state)));
+    .sort((left, right) => left.distanceMm - right.distanceMm || compareUnicodeCodePoints(directedStateKey(left.state), directedStateKey(right.state)));
 }

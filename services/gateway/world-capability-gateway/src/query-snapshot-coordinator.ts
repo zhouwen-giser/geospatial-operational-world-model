@@ -1,14 +1,20 @@
-import type {
-  CapabilityDescriptor,
-  CapabilityResultEnvelope,
-  DataSnapshotContext,
-  GowmV07QuerySnapshotAdherence as QuerySnapshotAdherence,
-  GowmV07QuerySnapshotManifest as QuerySnapshotManifest,
-  GowmV07QuerySnapshotPolicy as QuerySnapshotPolicy,
-  WorldQueryPlanV2InputBinding,
-  WorldQuerySubmission
+import {
+  compareUnicodeCodePoints,
+  snapshotResourceIdFromArtifact,
+  snapshotResourceIdFromDataset,
+  snapshotResourceIdFromReferenceKey,
+  snapshotResourceIdentity,
+  type CapabilityDescriptor,
+  type CapabilityResultEnvelope,
+  type DataSnapshotContext,
+  type GowmV071QuerySnapshotAdherence as QuerySnapshotAdherence,
+  type GowmV071QuerySnapshotManifest as QuerySnapshotManifest,
+  type GowmV071QuerySnapshotPolicy as QuerySnapshotPolicy,
+  type WorldQueryPlanV2InputBinding,
+  type WorldQuerySubmission
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
+import { validateProviderSnapshotBoundary } from "./provider-snapshot-boundary.js";
 
 type SnapshotResource = QuerySnapshotManifest["resources"][number];
 type SnapshotMismatch = NonNullable<QuerySnapshotAdherence["mismatches"]>[number];
@@ -124,13 +130,30 @@ export class QuerySnapshotCoordinator {
       args.dataScopeClaim,
       args.datasetScopeClaim
     );
+    const effectivePolicy = args.policy ?? defaultPolicy(args.requested);
+    const boundary = validateProviderSnapshotBoundary({
+      requestedSnapshot: args.requested,
+      effectiveSnapshot: args.effective,
+      providerSnapshot: args.providerSnapshot,
+      policy: effectivePolicy,
+      descriptor: args.descriptor,
+      nodeId: args.nodeId
+    });
     const providerResources = normalizeProviderResources(args.providerSnapshot);
     const warnings = [scopeDigestVerified
       ? "Provider scopeDigest was verified against the delegated Gateway scope"
       : "Provider scopeDigest is retained as evidence but is not recomputed by the Gateway"];
-    const current = new Map(args.effective.resources.map((resource) => [resourceIdentity(resource), structuredClone(resource)]));
+    const boundaryMismatches: SnapshotMismatch[] = boundary.mismatchReasons.map((reason) => ({
+      resourceKind: "SNAPSHOT",
+      resourceId: args.nodeId,
+      reason
+    }));
+    const effectiveAtBoundary = boundary.downgradeRequired
+      ? downgradedSnapshot(args.effective)
+      : args.effective;
+    const current = new Map(effectiveAtBoundary.resources.map((resource) => [resourceIdentity(resource), structuredClone(resource)]));
     const requested = new Map(args.requested.resources.map((resource) => [resourceIdentity(resource), resource]));
-    const mismatches: SnapshotMismatch[] = [];
+    const mismatches: SnapshotMismatch[] = [...boundaryMismatches];
     let discoveredResourceCount = 0;
 
     for (const observed of providerResources) {
@@ -138,7 +161,14 @@ export class QuerySnapshotCoordinator {
       const existing = current.get(identity);
       if (!existing) {
         if (behavior === "DISCOVER_RESOURCES") {
-          if (strictPolicy(args.policy) && observed.pinning !== "PINNED") {
+          if (effectivePolicy.mode === "PINNED") {
+            mismatches.push(mismatch(observed, undefined, "RESOURCE_MISSING"));
+          } else if (
+            effectivePolicy.mode === "AT_LEAST_WORLD_VERSION"
+            && !providerVersionSatisfiesPolicy(observed, effectivePolicy)
+          ) {
+            mismatches.push(mismatch(observed, undefined, versionMismatchReason(effectivePolicy, observed)));
+          } else if (strictPolicy(effectivePolicy) && observed.pinning !== "PINNED") {
             mismatches.push(mismatch(observed, undefined, "PINNING_UNSUPPORTED"));
           } else {
             current.set(identity, pinObservedResource(observed));
@@ -156,13 +186,13 @@ export class QuerySnapshotCoordinator {
         existing.version === requestedResource.version &&
         existing.pinning !== "PINNED";
 
-      if (mayResolveFlexibleRequestedPin && !providerVersionSatisfiesPolicy(observed, args.policy)) {
-        mismatches.push(mismatch(observed, existing, versionMismatchReason(args.policy, observed)));
+      if (mayResolveFlexibleRequestedPin && !providerVersionSatisfiesPolicy(observed, effectivePolicy)) {
+        mismatches.push(mismatch(observed, existing, versionMismatchReason(effectivePolicy, observed)));
         continue;
       }
 
       if (existing.version !== observed.version) {
-        if (mayResolveFlexibleRequestedPin && providerVersionSatisfiesPolicy(observed, args.policy)) {
+        if (mayResolveFlexibleRequestedPin && providerVersionSatisfiesPolicy(observed, effectivePolicy)) {
           current.set(identity, pinObservedResource({
             ...observed,
             ...((observed.contentHash ?? existing.contentHash) === undefined
@@ -174,7 +204,7 @@ export class QuerySnapshotCoordinator {
           }));
           continue;
         }
-        mismatches.push(mismatch(observed, existing, versionMismatchReason(args.policy, observed)));
+        mismatches.push(mismatch(observed, existing, versionMismatchReason(effectivePolicy, observed)));
         continue;
       }
       if (existing.contentHash !== undefined && observed.contentHash === undefined) {
@@ -201,22 +231,30 @@ export class QuerySnapshotCoordinator {
       });
     }
 
+    const adherenceEvidence = {
+      expectedConsistency: boundary.expectedConsistency,
+      actualConsistency: boundary.actualConsistency,
+      expectedCapturedAt: boundary.expectedCapturedAt,
+      actualCapturedAt: boundary.actualCapturedAt
+    };
     const adherence: QuerySnapshotAdherence = mismatches.length === 0
       ? {
           nodeId: args.nodeId,
-          status: behavior === undefined && args.effective.resources.length === 0 ? "ADVANCED_COMPATIBLE" : "MATCHED",
+          status: boundary.status === "ADVANCED_COMPATIBLE" || (behavior === undefined && args.effective.resources.length === 0) ? "ADVANCED_COMPATIBLE" : "MATCHED",
           checkedResources: providerResources.length,
-          mismatches: []
+          mismatches: [],
+          ...adherenceEvidence
         }
       : {
           nodeId: args.nodeId,
           status: "MISMATCHED",
           checkedResources: providerResources.length,
-          mismatches
+          mismatches,
+          ...adherenceEvidence
         };
 
     if (mismatches.length > 0) {
-      if (strictPolicy(args.policy)) {
+      if (strictPolicy(effectivePolicy)) {
         const first = mismatches[0]!;
         throw snapshotError("provider data snapshot conflicts with the effective snapshot", {
           nodeId: args.nodeId,
@@ -229,7 +267,7 @@ export class QuerySnapshotCoordinator {
         `${args.nodeId}: retained prior effective pin for ${item.resourceKind}/${item.resourceId} (${item.reason})`
       ));
       return {
-        effective: structuredClone(args.effective),
+        effective: structuredClone(effectiveAtBoundary),
         adherence,
         discoveredResourceCount: 0,
         warnings
@@ -239,7 +277,7 @@ export class QuerySnapshotCoordinator {
     if (behavior === undefined) {
       warnings.push(`${args.nodeId}: legacy descriptor resources were checked but not merged`);
       return {
-        effective: structuredClone(args.effective),
+        effective: structuredClone(effectiveAtBoundary),
         adherence,
         discoveredResourceCount: 0,
         warnings
@@ -253,7 +291,7 @@ export class QuerySnapshotCoordinator {
         details: { stage: "SNAPSHOT", nodeId: args.nodeId, limit: 512, actual: resources.length }
       });
     }
-    const nextContent = { ...withoutManifestHash(args.effective), resources };
+    const nextContent = { ...withoutManifestHash(effectiveAtBoundary), resources };
     const effective: QuerySnapshotManifest = { ...nextContent, manifestHash: sha256(nextContent) };
     return { effective, adherence, discoveredResourceCount, warnings };
   }
@@ -291,7 +329,7 @@ export class QuerySnapshotCoordinator {
     for (const expected of manifest.resources) {
       const observed = actual.resources.find((resource) =>
         resource.referenceKey.kind === expected.resourceKind &&
-        `${resource.referenceKey.namespace}:${resource.referenceKey.id}` === expected.resourceId
+        snapshotResourceIdFromReferenceKey(resource.referenceKey) === expected.resourceId
       );
       if (!observed) {
         mismatches.push({ resourceKind: expected.resourceKind, resourceId: expected.resourceId, expectedVersion: expected.version, reason: "RESOURCE_MISSING" });
@@ -352,14 +390,14 @@ function collectResources(submission: WorldQuerySubmission, mode: QuerySnapshotM
     if (binding.kind === "REFERENCE_KEY") {
       add({
         resourceKind: binding.referenceKey.kind,
-        resourceId: `${binding.referenceKey.namespace}:${binding.referenceKey.id}`,
+        resourceId: inputResourceId(() => snapshotResourceIdFromReferenceKey(binding.referenceKey)),
         version: binding.referenceKey.version,
         pinning: mode === "AT_LEAST_WORLD_VERSION" ? "AT_LEAST" : mode === "BEST_EFFORT" ? "BEST_EFFORT" : "PINNED"
       });
     } else if (binding.kind === "DATASET_VERSION") {
-      add({ resourceKind: "DATASET", resourceId: `dataset:${binding.datasetId}`, version: binding.version, pinning: mode === "BEST_EFFORT" ? "BEST_EFFORT" : "PINNED" });
+      add({ resourceKind: "DATASET", resourceId: inputResourceId(() => snapshotResourceIdFromDataset(binding.datasetId)), version: binding.version, pinning: mode === "BEST_EFFORT" ? "BEST_EFFORT" : "PINNED" });
     } else if (binding.kind === "ARTIFACT_REFERENCE") {
-      add({ resourceKind: "ARTIFACT", resourceId: `artifact:${binding.artifactId}`, version: binding.digest, contentHash: binding.digest, pinning: mode === "BEST_EFFORT" ? "BEST_EFFORT" : "PINNED" });
+      add({ resourceKind: "ARTIFACT", resourceId: inputResourceId(() => snapshotResourceIdFromArtifact(binding.artifactId)), version: binding.digest, contentHash: binding.digest, pinning: mode === "BEST_EFFORT" ? "BEST_EFFORT" : "PINNED" });
     }
   };
   for (const node of submission.plan.nodes) {
@@ -426,7 +464,7 @@ function normalizeProviderResources(snapshot: DataSnapshotContext): SnapshotReso
     }
     const normalized: SnapshotResource = {
       resourceKind: kind,
-      resourceId: `${namespace}:${id}`,
+      resourceId: providerResourceId(() => snapshotResourceIdFromReferenceKey({ namespace, id })),
       version,
       ...(resource.digest === undefined ? {} : { contentHash: resource.digest }),
       ...(resource.worldVersion === undefined ? {} : { worldVersion: resource.worldVersion }),
@@ -467,25 +505,21 @@ function pinObservedResource(resource: SnapshotResource): SnapshotResource {
 }
 
 function resourceIdentity(resource: SnapshotResource): string {
-  return `${resource.resourceKind}\u0000${resource.resourceId}`;
+  return providerResourceId(() => snapshotResourceIdentity(resource));
 }
 
 function compareResources(left: SnapshotResource, right: SnapshotResource): number {
-  return [
-    left.resourceKind,
-    left.resourceId,
-    left.version,
-    left.contentHash ?? "",
-    String(left.worldVersion ?? -1).padStart(20, "0"),
-    left.pinning
-  ].join("\u0000").localeCompare([
-    right.resourceKind,
-    right.resourceId,
-    right.version,
-    right.contentHash ?? "",
-    String(right.worldVersion ?? -1).padStart(20, "0"),
-    right.pinning
-  ].join("\u0000"));
+  for (const [leftValue, rightValue] of [
+    [left.resourceKind, right.resourceKind],
+    [left.resourceId, right.resourceId],
+    [left.version, right.version],
+    [left.contentHash ?? "", right.contentHash ?? ""]
+  ] as const) {
+    const compared = compareUnicodeCodePoints(leftValue, rightValue);
+    if (compared !== 0) return compared;
+  }
+  const worldVersion = (left.worldVersion ?? -1) - (right.worldVersion ?? -1);
+  return worldVersion !== 0 ? worldVersion : compareUnicodeCodePoints(left.pinning, right.pinning);
 }
 
 function sameResource(left: SnapshotResource, right: SnapshotResource): boolean {
@@ -530,6 +564,39 @@ function mismatch(
 function strictPolicy(policy: QuerySnapshotPolicy | undefined): boolean {
   const effective = policy ?? { mode: "BEST_EFFORT", allowDowngrade: true };
   return effective.mode !== "BEST_EFFORT" && effective.allowDowngrade !== true;
+}
+
+function defaultPolicy(manifest: QuerySnapshotManifest): QuerySnapshotPolicy {
+  return {
+    mode: manifest.mode,
+    ...(manifest.minimumWorldVersion === undefined ? {} : { minimumWorldVersion: manifest.minimumWorldVersion }),
+    ...(manifest.mode === "PINNED" ? { pinnedSnapshot: manifest } : {}),
+    allowDowngrade: manifest.mode === "BEST_EFFORT"
+  } as QuerySnapshotPolicy;
+}
+
+function downgradedSnapshot(manifest: QuerySnapshotManifest): QuerySnapshotManifest {
+  const content = { ...withoutManifestHash(manifest), consistency: "BEST_EFFORT" as const };
+  return { ...content, manifestHash: sha256(content) };
+}
+
+function inputResourceId(factory: () => string): string {
+  try {
+    return factory();
+  } catch (error) {
+    throw new ProviderProtocolError("INVALID_REQUEST", error instanceof Error ? error.message : "snapshot resource identity is invalid", {
+      retryable: false,
+      details: { stage: "SNAPSHOT" }
+    });
+  }
+}
+
+function providerResourceId(factory: () => string): string {
+  try {
+    return factory();
+  } catch (error) {
+    throw snapshotError(error instanceof Error ? error.message : "snapshot resource identity is invalid", { reason: "RESOURCE_MISSING" });
+  }
 }
 
 function withoutManifestHash(manifest: QuerySnapshotManifest): Omit<QuerySnapshotManifest, "manifestHash"> {

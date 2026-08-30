@@ -5,6 +5,7 @@ import pg from "pg";
 import { canonicalJson } from "../../packages/observation-model/src/canonical.js";
 import {
   canonicalSha256,
+  compareUnicodeCodePoints,
   validateAgainstSchema,
   type DelegationTokenClaims
 } from "../../packages/platform/contract-runtime/src/index.js";
@@ -287,10 +288,11 @@ export function buildSampleAvailabilityProbePlan(
 
   const absentProviderProbes = deployments
     .filter(({ providerId }) => !runningProviderIds.includes(providerId))
-    .sort((left, right) => left.providerId.localeCompare(right.providerId))
+    .sort((left, right) => compareUnicodeCodePoints(left.providerId, right.providerId))
     .map((deployment) => {
       const capability = [...deployment.approvedManifest.capabilities]
-        .sort((left, right) => `${left.operationId}@${left.operationVersion}`.localeCompare(
+        .sort((left, right) => compareUnicodeCodePoints(
+          `${left.operationId}@${left.operationVersion}`,
           `${right.operationId}@${right.operationVersion}`
         ))
         .find((candidate) => !["PLANNED", "RETIRED", "EXPERIMENTAL"].includes(candidate.maturity));

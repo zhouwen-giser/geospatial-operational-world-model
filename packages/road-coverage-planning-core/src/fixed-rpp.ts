@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { CoveragePlanningError } from "./errors.js";
 import type {
   ClosedDcppAugmentation,
@@ -172,7 +172,7 @@ export function solveFixedDirectionRpp(problem: CoverageProblem, traversableArcs
 
 function validateInput(problem: CoverageProblem, input: readonly CoverageTraversalArc[]): CoverageTraversalArc[] {
   if (input.length === 0) throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "RPP requires a non-empty traversable network E");
-  const arcs = [...input].sort((left, right) => left.arcKey.localeCompare(right.arcKey));
+  const arcs = [...input].sort((left, right) => compareUnicodeCodePoints(left.arcKey, right.arcKey));
   const byArc = new Map<string, CoverageTraversalArc>();
   for (const arc of arcs) {
     if (byArc.has(arc.arcKey)) throw new CoveragePlanningError("NO_FEASIBLE_PLAN", `duplicate traversable Arc: ${arc.arcKey}`);
@@ -232,12 +232,12 @@ function buildAtomicNetwork(arcs: readonly CoverageTraversalArc[], fractions: Re
       });
     }
   }
-  return steps.sort((left, right) => left.id.localeCompare(right.id));
+  return steps.sort((left, right) => compareUnicodeCodePoints(left.id, right.id));
 }
 
 function buildRequiredEdges(obligations: readonly RoadServiceObligation[], byArc: ReadonlyMap<string, CoverageTraversalArc>): RouteEdge[] {
   const result: RouteEdge[] = [];
-  for (const obligation of [...obligations].sort((left, right) => left.obligationId.localeCompare(right.obligationId))) {
+  for (const obligation of [...obligations].sort((left, right) => compareUnicodeCodePoints(left.obligationId, right.obligationId))) {
     const arc = byArc.get(obligation.arcKey)!;
     const step: AtomicStep = {
       id: `service:${obligation.obligationId}`,
@@ -282,7 +282,7 @@ function requiredComponents(edges: readonly RouteEdge[], start: string, end: str
   for (const terminal of [...new Set([start, end])].sort()) {
     if (!result.some((component) => component.nodes.includes(terminal))) result.push({ id: `terminal:${terminal}`, nodes: [terminal] });
   }
-  return result.sort((left, right) => left.id.localeCompare(right.id));
+  return result.sort((left, right) => compareUnicodeCodePoints(left.id, right.id));
 }
 
 function minimumSpanningComponentLinks(components: readonly Component[], getPath: (from: string, to: string) => Path, deadline: number): ComponentLink[] {
@@ -329,8 +329,8 @@ function minimumSpanningComponentLinks(components: readonly Component[], getPath
 }
 
 function compareLinks(left: ComponentLink, right: ComponentLink): number {
-  return left.path.cost - right.path.cost || left.from.localeCompare(right.from) || left.to.localeCompare(right.to) ||
-    left.path.steps.map((step) => step.id).join("|").localeCompare(right.path.steps.map((step) => step.id).join("|"));
+  return left.path.cost - right.path.cost || compareUnicodeCodePoints(left.from, right.from) || compareUnicodeCodePoints(left.to, right.to) ||
+    compareUnicodeCodePoints(left.path.steps.map((step) => step.id).join("|"), right.path.steps.map((step) => step.id).join("|"));
 }
 
 function shortestPath(network: readonly AtomicStep[], from: string, to: string, deadline: number): Path {
@@ -341,7 +341,7 @@ function shortestPath(network: readonly AtomicStep[], from: string, to: string, 
     ensureArray(outgoing, step.from).push(step);
     nodes.add(step.from); nodes.add(step.to);
   }
-  for (const steps of outgoing.values()) steps.sort((left, right) => left.id.localeCompare(right.id));
+  for (const steps of outgoing.values()) steps.sort((left, right) => compareUnicodeCodePoints(left.id, right.id));
   const orderedNodes = [...nodes].sort();
   const distance = new Map(orderedNodes.map((node) => [node, Number.POSITIVE_INFINITY]));
   const previous = new Map<string, AtomicStep>();
@@ -432,7 +432,7 @@ function minimumCostFlow(supplies: readonly QuantityNode[], demands: readonly Qu
 function eulerTrail(edges: readonly RouteEdge[], start: string, end: string, deadline: number): RouteEdge[] {
   const outgoing = new Map<string, RouteEdge[]>();
   for (const edge of edges) ensureArray(outgoing, edge.step.from).push(edge);
-  for (const list of outgoing.values()) list.sort((left, right) => left.step.id.localeCompare(right.step.id) || left.id.localeCompare(right.id));
+  for (const list of outgoing.values()) list.sort((left, right) => compareUnicodeCodePoints(left.step.id, right.step.id) || compareUnicodeCodePoints(left.id, right.id));
   const cursors = new Map<string, number>(), used = new Set<string>();
   const nodeStack = [start], edgeStack: RouteEdge[] = [], reversed: RouteEdge[] = [];
   while (nodeStack.length > 0) {
@@ -490,7 +490,7 @@ function validateMetrics(metrics: FixedMetrics, arcKey: string): void {
 }
 
 function imbalance(balance: ReadonlyMap<string, number>, predicate: (value: number) => boolean, quantity: (value: number) => number): QuantityNode[] {
-  return [...balance].filter(([, value]) => predicate(value)).map(([nodeKey, value]) => ({ nodeKey, quantity: quantity(value) })).sort((left, right) => left.nodeKey.localeCompare(right.nodeKey));
+  return [...balance].filter(([, value]) => predicate(value)).map(([nodeKey, value]) => ({ nodeKey, quantity: quantity(value) })).sort((left, right) => compareUnicodeCodePoints(left.nodeKey, right.nodeKey));
 }
 
 function addBalance(balance: Map<string, number>, node: string, delta: number): void { balance.set(node, safeSignedAdd(balance.get(node) ?? 0, delta)); }

@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import type {
   Geometry,
   H3Projection,
@@ -211,7 +212,7 @@ export class MemoryWorldModel {
       confidence: observation.confidence,
       observationId: observation.observationId
     });
-    track.sort((a, b) => a.timestamp.localeCompare(b.timestamp) || a.observationId.localeCompare(b.observationId));
+    track.sort((a, b) => compareUnicodeCodePoints(a.timestamp, b.timestamp) || compareUnicodeCodePoints(a.observationId, b.observationId));
     this.tracks.set(observation.subject.id, track);
   }
 
@@ -287,7 +288,7 @@ export class MemoryWorldModel {
       .filter((object) => matchesFilter(object, options.filter ?? {}))
       .map((object) => ({ object: this.getObject(object.id)!, distanceM: haversineDistanceM(point, object.geometry as PointGeometry) }))
       .filter((entry) => entry.distanceM <= options.radiusM)
-      .sort((a, b) => a.distanceM - b.distanceM || a.object.id.localeCompare(b.object.id))
+      .sort((a, b) => a.distanceM - b.distanceM || compareUnicodeCodePoints(a.object.id, b.object.id))
       .slice(0, options.limit ?? 10);
   }
 
@@ -318,7 +319,7 @@ export class MemoryWorldModel {
       .filter(([, cell]) => cell.resolution === resolution)
       .map(([index]) => this.getCell(index)!)
       .filter((cell) => !parentCell || (parentResolution !== undefined && h3Parent(cell.h3Index, parentResolution) === parentCell))
-      .sort((a, b) => b.metrics.activityScore - a.metrics.activityScore || a.h3Index.localeCompare(b.h3Index))
+      .sort((a, b) => b.metrics.activityScore - a.metrics.activityScore || compareUnicodeCodePoints(a.h3Index, b.h3Index))
       .slice(0, limit);
   }
 
@@ -337,7 +338,7 @@ export class MemoryWorldModel {
   replay(): { before: string; after: string; equal: boolean } {
     const before = this.stateChecksum();
     const facts = [...this.observations.values()].sort((a, b) =>
-      a.receivedAt.localeCompare(b.receivedAt) || a.observationId.localeCompare(b.observationId)
+      compareUnicodeCodePoints(a.receivedAt, b.receivedAt) || compareUnicodeCodePoints(a.observationId, b.observationId)
     );
     const staticObjects = [...this.objects.values()].filter((object) => ["Zone", "AOI", "Geofence", "Facility", "Road", "RoadSegment"].includes(String(object.type)));
     this.objects.clear();
@@ -360,7 +361,7 @@ export class MemoryWorldModel {
   stateChecksum(): string {
     const canonical = [...this.objects.values()]
       .filter((object) => !["Zone", "AOI", "Geofence", "Facility", "Road", "RoadSegment"].includes(String(object.type)))
-      .sort((a, b) => a.id.localeCompare(b.id))
+      .sort((a, b) => compareUnicodeCodePoints(a.id, b.id))
       .map((object) => ({
         id: object.id, type: object.type, geometry: object.geometry, state: sortObject(object.state),
         confidence: object.confidence, observedAt: object.observedAt,
@@ -421,7 +422,7 @@ function maxTime(a: string | undefined, b: string): string {
 }
 
 function sortObject(value: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)));
+  return Object.fromEntries(Object.entries(value).sort(([a], [b]) => compareUnicodeCodePoints(a, b)));
 }
 
 export function makeObservation(input: Partial<ObservationEnvelope> & Pick<ObservationEnvelope, "observer" | "subject" | "observationType">): ObservationEnvelope {

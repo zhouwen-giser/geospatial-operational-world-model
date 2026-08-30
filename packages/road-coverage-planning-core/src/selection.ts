@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { buildRoadServiceObligation, canonicalObligationLedger, obligationSetHash } from "./canonical.js";
 import { CoveragePlanningError } from "./errors.js";
 import type {
@@ -126,7 +126,7 @@ function chooseDirections(
   }
   const selected: CoverageSelectionCandidate[] = [];
   for (const items of grouped.values()) {
-    const sorted = [...items].sort((left, right) => left.arcKey.localeCompare(right.arcKey));
+    const sorted = [...items].sort((left, right) => compareUnicodeCodePoints(left.arcKey, right.arcKey));
     if (source === "SOURCE_FEATURE_ATTRIBUTE") {
       const authoritativeDirection = sorted[0]?.oneway;
       if (authoritativeDirection === "BIDIRECTIONAL") {

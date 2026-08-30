@@ -1,3 +1,4 @@
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { sha256, stableKey } from "./canonical.js";
 import type {
   BuiltNetworkArc,
@@ -30,7 +31,7 @@ function arcsByFeature(topology: BuiltNetworkTopology): Map<string, BuiltNetwork
     collection.push(arc);
     result.set(featureKey, collection);
   }
-  for (const collection of result.values()) collection.sort((left, right) => left.arcKey.localeCompare(right.arcKey));
+  for (const collection of result.values()) collection.sort((left, right) => compareUnicodeCodePoints(left.arcKey, right.arcKey));
   return result;
 }
 
@@ -71,11 +72,11 @@ function automatonFor(rules: readonly Omit<BuiltTurnSequenceRule, "automatonHash
       }
     }
   }
-  prefixes.sort((left, right) => left.length - right.length || left.join("\u0000").localeCompare(right.join("\u0000")));
+  prefixes.sort((left, right) => left.length - right.length || compareUnicodeCodePoints(left.join("\u0000"), right.join("\u0000")));
   const states = prefixes.map((prefix, stateId) => ({ stateId, prefix }));
   const normalizedRules = rules.map(({ ruleKey, arcSequence, ruleType, penaltyUnits }) => ({
     ruleKey, arcSequence, ruleType, penaltyUnits
-  })).sort((left, right) => left.ruleKey.localeCompare(right.ruleKey));
+  })).sort((left, right) => compareUnicodeCodePoints(left.ruleKey, right.ruleKey));
   const automatonHash = sha256({ states, rules: normalizedRules });
   return { states, rules: normalizedRules, automatonHash };
 }
@@ -155,9 +156,9 @@ export function compileTurnRestrictions(input: {
     const ruleKey = stableKey("ts", { restrictionReferenceKey: source.restrictionReferenceKey, ...normalized });
     pendingSequences.push({ ruleKey, ...normalized });
   }
-  pairwiseRules.sort((left, right) => left.ruleKey.localeCompare(right.ruleKey));
-  pendingSequences.sort((left, right) => left.ruleKey.localeCompare(right.ruleKey));
-  diagnostics.sort((left, right) => left.restrictionReferenceKey.localeCompare(right.restrictionReferenceKey));
+  pairwiseRules.sort((left, right) => compareUnicodeCodePoints(left.ruleKey, right.ruleKey));
+  pendingSequences.sort((left, right) => compareUnicodeCodePoints(left.ruleKey, right.ruleKey));
+  diagnostics.sort((left, right) => compareUnicodeCodePoints(left.restrictionReferenceKey, right.restrictionReferenceKey));
   const automaton = automatonFor(pendingSequences);
   const sequenceRules = pendingSequences.map((rule) => ({
     ...rule,

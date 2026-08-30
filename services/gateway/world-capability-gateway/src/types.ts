@@ -49,12 +49,24 @@ export interface GatewayPrincipal {
   authenticatedAt: string;
   dataScopeClaim?: string;
   datasetScopeClaim?: string;
-  effectiveDataScopes?: string[];
-  effectiveDatasetScopes?: string[];
-  allowedOperations?: string[];
+  effectiveDataScopes?: readonly [] | readonly [string];
+  effectiveDatasetScopes?: readonly [] | readonly [string];
+  allowedOperations?: readonly string[];
   delegationJtiHash?: `sha256:${string}`;
   authorizationContextHash?: `sha256:${string}`;
   allowExperimental?: boolean;
+}
+
+export interface SignedDelegationGatewayPrincipal extends GatewayPrincipal {
+  mode: "SIGNED_DELEGATION_V1";
+  servicePrincipalRef: string;
+  actorRef: string;
+  dataScopeClaim: string;
+  effectiveDataScopes: readonly [string];
+  effectiveDatasetScopes: readonly [] | readonly [string];
+  allowedOperations: readonly string[];
+  delegationJtiHash: `sha256:${string}`;
+  authorizationContextHash: `sha256:${string}`;
 }
 
 export interface AuditEvent {
@@ -69,6 +81,8 @@ export interface AuditEvent {
   inputHash: string;
   outputHash?: string;
   dataScopeHash?: `sha256:${string}`;
+  dataScopeSetHash?: `sha256:${string}`;
+  datasetScopeSetHash?: `sha256:${string}`;
   errorCode?: string;
   elapsedMs?: number;
   delegationJtiHash?: `sha256:${string}`;

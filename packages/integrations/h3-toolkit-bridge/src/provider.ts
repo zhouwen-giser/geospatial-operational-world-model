@@ -2,9 +2,10 @@ import semanticProfiles0 from "./semantic-profiles.h3-interactive.json" with { t
 import semanticProfiles1 from "./semantic-profiles.h3-analysis.json" with { type: "json" };
 import { declaredSemanticProfile } from "../../../../packages/platform/provider-sdk/src/declared-semantics.js";
 const DECLARED_SEMANTICS = { ...semanticProfiles0, ...semanticProfiles1 };
-import type {
-  CapabilityDescriptor,
-  CapabilityProviderManifest
+import {
+  compareUnicodeCodePoints,
+  type CapabilityDescriptor,
+  type CapabilityProviderManifest
 } from "../../../platform/contract-runtime/src/index.js";
 import { getContractSchemaHash } from "../../../platform/contract-runtime/src/index.js";
 import {
@@ -470,7 +471,7 @@ function sortedCells(value: unknown): string[] {
 
 function sortedCellValues(value: unknown): unknown[] {
   const cells = asArray(value, "H3 cell values");
-  return [...cells].sort((left, right) => string(asRecord(left, "H3 cell value").index).localeCompare(string(asRecord(right, "H3 cell value").index)));
+  return [...cells].sort((left, right) => compareUnicodeCodePoints(string(asRecord(left, "H3 cell value").index), string(asRecord(right, "H3 cell value").index)));
 }
 
 function asRecord(value: unknown, name: string): Record<string, unknown> {

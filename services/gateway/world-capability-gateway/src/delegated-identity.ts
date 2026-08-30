@@ -1,27 +1,28 @@
 import { createPublicKey, verify as verifySignature } from "node:crypto";
 import type { FastifyRequest } from "fastify";
 import {
+  compareUnicodeCodePoints,
   validateContract,
-  type DelegationTokenClaims
+  type GowmV071DelegationTokenClaims
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
-import type { GatewayServerConfig } from "./config.js";
+import type { GatewayServerConfig, SignedDelegationGatewayConfig } from "./config.js";
 import { principalContextHash } from "./principal-context.js";
-import type { GatewayPrincipal } from "./types.js";
+import type { GatewayPrincipal, SignedDelegationGatewayPrincipal } from "./types.js";
 
 const CLOCK_SKEW_SECONDS = 5;
 
 export interface DelegationVerificationContext {
   servicePrincipalRef: string;
   requestId: string;
-  allowedDataScopes: readonly string[];
-  allowedDatasetScopes: readonly string[];
+  allowedDataScopes: readonly [string];
+  allowedDatasetScopes: readonly [] | readonly [string];
   registeredOperations: readonly string[];
   allowExperimental: boolean;
 }
 
 export interface DelegationVerifier {
-  verify(compactJws: string, context: DelegationVerificationContext): GatewayPrincipal;
+  verify(compactJws: string, context: DelegationVerificationContext): SignedDelegationGatewayPrincipal;
 }
 
 export class SignedDelegationVerifier implements DelegationVerifier {
@@ -37,7 +38,7 @@ export class SignedDelegationVerifier implements DelegationVerifier {
     this.#publicKey = createPublicKey(options.publicKey);
   }
 
-  verify(compactJws: string, context: DelegationVerificationContext): GatewayPrincipal {
+  verify(compactJws: string, context: DelegationVerificationContext): SignedDelegationGatewayPrincipal {
     const segments = compactJws.split(".");
     if (segments.length !== 3 || segments.some((segment) => segment.length === 0)) {
       throw denied("delegation token must be a compact JWS");
@@ -57,9 +58,10 @@ export class SignedDelegationVerifier implements DelegationVerifier {
     }
 
     const claims = parseSegment(encodedPayload, "delegation JWS claims") as unknown;
-    const validation = validateContract("urn:gowm:v0.6.3:delegation-token-claims", claims);
+    assertSingleScopeClaims(claims);
+    const validation = validateContract("urn:gowm:v0.7.1:delegation-token-claims", claims);
     if (!validation.valid) throw denied("delegation claims violate the contract");
-    const token = claims as DelegationTokenClaims;
+    const token = claims as GowmV071DelegationTokenClaims;
     const now = Math.floor((this.options.now?.() ?? new Date()).getTime() / 1_000);
     const maximumTtl = this.options.maximumTtlSeconds ?? 300;
     if (token.iss !== this.options.issuer || token.aud !== this.options.audience) throw denied("delegation issuer or audience is invalid");
@@ -70,27 +72,34 @@ export class SignedDelegationVerifier implements DelegationVerifier {
     }
     if (token.exp <= token.iat || token.exp - token.iat > maximumTtl) throw denied("delegation token TTL exceeds policy");
 
-    const effectiveDataScopes = intersection(token.dataScopes, context.allowedDataScopes);
-    const effectiveDatasetScopes = intersection(token.datasetScopes, context.allowedDatasetScopes);
-    if (context.allowedDataScopes.length > 0 && effectiveDataScopes.length === 0) throw denied("delegation grants no allowed data scope");
-    if (context.allowedDatasetScopes.length > 0 && effectiveDatasetScopes.length === 0) throw denied("delegation grants no allowed dataset scope");
+    assertVerificationScopeContext(context);
+    const tokenDataScope = token.dataScopes[0];
+    if (tokenDataScope === undefined || tokenDataScope !== context.allowedDataScopes[0]) {
+      throw denied("delegation grants no allowed data scope");
+    }
+    const tokenDatasetScope = token.datasetScopes[0];
+    if (tokenDatasetScope !== undefined && tokenDatasetScope !== context.allowedDatasetScopes[0]) {
+      throw denied("delegation grants no allowed dataset scope");
+    }
+    const effectiveDatasetScopes = tokenDatasetScope === undefined ? [] as const : [tokenDatasetScope] as const;
     const allowedOperations = intersection(token.allowedOperations, context.registeredOperations);
     if (allowedOperations.length === 0) throw denied("delegation grants no registered operation");
 
-    const principal: GatewayPrincipal = {
+    const principal: SignedDelegationGatewayPrincipal = {
       mode: "SIGNED_DELEGATION_V1",
       principalRef: context.servicePrincipalRef,
       servicePrincipalRef: context.servicePrincipalRef,
       actorRef: token.act.sub,
       authenticationMethod: "SERVICE_BEARER+JWS_DELEGATION",
       authenticatedAt: new Date(now * 1_000).toISOString(),
-      effectiveDataScopes,
+      effectiveDataScopes: [tokenDataScope] as const,
       effectiveDatasetScopes,
-      ...(effectiveDataScopes[0] === undefined ? {} : { dataScopeClaim: effectiveDataScopes[0] }),
-      ...(effectiveDatasetScopes[0] === undefined ? {} : { datasetScopeClaim: effectiveDatasetScopes[0] }),
+      dataScopeClaim: tokenDataScope,
+      ...(tokenDatasetScope === undefined ? {} : { datasetScopeClaim: tokenDatasetScope }),
       allowedOperations,
       delegationJtiHash: sha256(token.jti),
-      allowExperimental: context.allowExperimental
+      allowExperimental: context.allowExperimental,
+      authorizationContextHash: "" as `sha256:${string}`
     };
     principal.authorizationContextHash = principalContextHash(principal);
     return principal;
@@ -103,10 +112,11 @@ export function createGatewayAuthenticator(
 ): (request: FastifyRequest) => Promise<GatewayPrincipal> {
   const authenticateService = staticBearer(config);
   if (config.authenticationMode === "STATIC_SERVICE") return authenticateService;
+  assertSignedDelegationConfig(config);
   const verifier = new SignedDelegationVerifier({
-    issuer: config.delegationIssuer!,
-    audience: config.delegationAudience!,
-    publicKey: config.delegationPublicKey!,
+    issuer: config.delegationIssuer,
+    audience: config.delegationAudience,
+    publicKey: config.delegationPublicKey,
     maximumTtlSeconds: config.delegationMaximumTtlSeconds
   });
   return async (request) => {
@@ -116,7 +126,7 @@ export function createGatewayAuthenticator(
     return verifier.verify(raw, {
       servicePrincipalRef: service.principalRef,
       requestId: requestIdentity(request),
-      allowedDataScopes: service.dataScopeClaim === undefined ? [] : [service.dataScopeClaim],
+      allowedDataScopes: [config.dataScopeClaim],
       allowedDatasetScopes: service.datasetScopeClaim === undefined ? [] : [service.datasetScopeClaim],
       registeredOperations: registeredOperations(),
       allowExperimental: service.allowExperimental ?? false
@@ -144,11 +154,11 @@ export function staticBearer(
       authenticatedAt: new Date().toISOString(),
       ...(config.dataScopeClaim === undefined ? {} : {
         dataScopeClaim: config.dataScopeClaim,
-        effectiveDataScopes: [config.dataScopeClaim]
+        effectiveDataScopes: [config.dataScopeClaim] as const
       }),
       ...(config.datasetScopeClaim === undefined ? {} : {
         datasetScopeClaim: config.datasetScopeClaim,
-        effectiveDatasetScopes: [config.datasetScopeClaim]
+        effectiveDatasetScopes: [config.datasetScopeClaim] as const
       }),
       allowExperimental: config.allowExperimental
     };
@@ -176,11 +186,46 @@ function parseSegment(segment: string, name: string): Record<string, unknown> {
 
 function intersection(left: readonly string[], right: readonly string[]): string[] {
   const allowed = new Set(right);
-  return [...new Set(left.filter((value) => allowed.has(value)))].sort();
+  return [...new Set(left.filter((value) => allowed.has(value)))].sort(compareUnicodeCodePoints);
 }
 
-function denied(message: string): ProviderProtocolError {
-  return new ProviderProtocolError("SCOPE_DENIED", message, { retryable: false });
+function assertVerificationScopeContext(context: DelegationVerificationContext): void {
+  if (context.allowedDataScopes.length !== 1 || context.allowedDatasetScopes.length > 1) {
+    throw denied("delegation verifier scope configuration is not singleton", "MULTI_SCOPE_UNSUPPORTED");
+  }
+  if (
+    context.allowedDataScopes[0].trim().length === 0
+    || context.allowedDatasetScopes.some((value) => value.trim().length === 0)
+  ) {
+    throw denied("delegation verifier scope configuration is empty");
+  }
+}
+
+function assertSignedDelegationConfig(config: GatewayServerConfig): asserts config is SignedDelegationGatewayConfig {
+  if (
+    !config.dataScopeClaim
+    || !config.delegationIssuer
+    || !config.delegationAudience
+    || !config.delegationPublicKey
+  ) {
+    throw new Error("SIGNED_DELEGATION_V1 configuration is incomplete");
+  }
+}
+
+function assertSingleScopeClaims(claims: unknown): void {
+  if (claims === null || typeof claims !== "object" || Array.isArray(claims)) return;
+  const value = claims as Record<string, unknown>;
+  if ((Array.isArray(value.dataScopes) && value.dataScopes.length > 1) ||
+      (Array.isArray(value.datasetScopes) && value.datasetScopes.length > 1)) {
+    throw denied("delegation token contains multiple scopes", "MULTI_SCOPE_UNSUPPORTED");
+  }
+}
+
+function denied(message: string, reason?: string): ProviderProtocolError {
+  return new ProviderProtocolError("SCOPE_DENIED", message, {
+    retryable: false,
+    ...(reason === undefined ? {} : { details: { reason } })
+  });
 }
 
 function timingSafeEqualLocal(left: Buffer, right: Buffer): boolean {

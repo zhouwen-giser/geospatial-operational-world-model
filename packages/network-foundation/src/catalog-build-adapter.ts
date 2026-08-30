@@ -1,3 +1,4 @@
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { graphIdentityHash } from "./identity.js";
 import { sha256 } from "./canonical.js";
 import type {
@@ -58,7 +59,7 @@ function assemble(
   if (!hashPattern.test(dataset.contentHash)) throw new Error("dataset content hash is invalid");
   const features = sourceFeatures
     .map((feature) => materializeFeature(feature, buildPolicy))
-    .sort((left, right) => left.featureReferenceKey.localeCompare(right.featureReferenceKey) || left.featureVersion.localeCompare(right.featureVersion));
+    .sort((left, right) => compareUnicodeCodePoints(left.featureReferenceKey, right.featureReferenceKey) || compareUnicodeCodePoints(left.featureVersion, right.featureVersion));
   if (features.length === 0) throw new Error("network source contains no authorized line features");
   const sourceContentHash = sha256(features.map(({ featureReferenceKey, featureVersion, layerKey, contentHash, positions, properties }) => ({
     featureReferenceKey, featureVersion, layerKey, contentHash, positions, properties

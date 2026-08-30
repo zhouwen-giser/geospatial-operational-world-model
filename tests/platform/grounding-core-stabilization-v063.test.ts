@@ -74,13 +74,13 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
       iss: "https://identity.example.test", sub: "service:wsgs", aud: "gowm-world-gateway",
       iat: now - 1, nbf: now - 1, exp: now + 120, jti: "delegation-jti-0001",
       act: { sub: "actor:planner" }, requestId: "request:bound", delegationDepth: 1,
-      dataScopes: ["tenant:a", "tenant:forged"], datasetScopes: ["dataset:roads"],
+      dataScopes: ["tenant:a"], datasetScopes: ["dataset:roads"],
       allowedOperations: ["reference.get@1.0", "not.registered@1.0"]
     };
     const token = compactJws(claims, privateKey);
     const context = {
       servicePrincipalRef: "service:wsgs", requestId: "request:bound",
-      allowedDataScopes: ["tenant:a"], allowedDatasetScopes: ["dataset:roads"],
+      allowedDataScopes: ["tenant:a"] as const, allowedDatasetScopes: ["dataset:roads"] as const,
       registeredOperations: ["reference.get@1.0"], allowExperimental: false
     };
     const first = verifier.verify(token, context);
@@ -94,6 +94,53 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
     expect(first.authorizationContextHash).toBe(resigned.authorizationContextHash);
     expect(JSON.stringify(first)).not.toContain(token);
     expect(first.delegationJtiHash).toMatch(/^sha256:[0-9a-f]{64}$/u);
+    let multiScopeError: ProviderProtocolError | undefined;
+    try {
+      verifier.verify(compactJws({ ...claims, dataScopes: ["tenant:a", "tenant:forged"] }, privateKey), context);
+    } catch (error) {
+      multiScopeError = error as ProviderProtocolError;
+    }
+    expect(multiScopeError).toMatchObject({ code: "SCOPE_DENIED", details: { reason: "MULTI_SCOPE_UNSUPPORTED" } });
+
+    const dataOnly = verifier.verify(compactJws({
+      ...claims,
+      jti: "delegation-jti-data-only",
+      datasetScopes: []
+    }, privateKey), context);
+    expect(dataOnly).toMatchObject({
+      dataScopeClaim: "tenant:a",
+      effectiveDataScopes: ["tenant:a"],
+      effectiveDatasetScopes: []
+    });
+    expect(dataOnly).not.toHaveProperty("datasetScopeClaim");
+    expect(dataOnly.authorizationContextHash).not.toBe(first.authorizationContextHash);
+
+    expect(captureProtocolError(() => verifier.verify(compactJws({
+      ...claims,
+      dataScopes: ["tenant:other"]
+    }, privateKey), context))).toMatchObject({ code: "SCOPE_DENIED" });
+    expect(captureProtocolError(() => verifier.verify(compactJws({
+      ...claims,
+      datasetScopes: ["dataset:other"]
+    }, privateKey), context))).toMatchObject({ code: "SCOPE_DENIED" });
+    expect(captureProtocolError(() => verifier.verify(token, {
+      ...context,
+      allowedDatasetScopes: []
+    }))).toMatchObject({ code: "SCOPE_DENIED" });
+    expect(captureProtocolError(() => verifier.verify(token, {
+      ...context,
+      allowedDataScopes: []
+    } as never))).toMatchObject({
+      code: "SCOPE_DENIED",
+      details: { reason: "MULTI_SCOPE_UNSUPPORTED" }
+    });
+    expect(captureProtocolError(() => verifier.verify(compactJws({
+      ...claims,
+      datasetScopes: ["dataset:roads", "dataset:forged"]
+    }, privateKey), context))).toMatchObject({
+      code: "SCOPE_DENIED",
+      details: { reason: "MULTI_SCOPE_UNSUPPORTED" }
+    });
 
     for (const mutation of [
       { aud: "other" }, { iss: "https://evil.example.test" }, { sub: "service:other" },
@@ -139,6 +186,13 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
       nodeId: "current",
       adherenceStatus: "MISMATCHED"
     });
+  });
+
+  it("publishes only the stable non-sensitive multi-scope denial reason", () => {
+    expect(redactPublicDetails({ reason: "MULTI_SCOPE_UNSUPPORTED" })).toEqual({
+      reason: "MULTI_SCOPE_UNSUPPORTED"
+    });
+    expect(redactPublicDetails({ reason: "tenant:a" })).toBeUndefined();
   });
 
   it("projects authorized availability with bounded cache and no provider topology", async () => {
@@ -197,12 +251,23 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
     const lock = JSON.parse(await readFile(join(root, "contracts/consumers/wsgs-southbound-operation-lock-v2.json"), "utf8"));
     const manifest = JSON.parse(await readFile(join(root, "packages/platform/world-gateway-contracts/bundle/MANIFEST.json"), "utf8"));
     const semanticProjection = projectCapabilitySemantics(catalog, manifest.contractCatalogRevision);
-    expect(validateContract("urn:gowm:v0.7:wsgs-southbound-operation-lock-v2", lock)).toMatchObject({ valid: true });
-    expect(validateContract("urn:gowm:v0.7:consumer-contract-bundle-manifest", manifest)).toMatchObject({ valid: true });
+    expect(validateContract("urn:gowm:v0.7.1:wsgs-southbound-operation-lock-v2", lock)).toMatchObject({ valid: true });
+    expect(validateContract("urn:gowm:v0.7.1:consumer-contract-bundle-manifest", manifest)).toMatchObject({ valid: true });
+    const {
+      scopeModel: _scopeModel,
+      resourceIdEncodingRevision: _resourceIdEncodingRevision,
+      canonicalOrderingRevision: _canonicalOrderingRevision,
+      ...legacyLock
+    } = lock;
+    expect(validateContract("urn:gowm:v0.7:wsgs-southbound-operation-lock-v2", {
+      ...legacyLock,
+      gatewayContractVersion: "0.7.0",
+      consumerContractPackage: { ...legacyLock.consumerContractPackage, version: "0.7.0" }
+    })).toMatchObject({ valid: true });
     expect(validateContract("urn:gowm:v0.6.3:wsgs-southbound-operation-lock-v2", {
-      ...lock,
+      ...legacyLock,
       gatewayContractVersion: "0.6.3",
-      consumerContractPackage: { ...lock.consumerContractPackage, version: "0.6.3" }
+      consumerContractPackage: { ...legacyLock.consumerContractPackage, version: "0.6.3" }
     })).toMatchObject({ valid: true });
     expect(validateContract("urn:gowm:v0.6.3:consumer-contract-bundle-manifest", {
       ...manifest,
@@ -229,6 +294,15 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
 function compactJws(claims: unknown, privateKey: Parameters<typeof sign>[2]): string {
   const input = `${encoded({ alg: "RS256", typ: "JWT" })}.${encoded(claims)}`;
   return `${input}.${sign("RSA-SHA256", Buffer.from(input), privateKey).toString("base64url")}`;
+}
+
+function captureProtocolError(action: () => unknown): ProviderProtocolError {
+  try {
+    action();
+  } catch (error) {
+    return error as ProviderProtocolError;
+  }
+  throw new Error("expected ProviderProtocolError");
 }
 
 function snapshotSubmission(): WorldQuerySubmission {

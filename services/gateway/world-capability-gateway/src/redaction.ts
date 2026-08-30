@@ -16,6 +16,7 @@ const PUBLIC_DETAIL_KEYS = new Set([
   "operationVersion",
   "path",
   "providerId",
+  "reason",
   "registeredHash",
   "requested",
   "retryAfterMs",
@@ -25,6 +26,13 @@ const PUBLIC_DETAIL_KEYS = new Set([
   "status"
 ]);
 
+// Public reason codes are an API surface, not an arbitrary diagnostic channel.
+// Keep this allowlist narrow so scope identities and internal policy text cannot
+// escape through otherwise safe-looking strings.
+const PUBLIC_REASON_CODES = new Set([
+  "MULTI_SCOPE_UNSUPPORTED"
+]);
+
 const MAX_ARRAY_ITEMS = 32;
 const MAX_DEPTH = 5;
 const SAFE_PUBLIC_STRING = /^[A-Za-z0-9][A-Za-z0-9._:/@+ -]{0,255}$/u;
@@ -32,6 +40,7 @@ const SAFE_PUBLIC_STRING = /^[A-Za-z0-9][A-Za-z0-9._:/@+ -]{0,255}$/u;
 export function publicErrorMessage(code: string): string {
   if (code === "INVALID_REQUEST") return "Request validation failed";
   if (code === "SCHEMA_MISMATCH") return "Schema validation failed";
+  if (code === "REFERENCE_VERSION_MISMATCH") return "Reference version does not match the authoritative catalog";
   if (["OPERATION_NOT_FOUND", "VERSION_NOT_FOUND"].includes(code)) return "Operation is not available";
   if (["SCOPE_REQUIRED", "SCOPE_DENIED"].includes(code)) return "Request scope is not permitted";
   if (code === "DEADLINE_EXCEEDED") return "Execution deadline exceeded";
@@ -59,6 +68,10 @@ function sanitizeRecord(value: Readonly<Record<string, unknown>>, depth: number)
       continue;
     }
     if (!PUBLIC_DETAIL_KEYS.has(key)) continue;
+    if (key === "reason") {
+      if (typeof child === "string" && PUBLIC_REASON_CODES.has(child)) result[key] = child;
+      continue;
+    }
     const sanitized = sanitizeValue(child, depth + 1);
     if (sanitized !== undefined) result[key] = sanitized;
   }

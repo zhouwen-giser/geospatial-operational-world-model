@@ -4,7 +4,7 @@ import { readFile, readdir } from "node:fs/promises";
 import ts from "typescript";
 import { parse } from "pgsql-parser";
 import {
-  canonicalSha256, validateContract, validateCapabilityDescriptorSemantics,
+  canonicalSha256, compareUnicodeCodePoints, validateContract, validateCapabilityDescriptorSemantics,
   type CapabilityDescriptor, type GowmV07CapabilitySemanticProfileV11
 } from "../../contract-runtime/src/index.js";
 
@@ -95,7 +95,7 @@ export function checkSemanticRules(
   for (const issue of validateCapabilityDescriptorSemantics(descriptor).issues) fail("S013", issue.message);
   if (!bound && (p.timeSemantics !== "NONE" || p.freshnessSemantics !== "NONE")) fail("S013", "Caller-only operation cannot invent a world snapshot/time authority");
   if (descriptor.maturity === "STABLE" && (!evidence.implementation || (requireBlackBox && !evidence.blackBox))) fail("S014", "Stable requires implementation and current black-box evidence");
-  return issues.sort((a, b) => `${a.rule}:${a.message}`.localeCompare(`${b.rule}:${b.message}`));
+  return issues.sort((a, b) => compareUnicodeCodePoints(`${a.rule}:${a.message}`, `${b.rule}:${b.message}`));
 }
 
 export interface TypeScriptInspection {
@@ -203,7 +203,7 @@ export function byteHash(value: string | Uint8Array): string { return createHash
 export async function semanticSourceFingerprint(root: string): Promise<string> {
   const hashes: Record<string, string> = {};
   const scan = async (directory: string): Promise<void> => {
-    for (const entry of (await readdir(resolve(root, directory), { withFileTypes: true })).sort((a,b) => a.name.localeCompare(b.name))) {
+    for (const entry of (await readdir(resolve(root, directory), { withFileTypes: true })).sort((a,b) => compareUnicodeCodePoints(a.name, b.name))) {
       if (["node_modules", "dist", ".git"].includes(entry.name)) continue;
       const path = `${directory}/${entry.name}`;
       // Admission-dependent output is verified separately. Including it here would
@@ -258,5 +258,5 @@ export function checkCrossCapability(catalog: readonly CapabilityDescriptor[], e
     if (["WORLD_SNAPSHOT_BOUND", "DATASET_VERSION_BOUND"].includes(c.dataBinding) && !snapshot) fail(c, "Snapshot-bound operation requires an executable snapshot validator");
     for (const issue of checkSemanticRules(c, evidence.get(key(c)) ?? EMPTY_EVIDENCE, catalog, false)) if (issue.rule === "S006") fail(c, issue.message);
   }
-  return issues.sort((a,b) => `${a.operation}:${a.message}`.localeCompare(`${b.operation}:${b.message}`));
+  return issues.sort((a,b) => compareUnicodeCodePoints(`${a.operation}:${a.message}`, `${b.operation}:${b.message}`));
 }

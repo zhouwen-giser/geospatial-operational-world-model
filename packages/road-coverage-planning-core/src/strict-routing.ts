@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { CoveragePlanningError } from "./errors.js";
 import type {
   ClosedDcppSolution,
@@ -221,7 +221,7 @@ function validateOptions(options: StrictCoverageSolverOptions): void {
 function effectiveArcs(problem: CoverageProblem, input: readonly CoverageTraversalArc[], options: StrictCoverageSolverOptions): CoverageTraversalArc[] {
   const result: CoverageTraversalArc[] = [];
   const seen = new Set<string>();
-  for (const source of [...input].sort((left, right) => left.arcKey.localeCompare(right.arcKey))) {
+  for (const source of [...input].sort((left, right) => compareUnicodeCodePoints(left.arcKey, right.arcKey))) {
     if (seen.has(source.arcKey)) throw new CoveragePlanningError("NO_FEASIBLE_PLAN", `duplicate Arc: ${source.arcKey}`);
     seen.add(source.arcKey);
     if (source.graphVersion !== problem.routingSnapshot.graphVersion) throw new CoveragePlanningError("VERSION_NOT_FOUND", `Arc is outside pinned graph: ${source.arcKey}`);
@@ -266,12 +266,12 @@ function atomicNetwork(arcs: readonly CoverageTraversalArc[], fractions: Readonl
     const points = fractions.get(arc.arcKey)!;
     for (let index = 1; index < points.length; index += 1) result.push(intervalStep(arc, points[index - 1]!, points[index]!));
   }
-  return result.sort((left, right) => left.id.localeCompare(right.id));
+  return result.sort((left, right) => compareUnicodeCodePoints(left.id, right.id));
 }
 
 function serviceTasks(obligations: readonly RoadServiceObligation[], byArc: ReadonlyMap<string, CoverageTraversalArc>): ServiceTask[] {
   const result: ServiceTask[] = [];
-  for (const obligation of [...obligations].sort((left, right) => left.obligationId.localeCompare(right.obligationId))) {
+  for (const obligation of [...obligations].sort((left, right) => compareUnicodeCodePoints(left.obligationId, right.obligationId))) {
     const arc = byArc.get(obligation.arcKey)!;
     if (obligation.startFractionPpm >= obligation.endFractionPpm) throw new CoveragePlanningError("NO_FEASIBLE_PLAN", `invalid service interval: ${obligation.obligationId}`);
     const step = intervalStep(arc, obligation.startFractionPpm, obligation.endFractionPpm);
@@ -287,7 +287,7 @@ function strictShortestPath(
   if (from === to && (requiredNextArc === undefined || advanceTurn(initialHistory, requiredNextArc, rules, maxHistory).valid)) return { steps: [], cost: 0, history: initialHistory };
   const outgoing = new Map<string, StrictStep[]>();
   for (const step of network) ensureArray(outgoing, step.from).push(step);
-  for (const values of outgoing.values()) values.sort((left, right) => left.id.localeCompare(right.id));
+  for (const values of outgoing.values()) values.sort((left, right) => compareUnicodeCodePoints(left.id, right.id));
   const startKey = searchKey(from, initialHistory);
   const distance = new Map<string, number>([[startKey, 0]]);
   const states = new Map<string, { node: string; history: HistoryState }>([[startKey, { node: from, history: initialHistory }]]);
@@ -297,7 +297,7 @@ function strictShortestPath(
     checkDeadline(deadline);
     let currentKey: string | undefined;
     let currentDistance = Number.POSITIVE_INFINITY;
-    for (const [key, value] of distance) if (!settled.has(key) && (value < currentDistance || (value === currentDistance && (currentKey === undefined || key.localeCompare(currentKey) < 0)))) { currentKey = key; currentDistance = value; }
+    for (const [key, value] of distance) if (!settled.has(key) && (value < currentDistance || (value === currentDistance && (currentKey === undefined || compareUnicodeCodePoints(key, currentKey) < 0)))) { currentKey = key; currentDistance = value; }
     if (currentKey === undefined) break;
     const current = states.get(currentKey)!;
     if (current.node === to && (requiredNextArc === undefined || advanceTurn(current.history, requiredNextArc, rules, maxHistory).valid)) {
@@ -337,7 +337,7 @@ function advanceTurn(history: HistoryState, nextArcKey: string, rules: readonly 
 }
 
 function activeRules(rules: readonly CoverageTurnRule[], profileKey: string): CoverageTurnRule[] {
-  return [...rules].filter((rule) => rule.travelProfileKeys === undefined || rule.travelProfileKeys.includes(profileKey)).sort((left, right) => left.ruleKey.localeCompare(right.ruleKey));
+  return [...rules].filter((rule) => rule.travelProfileKeys === undefined || rule.travelProfileKeys.includes(profileKey)).sort((left, right) => compareUnicodeCodePoints(left.ruleKey, right.ruleKey));
 }
 
 function intervalStep(arc: CoverageTraversalArc, start: number, end: number): StrictStep {
@@ -364,7 +364,7 @@ function withTurnPenalty(step: StrictStep, penaltyUnits: number): StrictStep {
   return { ...step, metrics: { ...step.metrics, turnPenaltyUnits: safeAdd(step.metrics.turnPenaltyUnits ?? 0, penaltyUnits), combinedCostUnits: safeAdd(step.metrics.combinedCostUnits, penaltyUnits) } };
 }
 
-function compareSearchStates(left: SearchState, right: SearchState): number { return left.cost - right.cost || stateSignature(left).localeCompare(stateSignature(right)); }
+function compareSearchStates(left: SearchState, right: SearchState): number { return left.cost - right.cost || compareUnicodeCodePoints(stateSignature(left), stateSignature(right)); }
 function stateSignature(state: SearchState): string { return `${state.remaining.join(",")}|${state.currentNode}|${state.history.arcKeys.join(",")}|${state.segments.map((segment) => `${segment.step.id}:${segment.role}`).join("|")}`; }
 function deduplicateStates(states: readonly SearchState[]): SearchState[] {
   const result: SearchState[] = [], seen = new Set<string>();

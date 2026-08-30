@@ -1,7 +1,7 @@
-import { readdir, readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { canonicalSha256, catalogRevisions, validateContract, type WorldPlatformProviderSet } from "../packages/platform/contract-runtime/src/index.js";
+import { canonicalSha256, catalogRevisions, compareUnicodeCodePoints, validateContract, type WorldPlatformProviderSet } from "../packages/platform/contract-runtime/src/index.js";
 import { loadControlledProviderDeployments, type ControlledProviderDeployment } from "../services/gateway/world-capability-gateway/src/config.js";
 import { CapabilityRegistry } from "../services/gateway/world-capability-gateway/src/registry.js";
 import { operationKey } from "../packages/platform/semantic-conformance/src/index.js";
@@ -13,7 +13,7 @@ export function assembleWorldPlatformRegistry(deployments: readonly ControlledPr
   const allowed = [...policy.requiredProviders, ...policy.optionalProviders];
   if (new Set(allowed).size !== allowed.length) throw new Error("Required and optional Provider sets overlap");
   const ids = new Set<string>(), operations = new Set<string>();
-  const providers = [...deployments].sort((a,b) => a.providerId.localeCompare(b.providerId));
+  const providers = [...deployments].sort((a,b) => compareUnicodeCodePoints(a.providerId, b.providerId));
   const registry = new CapabilityRegistry({ profile: "world-platform" });
   for (const entry of providers) {
     const identity = entry.approvedManifest.provider;
@@ -67,7 +67,10 @@ export async function buildWorldPlatformRegistry(
   };
   for (const [name, value] of Object.entries(artifacts)) {
     const path = resolve(root, name), bytes = `${JSON.stringify(value,null,2)}\n`;
-    if (write) await writeFile(path, bytes);
+    if (write) {
+      await mkdir(dirname(path), { recursive: true });
+      await writeFile(path, bytes);
+    }
     else if (await readFile(path,"utf8").catch(() => "") !== bytes) throw new Error(`Stale generated registry artifact: ${name}`);
   }
   return result;

@@ -1,5 +1,6 @@
 import {
   canonicalSha256,
+  compareUnicodeCodePoints,
   validateContract,
   type CapabilityDescriptor,
   type CapabilitySemanticCatalogV1_1
@@ -15,6 +16,6 @@ export function projectCapabilitySemantics(
     const semanticProfile = structuredClone(c.semanticProfile!);
     if (!validateContract("urn:gowm:v0.7:capability-semantic-profile", semanticProfile).valid) throw new Error("Invalid explicit semantic profile");
     return { operationId: c.operationId, operationVersion: c.operationVersion, semanticProfile, semanticProfileHash: canonicalSha256(semanticProfile) };
-  }).sort((a,b) => `${a.operationId}@${a.operationVersion}`.localeCompare(`${b.operationId}@${b.operationVersion}`));
+  }).sort((a,b) => compareUnicodeCodePoints(`${a.operationId}@${a.operationVersion}`, `${b.operationId}@${b.operationVersion}`));
   return { schemaVersion: "1.1", registryRevision: contractCatalogRevision, contractCatalogRevision, bindingRevision, profiles, catalogHash: canonicalSha256(profiles) };
 }
