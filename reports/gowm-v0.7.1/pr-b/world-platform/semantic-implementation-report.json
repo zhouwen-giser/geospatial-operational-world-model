@@ -118,7 +118,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:abcf311d12ffebcd716cc1114dc1aeaef11c837f4966d7f21f4df718d96cef87"
+    "operationEvidenceDigest": "sha256:ffed7ad2f163de68667ac9c76a1599bdda2e054b2258070fd1657092a9efc63b"
   },
   "crs.normalize.feature-collection@1.0": {
     "contractHash": "sha256:4932de634336586ca9bafc1d5f1260d758119fb35f0bc2a7c8241ab053382288",
@@ -309,7 +309,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:82d6278553a1f0bff3856f67b4f6dc7189ca5a6266fe659ef503ff4d04dee344"
+    "operationEvidenceDigest": "sha256:4819174bf25904b733b3937a61bf2f79cc1089008dc2fb27d92b9fe6aa62c21f"
   },
   "crs.normalize.feature@1.0": {
     "contractHash": "sha256:af5f61d8567c1605d7572b31a862bc6cd9e7cde630d9f36195bc12c413aa9027",
@@ -494,7 +494,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:01d061b505d71130d77bb06132881c7066888d2e01641b0c629668e7646a7d57"
+    "operationEvidenceDigest": "sha256:3d76f680ffb7f0692cdad766fc134716cc8900256a7285eb107f0ecd6d167d85"
   },
   "crs.normalize.geometry@1.0": {
     "contractHash": "sha256:bc78a7095fd8b20bd4949a3049beae0678c888f0012c6bf8dc0f0ffa672c84a3",
@@ -695,7 +695,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ae3882ceab3fa51c7592c67743a44a38d6c8104285c86d2255427e562b3695b6"
+    "operationEvidenceDigest": "sha256:91fa7e827fcd4ab8e948dc1a4242f35ab6937a0777707bdfb141fa7d1aa3bb76"
   },
   "crs.normalize.point@1.0": {
     "contractHash": "sha256:d4ebf90684fc63ae65c21d78c39bcd1a4b374fdbd3783763e6b85b8a7311213b",
@@ -841,7 +841,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:dd6a2d822072ed35955d37c7c44ec9ce461f243bed3e5a30e5b6855267786e5d"
+    "operationEvidenceDigest": "sha256:77a3df4caaf59c863a4636c42a3b5dc2b1368d3017207f16c588a7f1519aeb52"
   },
   "crs.normalize.points@1.0": {
     "contractHash": "sha256:3f2b418d9664427b3649f2d270cce3b27dbd2c0cb40e4acb7d0ab84839e25c30",
@@ -987,7 +987,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:7eada59b699d548748e45ec21e5447f34a1b794df3af027bd30e70f5a21083a0"
+    "operationEvidenceDigest": "sha256:8084a594e80e94118201c05f56e6619eed3578241a61d42e7bfe81963d746348"
   },
   "catalog.describe-schema@1.0": {
     "contractHash": "sha256:551a86fc32a524e187bc2e91846fd1f75ae0060681758cb76d284a7d66ee078d",

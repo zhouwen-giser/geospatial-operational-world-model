@@ -50,7 +50,7 @@
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/provider-gateway.test.ts",
-      "sha256": "6804e5eb5b351ca828666378c4b7f40dd87bea023cd3e2c1e7dfe3c331ca48ab"
+      "sha256": "d2aad2d3604667458697703428ad86c37d3a39f7ccc82f67c31fd75cabf50f43"
     },
     {
       "kind": "SOURCE_LOCK",
