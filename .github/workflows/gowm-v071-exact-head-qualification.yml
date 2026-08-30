@@ -17,8 +17,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
-      GOWM_V071_ARTIFACT_ROOT: ${{ runner.temp }}/exact-head-artifact
-      GOWM_V071_EVIDENCE_ROOT: ${{ runner.temp }}/exact-head-artifact/reports/gowm-v0.7.1/${{ github.sha }}
       GOWM_V071_QUALIFICATION_NETWORK: gowm-v071-${{ github.run_id }}-${{ github.run_attempt }}
       GOWM_V071_DATABASE_CONTAINER: gowm-v071-db-${{ github.run_id }}-${{ github.run_attempt }}
       STAS_DB_PASSWORD: v071_ci_stas_password_20260830
@@ -26,6 +24,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+
+      - name: Configure exact-head evidence paths
+        run: |
+          echo "GOWM_V071_ARTIFACT_ROOT=${RUNNER_TEMP}/exact-head-artifact" >> "$GITHUB_ENV"
+          echo "GOWM_V071_EVIDENCE_ROOT=${RUNNER_TEMP}/exact-head-artifact/reports/gowm-v0.7.1/${GITHUB_SHA}" >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:
