@@ -4,7 +4,7 @@ import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildConsumerContracts } from "./build.mjs";
+import { buildConsumerContracts, canonicalArtifactBytes } from "./build.mjs";
 
 const packageRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const repositoryRoot = resolve(packageRoot, "../../..");
@@ -14,7 +14,11 @@ const walk = async (root) => (await Promise.all((await readdir(root, { withFileT
   const path = join(root, entry.name);
   return entry.isDirectory() ? walk(path) : path;
 }))).flat().sort();
-const digestTree = async (root) => Promise.all((await walk(root)).map(async (path) => [relative(root, path), createHash("sha256").update(await readFile(path)).digest("hex")]));
+const canonicalTextEquals = (left, right) => canonicalArtifactBytes("value.json", left).equals(canonicalArtifactBytes("value.json", right));
+const digestTree = async (root) => Promise.all((await walk(root)).map(async (path) => [
+  relative(root, path),
+  createHash("sha256").update(canonicalArtifactBytes(path, await readFile(path))).digest("hex")
+]));
 
 const initialRepositoryStatus = repositoryStatus();
 const initialSourceLock = await readFile(sourceLockPath);
@@ -30,7 +34,7 @@ try {
   const expectedLock = await readFile(join(first, bundledLockPath));
   const sourceLock = await readFile(sourceLockPath);
   if (!initialSourceLock.equals(sourceLock)) throw new Error("Consumer contract validation modified the tracked source lock");
-  if (!expectedLock.equals(sourceLock)) throw new Error("Tracked consumer source lock is stale");
+  if (!canonicalTextEquals(expectedLock, sourceLock)) throw new Error("Tracked consumer source lock is stale");
   const installed = await digestTree(join(packageRoot, "bundle"));
   if (one !== JSON.stringify(installed)) throw new Error("Tracked consumer bundle is stale");
   const compatibility = JSON.parse(await readFile(join(first, "compatibility/report.json"), "utf8"));

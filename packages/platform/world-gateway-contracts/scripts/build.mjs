@@ -29,9 +29,14 @@ const emitJson = async (path, value) => {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`);
 };
+export function canonicalArtifactBytes(path, value) {
+  const bytes = Buffer.isBuffer(value) ? value : Buffer.from(value);
+  if (!/\.(?:json|ya?ml|ts|mjs|js|sql|py)$/u.test(path)) return bytes;
+  return Buffer.from(bytes.toString("utf8").replace(/\r\n/gu, "\n"), "utf8");
+}
 const copy = async (source, destination) => {
   await mkdir(dirname(destination), { recursive: true });
-  await writeFile(destination, await readFile(source));
+  await writeFile(destination, canonicalArtifactBytes(source, await readFile(source)));
 };
 const walk = async (root) => {
   const entries = await readdir(root, { withFileTypes: true });

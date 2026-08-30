@@ -4,7 +4,7 @@
   "consumerContractPackage": {
     "name": "@gowm/world-gateway-contracts",
     "version": "0.7.1",
-    "integrity": "sha512-VQtACQ/ssVafFbwj4xzlHEAe4Jw3hwhq/btVj5/VypJMHARuuXgVkze9E7zDWz1ul9vh0LeJE2kvXFDwNF6/eQ=="
+    "integrity": "sha512-BD4Cbucd/eRC8Rzg75Y2kmF6G4Ph7HQKR37hDvnGlV0om1YNwVQrDZCy8jY6kzuryHyR4I54uY8VQK7qWcF+xQ=="
   },
   "scopeModel": "SINGLE_SCOPE_V1",
   "resourceIdEncodingRevision": "SNAPSHOT_RESOURCE_ID_V1_512",

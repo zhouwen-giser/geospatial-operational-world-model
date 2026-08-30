@@ -10,7 +10,7 @@
         "status": "PASS",
         "filesPassed": 85,
         "filesSkipped": 3,
-        "testsPassed": 580,
+        "testsPassed": 581,
         "testsSkipped": 9
       },
       "sqlAst": {
