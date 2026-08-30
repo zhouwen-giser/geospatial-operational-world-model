@@ -32,8 +32,8 @@ describe("operational reality provider",()=>{
       .toEqual(expect.arrayContaining([expect.objectContaining({
         name:"executionIntervalReferenceKey",
         path:"/intervals/0/executionIntervalReferenceKey",
-        schemaUri:"urn:gowm:v0.4:reference-key",
-        schemaHash:getContractSchemaHash("urn:gowm:v0.4:reference-key"),
+        schemaUri:"urn:gowm:v0.7:reference-key",
+        schemaHash:getContractSchemaHash("urn:gowm:v0.7:reference-key"),
         valueKind:"REFERENCE_KEY"
       })]));
     for(const operationId of ["predicate.evaluate","observability.evaluate"]){
