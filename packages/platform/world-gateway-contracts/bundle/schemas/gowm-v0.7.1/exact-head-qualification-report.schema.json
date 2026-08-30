@@ -36,6 +36,93 @@
       "then": { "required": ["trackedWorktreeCleanAtStart"] }
     },
     {
+      "if": { "properties": { "reportId": { "const": "exact-head-runtime-report" } } },
+      "then": {
+        "required": ["gate", "marker", "checks"],
+        "properties": {
+          "status": { "const": "PASS" },
+          "marker": { "const": "GOWM_V071_EXACT_HEAD_RUNTIME_QUALIFIED" },
+          "checks": {
+            "minItems": 10,
+            "maxItems": 10,
+            "uniqueItems": true,
+            "prefixItems": [
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "source-lock" },
+                  "status": { "const": "PASS" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "protocol-closure-report" },
+                  "status": { "const": "PASS" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "deterministic-hash-report" },
+                  "status": { "const": "PASS" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "database-fresh-report" },
+                  "status": { "const": "PASS" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "database-upgrade-report" },
+                  "status": { "const": "PASS" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "gateway-runtime-report" },
+                  "status": { "const": "PASS" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "node-adherence-report" },
+                  "status": { "const": "PASS" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "worker-backoff-report" },
+                  "status": { "const": "PASS" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "artifact-roundtrip-report" },
+                  "status": { "const": "DEFERRED" }
+                }
+              },
+              {
+                "required": ["reportId", "status"],
+                "properties": {
+                  "reportId": { "const": "historical-two-provider-dag-report" },
+                  "status": { "const": "PASS" }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
       "if": { "properties": { "reportId": { "const": "wsgs-historical-consumer-lock" } } },
       "then": { "required": ["lock"] }
     },

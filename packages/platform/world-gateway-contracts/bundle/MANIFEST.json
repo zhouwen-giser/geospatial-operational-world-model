@@ -13,7 +13,7 @@
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
       "bytes": 65721,
-      "sha256": "5b6106daa19750c6b5826af7828204dbec443e8fc813859352c6dbe1a614489c"
+      "sha256": "588665b5fc93aa3c24a263a298bf35582451c9e11669946ad2437bb8ad705b38"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -177,8 +177,8 @@
     },
     {
       "path": "schemas/gowm-v0.7.1/exact-head-qualification-report.schema.json",
-      "bytes": 4031,
-      "sha256": "95841997a7f7bbb205e07ab8b0568cb70970e2d107118aa49e1b1c4ee07d8ecc"
+      "bytes": 7051,
+      "sha256": "77734c582a5abaa93b4d378631721894f693f8f9fa0d86a8b1a8fb2eb20e6d3b"
     },
     {
       "path": "schemas/gowm-v0.7.1/historical-trajectory-result.schema.json",
@@ -447,8 +447,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 151065,
-      "sha256": "be507593d5ea80a3bce23a4e8969d34ee870e62f9f9d6bbc97326e21ee35eeea"
+      "bytes": 151093,
+      "sha256": "1de2f628228afb9dca498affff95de7a816ee2413ab1946bca908ba591f60a0f"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -471,5 +471,5 @@
       "sha256": "5d21c0213e291939e9cbfce2cb3aa65f739d69a486d270dc4725bffe7f208428"
     }
   ],
-  "packageIntegrity": "sha512-BD4Cbucd/eRC8Rzg75Y2kmF6G4Ph7HQKR37hDvnGlV0om1YNwVQrDZCy8jY6kzuryHyR4I54uY8VQK7qWcF+xQ=="
+  "packageIntegrity": "sha512-NmF5oYTSxg9hbwPSCowIv7U+JUR0q9gD5JPS0BwKwCPyTBLSfR+K3zybZkNi80oPMozxvmQ63kZZjfNS7ZfeMg=="
 }

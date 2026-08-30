@@ -248,7 +248,7 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "gowm-v0.6/road-service-obligation.schema.json": "sha256:0e2344520ab9fcf4d076dfd77cf36223bda8d3676317b37ac30874e532f81cb1",
   "gowm-v0.7.1/consumer-contract-bundle-manifest.schema.json": "sha256:f085e3701652d24b1fa41b04b3f0004d70a934a7c90672a591430a77f528f29c",
   "gowm-v0.7.1/delegation-token-claims.schema.json": "sha256:a80e51793f46a90b2f627937fce06bc31fa3489a87a509185b9813f82ede1c4a",
-  "gowm-v0.7.1/exact-head-qualification-report.schema.json": "sha256:66175cc450391f9358e40f6fda1785a695099aef2568dc88e9d32efc8312409c",
+  "gowm-v0.7.1/exact-head-qualification-report.schema.json": "sha256:5695e21a86a56590cd4e25647cfb5fd4b7385844a45fda504ae153f33126ee0c",
   "gowm-v0.7.1/historical-trajectory-result.schema.json": "sha256:d51c07904cc18ec3a67c3bbaebf904f781d407378fc42e9e91debbfc04f1b02d",
   "gowm-v0.7.1/query-snapshot-adherence.schema.json": "sha256:3d43fbda0bd1c1f503abe2a6230087326a287337aa7814cf98a8d0ac81ccdbc0",
   "gowm-v0.7.1/query-snapshot-manifest.schema.json": "sha256:7a984eef06eec1ed19b21a6649644cc1b8a7e1d653c8b6f9b06490a8d316d185",

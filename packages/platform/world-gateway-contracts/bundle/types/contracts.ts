@@ -3460,7 +3460,7 @@ export type GowmV071ExactHeadQualificationReport = ({
   status: "PASS" | "FAIL" | "PARTIAL" | "DEFERRED" | "NOT_RUN";
   trackedWorktreeCleanAfter?: boolean;
   trackedWorktreeCleanAtStart?: boolean;
-}) & ((Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>));
+}) & ((Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>));
 
 export type GowmV071HistoricalTrajectoryResult = {
   completeness: GowmV071HistoricalTrajectoryResultCompleteness;

@@ -16,6 +16,19 @@ const CI_SOURCE = {
   githubRunId: "123456789",
   githubRunAttempt: "2"
 } as const;
+const EXACT_HEAD_RUNTIME_MARKER = "GOWM_V071_EXACT_HEAD_RUNTIME_QUALIFIED";
+const EXACT_HEAD_RUNTIME_PREREQUISITES = [
+  { reportId: "source-lock", status: "PASS" },
+  { reportId: "protocol-closure-report", status: "PASS" },
+  { reportId: "deterministic-hash-report", status: "PASS" },
+  { reportId: "database-fresh-report", status: "PASS" },
+  { reportId: "database-upgrade-report", status: "PASS" },
+  { reportId: "gateway-runtime-report", status: "PASS" },
+  { reportId: "node-adherence-report", status: "PASS" },
+  { reportId: "worker-backoff-report", status: "PASS" },
+  { reportId: "artifact-roundtrip-report", status: "DEFERRED" },
+  { reportId: "historical-two-provider-dag-report", status: "PASS" }
+] as const;
 const repositoryRoot = resolve(import.meta.dirname, "../..");
 
 describe("GOWM v0.7.1 exact-head evidence contracts", () => {
@@ -51,6 +64,43 @@ describe("GOWM v0.7.1 exact-head evidence contracts", () => {
     expect(validateContract("urn:gowm:v0.7.1:exact-head-qualification-report", {
       ...report,
       ciSource: { ...CI_SOURCE, githubRepository: "fork/repository" }
+    })).toMatchObject({ valid: false });
+  });
+
+  it("requires an exact, complete runtime prerequisite ledger for the qualification marker", () => {
+    const checks = exactHeadRuntimeChecks();
+    const report = qualificationReport("exact-head-runtime-report", "PASS", {
+      gate: "exact-head runtime qualification",
+      marker: EXACT_HEAD_RUNTIME_MARKER,
+      checks
+    });
+    const validate = (candidate: unknown) =>
+      validateContract("urn:gowm:v0.7.1:exact-head-qualification-report", candidate);
+
+    expect(validate(report)).toMatchObject({ valid: true });
+
+    for (const missingField of ["gate", "marker", "checks"] as const) {
+      const missing = { ...report } as Record<string, unknown>;
+      delete missing[missingField];
+      expect(validate(missing)).toMatchObject({ valid: false });
+    }
+
+    expect(validate({ ...report, status: "DEFERRED" })).toMatchObject({ valid: false });
+    expect(validate({ ...report, marker: "GOWM_V071_RUNTIME_MARKER_DRIFTED" })).toMatchObject({ valid: false });
+    expect(validate({ ...report, checks: checks.slice(0, -1) })).toMatchObject({ valid: false });
+    expect(validate({
+      ...report,
+      checks: [...checks.slice(0, -1), checks[0]]
+    })).toMatchObject({ valid: false });
+    expect(validate({
+      ...report,
+      checks: checks.map((check) => check.reportId === "artifact-roundtrip-report"
+        ? { ...check, status: "PASS" }
+        : check)
+    })).toMatchObject({ valid: false });
+    expect(validate({
+      ...report,
+      checks: [checks[1], checks[0], ...checks.slice(2)]
     })).toMatchObject({ valid: false });
   });
 
@@ -237,7 +287,8 @@ describe("GOWM v0.7.1 exact-head evidence contracts", () => {
       })}\n`);
       const markerDrift = runRuntimeQualificationVerification(evidenceRoot);
       expect(markerDrift.status).not.toBe(0);
-      expect(markerDrift.stderr).toContain("runtime qualification marker drifted");
+      expect(markerDrift.stderr).toContain("/marker");
+      expect(markerDrift.stderr).toContain(EXACT_HEAD_RUNTIME_MARKER);
 
       await writeFile(
         resolve(evidenceRoot, "exact-head-runtime-report.json"),
@@ -369,21 +420,9 @@ function runRuntimeQualificationVerification(evidenceRoot: string) {
 }
 
 async function writeExactHeadRuntimeFixture(evidenceRoot: string) {
-  const prerequisites = [
-    ["source-lock", "PASS"],
-    ["protocol-closure-report", "PASS"],
-    ["deterministic-hash-report", "PASS"],
-    ["database-fresh-report", "PASS"],
-    ["database-upgrade-report", "PASS"],
-    ["gateway-runtime-report", "PASS"],
-    ["node-adherence-report", "PASS"],
-    ["worker-backoff-report", "PASS"],
-    ["artifact-roundtrip-report", "DEFERRED"],
-    ["historical-two-provider-dag-report", "PASS"]
-  ] as const;
   const prerequisiteReports = new Map<string, Record<string, unknown>>();
   const checks = [];
-  for (const [reportId, status] of prerequisites) {
+  for (const { reportId, status } of EXACT_HEAD_RUNTIME_PREREQUISITES) {
     const report = qualificationReport(reportId, status, reportId === "source-lock"
       ? { trackedWorktreeCleanAtStart: true }
       : {});
@@ -398,11 +437,15 @@ async function writeExactHeadRuntimeFixture(evidenceRoot: string) {
   }
   const runtimeReport = qualificationReport("exact-head-runtime-report", "PASS", {
     gate: "exact-head runtime qualification",
-    marker: "GOWM_V071_EXACT_HEAD_RUNTIME_QUALIFIED",
+    marker: EXACT_HEAD_RUNTIME_MARKER,
     checks
   });
   await writeFile(resolve(evidenceRoot, "exact-head-runtime-report.json"), `${JSON.stringify(runtimeReport)}\n`);
   return { prerequisiteReports, runtimeReport };
+}
+
+function exactHeadRuntimeChecks() {
+  return EXACT_HEAD_RUNTIME_PREREQUISITES.map((check) => ({ ...check, sha256: HASH }));
 }
 
 function qualificationReport(
