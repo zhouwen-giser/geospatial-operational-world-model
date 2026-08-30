@@ -206,7 +206,12 @@ BEGIN
   UPDATE interval_assertion_state SET second_revision = revision_id;
 
   IF revision_id = prior_id OR
-     (SELECT count(*) FROM gowm_history.task_execution_interval_revision) <> 2 OR
+     (SELECT count(*)
+      FROM gowm_history.task_execution_interval_revision revision
+      JOIN gowm_history.task_execution_interval interval USING (interval_id)
+      WHERE interval.data_scope_key = 'history-interval-a'
+        AND interval.operational_task_id = 'history-interval-task-a'
+        AND interval.execution_no = 1) <> 2 OR
      (SELECT supersedes_revision_id FROM gowm_history.task_execution_interval_revision
       WHERE interval_revision_id = revision_id) IS DISTINCT FROM prior_id THEN
     RAISE EXCEPTION 'late task event did not append a superseding revision';
@@ -395,10 +400,19 @@ BEGIN
      ) THEN
     RAISE EXCEPTION 'task interval restart could not complete the independent Task Key';
   END IF;
-  IF (SELECT count(*) FROM gowm_history.task_execution_interval_revision) <> 2
+  IF (SELECT count(*)
+      FROM gowm_history.task_execution_interval_revision revision
+      JOIN gowm_history.task_execution_interval interval USING (interval_id)
+      WHERE interval.data_scope_key = 'history-interval-a'
+        AND interval.operational_task_id = 'history-interval-task-a'
+        AND interval.execution_no = 1) <> 2
      OR EXISTS (
        SELECT revision.content_hash
        FROM gowm_history.task_execution_interval_revision revision
+       JOIN gowm_history.task_execution_interval interval USING (interval_id)
+       WHERE interval.data_scope_key = 'history-interval-a'
+         AND interval.operational_task_id = 'history-interval-task-a'
+         AND interval.execution_no = 1
        GROUP BY revision.content_hash
        HAVING count(*) > 1
      ) THEN
