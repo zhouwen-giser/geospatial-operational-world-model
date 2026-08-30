@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0",
+  "pr": "PR-2",
+  "branch": "codex/gowm-v0.7-pr2-task-trajectory",
+  "baseSha": "f2894d86eeca121f9cea76c70797ece3b091d51f",
+  "pr1CandidateSha": "835074d2aaf9b0eb58f03d381269f2610a624d13",
+  "headSha": "91e1f030369cd91a8a29308d4ba89bc0339e29f0",
+  "phase": "FINAL",
+  "completedWorkPackages": [
+    "SOURCE_RECONCILIATION",
+    "CONTRACTS",
+    "TASK_INTERVALS",
+    "TRACKLET_REBUILD",
+    "TRACKLET_FINALIZATION",
+    "HISTORICAL_TRAJECTORY",
+    "PROVIDERS_AND_GATEWAY",
+    "LATE_DATA_AND_REPLAY",
+    "SECURITY",
+    "PERFORMANCE_SAMPLE",
+    "EXACT_SOURCE_CANARY",
+    "REGRESSION",
+    "FINAL_CANDIDATE",
+    "ISOLATED_ACCEPTANCE_CLEANUP"
+  ],
+  "activeWorkPackage": null,
+  "pendingWorkPackages": [
+    "PR1_MERGE_AND_REBASE_OR_RESTACK",
+    "PUSH_AND_DRAFT_PR_WHEN_AUTHORIZED"
+  ],
+  "lastSuccessfulCommand": {
+    "command": "npm.cmd run validate:world-platform-final",
+    "workingDirectory": "<local-worktree>/gowm-v07-pr2",
+    "startedAt": "2026-08-30T09:42:29.022Z",
+    "finishedAt": "2026-08-30T09:44:12.3010375Z",
+    "exitCode": 0,
+    "commit": "91e1f030369cd91a8a29308d4ba89bc0339e29f0"
+  },
+  "knownFailures": [],
+  "deliveryConditions": [
+    "PR-1 is not merged into observed origin/main.",
+    "This task did not push the PR-2 branch or create a Draft PR."
+  ],
+  "uncommittedPaths": [
+    "reports/gowm-v0.7/pr1/",
+    "reports/gowm-v0.7/pr2/"
+  ],
+  "nextAction": "After explicit publication authorization, merge PR-1 through review, restack PR-2 on the resulting main, refresh exact-head gates, then push and create a Draft PR.",
+  "authorization": {
+    "localImplementationAndTests": true,
+    "isolatedDatabaseWrites": true,
+    "push": false,
+    "draftPr": false,
+    "merge": false,
+    "deployOrSharedRuntimeMutation": false
+  },
+  "updatedAt": "2026-08-30T10:06:16.8886243Z"
+}

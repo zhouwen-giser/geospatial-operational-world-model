@@ -1,6 +1,22 @@
 \set ON_ERROR_STOP on
 BEGIN;
 
+CREATE FUNCTION pg_temp.gowm_assertion_snapshot(p_query_id text)
+RETURNS jsonb LANGUAGE sql AS $snapshot$
+  WITH seed AS (
+    SELECT jsonb_build_object(
+      'querySnapshotId','snapshot_legacy_' || substr(encode(public.digest(p_query_id,'sha256'),'hex'),1,32),
+      'mode','BEST_EFFORT','consistency','BEST_EFFORT',
+      'capturedAt','2026-08-24T00:00:00.000Z','resources','[]'::jsonb,
+      'manifestHash','sha256:' || repeat('0',64)
+    ) AS value
+  )
+  SELECT jsonb_set(
+    value,'{manifestHash}',
+    to_jsonb(gowm_capability.canonical_legacy_query_snapshot_hash(value)),false
+  ) FROM seed
+$snapshot$;
+
 DO $privileges$
 DECLARE relation text;
 BEGIN
@@ -50,17 +66,13 @@ BEGIN
     RETURNING job_id INTO job_key;
     INSERT INTO gowm_capability.world_query_job(query_id,job_id,public_job_id,request_id,principal_ref,principal_hash,
       idempotency_key,request_hash,parameter_schema_hash,plan_hash,submission,authentication_method,authenticated_at,data_scope_claim,dataset_scope_claim,
-      query_snapshot_manifest,principal_context)
+      query_snapshot_manifest,effective_snapshot_manifest,principal_context)
     VALUES (query_key,job_key,'job-'||query_key,'request-'||query_key,'principal:validation','sha256:'||repeat('1',64),
       'idempotency-'||query_key,'sha256:'||repeat('2',64),'sha256:'||repeat('3',64),'sha256:'||repeat('4',64),
       jsonb_build_object('requestId','request-'||query_key,'idempotencyKey','idempotency-'||query_key,
         'parameterSchemaHash','sha256:'||repeat('3',64),'plan',jsonb_build_object('queryId',query_key)),
       'SQL_ASSERTION',clock_timestamp(),'validation-authority-test','tenant-'||tenant,
-      jsonb_build_object(
-        'querySnapshotId','snapshot-'||query_key,'mode','PINNED','consistency','SNAPSHOT',
-        'capturedAt','2026-08-24T00:00:00.000Z','resources','[]'::jsonb,
-        'manifestHash','sha256:'||repeat('5',64)
-      ),
+      pg_temp.gowm_assertion_snapshot(query_key),pg_temp.gowm_assertion_snapshot(query_key),
       jsonb_build_object(
         'mode','STATIC_SERVICE','principalRef','principal:validation',
         'authenticationMethod','SQL_ASSERTION','dataScopeClaim','validation-authority-test',

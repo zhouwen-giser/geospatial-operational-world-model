@@ -13,7 +13,8 @@ const contractRoots = [
   resolve(repositoryRoot, "contracts/gowm-v0.6"),
   resolve(repositoryRoot, "contracts/gowm-v0.6.1"),
   resolve(repositoryRoot, "contracts/gowm-v0.6.2"),
-  resolve(repositoryRoot, "contracts/gowm-v0.6.3")
+  resolve(repositoryRoot, "contracts/gowm-v0.6.3"),
+  resolve(repositoryRoot, "contracts/gowm-v0.7")
 ];
 const generatedDirectory = resolve(repositoryRoot, "packages/platform/contract-runtime/src/generated");
 const contractsOutput = resolve(generatedDirectory, "contracts.ts");
@@ -70,6 +71,15 @@ for (const [key, schema] of documents) {
       definition.title || `${rootName}${pascal(definitionName)}`
     );
   }
+}
+
+const typeNameOwners = new Map();
+for (const [reference, typeName] of typeNames) {
+  const previous = typeNameOwners.get(typeName);
+  if (previous !== undefined) {
+    throw new Error(`Duplicate generated type name ${typeName}: ${previous} and ${reference}`);
+  }
+  typeNameOwners.set(typeName, reference);
 }
 
 function resolveReferenceKey(currentKey, reference) {

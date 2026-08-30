@@ -5,10 +5,10 @@ import ts from "typescript";
 import { parse } from "pgsql-parser";
 import {
   canonicalSha256, validateContract, validateCapabilityDescriptorSemantics,
-  type CapabilityDescriptor, type CapabilitySemanticProfileV1
+  type CapabilityDescriptor, type GowmV07CapabilitySemanticProfileV11
 } from "../../contract-runtime/src/index.js";
 
-export type SemanticProfile = CapabilitySemanticProfileV1;
+export type SemanticProfile = GowmV07CapabilitySemanticProfileV11;
 export interface SemanticIssue { rule: string; operation: string; message: string }
 export interface ImplementationEvidence {
   referenceInput: boolean;
@@ -54,7 +54,7 @@ export function checkSemanticRules(
   const fail = (rule: string, message: string) => issues.push({ rule, operation: key(descriptor), message });
   const p = descriptor.semanticProfile;
   if (!p) { fail("S014", "Explicit semanticProfile is missing"); return issues; }
-  const validation = validateContract("urn:gowm:v0.6.2:capability-semantic-profile", p);
+  const validation = validateContract("urn:gowm:v0.7:capability-semantic-profile", p);
   for (const issue of validation.issues) fail("VOCABULARY", `${issue.path}: ${issue.message}`);
   if (evidence.referenceInput && p.acceptedReferenceKinds.length === 0) fail("S001", "Reference input lacks accepted kinds");
   if (evidence.referenceOutput && p.producedReferenceKinds.length === 0) fail("S002", "Reference output lacks produced kinds");
@@ -179,7 +179,12 @@ export function inspectSchema(schema: unknown, resolveReference: (ref: string, p
     if (typeof node.$id === "string") uris.add(node.$id);
     if (node.$ref) visit(resolveReference(node.$ref, value), path, next, property);
     if (property === "kind") {
-      for (const k of node.enum ?? (node.const ? [node.const] : [])) if (["WORLD_OBJECT", "SPATIAL_OBJECT", "DATASET", "LAYER", "LAYER_FEATURE", "OPERATIONAL_TASK", "DERIVED_REFERENCE", "REFERENCE_SET", "QUERY_RESULT"].includes(k)) kinds.add(k);
+      for (const k of node.enum ?? (node.const ? [node.const] : [])) if ([
+        "WORLD_OBJECT", "SPATIAL_OBJECT", "DATASET", "LAYER", "LAYER_FEATURE", "OPERATIONAL_TASK",
+        "DERIVED_REFERENCE", "REFERENCE_SET", "QUERY_RESULT", "TASK_EXECUTION_INTERVAL",
+        "TASK_EXECUTION_EVENT_SET", "TRACKLET_VERSION", "TRACKLET_FINALIZATION",
+        "HISTORICAL_TRAJECTORY", "HISTORY_INPUT_SET", "HISTORY_METHOD_PROFILE"
+      ].includes(k)) kinds.add(k);
     }
     if (property === "status" || property === "currentness" || property === "resolutionStatus") {
       const terms = node.enum ?? (node.const ? [node.const] : []);

@@ -1,22 +1,22 @@
 # Project status
 
-Last updated: 2026-08-29
+Last updated: 2026-08-30
 
 ## Current candidate
 
-GOWM+ **0.6.4 — Reference Composability Repair** is a qualification candidate
-based on the merged v0.6.3 line. Development Ready is asserted only after the
-exact candidate passes all 61 required gates and the coherent optional WSGS
-group. Work is isolated on
-`codex/gowm-v0.6.4-reference-composability` and reviewed in Draft PR #10.
+GOWM+ **0.7.0 — Historical Trace & Effective Snapshot**. The local candidate is
+split into `codex/gowm-v0.7-pr1-effective-snapshot` and the stacked
+`codex/gowm-v0.7-pr2-task-trajectory`. Publication and merge state are reported
+separately from source and runtime evidence.
 
-The public consumer bundle remains frozen at
-`@gowm/world-gateway-contracts@0.6.3`; the root product candidate version is
-0.6.4. Historical v0.6.3 reports are investigation inputs only. The v0.6.4
-decision is bound to fresh evidence from one exact source candidate and its
-isolated database/runtime realization.
+The 0.7.0 decision is bound to fresh exact-source evidence under
+`reports/gowm-v0.7`. Earlier reports and a running shared sample instance do not
+prove this candidate.
 
-## v0.6.4 scope
+## Historical v0.6.4 baseline
+
+The v0.7 candidate incorporates the merged v0.6.4 Reference Composability
+Repair. Its qualified baseline remains bound to its own exact-source evidence:
 
 - Resolver descriptors bind to the corresponding immutable catalog/object
   version so their ReferenceKeys can be passed unchanged to current validation,
@@ -28,34 +28,34 @@ isolated database/runtime realization.
 - Readiness is derived from the task package's 61 required acceptance cases;
   the five WSGS cases are optional and must be reported consistently as one run.
 
-This candidate does not authorize or claim merge, tag, release, package
-publication, production deployment, or production SLO qualification.
-
-## Historical v0.6.3 candidate
+Those v0.6.4 results establish the inherited baseline; they do not replace
+fresh v0.7 qualification or authorize tag, release, package publication,
+production deployment, or production SLO claims.
 
 ## Scope and authority
 
-The formal registry contains 15 providers and 122 explicit Manifest 1.1
-capabilities. Provider Execution Protocol remains 1.0. Exactly ten qualified
-Grounding Core operations moved from Preview to Stable, yielding 31 Stable,
-89 Preview, and 2 Experimental operations. The generated v2 consumer lock has
-no provider addresses, secrets, database names, or deployment topology.
+The formal registry contains 16 providers and 124 explicit Manifest 1.1
+capabilities. Provider Execution Protocol remains 1.0. The catalog contains 31
+Stable, 91 Preview, and 2 Experimental operations. The historical interval and
+trajectory operations remain Preview. The generated v2 consumer lock has no
+provider addresses, secrets, database names, or deployment topology.
 
 Gateway projects and hashes provider-owned profiles. It does not infer domains,
 units, references or relations from operation names. Vocabulary and S001–S014
 rules are checked offline against schemas, ports, TypeScript, SQL AST and tests.
 Foundation remains the fact authority and its write path is independent.
-Network, Route and Coverage algorithms and migrations 001–060 are unchanged;
-migration 061 only adds durable query snapshot and effective-principal context.
+Network, Route and Coverage algorithms remain unchanged. Migrations 063–067 add
+generic analysis inputs, runtime-discovered effective snapshots, task execution
+intervals, Tracklet finalization, and historical trajectory contracts without
+rewriting earlier migrations.
 
 ## Runtime and qualifications
 
-The world-platform overlay exposes only the Gateway. Thirteen required provider
-processes and PostgreSQL use an internal network; two optional CRS/Geometry
-bridges are registered but require separately supplied operator artifacts.
-Their unavailability is visible. Situation retains its existing single-scope
-readiness qualification. STAS stays Preview. These qualifications are not
-represented as Stable execution proof.
+The historical Provider is exposed only through the World Capability Gateway.
+Its reads are scoped, bounded and pinned to an Effective Snapshot; materialized
+revisions retain interval, Tracklet, finalization, method-profile and compute
+lineage. The worker uses leases and generation fencing. These qualifications do
+not promote the Preview capabilities or constitute production SLO/HA proof.
 
 H3 bindings are reproducibly built from the locked upstream commit and checked
 against the source-lock digest before import. H3 cover is a candidate operation;
@@ -65,16 +65,17 @@ resolves pinned area references through scoped views and rechecks area
 currentness. Route LOGIN uses controlled write functions with no direct
 fact/job-table mutation privilege.
 
-## v0.6.3 evidence
+## v0.7 evidence
 
-- `reports/gowm-v0.6.3/runtime`: real same-Gateway execution of all ten promoted
-  operations, query snapshot restart/replay, and local Provider failure recovery.
-- `reports/gowm-v0.6.3/black-box-evidence.json`: content-addressed qualification
-  receipts for the promoted operation set.
+- `reports/gowm-v0.7/pr1`: Effective Snapshot, generic analysis-input, restart,
+  conflict and regression evidence.
+- `reports/gowm-v0.7/pr2`: task interval, Tracklet finalization, historical
+  trajectory, late-data, Gateway, scope-security and performance evidence.
 - `packages/platform/world-gateway-contracts/bundle`: deterministic consumer
   schemas, OpenAPI, generated types, vocabularies, revisions, lock, and manifest.
-- `database/migrations/061_grounding_identity_and_query_snapshot.sql`: additive
-  durable context migration with SQL AST and real PostgreSQL verification.
+- `database/migrations/063_analysis_resource_inputs.sql` through
+  `067_historical_trajectory_contract.sql`: additive durable history model and
+  scoped read/write contracts.
 
 ## Historical v0.6.2 evidence
 

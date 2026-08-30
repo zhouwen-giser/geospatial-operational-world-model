@@ -188,7 +188,7 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
       "spatial.find-in-area@1.0", "spatial.find-intersections@1.0"
     ]);
     expect(catalog.filter((operation) => operation.maturity === "STABLE")).toHaveLength(31);
-    expect(catalog.filter((operation) => operation.maturity === "PREVIEW")).toHaveLength(89);
+    expect(catalog.filter((operation) => operation.maturity === "PREVIEW")).toHaveLength(91);
     expect(catalog.filter((operation) => operation.maturity === "EXPERIMENTAL")).toHaveLength(2);
     for (const key of expected) {
       const [operationId, operationVersion] = key.split("@");
@@ -197,8 +197,17 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
     const lock = JSON.parse(await readFile(join(root, "contracts/consumers/wsgs-southbound-operation-lock-v2.json"), "utf8"));
     const manifest = JSON.parse(await readFile(join(root, "packages/platform/world-gateway-contracts/bundle/MANIFEST.json"), "utf8"));
     const semanticProjection = projectCapabilitySemantics(catalog, manifest.contractCatalogRevision);
-    expect(validateContract("urn:gowm:v0.6.3:wsgs-southbound-operation-lock-v2", lock)).toMatchObject({ valid: true });
-    expect(validateContract("urn:gowm:v0.6.3:consumer-contract-bundle-manifest", manifest)).toMatchObject({ valid: true });
+    expect(validateContract("urn:gowm:v0.7:wsgs-southbound-operation-lock-v2", lock)).toMatchObject({ valid: true });
+    expect(validateContract("urn:gowm:v0.7:consumer-contract-bundle-manifest", manifest)).toMatchObject({ valid: true });
+    expect(validateContract("urn:gowm:v0.6.3:wsgs-southbound-operation-lock-v2", {
+      ...lock,
+      gatewayContractVersion: "0.6.3",
+      consumerContractPackage: { ...lock.consumerContractPackage, version: "0.6.3" }
+    })).toMatchObject({ valid: true });
+    expect(validateContract("urn:gowm:v0.6.3:consumer-contract-bundle-manifest", {
+      ...manifest,
+      packageVersion: "0.6.3"
+    })).toMatchObject({ valid: true });
     expect(lock.defaultOperations).toHaveLength(31);
     expect(lock.consumerContractPackage.integrity).toBe(manifest.packageIntegrity);
     expect(lock.semanticCatalogHash).toBe(semanticProjection.catalogHash);

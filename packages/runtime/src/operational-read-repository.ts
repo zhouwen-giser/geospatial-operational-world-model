@@ -19,6 +19,10 @@ export interface OperationalReadSnapshot {
 export class OperationalReadRepository {
   constructor(private readonly pool: pg.Pool) {}
 
+  async snapshot(dataScopeKey: string): Promise<OperationalReadSnapshot> {
+    return this.read(dataScopeKey, async (_client, snapshot) => snapshot);
+  }
+
   async find(dataScopeKey: string,options: {
     referenceKey?: OperationalReferenceKey;
     actorReferenceKeys?: OperationalReferenceKey[];

@@ -35,6 +35,13 @@
       ]
     },
     {
+      "providerId": "gowm.historical-trace",
+      "allowedDomains": [
+        "ANALYSIS",
+        "TEMPORAL"
+      ]
+    },
+    {
       "providerId": "gowm.crs-normalization.bridge",
       "allowedDomains": [
         "SPATIAL"

@@ -1,6 +1,6 @@
 {
   "name": "@gowm/world-gateway-contracts",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "description": "Deterministic consumer distribution of the GOWM World Gateway contracts",
   "type": "module",
   "license": "MIT",

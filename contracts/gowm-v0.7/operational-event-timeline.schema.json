@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7:operational-event-timeline",
+  "title": "GowmV07OperationalEventTimeline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "events", "truncated"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "operationalTaskReferenceKey": { "$ref": "../gowm-v0.4/common.schema.json#/$defs/referenceKey" },
+    "events": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": { "$ref": "operational-task-event.schema.json" }
+    },
+    "truncated": { "type": "boolean" },
+    "nextCursor": { "type": "string", "maxLength": 2048 }
+  }
+}

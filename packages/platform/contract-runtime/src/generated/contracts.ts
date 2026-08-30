@@ -3390,6 +3390,370 @@ export type GowmV06RoadServiceObligation = {
   startFractionPpm: number;
 };
 
+export type GowmV07AnalysisInputSet = {
+  authority: string;
+  inputSetKind: string;
+  inputSetReferenceKey: GowmV07AnalysisInputSetInputSetReferenceKey;
+  itemCount: number;
+  itemSetDigest: PlatformCommonDefinitionsSha256Digest;
+  manifestArtifactReference?: GowmV07AnalysisInputSetArtifactReference;
+  schemaVersion: "1.0";
+};
+
+export type GowmV07AnalysisInputSetArtifactReference = {
+  artifactId: string;
+  digest: PlatformCommonDefinitionsSha256Digest;
+  mediaType: string;
+};
+
+export type GowmV07AnalysisInputSetInputSetReferenceKey = {
+  id: string;
+  kind: "HISTORY_INPUT_SET";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV07AnalysisResourceReference = {
+  authority: string;
+  contentHash?: PlatformCommonDefinitionsSha256Digest;
+  inputRole: string;
+  pinning: "PINNED" | "AT_LEAST" | "BEST_EFFORT";
+  resourceReferenceKey: PlatformCommonDefinitionsReferenceKey;
+  schemaVersion: "1.0";
+  sourceAnalysisReferenceKey?: PlatformCommonDefinitionsReferenceKey;
+  worldReferenceKey?: PlatformCommonDefinitionsReferenceKey;
+  worldVersion?: number;
+};
+
+export type CapabilitySemanticCatalogV1_1 = {
+  bindingRevision: string;
+  catalogHash: string;
+  contractCatalogRevision: string;
+  profiles: Array<{
+  operationId: string;
+  operationVersion: string;
+  semanticProfile: GowmV07CapabilitySemanticProfileV11;
+  semanticProfileHash: string;
+}>;
+  registryRevision?: string;
+  schemaVersion: "1.1";
+};
+
+export type GowmV07CapabilitySemanticProfileV11 = ({
+  acceptedReferenceKinds: Array<GowmV07CapabilitySemanticProfileV11ReferenceKindV11>;
+  domain: "REFERENCE" | "CATALOG" | "WORLD_STATE" | "SPATIAL" | "TEMPORAL" | "H3" | "NETWORK" | "ROUTING" | "COVERAGE" | "ANALYSIS" | "PLATFORM";
+  domainStatus?: {
+  mapping: Record<string, "COMPLETED" | "PARTIAL" | "NO_DATA" | "AMBIGUOUS" | "INDETERMINATE" | "NO_FEASIBLE_RESULT" | "STALE" | "FAILED">;
+  path: string;
+};
+  exactVerification?: {
+  operationId: string;
+  operationVersion: string;
+};
+  freshnessSemantics: "NONE" | "TTL" | "WORLD_VERSION" | "SNAPSHOT_CURRENTNESS";
+  negativeEvidencePolicy: "SUPPORTED" | "NOT_SUPPORTED" | "NO_DATA_IS_UNKNOWN" | "NOT_APPLICABLE";
+  notes?: Array<string>;
+  producedReferenceKinds: Array<GowmV07CapabilitySemanticProfileV11ReferenceKindV11>;
+  profileVersion: "1.0" | "1.1";
+  relationSemantics: Array<"RESOLVES_TO" | "DESCRIBES" | "HAS_GEOMETRY" | "INSIDE" | "CONTAINS" | "INTERSECTS" | "NEAR" | "CANDIDATE_COVER" | "SNAPPED_TO_NETWORK" | "ROUTE_BETWEEN" | "ROAD_COVERAGE_PLAN" | "TEMPORALLY_OVERLAPS" | "PROXIMITY_INTERVAL" | "CORRELATES_WITH" | "EVALUATES_PREDICATE" | "VALIDATES" | "VALIDATES_SNAPSHOT" | "DISCOVERS_DATA_PRODUCT">;
+  resultNature: "FACT" | "PROJECTION" | "DERIVED" | "PLAN" | "VALIDATION" | "CATALOG";
+  spatialSemantics: "EXACT" | "CANDIDATE" | "AGGREGATED" | "NONE";
+  timeSemantics: "CURRENT" | "HISTORICAL" | "INTERVAL" | "SNAPSHOT" | "NONE";
+}) & ((Record<string, unknown>));
+
+export type GowmV07CapabilitySemanticProfileV11ReferenceKindV1 = "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT";
+
+export type GowmV07CapabilitySemanticProfileV11ReferenceKindV11 = "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT" | "TASK_EXECUTION_INTERVAL" | "TASK_EXECUTION_EVENT_SET" | "TRACKLET_VERSION" | "TRACKLET_FINALIZATION" | "HISTORICAL_TRAJECTORY" | "HISTORY_INPUT_SET" | "HISTORY_METHOD_PROFILE";
+
+export type ConsumerContractBundleManifestV07 = {
+  builtAtSourceCommit?: string;
+  contractCatalogRevision: string;
+  files: Array<{
+  bytes: number;
+  path: string;
+  sha256: string;
+}>;
+  packageIntegrity: string;
+  packageName: "@gowm/world-gateway-contracts";
+  packageVersion: "0.7.0";
+  schemaVersion: "1.0";
+  semanticCatalogHash: string;
+};
+
+export type GowmV07HistoricalGap = {
+  details?: string;
+  range: GowmV07HistoricalGapTimeRange;
+  reason: "UNKNOWN_INPUT_GAP" | "SOURCE_COVERAGE_GAP" | "TRACKLET_BOUNDARY_GAP";
+};
+
+export type GowmV07HistoricalGapTimeRange = {
+  bounds?: "[)";
+  end: string;
+  start: string;
+};
+
+export type GowmV07HistoricalOutcome = {
+  reasonCode: string;
+  schemaVersion: "1.0";
+  status: "COMPLETED" | "PARTIAL" | "NO_DATA" | "INDETERMINATE";
+  warnings: Array<string>;
+};
+
+export type GowmV07HistoricalTrajectoryQuery = {
+  analysisSpaceReferenceKey?: PlatformCommonDefinitionsReferenceKey;
+  executionIntervalReferenceKey: GowmV07HistoricalTrajectoryQueryExecutionIntervalReferenceKey;
+  maximumInlinePoints?: number;
+  phaseScope: "EXECUTION_ENVELOPE" | "ACTIVE_PHASES_ONLY";
+  sourceSelection: ({
+  mode: "EXPLICIT_SOURCE";
+  sourceKey: string;
+  trackerSessionKey?: string;
+}) | ({
+  mode: "ONLY_CANDIDATE";
+});
+  sourceSelectionProfileReferenceKey: GowmV07HistoricalTrajectoryQueryMethodProfileReferenceKey;
+  subjectReferenceKey: PlatformCommonDefinitionsReferenceKey;
+};
+
+export type GowmV07HistoricalTrajectoryQueryExecutionIntervalReferenceKey = {
+  id: string;
+  kind: "TASK_EXECUTION_INTERVAL";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV07HistoricalTrajectoryQueryMethodProfileReferenceKey = {
+  id: string;
+  kind: "HISTORY_METHOD_PROFILE";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV07HistoricalTrajectoryResult = {
+  artifactReference?: GowmV07HistoricalTrajectoryResultArtifactReference;
+  completeness: GowmV07HistoricalTrajectoryResultCompleteness;
+  definedPeriods: Array<GowmV07HistoricalTrajectoryResultTimeRange>;
+  excludedPeriods: Array<{
+  range: GowmV07HistoricalTrajectoryResultTimeRange;
+  reason: "EXCLUDED_PAUSED_PHASE";
+}>;
+  executionIntervalReferenceKey: GowmV07HistoricalTrajectoryResultExecutionIntervalReferenceKey;
+  finalization: GowmV07HistoricalTrajectoryResultFinalization;
+  gaps: Array<GowmV07HistoricalGap>;
+  inputTrackletVersions: Array<GowmV07HistoricalTrajectoryResultInputTrackletVersion>;
+  preview: Array<GowmV07HistoricalTrajectoryResultPreviewPoint>;
+  reasonCode: string;
+  requestedPeriods: Array<GowmV07HistoricalTrajectoryResultTimeRange>;
+  schemaVersion: "1.0";
+  status: "COMPLETED" | "PARTIAL" | "NO_DATA" | "INDETERMINATE";
+  subjectReferenceKey: PlatformCommonDefinitionsReferenceKey;
+  trajectoryReferenceKey?: GowmV07HistoricalTrajectoryResultTrajectoryReferenceKey;
+  warnings: Array<string>;
+};
+
+export type GowmV07HistoricalTrajectoryResultArtifactReference = {
+  artifactId: string;
+  digest: PlatformCommonDefinitionsSha256Digest;
+  mediaType: string;
+};
+
+export type GowmV07HistoricalTrajectoryResultCompleteness = {
+  gapCount: number;
+  prefixComplete: boolean;
+  sampleCount: number;
+  sequenceCount: number;
+  suffixComplete: boolean;
+  temporalCoverageRatio: number;
+};
+
+export type GowmV07HistoricalTrajectoryResultExecutionIntervalReferenceKey = {
+  id: string;
+  kind: "TASK_EXECUTION_INTERVAL";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV07HistoricalTrajectoryResultFinalization = {
+  observedThrough?: string;
+  state: "PROVISIONAL" | "SEALED" | "CONFLICTED";
+};
+
+export type GowmV07HistoricalTrajectoryResultInputTrackletVersion = {
+  contentHash: PlatformCommonDefinitionsSha256Digest;
+  sourceKey: string;
+  trackerSessionKey: string;
+  trackletId: string;
+  trackletVersionId: string;
+  versionNo: number;
+};
+
+export type GowmV07HistoricalTrajectoryResultPreviewPoint = {
+  observedAt: string;
+  position: ProjectedWgs84PointPort;
+};
+
+export type GowmV07HistoricalTrajectoryResultTimeRange = {
+  bounds?: "[)";
+  end: string;
+  start: string;
+};
+
+export type GowmV07HistoricalTrajectoryResultTrajectoryReferenceKey = {
+  id: string;
+  kind: "HISTORICAL_TRAJECTORY";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV07OperationalEventTimeline = {
+  events: Array<GowmV07OperationalTaskEvent>;
+  nextCursor?: string;
+  operationalTaskReferenceKey?: GowmV04CommonReferenceKey;
+  schemaVersion: "1.0";
+  truncated: boolean;
+};
+
+export type GowmV07OperationalTaskEvent = {
+  actorReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  confidence?: number;
+  correlationClaims?: Array<GowmV04ExternalCorrelationClaim>;
+  eventId: string;
+  eventTime: GowmV04CommonDateTime;
+  eventType: "CONTROL_REQUEST_OBSERVED" | "CONTROL_ACCEPTED_OBSERVED" | "CONTROL_REJECTED_OBSERVED" | "EXECUTION_STARTED_OBSERVED" | "EXECUTION_PROGRESS_OBSERVED" | "EXECUTION_PAUSED_OBSERVED" | "EXECUTION_RESUMED_OBSERVED" | "EXECUTION_STOPPED_OBSERVED" | "CONTROL_COMPLETED_REPORTED" | "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED" | "PHYSICAL_EFFECT_CONFIRMED" | "PHYSICAL_EFFECT_CONTRADICTED" | "EXECUTION_FAILED_OBSERVED" | "EXECUTION_CANCELLED_OBSERVED" | "OBSERVATION_GAP_OPENED" | "OBSERVATION_GAP_CLOSED";
+  geometryRef?: string;
+  operationalTaskId: string;
+  payload: Record<string, unknown>;
+  provenance: Array<GowmV04CommonEvidenceRef>;
+  receivedTime: GowmV04CommonDateTime;
+  subjectReferenceKey?: GowmV04CommonReferenceKey;
+  targetReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  worldVersion: number;
+};
+
+export type GowmV07QuerySnapshotAdherence = {
+  checkedResources: number;
+  mismatches?: Array<{
+  actualVersion?: string;
+  expectedVersion?: string;
+  reason: "VERSION_MISMATCH" | "CONTENT_HASH_MISMATCH" | "WORLD_VERSION_TOO_OLD" | "RESOURCE_MISSING" | "PINNING_UNSUPPORTED";
+  resourceId: string;
+  resourceKind: string;
+}>;
+  nodeId: string;
+  status: "MATCHED" | "ADVANCED_COMPATIBLE" | "MISMATCHED" | "UNSUPPORTED" | "NOT_APPLICABLE";
+};
+
+export type GowmV07QuerySnapshotManifest = {
+  capturedAt: string;
+  consistency: "PINNED" | "CONSISTENT_AT_START" | "BEST_EFFORT";
+  manifestHash: string;
+  minimumWorldVersion?: number;
+  mode: "LATEST_AT_START" | "PINNED" | "AT_LEAST_WORLD_VERSION" | "BEST_EFFORT";
+  querySnapshotId: string;
+  resources: Array<{
+  contentHash?: string;
+  pinning: "PINNED" | "AT_LEAST" | "BEST_EFFORT";
+  resourceId: string;
+  resourceKind: string;
+  version: string;
+  worldVersion?: number;
+}>;
+};
+
+export type GowmV07QuerySnapshotPolicy = ({
+  allowDowngrade?: boolean;
+  minimumWorldVersion?: number;
+  mode: "LATEST_AT_START" | "PINNED" | "AT_LEAST_WORLD_VERSION" | "BEST_EFFORT";
+  pinnedSnapshot?: GowmV07QuerySnapshotManifest;
+}) & ((Record<string, unknown>) & (Record<string, unknown>));
+
+export type GowmV07ReferenceKey = PlatformCommonDefinitionsReferenceKey;
+
+export type GowmV07TaskExecutionIntervalQuery = {
+  phaseScope: "EXECUTION_ENVELOPE" | "ACTIVE_PHASES_ONLY";
+  selection: ({
+  kind: "LATEST";
+}) | ({
+  executionNo: number;
+  kind: "EXECUTION_NO";
+}) | ({
+  kind: "ALL";
+  limit: number;
+});
+  taskReferenceKey: GowmV07TaskExecutionIntervalQueryTaskReferenceKey;
+};
+
+export type GowmV07TaskExecutionIntervalQueryTaskReferenceKey = {
+  id: string;
+  kind: "OPERATIONAL_TASK";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV07TaskExecutionIntervalResult = {
+  intervals: Array<GowmV07TaskExecutionIntervalResultInterval>;
+  reasonCode: string;
+  schemaVersion: "1.0";
+  status: "COMPLETED" | "PARTIAL" | "NO_DATA" | "INDETERMINATE";
+  truncated: boolean;
+};
+
+export type GowmV07TaskExecutionIntervalResultExecutionIntervalReferenceKey = {
+  id: string;
+  kind: "TASK_EXECUTION_INTERVAL";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV07TaskExecutionIntervalResultInterval = {
+  activePeriods: Array<GowmV07TaskExecutionIntervalResultTimeRange>;
+  confidence?: number;
+  derivationKind: "OBSERVED" | "INFERRED" | "MIXED";
+  end?: string;
+  executionIntervalReferenceKey: GowmV07TaskExecutionIntervalResultExecutionIntervalReferenceKey;
+  executionNo: number;
+  lifecycleState: "OPEN" | "CLOSED" | "CONFLICTED";
+  pausedPeriods: Array<GowmV07TaskExecutionIntervalResultTimeRange>;
+  reasonCodes: Array<string>;
+  revisionNo: number;
+  stabilityState: "PROVISIONAL" | "SEALED" | "CONFLICTED";
+  start?: string;
+};
+
+export type GowmV07TaskExecutionIntervalResultTimeRange = {
+  bounds?: "[)";
+  end: string;
+  start: string;
+};
+
+export type WsgsSouthboundOperationLockV2V07 = {
+  availabilityContractHash: string;
+  consumerContractPackage: {
+  integrity: string;
+  name: "@gowm/world-gateway-contracts";
+  version: "0.7.0";
+};
+  contractCatalogRevision: string;
+  defaultOperations: WsgsSouthboundOperationLockV2V07OperationList;
+  delegationContractHash: string;
+  gatewayContractVersion: "0.7.0";
+  previewOperations: WsgsSouthboundOperationLockV2V07OperationList;
+  schemaVersion: "2.0";
+  semanticCatalogHash: string;
+  snapshotContractHash: string;
+};
+
+export type WsgsSouthboundOperationLockV2V07OperationList = Array<{
+  inputSchemaHash: string;
+  maturity: "STABLE" | "PREVIEW";
+  operationId: string;
+  operationVersion: string;
+  outputSchemaHash: string;
+  requiredPermissions: Array<string>;
+  semanticProfileHash: string;
+  snapshotSupport: "NONE" | "BEST_EFFORT" | "CONSISTENT_AT_START" | "PINNED";
+}>;
+
 export type CapabilityCatalog = {
   catalogVersion: string;
   endpoints: Array<{
@@ -3457,11 +3821,12 @@ export type CapabilityDescriptor = {
 };
   resultSemantics: "TRANSFORMATION" | "VALIDATION" | "DERIVED_INDEX" | "DATA_QUERY" | "DERIVED_ANALYSIS" | "WORLD_PROJECTION";
   scopePolicy: "IDENTITY_ONLY" | "REQUEST_CONTEXT" | "DATA_SCOPE_REQUIRED" | "DATASET_SCOPE_REQUIRED";
-  semanticProfile?: CapabilitySemanticProfileV1;
+  semanticProfile?: GowmV07CapabilitySemanticProfileV11;
   semanticRole: "FOUNDATION_PRIMITIVE" | "FOUNDATION_DATA_QUERY" | "GENERIC_ANALYSIS" | "DOMAIN_ANALYSIS" | "PROJECTION_QUERY";
   snapshotPolicy: {
   computeSnapshot: "REQUIRED";
   dataSnapshot: "NONE" | "OPTIONAL" | "REQUIRED";
+  resourceResolution?: "DISCOVER_RESOURCES" | "REQUIRE_PINNED" | "NOT_APPLICABLE";
 };
 };
 
@@ -3616,6 +3981,7 @@ export type DataSnapshotContext = {
   digest?: PlatformCommonDefinitionsSha256Digest;
   pinning: "PINNED" | "AT_LEAST" | "BEST_EFFORT";
   referenceKey: PlatformCommonDefinitionsReferenceKey;
+  worldVersion?: number;
 }>;
   scopeDigest: PlatformCommonDefinitionsSha256Digest;
 };
@@ -3711,6 +4077,7 @@ export type PlatformError = {
 
 export type ProviderExecutionRequest = {
   dataSnapshot?: DataSnapshotContext;
+  effectiveSnapshot?: GowmV07QuerySnapshotManifest;
   executionPolicy: {
   deadlineAt: string;
   maximumBatchItems?: number;
@@ -3736,7 +4103,7 @@ export type ProviderExecutionRequest = {
   operation: PlatformCommonDefinitionsOperationRef;
   providerProtocolVersion: "1.0";
   requestId: PlatformCommonDefinitionsIdentifier;
-  requestedSnapshot?: QuerySnapshotManifest;
+  requestedSnapshot?: GowmV07QuerySnapshotManifest;
   securityContext: {
   authenticatedAt: string;
   authenticationMethod: string;
@@ -3886,6 +4253,7 @@ export type WorldQueryPlanV2SchemaPort = {
 export type WorldQueryPlanV2TargetPath = string;
 
 export type WorldQueryResult = {
+  effectiveSnapshotManifest?: GowmV07QuerySnapshotManifest;
   finishedAt: string;
   jobId: PlatformCommonDefinitionsIdentifier;
   nodes: Array<WorldQueryResultNodeResult>;
@@ -3893,8 +4261,9 @@ export type WorldQueryResult = {
   outputs: Record<string, unknown>;
   queryId: PlatformCommonDefinitionsIdentifier;
   queryPlanVersion: "2.0";
-  snapshotAdherence: Array<QuerySnapshotAdherence>;
-  snapshotManifest: QuerySnapshotManifest;
+  requestedSnapshotManifest?: GowmV07QuerySnapshotManifest;
+  snapshotAdherence: Array<GowmV07QuerySnapshotAdherence>;
+  snapshotManifest: GowmV07QuerySnapshotManifest;
   startedAt: string;
   status: "COMPLETED" | "PARTIAL" | "FAILED" | "CANCELLED";
   warnings: Array<string>;

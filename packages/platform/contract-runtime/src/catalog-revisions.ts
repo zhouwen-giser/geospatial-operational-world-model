@@ -1,6 +1,6 @@
 import { canonicalSha256 } from "./canonical-json.js";
 import type { CapabilityProviderManifest } from "./generated/contracts.js";
-import references from "../../../../contracts/gowm-v0.6.2/vocabularies/reference-kind-vocabulary.v1.json" with { type: "json" };
+import references from "../../../../contracts/gowm-v0.7/vocabularies/reference-kind-vocabulary.v2.json" with { type: "json" };
 import relations from "../../../../contracts/gowm-v0.6.2/vocabularies/relation-semantic-vocabulary.v1.json" with { type: "json" };
 import statuses from "../../../../contracts/gowm-v0.6.2/vocabularies/normalized-result-status-vocabulary.v1.json" with { type: "json" };
 

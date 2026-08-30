@@ -1,0 +1,17 @@
+{
+  "configVersion": "1.0",
+  "providers": [
+    {
+      "providerId": "gowm.historical-trace",
+      "providerVersion": "0.7.0",
+      "implementationDigest": "sha256:5558e64bc2c4f187c851543bc7a3bd2cdc0284dbd7565cc1fdfe700e8b22800c",
+      "manifestHash": "sha256:7e45851dd3def3209daf4ae1c1bb568db28ae946cec45cfa5559dc27b4513fce",
+      "manifestPath": "contracts/manifests/providers/historical-trace-provider.json",
+      "endpoint": "http://historical-trace-provider:8100",
+      "approvalId": "historical-trace-v0.7",
+      "approvedBy": "gowm-v0.7-task-package",
+      "transportTokenEnv": "HISTORICAL_TRACE_PROVIDER_TRANSPORT_TOKEN",
+      "allowPlaintextPrivateNetwork": true
+    }
+  ]
+}

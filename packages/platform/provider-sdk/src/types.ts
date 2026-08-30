@@ -4,6 +4,7 @@ import type {
   CapabilityResultEnvelope,
   DataSnapshotContext,
   EvidenceReference,
+  GowmV07QuerySnapshotManifest,
   ProviderExecutionRequest
 } from "../../contract-runtime/src/index.js";
 import type { ResourceConsumption } from "./budget.js";
@@ -47,6 +48,12 @@ export interface ProviderHandlerContext {
   deadline: DeadlineContext;
   trace: TraceContext;
   gateway: ProviderExecutionRequest["gatewayContext"];
+  snapshots: ProviderSnapshotContext;
+}
+
+export interface ProviderSnapshotContext {
+  requested?: GowmV07QuerySnapshotManifest;
+  effective?: GowmV07QuerySnapshotManifest;
 }
 
 export interface ProviderOperation<Input = unknown, Output = unknown> {

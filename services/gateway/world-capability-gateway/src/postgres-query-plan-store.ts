@@ -1,14 +1,15 @@
 import type pg from "pg";
 import type {
+  GowmV07QuerySnapshotManifest as QuerySnapshotManifest,
   JobRecord,
   PlatformError,
-  QuerySnapshotManifest,
   WorldQueryResult,
   WorldQueryResultNodeResult,
   WorldQuerySubmission
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import type {
+  QueryExecutionFence,
   QueryJobContext,
   QueryJobCreateResult,
   QueryPlanStore
@@ -27,6 +28,9 @@ interface QueryRow {
   request_hash: `sha256:${string}`;
   submission: WorldQuerySubmission;
   query_snapshot_manifest: QuerySnapshotManifest;
+  effective_snapshot_manifest: QuerySnapshotManifest;
+  effective_snapshot_revision: number;
+  effective_snapshot_updated_at: Date | string;
   principal_context: GatewayPrincipal;
   authentication_method: string;
   authenticated_at: Date | string;
@@ -40,6 +44,8 @@ interface QueryRow {
   started_at: Date | string | null;
   completed_at: Date | string | null;
   failure_code: string | null;
+  lease_owner: string | null;
+  attempt_count: number;
   created_at: Date | string;
   updated_at: Date | string;
 }
@@ -57,6 +63,9 @@ SELECT query_job.query_id,
        query_job.request_hash,
        query_job.submission,
        query_job.query_snapshot_manifest,
+       query_job.effective_snapshot_manifest,
+       query_job.effective_snapshot_revision,
+       query_job.effective_snapshot_updated_at,
        query_job.principal_context,
        query_job.authentication_method,
        query_job.authenticated_at,
@@ -70,6 +79,8 @@ SELECT query_job.query_id,
        gateway_job.started_at,
        gateway_job.completed_at,
        gateway_job.failure_code,
+       gateway_job.lease_owner,
+       gateway_job.attempt_count,
        gateway_job.created_at,
        gateway_job.updated_at
 FROM gowm_capability.world_query_job query_job
@@ -132,10 +143,12 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
            query_id, job_id, public_job_id, request_id, principal_ref, principal_hash,
            idempotency_key, request_hash, parameter_schema_hash, plan_hash, submission,
            authentication_method, authenticated_at, data_scope_claim, dataset_scope_claim,
-           allow_experimental, query_snapshot_manifest, principal_context
+           allow_experimental, query_snapshot_manifest, effective_snapshot_manifest,
+           effective_snapshot_revision, effective_snapshot_updated_at, principal_context
          ) VALUES (
            $1, $2::uuid, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb,
-           $12, $13::timestamptz, $14, $15, $16, $17::jsonb, $18::jsonb
+           $12, $13::timestamptz, $14, $15, $16, $17::jsonb, $18::jsonb,
+           $19, clock_timestamp(), $20::jsonb
          )`,
         [
           context.submission.plan.queryId,
@@ -154,7 +167,9 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
           context.principal.dataScopeClaim ?? null,
           context.principal.datasetScopeClaim ?? null,
           context.principal.allowExperimental ?? false,
-          JSON.stringify(context.snapshotManifest),
+          JSON.stringify(context.requestedSnapshotManifest),
+          JSON.stringify(context.effectiveSnapshotManifest),
+          context.effectiveSnapshotRevision,
           JSON.stringify(context.principal)
         ]
       );
@@ -219,12 +234,20 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
     }
   }
 
-  async updateJob(job: JobRecord): Promise<void> {
+  async updateJob(job: JobRecord, fence?: QueryExecutionFence): Promise<void> {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
-      const current = await client.query<{ job_id: string; state: DatabaseJobState }>(
-        `SELECT query_job.job_id::text AS job_id, gateway_job.state
+      const current = await client.query<{
+        job_id: string;
+        state: DatabaseJobState;
+        lease_owner: string | null;
+        attempt_count: number;
+        lease_active: boolean | null;
+      }>(
+        `SELECT query_job.job_id::text AS job_id, gateway_job.state,
+                gateway_job.lease_owner, gateway_job.attempt_count,
+                gateway_job.lease_until > clock_timestamp() AS lease_active
          FROM gowm_capability.world_query_job query_job
          JOIN gowm_capability.gateway_job gateway_job USING (job_id)
          WHERE query_job.public_job_id = $1
@@ -233,6 +256,12 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
       );
       const row = current.rows[0];
       if (!row) throw new Error(`query job ${job.jobId} is not registered`);
+      assertFence(row.lease_owner, row.attempt_count, row.lease_active, fence);
+      if (terminalDatabaseState(row.state) && row.state !== toDatabaseState(job.status)) {
+        throw new ProviderProtocolError("PROVIDER_NOT_READY", "world query terminal state cannot regress", {
+          retryable: false
+        });
+      }
       const nextState = toDatabaseState(job.status);
       await client.query(
         `UPDATE gowm_capability.gateway_job
@@ -302,19 +331,54 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
     return result.rows[0] === undefined ? undefined : fromRow(result.rows[0]);
   }
 
-  async putNode(jobId: string, node: WorldQueryResultNodeResult): Promise<void> {
+  async putNode(jobId: string, node: WorldQueryResultNodeResult, fence?: QueryExecutionFence): Promise<void> {
+    await this.commitNodeResult(jobId, node, undefined, fence);
+  }
+
+  async commitNodeResult(
+    jobId: string,
+    node: WorldQueryResultNodeResult,
+    snapshotUpdate?: {
+      expectedManifestHash: QuerySnapshotManifest["manifestHash"];
+      nextEffectiveManifest: QuerySnapshotManifest;
+    },
+    fence?: QueryExecutionFence
+  ): Promise<void> {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
-      const context = await client.query<{ internal_job_id: string; submission: WorldQuerySubmission }>(
-        `SELECT job_id::text AS internal_job_id, submission
-         FROM gowm_capability.world_query_job
-         WHERE public_job_id = $1
-         FOR UPDATE`,
+      const context = await client.query<{
+        internal_job_id: string;
+        submission: WorldQuerySubmission;
+        effective_manifest_hash: string;
+        lease_owner: string | null;
+        attempt_count: number;
+        lease_active: boolean | null;
+      }>(
+        `SELECT query_job.job_id::text AS internal_job_id,
+                query_job.submission,
+                query_job.effective_snapshot_manifest ->> 'manifestHash' AS effective_manifest_hash,
+                gateway_job.lease_owner,
+                gateway_job.attempt_count,
+                gateway_job.lease_until > clock_timestamp() AS lease_active
+         FROM gowm_capability.world_query_job query_job
+         JOIN gowm_capability.gateway_job gateway_job USING (job_id)
+         WHERE query_job.public_job_id = $1
+         FOR UPDATE OF query_job, gateway_job`,
         [jobId]
       );
       const query = context.rows[0];
       if (!query) throw new Error(`query job ${jobId} is not registered`);
+      assertFence(query.lease_owner, query.attempt_count, query.lease_active, fence);
+      if (
+        snapshotUpdate !== undefined &&
+        query.effective_manifest_hash !== snapshotUpdate.expectedManifestHash
+      ) {
+        throw new ProviderProtocolError("PROVIDER_NOT_READY", "effective snapshot compare-and-swap failed", {
+          retryable: true,
+          details: { stage: "EXECUTION_FENCE" }
+        });
+      }
       const ordinal = query.submission.plan.nodes.findIndex((candidate) => candidate.nodeId === node.nodeId);
       if (ordinal < 0) throw new Error(`query node ${node.nodeId} is not present in the persisted plan`);
       const prior = await client.query<{ state: WorldQueryResultNodeResult["status"] }>(
@@ -370,6 +434,28 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
            ) VALUES ($1::uuid, $2, $3, $4, $5, 'WORLD_QUERY_RUNTIME')`,
           [query.internal_job_id, node.nodeId, prior.rows[0]?.state ?? null, node.status, node.attempt]
         );
+      }
+      if (snapshotUpdate !== undefined) {
+        const updated = await client.query(
+          `UPDATE gowm_capability.world_query_job
+           SET effective_snapshot_manifest = $2::jsonb,
+               effective_snapshot_revision = effective_snapshot_revision + 1,
+               effective_snapshot_updated_at = clock_timestamp(),
+               updated_at = clock_timestamp()
+           WHERE job_id = $1::uuid
+             AND effective_snapshot_manifest ->> 'manifestHash' = $3`,
+          [
+            query.internal_job_id,
+            JSON.stringify(snapshotUpdate.nextEffectiveManifest),
+            snapshotUpdate.expectedManifestHash
+          ]
+        );
+        if (updated.rowCount !== 1) {
+          throw new ProviderProtocolError("PROVIDER_NOT_READY", "effective snapshot compare-and-swap failed", {
+            retryable: true,
+            details: { stage: "EXECUTION_FENCE" }
+          });
+        }
       }
       await client.query("COMMIT");
     } catch (error) {
@@ -493,7 +579,12 @@ function fromRow(row: QueryRow): QueryJobContext {
     job,
     gatewayJobId: row.internal_job_id,
     submission: structuredClone(row.submission),
-    snapshotManifest: structuredClone(row.query_snapshot_manifest),
+    requestedSnapshotManifest: structuredClone(row.query_snapshot_manifest),
+    effectiveSnapshotManifest: structuredClone(row.effective_snapshot_manifest),
+    effectiveSnapshotRevision: row.effective_snapshot_revision,
+    ...(row.lease_owner === null
+      ? {}
+      : { executionFence: { leaseOwner: row.lease_owner, attempt: row.attempt_count } }),
     principal: structuredClone(row.principal_context),
     requestHash: row.request_hash,
     cancellationRequested: row.cancellation_requested_at !== null
@@ -533,4 +624,26 @@ function iso(value: Date | string): string {
 
 function isUniqueViolation(error: unknown): error is { code: "23505" } {
   return error !== null && typeof error === "object" && (error as { code?: unknown }).code === "23505";
+}
+
+function assertFence(
+  leaseOwner: string | null,
+  attempt: number,
+  leaseActive: boolean | null,
+  supplied: QueryExecutionFence | undefined
+): void {
+  if (leaseOwner === null && supplied === undefined) return;
+  if (
+    leaseOwner === null || supplied === undefined || leaseActive !== true ||
+    supplied.leaseOwner !== leaseOwner || supplied.attempt !== attempt
+  ) {
+    throw new ProviderProtocolError("PROVIDER_NOT_READY", "world query execution lease was superseded", {
+      retryable: false,
+      details: { stage: "EXECUTION_FENCE" }
+    });
+  }
+}
+
+function terminalDatabaseState(state: DatabaseJobState): boolean {
+  return ["SUCCEEDED", "PARTIAL", "FAILED", "CANCELLED", "TIMED_OUT"].includes(state);
 }

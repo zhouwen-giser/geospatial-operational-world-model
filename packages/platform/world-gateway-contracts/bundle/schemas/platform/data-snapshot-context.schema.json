@@ -26,7 +26,8 @@
           },
           "authority": { "type": "string", "minLength": 1, "maxLength": 128 },
           "pinning": { "enum": ["PINNED", "AT_LEAST", "BEST_EFFORT"] },
-          "digest": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" }
+          "digest": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+          "worldVersion": { "type": "integer", "minimum": 0 }
         }
       }
     }

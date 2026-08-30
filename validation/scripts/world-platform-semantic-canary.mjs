@@ -9,10 +9,11 @@ import {createDataSnapshot} from '../../packages/platform/result-validation-core
 if(process.env.ALLOW_GOWM_WORLD_PLATFORM_CANARY!=='YES') throw new Error('Set ALLOW_GOWM_WORLD_PLATFORM_CANARY=YES for isolated real-process acceptance');
 const envPath=process.argv[process.argv.indexOf('--env-file')+1];
 if(!process.argv.includes('--env-file')||!envPath)throw new Error('--env-file is required');
-const env=Object.fromEntries((await readFile(envPath,'utf8')).split('\n').filter(l=>l&&!l.startsWith('#')).map(l=>[l.slice(0,l.indexOf('=')),l.slice(l.indexOf('=')+1)]));
+const env=Object.fromEntries((await readFile(envPath,'utf8')).split(/\r?\n/u).filter(l=>l&&!l.startsWith('#')).map(l=>[l.slice(0,l.indexOf('=')),l.slice(l.indexOf('=')+1)]));
 const reportRoot=process.env.GOWM_REPORT_DIRECTORY?.trim()||'reports/gowm-v0.6.2';
 const targetedV063=process.env.GOWM_V063_TARGETED==='YES';
-const release=reportRoot.endsWith('v0.6.3')?'v063':'v062';
+const normalizedReportRoot=reportRoot.replaceAll('\\','/');
+const release=normalizedReportRoot.includes('reports/gowm-v0.7/')?'v07':reportRoot.endsWith('v0.6.3')?'v063':'v062';
 if(!new RegExp(`^gowm-${release}-[a-z0-9-]+$`,'u').test(env.COMPOSE_PROJECT_NAME))throw new Error('Refusing a non-task Compose project');
 const base=`http://127.0.0.1:${env.GATEWAY_PORT}`;
 const composeArgs=['compose','--env-file',resolve(envPath),'-f','docker-compose.yml','-f','docker-compose.world-platform.yml','--profile','world-platform'];
@@ -92,8 +93,8 @@ try {
   for(const [path,hash] of Object.entries(imageFiles))if(createHash('sha256').update(await readFile(path)).digest('hex')!==hash)runtimeMismatches.push(path);
   check('runtime-image-matches-built-source',Object.keys(imageFiles).length>100&&runtimeMismatches.length===0,runtimeMismatches);
   await writeFile(`${directory}/runtime-image-attestation.json`,JSON.stringify({status:'PASS',sourceDigest,compiledFiles:Object.keys(imageFiles).length,files:imageFiles},null,2)+'\n');
-  check('catalog-count',catalog.capabilities.length===122,catalog.capabilities.length);
   const expected=JSON.parse(await readFile(`${reportRoot}/world-platform-registry-build-report.json`,'utf8'));
+  check('catalog-count',catalog.capabilities.length===expected.operationCount,{actual:catalog.capabilities.length,expected:expected.operationCount});
   check('runtime-contract-revision',catalog.contractCatalogRevision===expected.contractCatalogRevision,{actual:catalog.contractCatalogRevision,expected:expected.contractCatalogRevision});
   check('catalog-redaction',!/https?:\/\/|transportToken|containerName|providerEndpoint/iu.test(JSON.stringify([catalog,semantics])));
   for(const p of semantics.profiles)check(`profile-hash:${p.operationId}`,p.semanticProfileHash===canonicalSha256(descriptor(p.operationId).semanticProfile));
@@ -103,8 +104,10 @@ try {
   // The complete SQL suite runs in fresh/upgrade databases in the schema gate.
   // Its historical fixtures intentionally assume no application rows are present.
   check('route-login-controlled-writes',sql("SELECT (NOT ('default_transaction_read_only=on'=ANY(COALESCE(rolconfig,ARRAY[]::text[]))) AND NOT has_table_privilege('route_planner_provider','public.world_object','INSERT') AND NOT has_table_privilege('route_planner_provider','route_planner_runtime.route_request','INSERT') AND has_function_privilege('route_planner_provider','route_planner_runtime.submit_route_request(text,text,text,text,text,jsonb,text)','EXECUTE'))::text FROM pg_roles WHERE rolname='route_planner_provider'")==='true');
+  const profileReport=JSON.parse(await readFile(`${reportRoot}/world-platform-profile-report.json`,'utf8'));
+  const expectedProviderProcesses=profileReport.activeServices.filter(name=>name.includes('provider')).length;
   const processes=compose(['ps','--format','json']).trim().split('\n').map(l=>JSON.parse(l));
-  check('real-provider-processes',processes.filter(x=>x.Service.includes('provider')&&x.State==='running').length===13);
+  check('real-provider-processes',processes.filter(x=>x.Service.includes('provider')&&x.State==='running').length===expectedProviderProcesses,{actual:processes.filter(x=>x.Service.includes('provider')&&x.State==='running').length,expected:expectedProviderProcesses});
   check('single-published-gateway',processes.filter(x=>x.Publishers?.some(p=>p.PublishedPort>0)).map(x=>x.Service).join(',')==='world-capability-gateway');
   await writeFile(`${directory}/processes.json`,JSON.stringify(processes.map(({Service,State,Health,Image,Networks,Publishers})=>({Service,State,Health,Image,Networks,Publishers})),null,2)+'\n');
 

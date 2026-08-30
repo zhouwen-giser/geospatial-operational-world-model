@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7:capability-semantic-profile",
+  "title": "GowmV07CapabilitySemanticProfileV11",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profileVersion",
+    "domain",
+    "acceptedReferenceKinds",
+    "producedReferenceKinds",
+    "relationSemantics",
+    "spatialSemantics",
+    "timeSemantics",
+    "resultNature",
+    "negativeEvidencePolicy",
+    "freshnessSemantics"
+  ],
+  "properties": {
+    "profileVersion": { "enum": ["1.0", "1.1"] },
+    "domain": {
+      "enum": ["REFERENCE", "CATALOG", "WORLD_STATE", "SPATIAL", "TEMPORAL", "H3", "NETWORK", "ROUTING", "COVERAGE", "ANALYSIS", "PLATFORM"]
+    },
+    "acceptedReferenceKinds": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": { "$ref": "#/$defs/referenceKindV11" }
+    },
+    "producedReferenceKinds": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": { "$ref": "#/$defs/referenceKindV11" }
+    },
+    "relationSemantics": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": {
+        "enum": ["RESOLVES_TO", "DESCRIBES", "HAS_GEOMETRY", "INSIDE", "CONTAINS", "INTERSECTS", "NEAR", "CANDIDATE_COVER", "SNAPPED_TO_NETWORK", "ROUTE_BETWEEN", "ROAD_COVERAGE_PLAN", "TEMPORALLY_OVERLAPS", "PROXIMITY_INTERVAL", "CORRELATES_WITH", "EVALUATES_PREDICATE", "VALIDATES", "VALIDATES_SNAPSHOT", "DISCOVERS_DATA_PRODUCT"]
+      }
+    },
+    "spatialSemantics": { "enum": ["EXACT", "CANDIDATE", "AGGREGATED", "NONE"] },
+    "timeSemantics": { "enum": ["CURRENT", "HISTORICAL", "INTERVAL", "SNAPSHOT", "NONE"] },
+    "resultNature": { "enum": ["FACT", "PROJECTION", "DERIVED", "PLAN", "VALIDATION", "CATALOG"] },
+    "negativeEvidencePolicy": { "enum": ["SUPPORTED", "NOT_SUPPORTED", "NO_DATA_IS_UNKNOWN", "NOT_APPLICABLE"] },
+    "freshnessSemantics": { "enum": ["NONE", "TTL", "WORLD_VERSION", "SNAPSHOT_CURRENTNESS"] },
+    "domainStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mapping"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "mapping": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "enum": ["COMPLETED", "PARTIAL", "NO_DATA", "AMBIGUOUS", "INDETERMINATE", "NO_FEASIBLE_RESULT", "STALE", "FAILED"] }
+        }
+      }
+    },
+    "exactVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operationId", "operationVersion"],
+      "properties": {
+        "operationId": { "type": "string", "pattern": "^[a-z][a-z0-9.-]{2,127}$" },
+        "operationVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "maxItems": 64,
+      "items": { "type": "string", "minLength": 1, "maxLength": 512 }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "profileVersion": { "const": "1.0" } } },
+      "then": {
+        "properties": {
+          "acceptedReferenceKinds": { "type": "array", "items": { "$ref": "#/$defs/referenceKindV1" } },
+          "producedReferenceKinds": { "type": "array", "items": { "$ref": "#/$defs/referenceKindV1" } }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "referenceKindV1": {
+      "enum": ["WORLD_OBJECT", "SPATIAL_OBJECT", "DATASET", "LAYER", "LAYER_FEATURE", "OPERATIONAL_TASK", "DERIVED_REFERENCE", "REFERENCE_SET", "QUERY_RESULT"]
+    },
+    "referenceKindV11": {
+      "enum": ["WORLD_OBJECT", "SPATIAL_OBJECT", "DATASET", "LAYER", "LAYER_FEATURE", "OPERATIONAL_TASK", "DERIVED_REFERENCE", "REFERENCE_SET", "QUERY_RESULT", "TASK_EXECUTION_INTERVAL", "TASK_EXECUTION_EVENT_SET", "TRACKLET_VERSION", "TRACKLET_FINALIZATION", "HISTORICAL_TRAJECTORY", "HISTORY_INPUT_SET", "HISTORY_METHOD_PROFILE"]
+    }
+  }
+}

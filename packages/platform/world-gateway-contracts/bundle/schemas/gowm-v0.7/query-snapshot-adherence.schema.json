@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7:query-snapshot-adherence",
+  "title": "GowmV07QuerySnapshotAdherence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["nodeId", "status", "checkedResources"],
+  "properties": {
+    "nodeId": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "status": { "enum": ["MATCHED", "ADVANCED_COMPATIBLE", "MISMATCHED", "UNSUPPORTED", "NOT_APPLICABLE"] },
+    "checkedResources": { "type": "integer", "minimum": 0 },
+    "mismatches": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resourceKind", "resourceId", "reason"],
+        "properties": {
+          "resourceKind": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "resourceId": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "expectedVersion": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "actualVersion": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "reason": { "enum": ["VERSION_MISMATCH", "CONTENT_HASH_MISMATCH", "WORLD_VERSION_TOO_OLD", "RESOURCE_MISSING", "PINNING_UNSUPPORTED"] }
+        }
+      }
+    }
+  }
+}

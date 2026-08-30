@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7:historical-outcome",
+  "title": "GowmV07HistoricalOutcome",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "reasonCode", "warnings"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "status": { "enum": ["COMPLETED", "PARTIAL", "NO_DATA", "INDETERMINATE"] },
+    "reasonCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,127}$" },
+    "warnings": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    }
+  }
+}

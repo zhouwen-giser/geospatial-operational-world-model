@@ -1,9 +1,9 @@
 import { z } from "zod";
 import type {
-  GowmV04OperationalTaskEvent,
+  GowmV07OperationalTaskEvent,
   GowmV04OperationalTaskSnapshot,
   GowmV04CorrelationFinding,
-  GowmV04OperationalEventTimeline,
+  GowmV07OperationalEventTimeline,
   GowmV04OperationalQueryResult,
   GowmV04CommonReferenceKey,
   GowmV04ExternalCorrelationClaim,
@@ -21,7 +21,7 @@ const REFERENCE_KINDS = [
 export const OPERATIONAL_EVENT_TYPES = [
   "CONTROL_REQUEST_OBSERVED","CONTROL_ACCEPTED_OBSERVED","CONTROL_REJECTED_OBSERVED",
   "EXECUTION_STARTED_OBSERVED","EXECUTION_PROGRESS_OBSERVED","EXECUTION_PAUSED_OBSERVED",
-  "EXECUTION_STOPPED_OBSERVED","CONTROL_COMPLETED_REPORTED",
+  "EXECUTION_RESUMED_OBSERVED","EXECUTION_STOPPED_OBSERVED","CONTROL_COMPLETED_REPORTED",
   "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED","PHYSICAL_EFFECT_CONFIRMED",
   "PHYSICAL_EFFECT_CONTRADICTED","EXECUTION_FAILED_OBSERVED",
   "EXECUTION_CANCELLED_OBSERVED","OBSERVATION_GAP_OPENED","OBSERVATION_GAP_CLOSED"
@@ -92,10 +92,10 @@ export const OperationalEventIngestSchema = z.object({
 });
 
 export type OperationalEventIngest = z.infer<typeof OperationalEventIngestSchema>;
-export type OperationalTaskEvent = GowmV04OperationalTaskEvent;
+export type OperationalTaskEvent = GowmV07OperationalTaskEvent;
 export type OperationalTaskSnapshot = GowmV04OperationalTaskSnapshot;
 export type CorrelationFinding = GowmV04CorrelationFinding;
-export type OperationalEventTimeline = GowmV04OperationalEventTimeline;
+export type OperationalEventTimeline = GowmV07OperationalEventTimeline;
 export type OperationalQueryResult = GowmV04OperationalQueryResult;
 export type OperationalReferenceKey = GowmV04CommonReferenceKey;
 export type OperationalCorrelationClaim = GowmV04ExternalCorrelationClaim;
@@ -108,7 +108,7 @@ export function parseOperationalEventIngest(input: unknown): OperationalEventIng
 }
 
 export function assertOperationalTaskEvent(event: unknown): asserts event is OperationalTaskEvent {
-  assertContract<OperationalTaskEvent>("gowm-v0.4/operational-task-event.schema.json",event);
+  assertContract<OperationalTaskEvent>("gowm-v0.7/operational-task-event.schema.json",event);
 }
 
 export function assertOperationalTaskSnapshot(snapshot: unknown): asserts snapshot is OperationalTaskSnapshot {
@@ -134,7 +134,7 @@ export function assertCorrelationFinding(finding: unknown): asserts finding is C
 }
 
 export function assertOperationalEventTimeline(timeline: unknown): asserts timeline is OperationalEventTimeline {
-  assertContract<OperationalEventTimeline>("gowm-v0.4/operational-event-timeline.schema.json",timeline);
+  assertContract<OperationalEventTimeline>("gowm-v0.7/operational-event-timeline.schema.json",timeline);
 }
 
 export function assertOperationalQueryResult(result: unknown): asserts result is OperationalQueryResult {

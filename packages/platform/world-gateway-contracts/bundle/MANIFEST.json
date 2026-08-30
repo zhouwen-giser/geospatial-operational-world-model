@@ -1,19 +1,19 @@
 {
   "schemaVersion": "1.0",
   "packageName": "@gowm/world-gateway-contracts",
-  "packageVersion": "0.6.3",
-  "contractCatalogRevision": "sha256:efd0395dbd05c884c781f964b22147efcb38c4cef91704597706ec4b8332075a",
-  "semanticCatalogHash": "sha256:418fc328861e846801c6e8109bf6d48b876c7814c650a391b84076f71e588b61",
+  "packageVersion": "0.7.0",
+  "contractCatalogRevision": "sha256:cebc90e797cfdb256c4e5ae27472dd2ef7b47733337c4ac0fbd32251ef092e2f",
+  "semanticCatalogHash": "sha256:9cb540bbda32d50bdcf9bd3f60d2974bd3fe02393a5c4914e30940dccb719ae2",
   "files": [
     {
       "path": "compatibility/report.json",
       "bytes": 1686,
-      "sha256": "dcbe956a5c1fcc68a6265dd7331fbae76ccb0a6abbc3b2210e96f79f8fec27bb"
+      "sha256": "ae189c715689572cd0bfa8a20f6da690e3457df0a84b89cc6cdeebbd085004d5"
     },
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
-      "bytes": 64474,
-      "sha256": "e31f657f5ab82a687dba58021d0b105d635753f2d3a59c2daa616afa20b9e54a"
+      "bytes": 65560,
+      "sha256": "218145fb630733e5e8bf5f4c1d2dca1af696cb1fa281d6e44e4b21ba7b2857f4"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -28,12 +28,12 @@
     {
       "path": "revisions/contract-catalog.json",
       "bytes": 229,
-      "sha256": "ac69488d26b8ca231c169ab6646e387431826e44d17e4b0b6df8ec1a24364201"
+      "sha256": "ef0374a73f1bf604a00e5d739db3417067020c2cf077d709eddfb4e21894b1b2"
     },
     {
       "path": "revisions/semantic-catalog.json",
       "bytes": 233,
-      "sha256": "974ae41991b35219bddc999130ae4bc94b587577667b23dd7e5b106ac36cddbd"
+      "sha256": "8e42319533cf86010b3468834752c91529e7bb0a4a0b2331e2ab86f4baef6044"
     },
     {
       "path": "schemas/gowm-v0.6.2/capability-descriptor-v1.1.schema.json",
@@ -72,8 +72,8 @@
     },
     {
       "path": "schemas/gowm-v0.6.2/provider-semantic-authority-map.v1.json",
-      "bytes": 2022,
-      "sha256": "580abe2585cb9b5b3fb61e6b6433954279cb65fbaf6b00ea96bc224a34dbb348"
+      "bytes": 2160,
+      "sha256": "e045bacb2f10a111590b97bec64132171b90d7e6bb057ec13f0f93695dec753b"
     },
     {
       "path": "schemas/gowm-v0.6.2/semantic-attestation.schema.json",
@@ -166,14 +166,104 @@
       "sha256": "ce68405b7ab03fd95937c70d3a92bb8ffc31959b9c01925a812b3ace5d6da545"
     },
     {
+      "path": "schemas/gowm-v0.7/analysis-input-set.schema.json",
+      "bytes": 1781,
+      "sha256": "98bb45406befff3f5c282e47ff20543db23dc101fd3a0b19a413aac8c1503e81"
+    },
+    {
+      "path": "schemas/gowm-v0.7/analysis-resource-reference.schema.json",
+      "bytes": 1084,
+      "sha256": "27341cf3200451d5266229dc838932217ccb5733ccd3ba9d6e230488c85655a2"
+    },
+    {
+      "path": "schemas/gowm-v0.7/capability-semantic-catalog-v1.1.schema.json",
+      "bytes": 1573,
+      "sha256": "ebec22dfecbe542304cb7cb7d080d0f3bca5c97516b5402df9a598ff05c46715"
+    },
+    {
+      "path": "schemas/gowm-v0.7/capability-semantic-profile-v1.1.schema.json",
+      "bytes": 3991,
+      "sha256": "25a5c12f6b648f3b3037cfc5b7fb84817660330a05e7f6ded7d20eb3e7af7db4"
+    },
+    {
+      "path": "schemas/gowm-v0.7/consumer-contract-bundle-manifest.schema.json",
+      "bytes": 1349,
+      "sha256": "808c151b5a15bac61e0500603e1427d82f2632c84db0079fea95dcfc70c5c202"
+    },
+    {
+      "path": "schemas/gowm-v0.7/historical-gap.schema.json",
+      "bytes": 835,
+      "sha256": "0b0e1071a2a0ede01f5e039ae79f19f81de94949355a104639b5a1ed9f91773d"
+    },
+    {
+      "path": "schemas/gowm-v0.7/historical-outcome.schema.json",
+      "bytes": 651,
+      "sha256": "aadce7726c6cbee7183fbb5d792812460fa9c036754e546b77bd8e1ecfbec662"
+    },
+    {
+      "path": "schemas/gowm-v0.7/historical-trajectory-query.schema.json",
+      "bytes": 2602,
+      "sha256": "97423ae98fa3aefcae44758e0467830b06ce4ad702177b2061abfb3884fd4fe6"
+    },
+    {
+      "path": "schemas/gowm-v0.7/historical-trajectory-result.schema.json",
+      "bytes": 5982,
+      "sha256": "1eb3c407a74fd51e279252fc7edc214bc99341b0664beadb96419af78b07cabc"
+    },
+    {
+      "path": "schemas/gowm-v0.7/operational-event-timeline.schema.json",
+      "bytes": 689,
+      "sha256": "f5a4fd61a071c66780555675dac59420f12532e7e85917a4df05eb94f652dcb2"
+    },
+    {
+      "path": "schemas/gowm-v0.7/operational-task-event.schema.json",
+      "bytes": 2448,
+      "sha256": "6fde5078431395bf5ccc387864056d5f2c31d2ce4225c339465e41b4d89629ad"
+    },
+    {
+      "path": "schemas/gowm-v0.7/query-snapshot-adherence.schema.json",
+      "bytes": 1293,
+      "sha256": "4281aba792da58cf8874a386beb65255e13a22c0ca0712e19908cf70e486cceb"
+    },
+    {
+      "path": "schemas/gowm-v0.7/query-snapshot-manifest.schema.json",
+      "bytes": 1682,
+      "sha256": "c4f9a13e0a6e6105247fbe27ae5117c90b65da6086001ba205a9dd1342a989f2"
+    },
+    {
+      "path": "schemas/gowm-v0.7/query-snapshot-policy.schema.json",
+      "bytes": 826,
+      "sha256": "b288952f08e07cdd6375b567324c801d0b7e84b1e959a02ee136d5a7a8a62a22"
+    },
+    {
+      "path": "schemas/gowm-v0.7/reference-key.schema.json",
+      "bytes": 220,
+      "sha256": "efe7ec1edbc052a1affcbba67b94ac01befaeb6b928a8f2c35bd309f811951ba"
+    },
+    {
+      "path": "schemas/gowm-v0.7/task-execution-interval-query.schema.json",
+      "bytes": 1773,
+      "sha256": "7c332d5d7d748fdb8b2ee8c33b453578c18bc6417043907db9a1667ca1bfe683"
+    },
+    {
+      "path": "schemas/gowm-v0.7/task-execution-interval-result.schema.json",
+      "bytes": 2884,
+      "sha256": "c4e0e5756e584786a77b31a02fd7153aeebe14d30488cbe2613bef174b39b858"
+    },
+    {
+      "path": "schemas/gowm-v0.7/wsgs-southbound-operation-lock-v2.schema.json",
+      "bytes": 2566,
+      "sha256": "7b98e4c78da2969060a5a03fbdce450503422dc621591de8f19d934f40f6f99b"
+    },
+    {
       "path": "schemas/platform/capability-catalog.schema.json",
       "bytes": 2950,
       "sha256": "338b7773557f00ba7e25432bb3a36c9fb44b55e899401d66546628791fd672db"
     },
     {
       "path": "schemas/platform/capability-descriptor.schema.json",
-      "bytes": 7289,
-      "sha256": "ee46f7872ec1e02f352758a3e8caae4863d8b55f0972ac6a971f67626df35c44"
+      "bytes": 7464,
+      "sha256": "3dbc12de911eb9f188d65fc5e08221e22c0e952e9114bdd0f70f18a4b17d7241"
     },
     {
       "path": "schemas/platform/capability-list-response.schema.json",
@@ -207,8 +297,8 @@
     },
     {
       "path": "schemas/platform/data-snapshot-context.schema.json",
-      "bytes": 1316,
-      "sha256": "9458c61652819d1325d3adae9ab48a7cb4ae1340b5a92ee5285c76d2b1c6626f"
+      "bytes": 1380,
+      "sha256": "d94a5aa76ed72608833904161a6d990f6fffdfabc86d9171b0ea569be7eba7b5"
     },
     {
       "path": "schemas/platform/evidence-reference.schema.json",
@@ -237,8 +327,8 @@
     },
     {
       "path": "schemas/platform/provider-execution-request.schema.json",
-      "bytes": 4105,
-      "sha256": "362bdeade56e930e557b5c9ac37cf54d773d30dae6c4d992baf41634cb45d6c4"
+      "bytes": 4344,
+      "sha256": "38403b57943a78c05d3a04a62ec087c4002aa7a6365400a1f90377e946d43627"
     },
     {
       "path": "schemas/platform/provider-lock.schema.json",
@@ -287,8 +377,8 @@
     },
     {
       "path": "schemas/platform/world-query-result.schema.json",
-      "bytes": 2832,
-      "sha256": "4799b1ab22ee722ae2c27a3b079fd4efa6706f61cc4d2884416be4b3e527e3c4"
+      "bytes": 3048,
+      "sha256": "eb8294ce81575c5c3f82d10b3ac625b33d8ccf42cdece7e46d4f0fc5cfd2dafc"
     },
     {
       "path": "schemas/platform/world-query-submission.schema.json",
@@ -297,8 +387,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 125695,
-      "sha256": "e8f4595b87108d0591ed38c2e8f998ec83ed7ed09008a8459f6806e9887b8df2"
+      "bytes": 143104,
+      "sha256": "b395b246a2edc6c268a75aadfd4b25eb4e3029355c7621550352d525e2e3f48b"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -311,10 +401,15 @@
       "sha256": "4fbc4ce12947cedf08453d7e464f6c8cd79e448fe798c93d2d03b83f85eb8114"
     },
     {
+      "path": "vocabularies/reference-kind-vocabulary.v2.json",
+      "bytes": 2168,
+      "sha256": "a72ffcf977264fd67c12e0e7374ee12fb3eb1029d33ead93989c357aa39e8a20"
+    },
+    {
       "path": "vocabularies/relation-semantic-vocabulary.v1.json",
       "bytes": 2453,
       "sha256": "cea3932eccd0316513bb6b9c56e906536767b109b7b5d64440d22571ab1acc31"
     }
   ],
-  "packageIntegrity": "sha512-f4bcksAK/JMk67pbkXlTycHREfM/19Xys4PcYhtjPTNW1Q43Xx+GYLlFkir0ePprUmNHo9Mnvksj2d2DOuCFrg=="
+  "packageIntegrity": "sha512-SVUXmQLtP1ZXm7l8I61bnBG+vKINxlHMIYs9DMb+PWrc1nibQdj75v3Z9ivx930mWetwTZ49xmQzrbR7lZxDJg=="
 }

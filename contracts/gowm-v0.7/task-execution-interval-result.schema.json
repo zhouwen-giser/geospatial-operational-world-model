@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7:task-execution-interval-result",
+  "title": "GowmV07TaskExecutionIntervalResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "reasonCode", "intervals", "truncated"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "status": { "enum": ["COMPLETED", "PARTIAL", "NO_DATA", "INDETERMINATE"] },
+    "reasonCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,127}$" },
+    "intervals": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": { "$ref": "#/$defs/interval" }
+    },
+    "truncated": { "type": "boolean" }
+  },
+  "$defs": {
+    "timeRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" },
+        "bounds": { "const": "[)", "default": "[)" }
+      }
+    },
+    "interval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executionIntervalReferenceKey", "executionNo", "revisionNo", "lifecycleState", "activePeriods", "pausedPeriods", "derivationKind", "stabilityState", "reasonCodes"],
+      "properties": {
+        "executionIntervalReferenceKey": { "$ref": "#/$defs/executionIntervalReferenceKey" },
+        "executionNo": { "type": "integer", "minimum": 1 },
+        "revisionNo": { "type": "integer", "minimum": 1 },
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" },
+        "lifecycleState": { "enum": ["OPEN", "CLOSED", "CONFLICTED"] },
+        "activePeriods": { "type": "array", "maxItems": 4096, "items": { "$ref": "#/$defs/timeRange" } },
+        "pausedPeriods": { "type": "array", "maxItems": 4096, "items": { "$ref": "#/$defs/timeRange" } },
+        "derivationKind": { "enum": ["OBSERVED", "INFERRED", "MIXED"] },
+        "stabilityState": { "enum": ["PROVISIONAL", "SEALED", "CONFLICTED"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "reasonCodes": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,127}$" }
+        }
+      }
+    },
+    "executionIntervalReferenceKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "kind", "id", "version"],
+      "properties": {
+        "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$" },
+        "kind": { "const": "TASK_EXECUTION_INTERVAL" },
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    }
+  }
+}

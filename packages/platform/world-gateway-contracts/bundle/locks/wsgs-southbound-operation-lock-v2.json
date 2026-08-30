@@ -1,13 +1,13 @@
 {
   "schemaVersion": "2.0",
-  "gatewayContractVersion": "0.6.3",
+  "gatewayContractVersion": "0.7.0",
   "consumerContractPackage": {
     "name": "@gowm/world-gateway-contracts",
-    "version": "0.6.3",
-    "integrity": "sha512-f4bcksAK/JMk67pbkXlTycHREfM/19Xys4PcYhtjPTNW1Q43Xx+GYLlFkir0ePprUmNHo9Mnvksj2d2DOuCFrg=="
+    "version": "0.7.0",
+    "integrity": "sha512-SVUXmQLtP1ZXm7l8I61bnBG+vKINxlHMIYs9DMb+PWrc1nibQdj75v3Z9ivx930mWetwTZ49xmQzrbR7lZxDJg=="
   },
-  "contractCatalogRevision": "sha256:efd0395dbd05c884c781f964b22147efcb38c4cef91704597706ec4b8332075a",
-  "semanticCatalogHash": "sha256:418fc328861e846801c6e8109bf6d48b876c7814c650a391b84076f71e588b61",
+  "contractCatalogRevision": "sha256:cebc90e797cfdb256c4e5ae27472dd2ef7b47733337c4ac0fbd32251ef092e2f",
+  "semanticCatalogHash": "sha256:9cb540bbda32d50bdcf9bd3f60d2974bd3fe02393a5c4914e30940dccb719ae2",
   "availabilityContractHash": "sha256:66d6cfe2679d6bdd0cf6f22cb7153d1f5f4c934ebc286f6bac33ab6bd7eb4036",
   "snapshotContractHash": "sha256:350044225667ce00c2850e9a9d7c86762fc2e042793b6a8666c724c763135ca0",
   "delegationContractHash": "sha256:6edf49002dc75e6701c9c56b8795539b3512884d31b66f7f12f122abdee9344b",
@@ -975,6 +975,18 @@
       "snapshotSupport": "NONE"
     },
     {
+      "operationId": "history.get-trajectory",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:cbdbe331192d1e78d3b525a47a5db40f4fbaac477bab2fc37bc700ad9f4ed464",
+      "outputSchemaHash": "sha256:3a7775d3099c6d63ab548c12db91d1b41cc920c6d4bcec8d9704b92eeaa9e3c2",
+      "semanticProfileHash": "sha256:b528ae4927df20b117c6243ba29e1998acda59c58abb052f7c142339ff644956",
+      "maturity": "PREVIEW",
+      "requiredPermissions": [
+        "data:read"
+      ],
+      "snapshotSupport": "CONSISTENT_AT_START"
+    },
+    {
       "operationId": "layer.find-features",
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
@@ -1071,10 +1083,22 @@
       "snapshotSupport": "CONSISTENT_AT_START"
     },
     {
+      "operationId": "operational-task.get-execution-intervals",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:7cd0e8b57d49bfb073e1f3c37626230b81a55bc66854db3642728a34e290a2d4",
+      "outputSchemaHash": "sha256:f95e9c45c7c7e2dadd683b36d133e1fb1e5785f03e9245c67bc391e48a3ad4ee",
+      "semanticProfileHash": "sha256:0a1b8baaa16665dd31b78f0ef3e06db3081c660a8d0ac45de7da77e26114bad6",
+      "maturity": "PREVIEW",
+      "requiredPermissions": [
+        "data:read"
+      ],
+      "snapshotSupport": "CONSISTENT_AT_START"
+    },
+    {
       "operationId": "operational-task.get-timeline",
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:8a0a79c862deaa88c082958698f19726fde04c9209a2ea3cc72da4b3d67c8c59",
-      "outputSchemaHash": "sha256:d6879e490c02b9e97ef62d2370d81821b48889e78ebf26f5d85ee7ba98a802fc",
+      "outputSchemaHash": "sha256:abf856b70a5369e8dc9f560a5e4f6637dd1b4849e9c6e09bd98b619bf54cc9c8",
       "semanticProfileHash": "sha256:2457793708b3c144eae88ee189d57bdf01816d58472dec8ce02b88106fdbca3b",
       "maturity": "PREVIEW",
       "requiredPermissions": [
@@ -1410,7 +1434,7 @@
       "operationId": "world-event.find-by-correlation",
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:8a0a79c862deaa88c082958698f19726fde04c9209a2ea3cc72da4b3d67c8c59",
-      "outputSchemaHash": "sha256:d6879e490c02b9e97ef62d2370d81821b48889e78ebf26f5d85ee7ba98a802fc",
+      "outputSchemaHash": "sha256:abf856b70a5369e8dc9f560a5e4f6637dd1b4849e9c6e09bd98b619bf54cc9c8",
       "semanticProfileHash": "sha256:ff1343dd39a7582549e881b59e83aee7b4a6246c7c0d5941991e4175ed46e5a6",
       "maturity": "PREVIEW",
       "requiredPermissions": [

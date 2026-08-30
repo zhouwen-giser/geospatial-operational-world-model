@@ -133,6 +133,8 @@ export async function migrate(options: MigrationOptions = {}): Promise<void> {
     await provisionRuntimeLogin(pool, "gowm_result_service", "RESULT_DB_PASSWORD", "gowm.result_db_password");
     await provisionRuntimeLogin(pool, "gowm_evidence_service", "EVIDENCE_DB_PASSWORD", "gowm.evidence_db_password");
     await provisionRuntimeLogin(pool, "gowm_operational_service", "OPERATIONAL_DB_PASSWORD", "gowm.operational_db_password");
+    await provisionRuntimeLogin(pool, "gowm_history_service", "HISTORICAL_DB_PASSWORD", "gowm.historical_db_password");
+    await provisionRuntimeLogin(pool, "gowm_history_worker_service", "HISTORICAL_WORKER_DB_PASSWORD", "gowm.historical_worker_db_password");
     await provisionRuntimeLogin(pool, "platform_validation_provider", "VALIDATION_DB_PASSWORD", "gowm.validation_db_password");
     await provisionRuntimeLogin(pool, "network_provider", "NETWORK_DB_PASSWORD", "gowm.network_db_password");
     await provisionRuntimeLogin(pool, "route_planner_provider", "ROUTE_DB_PASSWORD", "gowm.route_db_password");
@@ -146,7 +148,7 @@ async function provisionRuntimeLogin(
   pool: pg.Pool,
   role: "gowm_gateway_service" | "gowm_gateway_registry_service" | "gowm_spatial_service" | "gowm_situation_service" |
     "gowm_reference_service" | "gowm_catalog_service" | "gowm_result_service" | "gowm_evidence_service" |
-    "gowm_operational_service" | "platform_validation_provider" | "network_provider" | "route_planner_provider" | "coverage_planner_provider",
+    "gowm_operational_service" | "gowm_history_service" | "gowm_history_worker_service" | "platform_validation_provider" | "network_provider" | "route_planner_provider" | "coverage_planner_provider",
   environmentName: string,
   settingName: string
 ): Promise<void> {
@@ -171,7 +173,7 @@ function assertDistinctRuntimePasswords(): void {
   const names = [
     "GATEWAY_DB_PASSWORD", "GATEWAY_REGISTRY_DB_PASSWORD", "SPATIAL_DB_PASSWORD", "SITUATION_DB_PASSWORD",
     "REFERENCE_DB_PASSWORD", "CATALOG_DB_PASSWORD", "RESULT_DB_PASSWORD", "EVIDENCE_DB_PASSWORD",
-    "OPERATIONAL_DB_PASSWORD", "VALIDATION_DB_PASSWORD", "NETWORK_DB_PASSWORD", "ROUTE_DB_PASSWORD", "COVERAGE_DB_PASSWORD"
+    "OPERATIONAL_DB_PASSWORD", "HISTORICAL_DB_PASSWORD", "HISTORICAL_WORKER_DB_PASSWORD", "VALIDATION_DB_PASSWORD", "NETWORK_DB_PASSWORD", "ROUTE_DB_PASSWORD", "COVERAGE_DB_PASSWORD"
   ];
   const configured = names.map((name) => process.env[name]).filter((value): value is string => value !== undefined);
   if (new Set(configured).size !== configured.length) throw new Error("capability runtime database passwords must be distinct");
