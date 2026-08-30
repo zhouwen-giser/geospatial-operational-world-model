@@ -1,19 +1,19 @@
 {
   "schemaVersion": "1.0",
   "targetVersion": "0.6.4",
-  "candidateCommit": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
-  "generatedAt": "2026-08-30T00:51:29.023Z",
+  "candidateCommit": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+  "generatedAt": "2026-08-30T01:09:23.710Z",
   "status": "PASS",
   "sourceIdentity": {
-    "gitHead": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
-    "imageOciRevision": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
+    "gitHead": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+    "imageOciRevision": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
     "imageOciVersion": "0.6.4",
-    "semanticSourceDigest": "sha256:f6b18e6d4ab908913add1d0c876d25e7cc2c6051d8269acd4afac7ae33706b87",
+    "semanticSourceDigest": "sha256:a5582bf07a6757de0c97efab7cc21801f2511dc04ae0af721b24dd9eda7fc88f",
     "gitRemoteCount": 0
   },
   "qualification": {
     "runtimeClass": "ISOLATED_Q",
-    "runtimeInstanceIdHash": "sha256:495cf2e16efe599ef67a63948e1eff7c0e56f8b78d987f76eb88ba29aebb1fa1",
+    "runtimeInstanceIdHash": "sha256:17b113246c326cf8780bd99e0506c040e2fd83c56d88b2ae4da57476ce11f9c2",
     "freshClone": true,
     "freshDatabase": true,
     "manualPatchApplied": false,
@@ -31,9 +31,9 @@
     },
     "idempotency": {
       "status": "PASS",
-      "beforeLoadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a",
-      "afterLoadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a",
-      "liveLoadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a",
+      "beforeLoadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd",
+      "afterLoadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd",
+      "liveLoadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd",
       "loaderInternalRepeat": true
     },
     "handoff": {
@@ -41,25 +41,25 @@
       "runtimeIdentityBound": true,
       "signedDelegation": true,
       "independentConsumerContainer": true,
-      "manifestSha256": "sha256:a58ad15145f3d4664eb9096b1eab14cc3a11bba094a14770a421b330e1ec5d28",
-      "bindingSha256": "sha256:0c513dafda7c44ce4fd0aaa7e78dc03df92ffcf956629b6cd4081b0d34d04077",
-      "connectivitySha256": "sha256:a4a8ab5bad792c3c84abbc17c2a006d755c681c5645f875cea2e2de3f8ccfd17",
-      "canarySha256": "sha256:67fb0f2418c5dffeed85c6ef7ba838738ee5fa15e79e5ede05fd418b44ed2756"
+      "manifestSha256": "sha256:fe22f6128f32f950e92cc04d475ae63f39e997f35deea63423f089adf1e7c5ea",
+      "bindingSha256": "sha256:57c51ebe724f59c843994ca4ed5ec75cc44d1d1bdf7312d409477cee455e3ff3",
+      "connectivitySha256": "sha256:d681743fb33154cb8dfb03a7864da50545f1f5008ccbd036db9ec77edb61d518",
+      "canarySha256": "sha256:34832c55cbc30e762a2d9952bd863ff5f98f72baa8c7b1c83f60b34555c8face"
     }
   },
   "fixture": {
     "fixtureVersion": "1.0.0",
-    "realizationId": "sample-realization-6a0af047-04f2-53c7-ae22-38d9d74121b5",
+    "realizationId": "sample-realization-c6f9c8b9-6745-5098-b2bf-0f44b72339bf",
     "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025",
-    "generatedArtifactHash": "sha256:e9a0beb8014ba2478a231a614bc5b78d67230a2abc8d00bae43305ee8bf59846",
-    "realizationHash": "sha256:fe0935c93a4b292bf5e91554019f87abbbfdafb3011da02b0fc313debbc96f3e",
-    "loadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a"
+    "generatedArtifactHash": "sha256:61c6d95b493ecbd486be7f88052d4aab2171a36e3998cbc802c81476698c9597",
+    "realizationHash": "sha256:beb4eee7f71832634a82a52b63e3d5bba9eb291b348492724253736136c6aa4d",
+    "loadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd"
   },
-  "sourceEvidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f",
+  "sourceEvidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010",
   "nonClaims": [
     "PRODUCTION_READY",
     "RELEASE_ACCEPTED",
     "FULL_QUALIFICATION_COMPLETE"
   ],
-  "evidenceHash": "sha256:fa51937b73ab1c21e2765b541e4a0616318af08dd2502da2dd0d93baca5f7303"
+  "evidenceHash": "sha256:a204a40678d4db1e37bebc9333076def5809ba510673a26be1e955ce8e6f5762"
 }

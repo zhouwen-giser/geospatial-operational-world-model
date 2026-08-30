@@ -7,8 +7,8 @@
       "status": "PASS",
       "referenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
       "resultHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
-      "timestamp": "2026-08-29T16:17:16.261Z",
-      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+      "timestamp": "2026-08-30T01:04:55.888Z",
+      "evidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
     },
     {
       "operationId": "reference.validate",
@@ -16,16 +16,16 @@
       "referenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
       "resultHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
       "currentAndUsable": true,
-      "timestamp": "2026-08-29T16:17:16.261Z",
-      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+      "timestamp": "2026-08-30T01:04:55.888Z",
+      "evidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
     },
     {
       "operationId": "world.get-geometry",
       "status": "PASS",
       "referenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
       "resultHash": "sha256:237d3edc4f97428ac3bebe418a9c201283baba62a78a3cfd7141a2cb0b82c8a7",
-      "timestamp": "2026-08-29T16:17:16.261Z",
-      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+      "timestamp": "2026-08-30T01:04:55.888Z",
+      "evidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
     }
   ],
   "status": "PASS",

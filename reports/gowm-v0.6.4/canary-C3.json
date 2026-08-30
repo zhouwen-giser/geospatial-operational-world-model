@@ -7,8 +7,8 @@
       "status": "PASS",
       "referenceHash": "sha256:40306efd87b0ec57814fe80a7fb9562cc28602b7f8fb7214eb9c395430bed267",
       "resultHash": "sha256:40306efd87b0ec57814fe80a7fb9562cc28602b7f8fb7214eb9c395430bed267",
-      "timestamp": "2026-08-29T16:17:16.261Z",
-      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+      "timestamp": "2026-08-30T01:04:55.888Z",
+      "evidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
     },
     {
       "operationId": "reference.validate",
@@ -16,16 +16,16 @@
       "referenceHash": "sha256:40306efd87b0ec57814fe80a7fb9562cc28602b7f8fb7214eb9c395430bed267",
       "resultHash": "sha256:40306efd87b0ec57814fe80a7fb9562cc28602b7f8fb7214eb9c395430bed267",
       "currentAndUsable": true,
-      "timestamp": "2026-08-29T16:17:16.261Z",
-      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+      "timestamp": "2026-08-30T01:04:55.888Z",
+      "evidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
     },
     {
       "operationId": "world.get-current-state",
       "status": "PASS",
       "referenceHash": "sha256:40306efd87b0ec57814fe80a7fb9562cc28602b7f8fb7214eb9c395430bed267",
       "resultHash": "sha256:570d43da29f669163d91a6671cbdc3344fb36a8c77bc324c518f2c0e1ebdbe51",
-      "timestamp": "2026-08-29T16:17:16.261Z",
-      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+      "timestamp": "2026-08-30T01:04:55.888Z",
+      "evidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
     },
     {
       "operationId": "spatial.find-nearby",
@@ -34,8 +34,8 @@
       "resultHash": "sha256:ae88cd001abb68a4514039710b5bf9b90a3684dc94e225dfab2a09ddcfec84fa",
       "inputPositionHash": "sha256:570d43da29f669163d91a6671cbdc3344fb36a8c77bc324c518f2c0e1ebdbe51",
       "radiusM": 1000,
-      "timestamp": "2026-08-29T16:17:16.261Z",
-      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+      "timestamp": "2026-08-30T01:04:55.888Z",
+      "evidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
     }
   ],
   "status": "PASS",

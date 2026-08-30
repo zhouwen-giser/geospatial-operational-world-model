@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "targetVersion": "0.6.4",
-  "candidateCommit": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
+  "candidateCommit": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
   "seedVersion": "1.0.0",
   "dataScope": "wsgs-demo",
   "datasetScope": "wsgs-demo-main",
@@ -17,12 +17,12 @@
     "referenceHash": "sha256:40306efd87b0ec57814fe80a7fb9562cc28602b7f8fb7214eb9c395430bed267",
     "currentStatePositionAvailable": true
   },
-  "realizationId": "sample-realization-6a0af047-04f2-53c7-ae22-38d9d74121b5",
+  "realizationId": "sample-realization-c6f9c8b9-6745-5098-b2bf-0f44b72339bf",
   "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025",
-  "generatedArtifactHash": "sha256:e9a0beb8014ba2478a231a614bc5b78d67230a2abc8d00bae43305ee8bf59846",
-  "realizationHash": "sha256:fe0935c93a4b292bf5e91554019f87abbbfdafb3011da02b0fc313debbc96f3e",
-  "loadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a",
-  "runtimeInstanceIdHash": "sha256:495cf2e16efe599ef67a63948e1eff7c0e56f8b78d987f76eb88ba29aebb1fa1",
+  "generatedArtifactHash": "sha256:61c6d95b493ecbd486be7f88052d4aab2171a36e3998cbc802c81476698c9597",
+  "realizationHash": "sha256:beb4eee7f71832634a82a52b63e3d5bba9eb291b348492724253736136c6aa4d",
+  "loadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd",
+  "runtimeInstanceIdHash": "sha256:17b113246c326cf8780bd99e0506c040e2fd83c56d88b2ae4da57476ce11f9c2",
   "requiredAvailability": {
     "passed": 12,
     "total": 12,
@@ -32,6 +32,6 @@
   "manualPatchRequired": false,
   "signedDelegationVerified": true,
   "independentConsumerVerified": true,
-  "sourceEvidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f",
-  "evidenceHash": "sha256:68f56b1f73bc17e0efd4ea4266ad4a8a127f4d3ecbb39a03d6dee060eda8582c"
+  "sourceEvidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010",
+  "evidenceHash": "sha256:3f0813c67353cab0635473577a85d8123823d041ef05370ad2de136a6b26fac4"
 }

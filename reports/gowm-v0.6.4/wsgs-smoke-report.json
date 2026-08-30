@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0",
   "targetVersion": "0.6.4",
-  "candidateCommit": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
-  "generatedAt": "2026-08-30T00:48:48.766Z",
-  "materializedAt": "2026-08-30T00:51:29.023Z",
+  "candidateCommit": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+  "generatedAt": "2026-08-30T01:08:24.340Z",
+  "materializedAt": "2026-08-30T01:09:23.710Z",
   "status": "NOT_RUN",
   "environmentAvailable": false,
   "gatewayReady": false,
@@ -11,9 +11,9 @@
   "reasonCode": "WSGS_RUNTIME_UNAVAILABLE",
   "unavailabilityEvidence": {
     "status": "UNAVAILABLE",
-    "candidateCommit": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
-    "evidenceHash": "sha256:8b2680c227b33d7544ae918f79633affc40686197bb449d41e69d9e0adb09318",
-    "observedAt": "2026-08-30T00:48:48.766Z"
+    "candidateCommit": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+    "evidenceHash": "sha256:a0245f2f640e64849de380798a02c1dfdea250076ccbb35fcf27ed2fcd9e7fd8",
+    "observedAt": "2026-08-30T01:08:24.340Z"
   },
   "cases": [
     {
@@ -62,11 +62,11 @@
       "realChainObserved": false
     }
   ],
-  "sourceEvidenceSha256": "sha256:75cb34decb768435a1882aed911af62d5939812ad721df245c6ffab4dfe99386",
+  "sourceEvidenceSha256": "sha256:3cea4e7e7f95198637ab15a0c49e58b77cd01dfcbaad08d255c961ea770bc2f3",
   "nonClaims": [
     "PRODUCTION_READY",
     "RELEASE_ACCEPTED",
     "FULL_QUALIFICATION_COMPLETE"
   ],
-  "evidenceHash": "sha256:1b06e1bc62aafb3a35742436bc2d807da95689ccb637d8ee6c80dacc4934a2a1"
+  "evidenceHash": "sha256:2aa9a7703918569115155fc76f53a86864a9ff445155bc3ff0c61ba9c32b81ab"
 }
