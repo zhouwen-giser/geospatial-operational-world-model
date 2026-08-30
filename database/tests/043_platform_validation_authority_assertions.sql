@@ -73,15 +73,19 @@ BEGIN
         'parameterSchemaHash','sha256:'||repeat('3',64),'plan',jsonb_build_object('queryId',query_key)),
       'SQL_ASSERTION',clock_timestamp(),'validation-authority-test','tenant-'||tenant,
       pg_temp.gowm_assertion_snapshot(query_key),pg_temp.gowm_assertion_snapshot(query_key),
-      jsonb_build_object('mode','STATIC_SERVICE','principalRef','principal:validation','authenticationMethod','SQL_ASSERTION'));
+      jsonb_build_object(
+        'mode','STATIC_SERVICE','principalRef','principal:validation',
+        'authenticationMethod','SQL_ASSERTION','dataScopeClaim','validation-authority-test',
+        'datasetScopeClaim','tenant-'||tenant
+      ));
     UPDATE gowm_capability.world_query_job SET result='{"status":"COMPLETED","nodes":[]}' WHERE query_id=query_key;
     IF tenant='a' THEN
       SELECT reference_key INTO STRICT result_key FROM world_query_result_reference WHERE query_id=query_key;
       derived_key:=create_derived_reference('validation-authority-test','ANALYSIS_RESULT','test.analysis',query_key,'node',ARRAY[result_key],
         'sha256:'||repeat('5',64),'sha256:'||repeat('6',64),'1.0',NULL,NULL,clock_timestamp()+interval '1 hour',true);
       PERFORM create_reference_set('validation-authority-test','TEST',query_key,ARRAY[result_key],clock_timestamp()+interval '1 hour');
-      INSERT INTO world_reference_retirement(reference_key,reason,receipt_ref)
-      VALUES (derived_key,'Superseded analysis','urn:gowm:test:validation-retirement');
+      INSERT INTO world_reference_retirement(reference_key,retired_at,reason,receipt_ref)
+      VALUES (derived_key,clock_timestamp()-interval '1 second','Superseded analysis','urn:gowm:test:validation-retirement');
       INSERT INTO world_reference_descriptor_version(reference_key,data_scope_key,reference_type,display_name,stale,revalidation_required,content_hash)
       VALUES (result_key,'validation-authority-test','QUERY_RESULT','Authoritative stale result',true,true,'sha256:'||repeat('7',64));
     END IF;
@@ -106,7 +110,7 @@ $immutable$;
 
 INSERT INTO world_object(id,object_type,data_scope_key) VALUES ('validation-world-a','TEST','validation-authority-test'),('validation-world-b','TEST','validation-authority-other');
 INSERT INTO world_object_state(object_id,version) VALUES ('validation-world-a',7),('validation-world-b',99);
-UPDATE world_object SET deleted_at=clock_timestamp() WHERE id='validation-world-a';
+UPDATE world_object SET deleted_at=clock_timestamp()-interval '1 second' WHERE id='validation-world-a';
 
 SET LOCAL ROLE platform_validation_provider;
 SELECT gowm_platform_validation_v1.set_scope('validation-authority-test','tenant-a');
@@ -114,7 +118,11 @@ DO $scoped$
 BEGIN
   IF (SELECT count(*) FROM gowm_platform_validation_v1.result_reference)<>3 THEN RAISE EXCEPTION 'dataset-scoped result projection is incomplete or leaked'; END IF;
   IF NOT EXISTS (SELECT 1 FROM gowm_platform_validation_v1.result_reference WHERE entity_kind='QUERY_RESULT' AND descriptor_stale) THEN RAISE EXCEPTION 'stale descriptor was lost'; END IF;
-  IF NOT EXISTS (SELECT 1 FROM gowm_platform_validation_v1.result_reference WHERE entity_kind='DERIVED_REFERENCE' AND retired AND source_status='COMPLETED') THEN RAISE EXCEPTION 'retirement/source status separation failed'; END IF;
+  IF NOT EXISTS (SELECT 1 FROM gowm_platform_validation_v1.result_reference WHERE entity_kind='DERIVED_REFERENCE' AND retired AND source_status='COMPLETED') THEN
+    RAISE EXCEPTION 'retirement/source status separation failed: %',
+      (SELECT jsonb_agg(jsonb_build_object('sourceStatus',source_status,'retired',retired))
+       FROM gowm_platform_validation_v1.result_reference WHERE entity_kind='DERIVED_REFERENCE');
+  END IF;
   IF (SELECT count(*) FROM gowm_platform_validation_v1.scope_reference)<>1 THEN RAISE EXCEPTION 'Foundation scope identity is unavailable'; END IF;
   IF NOT EXISTS (SELECT 1 FROM gowm_platform_validation_v1.world_reference_version WHERE entity_kind='WORLD_OBJECT' AND retired) THEN RAISE EXCEPTION 'deleted world object was not retired'; END IF;
   IF (SELECT world_version FROM gowm_network_v1.source_world)<>'0' THEN RAISE EXCEPTION 'source-world projection leaked or retained deleted state'; END IF;

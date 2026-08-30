@@ -1,11 +1,15 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { canonicalSha256, validateAgainstSchema } from "../../packages/platform/contract-runtime/src/index.js";
 import { semanticSourceFingerprint } from "../../packages/platform/semantic-conformance/src/index.js";
 import { realizeSampleWorld } from "./model.js";
 import { probeLiveSampleInstance } from "./readiness.js";
-import { ensureSampleRuntimeEnvironment } from "./runtime.js";
+import {
+  ensureSampleRuntimeEnvironment,
+  sampleGatewayBaseUrl,
+  type SampleRuntimeEnvironment
+} from "./runtime.js";
 
 type AnyRecord = Record<string, any>;
 
@@ -22,9 +26,13 @@ const PROMOTED_OPERATIONS = [
   "spatial.find-intersections"
 ] as const;
 
-export async function admitSampleSemanticEvidence(rootDirectory = process.cwd()): Promise<string> {
-  const root = resolve(rootDirectory);
-  const runtimeEnvironment = await ensureSampleRuntimeEnvironment(root);
+export async function admitSampleSemanticEvidence(
+  runtimeOrRoot: SampleRuntimeEnvironment | string = process.cwd()
+): Promise<string> {
+  const runtimeEnvironment = typeof runtimeOrRoot === "string"
+    ? await ensureSampleRuntimeEnvironment(resolve(runtimeOrRoot))
+    : runtimeOrRoot;
+  const root = runtimeEnvironment.paths.root;
   const runtime = runtimeEnvironment.paths;
   const reportRoot = resolve(root, "reports/gowm-v0.6.3");
   const canary = await readJson(resolve(runtime.outputDirectory, "CANARY_EVIDENCE_REPORT.json"));
@@ -44,9 +52,10 @@ export async function admitSampleSemanticEvidence(rootDirectory = process.cwd())
   });
   const live = await probeLiveSampleInstance(runtimeEnvironment, { expectedRevision: "v1" });
   const implementation = await readJson(resolve(reportRoot, "semantic-implementation-report.json"));
+  const baseUrl = sampleGatewayBaseUrl(runtimeEnvironment, {});
   const [catalogResponse, semanticsResponse] = await Promise.all([
-    fetch("http://127.0.0.1:18063/v1/capabilities", { signal: AbortSignal.timeout(30_000) }),
-    fetch("http://127.0.0.1:18063/v1/capability-semantics", { signal: AbortSignal.timeout(30_000) })
+    fetch(`${baseUrl}/v1/capabilities`, { signal: AbortSignal.timeout(30_000) }),
+    fetch(`${baseUrl}/v1/capability-semantics`, { signal: AbortSignal.timeout(30_000) })
   ]);
   if (!catalogResponse.ok || !semanticsResponse.ok) throw new Error("Live Gateway contract discovery failed");
   const catalog = await catalogResponse.json() as AnyRecord;
@@ -124,7 +133,10 @@ export async function admitSampleSemanticEvidence(rootDirectory = process.cwd())
     sourceDigest: currentSourceDigest,
     runId: `${canary.realizationId}-sample-canary`,
     evidence: {
-      canaryPath: ".runtime/wsgs-sample/output/CANARY_EVIDENCE_REPORT.json",
+      canaryPath: relative(
+        root,
+        resolve(runtime.outputDirectory, "CANARY_EVIDENCE_REPORT.json")
+      ).replaceAll("\\", "/"),
       canaryHash: canonicalSha256(canary),
       realizationId: canary.realizationId,
       loadedStateHash: canary.loadedStateHash,

@@ -6,11 +6,16 @@ import { getContractSchemaHash } from "../../packages/platform/contract-runtime/
 import { ProviderProtocolError, sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "../../services/providers/grounding-catalog-provider/src/cursor.js";
 import { decodeEvidenceCursor, encodeEvidenceCursor } from "../../services/providers/grounding-catalog-provider/src/evidence-cursor.js";
-import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
+import {
+  createGroundingCatalogProvider,
+  groundingCatalogImplementationIdentity,
+  groundingCatalogPolicy
+} from "../../services/providers/grounding-catalog-provider/src/provider.js";
 import {
   GroundingCatalogRepository,
   preferExactResolutionRows,
-  projectedPosition
+  projectedPosition,
+  REFERENCE_RESOLUTION_POLICY_IDENTITY
 } from "../../services/providers/grounding-catalog-provider/src/repository.js";
 import { GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 } from "../../services/providers/grounding-catalog-provider/src/schemas.js";
 import type { CatalogSqlClient, CatalogSqlPool } from "../../services/providers/grounding-catalog-provider/src/types.js";
@@ -81,6 +86,47 @@ describe("grounding catalog providers", () => {
     expect(preferExactResolutionRows([exactEast, fuzzyWest])).toEqual([exactEast]);
     expect(preferExactResolutionRows([exactEast, exactWest, fuzzyWest])).toEqual([exactEast, exactWest]);
     expect(preferExactResolutionRows([fuzzyWest])).toEqual([fuzzyWest]);
+  });
+
+  it("binds exact-over-fuzzy identity only to the Reference implementation and policy", () => {
+    expect(REFERENCE_RESOLUTION_POLICY_IDENTITY).toEqual({
+      policyId: "gowm.reference.resolve.exact-over-fuzzy",
+      policyVersion: "1.0",
+      fuzzyMatchedBy: "FUZZY_NAME",
+      selectionRule: "KEEP_NON_FUZZY_ROWS_WHEN_PRESENT",
+      fallbackRule: "KEEP_ALL_ROWS_WHEN_ONLY_FUZZY",
+      orderingRule: "PRESERVE_INPUT_ORDER"
+    });
+
+    const referenceIdentity = groundingCatalogImplementationIdentity("reference");
+    expect(referenceIdentity).toHaveProperty("resolutionPolicy", REFERENCE_RESOLUTION_POLICY_IDENTITY);
+    expect(createGroundingCatalogProvider({ mode: "reference", pool, cursorSecret }).runtime.manifest.provider.implementationDigest)
+      .toBe("sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51");
+    expect(sha256(referenceIdentity)).toBe("sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51");
+
+    const unchangedImplementationDigests = {
+      dataset: "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",
+      evidence: "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317"
+    } as const;
+    const unchangedPolicyDigests = {
+      dataset: "sha256:8a52322f10218ff3dd1d2c20193a712e39b2e3da94dbb084fc88e830ec019fb3",
+      evidence: "sha256:0d5172459d4df64f5dd46756fb40bebb346c70d3ba7d1b36e65432702132df1a"
+    } as const;
+    for (const mode of ["dataset", "evidence"] as const) {
+      expect(groundingCatalogImplementationIdentity(mode)).not.toHaveProperty("resolutionPolicy");
+      expect(createGroundingCatalogProvider({ mode, pool, cursorSecret }).runtime.manifest.provider.implementationDigest)
+        .toBe(unchangedImplementationDigests[mode]);
+      expect(groundingCatalogPolicy(mode)).not.toHaveProperty("resolutionPolicy");
+      expect(groundingCatalogPolicy(mode).version).toBe(`gowm-${mode}-catalog-policy/1.0`);
+      expect(sha256(groundingCatalogPolicy(mode))).toBe(unchangedPolicyDigests[mode]);
+    }
+
+    const referencePolicy = groundingCatalogPolicy("reference");
+    expect(referencePolicy).toMatchObject({
+      version: "gowm-reference-catalog-policy/1.1",
+      resolutionPolicy: REFERENCE_RESOLUTION_POLICY_IDENTITY
+    });
+    expect(sha256(referencePolicy)).toBe("sha256:5a465097dbb309242bd3e5274bb8108175e94096e6d9904a26d86da41c1a1c1e");
   });
 
   it("reads LAYER_FEATURE geometry through the unified current geometry contract", async () => {

@@ -42,7 +42,10 @@ SELECT 'g05-query',job_id,'g05-job','g05-request','principal:g05',
        '{"requestId":"g05-request","idempotencyKey":"g05-idempotency","parameterSchemaHash":"sha256:3333333333333333333333333333333333333333333333333333333333333333","plan":{"queryId":"g05-query"}}',
        'TEST_ATTESTED',clock_timestamp(),'result-registry-test',
        pg_temp.gowm_assertion_snapshot('g05-query'),pg_temp.gowm_assertion_snapshot('g05-query'),
-       '{"mode":"STATIC_SERVICE","principalRef":"principal:g05","authenticationMethod":"TEST_ATTESTED"}'::jsonb
+       jsonb_build_object(
+         'mode','STATIC_SERVICE','principalRef','principal:g05',
+         'authenticationMethod','TEST_ATTESTED','dataScopeClaim','result-registry-test'
+       )
 FROM job;
 
 UPDATE gowm_capability.world_query_job

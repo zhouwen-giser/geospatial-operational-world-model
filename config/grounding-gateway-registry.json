@@ -4,8 +4,8 @@
     {
       "providerId": "gowm.reference-catalog",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba",
-      "manifestHash": "sha256:b8bc8e309b23af59f88708110387f8e7ed077c272fcea82ff35e242f914b6d2b",
+      "implementationDigest": "sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51",
+      "manifestHash": "sha256:cf41ac533a7e266fc5534baf7f32b123097d6364a49d4a83f19e08096e96ac29",
       "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
       "endpoint": "http://reference-catalog-provider:8090",
       "approvalId": "grounding-reference-catalog-v1.0",

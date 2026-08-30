@@ -78,7 +78,10 @@ SELECT 'g07-query',job_id,'g07-job','g07-request','principal:g07',
        '{"requestId":"g07-request","idempotencyKey":"g07-idempotency","parameterSchemaHash":"sha256:3333333333333333333333333333333333333333333333333333333333333333","plan":{"queryId":"g07-query"}}',
        'TEST_ATTESTED',clock_timestamp(),'grounding-replay-a',
        pg_temp.gowm_assertion_snapshot('g07-query'),pg_temp.gowm_assertion_snapshot('g07-query'),
-       '{"mode":"STATIC_SERVICE","principalRef":"principal:g07","authenticationMethod":"TEST_ATTESTED"}'::jsonb
+       jsonb_build_object(
+         'mode','STATIC_SERVICE','principalRef','principal:g07',
+         'authenticationMethod','TEST_ATTESTED','dataScopeClaim','grounding-replay-a'
+       )
 FROM job;
 
 UPDATE gowm_capability.world_query_job

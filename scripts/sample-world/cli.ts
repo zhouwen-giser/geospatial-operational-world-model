@@ -1,15 +1,23 @@
 import { execFileSync } from "node:child_process";
-import { readFile, writeFile } from "node:fs/promises";
+import { createHash, randomUUID } from "node:crypto";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { canonicalSha256 } from "../../packages/platform/contract-runtime/src/index.js";
 import { semanticSourceFingerprint } from "../../packages/platform/semantic-conformance/src/index.js";
 import { admitSampleSemanticEvidence } from "./admit-semantic-evidence.js";
 import { loadSampleWorldDatabase, mutateSampleWorldDatabase, resetSampleWorldDatabase } from "./database.js";
 import { realizeSampleWorld } from "./model.js";
 import { buildSampleHandoff } from "./handoff.js";
 import { probeLiveSampleInstance } from "./readiness.js";
-import { ensureSampleRuntimeEnvironment, type SampleRuntimeEnvironment } from "./runtime.js";
+import {
+  ensureSampleRuntimeEnvironment,
+  sampleGatewayBaseUrl,
+  sampleRuntimeIdentityFromValues,
+  type SampleRuntimeEnvironment
+} from "./runtime.js";
 import { verifySampleWorld, verifyStaticPrincipal } from "./verify.js";
+import { writeGowmV064RuntimeEvidence } from "../../validation/scripts/gowm-v064-runtime-evidence.js";
 
 const CORE_SERVICES = [
   "postgres",
@@ -60,10 +68,10 @@ export async function runSampleWorldCommand(command: string): Promise<void> {
       materializeV063SemanticEvidence(runtime);
       await generate(runtime);
       up(runtime, true);
-      await waitForGateway();
+      await waitForGateway(runtime);
       break;
     case "wait":
-      await waitForGateway();
+      await waitForGateway(runtime);
       break;
     case "load":
       await generate(runtime);
@@ -88,6 +96,12 @@ export async function runSampleWorldCommand(command: string): Promise<void> {
     case "handoff":
       await qualifyAndBuildHandoff(runtime);
       break;
+    case "upgrade-proof":
+      await proveReferenceGeometryUpgrade(runtime);
+      break;
+    case "evidence":
+      await writeReferenceComposabilityRuntimeEvidence(runtime);
+      break;
     case "all":
       await all(runtime);
       break;
@@ -97,12 +111,13 @@ export async function runSampleWorldCommand(command: string): Promise<void> {
 }
 
 async function all(runtime: SampleRuntimeEnvironment): Promise<void> {
+  await beginFreshQualification(runtime, "runtime");
   // The image, generated catalog fixture, and later admission must all consume
   // the same deterministic semantic materialization bytes.
   materializeV063SemanticEvidence(runtime);
   await generate(runtime);
   up(runtime, true);
-  await waitForGateway();
+  await waitForGateway(runtime);
   compose(runtime, ["run", "--rm", "sample-loader", "node", "dist/scripts/sample-world/database-cli.js", "load-db"]);
   await verifyAuthLifecycle(runtime);
   await verifySampleWorld({ runtime });
@@ -138,7 +153,7 @@ async function all(runtime: SampleRuntimeEnvironment): Promise<void> {
   await reset(runtime);
   compose(runtime, ["restart", "world-capability-gateway"]);
   await waitForServicesHealthy(runtime, ["world-capability-gateway"]);
-  await waitForGateway();
+  await waitForGateway(runtime);
   await qualifyAndBuildHandoff(runtime);
   process.stdout.write("GOWM_WSGS_SAMPLE_WORLD_TASK_COMPLETE\n");
 }
@@ -151,7 +166,7 @@ async function qualifyAndBuildHandoff(runtime: SampleRuntimeEnvironment): Promis
   materializeV063SemanticEvidence(runtime);
   const preparedSourceDigest = await semanticSourceFingerprint(runtime.paths.root);
   await verifySampleWorld({ runtime });
-  const admittedSourceDigest = await admitSampleSemanticEvidence(runtime.paths.root);
+  const admittedSourceDigest = await admitSampleSemanticEvidence(runtime);
   if (admittedSourceDigest !== preparedSourceDigest) {
     throw new Error("Semantic sources changed between static evidence preparation and live admission");
   }
@@ -174,16 +189,100 @@ async function generate(runtime: SampleRuntimeEnvironment): Promise<void> {
 }
 
 function up(runtime: SampleRuntimeEnvironment, build: boolean): void {
-  if (build) {
-    execFileSync("docker", ["build", "--tag", "gowm-wsgs-sample:0.6.4", "."], {
-      cwd: runtime.paths.root,
-      env: process.env,
-      stdio: "inherit",
-      maxBuffer: 64 * 1024 * 1024
-    });
-    compose(runtime, ["build", "postgres"]);
-  }
+  if (build) buildImages(runtime);
   compose(runtime, ["up", "-d", "--no-build", ...CORE_SERVICES]);
+}
+
+function buildImages(runtime: SampleRuntimeEnvironment): string {
+  assertQualificationBuildContextClean(runtime);
+  const revision = execFileSync("git", ["rev-parse", "HEAD"], {
+    cwd: runtime.paths.root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"]
+  }).trim();
+  if (!/^[0-9a-f]{40}$/u.test(revision)) throw new Error("Qualification candidate revision is invalid");
+  execFileSync("docker", [
+    "build",
+    "--tag", runtime.values.GOWM_WSGS_SAMPLE_IMAGE!,
+    "--label", `org.opencontainers.image.revision=${revision}`,
+    "--label", "org.opencontainers.image.version=0.6.4",
+    "."
+  ], {
+    cwd: runtime.paths.root,
+    env: process.env,
+    stdio: "inherit",
+    maxBuffer: 64 * 1024 * 1024
+  });
+  compose(runtime, ["build", "postgres"]);
+  return revision;
+}
+
+async function proveReferenceGeometryUpgrade(runtime: SampleRuntimeEnvironment): Promise<void> {
+  const identity = sampleRuntimeIdentityFromValues(runtime.values);
+  if (!identity.instanceId.startsWith("q-")) {
+    throw new Error("Reference geometry upgrade proof requires a bounded q-* qualification instance");
+  }
+  await beginFreshQualification(runtime, "upgrade");
+  materializeV063SemanticEvidence(runtime);
+  await generate(runtime);
+  const revision = buildImages(runtime);
+  compose(runtime, ["up", "-d", "--no-build", "postgres"]);
+  await waitForServicesHealthy(runtime, ["postgres"]);
+  compose(runtime, [
+    "run", "--rm", "--no-deps",
+    "-e", "GOWM_MAXIMUM_MIGRATION_NUMBER=061",
+    "sample-bootstrap"
+  ]);
+  compose(runtime, [
+    "run", "--rm", "--no-deps", "sample-loader",
+    "node", "dist/scripts/sample-world/database-cli.js", "load-db"
+  ]);
+  compose(runtime, [
+    "run", "--rm", "--no-deps",
+    "-e", `GOWM_QUALIFICATION_CANDIDATE_SHA=${revision}`,
+    "sample-bootstrap", "node", "dist/validation/scripts/gowm-v064-upgrade-probe.js", "baseline"
+  ]);
+  compose(runtime, ["run", "--rm", "--no-deps", "sample-bootstrap"]);
+  compose(runtime, [
+    "run", "--rm", "--no-deps", "sample-bootstrap",
+    "node", "dist/scripts/run-db-assertions.js"
+  ]);
+  compose(runtime, [
+    "run", "--rm", "--no-deps",
+    "-e", `GOWM_QUALIFICATION_CANDIDATE_SHA=${revision}`,
+    "-e", "GOWM_V064_DB_ASSERTION_COUNT=45",
+    "sample-bootstrap", "node", "dist/validation/scripts/gowm-v064-upgrade-probe.js", "upgraded"
+  ]);
+  process.stdout.write(`GOWM_V064_REFERENCE_GEOMETRY_UPGRADE_PASS candidate=${revision} migrations=61->62 assertions=45\n`);
+}
+
+async function writeReferenceComposabilityRuntimeEvidence(
+  runtime: SampleRuntimeEnvironment
+): Promise<void> {
+  const identity = sampleRuntimeIdentityFromValues(runtime.values);
+  if (!identity.instanceId.startsWith("q-")) {
+    throw new Error("GOWM v0.6.4 runtime evidence requires a bounded q-* qualification instance");
+  }
+  const candidateCommit = execFileSync("git", ["rev-parse", "HEAD"], {
+    cwd: runtime.paths.root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"]
+  }).trim();
+  const before = await probeLiveSampleInstance(runtime, { expectedRevision: "v1" });
+  compose(runtime, [
+    "run", "--rm", "sample-loader",
+    "node", "dist/scripts/sample-world/database-cli.js", "load-db"
+  ]);
+  const after = await probeLiveSampleInstance(runtime, { expectedRevision: "v1" });
+  await writeGowmV064RuntimeEvidence({
+    runtime,
+    candidateCommit,
+    idempotentStateHashBefore: before.loadedStateHash,
+    idempotentStateHashAfter: after.loadedStateHash,
+    freshClone: process.env.GOWM_V064_FRESH_CLONE === "YES",
+    freshDatabase: process.env.GOWM_V064_FRESH_DATABASE === "YES",
+    manualPatchApplied: process.env.GOWM_V064_MANUAL_PATCH_APPLIED === "YES"
+  });
 }
 
 function down(runtime: SampleRuntimeEnvironment, destroyVolumes: boolean): void {
@@ -192,16 +291,14 @@ function down(runtime: SampleRuntimeEnvironment, destroyVolumes: boolean): void 
     process.stdout.write("SAMPLE_WORLD_DOWN_PASS volumes=PRESERVED\n");
     return;
   }
-  if (runtime.values.COMPOSE_PROJECT_NAME !== "gowm-wsgs-sample" || runtime.values.POSTGRES_DB !== "gowm_wsgs_sample") {
-    throw new Error("Refusing volume destruction because the isolated instance markers do not match");
-  }
-  for (const volumeName of ["gowm-wsgs-sample-db", "gowm-wsgs-sample-runtime"]) {
+  const identity = sampleRuntimeIdentityFromValues(runtime.values);
+  for (const volumeName of [identity.databaseVolumeName, identity.runtimeVolumeName]) {
     const inspection = dockerJson(["volume", "inspect", volumeName], true) as Array<{
       Name?: string;
       Labels?: Record<string, string>;
     }> | undefined;
     if (inspection?.[0] && (inspection[0].Name !== volumeName ||
-        inspection[0].Labels?.["com.docker.compose.project"] !== "gowm-wsgs-sample")) {
+        inspection[0].Labels?.["com.docker.compose.project"] !== identity.composeProjectName)) {
       throw new Error(`Refusing volume destruction because ${volumeName} ownership does not match`);
     }
   }
@@ -226,7 +323,7 @@ async function restartAndVerifyV2(runtime: SampleRuntimeEnvironment, options: {
 }): Promise<Record<string, unknown>> {
   compose(runtime, ["restart", ...options.services]);
   await waitForServicesHealthy(runtime, options.waitServices);
-  await waitForGateway();
+  await waitForGateway(runtime);
   await verifySampleWorld({ runtime, expectedRevision: "v2" });
   process.stdout.write(
     `SAMPLE_WORLD_V2_RECOVERY_PASS stage=${options.stage} checks=v2-current,pinned-stale acceptance=${options.acceptance.join(",")}\n`
@@ -240,9 +337,7 @@ async function restartAndVerifyV2(runtime: SampleRuntimeEnvironment, options: {
 }
 
 async function reset(runtime: SampleRuntimeEnvironment, options: { dryRun?: boolean } = {}): Promise<void> {
-  if (runtime.values.COMPOSE_PROJECT_NAME !== "gowm-wsgs-sample" || runtime.values.POSTGRES_DB !== "gowm_wsgs_sample") {
-    throw new Error("Refusing reset because the isolated instance markers do not match");
-  }
+  sampleRuntimeIdentityFromValues(runtime.values);
   compose(runtime, ["run", "--rm", "sample-loader", "node", "dist/scripts/sample-world/database-cli.js", "reset-db",
     ...(options.dryRun ? ["--dry-run"] : [])]);
   if (options.dryRun) return;
@@ -262,7 +357,7 @@ async function verifyAuthLifecycle(runtime: SampleRuntimeEnvironment): Promise<v
     GATEWAY_DATA_SCOPE_CLAIM: "wsgs-demo",
     GATEWAY_DATASET_SCOPE_CLAIM: "wsgs-demo-main"
   });
-  await waitForGateway();
+  await waitForGateway(runtime);
   await verifyStaticPrincipal({ runtime, principal: "VISIBLE" });
 
   recreateGateway(runtime, {
@@ -271,7 +366,7 @@ async function verifyAuthLifecycle(runtime: SampleRuntimeEnvironment): Promise<v
     GATEWAY_DATA_SCOPE_CLAIM: "wsgs-hidden",
     GATEWAY_DATASET_SCOPE_CLAIM: "wsgs-hidden-main"
   });
-  await waitForGateway();
+  await waitForGateway(runtime);
   await verifyStaticPrincipal({ runtime, principal: "HIDDEN" });
 
   recreateGateway(runtime, {
@@ -280,7 +375,7 @@ async function verifyAuthLifecycle(runtime: SampleRuntimeEnvironment): Promise<v
     GATEWAY_DATA_SCOPE_CLAIM: runtime.values.GATEWAY_DATA_SCOPE_CLAIM!,
     GATEWAY_DATASET_SCOPE_CLAIM: runtime.values.GATEWAY_DATASET_SCOPE_CLAIM!
   });
-  await waitForGateway();
+  await waitForGateway(runtime);
   await verifySampleWorld({ runtime, signedSmokeOnly: true });
 }
 
@@ -297,7 +392,7 @@ function compose(runtime: SampleRuntimeEnvironment, args: string[], overrides: R
     ...args
   ], {
     cwd: runtime.paths.root,
-    env: { ...process.env, ...overrides },
+    env: { ...process.env, ...runtime.values, ...overrides },
     encoding: "utf8",
     stdio: args[0] === "ps" && !args.includes("--format") ? "inherit" : ["ignore", "pipe", "inherit"],
     maxBuffer: 64 * 1024 * 1024
@@ -388,16 +483,119 @@ function dockerJson(args: string[], missingAllowed: boolean): unknown {
     const output = execFileSync("docker", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
     return JSON.parse(output);
   } catch (error) {
-    if (missingAllowed) return undefined;
+    const stderr = String((error as { stderr?: string | Buffer }).stderr ?? "");
+    if (missingAllowed && /No such volume:/u.test(stderr)) return undefined;
     throw error;
   }
 }
 
-async function waitForGateway(): Promise<void> {
+async function beginFreshQualification(
+  runtime: SampleRuntimeEnvironment,
+  purpose: "upgrade" | "runtime"
+): Promise<void> {
+  const identity = sampleRuntimeIdentityFromValues(runtime.values);
+  if (identity.instanceId === "shared") return;
+  if (!identity.instanceId.startsWith("q-")) {
+    throw new Error("Fresh qualification requires a bounded q-* instance identity");
+  }
+  const candidateCommit = execFileSync("git", ["rev-parse", "HEAD"], {
+    cwd: runtime.paths.root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"]
+  }).trim();
+  if (!/^[0-9a-f]{40}$/u.test(candidateCommit)) {
+    throw new Error("Qualification source commit is invalid");
+  }
+  const remotes = execFileSync("git", ["remote"], {
+    cwd: runtime.paths.root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"]
+  }).split(/\r?\n/u).filter(Boolean);
+  if (remotes.length !== 0) {
+    throw new Error("Fresh-clone qualification requires a detached local clone with no configured remotes");
+  }
+  assertQualificationBuildContextClean(runtime);
+  const containerIds = execFileSync("docker", [
+    "ps", "-aq", "--filter", `label=com.docker.compose.project=${identity.composeProjectName}`
+  ], { encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] })
+    .split(/\r?\n/u).filter(Boolean);
+  const volumeNames = execFileSync("docker", ["volume", "ls", "--format", "{{.Name}}"], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"]
+  }).split(/\r?\n/u).filter(Boolean);
+  const networkNames = execFileSync("docker", ["network", "ls", "--format", "{{.Name}}"], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"]
+  }).split(/\r?\n/u).filter(Boolean);
+  const expectedVolumes = [identity.databaseVolumeName, identity.runtimeVolumeName];
+  const expectedNetworks = ["sample-debug", "sample-edge", "sample-internal"]
+    .map((name) => `${identity.composeProjectName}_${name}`);
+  const presentVolumes = expectedVolumes.filter((name) => volumeNames.includes(name));
+  const presentNetworks = expectedNetworks.filter((name) => networkNames.includes(name));
+  if (containerIds.length > 0 || presentVolumes.length > 0 || presentNetworks.length > 0) {
+    throw new Error("Qualification resources already exist; refusing to represent a reused database as fresh");
+  }
+  await Promise.all([
+    "UPGRADE_062_BASELINE.json",
+    "UPGRADE_062_REPORT.json",
+    "V064_RUNTIME_EVIDENCE.json",
+    "QUALIFICATION_PREFLIGHT.json"
+  ].map((name) => rm(resolve(runtime.paths.outputDirectory, name), { force: true })));
+  const generatedAt = new Date().toISOString();
+  const preflightCore = {
+    schemaVersion: "1.0",
+    targetVersion: "0.6.4",
+    purpose,
+    candidateCommit,
+    runtimeInstanceId: identity.instanceId,
+    qualificationRunId: randomUUID(),
+    generatedAt,
+    git: { remoteCount: 0, sourceContextClean: true },
+    observedAbsent: {
+      composeProjectContainers: 0,
+      databaseVolumeAbsent: true,
+      runtimeVolumeAbsent: true,
+      composeNetworkCount: expectedNetworks.length,
+      composeNetworksAbsent: true
+    },
+    resourceIdentityHash: `sha256:${createHash("sha256").update(JSON.stringify({
+      composeProjectName: identity.composeProjectName,
+      volumes: expectedVolumes,
+      networks: expectedNetworks
+    })).digest("hex")}`,
+    status: "PASS"
+  };
+  const preflight = {
+    ...preflightCore,
+    evidenceHash: canonicalSha256(preflightCore)
+  };
+  await writeFile(
+    resolve(runtime.paths.outputDirectory, "QUALIFICATION_PREFLIGHT.json"),
+    `${JSON.stringify(preflight, null, 2)}\n`,
+    "utf8"
+  );
+}
+
+function assertQualificationBuildContextClean(runtime: SampleRuntimeEnvironment): void {
+  const status = execFileSync("git", ["status", "--porcelain=v1", "--untracked-files=all"], {
+    cwd: runtime.paths.root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"]
+  });
+  const forbidden = status.split(/\r?\n/u).filter(Boolean)
+    .map((line) => line.slice(3).replaceAll("\\", "/"))
+    .filter((path) => !path.startsWith("reports/gowm-v0.6.3/"));
+  if (forbidden.length > 0) {
+    throw new Error(`Refusing to label a dirty image build context: ${forbidden.join(",")}`);
+  }
+}
+
+async function waitForGateway(runtime: SampleRuntimeEnvironment): Promise<void> {
   let last: unknown;
+  const baseUrl = sampleGatewayBaseUrl(runtime, {});
   for (let attempt = 0; attempt < 120; attempt += 1) {
     try {
-      const response = await fetch("http://127.0.0.1:18063/health/ready", { signal: AbortSignal.timeout(2_000) });
+      const response = await fetch(`${baseUrl}/health/ready`, { signal: AbortSignal.timeout(2_000) });
       if (response.ok) return;
       last = await response.text();
     } catch (error) {
@@ -409,8 +607,13 @@ async function waitForGateway(): Promise<void> {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  runSampleWorldCommand(process.argv[2] ?? "status").catch((error: unknown) => {
+  const commandLifecycleGuard = setInterval(() => undefined, 60_000);
+  try {
+    await runSampleWorldCommand(process.argv[2] ?? "status");
+  } catch (error: unknown) {
     process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`);
     process.exitCode = 1;
-  });
+  } finally {
+    clearInterval(commandLifecycleGuard);
+  }
 }

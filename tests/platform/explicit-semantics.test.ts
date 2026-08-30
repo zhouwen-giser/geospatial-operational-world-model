@@ -100,6 +100,12 @@ describe("offline semantic rules and implementation evidence", () => {
     expect(result.siblingImports).toHaveLength(2);
     expect(result.diagnostics).toBe(0);
   });
+  it("canonicalizes TypeScript line endings before emitting inspection evidence", () => {
+    const lf = 'async function handle() {\n  return call({\n    value: true\n  });\n}\n';
+    const crlf = lf.replaceAll("\n", "\r\n");
+    expect(inspectTypeScript(crlf, "/repo/services/providers/own/src/provider.ts", "/repo"))
+      .toEqual(inspectTypeScript(lf, "/repo/services/providers/own/src/provider.ts", "/repo"));
+  });
   it("recognizes legacy generic ReferenceKey structures without inventing an enum", () => {
     const schema = { type:"object", required:["namespace","kind","id","version"], properties:Object.fromEntries(["namespace","kind","id","version"].map((k) => [k,{type:"string"}])) };
     const inspected = inspectSchema(schema, () => { throw new Error("unexpected ref"); });

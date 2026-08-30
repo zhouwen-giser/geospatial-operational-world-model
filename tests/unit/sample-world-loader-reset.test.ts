@@ -1,13 +1,27 @@
 import { describe, expect, it } from "vitest";
 import {
+  assertSampleDatabase,
+  parseMaximumMigrationNumber,
   SAMPLE_LOADER_REQUIRED_ACL_SQL,
-  SAMPLE_RESET_FUNCTION_SQL
+  sampleResetFunctionSql
 } from "../../scripts/bootstrap-wsgs-sample.js";
 import {
+  assertSampleDatabaseConnection,
   parseSampleWorldFaultInjection,
+  sampleDatabaseMarker,
+  sampleRuntimeInstanceIdForDatabaseName,
   sampleFixtureEvidenceReference,
-  sampleObservationRecordIdentity
+  sampleObservationRecordIdentity,
+  validatedSampleDatabaseName
 } from "../../scripts/sample-world/database.js";
+import {
+  assertLiveSampleDatabaseIdentity,
+  sampleRuntimeDatabaseName
+} from "../../scripts/sample-world/readiness.js";
+import type { SampleRuntimeEnvironment } from "../../scripts/sample-world/runtime.js";
+
+const QUALIFICATION_DATABASE = "gowm_wsgs_sample_q_9313668_a1";
+const SAMPLE_RESET_FUNCTION_SQL = sampleResetFunctionSql(QUALIFICATION_DATABASE);
 
 describe("sample-world mutation observation identity", () => {
   const baseline = {
@@ -88,6 +102,69 @@ describe("sample-world first-load fault gate", () => {
       GOWM_ENV: "production"
     })).toThrow(/never authorized in production/u);
   });
+});
+
+describe("sample-world qualification database identity", () => {
+  const runtime = {
+    paths: {} as SampleRuntimeEnvironment["paths"],
+    values: {
+      SAMPLE_WORLD_INSTANCE_ID: "q-9313668-a1",
+      GATEWAY_PORT: "28064",
+      POSTGRES_PORT: "65464",
+      POSTGRES_DB: QUALIFICATION_DATABASE
+    }
+  } satisfies SampleRuntimeEnvironment;
+
+  it("binds loader, bootstrap, readiness and reset SQL to the same qualification database", () => {
+    const connectionString = `postgresql://sample:secret@postgres:5432/${QUALIFICATION_DATABASE}`;
+    expect(assertSampleDatabaseConnection(connectionString, QUALIFICATION_DATABASE)).toBe(QUALIFICATION_DATABASE);
+    expect(assertSampleDatabase(connectionString, QUALIFICATION_DATABASE)).toBe(QUALIFICATION_DATABASE);
+    expect(sampleRuntimeDatabaseName(runtime)).toBe(QUALIFICATION_DATABASE);
+    expect(assertLiveSampleDatabaseIdentity(runtime, QUALIFICATION_DATABASE)).toBe(QUALIFICATION_DATABASE);
+    expect(sampleDatabaseMarker(QUALIFICATION_DATABASE))
+      .toBe(`${QUALIFICATION_DATABASE}/gowm-wsgs-sample-world/1.0`);
+    expect(sampleRuntimeInstanceIdForDatabaseName(QUALIFICATION_DATABASE)).toBe("q-9313668-a1");
+    expect(SAMPLE_RESET_FUNCTION_SQL).toContain(`current_database() <> '${QUALIFICATION_DATABASE}'`);
+    expect(SAMPLE_RESET_FUNCTION_SQL).toContain("runtime_instance_id='q-9313668-a1'");
+    expect(SAMPLE_RESET_FUNCTION_SQL).toContain(`database_name='${QUALIFICATION_DATABASE}'`);
+    expect(SAMPLE_RESET_FUNCTION_SQL)
+      .toContain(`'databaseMarker','${QUALIFICATION_DATABASE}/gowm-wsgs-sample-world/1.0'`);
+  });
+
+  it("rejects URL, runtime and live-database drift and unsafe SQL identities", () => {
+    expect(() => assertSampleDatabaseConnection(
+      "postgresql://sample:secret@postgres:5432/gowm_wsgs_sample",
+      QUALIFICATION_DATABASE
+    )).toThrow(/differs from validated POSTGRES_DB/u);
+    expect(() => sampleRuntimeDatabaseName({
+      ...runtime,
+      values: { ...runtime.values, POSTGRES_DB: "gowm_wsgs_sample" }
+    })).toThrow(/differs from the validated runtime identity/u);
+    expect(() => assertLiveSampleDatabaseIdentity(runtime, "gowm_wsgs_sample"))
+      .toThrow(/differs from validated runtime POSTGRES_DB/u);
+    expect(() => validatedSampleDatabaseName("sample'; DROP DATABASE postgres; --"))
+      .toThrow(/bounded q-\*/u);
+    expect(() => sampleResetFunctionSql("sample'; DROP DATABASE postgres; --"))
+      .toThrow(/bounded q-\*/u);
+    expect(() => sampleResetFunctionSql(QUALIFICATION_DATABASE, "q-other"))
+      .toThrow(/differs from the qualification database/u);
+  });
+});
+
+describe("sample-world bounded migration CLI input", () => {
+  it("keeps full migration as the default and accepts exact three-digit bounds", () => {
+    expect(parseMaximumMigrationNumber(undefined)).toBeUndefined();
+    expect(parseMaximumMigrationNumber("001")).toBe(1);
+    expect(parseMaximumMigrationNumber("061")).toBe(61);
+    expect(parseMaximumMigrationNumber("999")).toBe(999);
+  });
+
+  it.each(["", "61", "0061", "000", " 061", "061 ", "+61", "abc"])(
+    "rejects non-canonical migration bound %j",
+    (value) => {
+      expect(() => parseMaximumMigrationNumber(value)).toThrow(/GOWM_MAXIMUM_MIGRATION_NUMBER/u);
+    }
+  );
 });
 
 describe("sample-world protected reset SQL", () => {

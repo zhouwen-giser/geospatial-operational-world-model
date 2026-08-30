@@ -1,36 +1,72 @@
 {
   "schemaVersion": "1.0",
-  "consumer": "WSGS",
-  "consumerCommit": "00ab906afc4857b9c6f369ce3751d485e4d40ab9",
+  "targetVersion": "0.6.4",
+  "candidateCommit": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+  "generatedAt": "2026-08-30T01:08:24.340Z",
+  "materializedAt": "2026-08-30T01:09:23.710Z",
+  "status": "NOT_RUN",
+  "environmentAvailable": false,
+  "gatewayReady": false,
+  "realResolverOutputConsumed": false,
+  "reasonCode": "WSGS_RUNTIME_UNAVAILABLE",
+  "unavailabilityEvidence": {
+    "status": "UNAVAILABLE",
+    "candidateCommit": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+    "evidenceHash": "sha256:a0245f2f640e64849de380798a02c1dfdea250076ccbb35fcf27ed2fcd9e7fd8",
+    "observedAt": "2026-08-30T01:08:24.340Z"
+  },
   "cases": [
     {
       "id": "R1",
-      "status": "PASS"
+      "status": "NOT_RUN",
+      "requiredPath": [
+        "reference.resolve",
+        "world.get-current-state"
+      ],
+      "realChainObserved": false
     },
     {
       "id": "R2",
-      "status": "PASS"
+      "status": "NOT_RUN",
+      "requiredPath": [
+        "reference.resolve"
+      ],
+      "realChainObserved": false
     },
     {
       "id": "R3",
-      "status": "PASS"
+      "status": "NOT_RUN",
+      "requiredPath": [
+        "reference.resolve",
+        "world.get-geometry",
+        "spatial.find-in-area"
+      ],
+      "realChainObserved": false
     },
     {
       "id": "R4",
-      "status": "PASS"
+      "status": "NOT_RUN",
+      "requiredPath": [
+        "reference.resolve",
+        "world.get-current-state",
+        "spatial.find-nearby"
+      ],
+      "realChainObserved": false
     },
     {
       "id": "R5",
-      "status": "PASS"
+      "status": "NOT_RUN",
+      "requiredPath": [
+        "reference.resolve_or_validate"
+      ],
+      "realChainObserved": false
     }
   ],
-  "realResolverOutputConsumed": true,
-  "gatewayReady": true,
-  "requiredAvailability": "12/12",
-  "resultHashes": {
-    "initial": "sha256:56c13d7413bb9a4f1cb1052864b7aa570bde41446ec237c859d6c6cc84e714e4",
-    "validated": "sha256:1a47ef76d05dd48301fef01dfed49d3cb980715cb2bc62ce2c16397fe4a8af05",
-    "evidence": "sha256:3c5638a2eab2fad89a3f4e49e447c22d2f5661a232babf2eef3371f68f2923aa"
-  },
-  "status": "PASS"
+  "sourceEvidenceSha256": "sha256:3cea4e7e7f95198637ab15a0c49e58b77cd01dfcbaad08d255c961ea770bc2f3",
+  "nonClaims": [
+    "PRODUCTION_READY",
+    "RELEASE_ACCEPTED",
+    "FULL_QUALIFICATION_COMPLETE"
+  ],
+  "evidenceHash": "sha256:2aa9a7703918569115155fc76f53a86864a9ff445155bc3ff0c61ba9c32b81ab"
 }

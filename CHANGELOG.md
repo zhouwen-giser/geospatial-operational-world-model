@@ -8,6 +8,21 @@
 - Added migrations 063–067, controlled scoped write functions, cross-scope negative gates, fresh and 064→067 database regression, restart/reclaim checks, and real PostgreSQL/PostGIS/MobilityDB qualification.
 - Advanced the repository and current consumer contract bundle/lock to 0.7.0 while retaining frozen v0.6.3 contracts and the existing sample-world compatibility surface. Historical operations remain Preview; this is not production deployment acceptance.
 
+## 0.6.4 - Unreleased
+
+- Repair immutable ReferenceKey composability for Dataset, Layer,
+  LayerFeature, and WorldObject descriptors without changing the frozen
+  `@gowm/world-gateway-contracts@0.6.3` public wire bundle.
+- Add the authoritative read-only LayerFeature geometry projection in additive
+  migration 062 while retaining migrations 001–061 unchanged.
+- Add exact resolver-to-validation/geometry/state/spatial chain canaries and a
+  collision-safe qualification runtime identity for fresh-clone evidence.
+- Bind source locks and provider implementation identity to the authoritative
+  migration and exact-over-fuzzy reference-resolution policy.
+- The candidate targets Development Ready only after the task-package gates
+  emit their guarded marker. Merge, tag, release, publish and production
+  deployment are outside this task.
+
 ## 0.6.3 - 2026-08-27
 
 - Promoted exactly ten Reference, World Evidence, Catalog, and Spatial Grounding Core operations from Preview to Stable after same-Gateway qualification.

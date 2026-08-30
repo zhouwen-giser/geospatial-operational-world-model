@@ -5,17 +5,16 @@
     {
       "operationId": "reference.resolve",
       "status": "PASS",
-      "requestId": "provider_request_8638e7421023401b8e2c7ae3638ce086",
-      "snapshotId": "sha256:fc9a5e818544fd4a07c22e0a1dbc0e2f8cb3e00203c42793dc67a75d2aeb431a",
-      "resultHash": "sha256:2df49f2a3cb7160653f4e65374693435fec279041b171ff285b7a713b9c178a5",
-      "timestamp": "2026-08-29T03:49:32.253Z",
+      "resultHash": "sha256:17aecf11c77300456593de4e3f8a8801fbf792d29946829cb79c95efa3b7dc42",
       "candidateCount": 2,
-      "downstreamExecutionCount": 0
+      "downstreamExecutionCount": 0,
+      "timestamp": "2026-08-30T01:04:55.888Z",
+      "evidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
     }
   ],
   "status": "PASS",
   "hardcodedReferenceUsed": false,
   "notes": [
-    "Ambiguity returned two candidates and stopped before downstream execution."
+    "Ambiguity stopped execution before any downstream world or spatial operation."
   ]
 }

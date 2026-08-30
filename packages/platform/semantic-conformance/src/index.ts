@@ -105,7 +105,8 @@ export interface TypeScriptInspection {
 
 /** Compiler API, including dynamic imports, handler methods and literal schema/status construction. */
 export function inspectTypeScript(source: string, filename: string, repositoryRoot: string): TypeScriptInspection {
-  const tree = ts.createSourceFile(filename, source, ts.ScriptTarget.Latest, true);
+  const canonicalSource = source.replace(/\r\n?/gu, "\n");
+  const tree = ts.createSourceFile(filename, canonicalSource, ts.ScriptTarget.Latest, true);
   const symbols = new Set<string>(), calls = new Set<string>(), imports = new Set<string>();
   const strings = new Set<string>(), properties = new Set<string>(), siblings = new Set<string>();
   const portable = (path: string) => path.replaceAll("\\", "/");

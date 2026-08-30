@@ -13,6 +13,25 @@ The 0.7.0 decision is bound to fresh exact-source evidence under
 `reports/gowm-v0.7`. Earlier reports and a running shared sample instance do not
 prove this candidate.
 
+## Historical v0.6.4 baseline
+
+The v0.7 candidate incorporates the merged v0.6.4 Reference Composability
+Repair. Its qualified baseline remains bound to its own exact-source evidence:
+
+- Resolver descriptors bind to the corresponding immutable catalog/object
+  version so their ReferenceKeys can be passed unchanged to current validation,
+  geometry, world-state, and spatial operations.
+- Additive migration 062 projects current LayerFeature geometry through the
+  existing scoped read contract; migrations 001–061 remain frozen.
+- Qualification uses a unique Compose project, database, ports, volumes, and
+  image identity, with source revision embedded as OCI metadata.
+- Readiness is derived from the task package's 61 required acceptance cases;
+  the five WSGS cases are optional and must be reported consistently as one run.
+
+Those v0.6.4 results establish the inherited baseline; they do not replace
+fresh v0.7 qualification or authorize tag, release, package publication,
+production deployment, or production SLO claims.
+
 ## Scope and authority
 
 The formal registry contains 16 providers and 124 explicit Manifest 1.1

@@ -13,7 +13,7 @@
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
       "bytes": 65560,
-      "sha256": "14a9008359cf41146ebb3a57118adcca4049f4d29056b87c1c2a101a86f4ae8d"
+      "sha256": "218145fb630733e5e8bf5f4c1d2dca1af696cb1fa281d6e44e4b21ba7b2857f4"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -28,7 +28,7 @@
     {
       "path": "revisions/contract-catalog.json",
       "bytes": 229,
-      "sha256": "1f28b5381383661afdd110d65fa713432e3eb8ad1ff4b2b6d3ca263e77352138"
+      "sha256": "ef0374a73f1bf604a00e5d739db3417067020c2cf077d709eddfb4e21894b1b2"
     },
     {
       "path": "revisions/semantic-catalog.json",
@@ -72,8 +72,8 @@
     },
     {
       "path": "schemas/gowm-v0.6.2/provider-semantic-authority-map.v1.json",
-      "bytes": 2143,
-      "sha256": "6ea958d5fbed5db5d4e8058bbeba02d534ebfc9388c8460a6d48ee435ea78233"
+      "bytes": 2160,
+      "sha256": "e045bacb2f10a111590b97bec64132171b90d7e6bb057ec13f0f93695dec753b"
     },
     {
       "path": "schemas/gowm-v0.6.2/semantic-attestation.schema.json",
@@ -177,8 +177,8 @@
     },
     {
       "path": "schemas/gowm-v0.7/capability-semantic-catalog-v1.1.schema.json",
-      "bytes": 1510,
-      "sha256": "6a22e46443061c96ba68bc71e76f7a1dfa34999cd5a98512a03e659a54cfd8e7"
+      "bytes": 1573,
+      "sha256": "ebec22dfecbe542304cb7cb7d080d0f3bca5c97516b5402df9a598ff05c46715"
     },
     {
       "path": "schemas/gowm-v0.7/capability-semantic-profile-v1.1.schema.json",
@@ -187,8 +187,8 @@
     },
     {
       "path": "schemas/gowm-v0.7/consumer-contract-bundle-manifest.schema.json",
-      "bytes": 1318,
-      "sha256": "d140b39ae773e779619b6b28cf830dac6f0ce51243f8b1adb87d26ecc0bc4924"
+      "bytes": 1349,
+      "sha256": "808c151b5a15bac61e0500603e1427d82f2632c84db0079fea95dcfc70c5c202"
     },
     {
       "path": "schemas/gowm-v0.7/historical-gap.schema.json",
@@ -212,13 +212,13 @@
     },
     {
       "path": "schemas/gowm-v0.7/operational-event-timeline.schema.json",
-      "bytes": 670,
-      "sha256": "dbd8bf948e28a48e8c7a8432ea7fabe9603e036adf6d1b522163993ecc5a1ce3"
+      "bytes": 689,
+      "sha256": "f5a4fd61a071c66780555675dac59420f12532e7e85917a4df05eb94f652dcb2"
     },
     {
       "path": "schemas/gowm-v0.7/operational-task-event.schema.json",
-      "bytes": 2377,
-      "sha256": "50eb9d3e312063ae5fffc81acdd1d12ef88fa4077e16be16d2498dc071c08d74"
+      "bytes": 2448,
+      "sha256": "6fde5078431395bf5ccc387864056d5f2c31d2ce4225c339465e41b4d89629ad"
     },
     {
       "path": "schemas/gowm-v0.7/query-snapshot-adherence.schema.json",
@@ -237,8 +237,8 @@
     },
     {
       "path": "schemas/gowm-v0.7/reference-key.schema.json",
-      "bytes": 214,
-      "sha256": "e3cc3cfc79d2c592319238e197faf37f0ab4781426c85e2170f39e4ed66d0bc6"
+      "bytes": 220,
+      "sha256": "efe7ec1edbc052a1affcbba67b94ac01befaeb6b928a8f2c35bd309f811951ba"
     },
     {
       "path": "schemas/gowm-v0.7/task-execution-interval-query.schema.json",
@@ -252,8 +252,8 @@
     },
     {
       "path": "schemas/gowm-v0.7/wsgs-southbound-operation-lock-v2.schema.json",
-      "bytes": 2517,
-      "sha256": "dbc8e0049ef96c4eed796f81a320a2efc92f782a36a2fb71efcc1a247b047898"
+      "bytes": 2566,
+      "sha256": "7b98e4c78da2969060a5a03fbdce450503422dc621591de8f19d934f40f6f99b"
     },
     {
       "path": "schemas/platform/capability-catalog.schema.json",
@@ -387,8 +387,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 138811,
-      "sha256": "43e959349dcba5aac1d252f0caaed1a103015f2ac27843bfc41d1d7fb43b34f1"
+      "bytes": 143104,
+      "sha256": "b395b246a2edc6c268a75aadfd4b25eb4e3029355c7621550352d525e2e3f48b"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -411,5 +411,5 @@
       "sha256": "cea3932eccd0316513bb6b9c56e906536767b109b7b5d64440d22571ab1acc31"
     }
   ],
-  "packageIntegrity": "sha512-E3jkCvGT1G6HnqLrBlvOPgFKYv5CxLxHiE+M8jA1yHx5aijYrX13OkN6FZIrYCzGfCUiO75z9S+XWcU/gciwwg=="
+  "packageIntegrity": "sha512-SVUXmQLtP1ZXm7l8I61bnBG+vKINxlHMIYs9DMb+PWrc1nibQdj75v3Z9ivx930mWetwTZ49xmQzrbR7lZxDJg=="
 }

@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.6.4:contract-compatibility-evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "baseline",
+    "target",
+    "migrationLock",
+    "referenceKey",
+    "operations",
+    "wsgsAdapter",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "baseline": { "$ref": "#/$defs/versionIdentity" },
+    "target": { "$ref": "#/$defs/versionIdentity" },
+    "migrationLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frozenCount", "beforeHash", "afterHash", "unchanged", "additiveMigration"],
+      "properties": {
+        "frozenCount": { "const": 61 },
+        "beforeHash": { "$ref": "#/$defs/digest" },
+        "afterHash": { "$ref": "#/$defs/digest" },
+        "unchanged": { "const": true },
+        "additiveMigration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": { "const": "database/migrations/062_reference_geometry_composability.sql" },
+            "sha256": { "$ref": "#/$defs/digest" }
+          }
+        }
+      }
+    },
+    "referenceKey": { "$ref": "#/$defs/subject" },
+    "operations": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/operation" }
+    },
+    "wsgsAdapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changeRequired", "basis"],
+      "properties": {
+        "changeRequired": { "const": false },
+        "basis": { "type": "string", "minLength": 1 }
+      }
+    },
+    "status": { "const": "PASS" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "versionIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "source"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^0\\.6\\.[34]$" },
+        "source": { "type": "string", "minLength": 1 }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "normalization", "beforeHash", "afterHash", "compatible"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "normalization": { "const": "CANONICAL_JSON_SORTED_KEYS_UTF8" },
+        "beforeHash": { "$ref": "#/$defs/digest" },
+        "afterHash": { "$ref": "#/$defs/digest" },
+        "compatible": { "const": true }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operationId",
+        "operationVersion",
+        "manifestPath",
+        "inputSchema",
+        "outputSchema",
+        "semanticProfile",
+        "implementationDigestBefore",
+        "implementationDigestAfter",
+        "implementationIdentityRefreshed",
+        "schemaCompatible"
+      ],
+      "properties": {
+        "operationId": { "enum": ["reference.resolve", "world.get-geometry"] },
+        "operationVersion": { "const": "1.0" },
+        "manifestPath": { "type": "string", "minLength": 1 },
+        "inputSchema": { "$ref": "#/$defs/subject" },
+        "outputSchema": { "$ref": "#/$defs/subject" },
+        "semanticProfile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["beforeHash", "afterHash", "publicContractBeforeHash", "publicContractAfterHash", "classification", "compatible"],
+          "properties": {
+            "beforeHash": { "$ref": "#/$defs/digest" },
+            "afterHash": { "$ref": "#/$defs/digest" },
+            "publicContractBeforeHash": { "$ref": "#/$defs/digest" },
+            "publicContractAfterHash": { "$ref": "#/$defs/digest" },
+            "classification": { "enum": ["UNCHANGED", "ADDITIVE_DOCUMENTATION"] },
+            "compatible": { "const": true }
+          }
+        },
+        "implementationDigestBefore": { "$ref": "#/$defs/digest" },
+        "implementationDigestAfter": { "$ref": "#/$defs/digest" },
+        "implementationIdentityRefreshed": { "const": true },
+        "schemaCompatible": { "const": true }
+      }
+    }
+  }
+}

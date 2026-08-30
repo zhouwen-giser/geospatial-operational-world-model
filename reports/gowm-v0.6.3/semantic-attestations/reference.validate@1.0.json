@@ -55,7 +55,7 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/platform-validation-provider/src/postgres-authority.ts",
-      "sha256": "d7ea8ce9e887586a0d53a2db9bf26253b3893705fec68a87da42f91f1aadf876"
+      "sha256": "955eb86bad469471212df28c8d9fdf1e160c90737560656b8e822ff679244802"
     },
     {
       "kind": "SQL_IMPLEMENTATION",

@@ -17,6 +17,7 @@ import { realizeSampleWorld, type SampleWorldRealization } from "./model.js";
 import {
   sampleGatewayBaseUrl,
   samplePostgresEndpoint,
+  sampleRuntimeIdentityFromValues,
   type SampleRuntimeEnvironment
 } from "./runtime.js";
 
@@ -66,6 +67,25 @@ export interface LiveSampleInstanceStatus {
   revision: "v1" | "v2";
   loadedStateHash: string;
   requiredAvailable: number;
+}
+
+export function sampleRuntimeDatabaseName(runtime: SampleRuntimeEnvironment): string {
+  const expected = sampleRuntimeIdentityFromValues(runtime.values).databaseName;
+  if (runtime.values.POSTGRES_DB !== expected) {
+    throw new Error("Sample runtime POSTGRES_DB differs from the validated runtime identity");
+  }
+  return expected;
+}
+
+export function assertLiveSampleDatabaseIdentity(
+  runtime: SampleRuntimeEnvironment,
+  actualDatabaseName: string | undefined
+): string {
+  const expected = sampleRuntimeDatabaseName(runtime);
+  if (actualDatabaseName !== expected) {
+    throw new Error("Live sample database identity differs from validated runtime POSTGRES_DB");
+  }
+  return expected;
 }
 
 export async function probeLiveSampleInstance(
@@ -326,10 +346,11 @@ async function inspectLiveDatabase(
   realization: SampleWorldRealization
 ): Promise<Omit<LiveSampleInstanceStatus, "requiredAvailable">> {
   const postgres = samplePostgresEndpoint(runtime);
+  const expectedDatabaseName = sampleRuntimeDatabaseName(runtime);
   const pool = new Pool({
     host: postgres.host,
     port: postgres.port,
-    database: runtime.values.POSTGRES_DB,
+    database: expectedDatabaseName,
     user: "gowm_sample_loader_service",
     password: runtime.values.SAMPLE_LOADER_DB_PASSWORD,
     max: 1,
@@ -339,15 +360,23 @@ async function inspectLiveDatabase(
   try {
     const marker = await pool.query<{
       database_name: string;
+      marker_database_name: string;
+      runtime_instance_id: string;
       fixture_id: string;
       schema_version: string;
       allowed_data_scopes: string[];
     }>(`
-      SELECT current_database() AS database_name,fixture_id,schema_version,allowed_data_scopes
+      SELECT current_database() AS database_name,database_name AS marker_database_name,
+             runtime_instance_id,fixture_id,schema_version,allowed_data_scopes
       FROM gowm_sample_fixture.instance_marker
     `);
     const markerRow = marker.rows[0];
-    if (marker.rows.length !== 1 || markerRow?.database_name !== "gowm_wsgs_sample" ||
+    if (marker.rows.length !== 1 || !markerRow) {
+      throw new Error("Live sample database marker mismatch");
+    }
+    assertLiveSampleDatabaseIdentity(runtime, markerRow.database_name);
+    if (markerRow.marker_database_name !== expectedDatabaseName ||
+        markerRow.runtime_instance_id !== sampleRuntimeIdentityFromValues(runtime.values).instanceId ||
         markerRow.fixture_id !== FIXTURE_ID || markerRow.schema_version !== FIXTURE_SCHEMA_VERSION ||
         canonicalJson(markerRow.allowed_data_scopes) !== canonicalJson([...EXPECTED_SCOPES])) {
       throw new Error("Live sample database marker mismatch");
@@ -391,7 +420,7 @@ async function inspectLiveDatabase(
     const loadedStateHash = await sampleStateHash(pool);
     return {
       fixtureId: FIXTURE_ID,
-      databaseMarker: "gowm_wsgs_sample/gowm-wsgs-sample-world/1.0",
+      databaseMarker: `${expectedDatabaseName}/${FIXTURE_SCHEMA_VERSION}`,
       realizationId: realization.fixture.realizationId,
       revision,
       loadedStateHash

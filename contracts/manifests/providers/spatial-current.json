@@ -5,7 +5,7 @@
     "providerId": "gowm.spatial-analysis.bridge",
     "providerVersion": "0.2.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:d257d2e9d46f379b0b9a6343fcc4830edb5c7168d2237dba38da3e5b1984ece7",
+    "implementationDigest": "sha256:e89d1f3c0131a4123152e8599e70de0c5d8fbef6aaad31dbf1e78bb505d0b51f",
     "sourceRef": "urn:gowm:source:zip:spatial-analysis-service:1.0.0"
   },
   "endpoints": {
