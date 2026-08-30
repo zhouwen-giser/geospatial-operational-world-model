@@ -227,7 +227,7 @@ export class OperationalRealityProviderRepository {
   }
 
   private async result(scope:string,output:unknown,rows:number,candidates:number,status:"COMPLETED"|"NO_DATA"="COMPLETED"):Promise<OperationalProviderResult> {
-    return {output,status,rows,candidates,warnings:[],dataSnapshot:await this.snapshot(scope)};
+    return {output,status,rows,candidates,warnings:[],dataSnapshot:await this.snapshot(scope,await this.reads.snapshot(scope))};
   }
 
   private async snapshot(scope:string,read?:{worldVersion:number;scopeDigest:string}):Promise<DataSnapshotContext> {
@@ -238,9 +238,9 @@ export class OperationalRealityProviderRepository {
     if (!ref) throw new ProviderProtocolError("SCOPE_DENIED","data scope is unavailable");
     const capturedAt=this.now().toISOString();
     return {
-      consistency:"CONSISTENT_AT_START",capturedAt,scopeDigest:(read?.scopeDigest??sha256({scope})) as `sha256:${string}`,resources:[{
-        referenceKey:{namespace:"gowm",kind:"DATA_SCOPE",id:ref,version:"1"},authority:"GOWM Foundation",
-        pinning:"AT_LEAST",digest:sha256({scope,capturedAt,...(read===undefined?{}:{worldVersion:read.worldVersion})})
+      consistency:"CONSISTENT_AT_START",capturedAt,scopeDigest:sha256({dataScopeKey:scope}),resources:[{
+        referenceKey:{namespace:"gowm",kind:"DATA_SCOPE",id:ref,version:read===undefined?"1":String(read.worldVersion)},authority:"GOWM Foundation",
+        pinning:"AT_LEAST",digest:(read?.scopeDigest??sha256({dataScopeKey:scope,referenceKey:ref})) as `sha256:${string}`
       }]
     };
   }

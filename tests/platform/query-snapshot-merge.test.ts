@@ -73,11 +73,11 @@ function providerResource(
   };
 }
 
-function providerSnapshot(resources: ProviderResource[]): DataSnapshotContext {
+function providerSnapshot(resources: ProviderResource[], scopeDigest: `sha256:${string}` = digest("9")): DataSnapshotContext {
   return {
     consistency: "PINNED",
     capturedAt,
-    scopeDigest: digest("9"),
+    scopeDigest,
     resources
   };
 }
@@ -133,6 +133,97 @@ describe("v0.7 effective snapshot merge", () => {
       pinning: "PINNED"
     }]);
     coordinator.assertManifestHash(result.effective);
+  });
+
+  it("verifies an opaque DATA_SCOPE reference against the delegated scope digest", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest();
+    const scopedDescriptor = descriptor("DISCOVER_RESOURCES");
+    scopedDescriptor.scopePolicy = "DATA_SCOPE_REQUIRED";
+    const result = coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([
+        providerResource("opaque-reference-key", {
+          namespace: "gowm",
+          kind: "DATA_SCOPE",
+          version: "17",
+          digest: digest("a")
+        })
+      ], sha256({ dataScopeKey: "delegated-scope", datasetScopeKey: "tenant-a" })),
+      descriptor: scopedDescriptor,
+      nodeId: "world-current-state",
+      dataScopeClaim: "delegated-scope",
+      datasetScopeClaim: "tenant-a"
+    });
+
+    expect(result.effective.resources).toEqual([{
+      resourceKind: "DATA_SCOPE",
+      resourceId: "gowm:opaque-reference-key",
+      version: "17",
+      contentHash: digest("a"),
+      pinning: "PINNED"
+    }]);
+    expect(result.warnings).toContain("Provider scopeDigest was verified against the delegated Gateway scope");
+    coordinator.assertManifestHash(result.effective);
+  });
+
+  it("fails closed when a DATA_SCOPE resource is not bound to the delegated scope digest", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest();
+    const scopedDescriptor = descriptor("DISCOVER_RESOURCES");
+    scopedDescriptor.scopePolicy = "DATA_SCOPE_REQUIRED";
+    const error = protocolError(() => coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([
+        providerResource("opaque-reference-key", { namespace: "gowm", kind: "DATA_SCOPE" })
+      ], sha256({ dataScopeKey: "different-scope" })),
+      descriptor: scopedDescriptor,
+      nodeId: "world-current-state",
+      dataScopeClaim: "delegated-scope"
+    }));
+
+    expect(error).toMatchObject({ code: "SCOPE_DENIED", retryable: false, details: { stage: "SNAPSHOT" } });
+  });
+
+  it("verifies required scope policy even when a Provider omits a DATA_SCOPE resource", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest();
+    const scopedDescriptor = descriptor("DISCOVER_RESOURCES");
+    scopedDescriptor.scopePolicy = "DATA_SCOPE_REQUIRED";
+    const error = protocolError(() => coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([
+        providerResource("dataset-a", { namespace: "gowm", kind: "DATASET" })
+      ], sha256({ dataScopeKey: "different-scope" })),
+      descriptor: scopedDescriptor,
+      nodeId: "catalog-provider",
+      dataScopeClaim: "delegated-scope"
+    }));
+
+    expect(error).toMatchObject({ code: "SCOPE_DENIED", retryable: false, details: { stage: "SNAPSHOT" } });
+  });
+
+  it("does not allow a DATASET_SCOPE_REQUIRED Provider to downgrade to a data-only digest", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest();
+    const datasetDescriptor = descriptor("DISCOVER_RESOURCES");
+    datasetDescriptor.scopePolicy = "DATASET_SCOPE_REQUIRED";
+    const error = protocolError(() => coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([
+        providerResource("dataset-a", { namespace: "gowm", kind: "DATASET" })
+      ], sha256({ dataScopeKey: "delegated-scope" })),
+      descriptor: datasetDescriptor,
+      nodeId: "dataset-provider",
+      dataScopeClaim: "delegated-scope",
+      datasetScopeClaim: "tenant-a"
+    }));
+
+    expect(error).toMatchObject({ code: "SCOPE_DENIED", retryable: false, details: { stage: "SNAPSHOT" } });
   });
 
   it("is idempotent when a resolver reports the exact same resource again", () => {

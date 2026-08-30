@@ -114,7 +114,7 @@
     "validate:stas-contracts": "python3 scripts/export-stas-provider-contracts.py --check",
     "validate:world-platform-canary": "node --import tsx validation/scripts/world-platform-semantic-canary.mjs",
     "validate:world-platform-regression": "node --import tsx validation/scripts/world-platform-regression.mjs",
-    "validate:world-platform-final": "node --import tsx validation/scripts/world-platform-final-candidate.mjs",
+    "validate:world-platform-final": "node --import tsx validation/scripts/world-platform-final-dispatch.mjs",
     "sample-world:generate": "node --import tsx scripts/sample-world/cli.ts generate",
     "sample-world:up": "node --import tsx scripts/sample-world/cli.ts up",
     "sample-world:wait": "node --import tsx scripts/sample-world/cli.ts wait",

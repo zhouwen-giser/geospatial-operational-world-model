@@ -1,7 +1,10 @@
 import { describe,expect,it } from "vitest";
 import type pg from "pg";
+import type { DataSnapshotContext } from "../../packages/platform/contract-runtime/src/index.js";
 import { getContractSchemaHash } from "../../packages/platform/contract-runtime/src/index.js";
+import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 import { createOperationalRealityProvider } from "../../services/providers/operational-reality-provider/src/provider.js";
+import { OperationalRealityProviderRepository } from "../../services/providers/operational-reality-provider/src/repository.js";
 import { loadControlledProviderDeployments } from "../../services/gateway/world-capability-gateway/src/config.js";
 
 const pool={} as pg.Pool;
@@ -34,5 +37,19 @@ describe("operational reality provider",()=>{
     const deployment=deployments.find((item)=>item.providerId==="gowm.operational-reality");
     expect(deployments).toHaveLength(5);
     expect(deployment?.approvedManifest).toEqual(createOperationalRealityProvider({pool}).runtime.manifest);
+  });
+  it("separates the delegated scope digest from the versioned operational evidence digest",async()=>{
+    const evidenceDigest=`sha256:${"a".repeat(64)}` as const;
+    const scopedPool={query:async()=>({rows:[{reference_key:"wrf_scope_opaque"}]})} as unknown as pg.Pool;
+    const repository=new OperationalRealityProviderRepository(scopedPool,()=>new Date("2026-08-30T00:00:00Z"));
+    const snapshot=await (repository as unknown as {
+      snapshot(scope:string,read:{worldVersion:number;scopeDigest:string}):Promise<DataSnapshotContext>;
+    }).snapshot("scope-a",{worldVersion:17,scopeDigest:evidenceDigest});
+
+    expect(snapshot.scopeDigest).toBe(sha256({dataScopeKey:"scope-a"}));
+    expect(snapshot.resources).toEqual([expect.objectContaining({
+      referenceKey:{namespace:"gowm",kind:"DATA_SCOPE",id:"wrf_scope_opaque",version:"17"},
+      digest:evidenceDigest
+    })]);
   });
 });
