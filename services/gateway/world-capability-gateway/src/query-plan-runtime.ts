@@ -35,7 +35,7 @@ import type { QueryJobContext, QueryPlanStore } from "./query-plan-store.js";
 import type { GatewayPrincipal, ResolvedCapability } from "./types.js";
 import { publicErrorMessage, redactPublicDetails } from "./redaction.js";
 import { principalContextHash } from "./principal-context.js";
-import { QuerySnapshotCoordinator } from "./query-snapshot-coordinator.js";
+import { ProviderSnapshotMismatchError, QuerySnapshotCoordinator } from "./query-snapshot-coordinator.js";
 
 export type WorldQueryExecutionMode = "SYNC" | "ASYNC";
 
@@ -157,7 +157,7 @@ export class WorldQueryRuntime {
     const context = await this.options.store.getByJobId(jobId);
     if (!context || ["COMPLETED", "PARTIAL", "FAILED", "CANCELLED"].includes(context.job.status)) return;
     const mapped = mapProviderError(error);
-    if (mapped.details?.stage === "EXECUTION_FENCE") return;
+    if (["EXECUTION_FENCE", "SNAPSHOT_COMMIT"].includes(String(mapped.details?.stage))) return;
     const now = this.#now().toISOString();
     await this.options.store.updateJob({
       ...context.job,
@@ -234,6 +234,8 @@ export class WorldQueryRuntime {
       const route = validated.routes.get(node.nodeId);
       if (!route) throw new Error(`validated route for ${node.nodeId} disappeared`);
       let runningNode: WorldQueryResultNodeResult | undefined;
+      let nodeSnapshotEvidence: NodeSnapshotEvidence | undefined;
+      let committingNodeResult = false;
       try {
         this.#snapshots.assertProviderMayExecute({
           requested: requestedSnapshotManifest,
@@ -258,7 +260,9 @@ export class WorldQueryRuntime {
         const input = this.#resolveNodeInput(node, route.descriptor, context.submission.parameters, nodeResults, validated.routes);
         this.#assertValue(route.descriptor.inputSchemaUri, route.descriptor.inputSchemaHash, input, node.nodeId, "input");
         const inputHash = sha256(input);
-        const nodeStartedAt = this.#now().toISOString();
+        const nodeStartedAt = prior?.status === "RUNNING" && prior.startedAt !== undefined
+          ? prior.startedAt
+          : this.#now().toISOString();
         const running = {
           ...queuedNode(node),
           status: "RUNNING" as const,
@@ -271,14 +275,20 @@ export class WorldQueryRuntime {
         runningNode = running;
         await this.options.store.putNode(jobId, running, fence);
 
+        const nodeStartedAtMs = Date.parse(nodeStartedAt);
         const nodeDeadlineMs = Math.min(
           deadline,
-          this.#now().getTime() + node.budget.maximumExecutionMs,
-          this.#now().getTime() + route.descriptor.execution.maximumTimeoutMs
+          nodeStartedAtMs + node.budget.maximumExecutionMs,
+          nodeStartedAtMs + route.descriptor.execution.maximumTimeoutMs
         );
         const request: GatewayExecuteRequest = {
           requestVersion: "1.0",
-          requestId: newOpaqueId("query_node"),
+          requestId: nodeExecutionRequestId(
+            jobId,
+            node.nodeId,
+            inputHash,
+            effectiveSnapshotManifest.manifestHash
+          ),
           idempotencyKey: nodeIdempotencyKey(
             context.submission.idempotencyKey,
             node.nodeId,
@@ -326,6 +336,7 @@ export class WorldQueryRuntime {
               effective: effectiveSnapshotManifest,
               adherence: this.#snapshots.adherence(node.nodeId, route.descriptor, effectiveSnapshotManifest, envelope),
               discoveredResourceCount: 0,
+              observedResourceIdentities: [] as string[],
               warnings: [] as string[]
             }
           : this.#snapshots.mergeProviderSnapshot({
@@ -345,6 +356,11 @@ export class WorldQueryRuntime {
                 : { datasetScopeClaim: context.principal.datasetScopeClaim })
             });
         const adherence = merge.adherence;
+        nodeSnapshotEvidence = snapshotEvidence(
+          merge,
+          effectiveSnapshotManifest,
+          persisted.effectiveSnapshotRevision
+        );
         this.#snapshots.assertAdherence(context.submission.snapshotPolicy, adherence);
         if (["ADVANCED_COMPATIBLE", "MISMATCHED", "UNSUPPORTED"].includes(adherence.status)) {
           warnings.push(`${node.nodeId}: snapshot ${adherence.status}`);
@@ -376,10 +392,12 @@ export class WorldQueryRuntime {
           finishedAt,
           inputHash,
           outputHash: sha256(envelope),
+          ...nodeSnapshotEvidence,
           result: envelope,
           ...(envelope.error === undefined ? {} : { error: withNodeIdentity(envelope.error, node.nodeId, route.manifest.provider.providerId) })
         };
         nodeResults.set(node.nodeId, completed);
+        committingNodeResult = true;
         await this.options.store.commitNodeResult(
           jobId,
           completed,
@@ -391,6 +409,7 @@ export class WorldQueryRuntime {
               },
           fence
         );
+        committingNodeResult = false;
         warnings.push(...merge.warnings);
         warnings.push(...envelope.warnings.map((warning) => `${node.nodeId}: ${warning}`));
         if (status === "FAILED") {
@@ -398,7 +417,25 @@ export class WorldQueryRuntime {
           failFast = node.failurePolicy === "FAIL_FAST";
         }
       } catch (error) {
+        if (error instanceof ProviderSnapshotMismatchError) {
+          nodeSnapshotEvidence = snapshotEvidence(
+            error.mergeResult,
+            effectiveSnapshotManifest,
+            persisted.effectiveSnapshotRevision
+          );
+        }
         const mapped = mapProviderError(error);
+        if (committingNodeResult) {
+          // The store owns the atomic node/snapshot transaction. If its outcome
+          // is unavailable, retry from persisted state instead of fabricating a
+          // Provider failure or an Effective Snapshot revision in a second write.
+          if (mapped.details?.stage === "EXECUTION_FENCE") throw mapped;
+          throw new ProviderProtocolError(mapped.code, mapped.message, {
+            retryable: mapped.retryable,
+            details: { ...mapped.details, stage: "SNAPSHOT_COMMIT" },
+            cause: mapped
+          });
+        }
         if (mapped.details?.stage === "EXECUTION_FENCE") {
           // A superseded worker must not borrow the replacement worker's fence
           // to publish either a failure or a cancellation.
@@ -415,7 +452,17 @@ export class WorldQueryRuntime {
           await this.options.store.putNode(jobId, cancelled, latest?.executionFence);
           break;
         }
-        const failed = failedNode(node, route, mapped, runningNode ?? prior, this.#now().toISOString());
+        if (nodeSnapshotEvidence !== undefined && !(error instanceof ProviderSnapshotMismatchError)) {
+          nodeSnapshotEvidence = uncommittedSnapshotEvidence(
+            nodeSnapshotEvidence,
+            effectiveSnapshotManifest,
+            persisted.effectiveSnapshotRevision
+          );
+        }
+        const failed = {
+          ...failedNode(node, route, mapped, runningNode ?? prior, this.#now().toISOString()),
+          ...(nodeSnapshotEvidence ?? {})
+        };
         nodeResults.set(node.nodeId, failed);
         const latest = await this.options.store.getByJobId(jobId);
         await this.options.store.putNode(jobId, failed, latest?.executionFence);
@@ -448,7 +495,7 @@ export class WorldQueryRuntime {
     const finalContext = await this.options.store.getByJobId(jobId);
     if (!finalContext) throw new Error(`query job ${jobId} disappeared during result assembly`);
     const effectiveSnapshotManifest = finalContext.effectiveSnapshotManifest;
-    const snapshotAdherence = this.#snapshotAdherence(context.submission, orderedResults, validated.routes, effectiveSnapshotManifest);
+    const snapshotAdherence = this.#snapshotAdherence(orderedResults, validated.routes);
     const finishedAt = this.#now().toISOString();
     const status: WorldQueryResult["status"] = cancelled
       ? "CANCELLED"
@@ -688,7 +735,7 @@ export class WorldQueryRuntime {
         nodeId: node.nodeId,
         status: "UNSUPPORTED" as const,
         checkedResources: 0,
-        mismatches: [{ resourceKind: "SNAPSHOT", resourceId: node.nodeId, reason: "RESOURCE_MISSING" as const }]
+        mismatches: [{ resourceKind: "SNAPSHOT", resourceId: node.nodeId, reason: "NODE_CANCELLED" as const }]
       })),
       startedAt: context.job.startedAt ?? context.job.createdAt,
       finishedAt,
@@ -697,17 +744,75 @@ export class WorldQueryRuntime {
   }
 
   #snapshotAdherence(
-    _submission: WorldQuerySubmission,
     results: readonly WorldQueryResultNodeResult[],
-    routes: ReadonlyMap<string, ResolvedCapability>,
-    manifest: QuerySnapshotManifest
+    routes: ReadonlyMap<string, ResolvedCapability>
   ): QuerySnapshotAdherence[] {
     return results.map((node) => {
       const route = routes.get(node.nodeId);
       if (!route) return { nodeId: node.nodeId, status: "UNSUPPORTED", checkedResources: 0 };
-      return this.#snapshots.adherence(node.nodeId, route.descriptor, manifest, node.result);
+      if (route.descriptor.dataBinding === "WORLD_INDEPENDENT") {
+        return { nodeId: node.nodeId, status: "NOT_APPLICABLE", checkedResources: 0, mismatches: [] };
+      }
+      if (node.snapshotAdherence !== undefined) return structuredClone(node.snapshotAdherence);
+      if (node.status === "CANCELLED") {
+        return unsupportedAdherence(node.nodeId, "NODE_CANCELLED");
+      }
+      if (["QUEUED", "RUNNING", "SKIPPED"].includes(node.status)) {
+        return { nodeId: node.nodeId, status: "NOT_APPLICABLE", checkedResources: 0,
+          mismatches: [{ resourceKind: "SNAPSHOT", resourceId: node.nodeId, reason: "NODE_NOT_EXECUTED" }] };
+      }
+      return unsupportedAdherence(node.nodeId, "LEGACY_ADHERENCE_NOT_RECORDED");
     });
   }
+}
+
+type NodeSnapshotEvidence = Pick<
+  WorldQueryResultNodeResult,
+  "snapshotAdherence" | "effectiveSnapshotBeforeHash" | "effectiveSnapshotAfterHash" |
+  "effectiveSnapshotRevisionBefore" | "effectiveSnapshotRevisionAfter" |
+  "observedSnapshotResourceIdentities"
+>;
+
+function snapshotEvidence(
+  merge: ReturnType<QuerySnapshotCoordinator["mergeProviderSnapshot"]>,
+  before: QuerySnapshotManifest,
+  revisionBefore: number
+): NodeSnapshotEvidence {
+  const changed = merge.effective.manifestHash !== before.manifestHash;
+  return {
+    snapshotAdherence: structuredClone(merge.adherence),
+    effectiveSnapshotBeforeHash: before.manifestHash,
+    effectiveSnapshotAfterHash: merge.effective.manifestHash,
+    effectiveSnapshotRevisionBefore: revisionBefore,
+    effectiveSnapshotRevisionAfter: revisionBefore + (changed ? 1 : 0),
+    observedSnapshotResourceIdentities: [...merge.observedResourceIdentities]
+  };
+}
+
+function uncommittedSnapshotEvidence(
+  evidence: NodeSnapshotEvidence,
+  before: QuerySnapshotManifest,
+  revisionBefore: number
+): NodeSnapshotEvidence {
+  return {
+    ...evidence,
+    effectiveSnapshotBeforeHash: before.manifestHash,
+    effectiveSnapshotAfterHash: before.manifestHash,
+    effectiveSnapshotRevisionBefore: revisionBefore,
+    effectiveSnapshotRevisionAfter: revisionBefore
+  };
+}
+
+function unsupportedAdherence(
+  nodeId: string,
+  reason: "NODE_CANCELLED" | "LEGACY_ADHERENCE_NOT_RECORDED" | "NODE_NOT_EXECUTED"
+): QuerySnapshotAdherence {
+  return {
+    nodeId,
+    status: "UNSUPPORTED",
+    checkedResources: 0,
+    mismatches: [{ resourceKind: "SNAPSHOT", resourceId: nodeId, reason }]
+  };
 }
 
 function queuedNode(node: WorldQueryPlanV2Node): WorldQueryResultNodeResult {
@@ -721,6 +826,12 @@ function skippedNode(node: WorldQueryPlanV2Node, message: string, finishedAt: st
     status: "SKIPPED",
     attempt: 0,
     finishedAt,
+    snapshotAdherence: {
+      nodeId: node.nodeId,
+      status: "NOT_APPLICABLE",
+      checkedResources: 0,
+      mismatches: [{ resourceKind: "SNAPSHOT", resourceId: node.nodeId, reason: "NODE_NOT_EXECUTED" }]
+    },
     error: platformError(newOpaqueId("query_node"), "NODE_SKIPPED", message, false, node.nodeId)
   };
 }
@@ -732,6 +843,7 @@ function cancelledNode(node: WorldQueryPlanV2Node, finishedAt: string, attempt: 
     status: "CANCELLED",
     attempt,
     finishedAt,
+    snapshotAdherence: unsupportedAdherence(node.nodeId, "NODE_CANCELLED"),
     error: platformError(newOpaqueId("query_node"), "NODE_CANCELLED", "Node execution was cancelled", false, node.nodeId)
   };
 }
@@ -751,6 +863,9 @@ function failedNode(
     attempt: previous?.status === "RUNNING" ? previous.attempt : (previous?.attempt ?? 0) + 1,
     ...(previous?.startedAt === undefined ? {} : { startedAt: previous.startedAt }),
     finishedAt,
+    snapshotAdherence: route.descriptor.dataBinding === "WORLD_INDEPENDENT"
+      ? { nodeId: node.nodeId, status: "NOT_APPLICABLE", checkedResources: 0, mismatches: [] }
+      : unsupportedAdherence(node.nodeId, "NODE_NOT_EXECUTED"),
     ...(previous?.inputHash === undefined ? {} : { inputHash: previous.inputHash }),
     error: platformError(
       newOpaqueId("query_node"),
@@ -864,6 +979,15 @@ function nodeIdempotencyKey(
   return candidate.length <= 256
     ? candidate
     : `dag:${sha256({ base, nodeId, inputHash, effectiveManifestHash }).slice("sha256:".length)}`;
+}
+
+function nodeExecutionRequestId(
+  jobId: string,
+  nodeId: string,
+  inputHash: string,
+  effectiveManifestHash: string
+): string {
+  return `query_node_${sha256({ jobId, nodeId, inputHash, effectiveManifestHash }).slice("sha256:".length)}`;
 }
 
 function platformError(

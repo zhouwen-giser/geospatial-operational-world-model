@@ -6,7 +6,7 @@ import { withMigratedV07Database } from "./gowm-v07-postgres-harness.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const expectedMigrationHead = "067_historical_trajectory_contract.sql";
-const migrationHead = await currentMigrationHead();
+const migrationHead = await frozenV07MigrationHead();
 if (migrationHead !== expectedMigrationHead) {
   throw new Error(`unexpected PR-2 migration head: ${String(migrationHead)}`);
 }
@@ -85,9 +85,10 @@ process.stdout.write(`${JSON.stringify({
   sharedRuntimeMutated: false
 })}\n`);
 
-async function currentMigrationHead() {
+async function frozenV07MigrationHead() {
   const files = (await readdir(resolve(root, "database/migrations")))
     .filter((name) => /^\d{3}_.+\.sql$/u.test(name))
+    .filter((name) => Number(name.slice(0, 3)) <= 67)
     .sort();
   return files.at(-1);
 }

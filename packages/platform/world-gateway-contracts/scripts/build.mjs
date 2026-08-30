@@ -10,7 +10,7 @@ const { compareUnicodeCodePoints } = await import("../../contract-runtime/src/ca
 const packageRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const repositoryRoot = resolve(packageRoot, "../../..");
 const defaultOutputRoot = resolve(process.argv[2] || join(packageRoot, "bundle"));
-const reportRoot = resolve(repositoryRoot, process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-a/world-platform");
+const reportRoot = resolve(repositoryRoot, process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-b/world-platform");
 
 const compareCanonicalText = compareUnicodeCodePoints;
 const canonical = (value) => JSON.stringify(value, (_key, item) => {

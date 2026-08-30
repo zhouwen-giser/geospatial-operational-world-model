@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.world-evidence",
+  "operationId": "world.get-geometry",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:cc8df371406aff181616832bf4b6824e30d2cbc50186164b21c1a55e61680d11",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/world-evidence-provider.json",
+      "sha256": "11722e25afbff2899bec94dc8ddac6bff4a4f5dc4d0d6937e13110f3cfd0835b"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/world-evidence-provider.json",
+      "sha256": "11722e25afbff2899bec94dc8ddac6bff4a4f5dc4d0d6937e13110f3cfd0835b"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/catalog-query-request.schema.json",
+      "sha256": "6ad1a9f486f517cffc8d49dd588b5e48a2bfe2eac20c872a90f9acb9ea5981e8"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/world-fact-result.schema.json",
+      "sha256": "920062e401515fc021aebe87dde56023dcfadfbf2bb59d2d791c9a1b86966ddb"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/provider.ts",
+      "sha256": "4a09ae7ae822e9abb394537a749a8cf66e4f169156f9b29aa69ad6105d12a70f",
+      "symbol": "createGroundingCatalogProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/repository.ts",
+      "sha256": "04f0f735387adbe448e7bf402171ce144d0bc3982e6c1403dd6d6610e66c4cbf"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/grounding-catalog-provider.test.ts",
+      "sha256": "191fccb726af2759251af310ee94a16e69fd90681a6e730b37b2b7ae2d5f0467"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/023_world_evidence_read_contract.sql",
+      "sha256": "600841b9bc0be3f77cbb0b39ffd8bee03059d457297f6fc267dbc8a581d8c197"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/062_reference_geometry_composability.sql",
+      "sha256": "7b8a606e3258baa2f3e68c88e81abacb289615cf960a1af20c8a9f4c2074539c"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Migration 023 remains authoritative for WORLD_OBJECT geometry; migration 062 adds scoped exact-pin LAYER_FEATURE geometry. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

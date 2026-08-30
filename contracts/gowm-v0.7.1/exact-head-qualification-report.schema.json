@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7.1:exact-head-qualification-report",
+  "title": "GowmV071ExactHeadQualificationReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "candidateCommit",
+    "candidateTree",
+    "generatedAt",
+    "evidenceAuthority",
+    "ciSource",
+    "reportId",
+    "status"
+  ],
+  "allOf": [
+    {
+      "if": { "required": ["command"] },
+      "then": { "required": ["exitCode", "log", "trackedWorktreeCleanAfter"] }
+    },
+    {
+      "if": {
+        "required": ["command"],
+        "properties": { "status": { "const": "PASS" } }
+      },
+      "then": {
+        "properties": {
+          "exitCode": { "const": 0 },
+          "trackedWorktreeCleanAfter": { "const": true }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "reportId": { "const": "source-lock" } } },
+      "then": { "required": ["trackedWorktreeCleanAtStart"] }
+    },
+    {
+      "if": { "properties": { "reportId": { "const": "wsgs-historical-consumer-lock" } } },
+      "then": { "required": ["lock"] }
+    },
+    {
+      "if": { "properties": { "reportId": { "const": "final-closure-report" } } },
+      "then": { "required": ["checks"] }
+    }
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "candidateCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "candidateTree": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "evidenceAuthority": { "const": "IMMUTABLE_CI_ARTIFACT" },
+    "ciSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["githubRepository", "githubWorkflowRef", "githubRunId", "githubRunAttempt"],
+      "properties": {
+        "githubRepository": { "const": "zhouwen-giser/geospatial-operational-world-model" },
+        "githubWorkflowRef": { "const": "zhouwen-giser/geospatial-operational-world-model/.github/workflows/gowm-v071-exact-head-qualification.yml@refs/heads/main" },
+        "githubRunId": { "type": "string", "pattern": "^[1-9][0-9]{0,31}$" },
+        "githubRunAttempt": { "type": "string", "pattern": "^[1-9][0-9]{0,31}$" }
+      }
+    },
+    "reportId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+    "status": { "enum": ["PASS", "FAIL", "PARTIAL", "DEFERRED", "NOT_RUN"] },
+    "gate": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "command": {
+      "type": "array",
+      "maxItems": 64,
+      "items": { "type": "string", "maxLength": 2048 }
+    },
+    "exitCode": { "type": "integer", "minimum": 0, "maximum": 255 },
+    "log": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relativePath", "bytes", "sha256"],
+      "properties": {
+        "relativePath": { "type": "string", "pattern": "^logs/[a-z0-9][a-z0-9-]{0,63}\\.log$" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "marker": { "type": "string", "maxLength": 128 },
+    "reason": { "type": "string", "maxLength": 2048 },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reportId", "status", "sha256"],
+        "properties": {
+          "reportId": { "type": "string" },
+          "status": { "enum": ["PASS", "DEFERRED"] },
+          "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+        }
+      }
+    },
+    "lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relativePath", "bytes", "sha256"],
+      "properties": {
+        "relativePath": { "const": "GOWM_HISTORICAL_CONSUMER_LOCK.json" },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "trackedWorktreeCleanAtStart": { "type": "boolean" },
+    "trackedWorktreeCleanAfter": { "type": "boolean" }
+  }
+}

@@ -2,8 +2,8 @@
   "schemaVersion": "1.0",
   "packageName": "@gowm/world-gateway-contracts",
   "packageVersion": "0.7.1",
-  "contractCatalogRevision": "sha256:2cfdd69429653e6b5dade82d555e28cf327c85100d61bc3f64c220a224fab4b8",
-  "semanticCatalogHash": "sha256:9cb540bbda32d50bdcf9bd3f60d2974bd3fe02393a5c4914e30940dccb719ae2",
+  "contractCatalogRevision": "sha256:062a366e8e633a820e9e30062fc41fa488914c1c09be08d996f40c238d76ba50",
+  "semanticCatalogHash": "sha256:e86a293444dbbfd761d3550812f17f0869bf27b5ee5e91bab77607a79c2be6d7",
   "files": [
     {
       "path": "compatibility/report.json",
@@ -13,7 +13,7 @@
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
       "bytes": 65721,
-      "sha256": "a8af8bef178970ea4d06fabbbfc3e25c8c08625001d56a6cc8a52afeb50a04c3"
+      "sha256": "ea2fb06bf28bea854d74832e7dd01afd2b0dccd60363fc1ec869a2ab5250310d"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -28,12 +28,12 @@
     {
       "path": "revisions/contract-catalog.json",
       "bytes": 229,
-      "sha256": "9980663e353837632de5e9ad76af92cc9a9b9b5577dd4b41192023e77019286e"
+      "sha256": "db2ea4b850618d27dd313b5f5f03526e21473e10769c96eb44e7daab846c212d"
     },
     {
       "path": "revisions/semantic-catalog.json",
       "bytes": 233,
-      "sha256": "9a9884fd9169a7f650dada3215e6f6def8f16ac51af90dd5a99adbbcd1d84bb6"
+      "sha256": "27050485a834fd1e8321bab92cab6baa49b46153fb4a1c79c56be6cef7193ef4"
     },
     {
       "path": "schemas/gowm-v0.6.2/capability-descriptor-v1.1.schema.json",
@@ -176,6 +176,16 @@
       "sha256": "74b3951daabc3272e2c9eb1728776ce076f0311ed6557a906b0b96f450fcf272"
     },
     {
+      "path": "schemas/gowm-v0.7.1/exact-head-qualification-report.schema.json",
+      "bytes": 4142,
+      "sha256": "3843165c30d659b4cdc5bb760ec957423162e051974ece7de5f276451448fb22"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/historical-trajectory-result.schema.json",
+      "bytes": 5489,
+      "sha256": "a92f3b728a792a4634ba791d2704ba4e088a0ce065985542ffb224955d1f27c6"
+    },
+    {
       "path": "schemas/gowm-v0.7.1/query-snapshot-adherence.schema.json",
       "bytes": 1816,
       "sha256": "a44fe1d85cc478911fe8d07176037b26d59784e260537970d3cc8d3186c81216"
@@ -204,6 +214,11 @@
       "path": "schemas/gowm-v0.7.1/world-query-result-v0.7.1.schema.json",
       "bytes": 206,
       "sha256": "16949d4be2ee924a8c6db476099aa5a764f6d4b70d37966f043aaa38b72c21cb"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/wsgs-historical-consumer-lock.schema.json",
+      "bytes": 6373,
+      "sha256": "715b21b74b24ce59be7874ffb8a837feb124f73cc47e74ee8c5251c37d000349"
     },
     {
       "path": "schemas/gowm-v0.7.1/wsgs-southbound-operation-lock-v2.schema.json",
@@ -422,8 +437,8 @@
     },
     {
       "path": "schemas/platform/world-query-result.schema.json",
-      "bytes": 3056,
-      "sha256": "c237f8587bd0aca730fe575aca81c1fdacf24d01b4a1191561a46ce192025bcf"
+      "bytes": 3750,
+      "sha256": "4ff825b07d9f7d4431252c0fd91277d2771f46fdb40f112e824dedbf208870bb"
     },
     {
       "path": "schemas/platform/world-query-submission.schema.json",
@@ -432,8 +447,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 144053,
-      "sha256": "6b6035d41c43804ed9b5ff9beee7008a2a468e737fd992b10bf48b17d0ae6964"
+      "bytes": 151065,
+      "sha256": "be507593d5ea80a3bce23a4e8969d34ee870e62f9f9d6bbc97326e21ee35eeea"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -456,5 +471,5 @@
       "sha256": "cea3932eccd0316513bb6b9c56e906536767b109b7b5d64440d22571ab1acc31"
     }
   ],
-  "packageIntegrity": "sha512-rgaa+AePHPBIipxGwxepjxH1uexU8u/sObMV1IEq3jzoVy6o6IQjYDyf16UPNNPnbfEvPR+uCTFM9DVux2mUIA=="
+  "packageIntegrity": "sha512-VQtACQ/ssVafFbwj4xzlHEAe4Jw3hwhq/btVj5/VypJMHARuuXgVkze9E7zDWz1ul9vh0LeJE2kvXFDwNF6/eQ=="
 }

@@ -3424,6 +3424,113 @@ export type GowmV071DelegationTokenClaims = {
   sub: string;
 };
 
+export type GowmV071ExactHeadQualificationReport = ({
+  candidateCommit: string;
+  candidateTree: string;
+  checks?: Array<{
+  reportId: string;
+  sha256: string;
+  status: "PASS" | "DEFERRED";
+}>;
+  ciSource: {
+  githubRepository: "zhouwen-giser/geospatial-operational-world-model";
+  githubRunAttempt: string;
+  githubRunId: string;
+  githubWorkflowRef: "zhouwen-giser/geospatial-operational-world-model/.github/workflows/gowm-v071-exact-head-qualification.yml@refs/heads/main";
+};
+  command?: Array<string>;
+  evidenceAuthority: "IMMUTABLE_CI_ARTIFACT";
+  exitCode?: number;
+  gate?: string;
+  generatedAt: string;
+  lock?: {
+  bytes: number;
+  relativePath: "GOWM_HISTORICAL_CONSUMER_LOCK.json";
+  sha256: string;
+};
+  log?: {
+  bytes: number;
+  relativePath: string;
+  sha256: string;
+};
+  marker?: string;
+  reason?: string;
+  reportId: string;
+  schemaVersion: "1.0";
+  status: "PASS" | "FAIL" | "PARTIAL" | "DEFERRED" | "NOT_RUN";
+  trackedWorktreeCleanAfter?: boolean;
+  trackedWorktreeCleanAtStart?: boolean;
+}) & ((Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>));
+
+export type GowmV071HistoricalTrajectoryResult = {
+  completeness: GowmV071HistoricalTrajectoryResultCompleteness;
+  definedPeriods: Array<GowmV071HistoricalTrajectoryResultTimeRange>;
+  excludedPeriods: Array<{
+  range: GowmV071HistoricalTrajectoryResultTimeRange;
+  reason: "EXCLUDED_PAUSED_PHASE";
+}>;
+  executionIntervalReferenceKey: GowmV071HistoricalTrajectoryResultExecutionIntervalReferenceKey;
+  finalization: GowmV071HistoricalTrajectoryResultFinalization;
+  gaps: Array<GowmV07HistoricalGap>;
+  inputTrackletVersions: Array<GowmV071HistoricalTrajectoryResultInputTrackletVersion>;
+  preview: Array<GowmV071HistoricalTrajectoryResultPreviewPoint>;
+  reasonCode: string;
+  requestedPeriods: Array<GowmV071HistoricalTrajectoryResultTimeRange>;
+  schemaVersion: "1.0";
+  status: "COMPLETED" | "PARTIAL" | "NO_DATA" | "INDETERMINATE";
+  subjectReferenceKey: PlatformCommonDefinitionsReferenceKey;
+  trajectoryReferenceKey?: GowmV071HistoricalTrajectoryResultTrajectoryReferenceKey;
+  warnings: Array<string>;
+};
+
+export type GowmV071HistoricalTrajectoryResultCompleteness = {
+  gapCount: number;
+  prefixComplete: boolean;
+  sampleCount: number;
+  sequenceCount: number;
+  suffixComplete: boolean;
+  temporalCoverageRatio: number;
+};
+
+export type GowmV071HistoricalTrajectoryResultExecutionIntervalReferenceKey = {
+  id: string;
+  kind: "TASK_EXECUTION_INTERVAL";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV071HistoricalTrajectoryResultFinalization = {
+  observedThrough?: string;
+  state: "PROVISIONAL" | "SEALED" | "CONFLICTED";
+};
+
+export type GowmV071HistoricalTrajectoryResultInputTrackletVersion = {
+  contentHash: PlatformCommonDefinitionsSha256Digest;
+  sourceKey: string;
+  trackerSessionKey: string;
+  trackletId: string;
+  trackletVersionId: string;
+  versionNo: number;
+};
+
+export type GowmV071HistoricalTrajectoryResultPreviewPoint = {
+  observedAt: string;
+  position: ProjectedWgs84PointPort;
+};
+
+export type GowmV071HistoricalTrajectoryResultTimeRange = {
+  bounds?: "[)";
+  end: string;
+  start: string;
+};
+
+export type GowmV071HistoricalTrajectoryResultTrajectoryReferenceKey = {
+  id: string;
+  kind: "HISTORICAL_TRAJECTORY";
+  namespace: string;
+  version: string;
+};
+
 export type GowmV071QuerySnapshotAdherence = {
   actualCapturedAt?: string;
   actualConsistency?: "PINNED" | "CONSISTENT_AT_START" | "BEST_EFFORT";
@@ -3525,6 +3632,64 @@ export type GowmV071TaskExecutionIntervalResultTimeRange = {
 };
 
 export type GowmV071WorldQueryResult = WorldQueryResult;
+
+export type GowmV071WsgsHistoricalConsumerLock = {
+  allowedConsumerCapabilities: ["TASK_EXECUTION_INTERVAL" | "HISTORICAL_TRAJECTORY" | "GAP" | "COMPLETENESS" | "CURRENTNESS_REPLAY_FOUNDATION", "TASK_EXECUTION_INTERVAL" | "HISTORICAL_TRAJECTORY" | "GAP" | "COMPLETENESS" | "CURRENTNESS_REPLAY_FOUNDATION", "TASK_EXECUTION_INTERVAL" | "HISTORICAL_TRAJECTORY" | "GAP" | "COMPLETENESS" | "CURRENTNESS_REPLAY_FOUNDATION", "TASK_EXECUTION_INTERVAL" | "HISTORICAL_TRAJECTORY" | "GAP" | "COMPLETENESS" | "CURRENTNESS_REPLAY_FOUNDATION", "TASK_EXECUTION_INTERVAL" | "HISTORICAL_TRAJECTORY" | "GAP" | "COMPLETENESS" | "CURRENTNESS_REPLAY_FOUNDATION"];
+  bindingRevision: string;
+  candidateCommit: string;
+  candidateTree: string;
+  ciSource: {
+  githubRepository: "zhouwen-giser/geospatial-operational-world-model";
+  githubRunAttempt: string;
+  githubRunId: string;
+  githubWorkflowRef: "zhouwen-giser/geospatial-operational-world-model/.github/workflows/gowm-v071-exact-head-qualification.yml@refs/heads/main";
+};
+  consumerContractPackage: {
+  contractCatalogRevision: string;
+  integrity: string;
+  name: "@gowm/world-gateway-contracts";
+  semanticCatalogHash: string;
+  version: "0.7.1";
+};
+  explicitNonClaims: ["MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT", "MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT", "MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT", "MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT", "MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT"];
+  marker: "GOWM_V071_WSGS_HISTORICAL_BASELINE_READY";
+  migrationHead: "068_effective_snapshot_consistency_downgrade.sql";
+  operations: ([{
+  inputSchemaHash: string;
+  maturity: "PREVIEW";
+  operationId: "operational-task.get-execution-intervals" | "history.get-trajectory";
+  operationVersion: string;
+  outputSchemaHash: string;
+  providerId: "gowm.operational-reality" | "gowm.historical-trace";
+  semanticProfileHash: string;
+}, {
+  inputSchemaHash: string;
+  maturity: "PREVIEW";
+  operationId: "operational-task.get-execution-intervals" | "history.get-trajectory";
+  operationVersion: string;
+  outputSchemaHash: string;
+  providerId: "gowm.operational-reality" | "gowm.historical-trace";
+  semanticProfileHash: string;
+}]) & ((Record<string, unknown>) & (Record<string, unknown>));
+  providerManifests: ([{
+  implementationDigest: string;
+  manifestHash: string;
+  providerId: "gowm.operational-reality" | "gowm.historical-trace";
+  providerVersion: string;
+}, {
+  implementationDigest: string;
+  manifestHash: string;
+  providerId: "gowm.operational-reality" | "gowm.historical-trace";
+  providerVersion: string;
+}]) & ((Record<string, unknown>) & (Record<string, unknown>));
+  runtimeQualificationEvidenceDigest: string;
+  schemaVersion: "1.0";
+  snapshotBehavior: {
+  canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1";
+  resourceIdEncodingRevision: "SNAPSHOT_RESOURCE_ID_V1_512";
+  scopeModel: "SINGLE_SCOPE_V1";
+};
+};
 
 export type WsgsSouthboundOperationLockV2V071 = {
   availabilityContractHash: string;
@@ -4438,14 +4603,20 @@ export type WorldQueryResult = {
 
 export type WorldQueryResultNodeResult = {
   attempt: number;
+  effectiveSnapshotAfterHash?: PlatformCommonDefinitionsSha256Digest;
+  effectiveSnapshotBeforeHash?: PlatformCommonDefinitionsSha256Digest;
+  effectiveSnapshotRevisionAfter?: number;
+  effectiveSnapshotRevisionBefore?: number;
   error?: PlatformError;
   finishedAt?: string;
   inputHash?: PlatformCommonDefinitionsSha256Digest;
   nodeId: string;
+  observedSnapshotResourceIdentities?: Array<string>;
   operation: PlatformCommonDefinitionsOperationRef;
   outputHash?: PlatformCommonDefinitionsSha256Digest;
   providerId?: PlatformCommonDefinitionsProviderId;
   result?: CapabilityResultEnvelope;
+  snapshotAdherence?: GowmV071QuerySnapshotAdherence;
   startedAt?: string;
   status: "QUEUED" | "RUNNING" | "COMPLETED" | "PARTIAL" | "NO_DATA" | "SKIPPED" | "FAILED" | "CANCELLED";
 };

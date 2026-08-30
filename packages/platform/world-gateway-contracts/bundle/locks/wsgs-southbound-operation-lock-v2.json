@@ -4,13 +4,13 @@
   "consumerContractPackage": {
     "name": "@gowm/world-gateway-contracts",
     "version": "0.7.1",
-    "integrity": "sha512-rgaa+AePHPBIipxGwxepjxH1uexU8u/sObMV1IEq3jzoVy6o6IQjYDyf16UPNNPnbfEvPR+uCTFM9DVux2mUIA=="
+    "integrity": "sha512-VQtACQ/ssVafFbwj4xzlHEAe4Jw3hwhq/btVj5/VypJMHARuuXgVkze9E7zDWz1ul9vh0LeJE2kvXFDwNF6/eQ=="
   },
   "scopeModel": "SINGLE_SCOPE_V1",
   "resourceIdEncodingRevision": "SNAPSHOT_RESOURCE_ID_V1_512",
   "canonicalOrderingRevision": "UNICODE_CODE_POINT_BINARY_V1",
-  "contractCatalogRevision": "sha256:2cfdd69429653e6b5dade82d555e28cf327c85100d61bc3f64c220a224fab4b8",
-  "semanticCatalogHash": "sha256:9cb540bbda32d50bdcf9bd3f60d2974bd3fe02393a5c4914e30940dccb719ae2",
+  "contractCatalogRevision": "sha256:062a366e8e633a820e9e30062fc41fa488914c1c09be08d996f40c238d76ba50",
+  "semanticCatalogHash": "sha256:e86a293444dbbfd761d3550812f17f0869bf27b5ee5e91bab77607a79c2be6d7",
   "availabilityContractHash": "sha256:66d6cfe2679d6bdd0cf6f22cb7153d1f5f4c934ebc286f6bac33ab6bd7eb4036",
   "snapshotContractHash": "sha256:7a984eef06eec1ed19b21a6649644cc1b8a7e1d653c8b6f9b06490a8d316d185",
   "delegationContractHash": "sha256:a80e51793f46a90b2f627937fce06bc31fa3489a87a509185b9813f82ede1c4a",
@@ -981,8 +981,8 @@
       "operationId": "history.get-trajectory",
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:cbdbe331192d1e78d3b525a47a5db40f4fbaac477bab2fc37bc700ad9f4ed464",
-      "outputSchemaHash": "sha256:3a7775d3099c6d63ab548c12db91d1b41cc920c6d4bcec8d9704b92eeaa9e3c2",
-      "semanticProfileHash": "sha256:b528ae4927df20b117c6243ba29e1998acda59c58abb052f7c142339ff644956",
+      "outputSchemaHash": "sha256:d51c07904cc18ec3a67c3bbaebf904f781d407378fc42e9e91debbfc04f1b02d",
+      "semanticProfileHash": "sha256:e5d7d097098a8c3f57e4c98d58575be25fc4779bf0c365457cebd0e0584b2dc2",
       "maturity": "PREVIEW",
       "requiredPermissions": [
         "data:read"

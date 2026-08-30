@@ -46,6 +46,7 @@ export function snapshotResourceEvidenceIdentity(resource: SnapshotResourceIdent
   if (resourceKind.length === 0) throw new TypeError("snapshot resource kind must not be empty");
   return JSON.stringify([resourceKind, validResourceId(resource.resourceId)]);
 }
+
 function validResourceId(resourceId: string): string {
   const codePointLength = [...resourceId].length;
   if (codePointLength === 0) throw new TypeError("snapshot resource id must not be empty");

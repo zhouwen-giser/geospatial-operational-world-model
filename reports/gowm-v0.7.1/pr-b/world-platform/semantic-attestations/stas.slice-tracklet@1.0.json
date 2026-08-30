@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.stas",
+  "operationId": "stas.slice-tracklet",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:ac083588969e1d02790e11ae380db6b5a7012abfe0664c170308341aa4dc8705",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/stas-provider.json",
+      "sha256": "73ac0cc70adeb44d039f15c52b267d1113abc1780876c3584592cbd25c633042"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/stas-provider.json",
+      "sha256": "73ac0cc70adeb44d039f15c52b267d1113abc1780876c3584592cbd25c633042"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/stas/stas.slice-tracklet.input.schema.json",
+      "sha256": "b10220288d8fa670af5281510852f9d8e993d6ceca2723edd0d95aa476b1a54b"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/stas/analysis-result.schema.json",
+      "sha256": "4c36cb8969f3a6b06c83969aac4d6bc116598f883606a9a254be9c4a118fa250"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/stas-provider/src/provider.ts",
+      "sha256": "8e0990a598922b6aaa6b4a9766d8bcde21d3d40d328ab02e529b350e616df272",
+      "symbol": "createStasProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/stas/src/application/analysis-service.ts",
+      "sha256": "d3b5788fbcf4eb2a877c7becf77205ebdb51f7feeaf3d9886d934a39a6779cf9",
+      "symbol": "execute"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/stas/src/repositories/tool-repository.ts",
+      "sha256": "ea25f3eec8e64522175d213b0f6b3e9edafa069099632eaf0170dcd522db17d7",
+      "symbol": "execute"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "services/stas/test/canonical-json.test.ts",
+      "sha256": "bc1e2b5f8d9c72ed697b5d59ee06f1d849c3668ba4d7698c94c194f48c3f2c30"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "services/stas/test/errors.test.ts",
+      "sha256": "de3806b0a1a3193a7f99bd0624f782812ae6348e069287976cb94d4c32395e81"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "services/stas/test/evidence.test.ts",
+      "sha256": "dcc213ba29623d96ec0357c95cc916aca85d4e4b188e90740bf25f179cf12c63"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/capabilities/stas/source-lock.json",
+      "sha256": "130b095d7b1a8d2a19fdd5e40497f258b61d3661406e956e2f58af22a0510b5d"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Protocol adapter calls the existing scoped native analysis service with executable refinements. Temporal gaps and NO_DATA remain unknown; native scope/tracklet IDs are not advertised as public ReferenceKeys. Original pinned snapshot is preserved."
+  ]
+}

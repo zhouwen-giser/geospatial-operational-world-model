@@ -35,7 +35,7 @@ export interface LegacySemanticAttestation {
   evidence?: OperationEvidenceRecord[];
 }
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const output = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.6.2";
+const output = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-b/world-platform";
 const readJson = async (path: string): Promise<any> => JSON.parse(await readFile(path, "utf8"));
 const render = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
 const portablePath = (path: string): string => path.replaceAll("\\", "/");

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.situation.h3",
+  "operationId": "gowm.situation.h3.get-hotspots",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:ecda3d367920e3b7cd69d92c97273f860df31a3949b19ddc5c24328360ca56db",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/gowm-situation-provider.json",
+      "sha256": "9ef24bc88e048f18d59a700b36993316040af9f53649d810270fdebde3a056c7"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/gowm-situation-provider.json",
+      "sha256": "9ef24bc88e048f18d59a700b36993316040af9f53649d810270fdebde3a056c7"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/gowm.situation.h3.get-hotspots/input-1.0.schema.json",
+      "sha256": "dd136dbad5632feb95edc45092d9edafc60cc67a9c86510ad9534175fbf64f63"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/gowm.situation.h3.get-hotspots/output-1.0.schema.json",
+      "sha256": "61f0b6694bdc43aa2e35fc2a6d5d887fd6c606ff2a7412ac3382c9277d6cb8e6"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/gowm-situation-provider/src/provider.ts",
+      "sha256": "66bfc57bd7dc0b379523bb2abac77a3de453bd2b4d3d70df1b2b02b3a09700ee",
+      "symbol": "createGowmSituationProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/compatibility-migration.test.ts",
+      "sha256": "62f03ef8f4e3502a6a3ac71beb6b5ca3fb4df99bb4bb1f0770b5ef7268d2f362"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

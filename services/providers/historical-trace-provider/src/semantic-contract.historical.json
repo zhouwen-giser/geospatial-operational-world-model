@@ -41,7 +41,8 @@
         "notes": [
           "The operation returns one stored source-selected trajectory revision and never performs hidden multi-source fusion.",
           "Every interval, tracklet, finalization, watermark, profile, and analysis-space input is frozen by the returned snapshot or its HISTORY_INPUT_SET resource.",
-          "When no as-of revision or outcome exists, the Provider only idempotently enqueues the exact frozen request and returns PROJECTION_PENDING; construction remains worker-owned."
+          "When no as-of revision or outcome exists, the Provider only idempotently enqueues the exact frozen request and returns PROJECTION_PENDING; construction remains worker-owned.",
+          "The v0.7.1 Provider returns only a bounded preview and does not advertise an artifactReference until a scope-aware artifact registry round trip is qualified."
         ]
       },
       "implementation": [
@@ -62,7 +63,7 @@
       "tests": [
         "tests/platform/historical-trace-provider.test.ts"
       ],
-      "rationale": "The preview provider performs scoped, head-free reads of immutable trajectory revisions and their complete persisted lineage. A missing result can cause only a bounded, scope-checked enqueue of the exact effective snapshot; source selection and trajectory construction remain worker projection-owned."
+      "rationale": "The preview provider performs scoped, head-free reads of immutable trajectory revisions and their persisted lineage. It returns a bounded preview, gaps, completeness and trajectoryReferenceKey, but deliberately does not claim that the complete trajectory is retrievable as an Artifact. A missing result can cause only a bounded, scope-checked enqueue of the exact effective snapshot; source selection and trajectory construction remain worker projection-owned."
     }
   }
 }

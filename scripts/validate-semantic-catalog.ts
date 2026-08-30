@@ -7,7 +7,7 @@ import { scanAndMaterialize, type ProviderSource } from "./materialize-capabilit
 import { syncWorldPlatformManifests } from "./sync-world-platform-manifests.js";
 
 const root = resolve(dirnameOfSelf(), "..");
-const output = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.6.2";
+const output = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-b/world-platform";
 function dirnameOfSelf() { return fileURLToPath(new URL(".", import.meta.url)); }
 export async function validateSemanticCatalog(requireBlackBox = true, write = false) {
   await scanAndMaterialize(root, true);

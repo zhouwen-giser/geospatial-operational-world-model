@@ -6,6 +6,8 @@ import { fileURLToPath } from "node:url";
 import pg from "pg";
 
 export const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const V07_MIGRATION_HEAD = "067_historical_trajectory_contract.sql";
+const V071_MIGRATION_HEAD = "068_effective_snapshot_consistency_downgrade.sql";
 
 export interface V07DatabaseEvidence {
   migrationCount: number;
@@ -29,7 +31,11 @@ export async function withMigratedV07Database<T>(
     const runId = randomUUID().replaceAll("-", "").slice(0, 20);
     const database = new pg.Pool({ connectionString: reusedUrl, max: 1 });
     try {
-      return await action(reusedUrl, await inspectMigratedDatabase(database), runId);
+      return await action(
+        reusedUrl,
+        await inspectMigratedDatabase(database, V07_MIGRATION_HEAD),
+        runId
+      );
     } finally {
       await database.end();
     }
@@ -52,7 +58,58 @@ export async function withMigratedV07Database<T>(
     created = true;
     const database = new pg.Pool({ connectionString: targetUrl.toString(), max: 1 });
     try {
-      const evidence = await applyMigrations(database);
+      const files = migrationsThrough(await migrationFiles(), V07_MIGRATION_HEAD);
+      const evidence = await applyMigrations(database, files, V07_MIGRATION_HEAD);
+      return await action(targetUrl.toString(), evidence, runId);
+    } finally {
+      await database.end();
+    }
+  } finally {
+    if (created) {
+      await admin.query(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+    }
+    await admin.end();
+  }
+}
+
+export async function withMigratedV071Database<T>(
+  label: string,
+  action: (databaseUrl: string, evidence: V07DatabaseEvidence, runId: string) => Promise<T>
+): Promise<T> {
+  const reusedUrl = process.env.GOWM_V071_REUSE_DATABASE_URL;
+  if (reusedUrl !== undefined && reusedUrl.length > 0) {
+    const runId = randomUUID().replaceAll("-", "").slice(0, 20);
+    const database = new pg.Pool({ connectionString: reusedUrl, max: 1 });
+    try {
+      return await action(
+        reusedUrl,
+        await inspectMigratedDatabase(database, V071_MIGRATION_HEAD),
+        runId
+      );
+    } finally {
+      await database.end();
+    }
+  }
+  const sourceUrl = process.env.DATABASE_ADMIN_URL ?? process.env.DATABASE_URL;
+  if (sourceUrl === undefined || sourceUrl.length === 0) {
+    throw new Error("DATABASE_ADMIN_URL or DATABASE_URL is required for the real PostgreSQL v0.7.1 gate");
+  }
+  const runId = randomUUID().replaceAll("-", "").slice(0, 20);
+  const databaseName = `gowm_v071_${label}_${runId}`;
+  if (!/^[a-z0-9_]+$/u.test(databaseName)) throw new Error("invalid ephemeral v0.7.1 database name");
+  const adminUrl = new URL(sourceUrl);
+  adminUrl.pathname = "/postgres";
+  const targetUrl = new URL(sourceUrl);
+  targetUrl.pathname = `/${databaseName}`;
+  const admin = new pg.Pool({ connectionString: adminUrl.toString(), max: 1 });
+  let created = false;
+  try {
+    await admin.query(`CREATE DATABASE "${databaseName}"`);
+    created = true;
+    const database = new pg.Pool({ connectionString: targetUrl.toString(), max: 1 });
+    try {
+      const files = migrationsThrough(await migrationFiles(), V071_MIGRATION_HEAD);
+      const evidence = await applyMigrations(database, files, V071_MIGRATION_HEAD);
       return await action(targetUrl.toString(), evidence, runId);
     } finally {
       await database.end();
@@ -109,7 +166,7 @@ async function migrationFiles(): Promise<string[]> {
 async function applyMigrations(
   pool: pg.Pool,
   files: readonly string[] | undefined = undefined,
-  expectedHead = "067_historical_trajectory_contract.sql"
+  expectedHead = V07_MIGRATION_HEAD
 ): Promise<V07DatabaseEvidence> {
   const selectedFiles = files ?? await migrationFiles();
   const migrationDirectory = resolve(repositoryRoot, "database/migrations");
@@ -172,8 +229,8 @@ export async function withUpgradedV07Database<T>(
       );
       const upgraded = await applyMigrations(
         database,
-        files.filter((file) => file > baseHead),
-        "067_historical_trajectory_contract.sql"
+        files.filter((file) => file > baseHead && file <= V07_MIGRATION_HEAD),
+        V07_MIGRATION_HEAD
       );
       return await action(targetUrl.toString(), {
         ...upgraded,
@@ -191,7 +248,7 @@ export async function withUpgradedV07Database<T>(
 
 async function inspectMigratedDatabase(
   pool: pg.Pool,
-  expectedHead = "067_historical_trajectory_contract.sql"
+  expectedHead = V07_MIGRATION_HEAD
 ): Promise<V07DatabaseEvidence> {
   const migration = await pool.query<{ migration_count: number; migration_head: string }>(
     `SELECT count(*)::integer AS migration_count, max(version) AS migration_head
@@ -220,4 +277,12 @@ async function inspectMigratedDatabase(
     postgisVersion: version.postgis_version,
     mobilityDbVersion: version.mobilitydb_version
   };
+}
+
+function migrationsThrough(files: readonly string[], expectedHead: string): string[] {
+  const selected = files.filter((file) => file <= expectedHead);
+  if (selected.at(-1) !== expectedHead) {
+    throw new Error(`required migration head is missing: ${expectedHead}`);
+  }
+  return selected;
 }

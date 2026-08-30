@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.h3.analysis.bridge",
+  "operationId": "h3.analytics.aggregate",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:c71ad481467ea4a6d188c225e98e2011527fdca71c1e4f798b6528832a1043ac",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/h3-analysis-provider.json",
+      "sha256": "b7499112fe5425ab6059bac52b562f23a5912fce8653cc404e89be1222012ab5"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/h3-analysis-provider.json",
+      "sha256": "b7499112fe5425ab6059bac52b562f23a5912fce8653cc404e89be1222012ab5"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/h3.analytics.aggregate/input-1.0.schema.json",
+      "sha256": "4abd839f091123ba22dae3ef2da6ea6b61a565f26280db2097f768f146d6abca"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/h3.analytics.aggregate/output-1.0.schema.json",
+      "sha256": "e69063666fbc2394e30ef42cbe0cb394cbf2cb6cc481aea2f649e7ca810bb11f"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+      "sha256": "8ab874c08b44ef5d0c575ea703a2f8bdfff993aa152de08b7e7673137cd82531",
+      "symbol": "createH3AnalysisProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "validation/h3-bridge/h3-provider-bridges.test.ts",
+      "sha256": "7a210073782fd7f6b5c650a3bdc506283e664d03cf83386190293f2b3d116ff8"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/h3-toolkit-source-lock.json",
+      "sha256": "b0a0a547df9d52b6f29fb38ed39d9e8aedc8498ab956863f92e223a2acf7e22a"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

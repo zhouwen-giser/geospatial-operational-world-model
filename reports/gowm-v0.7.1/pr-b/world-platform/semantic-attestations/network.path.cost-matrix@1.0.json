@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.network",
+  "operationId": "network.path.cost-matrix",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:9383f429cac1e912c4dbb281c70cf03b366b8514e074afbed3d44a4fca2efc11",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/network-provider.json",
+      "sha256": "64970ecfb360b9add757ccca1c9adf8b6f6964b6a0e793285f3b1f29efbea9d6"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/network-provider.json",
+      "sha256": "64970ecfb360b9add757ccca1c9adf8b6f6964b6a0e793285f3b1f29efbea9d6"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/network-cost-matrix-request.schema.json",
+      "sha256": "6dc75cdca2990e8239dd060f1d93bed26959d37ab32507fbc96d92844bda0a55"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/network-cost-matrix-result.schema.json",
+      "sha256": "058346014c99499e53b6b58a2509ef1308c321aad10e4a2525991678824e68f7"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/network-provider/src/provider.ts",
+      "sha256": "7acf21998b589490430ea8cac70dbef37de4293a8e00c58a3c7439f65964b527",
+      "symbol": "createNetworkProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/network-provider/src/repository.ts",
+      "sha256": "ea3727d5e7d786c403f067c9a14962c80240fef02fd2d63568c2d3c56a953357"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/network-provider.test.ts",
+      "sha256": "43aebea0c8bc9737703a2340fc5d233d4d4b1547116202396bbf642551dd7ab5"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

@@ -16195,6 +16195,582 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     }
   },
+  "gowm-v0.7.1/exact-head-qualification-report.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:exact-head-qualification-report",
+    "title": "GowmV071ExactHeadQualificationReport",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "candidateCommit",
+      "candidateTree",
+      "generatedAt",
+      "evidenceAuthority",
+      "ciSource",
+      "reportId",
+      "status"
+    ],
+    "allOf": [
+      {
+        "if": {
+          "required": [
+            "command"
+          ]
+        },
+        "then": {
+          "required": [
+            "exitCode",
+            "log",
+            "trackedWorktreeCleanAfter"
+          ]
+        }
+      },
+      {
+        "if": {
+          "required": [
+            "command"
+          ],
+          "properties": {
+            "status": {
+              "const": "PASS"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "exitCode": {
+              "const": 0
+            },
+            "trackedWorktreeCleanAfter": {
+              "const": true
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "reportId": {
+              "const": "source-lock"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "trackedWorktreeCleanAtStart"
+          ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "reportId": {
+              "const": "wsgs-historical-consumer-lock"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "lock"
+          ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "reportId": {
+              "const": "final-closure-report"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "checks"
+          ]
+        }
+      }
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "candidateCommit": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+      },
+      "candidateTree": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+      },
+      "generatedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "evidenceAuthority": {
+        "const": "IMMUTABLE_CI_ARTIFACT"
+      },
+      "ciSource": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "githubRepository",
+          "githubWorkflowRef",
+          "githubRunId",
+          "githubRunAttempt"
+        ],
+        "properties": {
+          "githubRepository": {
+            "const": "zhouwen-giser/geospatial-operational-world-model"
+          },
+          "githubWorkflowRef": {
+            "const": "zhouwen-giser/geospatial-operational-world-model/.github/workflows/gowm-v071-exact-head-qualification.yml@refs/heads/main"
+          },
+          "githubRunId": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,31}$"
+          },
+          "githubRunAttempt": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,31}$"
+          }
+        }
+      },
+      "reportId": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+      },
+      "status": {
+        "enum": [
+          "PASS",
+          "FAIL",
+          "PARTIAL",
+          "DEFERRED",
+          "NOT_RUN"
+        ]
+      },
+      "gate": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "command": {
+        "type": "array",
+        "maxItems": 64,
+        "items": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      },
+      "exitCode": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "log": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "relativePath",
+          "bytes",
+          "sha256"
+        ],
+        "properties": {
+          "relativePath": {
+            "type": "string",
+            "pattern": "^logs/[a-z0-9][a-z0-9-]{0,63}\\.log$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      },
+      "marker": {
+        "type": "string",
+        "maxLength": 128
+      },
+      "reason": {
+        "type": "string",
+        "maxLength": 2048
+      },
+      "checks": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "reportId",
+            "status",
+            "sha256"
+          ],
+          "properties": {
+            "reportId": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "PASS",
+                "DEFERRED"
+              ]
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          }
+        }
+      },
+      "lock": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "relativePath",
+          "bytes",
+          "sha256"
+        ],
+        "properties": {
+          "relativePath": {
+            "const": "GOWM_HISTORICAL_CONSUMER_LOCK.json"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      },
+      "trackedWorktreeCleanAtStart": {
+        "type": "boolean"
+      },
+      "trackedWorktreeCleanAfter": {
+        "type": "boolean"
+      }
+    }
+  },
+  "gowm-v0.7.1/historical-trajectory-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:historical-trajectory-result",
+    "title": "GowmV071HistoricalTrajectoryResult",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "status",
+      "reasonCode",
+      "subjectReferenceKey",
+      "executionIntervalReferenceKey",
+      "requestedPeriods",
+      "definedPeriods",
+      "excludedPeriods",
+      "gaps",
+      "inputTrackletVersions",
+      "completeness",
+      "finalization",
+      "preview",
+      "warnings"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "status": {
+        "enum": [
+          "COMPLETED",
+          "PARTIAL",
+          "NO_DATA",
+          "INDETERMINATE"
+        ]
+      },
+      "reasonCode": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{1,127}$"
+      },
+      "subjectReferenceKey": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/referenceKey"
+      },
+      "executionIntervalReferenceKey": {
+        "$ref": "#/$defs/executionIntervalReferenceKey"
+      },
+      "trajectoryReferenceKey": {
+        "$ref": "#/$defs/trajectoryReferenceKey"
+      },
+      "requestedPeriods": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "$ref": "#/$defs/timeRange"
+        }
+      },
+      "definedPeriods": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "$ref": "#/$defs/timeRange"
+        }
+      },
+      "excludedPeriods": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "range",
+            "reason"
+          ],
+          "properties": {
+            "range": {
+              "$ref": "#/$defs/timeRange"
+            },
+            "reason": {
+              "const": "EXCLUDED_PAUSED_PHASE"
+            }
+          }
+        }
+      },
+      "gaps": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "$ref": "../gowm-v0.7/historical-gap.schema.json"
+        }
+      },
+      "inputTrackletVersions": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "$ref": "#/$defs/inputTrackletVersion"
+        }
+      },
+      "completeness": {
+        "$ref": "#/$defs/completeness"
+      },
+      "finalization": {
+        "$ref": "#/$defs/finalization"
+      },
+      "preview": {
+        "type": "array",
+        "maxItems": 10000,
+        "items": {
+          "$ref": "#/$defs/previewPoint"
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "maxItems": 256,
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      }
+    },
+    "$defs": {
+      "timeRange": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "start",
+          "end"
+        ],
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bounds": {
+            "const": "[)",
+            "default": "[)"
+          }
+        }
+      },
+      "executionIntervalReferenceKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "namespace",
+          "kind",
+          "id",
+          "version"
+        ],
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{1,63}$"
+          },
+          "kind": {
+            "const": "TASK_EXECUTION_INTERVAL"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "trajectoryReferenceKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "namespace",
+          "kind",
+          "id",
+          "version"
+        ],
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{1,63}$"
+          },
+          "kind": {
+            "const": "HISTORICAL_TRAJECTORY"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "inputTrackletVersion": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "trackletId",
+          "trackletVersionId",
+          "versionNo",
+          "sourceKey",
+          "trackerSessionKey",
+          "contentHash"
+        ],
+        "properties": {
+          "trackletId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "trackletVersionId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "versionNo": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sourceKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "trackerSessionKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "contentHash": {
+            "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+          }
+        }
+      },
+      "completeness": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "temporalCoverageRatio",
+          "sampleCount",
+          "sequenceCount",
+          "gapCount",
+          "prefixComplete",
+          "suffixComplete"
+        ],
+        "properties": {
+          "temporalCoverageRatio": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "sampleCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sequenceCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "gapCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "prefixComplete": {
+            "type": "boolean"
+          },
+          "suffixComplete": {
+            "type": "boolean"
+          }
+        }
+      },
+      "finalization": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "enum": [
+              "PROVISIONAL",
+              "SEALED",
+              "CONFLICTED"
+            ]
+          },
+          "observedThrough": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "previewPoint": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "observedAt",
+          "position"
+        ],
+        "properties": {
+          "observedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "position": {
+            "$ref": "../gowm-v0.6.2/geojson-point.schema.json"
+          }
+        }
+      }
+    }
+  },
   "gowm-v0.7.1/query-snapshot-adherence.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.7.1:query-snapshot-adherence",
@@ -16760,6 +17336,321 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
     "$id": "urn:gowm:v0.7.1:world-query-result",
     "title": "GowmV071WorldQueryResult",
     "$ref": "../platform/world-query-result.schema.json"
+  },
+  "gowm-v0.7.1/wsgs-historical-consumer-lock.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:wsgs-historical-consumer-lock",
+    "title": "GowmV071WsgsHistoricalConsumerLock",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "candidateCommit",
+      "candidateTree",
+      "ciSource",
+      "bindingRevision",
+      "consumerContractPackage",
+      "providerManifests",
+      "operations",
+      "snapshotBehavior",
+      "migrationHead",
+      "runtimeQualificationEvidenceDigest",
+      "allowedConsumerCapabilities",
+      "explicitNonClaims",
+      "marker"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "candidateCommit": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+      },
+      "candidateTree": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+      },
+      "ciSource": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "githubRepository",
+          "githubWorkflowRef",
+          "githubRunId",
+          "githubRunAttempt"
+        ],
+        "properties": {
+          "githubRepository": {
+            "const": "zhouwen-giser/geospatial-operational-world-model"
+          },
+          "githubWorkflowRef": {
+            "const": "zhouwen-giser/geospatial-operational-world-model/.github/workflows/gowm-v071-exact-head-qualification.yml@refs/heads/main"
+          },
+          "githubRunId": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,31}$"
+          },
+          "githubRunAttempt": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,31}$"
+          }
+        }
+      },
+      "bindingRevision": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "consumerContractPackage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "version",
+          "integrity",
+          "contractCatalogRevision",
+          "semanticCatalogHash"
+        ],
+        "properties": {
+          "name": {
+            "const": "@gowm/world-gateway-contracts"
+          },
+          "version": {
+            "const": "0.7.1"
+          },
+          "integrity": {
+            "type": "string",
+            "pattern": "^sha512-[A-Za-z0-9+/]{86}==$"
+          },
+          "contractCatalogRevision": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "semanticCatalogHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      },
+      "providerManifests": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "uniqueItems": true,
+        "allOf": [
+          {
+            "contains": {
+              "type": "object",
+              "required": [
+                "providerId"
+              ],
+              "properties": {
+                "providerId": {
+                  "const": "gowm.operational-reality"
+                }
+              }
+            },
+            "minContains": 1,
+            "maxContains": 1
+          },
+          {
+            "contains": {
+              "type": "object",
+              "required": [
+                "providerId"
+              ],
+              "properties": {
+                "providerId": {
+                  "const": "gowm.historical-trace"
+                }
+              }
+            },
+            "minContains": 1,
+            "maxContains": 1
+          }
+        ],
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "providerId",
+            "providerVersion",
+            "implementationDigest",
+            "manifestHash"
+          ],
+          "properties": {
+            "providerId": {
+              "enum": [
+                "gowm.operational-reality",
+                "gowm.historical-trace"
+              ]
+            },
+            "providerVersion": {
+              "type": "string"
+            },
+            "implementationDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "manifestHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          }
+        }
+      },
+      "operations": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "uniqueItems": true,
+        "allOf": [
+          {
+            "contains": {
+              "type": "object",
+              "required": [
+                "operationId",
+                "providerId"
+              ],
+              "properties": {
+                "operationId": {
+                  "const": "operational-task.get-execution-intervals"
+                },
+                "providerId": {
+                  "const": "gowm.operational-reality"
+                }
+              }
+            },
+            "minContains": 1,
+            "maxContains": 1
+          },
+          {
+            "contains": {
+              "type": "object",
+              "required": [
+                "operationId",
+                "providerId"
+              ],
+              "properties": {
+                "operationId": {
+                  "const": "history.get-trajectory"
+                },
+                "providerId": {
+                  "const": "gowm.historical-trace"
+                }
+              }
+            },
+            "minContains": 1,
+            "maxContains": 1
+          }
+        ],
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operationId",
+            "providerId",
+            "operationVersion",
+            "inputSchemaHash",
+            "outputSchemaHash",
+            "semanticProfileHash",
+            "maturity"
+          ],
+          "properties": {
+            "operationId": {
+              "enum": [
+                "operational-task.get-execution-intervals",
+                "history.get-trajectory"
+              ]
+            },
+            "providerId": {
+              "enum": [
+                "gowm.operational-reality",
+                "gowm.historical-trace"
+              ]
+            },
+            "operationVersion": {
+              "type": "string"
+            },
+            "inputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "outputSchemaHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "semanticProfileHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "maturity": {
+              "const": "PREVIEW"
+            }
+          }
+        }
+      },
+      "snapshotBehavior": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scopeModel",
+          "resourceIdEncodingRevision",
+          "canonicalOrderingRevision"
+        ],
+        "properties": {
+          "scopeModel": {
+            "const": "SINGLE_SCOPE_V1"
+          },
+          "resourceIdEncodingRevision": {
+            "const": "SNAPSHOT_RESOURCE_ID_V1_512"
+          },
+          "canonicalOrderingRevision": {
+            "const": "UNICODE_CODE_POINT_BINARY_V1"
+          }
+        }
+      },
+      "migrationHead": {
+        "const": "068_effective_snapshot_consistency_downgrade.sql"
+      },
+      "runtimeQualificationEvidenceDigest": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "allowedConsumerCapabilities": {
+        "type": "array",
+        "minItems": 5,
+        "maxItems": 5,
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "TASK_EXECUTION_INTERVAL",
+            "HISTORICAL_TRAJECTORY",
+            "GAP",
+            "COMPLETENESS",
+            "CURRENTNESS_REPLAY_FOUNDATION"
+          ]
+        }
+      },
+      "explicitNonClaims": {
+        "type": "array",
+        "minItems": 5,
+        "maxItems": 5,
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "MAP_MATCHING",
+            "TEMPORAL_SPATIAL_EVENTS",
+            "LAST_INTERSECTION",
+            "HISTORICAL_SIGNAL_RANKING",
+            "COMPLETE_TRAJECTORY_ARTIFACT"
+          ]
+        }
+      },
+      "marker": {
+        "const": "GOWM_V071_WSGS_HISTORICAL_BASELINE_READY"
+      }
+    }
   },
   "gowm-v0.7.1/wsgs-southbound-operation-lock-v2.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -21312,6 +22203,33 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
           },
           "outputHash": {
             "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+          },
+          "snapshotAdherence": {
+            "$ref": "../gowm-v0.7.1/query-snapshot-adherence.schema.json"
+          },
+          "effectiveSnapshotBeforeHash": {
+            "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+          },
+          "effectiveSnapshotAfterHash": {
+            "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
+          },
+          "effectiveSnapshotRevisionBefore": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "effectiveSnapshotRevisionAfter": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "observedSnapshotResourceIdentities": {
+            "type": "array",
+            "maxItems": 256,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
           },
           "result": {
             "$ref": "capability-result-envelope.schema.json"

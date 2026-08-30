@@ -3,7 +3,7 @@ import type { JsonSchema } from "../../../../packages/platform/provider-sdk/src/
 
 export const HISTORICAL_TRACE_OPERATION_ID="history.get-trajectory" as const;
 export const HISTORICAL_TRAJECTORY_INPUT_SCHEMA_URI="urn:gowm:v0.7:historical-trajectory-query";
-export const HISTORICAL_TRAJECTORY_OUTPUT_SCHEMA_URI="urn:gowm:v0.7:historical-trajectory-result";
+export const HISTORICAL_TRAJECTORY_OUTPUT_SCHEMA_URI="urn:gowm:v0.7.1:historical-trajectory-result";
 
 export const HISTORICAL_TRACE_SCHEMAS:{
   input:JsonSchema;output:JsonSchema;inputSchemaUri:string;outputSchemaUri:string;

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.route-planning",
+  "operationId": "route.verify",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:b4b668759d51c3886d356a1576c89a3d64c4d4d4aa565d452f27d02d5a606e1e",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/route-provider.json",
+      "sha256": "8aca26a252d3087e698e14c044aaf66122e3b5ea38a9e96bec49d33a24dc09db"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/route-provider.json",
+      "sha256": "8aca26a252d3087e698e14c044aaf66122e3b5ea38a9e96bec49d33a24dc09db"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/route-planning-result.schema.json",
+      "sha256": "e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/route-verification-report.schema.json",
+      "sha256": "76477a2cf770bb5a72208882aa841ac7b13f60e0516a4726ff265efcbdbea8bd"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/route-planning-provider/src/provider.ts",
+      "sha256": "7d7f7c700beab6f7b18aa6ef1b84386b34b8d3922122e43356bfc7a513fe81c7",
+      "symbol": "createRoutePlanningProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/route-planning-provider.test.ts",
+      "sha256": "6e01521635105a23938cd90840b1e43b0ace219f46a51f5ace70bd7703740f01"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}
