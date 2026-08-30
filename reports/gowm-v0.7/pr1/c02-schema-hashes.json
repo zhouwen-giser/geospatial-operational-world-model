@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "commit": "835074d2aaf9b0eb58f03d381269f2610a624d13",
+  "schemas": [
+    {"path": "contracts/gowm-v0.7/analysis-input-set.schema.json", "sha256": "sha256:969c9e3ceedeaded5b0268d6dd84ac37ad8684257cd82509486e430a9c27224f"},
+    {"path": "contracts/gowm-v0.7/analysis-resource-reference.schema.json", "sha256": "sha256:64912999e69cc69a70cd57381baa0d525c25444c33c172aa671c364b1da8eea4"},
+    {"path": "contracts/gowm-v0.7/capability-semantic-profile-v1.1.schema.json", "sha256": "sha256:00f48f0c54451e9c7e8bd26f58878036941e5ccbe2dc54d713de30d76159fc27"},
+    {"path": "contracts/gowm-v0.7/historical-gap.schema.json", "sha256": "sha256:dae597d80cb74f39d29e0d588cc77d49bc38d6b1aac1cf5a68aadb9020a98037"},
+    {"path": "contracts/gowm-v0.7/historical-outcome.schema.json", "sha256": "sha256:a2b0de4070cb78aaafb97f238229e27fe953395b391653101ce74177382630a9"},
+    {"path": "contracts/gowm-v0.7/historical-trajectory-query.schema.json", "sha256": "sha256:28598b37321f26d27264bf24ee3b5f7687d030e15b734838e166226df5d65cd4"},
+    {"path": "contracts/gowm-v0.7/historical-trajectory-result.schema.json", "sha256": "sha256:90cec367fff1047bc96355dc7c27c74bd1e5272b33e83e8a3377a2524bbdb8a3"},
+    {"path": "contracts/gowm-v0.7/query-snapshot-adherence.schema.json", "sha256": "sha256:46d3807d6b36c91e474e122e569593f70ec155245beafe87364cf9eadcfc7207"},
+    {"path": "contracts/gowm-v0.7/query-snapshot-manifest.schema.json", "sha256": "sha256:ffc6a90094537f2feeb97bb194d5384dde2303794b4524a8efdbc79789e1aa7f"},
+    {"path": "contracts/gowm-v0.7/query-snapshot-policy.schema.json", "sha256": "sha256:78c36d5f31a9d449dcca6c907c1689588f83cebf60e6a920ee43ca575c8f0e1c"},
+    {"path": "contracts/gowm-v0.7/task-execution-interval-query.schema.json", "sha256": "sha256:d333270479b507295814b59b430d51486d8389b46dbbef884165d1888edf74fd"},
+    {"path": "contracts/gowm-v0.7/task-execution-interval-result.schema.json", "sha256": "sha256:947b22e2e5ca2f76aa10eed0f3f366f5b81d4f439a55460a4ce4fa067550084a"},
+    {"path": "contracts/gowm-v0.7/vocabularies/reference-kind-vocabulary.v2.json", "sha256": "sha256:72e31365e5b1161f64f88ed309d47f62a752ebad587d803ac880e7822b3cbf7f"}
+  ],
+  "generatedAt": "2026-08-30T09:48:36.8258645Z"
+}

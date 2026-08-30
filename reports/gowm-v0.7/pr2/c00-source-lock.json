@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0",
+  "repository": "zhouwen-giser/geospatial-operational-world-model",
+  "requiredBase": "main after PR-1 merge",
+  "observedOriginMain": "f2894d86eeca121f9cea76c70797ece3b091d51f",
+  "pr1Candidate": "835074d2aaf9b0eb58f03d381269f2610a624d13",
+  "pr1IsAncestorOfWorkingHead": true,
+  "pr1MergedIntoObservedOriginMain": false,
+  "workingBranch": "codex/gowm-v0.7-pr2-task-trajectory",
+  "workingHead": "91e1f030369cd91a8a29308d4ba89bc0339e29f0",
+  "rootVersion": "0.7.0",
+  "packageJsonVersion": "0.7.0",
+  "migrationHead": "067_historical_trajectory_contract.sql",
+  "migrationCount": 67,
+  "contractDirectories": [
+    "contracts/gowm-v0.7",
+    "contracts/platform",
+    "contracts/manifests",
+    "contracts/consumers"
+  ],
+  "goalPackageSha256": "e4e230c4c7caf7d50314ef302db22d357633b22e6e84fc556801982f2ab21584",
+  "semanticSourceFingerprint": "sha256:9a2b4f1629845fc3d7d3807d12baa75f1715c672f3aea2e62abfd7a53404507b",
+  "publicationState": "LOCAL_STACKED_UNPUBLISHED",
+  "generatedAt": "2026-08-30T09:48:36.8258645Z"
+}
