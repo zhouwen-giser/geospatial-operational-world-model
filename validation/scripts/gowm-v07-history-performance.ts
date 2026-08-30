@@ -62,6 +62,7 @@ async function runPerformanceSample(
   const pipeline = `history-perf-pipeline-${suffix}`;
   const stream = `history-perf-stream-${suffix}`;
   const target = `history-perf-target-${suffix}`;
+  const plannerProbeTarget = `${target}-planner-probe`;
   const session = `history-perf-session-${suffix}`;
   const processingRunId = randomUUID();
   const intervalTask = `history-perf-interval-${suffix}`;
@@ -73,6 +74,9 @@ async function runPerformanceSample(
     const positionFixtureMs = await timed(async () => {
       await seedPositionFixture(pool, {
         scope, source, pipeline, stream, target, session, processingRunId, clockModelId
+      });
+      await seedTrackletPlannerProbe(pool, {
+        scope, source, pipeline, stream, target: plannerProbeTarget, session
       });
     });
     within(positionFixtureMs, MAX_MS.positionFixture, "10k position fixture and Dirty Queue coalescing");
@@ -94,6 +98,11 @@ async function runPerformanceSample(
     const tracklets = new PostgresTrackletProjectionRepository(pool);
     const claim = (await tracklets.claimTracklets(`history-perf-tracklet-${suffix}`, 1, 120))[0];
     assert(claim, "10k Tracklet Dirty Key was not claimable");
+    assert.deepEqual(
+      [claim.dataScopeKey, claim.sourceKey, claim.sourceLocalTargetId, claim.trackerSessionKey],
+      [scope, source, target, session],
+      "Tracklet claim escaped the performance run scope"
+    );
     let trackletVersionId = "";
     const trackletRebuildMs = await timed(async () => {
       trackletVersionId = await tracklets.rebuildAndComplete(claim);
@@ -115,7 +124,11 @@ async function runPerformanceSample(
     const segment = firstSegment.rows[0];
     assert(segment, "Tracklet segment is missing");
     const sliceStart = iso(segment.start_time);
-    const sliceEnd = new Date(Date.parse(sliceStart) + SAMPLE.trajectorySamples * 10).toISOString();
+    // A linear temporal sequence with N instants spans N-1 sampling intervals;
+    // MobilityDB also retains the exclusive upper boundary as an instant.
+    const sliceEnd = new Date(
+      Date.parse(sliceStart) + (SAMPLE.trajectorySamples - 1) * 10
+    ).toISOString();
     let slicedSamples = 0;
     const trajectorySliceMs = await timed(async () => {
       const sliced = await new PostgresMobilityDbTrajectorySlicer(pool).slice({
@@ -137,6 +150,11 @@ async function runPerformanceSample(
     await seedThousandTaskEvents(pool, scope, intervalTask);
     const intervalClaim = (await intervalRepository.claim(`history-perf-interval-${suffix}`, 1, 120))[0];
     assert(intervalClaim, "1k Task Event Dirty Key was not claimable");
+    assert.deepEqual(
+      [intervalClaim.dataScopeKey, intervalClaim.operationalTaskId],
+      [scope, intervalTask],
+      "Task Interval claim escaped the performance run scope"
+    );
     let intervalInputCount = 0;
     let intervalRevisionCount = 0;
     const intervalReconstructionMs = await timed(async () => {
@@ -211,6 +229,14 @@ async function runPerformanceSample(
       SAMPLE.dirtyKeysRequested,
       "bounded Tracklet claim must stop at the requested batch size"
     );
+    assert(
+      boundedTrackletClaims.every((item) =>
+        item.dataScopeKey === scope &&
+        item.sourceKey === source &&
+        item.sourceLocalTargetId.startsWith(`history-perf-tracklet-dirty-${suffix}-`)
+      ),
+      "bounded Tracklet claims escaped the performance run scope"
+    );
     const remainingTrackletDirtyKeys = await scalar(pool,
       `SELECT count(*) FROM gowm_history.tracklet_projection_queue
        WHERE data_scope_key=$1 AND source_key=$2
@@ -259,7 +285,7 @@ async function runPerformanceSample(
            AND observation.source_local_target_id=$3
            AND COALESCE(observation.tracker_session_id,'__UNSCOPED__')=$4
          ORDER BY observation.observation_id LIMIT 100`,
-        [scope, source, target, session]
+        [scope, source, plannerProbeTarget, session]
       ),
       taskEventHistory: await explain(pool,
         `SELECT event_id FROM public.operational_task_event
@@ -481,14 +507,19 @@ async function seedPositionFixture(
       [fixture.processingRunId, `${fixture.session}:continuous`, fixture.scope, fixture.source]
     );
     // The v0.7 AFTER INSERT trigger performs only Dirty Queue enqueue/coalesce;
-    // this statement intentionally exercises all 10k trigger invocations.
+    // this statement intentionally exercises all 10k trigger invocations. The
+    // analysis positions form a tiny zig-zag so MobilityDB retains every
+    // fixture instant instead of canonicalizing a straight line to endpoints.
     await client.query(
       `INSERT INTO public.position_measurement(
          measurement_id,analysis_space_key,source_position,position,
          accuracy_radius_m,accuracy_model,accuracy_confidence
        )
        SELECT measurement.measurement_id,'default',observation.geometry::geometry(Point,4326),
-              ST_SetSRID(ST_MakePoint(448000+item.ordinality*0.01,4417000),32650),
+               ST_SetSRID(ST_MakePoint(
+                 448000+item.ordinality*0.01,
+                 4417000+CASE WHEN item.ordinality%2=0 THEN 0.1 ELSE 0 END
+               ),32650),
               1,'HARD_RADIUS',0.95
        FROM public.world_observation observation
        JOIN public.measurement measurement USING (observation_id)
@@ -505,6 +536,42 @@ async function seedPositionFixture(
   } finally {
     client.release();
   }
+}
+
+async function seedTrackletPlannerProbe(
+  pool: pg.Pool,
+  fixture: {
+    scope: string; source: string; pipeline: string; stream: string;
+    target: string; session: string;
+  }
+): Promise<void> {
+  const observationId = `${fixture.scope}-planner-probe`;
+  await pool.query(
+    `INSERT INTO public.world_observation(
+       observation_id,observer_type,observer_id,subject_type,subject_id,
+       observation_type,geometry,value,confidence,observed_at,received_at,
+       source,correlation_id,metadata,data_scope_key,source_record_key,
+       source_revision_no,origin_kind,source_local_target_id,tracker_session_id,
+       datastream_key,producer_pipeline_key,upstream_received_time,raw_reference,
+       payload_hash,entity_binding_status
+     ) VALUES (
+       $1,'VALIDATION_SENSOR',$2,'VEHICLE',$3,'position',
+       ST_SetSRID(ST_MakePoint(116.5,39.95),4326),'{}',1,
+       '2026-08-30T00:02:00Z',clock_timestamp(),$2,$1,'{}',$4,$1,1,
+       'SIMULATION',$3,$5,$6,$7,clock_timestamp(),
+       'inline://history-performance/planner-probe',$8,'DECLARED'
+     )`,
+    [
+      observationId, fixture.source, fixture.target, fixture.scope, fixture.session,
+      fixture.stream, fixture.pipeline, sha256({ plannerProbe: observationId })
+    ]
+  );
+  await pool.query(
+    `INSERT INTO public.world_observation_head(
+       source_key,source_record_key,current_observation_id
+     ) VALUES ($1,$2,$2)`,
+    [fixture.source, observationId]
+  );
 }
 
 async function seedOperationalTask(pool: pg.Pool, scope: string, taskId: string): Promise<void> {
