@@ -1,0 +1,146 @@
+name: GOWM v0.7.1 exact-head qualification
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gowm-v071-exact-head-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      GOWM_V071_QUALIFICATION_NETWORK: gowm-v071-${{ github.run_id }}-${{ github.run_attempt }}
+      GOWM_V071_DATABASE_CONTAINER: gowm-v071-db-${{ github.run_id }}-${{ github.run_attempt }}
+      STAS_DB_PASSWORD: v071_ci_stas_password_20260830
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure exact-head evidence paths
+        run: |
+          echo "GOWM_V071_ARTIFACT_ROOT=${RUNNER_TEMP}/exact-head-artifact" >> "$GITHUB_ENV"
+          echo "GOWM_V071_EVIDENCE_ROOT=${RUNNER_TEMP}/exact-head-artifact/reports/gowm-v0.7.1/${GITHUB_SHA}" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Initialize exact-source evidence
+        run: node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs initialize
+
+      - name: Static protocol closure
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs run
+          protocol-closure-report "check, SQL, tests and build"
+          -- npm run verify
+
+      - name: Deterministic locale matrix
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs run
+          deterministic-hash-report "Unicode code-point canonical ordering locale matrix"
+          -- npm run validate:v071-canonical-order
+
+      - name: Build exact-source database and application images
+        run: |
+          docker build --file database/Dockerfile --tag "gowm-v071-db:${GITHUB_SHA}" .
+          docker build --label "org.opencontainers.image.revision=${GITHUB_SHA}" --tag "gowm-v071-app:${GITHUB_SHA}" .
+
+      - name: Start isolated qualification database
+        id: database
+        run: |
+          network="$GOWM_V071_QUALIFICATION_NETWORK"
+          database="$GOWM_V071_DATABASE_CONTAINER"
+          docker network create "$network"
+          docker run --detach --name "$database" --network "$network" --network-alias postgres \
+            --publish 127.0.0.1::5432 \
+            --env POSTGRES_DB=gowm --env POSTGRES_USER=gowm --env POSTGRES_PASSWORD=gowm \
+            "gowm-v071-db:${GITHUB_SHA}"
+          for attempt in $(seq 1 60); do
+            if docker exec "$database" pg_isready -U gowm -d gowm; then break; fi
+            if [ "$attempt" = 60 ]; then docker logs "$database"; exit 1; fi
+            sleep 2
+          done
+          host_port="$(docker port "$database" 5432/tcp | sed -E 's/.*:([0-9]+)$/\1/')"
+          echo "DATABASE_ADMIN_URL=postgresql://gowm:gowm@127.0.0.1:${host_port}/gowm" >> "$GITHUB_ENV"
+          echo "DATABASE_URL=postgresql://gowm:gowm@127.0.0.1:${host_port}/gowm" >> "$GITHUB_ENV"
+          echo "GOWM_V071_QUALIFICATION_IMAGE=gowm-v071-app:${GITHUB_SHA}" >> "$GITHUB_ENV"
+          echo "GOWM_V071_MAIN_DATABASE_URL=postgresql://gowm:gowm@postgres:5432/gowm" >> "$GITHUB_ENV"
+
+      - name: Migrate persistent worker qualification database
+        run: npm run db:migrate
+
+      - name: Fresh 001-to-068 and 067-to-068 database gates
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs run
+          database-fresh-report "fresh install 001 through 068 and upgrade 067 through 068"
+          -- npm run validate:v071-database-upgrade
+
+      - name: Bind upgrade evidence to the same database execution
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs alias
+          database-upgrade-report database-fresh-report
+          "migration 067 to 068 with frozen predecessor ledger and checksum-stable replay"
+
+      - name: Real Gateway two-provider DAG gate
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs run
+          gateway-runtime-report "Operational interval to Historical trajectory Gateway DAG"
+          -- npm run validate:v07-history-gateway
+
+      - name: Bind historical DAG evidence to the same execution
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs alias
+          historical-two-provider-dag-report gateway-runtime-report
+          "Operational Reality Provider to Task Execution Interval to Historical Trace Provider"
+
+      - name: Node adherence persistence and restart gate
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs run
+          node-adherence-report "two-node adherence, persisted effective snapshot and restart"
+          -- npm run validate:v071-node-adherence-restart
+
+      - name: Container-level worker backoff and recovery gate
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs run
+          worker-backoff-report "real container database failure, bounded backoff, signal and recovery"
+          -- npm run validate:v071-worker-backoff-container
+
+      - name: Record honest Artifact deferral
+        run: node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs defer-artifact
+
+      - name: Finalize exact-head runtime qualification
+        run: node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs finalize-runtime
+
+      - name: Generate exact-head WSGS Historical Consumer Baseline
+        run: npm run validate:v071-wsgs-historical-lock
+
+      - name: Finalize exact-head closure
+        run: node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs finalize
+
+      - name: Stop isolated qualification resources
+        if: always()
+        run: |
+          if [ -n "${GOWM_V071_DATABASE_CONTAINER:-}" ]; then docker rm --force --volumes "$GOWM_V071_DATABASE_CONTAINER" || true; fi
+          if [ -n "${GOWM_V071_QUALIFICATION_NETWORK:-}" ]; then docker network rm "$GOWM_V071_QUALIFICATION_NETWORK" || true; fi
+
+      - name: Upload immutable exact-head evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gowm-v0.7.1-exact-head-${{ github.sha }}
+          path: ${{ env.GOWM_V071_ARTIFACT_ROOT }}
+          if-no-files-found: error
+          retention-days: 90

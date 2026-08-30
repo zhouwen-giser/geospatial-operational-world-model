@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.crs-normalization.bridge",
+  "operationId": "crs.normalize.point",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:0d8cf3ce49f44c07a948401f873409525974eb296f8c954fdedd69074adff4bf",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/crs-provider.json",
+      "sha256": "4c0dc2f409c8b1ebd2d82e867ae8b07048613a7b205948f57dbb4b0b83d2f6f9"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/crs-provider.json",
+      "sha256": "4c0dc2f409c8b1ebd2d82e867ae8b07048613a7b205948f57dbb4b0b83d2f6f9"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/crs.normalize.point/input-1.0.schema.json",
+      "sha256": "f7fbf15753d2e535f31ca70fa72e451ad7278836fac2ef79229286ab6056b95c"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/crs.normalize.point/output-1.0.schema.json",
+      "sha256": "580251608e3f468cb99adf391ba0c3912ba9d76600c2dc8b63f01757eaa090cd"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/crs-provider-bridge/src/provider.ts",
+      "sha256": "a6bd167f5e94ea940ca13501c20367eef8649c2bd4f7782d127d4985f5fba50d",
+      "symbol": "createCrsProviderBridge"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/provider-gateway.test.ts",
+      "sha256": "d2aad2d3604667458697703428ad86c37d3a39f7ccc82f67c31fd75cabf50f43"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/crs-provider-source-lock.json",
+      "sha256": "004311a4f40b5a6cb44ea82e955ab9ab9eb342586ddf7dcd956f096e046170d3"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

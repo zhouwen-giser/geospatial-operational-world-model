@@ -77,6 +77,17 @@
         "finishedAt": { "type": "string", "format": "date-time" },
         "inputHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
         "outputHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+        "snapshotAdherence": { "$ref": "../gowm-v0.7.1/query-snapshot-adherence.schema.json" },
+        "effectiveSnapshotBeforeHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+        "effectiveSnapshotAfterHash": { "$ref": "common-definitions.schema.json#/$defs/sha256Digest" },
+        "effectiveSnapshotRevisionBefore": { "type": "integer", "minimum": 0 },
+        "effectiveSnapshotRevisionAfter": { "type": "integer", "minimum": 0 },
+        "observedSnapshotResourceIdentities": {
+          "type": "array",
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
         "result": { "$ref": "capability-result-envelope.schema.json" },
         "error": { "$ref": "platform-error.schema.json" }
       }

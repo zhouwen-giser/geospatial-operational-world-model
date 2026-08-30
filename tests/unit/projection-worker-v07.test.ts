@@ -83,7 +83,10 @@ describe("ProjectionWorker v0.7 historical ordering", () => {
       historicalTrajectoryClaims: 2,
       historicalTrajectoriesMaterialized: 1,
       historicalTrajectoryOutcomesRecorded: 1,
-      historicalProjectionFailures: 0
+      historicalProjectionFailures: 0,
+      historicalItemFailures: 0,
+      historicalStageFailures: 0,
+      failedHistoricalStages: []
     });
     const expectedStageOptions = {
       workerId: "history-worker-test",
@@ -151,7 +154,13 @@ describe("ProjectionWorker v0.7 historical ordering", () => {
         taskIntervalsProjected: 0,
         trackletsRebuilt: 0,
         trackletsFinalized: 0,
-        historicalProjectionFailures: 3
+        historicalProjectionFailures: 3,
+        historicalItemFailures: 1,
+        historicalStageFailures: 2,
+        failedHistoricalStages: [
+          { stage: "TASK_INTERVALS", failureKind: "CONTRACT_FAILURE" },
+          { stage: "TRACKLET_REBUILD", failureKind: "UNKNOWN" }
+        ]
       });
       expect(order).toEqual([
         "observations:claim",
@@ -183,12 +192,19 @@ describe("ProjectionWorker v0.7 historical ordering", () => {
       historicalTrajectoryClaims: 0,
       historicalTrajectoriesMaterialized: 0,
       historicalTrajectoryOutcomesRecorded: 0,
-      historicalProjectionFailures: 0
+      historicalProjectionFailures: 0,
+      historicalItemFailures: 0,
+      historicalStageFailures: 0,
+      failedHistoricalStages: []
     };
     expect(isIdleWorkerTick(idle)).toBe(true);
-    for (const key of Object.keys(idle) as Array<keyof WorkerTickResult>) {
+    for (const key of Object.keys(idle).filter((key) => key !== "failedHistoricalStages") as Array<keyof WorkerTickResult>) {
       expect(isIdleWorkerTick({ ...idle, [key]: 1 }), key).toBe(false);
     }
+    expect(isIdleWorkerTick({
+      ...idle,
+      failedHistoricalStages: [{ stage: "TASK_INTERVALS", failureKind: "DATABASE_UNAVAILABLE" }]
+    })).toBe(false);
   });
 });
 

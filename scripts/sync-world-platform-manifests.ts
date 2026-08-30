@@ -18,11 +18,18 @@ export async function syncWorldPlatformManifests(write = false) {
       else if (await readFile(path, "utf8") !== rendered) throw new Error(`Manifest differs from executable runtime: ${path}`);
     }
   }
-  for (const path of ["config/capability-gateway-registry.json", "config/grounding-gateway-registry.json", "config/history-gateway-registry.json", "config/planning-gateway-registry.json"]) {
+  for (const path of [
+    "config/capability-gateway-registry.json",
+    "config/grounding-gateway-registry.json",
+    "config/history-gateway-registry.json",
+    "config/planning-gateway-registry.json",
+    "config/world-platform-gateway-registry.json"
+  ]) {
     const config = JSON.parse(await readFile(path, "utf8"));
     const prior = JSON.stringify(config);
     for (const entry of config.providers) {
       const runtime = runtimes.find((r) => r.manifest.provider.providerId === entry.providerId)!;
+      entry.providerVersion = runtime.manifest.provider.providerVersion;
       entry.manifestHash = canonicalSha256(runtime.manifest);
       entry.implementationDigest = runtime.manifest.provider.implementationDigest;
     }

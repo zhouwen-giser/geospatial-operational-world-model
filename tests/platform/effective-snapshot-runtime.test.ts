@@ -40,6 +40,7 @@ const objectSchemaHash = getContractSchemaHash(objectSchemaUri);
 const parameterSchemaHash = getContractSchemaHash("world-query-parameters.schema.json");
 const trackletDigestV1 = sha256({ trackletId: "tracklet-1", version: "v1" });
 const trackletDigestV2 = sha256({ trackletId: "tracklet-1", version: "v2" });
+const trackletDigestB = sha256({ trackletId: "tracklet-2", version: "v1" });
 
 const principal: GatewayPrincipal = {
   principalRef: "principal:effective-snapshot-runtime",
@@ -53,15 +54,16 @@ type ResourceResolution = "DISCOVER_RESOURCES" | "REQUIRE_PINNED";
 type ConsumerKind = "consumer" | "conflict";
 
 interface Harness {
-  descriptors: Record<"resolver" | ConsumerKind, CapabilityDescriptor>;
+  descriptors: Record<"resolver" | "resolverB" | ConsumerKind, CapabilityDescriptor>;
   store: MemoryQueryPlanStore;
+  direct: DirectExecutionService;
   runtime(): WorldQueryRuntime;
   observedResolverSnapshots: ProviderHandlerContext["snapshots"][];
   observedConsumerSnapshots: ProviderHandlerContext["snapshots"][];
-  calls: Record<"resolver" | ConsumerKind, number>;
+  calls: Record<"resolver" | "resolverB" | ConsumerKind, number>;
 }
 
-function snapshot(version: "v1" | "v2", capturedAt: string): DataSnapshotContext {
+function snapshot(version: "v1" | "v2", capturedAt: string, id = "tracklet-1"): DataSnapshotContext {
   return {
     consistency: "PINNED",
     capturedAt,
@@ -70,12 +72,12 @@ function snapshot(version: "v1" | "v2", capturedAt: string): DataSnapshotContext
       referenceKey: {
         namespace: "scope-a",
         kind: "TRACKLET_VERSION",
-        id: "tracklet-1",
+        id,
         version
       },
       authority: "gowm.effective-snapshot-fixture",
       pinning: "PINNED",
-      digest: version === "v1" ? trackletDigestV1 : trackletDigestV2,
+      digest: id === "tracklet-2" ? trackletDigestB : version === "v1" ? trackletDigestV1 : trackletDigestV2,
       worldVersion: version === "v1" ? 41 : 42
     }]
   };
@@ -136,12 +138,13 @@ function descriptor(operationId: string, resourceResolution: ResourceResolution)
 function createHarness(store: MemoryQueryPlanStore = new MemoryQueryPlanStore()): Harness {
   const descriptors = {
     resolver: descriptor("test.snapshot.resolver", "DISCOVER_RESOURCES"),
+    resolverB: descriptor("test.snapshot.resolver-b", "DISCOVER_RESOURCES"),
     consumer: descriptor("test.snapshot.consumer", "REQUIRE_PINNED"),
     conflict: descriptor("test.snapshot.consumer-conflict", "REQUIRE_PINNED")
   };
   const observedResolverSnapshots: ProviderHandlerContext["snapshots"][] = [];
   const observedConsumerSnapshots: ProviderHandlerContext["snapshots"][] = [];
-  const calls: Record<"resolver" | ConsumerKind, number> = { resolver: 0, consumer: 0, conflict: 0 };
+  const calls: Record<"resolver" | "resolverB" | ConsumerKind, number> = { resolver: 0, resolverB: 0, consumer: 0, conflict: 0 };
 
   const operations: ProviderOperation[] = [{
     descriptor: descriptors.resolver,
@@ -160,6 +163,26 @@ function createHarness(store: MemoryQueryPlanStore = new MemoryQueryPlanStore())
         status: "COMPLETED",
         value: { ...input as Record<string, unknown>, resolvedTracklet: "tracklet-1" },
         dataSnapshot: snapshot("v1", context.snapshots.effective!.capturedAt),
+        consumption: { rows: 1, candidates: 1 }
+      };
+    }
+  }, {
+    descriptor: descriptors.resolverB,
+    inputSchema: objectSchema,
+    outputSchema: objectSchema,
+    method: {
+      engine: "snapshot-fixture",
+      engineVersion: "1.0.0",
+      methodId: "resolve-tracklet-b",
+      methodVersion: "1.0"
+    },
+    async handle(input, context) {
+      calls.resolverB += 1;
+      observedResolverSnapshots.push(structuredClone(context.snapshots));
+      return {
+        status: "COMPLETED",
+        value: { ...input as Record<string, unknown>, resolvedTracklet: "tracklet-2" },
+        dataSnapshot: snapshot("v1", context.snapshots.effective!.capturedAt, "tracklet-2"),
         consumption: { rows: 1, candidates: 1 }
       };
     }
@@ -250,6 +273,7 @@ function createHarness(store: MemoryQueryPlanStore = new MemoryQueryPlanStore())
   return {
     descriptors,
     store,
+    direct,
     runtime: () => new WorldQueryRuntime({
       validator: new QueryPlanValidator(registry),
       directExecution: direct,
@@ -359,6 +383,39 @@ function submission(
   };
 }
 
+function twoResolverSubmission(queryId: string, descriptors: Harness["descriptors"]): WorldQuerySubmission {
+  const resolverA = node("resolver-a", descriptors.resolver, {
+    request: { kind: "LITERAL", value: { taskId: "task-a" }, port: port(descriptors.resolver) }
+  });
+  const resolverB = node("resolver-b", descriptors.resolverB, {
+    request: { kind: "LITERAL", value: { taskId: "task-b" }, port: port(descriptors.resolverB) }
+  });
+  return {
+    requestId: `request:${queryId}`,
+    idempotencyKey: `idempotency:${queryId}`,
+    parameterSchemaHash,
+    parameters: {},
+    snapshotPolicy: { mode: "LATEST_AT_START", allowDowngrade: false },
+    plan: {
+      queryPlanVersion: "2.0",
+      queryId,
+      nodes: [resolverA, resolverB],
+      outputs: [{
+        name: "answer",
+        binding: { kind: "NODE_OUTPUT", nodeId: "resolver-b", outputPort: "result", port: port(descriptors.resolverB) }
+      }],
+      budgets: {
+        maximumNodes: 2,
+        maximumDepth: 1,
+        maximumRows: 20,
+        maximumCandidates: 20,
+        maximumOutputBytes: 32_768,
+        maximumExecutionMs: 2_000
+      }
+    }
+  };
+}
+
 function expectedEffectiveResource() {
   return {
     resourceKind: "TRACKLET_VERSION",
@@ -407,6 +464,26 @@ class InterruptAfterResolverCommitStore extends MemoryQueryPlanStore {
   }
 }
 
+class RejectBeforeResolverCommitStore extends MemoryQueryPlanStore {
+  #rejected = false;
+
+  override async commitNodeResult(
+    jobId: string,
+    result: WorldQueryResultNodeResult,
+    snapshotUpdate?: {
+      expectedManifestHash: GowmV071QuerySnapshotManifest["manifestHash"];
+      nextEffectiveManifest: GowmV071QuerySnapshotManifest;
+    },
+    fence?: QueryExecutionFence
+  ): Promise<void> {
+    if (!this.#rejected && result.nodeId === "resolver-a" && result.status === "COMPLETED" && snapshotUpdate !== undefined) {
+      this.#rejected = true;
+      throw new ProviderProtocolError("PROVIDER_NOT_READY", "fixture transaction was unavailable", { retryable: true });
+    }
+    await super.commitNodeResult(jobId, result, snapshotUpdate, fence);
+  }
+}
+
 function workerSuperseded(): ProviderProtocolError {
   return new ProviderProtocolError("PROVIDER_NOT_READY", "fixture worker lease was superseded", {
     retryable: false,
@@ -415,6 +492,46 @@ function workerSuperseded(): ProviderProtocolError {
 }
 
 describe("v0.7 effective snapshot World Query runtime", () => {
+  it("persists node-local adherence for two providers with distinct resources", async () => {
+    const test = createHarness();
+    const runtime = test.runtime();
+    const executed = await runtime.submit(
+      twoResolverSubmission("query-effective-two-provider", test.descriptors),
+      principal
+    );
+
+    expect(executed.result?.status).toBe("COMPLETED");
+    expect(executed.result?.effectiveSnapshotManifest?.resources.map((resource) => resource.resourceId)).toEqual([
+      "scope-a:tracklet-1",
+      "scope-a:tracklet-2"
+    ]);
+    expect(executed.result?.snapshotAdherence).toEqual([
+      expect.objectContaining({ nodeId: "resolver-a", status: "MATCHED" }),
+      expect.objectContaining({ nodeId: "resolver-b", status: "MATCHED" })
+    ]);
+    expect(executed.result?.nodes).toEqual([
+      expect.objectContaining({
+        nodeId: "resolver-a",
+        snapshotAdherence: expect.objectContaining({ status: "MATCHED" }),
+        effectiveSnapshotRevisionBefore: 0,
+        effectiveSnapshotRevisionAfter: 1,
+        observedSnapshotResourceIdentities: ['["TRACKLET_VERSION","scope-a:tracklet-1"]']
+      }),
+      expect.objectContaining({
+        nodeId: "resolver-b",
+        snapshotAdherence: expect.objectContaining({ status: "MATCHED" }),
+        effectiveSnapshotRevisionBefore: 1,
+        effectiveSnapshotRevisionAfter: 2,
+        observedSnapshotResourceIdentities: ['["TRACKLET_VERSION","scope-a:tracklet-2"]']
+      })
+    ]);
+
+    const persistedBeforeRestart = await test.store.listNodes(executed.job.jobId);
+    const recovered = await test.runtime().run(executed.job.jobId);
+    expect(recovered.snapshotAdherence).toEqual(executed.result?.snapshotAdherence);
+    expect(await test.store.listNodes(executed.job.jobId)).toEqual(persistedBeforeRestart);
+  });
+
   it("discovers a tracklet, passes the exact effective pin downstream, and binds it into the final result hash", async () => {
     const test = createHarness();
     const executed = await test.runtime().submit(
@@ -438,7 +555,7 @@ describe("v0.7 effective snapshot World Query runtime", () => {
       effectiveSnapshotManifest: executed.result?.effectiveSnapshotManifest
     }));
     expect((await test.store.getByJobId(executed.job.jobId))?.effectiveSnapshotRevision).toBe(1);
-    expect(test.calls).toEqual({ resolver: 1, consumer: 1, conflict: 0 });
+    expect(test.calls).toEqual({ resolver: 1, resolverB: 0, consumer: 1, conflict: 0 });
   });
 
   it("fails closed on a strict consumer version conflict without changing the discovered pin", async () => {
@@ -451,13 +568,20 @@ describe("v0.7 effective snapshot World Query runtime", () => {
     expectExactConsumerPin(test.observedConsumerSnapshots[0]);
     expect(executed.result?.status).toBe("FAILED");
     expect(executed.result?.effectiveSnapshotManifest?.resources).toEqual([expectedEffectiveResource()]);
+    expect(executed.result?.nodes.find((entry) => entry.nodeId === "resolver-a")).toMatchObject({
+      nodeId: "resolver-a",
+      status: "COMPLETED",
+      snapshotAdherence: { status: "MATCHED" },
+      effectiveSnapshotRevisionBefore: 0,
+      effectiveSnapshotRevisionAfter: 1
+    });
     expect(executed.result?.nodes.find((entry) => entry.nodeId === "consumer-conflict")).toMatchObject({
       nodeId: "consumer-conflict",
       status: "FAILED",
       error: { error: { code: "SCHEMA_MISMATCH" } }
     });
     expect((await test.store.getByJobId(executed.job.jobId))?.effectiveSnapshotRevision).toBe(1);
-    expect(test.calls).toEqual({ resolver: 1, consumer: 0, conflict: 1 });
+    expect(test.calls).toEqual({ resolver: 1, resolverB: 0, consumer: 0, conflict: 1 });
   });
 
   it("keeps the prior pin and reports PARTIAL/MISMATCHED for a BEST_EFFORT conflict", async () => {
@@ -480,7 +604,7 @@ describe("v0.7 effective snapshot World Query runtime", () => {
           resourceId: "scope-a:tracklet-1",
           expectedVersion: "v1",
           actualVersion: "v2",
-          reason: "CONTENT_HASH_MISMATCH"
+          reason: "VERSION_MISMATCH"
         })]
       })])
     });
@@ -521,6 +645,69 @@ describe("v0.7 effective snapshot World Query runtime", () => {
     expect(result.effectiveSnapshotManifest).toBeDefined();
     expect(result.effectiveSnapshotManifest!.resources).toEqual([expectedEffectiveResource()]);
     expect((await store.getByJobId(queued.job.jobId))?.effectiveSnapshotRevision).toBe(1);
-    expect(test.calls).toEqual({ resolver: 1, consumer: 1, conflict: 0 });
+    expect(test.calls).toEqual({ resolver: 1, resolverB: 0, consumer: 1, conflict: 0 });
+  });
+
+  it("does not persist a candidate snapshot revision when Gateway output validation fails", async () => {
+    const test = createHarness();
+    const originalExecute = test.direct.execute.bind(test.direct);
+    test.direct.execute = async (...arguments_) => {
+      const executed = await originalExecute(...arguments_);
+      if (executed.result.output === undefined) throw new Error("fixture provider output is missing");
+      return {
+        ...executed,
+        result: {
+          ...executed.result,
+          output: { ...executed.result.output, value: "not-an-object" }
+        }
+      };
+    };
+    const executed = await test.runtime().submit(
+      submission("query-invalid-output-snapshot-atomicity", test.descriptors, "consumer", "LATEST_AT_START"),
+      principal
+    );
+    const failed = executed.result?.nodes.find((entry) => entry.nodeId === "resolver-a");
+    const persisted = await test.store.getByJobId(executed.job.jobId);
+
+    expect(executed.result?.status).toBe("FAILED");
+    expect(persisted?.effectiveSnapshotRevision).toBe(0);
+    expect(persisted?.effectiveSnapshotManifest.resources).toEqual([]);
+    expect(failed).toMatchObject({
+      status: "FAILED",
+      effectiveSnapshotBeforeHash: persisted?.effectiveSnapshotManifest.manifestHash,
+      effectiveSnapshotAfterHash: persisted?.effectiveSnapshotManifest.manifestHash,
+      effectiveSnapshotRevisionBefore: 0,
+      effectiveSnapshotRevisionAfter: 0,
+      observedSnapshotResourceIdentities: ['["TRACKLET_VERSION","scope-a:tracklet-1"]']
+    });
+  });
+
+  it("retries from persisted state when the atomic node and snapshot commit is unavailable", async () => {
+    const store = new RejectBeforeResolverCommitStore();
+    const test = createHarness(store);
+    const request = submission("query-snapshot-commit-retry", test.descriptors, "consumer", "LATEST_AT_START");
+    const queued = await test.runtime().submit(request, principal, "ASYNC");
+
+    await expect(test.runtime().run(queued.job.jobId)).rejects.toMatchObject({ code: "PROVIDER_NOT_READY" });
+    expect(await store.getByJobId(queued.job.jobId)).toMatchObject({
+      effectiveSnapshotRevision: 0,
+      effectiveSnapshotManifest: { resources: [] }
+    });
+    const interruptedResolver = (await store.listNodes(queued.job.jobId))
+      .find((entry) => entry.nodeId === "resolver-a");
+    expect(interruptedResolver).toMatchObject({ nodeId: "resolver-a", status: "RUNNING" });
+    expect(interruptedResolver).not.toHaveProperty("effectiveSnapshotRevisionAfter");
+
+    const recovered = await test.runtime().run(queued.job.jobId);
+    expect(recovered.status).toBe("COMPLETED");
+    expect(await store.getByJobId(queued.job.jobId)).toMatchObject({
+      effectiveSnapshotRevision: 1,
+      effectiveSnapshotManifest: { resources: [expectedEffectiveResource()] }
+    });
+    expect((await store.listNodes(queued.job.jobId)).find((entry) => entry.nodeId === "resolver-a")).toMatchObject({
+      status: "COMPLETED",
+      effectiveSnapshotRevisionBefore: 0,
+      effectiveSnapshotRevisionAfter: 1
+    });
   });
 });

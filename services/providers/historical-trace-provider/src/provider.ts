@@ -20,11 +20,11 @@ export function createHistoricalTraceProvider(options:{
   const manifest:CapabilityProviderManifest={
     providerProtocolVersion:"1.0",manifestSchemaVersion:"1.1",
     provider:{
-      providerId:"gowm.historical-trace",providerVersion:"0.7.0",owner:"gowm-platform",
+      providerId:"gowm.historical-trace",providerVersion:"0.7.1",owner:"gowm-platform",
       implementationDigest:sha256({
-        providerId:"gowm.historical-trace",providerVersion:"0.7.0",readContract:"gowm_history_v1",
-        capability:operation.descriptor,policy:"historical-trace-read-and-controlled-enqueue-v1"
-      }),sourceRef:"urn:gowm:source:in-tree:historical-trace:0.7.0"
+        providerId:"gowm.historical-trace",providerVersion:"0.7.1",readContract:"gowm_history_v1",
+        capability:operation.descriptor,policy:"historical-trace-read-and-controlled-enqueue-v1.1"
+      }),sourceRef:"urn:gowm:source:in-tree:historical-trace:0.7.1"
     },
     endpoints:{
       manifest:"/v1/manifest",liveness:"/health/live",readiness:"/health/ready",

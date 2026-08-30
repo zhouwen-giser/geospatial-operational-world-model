@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.route-planning",
+  "operationId": "route.plan",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:3c93a68e8f709998c1beff22add31db99c961ed5d558b208127e149f2d26703b",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/route-provider.json",
+      "sha256": "8aca26a252d3087e698e14c044aaf66122e3b5ea38a9e96bec49d33a24dc09db"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/route-provider.json",
+      "sha256": "8aca26a252d3087e698e14c044aaf66122e3b5ea38a9e96bec49d33a24dc09db"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/route-planning-request.schema.json",
+      "sha256": "0cdee0b4a503099aef05e738a323ae57414c7f0c9cdba7997f86e89ed045da67"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/route-planning-result.schema.json",
+      "sha256": "e45253b2c53dfe6d40be0bdbc7cf4c33fb5d9500bff3363da2ee27da96418f8c"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/route-planning-provider/src/provider.ts",
+      "sha256": "7d7f7c700beab6f7b18aa6ef1b84386b34b8d3922122e43356bfc7a513fe81c7",
+      "symbol": "createRoutePlanningProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/route-planning-provider.test.ts",
+      "sha256": "6e01521635105a23938cd90840b1e43b0ace219f46a51f5ace70bd7703740f01"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/route-planning-provider/src/verifier.ts",
+      "sha256": "5b1e16d1f37d9639ecd61347d9d46d49b1e0ed2c430a737c1d6b2d46d131dc1b",
+      "symbol": "verifyRouteCandidate"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Plans are derived against pinned graph/currentness inputs and independently verified by the named implementation; no live-world guarantee follows from mathematical validity.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

@@ -12,16 +12,26 @@ import type {
   GowmV07TaskExecutionIntervalQuery,
   GowmV07TaskExecutionIntervalResult,
   WorldQueryPlanV2SchemaPort,
+  WorldQueryPlanV2Node,
   WorldQuerySubmission
 } from "../../packages/platform/contract-runtime/src/index.js";
-import { getContractSchemaHash } from "../../packages/platform/contract-runtime/src/index.js";
+import {
+  getContractSchema,
+  getContractSchemaHash,
+  validateContract
+} from "../../packages/platform/contract-runtime/src/index.js";
 import {
   HistoricalProjectionCoordinator,
   PostgresHistoricalTrajectoryMaterializer,
   PostgresTaskIntervalProjectionRepository,
   PostgresTrackletProjectionRepository
 } from "../../packages/historical-trace-runtime/src/index.js";
-import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
+import {
+  buildProviderProtocolApp,
+  createProviderRuntime,
+  sha256,
+  type ProviderOperation
+} from "../../packages/platform/provider-sdk/src/index.js";
 import { OperationalEventRepository } from "../../packages/runtime/src/operational-event-repository.js";
 import { OperationalProjectionRepository } from "../../packages/runtime/src/operational-projection-repository.js";
 import {
@@ -35,6 +45,7 @@ import {
   PostgresQueryPlanStore,
   ProviderCircuitBreaker,
   QueryPlanValidator,
+  normalizePrincipalScopes,
   synchronizePostgresRegistry,
   WorldQueryRuntime,
   type GatewayPrincipal
@@ -44,7 +55,7 @@ import { createHistoricalTraceProvider } from "../../services/providers/historic
 import { buildOperationalRealityApp } from "../../services/providers/operational-reality-provider/src/app.js";
 import { createOperationalRealityProvider } from "../../services/providers/operational-reality-provider/src/provider.js";
 import {
-  withMigratedV07Database,
+  withMigratedV071Database,
   type V07DatabaseEvidence
 } from "./gowm-v07-postgres-harness.js";
 
@@ -60,6 +71,7 @@ interface FixtureIdentity {
   trackerSessionKey: string;
   targetKey: string;
   operationalTaskId: string;
+  openOperationalTaskId: string;
   subjectReferenceKey: string;
   processingRunId: string;
   clockModelId: string;
@@ -111,7 +123,21 @@ interface GatewayResponse {
   body: JsonRecord;
 }
 
-await withMigratedV07Database("history_gateway", async (databaseUrl, versions, runId) => {
+interface GatewayQualificationProvider {
+  app: ReturnType<typeof buildProviderProtocolApp>;
+  descriptor: CapabilityDescriptor;
+  registration: GatewayProviderRegistration;
+  maximumReferenceKey: {
+    namespace: string;
+    kind: string;
+    id: string;
+    version: string;
+  };
+  observedDataScopes: string[];
+  executeCalls(): number;
+}
+
+await withMigratedV071Database("history_gateway", async (databaseUrl, versions, runId) => {
   await runGatewayHistoricalE2e(databaseUrl, versions, runId);
 });
 
@@ -125,6 +151,7 @@ async function runGatewayHistoricalE2e(
   const transportToken = `HistoryGatewayTransport_${runId}_ValidationOnly`;
   let providerApp: ReturnType<typeof buildHistoricalTraceApp> | undefined;
   let operationalProviderApp: ReturnType<typeof buildOperationalRealityApp> | undefined;
+  let qualificationProviderApp: ReturnType<typeof buildProviderProtocolApp> | undefined;
   let gatewayApp: FastifyApp | undefined;
   let providerHttpExecuteCalls = 0;
   let operationalProviderHttpExecuteCalls = 0;
@@ -194,6 +221,12 @@ async function runGatewayHistoricalE2e(
       transportToken,
       allowPlaintextPrivateNetwork: false
     });
+    const qualificationProvider = await startGatewayQualificationProvider(
+      fixture,
+      runId,
+      transportToken
+    );
+    qualificationProviderApp = qualificationProvider.app;
     const providerRegistrations: GatewayProviderRegistration[] = [{
       approvalId: `history-gateway-e2e-${runId}`,
       manifest,
@@ -204,7 +237,7 @@ async function runGatewayHistoricalE2e(
       manifest: operationalManifest,
       endpoint: operationalProviderEndpoint,
       client: operationalProviderClient
-    }];
+    }, qualificationProvider.registration];
     await synchronizePostgresRegistry(pool, providerRegistrations.map((registration) => ({
       config: {
         providerId: registration.manifest.provider.providerId,
@@ -238,6 +271,185 @@ async function runGatewayHistoricalE2e(
       return submitGateway(gatewayBase, submission, dataScopeKey, asynchronous);
     };
 
+    const strictWeakQueryId = `gateway-case1-strict-${runId}`;
+    const qualificationCallsBeforeCases = qualificationProvider.executeCalls();
+    const strictWeak = await submit(
+      gatewayQualificationSubmission(
+        strictWeakQueryId,
+        qualificationProvider.descriptor,
+        "LATER_BEST_EFFORT",
+        false
+      ),
+      fixture.scopeA
+    );
+    gatewayHttpSubmissions += 1;
+    assert.equal(strictWeak.status, 200, JSON.stringify(strictWeak.body));
+    assert.equal(strictWeak.body.status, "FAILED", "Case 1 strict mismatch must fail the World Query");
+    const strictWeakNode = worldQueryNode(strictWeak, "snapshotQualification");
+    assert.equal(strictWeakNode.status, "FAILED");
+    const strictWeakAdherence = requiredRecord(
+      strictWeakNode.snapshotAdherence,
+      "Case 1 node snapshot adherence"
+    );
+    assert.equal(strictWeakAdherence.status, "MISMATCHED");
+    assert.equal(strictWeakAdherence.expectedConsistency, "CONSISTENT_AT_START");
+    assert.equal(strictWeakAdherence.actualConsistency, "BEST_EFFORT");
+    const strictWeakReasons = snapshotMismatchReasons(strictWeakAdherence);
+    assert(strictWeakReasons.includes("CONSISTENCY_LEVEL_TOO_WEAK"));
+    assert(strictWeakReasons.includes("CAPTURED_AT_AFTER_QUERY_BOUNDARY"));
+    const strictWeakRequested = requiredRecord(
+      strictWeak.body.requestedSnapshotManifest,
+      "Case 1 requested snapshot"
+    );
+    const strictWeakEffective = requiredRecord(
+      strictWeak.body.effectiveSnapshotManifest,
+      "Case 1 effective snapshot"
+    );
+    assert.equal(strictWeakEffective.consistency, "CONSISTENT_AT_START");
+    assert.deepEqual(strictWeakEffective.resources, [], "Case 1 must not commit the rejected Provider candidate");
+    assert.equal(strictWeakEffective.manifestHash, strictWeakRequested.manifestHash);
+    assert.equal(
+      (await gateway.store.getByQueryId(strictWeakQueryId))?.effectiveSnapshotRevision,
+      0,
+      "Case 1 must leave the PostgreSQL Effective Snapshot revision unchanged"
+    );
+
+    const maximumReferenceQueryId = `gateway-case4-maximum-reference-${runId}`;
+    const maximumReference = await submit(
+      gatewayQualificationSubmission(
+        maximumReferenceQueryId,
+        qualificationProvider.descriptor,
+        "MAXIMUM_REFERENCE_KEY",
+        false
+      ),
+      fixture.scopeA
+    );
+    gatewayHttpSubmissions += 1;
+    assert.equal(maximumReference.status, 200, JSON.stringify(maximumReference.body));
+    assert.equal(maximumReference.body.status, "COMPLETED");
+    const maximumReferenceNode = worldQueryNode(maximumReference, "snapshotQualification");
+    assert.equal(maximumReferenceNode.status, "COMPLETED");
+    assert.equal(
+      requiredRecord(maximumReferenceNode.snapshotAdherence, "Case 4 adherence").status,
+      "MATCHED"
+    );
+    const maximumReferenceManifest = requiredRecord(
+      maximumReference.body.effectiveSnapshotManifest,
+      "Case 4 effective snapshot"
+    );
+    const maximumReferenceResources = requiredRecordArray(
+      maximumReferenceManifest.resources,
+      "Case 4 effective resources"
+    );
+    assert.equal(maximumReferenceResources.length, 1);
+    const expectedMaximumResourceId = `${qualificationProvider.maximumReferenceKey.namespace}:${qualificationProvider.maximumReferenceKey.id}`;
+    assert.equal([...expectedMaximumResourceId].length, 321);
+    assert.equal(maximumReferenceResources[0]?.resourceId, expectedMaximumResourceId);
+    assert.equal(
+      validateContract("urn:gowm:v0.7.1:query-snapshot-manifest", maximumReferenceManifest).valid,
+      true,
+      "Case 4 must produce a contract-valid v0.7.1 Snapshot Manifest"
+    );
+    const persistedMaximumReference = await gateway.store.getByQueryId(maximumReferenceQueryId);
+    assert.equal(persistedMaximumReference?.effectiveSnapshotRevision, 1);
+    assert.equal(
+      persistedMaximumReference?.effectiveSnapshotManifest.resources[0]?.resourceId,
+      expectedMaximumResourceId,
+      "Case 4 maximum identity must be durably committed by PostgresQueryPlanStore"
+    );
+    assert.deepEqual(
+      qualificationProvider.observedDataScopes.slice(0, 2),
+      [fixture.scopeA, fixture.scopeA],
+      "Cases 1 and 4 must execute under one exact delegated Data Scope"
+    );
+
+    const dualScopeQueryId = `gateway-case5-dual-scope-${runId}`;
+    const qualificationCallsBeforeDualScope = qualificationProvider.executeCalls();
+    const dualScope = await submit(
+      gatewayQualificationSubmission(
+        dualScopeQueryId,
+        qualificationProvider.descriptor,
+        "MAXIMUM_REFERENCE_KEY",
+        false
+      ),
+      `${fixture.scopeA},${fixture.scopeB}`
+    );
+    gatewayHttpSubmissions += 1;
+    assert.equal(dualScope.status, 403, JSON.stringify(dualScope.body));
+    assert.equal(requiredRecord(dualScope.body.error, "Case 5 Gateway error").code, "SCOPE_DENIED");
+    assert.equal(
+      requiredRecord(
+        requiredRecord(dualScope.body.error, "Case 5 Gateway error").details,
+        "Case 5 public Gateway error details"
+      ).reason,
+      "MULTI_SCOPE_UNSUPPORTED",
+      "Case 5 must expose the stable denial reason through the real HTTP response"
+    );
+    const qualificationCallsAfterDualScope = qualificationProvider.executeCalls();
+    assert.equal(
+      qualificationCallsAfterDualScope,
+      qualificationCallsBeforeDualScope,
+      "Case 5 must reject dual Scope before the Provider HTTP boundary"
+    );
+    const dualScopePersisted = await gateway.store.getByQueryId(dualScopeQueryId);
+    assert.equal(
+      dualScopePersisted,
+      undefined,
+      "Case 5 must reject dual Scope before persisting a PostgreSQL query job"
+    );
+
+    // Run Case 2 after the independent identity/scope cases so any database
+    // persistence conflict in the downgrade path cannot hide their evidence.
+    const downgradeQueryId = `gateway-case2-downgrade-${runId}`;
+    const downgrade = await submit(
+      gatewayQualificationSubmission(
+        downgradeQueryId,
+        qualificationProvider.descriptor,
+        "LATER_BEST_EFFORT",
+        true
+      ),
+      fixture.scopeA
+    );
+    gatewayHttpSubmissions += 1;
+    assert.equal(downgrade.status, 200, JSON.stringify(downgrade.body));
+    assert.equal(downgrade.body.status, "PARTIAL", "Case 2 allowed downgrade must be fail-visible");
+    const downgradeNode = worldQueryNode(downgrade, "snapshotQualification");
+    assert.equal(downgradeNode.status, "PARTIAL");
+    const downgradeAdherence = requiredRecord(
+      downgradeNode.snapshotAdherence,
+      "Case 2 node snapshot adherence"
+    );
+    assert.equal(downgradeAdherence.status, "MISMATCHED");
+    assert(snapshotMismatchReasons(downgradeAdherence).includes("CONSISTENCY_LEVEL_TOO_WEAK"));
+    assert(snapshotMismatchReasons(downgradeAdherence).includes("CAPTURED_AT_AFTER_QUERY_BOUNDARY"));
+    assert.equal(
+      requiredRecord(downgrade.body.effectiveSnapshotManifest, "Case 2 effective snapshot").consistency,
+      "BEST_EFFORT"
+    );
+    const persistedDowngrade = await gateway.store.getByQueryId(downgradeQueryId);
+    assert.equal(persistedDowngrade?.effectiveSnapshotRevision, 1);
+    assert.equal(persistedDowngrade?.effectiveSnapshotManifest.consistency, "BEST_EFFORT");
+    assert.deepEqual(
+      persistedDowngrade?.effectiveSnapshotManifest.resources,
+      [],
+      "Case 2 must persist the consistency downgrade without accepting the mismatched resource"
+    );
+    const downgradeWarnings = requiredStringArray(downgrade.body.warnings, "Case 2 warnings");
+    assert(
+      downgradeWarnings.some((warning) => warning.includes("snapshot MISMATCHED")),
+      "Case 2 must expose the downgrade mismatch in warnings"
+    );
+    assert.deepEqual(
+      qualificationProvider.observedDataScopes,
+      [fixture.scopeA, fixture.scopeA, fixture.scopeA],
+      "Cases 1, 2 and 4 must execute under one exact delegated Data Scope"
+    );
+    assert.equal(
+      qualificationProvider.executeCalls() - qualificationCallsBeforeCases,
+      3,
+      "Cases 1, 2 and 4 must each traverse the real Provider HTTP execute route exactly once"
+    );
+
     const intervalDescriptor = requiredDescriptor(
       operationalManifest,
       "operational-task.get-execution-intervals"
@@ -249,6 +461,122 @@ async function runGatewayHistoricalE2e(
       selection: { kind: "EXECUTION_NO", executionNo: 1 },
       phaseScope: "EXECUTION_ENVELOPE"
     };
+    const versionMismatchQueryId = `task-version-mismatch-${runId}`;
+    const operationalCallsBeforeVersionMismatch = operationalProviderHttpExecuteCalls;
+    const versionMismatch = await submit(
+      intervalOnlySubmission(
+        versionMismatchQueryId,
+        intervalDescriptor,
+        {
+          ...intervalQuery,
+          taskReferenceKey: { ...taskReferenceKey, version: "999" }
+        }
+      ),
+      fixture.scopeA
+    );
+    gatewayHttpSubmissions += 1;
+    assert.equal(versionMismatch.status, 200, JSON.stringify(versionMismatch.body));
+    assert.equal(versionMismatch.body.status, "FAILED");
+    const versionMismatchNode = worldQueryNode(versionMismatch, "executionIntervals");
+    assert.equal(versionMismatchNode.status, "FAILED");
+    assert.equal(versionMismatchNode.providerId, operationalManifest.provider.providerId);
+    assert.equal(worldQueryNodeErrorCode(versionMismatchNode), "REFERENCE_VERSION_MISMATCH");
+    assert.equal(
+      operationalProviderHttpExecuteCalls,
+      operationalCallsBeforeVersionMismatch + 1,
+      "Task Reference Version mismatch must cross the real Operational Provider HTTP boundary"
+    );
+    const persistedVersionMismatch = await gateway.store.getByQueryId(versionMismatchQueryId);
+    assert.equal(persistedVersionMismatch?.job.status, "FAILED");
+    assert.equal(persistedVersionMismatch?.effectiveSnapshotRevision, 0);
+    assert.equal(
+      worldQueryNodeErrorCode(worldQueryNode(
+        { status: 200, replayed: false, body: requiredRecord(persistedVersionMismatch?.job.result, "persisted version mismatch result") },
+        "executionIntervals"
+      )),
+      "REFERENCE_VERSION_MISMATCH"
+    );
+    const versionMismatchProviderBoundaryVerified = operationalProviderHttpExecuteCalls
+      === operationalCallsBeforeVersionMismatch + 1;
+
+    const openTaskReferenceKey = await loadOperationalTaskReferenceKey(
+      pool,
+      fixture,
+      fixture.openOperationalTaskId
+    );
+    const openTaskEventProof = await pool.query<{ started_count: number; terminal_count: number }>(
+      `SELECT count(*) FILTER (WHERE event_type='EXECUTION_STARTED_OBSERVED')::integer AS started_count,
+              count(*) FILTER (WHERE event_type IN (
+                'EXECUTION_STOPPED_OBSERVED','CONTROL_COMPLETED_REPORTED','EXECUTION_FAILED_OBSERVED',
+                'EXECUTION_CANCELLED_OBSERVED'
+              ))::integer AS terminal_count
+       FROM public.operational_task_event
+       WHERE data_scope_key=$1 AND operational_task_id=$2`,
+      [fixture.scopeA, fixture.openOperationalTaskId]
+    );
+    assert.equal(Number(openTaskEventProof.rows[0]?.started_count), 1);
+    assert.equal(Number(openTaskEventProof.rows[0]?.terminal_count), 0);
+    const openTaskQueryId = `open-task-captured-at-${runId}`;
+    const openTaskSubmission = intervalOnlySubmission(
+      openTaskQueryId,
+      intervalDescriptor,
+      {
+        taskReferenceKey: openTaskReferenceKey,
+        selection: { kind: "EXECUTION_NO", executionNo: 1 },
+        phaseScope: "EXECUTION_ENVELOPE"
+      }
+    );
+    const operationalCallsBeforeOpenTask = operationalProviderHttpExecuteCalls;
+    const openTaskQueued = await submit(openTaskSubmission, fixture.scopeA, true);
+    gatewayHttpSubmissions += 1;
+    assert.equal(openTaskQueued.status, 202, JSON.stringify(openTaskQueued.body));
+    const openTaskJobId = requiredString(openTaskQueued.body.jobId, "open task job id");
+    const openTaskQueuedContext = await gateway.store.getByJobId(openTaskJobId);
+    assert(openTaskQueuedContext, "open task query context is missing");
+    const openTaskCapturedAt = openTaskQueuedContext.requestedSnapshotManifest.capturedAt;
+    await waitForDatabaseClockAfter(pool, openTaskCapturedAt);
+    const openTaskRun = await gateway.runtime.run(openTaskJobId);
+    assert.equal(openTaskRun.status, "PARTIAL");
+    assert.equal(
+      operationalProviderHttpExecuteCalls,
+      operationalCallsBeforeOpenTask + 1,
+      "open task query must cross the real Operational Provider HTTP boundary exactly once"
+    );
+    const openTaskReadTarget = `${gatewayBase}/v1/jobs/${encodeURIComponent(openTaskJobId)}`;
+    validationClientTargets.push(openTaskReadTarget);
+    const openTaskRead = await fetch(openTaskReadTarget, {
+      headers: { "x-validation-scope": fixture.scopeA }
+    });
+    assert.equal(openTaskRead.status, 200);
+    const openTaskJob = await openTaskRead.json() as JsonRecord;
+    const openTaskResultRecord = requiredRecord(openTaskJob.result, "open task job result");
+    const openTaskResponse: GatewayResponse = { status: 200, replayed: false, body: openTaskResultRecord };
+    const openTaskResult = intervalOutput(openTaskResponse);
+    assert.equal(openTaskResult.status, "PARTIAL");
+    assert.equal(openTaskResult.reasonCode, "OPEN_EXECUTION");
+    assert.equal(openTaskResult.requestedPhaseScope, "EXECUTION_ENVELOPE");
+    assert.equal(openTaskResult.intervals.length, 1);
+    const openInterval = openTaskResult.intervals[0]!;
+    assert.equal(openInterval.lifecycleState, "OPEN");
+    assert.equal(openInterval.start, "2026-08-30T00:00:20.000Z");
+    assert.equal(openInterval.end, undefined, "open interval public identity must not fabricate a terminal end");
+    assert.equal(openInterval.selectedPeriods.length, 1);
+    assert.deepEqual(openInterval.selectedPeriods[0], {
+      start: "2026-08-30T00:00:20.000Z",
+      end: openTaskCapturedAt,
+      bounds: "[)"
+    });
+    assert.deepEqual(openInterval.activePeriods[0], openInterval.selectedPeriods[0]);
+    assert.equal(snapshotManifest(openTaskResponse).capturedAt, openTaskCapturedAt);
+    assert.equal(
+      nodeProviderSnapshot(openTaskResponse, "executionIntervals").capturedAt,
+      openTaskCapturedAt,
+      "Operational Provider must reuse the fixed Gateway capturedAt for an open task"
+    );
+    assert.equal((await gateway.store.getByJobId(openTaskJobId))?.effectiveSnapshotRevision, 1);
+    const openTaskCapturedAtCapped = openInterval.selectedPeriods[0]?.end === openTaskCapturedAt
+      && nodeProviderSnapshot(openTaskResponse, "executionIntervals").capturedAt === openTaskCapturedAt;
+
     const intervalPin = await loadCurrentIntervalPin(pool, fixture);
     const query = historicalQuery(fixture, intervalPin.referenceKey);
     const trackletV1 = await loadCurrentTrackletPin(pool, fixture);
@@ -285,6 +613,8 @@ async function runGatewayHistoricalE2e(
     assert.equal(historyIntervalBinding.outputPort, "executionIntervalReferenceKey");
     assert.equal(historyIntervalBinding.path, "/intervals/0/executionIntervalReferenceKey");
     assert.equal(historyIntervalBinding.targetPath, "/executionIntervalReferenceKey");
+    const operationalCallsBeforeQ1 = operationalProviderHttpExecuteCalls;
+    const historicalCallsBeforeQ1 = providerHttpExecuteCalls;
     const q1 = await submit(q1Submission, fixture.scopeA);
     gatewayHttpSubmissions += 1;
     assert.equal(q1.status, 200, JSON.stringify(q1.body));
@@ -307,12 +637,12 @@ async function runGatewayHistoricalE2e(
       intervalReferenceKeyHash,
       "Historical Provider must receive the exact interval ReferenceKey produced by the upstream node"
     );
-    assert.equal(operationalProviderHttpExecuteCalls, 1, "Q1 DAG must call interval Provider once");
-    assert.equal(providerHttpExecuteCalls, 1, "Q1 DAG must call historical Provider once");
+    assert.equal(operationalProviderHttpExecuteCalls, operationalCallsBeforeQ1 + 1, "Q1 DAG must call interval Provider once");
+    assert.equal(providerHttpExecuteCalls, historicalCallsBeforeQ1 + 1, "Q1 DAG must call historical Provider once");
     const q1SingleSubmissionTwoProviderDag = historyProviderIntervalReferenceKeyHashes[0] === intervalReferenceKeyHash
       && historyIntervalBinding.kind === "NODE_OUTPUT"
-      && operationalProviderHttpExecuteCalls === 1
-      && providerHttpExecuteCalls === 1;
+      && operationalProviderHttpExecuteCalls === operationalCallsBeforeQ1 + 1
+      && providerHttpExecuteCalls === historicalCallsBeforeQ1 + 1;
     assert(q1SingleSubmissionTwoProviderDag);
     assert.equal(q1Trajectory.trajectoryReferenceKey?.id, h1.referenceKey);
     assert.equal(q1Trajectory.trajectoryReferenceKey?.version, "1");
@@ -352,6 +682,7 @@ async function runGatewayHistoricalE2e(
     const q1CompleteLineagePinned = await assertTrajectoryCompleteLineage(pool, h1, q1Snapshot);
 
     const providerCallsAfterQ1 = providerHttpExecuteCalls;
+    const operationalCallsAfterQ1 = operationalProviderHttpExecuteCalls;
     const q1Replay = await submit(structuredClone(q1Submission), fixture.scopeA);
     gatewayHttpSubmissions += 1;
     assert.equal(q1Replay.status, 200, JSON.stringify(q1Replay.body));
@@ -359,7 +690,7 @@ async function runGatewayHistoricalE2e(
     assert.equal(requiredString(q1Replay.body.outputHash, "Q1 replay outputHash"), q1WorldOutputHash);
     assert.equal(sha256(trajectoryOutput(q1Replay)), q1ValueHash);
     assert.equal(providerHttpExecuteCalls, providerCallsAfterQ1, "Q1 replay must not re-call the Provider");
-    assert.equal(operationalProviderHttpExecuteCalls, 1, "Q1 replay must not re-call the interval Provider");
+    assert.equal(operationalProviderHttpExecuteCalls, operationalCallsAfterQ1, "Q1 replay must not re-call the interval Provider");
 
     // Q4 is submitted first so the Gateway durably fixes capturedAt, then the
     // late observation advances Tracklet/Trajectory heads before execution.
@@ -608,7 +939,8 @@ async function runGatewayHistoricalE2e(
     assert(q1DurableIdempotentReplay);
     const expectedProviderExecutions = 6; // Q1, Q4, Q2, ACTIVE, pinned h1, cross-scope.
     assert.equal(providerHttpExecuteCalls, expectedProviderExecutions);
-    assert.equal(operationalProviderHttpExecuteCalls, 1);
+    const expectedOperationalProviderExecutions = 3; // version mismatch, open task, and Q1 interval discovery.
+    assert.equal(operationalProviderHttpExecuteCalls, expectedOperationalProviderExecutions);
     process.stdout.write(`${JSON.stringify({
       status: "PASS",
       gate: "GOWM_V07_HISTORY_GATEWAY_E2E",
@@ -622,10 +954,42 @@ async function runGatewayHistoricalE2e(
         intervalProviderId: operationalManifest.provider.providerId,
         intervalOperationId: intervalDescriptor.operationId,
         intervalProviderHttpExecuteCalls: operationalProviderHttpExecuteCalls,
+        qualificationProviderId: qualificationProvider.registration.manifest.provider.providerId,
+        qualificationOperationId: qualificationProvider.descriptor.operationId,
+        qualificationProviderHttpExecuteCalls: qualificationProvider.executeCalls(),
         directProviderCallsFromValidationClient,
         gatewayHttpSubmissions
       },
       checks: {
+        taskReferenceVersionMismatchUsesRealProvider: versionMismatch.body.status === "FAILED"
+          && worldQueryNodeErrorCode(versionMismatchNode) === "REFERENCE_VERSION_MISMATCH"
+          && versionMismatchProviderBoundaryVerified
+          && persistedVersionMismatch?.job.status === "FAILED",
+        openTaskExecutionEnvelopeCappedAtGatewayCapturedAt: openTaskRun.status === "PARTIAL"
+          && openTaskResult.reasonCode === "OPEN_EXECUTION"
+          && Number(openTaskEventProof.rows[0]?.started_count) === 1
+          && Number(openTaskEventProof.rows[0]?.terminal_count) === 0
+          && openTaskCapturedAtCapped,
+        case1StrictLaterBestEffortRejected: strictWeak.body.status === "FAILED"
+          && strictWeakReasons.includes("CONSISTENCY_LEVEL_TOO_WEAK")
+          && strictWeakReasons.includes("CAPTURED_AT_AFTER_QUERY_BOUNDARY")
+          && strictWeakEffective.manifestHash === strictWeakRequested.manifestHash,
+        case2AllowedDowngradeIsPartial: downgrade.body.status === "PARTIAL"
+          && requiredRecord(downgrade.body.effectiveSnapshotManifest, "Case 2 effective snapshot").consistency === "BEST_EFFORT"
+          && persistedDowngrade?.effectiveSnapshotRevision === 1,
+        case4MaximumReferenceKeyAccepted: maximumReferenceResources[0]?.resourceId === expectedMaximumResourceId
+          && [...expectedMaximumResourceId].length === 321
+          && persistedMaximumReference?.effectiveSnapshotRevision === 1,
+        case5SingleScopeAccepted: maximumReference.body.status === "COMPLETED"
+          && qualificationProvider.observedDataScopes[1] === fixture.scopeA,
+        case5DualScopeRejectedBeforeProvider: dualScope.status === 403
+          && requiredRecord(dualScope.body.error, "Case 5 Gateway error").code === "SCOPE_DENIED"
+          && requiredRecord(
+            requiredRecord(dualScope.body.error, "Case 5 Gateway error").details,
+            "Case 5 public Gateway error details"
+          ).reason === "MULTI_SCOPE_UNSUPPORTED"
+          && qualificationCallsAfterDualScope === qualificationCallsBeforeDualScope
+          && dualScopePersisted === undefined,
         q1InitialRevisionNo: h1.revisionNo,
         intervalProviderPreview: intervalDescriptor.maturity === "PREVIEW",
         intervalProviderDiscoversResources: intervalDescriptor.snapshotPolicy.resourceResolution === "DISCOVER_RESOURCES",
@@ -664,7 +1028,12 @@ async function runGatewayHistoricalE2e(
       externalModelQualification: false
     })}\n`);
   } finally {
-    await Promise.allSettled([gatewayApp?.close(), providerApp?.close(), operationalProviderApp?.close()]);
+    await Promise.allSettled([
+      gatewayApp?.close(),
+      providerApp?.close(),
+      operationalProviderApp?.close(),
+      qualificationProviderApp?.close()
+    ]);
     await pool.end();
   }
 }
@@ -680,6 +1049,7 @@ function fixtureIdentity(runId: string): FixtureIdentity {
     trackerSessionKey: `history-session-${suffix}`,
     targetKey: `history-target-${suffix}`,
     operationalTaskId: `history-task-${suffix}`,
+    openOperationalTaskId: `history-open-task-${suffix}`,
     subjectReferenceKey: "",
     processingRunId: randomUUID(),
     clockModelId: ""
@@ -767,6 +1137,27 @@ async function seedTaskEvents(pool: pg.Pool, fixture: FixtureIdentity): Promise<
       }]
     }, new Date().toISOString());
   }
+  const openEventId = `history-event-execution-started-observed-${fixture.openOperationalTaskId}`;
+  await repository.insert({
+    dataScopeKey: fixture.scopeA,
+    sourceAuthority: "history-gateway-e2e",
+    sourceEventKey: openEventId,
+    sourceRevisionNo: 1,
+    eventId: openEventId,
+    operationalTaskId: fixture.openOperationalTaskId,
+    eventType: "EXECUTION_STARTED_OBSERVED",
+    eventTime: "2026-08-30T00:00:20.000Z",
+    actorReferenceKeys: [],
+    targetReferenceKeys: [],
+    payload: { taskType: "HISTORY_GATEWAY_OPEN_E2E" },
+    confidence: 1,
+    provenance: [{
+      evidenceId: `evidence-${openEventId}`,
+      authority: "history-gateway-e2e",
+      evidenceType: "VALIDATION_EVENT",
+      observedAt: "2026-08-30T00:00:20.000Z"
+    }]
+  }, new Date().toISOString());
 }
 
 async function seedInitialPositions(pool: pg.Pool, fixture: FixtureIdentity): Promise<void> {
@@ -937,13 +1328,14 @@ function historicalQuery(
 
 async function loadOperationalTaskReferenceKey(
   pool: pg.Pool,
-  fixture: FixtureIdentity
+  fixture: FixtureIdentity,
+  operationalTaskId = fixture.operationalTaskId
 ): Promise<GowmV07TaskExecutionIntervalQuery["taskReferenceKey"]> {
   const result = await pool.query<{ reference_key: string }>(
     `SELECT reference_key
      FROM public.operational_task
      WHERE data_scope_key=$1 AND operational_task_id=$2`,
-    [fixture.scopeA, fixture.operationalTaskId]
+    [fixture.scopeA, operationalTaskId]
   );
   const referenceKey = requiredString(result.rows[0]?.reference_key, "operational task reference key");
   return { namespace: "gowm", kind: "OPERATIONAL_TASK", id: referenceKey, version: "1" };
@@ -1183,12 +1575,263 @@ async function loadCurrentTrackletPin(pool: pg.Pool, fixture: FixtureIdentity): 
   };
 }
 
+async function startGatewayQualificationProvider(
+  fixture: FixtureIdentity,
+  runId: string,
+  transportToken: string
+): Promise<GatewayQualificationProvider> {
+  const schemaUri = "urn:gowm:v0.2:value:object";
+  const schema = getContractSchema(schemaUri);
+  const schemaHash = getContractSchemaHash(schemaUri);
+  const descriptor: CapabilityDescriptor = {
+    operationId: "validation.snapshot.qualify",
+    operationVersion: "1.0",
+    semanticRole: "GENERIC_ANALYSIS",
+    dataBinding: "WORLD_SNAPSHOT_BOUND",
+    resultSemantics: "DERIVED_ANALYSIS",
+    executionBindings: ["SYNC_HTTP"],
+    criticalPathPolicy: "REMOTE_ONLY",
+    maturity: "PREVIEW",
+    inputSchemaUri: schemaUri,
+    inputSchemaHash: schemaHash,
+    outputSchemaUri: schemaUri,
+    outputSchemaHash: schemaHash,
+    scopePolicy: "DATA_SCOPE_REQUIRED",
+    execution: {
+      mode: "SYNC",
+      defaultTimeoutMs: 2_000,
+      maximumTimeoutMs: 5_000,
+      costClass: "LOW"
+    },
+    limits: {
+      maximumInputBytes: 16_384,
+      maximumOutputBytes: 16_384,
+      maximumRows: 10,
+      maximumCandidates: 10,
+      maximumBatchItems: 10
+    },
+    snapshotPolicy: {
+      dataSnapshot: "REQUIRED",
+      computeSnapshot: "REQUIRED",
+      resourceResolution: "DISCOVER_RESOURCES"
+    },
+    ports: {
+      inputs: [{
+        name: "request",
+        schemaUri,
+        schemaHash,
+        valueKind: "ANY",
+        unitSemantics: "UNSPECIFIED"
+      }],
+      outputs: [{
+        name: "result",
+        schemaUri,
+        schemaHash,
+        valueKind: "ANY",
+        unitSemantics: "UNSPECIFIED"
+      }]
+    }
+  };
+  const maximumReferenceKey = {
+    namespace: `a${"n".repeat(63)}`,
+    kind: "QUALIFICATION_RESOURCE",
+    id: "i".repeat(256),
+    version: "1"
+  };
+  const observedDataScopes: string[] = [];
+  const operation: ProviderOperation = {
+    descriptor,
+    inputSchema: schema,
+    outputSchema: schema,
+    method: {
+      engine: "gateway-qualification-provider",
+      engineVersion: "1.0.0",
+      methodId: "qualify-snapshot-boundary",
+      methodVersion: "1.0"
+    },
+    async handle(input, context) {
+      const request = requiredRecord(input, "Gateway qualification Provider input");
+      const scenario = requiredString(request.scenario, "Gateway qualification scenario");
+      if (scenario !== "LATER_BEST_EFFORT" && scenario !== "MAXIMUM_REFERENCE_KEY") {
+        throw new Error(`unknown Gateway qualification scenario ${scenario}`);
+      }
+      const effective = context.snapshots.effective;
+      assert(effective, "Gateway qualification Provider requires an Effective Snapshot");
+      const dataScopeKey = requiredString(
+        context.security.dataScopeClaim,
+        "Gateway qualification delegated Data Scope"
+      );
+      assert.equal(dataScopeKey, fixture.scopeA, "qualification Provider must stay within Scope A");
+      observedDataScopes.push(dataScopeKey);
+      const referenceKey = scenario === "MAXIMUM_REFERENCE_KEY"
+        ? maximumReferenceKey
+        : {
+            namespace: "gowm.validation",
+            kind: "QUALIFICATION_RESOURCE",
+            id: "later-best-effort",
+            version: "1"
+          };
+      const capturedAt = scenario === "LATER_BEST_EFFORT"
+        ? new Date(Date.parse(effective.capturedAt) + 1_000).toISOString()
+        : effective.capturedAt;
+      return {
+        status: "COMPLETED",
+        value: { scenario, delegatedDataScope: dataScopeKey },
+        dataSnapshot: {
+          consistency: scenario === "LATER_BEST_EFFORT" ? "BEST_EFFORT" : "CONSISTENT_AT_START",
+          capturedAt,
+          scopeDigest: sha256({ dataScopeKey }),
+          resources: [{
+            referenceKey,
+            authority: "gowm.gateway-qualification",
+            pinning: scenario === "LATER_BEST_EFFORT" ? "BEST_EFFORT" : "PINNED",
+            digest: sha256({ scenario, referenceKey }),
+            worldVersion: 1
+          }]
+        },
+        consumption: { rows: 1, candidates: 1 }
+      };
+    }
+  };
+  const manifest: CapabilityProviderManifest = {
+    providerProtocolVersion: "1.0",
+    provider: {
+      providerId: "gowm.gateway-qualification",
+      providerVersion: "0.7.1",
+      owner: "gowm-platform",
+      implementationDigest: sha256({ fixture: "gateway-qualification", runId })
+    },
+    endpoints: {
+      manifest: "/v1/manifest",
+      liveness: "/health/live",
+      readiness: "/health/ready",
+      execute: "/v1/operations/{operationId}:execute",
+      job: "/v1/jobs/{jobId}"
+    },
+    capabilities: [descriptor]
+  };
+  const runtime = createProviderRuntime({
+    manifest,
+    operations: [operation],
+    policyVersion: "gateway-qualification/1.0",
+    policyDigest: sha256({ singleScope: true, snapshotBoundary: "v0.7.1" })
+  });
+  const app = buildProviderProtocolApp(runtime, transportToken, async () => ({ ready: true, reasons: [] }));
+  let executeCalls = 0;
+  app.addHook("onRequest", async (request) => {
+    if (request.method === "POST" && request.url.includes("/v1/operations/validation.snapshot.qualify:execute")) {
+      executeCalls += 1;
+    }
+  });
+  app.addHook("onError", async (_request, _reply, error) => {
+    emitDiagnosticError("gateway-qualification-provider", error);
+  });
+  await app.listen({ host: "127.0.0.1", port: 0 });
+  const endpoint = listenerUrl(app);
+  const client = new HttpProviderClient({
+    endpoint,
+    providerId: manifest.provider.providerId,
+    providerVersion: manifest.provider.providerVersion,
+    implementationDigest: manifest.provider.implementationDigest as `sha256:${string}`,
+    manifestHash: sha256(manifest),
+    approvedManifest: manifest,
+    transportToken,
+    allowPlaintextPrivateNetwork: false
+  });
+  return {
+    app,
+    descriptor,
+    maximumReferenceKey,
+    observedDataScopes,
+    executeCalls: () => executeCalls,
+    registration: {
+      approvalId: `gateway-qualification-e2e-${runId}`,
+      manifest,
+      endpoint,
+      client
+    }
+  };
+}
+
+function gatewayQualificationSubmission(
+  queryId: string,
+  descriptor: CapabilityDescriptor,
+  scenario: "LATER_BEST_EFFORT" | "MAXIMUM_REFERENCE_KEY",
+  allowDowngrade: boolean
+): WorldQuerySubmission {
+  const inputPort = descriptor.ports.inputs.find((candidate) => candidate.name === "request");
+  const outputPort = descriptor.ports.outputs.find((candidate) => candidate.name === "result");
+  assert(inputPort && outputPort, "Gateway qualification Provider is missing canonical ports");
+  const port = (value: typeof inputPort): WorldQueryPlanV2SchemaPort => ({
+    schemaUri: value.schemaUri,
+    schemaHash: value.schemaHash,
+    valueKind: value.valueKind,
+    unitSemantics: value.unitSemantics
+  });
+  const node: WorldQueryPlanV2Node = {
+    nodeId: "snapshotQualification",
+    operation: {
+      operationId: descriptor.operationId,
+      operationVersion: descriptor.operationVersion,
+      inputSchemaHash: descriptor.inputSchemaHash,
+      outputSchemaHash: descriptor.outputSchemaHash
+    },
+    inputs: {
+      request: {
+        kind: "LITERAL",
+        value: { scenario },
+        port: port(inputPort)
+      }
+    },
+    failurePolicy: "FAIL_FAST",
+    budget: {
+      maximumRows: 10,
+      maximumCandidates: 10,
+      maximumOutputBytes: 16_384,
+      maximumExecutionMs: 5_000
+    }
+  };
+  return {
+    requestId: `request-${queryId}`,
+    idempotencyKey: `idempotency-${queryId}`,
+    parameterSchemaHash: getContractSchemaHash("world-query-parameters.schema.json"),
+    parameters: {},
+    snapshotPolicy: { mode: "LATEST_AT_START", allowDowngrade },
+    plan: {
+      queryPlanVersion: "2.0",
+      queryId,
+      nodes: [node],
+      outputs: [{
+        name: "qualification",
+        binding: {
+          kind: "NODE_OUTPUT",
+          nodeId: node.nodeId,
+          outputPort: "result",
+          port: port(outputPort)
+        }
+      }],
+      budgets: {
+        maximumNodes: 1,
+        maximumDepth: 1,
+        maximumRows: 10,
+        maximumCandidates: 10,
+        maximumOutputBytes: 32_768,
+        maximumExecutionMs: 5_000
+      }
+    }
+  };
+}
+
 function gatewayRuntime(
   pool: pg.Pool,
   providers: readonly GatewayProviderRegistration[],
   fixture: FixtureIdentity,
   runId: string
-): { app: FastifyApp; runtime: WorldQueryRuntime; store: PostgresQueryPlanStore } {
+): {
+  app: FastifyApp;
+  runtime: WorldQueryRuntime;
+  store: PostgresQueryPlanStore;
+} {
   const registry = new CapabilityRegistry();
   for (const provider of providers) registry.register({ ...provider, approved: true });
   const records = new PostgresGatewayRecordStore(pool);
@@ -1215,17 +1858,23 @@ function gatewayRuntime(
     records,
     worldQueries: runtime,
     authenticate: async (request): Promise<GatewayPrincipal> => {
-      const claim = typeof request.headers["x-validation-scope"] === "string"
+      const claimHeader = typeof request.headers["x-validation-scope"] === "string"
         ? request.headers["x-validation-scope"]
         : fixture.scopeA;
-      if (claim !== fixture.scopeA && claim !== fixture.scopeB) throw new Error("invalid validation scope");
-      return {
-        principalRef: `principal:history-gateway:${claim}`,
+      const claims = claimHeader.split(",").map((claim) => claim.trim());
+      if (claims.some((claim) => claim !== fixture.scopeA && claim !== fixture.scopeB)) {
+        throw new Error("invalid validation scope");
+      }
+      const principal = {
+        principalRef: `principal:history-gateway:${claims.join("+")}`,
         authenticationMethod: "TEST_ATTESTED",
         authenticatedAt: new Date().toISOString(),
-        dataScopeClaim: claim,
+        dataScopeClaim: claims[0],
+        effectiveDataScopes: claims,
         allowExperimental: true
-      };
+      } as unknown as GatewayPrincipal;
+      normalizePrincipalScopes(principal);
+      return principal;
     },
     logger: process.env.GOWM_E2E_DEBUG === "1"
   });
@@ -1280,6 +1929,69 @@ function oneNodeSubmission(
         binding: {
           kind: "NODE_OUTPUT",
           nodeId: "historicalTrajectory",
+          outputPort: "result",
+          port: port(resultPort)
+        }
+      }],
+      budgets: {
+        maximumNodes: 1,
+        maximumDepth: 1,
+        maximumRows: descriptor.limits.maximumRows ?? 1_000,
+        maximumCandidates: descriptor.limits.maximumCandidates ?? 5_000,
+        maximumOutputBytes: descriptor.limits.maximumOutputBytes ?? 16_777_216,
+        maximumExecutionMs: descriptor.execution.maximumTimeoutMs
+      }
+    }
+  };
+}
+
+function intervalOnlySubmission(
+  queryId: string,
+  descriptor: CapabilityDescriptor,
+  input: GowmV07TaskExecutionIntervalQuery
+): WorldQuerySubmission {
+  const requestPort = descriptor.ports.inputs.find((candidate) => candidate.name === "request");
+  const resultPort = descriptor.ports.outputs.find((candidate) => candidate.name === "result");
+  assert(requestPort && resultPort, "Operational interval Provider is missing request/result ports");
+  const port = (value: typeof requestPort): WorldQueryPlanV2SchemaPort => ({
+    schemaUri: value.schemaUri,
+    schemaHash: value.schemaHash,
+    valueKind: value.valueKind,
+    unitSemantics: value.unitSemantics
+  });
+  return {
+    requestId: `request-${queryId}`,
+    idempotencyKey: `idempotency-${queryId}`,
+    parameterSchemaHash: getContractSchemaHash("world-query-parameters.schema.json"),
+    parameters: {},
+    snapshotPolicy: { mode: "LATEST_AT_START", allowDowngrade: false },
+    plan: {
+      queryPlanVersion: "2.0",
+      queryId,
+      nodes: [{
+        nodeId: "executionIntervals",
+        operation: {
+          operationId: descriptor.operationId,
+          operationVersion: descriptor.operationVersion,
+          inputSchemaHash: descriptor.inputSchemaHash,
+          outputSchemaHash: descriptor.outputSchemaHash
+        },
+        inputs: {
+          request: { kind: "LITERAL", port: port(requestPort), value: input }
+        },
+        failurePolicy: "FAIL_FAST",
+        budget: {
+          maximumRows: descriptor.limits.maximumRows ?? 1_000,
+          maximumCandidates: descriptor.limits.maximumCandidates ?? 5_000,
+          maximumOutputBytes: descriptor.limits.maximumOutputBytes ?? 16_777_216,
+          maximumExecutionMs: descriptor.execution.maximumTimeoutMs
+        }
+      }],
+      outputs: [{
+        name: "intervals",
+        binding: {
+          kind: "NODE_OUTPUT",
+          nodeId: "executionIntervals",
           outputPort: "result",
           port: port(resultPort)
         }
@@ -1467,6 +2179,26 @@ function intervalOutput(response: GatewayResponse): GowmV07TaskExecutionInterval
   return requiredRecord(outputs.intervals, "execution interval output") as unknown as GowmV07TaskExecutionIntervalResult;
 }
 
+function worldQueryNode(response: GatewayResponse, nodeId: string): JsonRecord {
+  const nodes = requiredRecordArray(response.body.nodes, "world query nodes");
+  const node = nodes.find((candidate) => candidate.nodeId === nodeId);
+  assert(node, `world query node ${nodeId} is missing`);
+  return node;
+}
+
+function worldQueryNodeErrorCode(node: JsonRecord): string {
+  const platformError = requiredRecord(node.error, `${String(node.nodeId)} node error`);
+  return requiredString(
+    requiredRecord(platformError.error, `${String(node.nodeId)} platform error`).code,
+    `${String(node.nodeId)} error code`
+  );
+}
+
+function snapshotMismatchReasons(adherence: JsonRecord): string[] {
+  return requiredRecordArray(adherence.mismatches, "snapshot adherence mismatches")
+    .map((mismatch) => requiredString(mismatch.reason, "snapshot mismatch reason"));
+}
+
 function nodeProviderSnapshot(response: GatewayResponse, nodeId: string): DataSnapshotContext {
   if (!Array.isArray(response.body.nodes)) throw new Error("world query nodes must be an array");
   const node = response.body.nodes.find((candidate) =>
@@ -1561,6 +2293,16 @@ function requiredDescriptor(manifest: CapabilityProviderManifest, operationId: s
 function requiredRecord(value: unknown, field: string): JsonRecord {
   if (value === null || typeof value !== "object" || Array.isArray(value)) throw new Error(`${field} must be an object`);
   return value as JsonRecord;
+}
+
+function requiredRecordArray(value: unknown, field: string): JsonRecord[] {
+  if (!Array.isArray(value)) throw new Error(`${field} must be an array`);
+  return value.map((entry, index) => requiredRecord(entry, `${field}[${index}]`));
+}
+
+function requiredStringArray(value: unknown, field: string): string[] {
+  if (!Array.isArray(value)) throw new Error(`${field} must be an array`);
+  return value.map((entry, index) => requiredString(entry, `${field}[${index}]`));
 }
 
 function requiredString(value: unknown, field: string): string {

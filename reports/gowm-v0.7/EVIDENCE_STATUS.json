@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "evidenceStatus": "HISTORICAL_CANDIDATE_ONLY",
+  "notAuthoritativeForCurrentHead": true,
+  "appliesTo": [
+    "reports/gowm-v0.7/pr1",
+    "reports/gowm-v0.7/pr2"
+  ],
+  "reason": "These reports are retained historical candidate records. They predate the v0.7.1 protocol and runtime closure changes and cannot establish current-HEAD runtime qualification.",
+  "authoritativeEvidenceLocation": "immutable CI artifact generated at the exact post-merge GITHUB_SHA"
+}

@@ -10,7 +10,7 @@ const { compareUnicodeCodePoints } = await import("../../contract-runtime/src/ca
 const packageRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const repositoryRoot = resolve(packageRoot, "../../..");
 const defaultOutputRoot = resolve(process.argv[2] || join(packageRoot, "bundle"));
-const reportRoot = resolve(repositoryRoot, process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-a/world-platform");
+const reportRoot = resolve(repositoryRoot, process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-b/world-platform");
 
 const compareCanonicalText = compareUnicodeCodePoints;
 const canonical = (value) => JSON.stringify(value, (_key, item) => {
@@ -29,9 +29,14 @@ const emitJson = async (path, value) => {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`);
 };
+export function canonicalArtifactBytes(path, value) {
+  const bytes = Buffer.isBuffer(value) ? value : Buffer.from(value);
+  if (!/\.(?:json|ya?ml|ts|mjs|js|sql|py)$/u.test(path)) return bytes;
+  return Buffer.from(bytes.toString("utf8").replace(/\r\n/gu, "\n"), "utf8");
+}
 const copy = async (source, destination) => {
   await mkdir(dirname(destination), { recursive: true });
-  await writeFile(destination, await readFile(source));
+  await writeFile(destination, canonicalArtifactBytes(source, await readFile(source)));
 };
 const walk = async (root) => {
   const entries = await readdir(root, { withFileTypes: true });

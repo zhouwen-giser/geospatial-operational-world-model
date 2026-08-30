@@ -37,7 +37,8 @@
     "notes": [
       "The operation returns one stored source-selected trajectory revision and never performs hidden multi-source fusion.",
       "Every interval, tracklet, finalization, watermark, profile, and analysis-space input is frozen by the returned snapshot or its HISTORY_INPUT_SET resource.",
-      "When no as-of revision or outcome exists, the Provider only idempotently enqueues the exact frozen request and returns PROJECTION_PENDING; construction remains worker-owned."
+      "When no as-of revision or outcome exists, the Provider only idempotently enqueues the exact frozen request and returns PROJECTION_PENDING; construction remains worker-owned.",
+      "The v0.7.1 Provider returns only a bounded preview and does not advertise an artifactReference until a scope-aware artifact registry round trip is qualified."
     ]
   }
 }

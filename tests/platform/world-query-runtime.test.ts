@@ -766,8 +766,15 @@ describe("World Query DAG runtime", () => {
     expect(failed).toMatchObject({
       status: "FAILED",
       providerId: "gowm.dag-fixture",
+      snapshotAdherence: {
+        nodeId: "aFail",
+        status: "NOT_APPLICABLE",
+        checkedResources: 0,
+        mismatches: []
+      },
       error: { error: { code: "OVERLOADED", nodeId: "aFail", providerId: "gowm.dag-fixture", retryable: true } }
     });
+    expect(executed.result?.snapshotAdherence).toContainEqual(failed?.snapshotAdherence);
     expect(test.calls).toEqual({ source: 0, sample: 1, fail: 1 });
   });
 

@@ -1,0 +1,171 @@
+{
+  "schemaVersion": "1.0",
+  "counters": {
+    "semanticProfileMissing": 0,
+    "semanticRuleViolation": 0,
+    "semanticImplementationMismatch": 0,
+    "crossCapabilityViolation": 0,
+    "stableCapabilityWithoutBlackBoxEvidence": 31,
+    "runtimeSemanticInference": 0,
+    "providerTopologyLeak": 0,
+    "operationCollision": 0
+  },
+  "issues": [
+    {
+      "rule": "S014",
+      "operation": "spatial.find-nearby@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "spatial.find-in-area@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "spatial.find-intersections@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "reference.get@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "reference.resolve@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "catalog.get@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "catalog.search@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "world.get-current-state@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "world.get-geometry@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "world.get-provenance@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "reference.validate@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "result.validate@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "snapshot.get@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "snapshot.validate@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.graph.get@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.graph.list@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.graph.diagnose@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.snap.point@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.snap.points@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.path.shortest@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.path.expand@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.path.verify@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "network.connectivity.inspect@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "route.validate@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "route.plan@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "route.verify@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "coverage.road.validate@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "coverage.road.select-obligations@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "coverage.road.plan@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "coverage.road.verify@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    },
+    {
+      "rule": "S014",
+      "operation": "coverage.road.expand-geojson@1.0",
+      "message": "Stable requires implementation and current black-box evidence"
+    }
+  ],
+  "status": "FAIL"
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.dataset-catalog",
+  "operationId": "catalog.search",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:384d9f9fdd83f9c6799148478e12955385b3d4adca375ab2e2399f6d2fa8c33a",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/dataset-catalog-provider.json",
+      "sha256": "c43070d10325cbe51a97a24f0556c0b772f79e681f8f4b64b4350d31a01552b9"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/dataset-catalog-provider.json",
+      "sha256": "c43070d10325cbe51a97a24f0556c0b772f79e681f8f4b64b4350d31a01552b9"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/catalog-search-request.schema.json",
+      "sha256": "94c011a6a8bbff8c05eae93fcd7c4a06916cf5b8309a4ef77cb67248016a3ef8"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.6.1/catalog-search-result.schema.json",
+      "sha256": "2c4cadd1b2802598ca39b4182c03740608d17d18c706d713e68d5a95880a681f"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/provider.ts",
+      "sha256": "4a09ae7ae822e9abb394537a749a8cf66e4f169156f9b29aa69ad6105d12a70f",
+      "symbol": "createGroundingCatalogProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/repository.ts",
+      "sha256": "04f0f735387adbe448e7bf402171ce144d0bc3982e6c1403dd6d6610e66c4cbf"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/grounding-catalog-provider.test.ts",
+      "sha256": "191fccb726af2759251af310ee94a16e69fd90681a6e730b37b2b7ae2d5f0467"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/019_dataset_layer_feature_catalog.sql",
+      "sha256": "831cae1fa3b407ea55fbe2a18d14311eff8ecda8d4e5840f4cd7a8e291b241dd"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

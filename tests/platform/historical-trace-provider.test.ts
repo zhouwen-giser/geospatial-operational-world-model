@@ -1,6 +1,6 @@
 import { describe,expect,it } from "vitest";
 import type pg from "pg";
-import { validateContract,type GowmV07HistoricalTrajectoryQuery,type GowmV07QuerySnapshotManifest } from "../../packages/platform/contract-runtime/src/index.js";
+import { getContractSchemaHash,validateContract,type GowmV07HistoricalTrajectoryQuery,type GowmV07QuerySnapshotManifest } from "../../packages/platform/contract-runtime/src/index.js";
 import { createHistoricalTraceProvider } from "../../services/providers/historical-trace-provider/src/provider.js";
 import { HistoricalTraceRepository,historicalSemanticRequestHash } from "../../services/providers/historical-trace-provider/src/repository.js";
 import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
@@ -16,6 +16,13 @@ const input:GowmV07HistoricalTrajectoryQuery={
 };
 
 describe("historical trace provider",()=>{
+  it("preserves the frozen v0.7 result contract while publishing the honest v0.7.1 result",()=>{
+    expect(getContractSchemaHash("urn:gowm:v0.7:historical-trajectory-result"))
+      .toBe("sha256:3a7775d3099c6d63ab548c12db91d1b41cc920c6d4bcec8d9704b92eeaa9e3c2");
+    expect(getContractSchemaHash("urn:gowm:v0.7.1:historical-trajectory-result"))
+      .toBe("sha256:d51c07904cc18ec3a67c3bbaebf904f781d407378fc42e9e91debbfc04f1b02d");
+  });
+
   it("registers only the PREVIEW operation and returns a pinned, bounded, gap-preserving revision",async()=>{
     const semanticHash=historicalSemanticRequestHash(input);
     const effective:satisfiesManifest={
@@ -48,7 +55,7 @@ describe("historical trace provider",()=>{
     });
 
     const provider=createHistoricalTraceProvider({pool});
-    expect(provider.runtime.manifest.provider).toMatchObject({providerId:"gowm.historical-trace",providerVersion:"0.7.0"});
+    expect(provider.runtime.manifest.provider).toMatchObject({providerId:"gowm.historical-trace",providerVersion:"0.7.1"});
     expect(provider.runtime.manifest.capabilities).toHaveLength(1);
     expect(provider.runtime.manifest.capabilities[0]).toMatchObject({
       operationId:"history.get-trajectory",semanticRole:"DOMAIN_ANALYSIS",dataBinding:"WORLD_SNAPSHOT_BOUND",
@@ -66,9 +73,17 @@ describe("historical trace provider",()=>{
       completeness:{temporalCoverageRatio:1,sampleCount:4,sequenceCount:1,gapCount:0,prefixComplete:true,suffixComplete:true},
       finalization:{state:"SEALED"}
     });
-    expect(validateContract("urn:gowm:v0.7:historical-trajectory-result",result.output)).toMatchObject({valid:true});
+    expect(validateContract("urn:gowm:v0.7.1:historical-trajectory-result",result.output)).toMatchObject({valid:true});
+    expect(validateContract("urn:gowm:v0.7.1:historical-trajectory-result",{
+      ...result.output,
+      artifactReference:{artifactId:"forbidden",digest:HASH,mediaType:"application/json"}
+    })).toMatchObject({valid:false});
     expect(result.output.preview).toHaveLength(2);
-    expect(result.output.artifactReference).toMatchObject({digest:HASH,mediaType:"application/vnd.gowm.historical-trajectory+mfjson"});
+    expect("artifactReference" in result.output).toBe(false);
+    expect(result.output.warnings).toEqual(expect.arrayContaining([
+      "history.previewTruncated=true",
+      "history.artifactDeferred=true"
+    ]));
     expect(result.output.inputTrackletVersions).toEqual([expect.objectContaining({sourceKey:"gps-a",trackerSessionKey:"session-a",versionNo:3})]);
     expect(result.dataSnapshot.capturedAt).toBe(CAPTURED_AT);
     expect(result.dataSnapshot.scopeDigest).toBe(sha256({dataScopeKey:"scope-a"}));

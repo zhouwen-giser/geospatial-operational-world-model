@@ -3,6 +3,7 @@ import {
   snapshotResourceIdFromArtifact,
   snapshotResourceIdFromDataset,
   snapshotResourceIdFromReferenceKey,
+  snapshotResourceEvidenceIdentity,
   snapshotResourceIdentity,
   type CapabilityDescriptor,
   type CapabilityResultEnvelope,
@@ -34,7 +35,18 @@ export interface MergeProviderSnapshotResult {
   effective: QuerySnapshotManifest;
   adherence: QuerySnapshotAdherence;
   discoveredResourceCount: number;
+  observedResourceIdentities: string[];
   warnings: string[];
+}
+
+export class ProviderSnapshotMismatchError extends ProviderProtocolError {
+  constructor(readonly mergeResult: MergeProviderSnapshotResult, details: Record<string, unknown>) {
+    super("SCHEMA_MISMATCH", "provider data snapshot conflicts with the effective snapshot", {
+      retryable: false,
+      details: { stage: "SNAPSHOT", ...details }
+    });
+    this.name = "ProviderSnapshotMismatchError";
+  }
 }
 
 export class QuerySnapshotCoordinator {
@@ -140,6 +152,9 @@ export class QuerySnapshotCoordinator {
       nodeId: args.nodeId
     });
     const providerResources = normalizeProviderResources(args.providerSnapshot);
+    const observedResourceIdentities = providerResources.map((resource) =>
+      providerResourceId(() => snapshotResourceEvidenceIdentity(resource))
+    );
     const warnings = [scopeDigestVerified
       ? "Provider scopeDigest was verified against the delegated Gateway scope"
       : "Provider scopeDigest is retained as evidence but is not recomputed by the Gateway"];
@@ -256,7 +271,14 @@ export class QuerySnapshotCoordinator {
     if (mismatches.length > 0) {
       if (strictPolicy(effectivePolicy)) {
         const first = mismatches[0]!;
-        throw snapshotError("provider data snapshot conflicts with the effective snapshot", {
+        const mergeResult: MergeProviderSnapshotResult = {
+          effective: structuredClone(effectiveAtBoundary),
+          adherence,
+          discoveredResourceCount: 0,
+          observedResourceIdentities,
+          warnings
+        };
+        throw new ProviderSnapshotMismatchError(mergeResult, {
           nodeId: args.nodeId,
           reason: first.reason,
           resourceKind: first.resourceKind,
@@ -270,6 +292,7 @@ export class QuerySnapshotCoordinator {
         effective: structuredClone(effectiveAtBoundary),
         adherence,
         discoveredResourceCount: 0,
+        observedResourceIdentities,
         warnings
       };
     }
@@ -280,6 +303,7 @@ export class QuerySnapshotCoordinator {
         effective: structuredClone(effectiveAtBoundary),
         adherence,
         discoveredResourceCount: 0,
+        observedResourceIdentities,
         warnings
       };
     }
@@ -293,7 +317,7 @@ export class QuerySnapshotCoordinator {
     }
     const nextContent = { ...withoutManifestHash(effectiveAtBoundary), resources };
     const effective: QuerySnapshotManifest = { ...nextContent, manifestHash: sha256(nextContent) };
-    return { effective, adherence, discoveredResourceCount, warnings };
+    return { effective, adherence, discoveredResourceCount, observedResourceIdentities, warnings };
   }
 
   adherence(

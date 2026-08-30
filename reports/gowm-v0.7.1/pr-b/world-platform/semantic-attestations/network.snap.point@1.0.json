@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.network",
+  "operationId": "network.snap.point",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:8363cef0e0100152b6fc13f69d382330b5dee8a9d659387c0e6ecdf843e75623",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/network-provider.json",
+      "sha256": "64970ecfb360b9add757ccca1c9adf8b6f6964b6a0e793285f3b1f29efbea9d6"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/network-provider.json",
+      "sha256": "64970ecfb360b9add757ccca1c9adf8b6f6964b6a0e793285f3b1f29efbea9d6"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/network-snap-request.schema.json",
+      "sha256": "d63fe16bae3534403a320abd21c79d98c9d6914c694cbe810d6773913cf084cb"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.5/network-snap-result.schema.json",
+      "sha256": "e606e231164ceecdece02310395b6b4742ab45b92d8a9713f196b1779dc257fd"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/network-provider/src/provider.ts",
+      "sha256": "7acf21998b589490430ea8cac70dbef37de4293a8e00c58a3c7439f65964b527",
+      "symbol": "createNetworkProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/network-provider/src/repository.ts",
+      "sha256": "ea3727d5e7d786c403f067c9a14962c80240fef02fd2d63568c2d3c56a953357"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/network-provider.test.ts",
+      "sha256": "43aebea0c8bc9737703a2340fc5d233d4d4b1547116202396bbf642551dd7ab5"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "packages/network-query-core/src/repository.ts",
+      "sha256": "bf1ea1e33406e9034fd53003fa0664b7f9856f3e27aa2db44cfc31d0bd7bd5b2",
+      "symbol": "snap"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

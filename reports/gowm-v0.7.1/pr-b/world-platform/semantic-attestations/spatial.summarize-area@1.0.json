@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.spatial-analysis.bridge",
+  "operationId": "spatial.summarize-area",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:9962749c808ba158dcf71eb019e74f2ad0f1d12570dcb0030006f0d6d93f9f7a",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/spatial-provider.json",
+      "sha256": "a1331b94281b4cbad4125f4d4582690ee085ad9e38146c6e1ab97b7398b2b2e4"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/spatial-provider.json",
+      "sha256": "a1331b94281b4cbad4125f4d4582690ee085ad9e38146c6e1ab97b7398b2b2e4"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/spatial.summarize-area/input-1.0.schema.json",
+      "sha256": "6318a3c2235db51ad3d67003bcf3c422c2c0f28e10a39fcf54606fa197867408"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/spatial.summarize-area/output-1.0.schema.json",
+      "sha256": "4e0fb3b3e1c5ad3c1ebf80f5060fb7ee1cafcfd38fe6a7127e2d0d138334a2d5"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/spatial-provider-bridge/src/provider.ts",
+      "sha256": "ea4ae2e51796243a9330a610e1bf2a6b8deaa2b1885cffcfbdd6498657fe6791",
+      "symbol": "createSpatialProviderBridge"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/spatial-provider-bridge/src/repository.ts",
+      "sha256": "10bc6c4038ee405243a37876ab51575fd6f9da20e3924b68d0853c1b71b8f76f"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "validation/provider-conformance/spatial/spatial-provider-bridge.test.ts",
+      "sha256": "db1b3a3875fde44b12368187ab7ce112758101345b0699fa014ee4fe0d9cb531"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/012_gowm_spatial_v1_read_contract.sql",
+      "sha256": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/spatial-provider-source-lock.json",
+      "sha256": "7a1eeb357034ea22054c5f43c484922d7ea78e2860f6e72890f950577bccf5c0"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "services/providers/spatial-provider-bridge/src/sql.ts",
+      "sha256": "24dabedcf4f187bea7270bf2e4db9f4f9918b7a16833991f8c29ace9ca6e4db9",
+      "symbol": "buildSpatialQuery"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Exact predicates are checked in the AST of the operation SQL produced by buildSpatialQuery. ST_Covers includes boundary contact; ST_Intersects tests true geometry, not bounding boxes. Geography distance uses WGS84 spheroid meters. Generic ReferenceKey fields are structurally detected even without an enum; explicit kinds are constrained by the cited versioned SQL/validation authority."
+  ]
+}

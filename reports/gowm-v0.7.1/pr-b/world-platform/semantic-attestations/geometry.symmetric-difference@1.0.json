@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.geometry.bridge",
+  "operationId": "geometry.symmetric-difference",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:0d8cf3ce49f44c07a948401f873409525974eb296f8c954fdedd69074adff4bf",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/geometry-provider.json",
+      "sha256": "a837d05955691e4d384ad877f80d48bc9eeb71f10c6c4c8b67baeb5ceda7c871"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/geometry-provider.json",
+      "sha256": "a837d05955691e4d384ad877f80d48bc9eeb71f10c6c4c8b67baeb5ceda7c871"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/geometry.symmetric-difference/input-1.0.schema.json",
+      "sha256": "21a0e57dd907a9b151f1729893805c33e9771a5a8faefc459698819467f21490"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/geometry.symmetric-difference/output-1.0.schema.json",
+      "sha256": "2d79fb72ae5b303154587d4216dedcd01b6d518dc2a3b6e41b05ca06ad7c3ee9"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/geometry-provider-bridge/src/provider.ts",
+      "sha256": "ddb5723d36cd641b10b68519cc93d19126dd90397396a0f33c85e2a23396414b",
+      "symbol": "createGeometryProviderBridge"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/geometry-provider-bridge.test.ts",
+      "sha256": "8656a7eb0cb714e9f9e33de4c19cb13197f74492952bf58a0877fd8fb1ec23db"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/geometry-provider-source-lock.json",
+      "sha256": "74326c611d1a888f74c4d6c62240c3b2f318edbd85f9f732ec5bb83588e2bf8d"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+  ]
+}

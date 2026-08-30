@@ -26,8 +26,33 @@ export interface WorkerTickResult {
   historicalTrajectoryClaims: number;
   historicalTrajectoriesMaterialized: number;
   historicalTrajectoryOutcomesRecorded: number;
+  /** @deprecated Use historicalItemFailures and historicalStageFailures. */
   historicalProjectionFailures: number;
+  historicalItemFailures: number;
+  historicalStageFailures: number;
+  failedHistoricalStages: HistoricalStageFailure[];
 }
+
+export type HistoricalStageFailureKind =
+  | "DATABASE_UNAVAILABLE"
+  | "CONNECTION_POOL_UNAVAILABLE"
+  | "CONTRACT_FAILURE"
+  | "UNKNOWN";
+
+export type HistoricalStageName =
+  | "TASK_INTERVALS"
+  | "TRACKLET_REBUILD"
+  | "TRACKLET_FINALIZATION"
+  | "HISTORICAL_TRAJECTORIES";
+
+export interface HistoricalStageFailure {
+  stage: HistoricalStageName;
+  failureKind: HistoricalStageFailureKind;
+}
+
+export type HistoricalStageExecution<T> =
+  | { status: "SUCCEEDED"; result: T }
+  | { status: "STAGE_FAILED"; failureKind: HistoricalStageFailureKind };
 
 /**
  * The worker calls these stages separately so the global ordering remains
@@ -121,26 +146,46 @@ export class ProjectionWorker {
 
     const operationalProjected = await this.operational.projectPending(this.batchSize);
     const intervals = await this.historicalStage(
-      "task intervals",
+      "TASK_INTERVALS",
       () => this.historical.projectTaskIntervals(this.stageOptions),
       validateTaskIntervalResult
     );
     const tracklets = await this.historicalStage(
-      "tracklet rebuild",
+      "TRACKLET_REBUILD",
       () => this.historical.rebuildTracklets(this.stageOptions),
       validateTrackletRebuildResult
     );
     const finalizations = await this.historicalStage(
-      "tracklet finalization",
+      "TRACKLET_FINALIZATION",
       () => this.historical.finalizeTracklets(this.stageOptions),
       validateTrackletFinalizationResult
     );
     const trajectories = await this.historicalStage(
-      "historical trajectories",
+      "HISTORICAL_TRAJECTORIES",
       () => this.historical.materializeHistoricalTrajectories(this.stageOptions),
       validateHistoricalTrajectoryResult
     );
     const eventsPublished = await this.relayEvents();
+    const executions = [intervals, tracklets, finalizations, trajectories] as const;
+    const failedHistoricalStages: HistoricalStageFailure[] = executions.flatMap((execution, index) => {
+      if (execution.status !== "STAGE_FAILED") return [];
+      return [{
+        stage: ([
+          "TASK_INTERVALS",
+          "TRACKLET_REBUILD",
+          "TRACKLET_FINALIZATION",
+          "HISTORICAL_TRAJECTORIES"
+        ] as const)[index]!,
+        failureKind: execution.failureKind
+      }];
+    });
+    const historicalItemFailures = executions.reduce(
+      (total, execution) => total + (execution.status === "SUCCEEDED"
+        ? execution.result.historicalProjectionFailures
+        : 0),
+      0
+    );
+    const historicalStageFailures = failedHistoricalStages.length;
 
     return {
       claimed: ids.length,
@@ -148,17 +193,17 @@ export class ProjectionWorker {
       failed,
       eventsPublished,
       operationalProjected,
-      taskIntervalsProjected: intervals?.taskIntervalsProjected ?? 0,
-      trackletsRebuilt: tracklets?.trackletsRebuilt ?? 0,
-      trackletsFinalized: finalizations?.trackletsFinalized ?? 0,
-      historicalTrajectoryClaims: trajectories?.historicalTrajectoryClaims ?? 0,
-      historicalTrajectoriesMaterialized: trajectories?.historicalTrajectoriesMaterialized ?? 0,
-      historicalTrajectoryOutcomesRecorded: trajectories?.historicalTrajectoryOutcomesRecorded ?? 0,
-      historicalProjectionFailures:
-        (intervals?.historicalProjectionFailures ?? 1)
-        + (tracklets?.historicalProjectionFailures ?? 1)
-        + (finalizations?.historicalProjectionFailures ?? 1)
-        + (trajectories?.historicalProjectionFailures ?? 1)
+      taskIntervalsProjected: succeededResult(intervals)?.taskIntervalsProjected ?? 0,
+      trackletsRebuilt: succeededResult(tracklets)?.trackletsRebuilt ?? 0,
+      trackletsFinalized: succeededResult(finalizations)?.trackletsFinalized ?? 0,
+      historicalTrajectoryClaims: succeededResult(trajectories)?.historicalTrajectoryClaims ?? 0,
+      historicalTrajectoriesMaterialized: succeededResult(trajectories)?.historicalTrajectoriesMaterialized ?? 0,
+      historicalTrajectoryOutcomesRecorded:
+        succeededResult(trajectories)?.historicalTrajectoryOutcomesRecorded ?? 0,
+      historicalProjectionFailures: historicalItemFailures + historicalStageFailures,
+      historicalItemFailures,
+      historicalStageFailures,
+      failedHistoricalStages
     };
   }
 
@@ -183,19 +228,24 @@ export class ProjectionWorker {
   }
 
   private async historicalStage<T>(
-    label: string,
+    stage: HistoricalStageName,
     action: () => Promise<T>,
     validate: (result: T) => void
-  ): Promise<T | undefined> {
+  ): Promise<HistoricalStageExecution<T>> {
+    let result: T;
     try {
-      const result = await action();
+      result = await action();
+    } catch (error) {
+      const failureKind = classifyHistoricalStageFailure(error);
+      process.stderr.write(`historical projection stage failed: ${stage} (${failureKind})\n`);
+      return { status: "STAGE_FAILED", failureKind };
+    }
+    try {
       validate(result);
-      return result;
+      return { status: "SUCCEEDED", result };
     } catch {
-      // Repository last_error retains diagnostics. Keep the process log free of
-      // SQL/connection detail while ensuring this stage cannot count as success.
-      process.stderr.write(`historical projection stage failed: ${label}\n`);
-      return undefined;
+      process.stderr.write(`historical projection stage failed: ${stage} (CONTRACT_FAILURE)\n`);
+      return { status: "STAGE_FAILED", failureKind: "CONTRACT_FAILURE" };
     }
   }
 }
@@ -212,7 +262,48 @@ export function isIdleWorkerTick(result: WorkerTickResult): boolean {
     && result.historicalTrajectoryClaims === 0
     && result.historicalTrajectoriesMaterialized === 0
     && result.historicalTrajectoryOutcomesRecorded === 0
-    && result.historicalProjectionFailures === 0;
+    && result.historicalProjectionFailures === 0
+    && result.historicalItemFailures === 0
+    && result.historicalStageFailures === 0
+    && result.failedHistoricalStages.length === 0;
+}
+
+export function hasProductiveWorkerWork(result: WorkerTickResult): boolean {
+  return result.projected > 0
+    || result.eventsPublished > 0
+    || result.operationalProjected > 0
+    || result.taskIntervalsProjected > 0
+    || result.trackletsRebuilt > 0
+    || result.trackletsFinalized > 0
+    || result.historicalTrajectoriesMaterialized > 0
+    || result.historicalTrajectoryOutcomesRecorded > 0;
+}
+
+function succeededResult<T>(execution: HistoricalStageExecution<T>): T | undefined {
+  return execution.status === "SUCCEEDED" ? execution.result : undefined;
+}
+
+function classifyHistoricalStageFailure(error: unknown): HistoricalStageFailureKind {
+  const code = errorCode(error);
+  const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+  if (code === "HISTORICAL_PROJECTION_INPUT_INVALID") return "CONTRACT_FAILURE";
+  if (code === "POOL_ENDED" || message.includes("pool is closed") || message.includes("calling end on the pool")) {
+    return "CONNECTION_POOL_UNAVAILABLE";
+  }
+  if (
+    ["ECONNREFUSED", "ECONNRESET", "ENETUNREACH", "EHOSTUNREACH", "ENOTFOUND", "ETIMEDOUT", "57P01", "57P02", "57P03"].includes(code)
+    || message.includes("connection terminated")
+    || message.includes("connection timeout")
+    || message.includes("connect econnrefused")
+  ) {
+    return "DATABASE_UNAVAILABLE";
+  }
+  return "UNKNOWN";
+}
+
+function errorCode(error: unknown): string {
+  if (typeof error !== "object" || error === null || !("code" in error)) return "";
+  return typeof error.code === "string" ? error.code.toUpperCase() : "";
 }
 
 function validateTaskIntervalResult(result: TaskIntervalProjectionStageResult): void {

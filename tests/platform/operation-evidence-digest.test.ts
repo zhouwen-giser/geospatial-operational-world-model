@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  generatedTextMatches,
   isCurrentBlackBoxReceipt,
   operationEvidenceDigest,
   type OperationEvidenceRecord
@@ -34,6 +35,11 @@ const current = (overrides: Partial<Parameters<typeof isCurrentBlackBoxReceipt>[
 };
 
 describe("operation-scoped black-box freshness", () => {
+  it("compares generated artifacts independently of checkout line endings", () => {
+    expect(generatedTextMatches("first\r\nsecond\r\n", "first\nsecond\n")).toBe(true);
+    expect(generatedTextMatches("first\r\nchanged\r\n", "first\nsecond\n")).toBe(false);
+  });
+
   it("canonicalizes record order and Windows paths", () => {
     const normalized = records.map((record) => ({ ...record, path: record.path.replaceAll("\\", "/") })).reverse();
     expect(operationEvidenceDigest(records)).toBe(operationEvidenceDigest(normalized));

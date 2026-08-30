@@ -1,9 +1,9 @@
-import { setTimeout as delay } from "node:timers/promises";
 import pg from "pg";
 import { loadConfig } from "../../../packages/world-model-core/src/config.js";
 import { closeDatabasePool, databasePool } from "../../../packages/runtime/src/db.js";
 import { createPostgresHistoricalProjectionStages } from "./historical-runtime-adapter.js";
-import { isIdleWorkerTick, ProjectionWorker } from "./worker.js";
+import { loadWorkerBackoffConfig, WorkerLoopBackoff } from "./loop-backoff.js";
+import { ProjectionWorker } from "./worker.js";
 
 const config = loadConfig();
 const pool = databasePool();
@@ -23,8 +23,13 @@ const worker = new ProjectionWorker(pool, {
   historical: createPostgresHistoricalProjectionStages(historicalPool)
 });
 let running = true;
+const shutdownController = new AbortController();
+const backoff = new WorkerLoopBackoff(loadWorkerBackoffConfig());
 
-const shutdown = () => { running = false; };
+const shutdown = () => {
+  running = false;
+  shutdownController.abort();
+};
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 
@@ -32,12 +37,38 @@ async function main(): Promise<void> {
   if (process.argv.includes("--once")) {
     const result = await worker.tick();
     process.stdout.write(`${JSON.stringify(result)}\n`);
+    if (result.historicalStageFailures > 0) process.exitCode = 1;
     return;
   }
   process.stdout.write("projection-worker ready\n");
   while (running) {
     const result = await worker.tick();
-    if (isIdleWorkerTick(result)) await delay(config.projectionPollMs);
+    const previousBackoffState = backoff.state;
+    const decision = backoff.decide(result, config.projectionPollMs);
+    if (decision.reason === "STAGE_FAILURE") {
+      process.stderr.write(`${JSON.stringify({
+        event: "historical_projection_backoff",
+        historicalStageFailures: result.historicalStageFailures,
+        failedHistoricalStages: result.failedHistoricalStages,
+        consecutiveStageFailures: decision.consecutiveStageFailures,
+        delayMs: decision.delayMs
+      })}\n`);
+    }
+    if (previousBackoffState.consecutiveStageFailures > 0
+        && decision.consecutiveStageFailures === 0) {
+      process.stdout.write(`${JSON.stringify({
+        event: "historical_projection_backoff_reset",
+        previousConsecutiveStageFailures: previousBackoffState.consecutiveStageFailures,
+        consecutiveStageFailures: decision.consecutiveStageFailures,
+        reason: decision.reason,
+        delayMs: decision.delayMs
+      })}\n`);
+    }
+    try {
+      await backoff.wait(decision, shutdownController.signal);
+    } catch (error) {
+      if (!(error instanceof Error && error.name === "AbortError")) throw error;
+    }
   }
 }
 

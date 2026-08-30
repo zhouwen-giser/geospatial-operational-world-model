@@ -61,7 +61,7 @@ describe("historical trace Provider HTTP/bootstrap", () => {
       const manifest = await app.inject({ method: "GET", url: "/v1/manifest" });
       expect(manifest.statusCode).toBe(200);
       expect(manifest.json()).toMatchObject({
-        provider: { providerId: "gowm.historical-trace", providerVersion: "0.7.0" },
+        provider: { providerId: "gowm.historical-trace", providerVersion: "0.7.1" },
         capabilities: [{ operationId: "history.get-trajectory" }]
       });
       expect(manifest.json().capabilities).toHaveLength(1);
@@ -119,7 +119,7 @@ describe("historical trace Provider HTTP/bootstrap", () => {
         operation: { operationId: "history.get-trajectory", operationVersion: "1.0" },
         status: "NO_DATA",
         output: { value: { status: "NO_DATA", reasonCode: "TASK_INTERVAL_UNAVAILABLE" } },
-        execution: { providerId: "gowm.historical-trace", providerVersion: "0.7.0" }
+        execution: { providerId: "gowm.historical-trace", providerVersion: "0.7.1" }
       });
       expect(connect).toHaveBeenCalledOnce();
       expect(transactionQueries[0]?.sql).toBe("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
@@ -216,8 +216,8 @@ function executionRequest(
     },
     gatewayContext: {
       gatewayId: "history-gateway",
-      registryVersion: "v0.7.0",
-      policyVersion: "v0.7.0"
+      registryVersion: "v0.7.1",
+      policyVersion: "v0.7.1"
     },
     effectiveSnapshot: { ...effectiveSnapshot, manifestHash: sha256(effectiveSnapshot) },
     executionPolicy: {

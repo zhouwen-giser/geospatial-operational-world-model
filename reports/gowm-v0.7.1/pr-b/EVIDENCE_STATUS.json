@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0",
+  "evidenceStatus": "LOCAL_CANDIDATE_STATIC_ONLY",
+  "authoritativeForExactHeadRuntime": false,
+  "sourceQualification": {
+    "status": "PASS",
+    "checks": {
+      "npmRunCheck": "PASS",
+      "vitest": {
+        "status": "PASS",
+        "filesPassed": 85,
+        "filesSkipped": 3,
+        "testsPassed": 581,
+        "testsSkipped": 9
+      },
+      "sqlAst": {
+        "status": "PASS",
+        "migrationRange": "001-068",
+        "assertionRange": "001-051"
+      },
+      "consumerContractFiles": {
+        "status": "PASS",
+        "count": 94
+      },
+      "canonicalLocaleMatrix": {
+        "status": "PASS",
+        "locales": ["C", "en_US.UTF-8", "zh_CN.UTF-8"]
+      }
+    }
+  },
+  "runtimeQualification": {
+    "status": "NOT_RUN",
+    "reason": "Authoritative runtime qualification is generated only as an immutable CI artifact at the exact post-merge main SHA."
+  },
+  "historicalArtifact": {
+    "status": "DEFERRED",
+    "marker": "GOWM_V071_HISTORICAL_ARTIFACT_DEFERRED",
+    "outboundArtifactReferenceAdvertised": false
+  },
+  "wsgsHistoricalConsumerBaseline": {
+    "status": "NOT_RUN",
+    "reason": "Generation is gated on exact-main runtime qualification."
+  }
+}

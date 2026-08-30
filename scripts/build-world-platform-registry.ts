@@ -44,7 +44,7 @@ export function assembleWorldPlatformRegistry(deployments: readonly ControlledPr
 export async function buildWorldPlatformRegistry(
   write = false,
   root = resolve(fileURLToPath(new URL("..", import.meta.url))),
-  reportDirectory = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.6.2"
+  reportDirectory = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-b/world-platform"
 ) {
   const config = resolve(root, "config");
   const fragments = (await readdir(config)).filter((p) =>

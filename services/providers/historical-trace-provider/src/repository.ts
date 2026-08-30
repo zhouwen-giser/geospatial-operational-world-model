@@ -4,10 +4,10 @@ import type {
   EvidenceReference,
   GowmV07HistoricalGap,
   GowmV07HistoricalTrajectoryQuery,
-  GowmV07HistoricalTrajectoryResult,
-  GowmV07HistoricalTrajectoryResultInputTrackletVersion,
-  GowmV07HistoricalTrajectoryResultPreviewPoint,
-  GowmV07HistoricalTrajectoryResultTimeRange,
+  GowmV071HistoricalTrajectoryResult,
+  GowmV071HistoricalTrajectoryResultInputTrackletVersion,
+  GowmV071HistoricalTrajectoryResultPreviewPoint,
+  GowmV071HistoricalTrajectoryResultTimeRange,
   GowmV07QuerySnapshotManifest
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { historicalSemanticRequestHash } from "../../../../packages/historical-trace-core/src/canonical-hash.js";
@@ -74,7 +74,7 @@ interface HistoricalTraceRepositoryOptions {
 }
 
 export interface HistoricalTraceRepositoryResult {
-  output:GowmV07HistoricalTrajectoryResult;
+  output:GowmV071HistoricalTrajectoryResult;
   status:"COMPLETED"|"PARTIAL"|"NO_DATA"|"INDETERMINATE";
   dataSnapshot:DataSnapshotContext;evidenceReferences:EvidenceReference[];
   rows:number;candidates:number;warnings:string[];
@@ -230,15 +230,15 @@ export class HistoricalTraceRepository {
       const exclusions=exclusionsResult.rows.map(mapExclusion);
       const inputTrackletVersions=trackletRows.map(mapInputTracklet);
       const resultOutcome=trajectoryOutcome(trajectory,interval,gaps.length,outcome);
-      const artifactRequired=sampleCount>preview.length;
+      const previewTruncated=sampleCount>preview.length;
       const warnings=[
         "history.readContract=gowm_history_v1",
         "history.asOf=effectiveSnapshot.capturedAt",
         "history.sourceSelection=projectionOwned",
-        ...(artifactRequired?["history.previewTruncated=true"]:[]),
+        ...(previewTruncated?["history.previewTruncated=true","history.artifactDeferred=true"]:[]),
         ...(childInputs.length+2>256?["history.snapshotInputsAggregated=true"]:[])
       ];
-      const output:GowmV07HistoricalTrajectoryResult={
+      const output:GowmV071HistoricalTrajectoryResult={
         schemaVersion:"1.0",status:resultOutcome.status,reasonCode:resultOutcome.reasonCode,
         subjectReferenceKey:{...input.subjectReferenceKey},executionIntervalReferenceKey:{...input.executionIntervalReferenceKey},
         trajectoryReferenceKey:{namespace:"gowm",kind:"HISTORICAL_TRAJECTORY",id:String(trajectory.reference_key),version:String(trajectory.revision_no)},
@@ -254,12 +254,7 @@ export class HistoricalTraceRepository {
         finalization:{
           state:enumValue(trajectory.finalization_state,["PROVISIONAL","SEALED","CONFLICTED"] as const,"finalization_state"),
           ...observedThrough(trackletRows)
-        },preview,
-        ...(artifactRequired?{artifactReference:{
-          artifactId:`trajectory-${sha256({referenceKey:trajectory.reference_key,revisionNo:trajectory.revision_no}).slice(7)}`,
-          digest:digest(trajectory.content_hash,{trajectoryRevisionId:revisionId}),
-          mediaType:"application/vnd.gowm.historical-trajectory+mfjson"
-        }}:{}),warnings
+        },preview,warnings
       };
       return {
         output,status:resultOutcome.status,
@@ -325,7 +320,7 @@ function emptyHistoricalResult(
   interval?:IntervalRow
 ):HistoricalTraceRepositoryResult {
   const warnings=["history.readContract=gowm_history_v1","history.asOf=effectiveSnapshot.capturedAt"];
-  const output:GowmV07HistoricalTrajectoryResult={
+  const output:GowmV071HistoricalTrajectoryResult={
     schemaVersion:"1.0",status,reasonCode,subjectReferenceKey:{...input.subjectReferenceKey},
     executionIntervalReferenceKey:{...input.executionIntervalReferenceKey},requestedPeriods:[],definedPeriods:[],
     excludedPeriods:[],gaps:[],inputTrackletVersions:[],
@@ -452,7 +447,7 @@ function observedThrough(rows:TrackletRow[]):{observedThrough?:string} {
   return values[0]?{observedThrough:values[0]}:{};
 }
 
-function mapInputTracklet(row:TrackletRow):GowmV07HistoricalTrajectoryResultInputTrackletVersion {
+function mapInputTracklet(row:TrackletRow):GowmV071HistoricalTrajectoryResultInputTrackletVersion {
   return {
     trackletId:String(row.tracklet_id),trackletVersionId:String(row.tracklet_version_id),
     versionNo:positiveInteger(row.version_no,"tracklet version_no"),sourceKey:String(row.source_key),
@@ -460,10 +455,10 @@ function mapInputTracklet(row:TrackletRow):GowmV07HistoricalTrajectoryResultInpu
   };
 }
 
-function mapPreviewPoint(row:Record<string,unknown>):GowmV07HistoricalTrajectoryResultPreviewPoint {
+function mapPreviewPoint(row:Record<string,unknown>):GowmV071HistoricalTrajectoryResultPreviewPoint {
   const position=jsonRecord(row.position,"preview position");
   if (position.type!=="Point"||!Array.isArray(position.coordinates)) throw new ProviderProtocolError("SCHEMA_MISMATCH","preview position is not a GeoJSON Point");
-  return {observedAt:validTimestamp(row.observed_at,"preview observed_at"),position:position as GowmV07HistoricalTrajectoryResultPreviewPoint["position"]};
+  return {observedAt:validTimestamp(row.observed_at,"preview observed_at"),position:position as GowmV071HistoricalTrajectoryResultPreviewPoint["position"]};
 }
 
 function mapGap(row:Record<string,unknown>):GowmV07HistoricalGap {
@@ -475,7 +470,7 @@ function mapGap(row:Record<string,unknown>):GowmV07HistoricalGap {
   };
 }
 
-function mapExclusion(row:Record<string,unknown>):{range:GowmV07HistoricalTrajectoryResultTimeRange;reason:"EXCLUDED_PAUSED_PHASE"} {
+function mapExclusion(row:Record<string,unknown>):{range:GowmV071HistoricalTrajectoryResultTimeRange;reason:"EXCLUDED_PAUSED_PHASE"} {
   return {range:range(row.excluded_time,"excluded_time"),reason:enumValue(row.exclusion_kind,["EXCLUDED_PAUSED_PHASE"] as const,"exclusion_kind")};
 }
 
@@ -538,7 +533,7 @@ function previewIndexes(sampleCount:number,limit:number):number[] {
   return [...indexes];
 }
 
-function timeRanges(value:unknown,name:string):GowmV07HistoricalTrajectoryResultTimeRange[] {
+function timeRanges(value:unknown,name:string):GowmV071HistoricalTrajectoryResultTimeRange[] {
   const parsed=typeof value==="string"?JSON.parse(value) as unknown:value;
   if (!Array.isArray(parsed)) throw new ProviderProtocolError("SCHEMA_MISMATCH",`${name} is not an array`);
   return parsed.map((item)=>{
@@ -547,7 +542,7 @@ function timeRanges(value:unknown,name:string):GowmV07HistoricalTrajectoryResult
   });
 }
 
-function range(value:unknown,name:string):GowmV07HistoricalTrajectoryResultTimeRange {
+function range(value:unknown,name:string):GowmV071HistoricalTrajectoryResultTimeRange {
   if (typeof value==="object"&&value!==null&&!Array.isArray(value)) {
     const record=value as Record<string,unknown>;
     return {start:validTimestamp(record.lower??record.start,`${name}.start`),end:validTimestamp(record.upper??record.end,`${name}.end`),bounds:"[)"};

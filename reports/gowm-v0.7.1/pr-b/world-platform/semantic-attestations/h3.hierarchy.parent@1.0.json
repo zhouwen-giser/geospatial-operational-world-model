@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.h3.interactive.bridge",
+  "operationId": "h3.hierarchy.parent",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:e10df26f33b3091082c4ead1b3fd7be019c3ca7d287d013bb88de8d2110b1219",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/h3-interactive-provider.json",
+      "sha256": "e6dd4bb36b125ef6756c9a4f6fd2a7209b27e0f3935e65df842f548760c1495b"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/h3-interactive-provider.json",
+      "sha256": "e6dd4bb36b125ef6756c9a4f6fd2a7209b27e0f3935e65df842f548760c1495b"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/capabilities/h3.hierarchy.parent/input-1.0.schema.json",
+      "sha256": "efccc20d005921a7b97c3b2ae1febfb9497c04b95070dc2a19b00ad364d00045"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/capabilities/h3.hierarchy.parent/output-1.0.schema.json",
+      "sha256": "25147afb5bf333e91497f19104e5f3d00ef4effc7dbc800e02bbb50ba53d06e9"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "packages/integrations/h3-toolkit-bridge/src/provider.ts",
+      "sha256": "8ab874c08b44ef5d0c575ea703a2f8bdfff993aa152de08b7e7673137cd82531",
+      "symbol": "createH3InteractiveProvider"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "validation/h3-bridge/h3-provider-bridges.test.ts",
+      "sha256": "7a210073782fd7f6b5c650a3bdc506283e664d03cf83386190293f2b3d116ff8"
+    },
+    {
+      "kind": "SOURCE_LOCK",
+      "path": "contracts/manifests/providers/h3-toolkit-source-lock.json",
+      "sha256": "b0a0a547df9d52b6f29fb38ed39d9e8aedc8498ab956863f92e223a2acf7e22a"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "H3 indexes and cell geometry are discrete index results; they do not establish exact world relations. Source lock and adapter schemas retain candidate meaning."
+  ]
+}

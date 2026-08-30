@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.historical-trace",
+  "operationId": "history.get-trajectory",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:e5d7d097098a8c3f57e4c98d58575be25fc4779bf0c365457cebd0e0584b2dc2",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/historical-trace-provider.json",
+      "sha256": "d572017f23d621d90d4187e8ba159915afddb13e6d39d20dcc1e31329753f94a"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/historical-trace-provider.json",
+      "sha256": "d572017f23d621d90d4187e8ba159915afddb13e6d39d20dcc1e31329753f94a"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.7/historical-trajectory-query.schema.json",
+      "sha256": "28598b37321f26d27264bf24ee3b5f7687d030e15b734838e166226df5d65cd4"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.7.1/historical-trajectory-result.schema.json",
+      "sha256": "8529155099f294da9a8ef22de9de5d0aa9f43ad7fa33c1d8712b51a044b33206"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/historical-trace-provider/src/provider.ts",
+      "sha256": "08bf2bb364accc0397023af8721785f32c7a2042f37dcf1188c8fe3196a026a3",
+      "symbol": "createHistoricalTraceProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/historical-trace-provider/src/repository.ts",
+      "sha256": "05953f2364bdb446e192f3367b0c365087295753553a2e1492a295404e108fb0"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/historical-trace-provider.test.ts",
+      "sha256": "2d6ed58b3d5471836659e7128e108a8c2d8ae1274663eaaa40fc432d0518a6b6"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/historical-trace-provider/src/repository.ts",
+      "sha256": "05953f2364bdb446e192f3367b0c365087295753553a2e1492a295404e108fb0",
+      "symbol": "HistoricalTraceRepository"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "The preview provider performs scoped, head-free reads of immutable trajectory revisions and their persisted lineage. It returns a bounded preview, gaps, completeness and trajectoryReferenceKey, but deliberately does not claim that the complete trajectory is retrievable as an Artifact. A missing result can cause only a bounded, scope-checked enqueue of the exact effective snapshot; source selection and trajectory construction remain worker projection-owned."
+  ]
+}

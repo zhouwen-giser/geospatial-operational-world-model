@@ -147,6 +147,9 @@ services:
     environment:
       <<: *app-environment
       HISTORICAL_WORKER_DATABASE_URL: postgresql://gowm_history_worker_service:${HISTORICAL_WORKER_DB_PASSWORD:?set a distinct HISTORICAL_WORKER_DB_PASSWORD in .env}@postgres:5432/gowm
+      HISTORICAL_PROJECTION_RETRY_DELAY_MS: ${HISTORICAL_PROJECTION_RETRY_DELAY_MS:-1000}
+      HISTORICAL_PROJECTION_MAX_RETRY_DELAY_MS: ${HISTORICAL_PROJECTION_MAX_RETRY_DELAY_MS:-60000}
+      HISTORICAL_PROJECTION_BACKOFF_MULTIPLIER: ${HISTORICAL_PROJECTION_BACKOFF_MULTIPLIER:-2}
     command: ["node", "dist/services/projection-worker/src/index.js"]
     depends_on:
       migrate:

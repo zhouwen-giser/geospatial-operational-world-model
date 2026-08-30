@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.reference-catalog",
+  "operationId": "reference.resolve",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:2345427b162f36cc0792116f20cd337f1e95e0e8284b000ab556b876c45328ad",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/reference-catalog-provider.json",
+      "sha256": "cdea2de7b94e583846893311c7c9d69f737e506b9918a50be8fac241a376b4ec"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/reference-catalog-provider.json",
+      "sha256": "cdea2de7b94e583846893311c7c9d69f737e506b9918a50be8fac241a376b4ec"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/reference-resolve-request.schema.json",
+      "sha256": "16d73c457ce186f12557fe52bbebca65e757754ed6d00671faad7e3c65b46a0a"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.4/reference-resolve-result.schema.json",
+      "sha256": "d8cfb0673f90abd2c88b60522b3df0158f8035f69daf9b760a649566acf27749"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/provider.ts",
+      "sha256": "4a09ae7ae822e9abb394537a749a8cf66e4f169156f9b29aa69ad6105d12a70f",
+      "symbol": "createGroundingCatalogProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/grounding-catalog-provider/src/repository.ts",
+      "sha256": "04f0f735387adbe448e7bf402171ce144d0bc3982e6c1403dd6d6610e66c4cbf"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/grounding-catalog-provider.test.ts",
+      "sha256": "191fccb726af2759251af310ee94a16e69fd90681a6e730b37b2b7ae2d5f0467"
+    }
+  ],
+  "status": "BLOCKED",
+  "notes": [
+    "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence.",
+    "Static profile resolved; current real black-box execution remains required for Stable admission."
+  ]
+}

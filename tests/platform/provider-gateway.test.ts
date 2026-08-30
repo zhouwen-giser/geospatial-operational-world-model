@@ -19,6 +19,7 @@ import {
   MemoryAuditSink,
   MemoryGatewayIdempotencyStore,
   MemoryGatewayRecordStore,
+  principalContextHash,
   ProviderCircuitBreaker,
   type GatewayPrincipal
 } from "../../services/gateway/world-capability-gateway/src/index.js";
@@ -225,6 +226,98 @@ describe("Capability Registry and direct execution", () => {
     expect(audit.events().every((event) => event.dataScopeHash === sha256("tenant:test"))).toBe(true);
     expect(audit.events().every((event) => event.dataScopeSetHash === sha256(["tenant:test"]))).toBe(true);
     expect(audit.events().every((event) => event.datasetScopeSetHash === sha256([]))).toBe(true);
+  });
+
+  it("binds one canonical scope set across principal identity, idempotency, audit and Provider attestation", async () => {
+    const runtime = createElevationMockProvider();
+    const operation = runtime.manifest.capabilities[0];
+    if (!operation) throw new Error("mock operation missing");
+    const observedRequests: ProviderExecutionRequest[] = [];
+    const { client, direct, audit } = gatewayHarness(runtime);
+    client.execute = async (_operationId, request) => {
+      observedRequests.push(structuredClone(request));
+      return createElevationMockProvider().execute(request);
+    };
+    const allowedOperation = `${operation.operationId}@${operation.operationVersion}`;
+    const scopedPrincipal = (dataScope: string, datasetScope: string): GatewayPrincipal => {
+      const value: GatewayPrincipal = {
+        principalRef: "principal:scope-bound",
+        authenticationMethod: "TEST_ATTESTED",
+        authenticatedAt: "2026-08-30T00:00:00.000Z",
+        dataScopeClaim: dataScope,
+        datasetScopeClaim: datasetScope,
+        effectiveDataScopes: [dataScope],
+        effectiveDatasetScopes: [datasetScope],
+        allowedOperations: [allowedOperation],
+        allowExperimental: true
+      };
+      return { ...value, authorizationContextHash: principalContextHash(value) };
+    };
+    const scopeA = scopedPrincipal("tenant:a", "dataset:roads");
+    const scopeB = scopedPrincipal("tenant:b", "dataset:buildings");
+    const scopeAHash = principalContextHash(scopeA);
+    const scopeBHash = principalContextHash(scopeB);
+    const request = gatewayRequest(runtime);
+    request.requestId = "gateway-scope-bound-request";
+    request.idempotencyKey = "gateway-scope-bound-idempotency";
+    request.executionPolicy.deadlineAt = new Date(Date.now() + 1_500).toISOString();
+
+    expect(scopeAHash).toBe(sha256({
+      principalRef: scopeA.principalRef,
+      servicePrincipalRef: scopeA.principalRef,
+      actorRef: scopeA.principalRef,
+      effectiveDataScopes: ["tenant:a"],
+      effectiveDatasetScopes: ["dataset:roads"],
+      allowedOperations: [allowedOperation]
+    }));
+    expect(scopeBHash).not.toBe(scopeAHash);
+
+    await expect(direct.execute(operation.operationId, request, scopeA)).resolves.toMatchObject({ replayed: false });
+    await expect(direct.execute(operation.operationId, structuredClone(request), scopeB)).resolves.toMatchObject({ replayed: false });
+    await expect(direct.execute(operation.operationId, structuredClone(request), scopeA)).resolves.toMatchObject({ replayed: true });
+
+    expect(observedRequests).toHaveLength(2);
+    for (const [index, expected] of [
+      { principal: scopeA, dataScope: "tenant:a", datasetScope: "dataset:roads" },
+      { principal: scopeB, dataScope: "tenant:b", datasetScope: "dataset:buildings" }
+    ].entries()) {
+      const observed = observedRequests[index];
+      expect(observed?.securityContext).toMatchObject({
+        principalRef: expected.principal.principalRef,
+        dataScopeClaim: expected.dataScope,
+        datasetScopeClaim: expected.datasetScope,
+        scopeAttestation: {
+          issuer: "gateway-test",
+          claimDigest: sha256({
+            principalRef: expected.principal.principalRef,
+            effectiveDataScopes: [expected.dataScope],
+            effectiveDatasetScopes: [expected.datasetScope],
+            gatewayRequestId: request.requestId
+          })
+        }
+      });
+    }
+
+    expect(audit.events()).toEqual([
+      expect.objectContaining({
+        outcome: "COMPLETED",
+        authorizationContextHash: scopeAHash,
+        dataScopeSetHash: sha256(["tenant:a"]),
+        datasetScopeSetHash: sha256(["dataset:roads"])
+      }),
+      expect.objectContaining({
+        outcome: "COMPLETED",
+        authorizationContextHash: scopeBHash,
+        dataScopeSetHash: sha256(["tenant:b"]),
+        datasetScopeSetHash: sha256(["dataset:buildings"])
+      }),
+      expect.objectContaining({
+        outcome: "REPLAYED",
+        authorizationContextHash: scopeAHash,
+        dataScopeSetHash: sha256(["tenant:a"]),
+        datasetScopeSetHash: sha256(["dataset:roads"])
+      })
+    ]);
   });
 
   it("enforces the caller output budget even when a nonconforming provider ignores it", async () => {

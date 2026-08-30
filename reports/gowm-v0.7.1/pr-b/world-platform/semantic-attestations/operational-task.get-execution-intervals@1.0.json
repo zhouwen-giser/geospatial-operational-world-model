@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.operational-reality",
+  "operationId": "operational-task.get-execution-intervals",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:0a1b8baaa16665dd31b78f0ef3e06db3081c660a8d0ac45de7da77e26114bad6",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/operational-reality-provider.json",
+      "sha256": "2328b64b01ea42dbae0d8979408ddea911b4f337db0e3aa9d07ca9221b518747"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/operational-reality-provider.json",
+      "sha256": "2328b64b01ea42dbae0d8979408ddea911b4f337db0e3aa9d07ca9221b518747"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.7.1/task-execution-interval-query.schema.json",
+      "sha256": "75dc64dc07abd98b7a01e4b27ddbfdc362434c2944b7b456e2fb4cd1871486bf"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.7.1/task-execution-interval-result.schema.json",
+      "sha256": "4c80a458bbecee377665ba3e654693974cb5368f80c3260155231fb1ad7d053b"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/operational-reality-provider/src/provider.ts",
+      "sha256": "a236b56bbdf0943bfe90c3c16cc34a80dbe6d543685e8177ffffea88b3d8f6fb",
+      "symbol": "createOperationalRealityProvider"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/operational-reality-provider/src/repository.ts",
+      "sha256": "cb5e989f8681db74f49c34c7e7fc0e455df566fffa6c35c6caeebb9df7505387"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/operational-interval-provider.test.ts",
+      "sha256": "7e2ca05410bd3e0bb38e97642e0f15a1fa72cf1e2dc3618a04010a51442e6d19"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "The preview query reads immutable interval revisions at the effective snapshot capturedAt, exposes projection lag as PARTIAL, and discovers all scoped interval, event-set, task, and method-profile resources used by the result."
+  ]
+}
