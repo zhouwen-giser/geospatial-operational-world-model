@@ -19,6 +19,14 @@ const digestTree = async (root) => Promise.all((await walk(root)).map(async (pat
   relative(root, path),
   createHash("sha256").update(canonicalArtifactBytes(path, await readFile(path))).digest("hex")
 ]));
+const assertCanonicalTextTree = async (root) => {
+  for (const path of await walk(root)) {
+    const bytes = await readFile(path);
+    if (!bytes.equals(canonicalArtifactBytes(path, bytes))) {
+      throw new Error(`Generated consumer artifact has non-canonical line endings: ${relative(root, path)}`);
+    }
+  }
+};
 
 const initialRepositoryStatus = repositoryStatus();
 const initialSourceLock = await readFile(sourceLockPath);
@@ -28,6 +36,8 @@ let failure;
 try {
   await buildConsumerContracts(first, { writeSourceLock: false });
   await buildConsumerContracts(second, { writeSourceLock: false });
+  await assertCanonicalTextTree(first);
+  await assertCanonicalTextTree(second);
   const one = JSON.stringify(await digestTree(first));
   const two = JSON.stringify(await digestTree(second));
   if (one !== two) throw new Error("Two clean consumer contract builds produced different hashes");
