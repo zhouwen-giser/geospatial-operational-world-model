@@ -121,6 +121,7 @@ try {
   if (!recoveredDatabaseAliases.includes("historical-postgres")) {
     throw new Error("qualification database did not acquire the historical recovery alias");
   }
+  const recoveryWorkerAddress = containerNetworkAddress(workerContainer, recoveryNetwork);
 
   const completedQueue = await waitForQueueCompletion(databaseContainer, queue, 20_000);
   if (completedQueue.attempts !== 1 || completedQueue.generation !== 1) {
@@ -146,10 +147,21 @@ try {
   if (networkContainerNames(recoveryNetwork).includes(databaseContainer)) {
     throw new Error("qualification database remained attached after the recovery disconnect");
   }
+  // Docker network disconnect does not necessarily close an established TCP
+  // session. Terminate only sessions sourced from the worker's recovery-network
+  // address so the Historical pool must reconnect, while its main-database
+  // sessions on the qualification network remain untouched.
+  const terminatedHistoricalConnections = terminateHistoricalWorkerConnections(
+    databaseContainer,
+    recoveryWorkerAddress
+  );
+  if (terminatedHistoricalConnections < 1) {
+    throw new Error("qualification did not identify an established Historical worker connection");
+  }
   const resetEvent = await waitForNewBackoffEvent(
     workerContainer,
     eventsBeforeDisconnect.length,
-    20_000
+    30_000
   );
   if (resetEvent.consecutiveStageFailures !== 1 || resetEvent.delayMs !== 100
       || !isHistoricalDatabaseUnavailable(resetEvent)) {
@@ -263,6 +275,7 @@ try {
     resetAfterDisconnect: {
       consecutiveStageFailures: resetEvent.consecutiveStageFailures,
       delayMs: resetEvent.delayMs,
+      terminatedHistoricalConnections,
       sameContainerId: initialIdentity.id === identityAfterReset.id,
       sameProcessId: initialIdentity.pid === identityAfterReset.pid
     },
@@ -492,6 +505,21 @@ async function waitForNewBackoffEvent(container, priorCount, timeoutMs) {
   throw new Error("worker did not emit the expected backoff event before the deadline");
 }
 
+function terminateHistoricalWorkerConnections(container, clientAddress) {
+  return integer(psql(container, `
+    SELECT count(*)
+    FROM (
+      SELECT pg_terminate_backend(pid) AS terminated
+      FROM pg_stat_activity
+      WHERE pid <> pg_backend_pid()
+        AND datname = current_database()
+        AND usename = current_user
+        AND client_addr = :'client_address'::inet
+    ) candidates
+    WHERE terminated
+  `, { client_address: clientAddress }), "terminated Historical worker connections");
+}
+
 async function waitForBackoffEventCount(container, requiredCount, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   let latest = [];
@@ -589,6 +617,25 @@ function containerNetworkAliases(container, network) {
   return Array.isArray(attachment?.Aliases)
     ? attachment.Aliases.map((alias) => String(alias)).sort()
     : [];
+}
+
+function containerNetworkAddress(container, network) {
+  const output = docker([
+    "inspect", "--format",
+    `{{json (index .NetworkSettings.Networks "${network}")}}`,
+    container
+  ]);
+  let attachment;
+  try {
+    attachment = JSON.parse(output);
+  } catch {
+    throw new Error("unable to inspect the dedicated recovery network address");
+  }
+  const address = String(attachment?.IPAddress ?? "").trim();
+  if (!address || address.includes("\n") || address.includes("\r")) {
+    throw new Error("worker has no unambiguous dedicated recovery network address");
+  }
+  return address;
 }
 
 function assertSameRunningProcess(before, after) {
