@@ -16554,7 +16554,9 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
             "maxLength": 256
           },
           "version": {
-            "const": "1"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
           }
         }
       }

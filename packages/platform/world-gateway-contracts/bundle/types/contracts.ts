@@ -3483,7 +3483,7 @@ export type GowmV071TaskExecutionIntervalQueryTaskReferenceKey = {
   id: string;
   kind: "OPERATIONAL_TASK";
   namespace: "gowm";
-  version: "1";
+  version: string;
 };
 
 export type GowmV071TaskExecutionIntervalResult = {

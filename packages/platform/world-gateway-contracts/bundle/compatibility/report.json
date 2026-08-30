@@ -3,67 +3,10 @@
   "packageVersion": "0.7.1",
   "baselineVersion": "0.7.0",
   "classification": "BREAKING_AUTHORIZATION_HARDENING",
-  "breakingChanges": [],
-  "promotedOperations": [
-    {
-      "operationId": "reference.get",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "reference.resolve",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "world.get-current-state",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "world.get-geometry",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "world.get-provenance",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "catalog.get",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "catalog.search",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "spatial.find-nearby",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "spatial.find-in-area",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    },
-    {
-      "operationId": "spatial.find-intersections",
-      "operationVersion": "1.0",
-      "fromMaturity": "PREVIEW",
-      "toMaturity": "STABLE"
-    }
-  ]
+  "breakingChanges": [
+    "SIGNED_DELEGATION_V1 dataScopes cardinality is now exactly one instead of up to 32.",
+    "SIGNED_DELEGATION_V1 datasetScopes cardinality is now at most one instead of up to 32.",
+    "Gateway replay and idempotency authorization identity is now bound to the SINGLE_SCOPE_V1 canonical principal context."
+  ],
+  "promotedOperations": []
 }

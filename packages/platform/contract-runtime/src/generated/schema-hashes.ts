@@ -251,7 +251,7 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "gowm-v0.7.1/query-snapshot-adherence.schema.json": "sha256:3d43fbda0bd1c1f503abe2a6230087326a287337aa7814cf98a8d0ac81ccdbc0",
   "gowm-v0.7.1/query-snapshot-manifest.schema.json": "sha256:7a984eef06eec1ed19b21a6649644cc1b8a7e1d653c8b6f9b06490a8d316d185",
   "gowm-v0.7.1/query-snapshot-policy.schema.json": "sha256:84cb6abc57a9716eda532d20144342c30859a105fb9b8ddbef792b3f382dd61b",
-  "gowm-v0.7.1/task-execution-interval-query.schema.json": "sha256:d738b6fa2736e82f7b8145da8f87ac7387d7668341e8e32ee4102aa09c7e5495",
+  "gowm-v0.7.1/task-execution-interval-query.schema.json": "sha256:ca009622642a4ad35183eb7168fc85e867ca7004aeb572340a1dcce3d4a2d010",
   "gowm-v0.7.1/task-execution-interval-result.schema.json": "sha256:1927cc0a68542eeaa8887f698748578ea23b9b305d97b3cafb73dd7dc53011ee",
   "gowm-v0.7.1/world-query-result-v0.7.1.schema.json": "sha256:c78a38ea20704208c97cd9813f2266349d62756dff36877ce33cb3411fc696fb",
   "gowm-v0.7.1/wsgs-southbound-operation-lock-v2.schema.json": "sha256:aa20c9779d78dffc69978ed05361acd1cd95cd7fd00e8d2f4956fa8a7beb7c0d",
