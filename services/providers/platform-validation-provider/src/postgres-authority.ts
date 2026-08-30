@@ -51,6 +51,7 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
           // scope must never reveal a product from another dataset scope.
           const row = (await client.query<Row>(
             `SELECT version.*,current.version AS current_version,lifecycle.retired AS identity_retired,
+                    descriptor.descriptor_version,descriptor.object_version AS descriptor_object_version,
                     descriptor.stale,descriptor.revalidation_required
              FROM gowm_catalog_v1.${relation}_version version
              JOIN gowm_catalog_v1.${relation} current USING(reference_key)
@@ -68,7 +69,7 @@ export class PostgresPlatformValidationAuthority implements PlatformValidationAu
             referenceKey: key, available: true, retired: row.identity_retired === true || isPast(row.retired_at),
             sourceStatus: "COMPLETED", sourceAuthority: "gowm.dataset-catalog",
             ...timestamps(row.valid_to, row.published_at),
-            snapshotStatus: row.current_version !== key.version || row.stale === true || row.revalidation_required === true ? "STALE" : "CURRENT",
+            snapshotStatus: catalogReferenceSnapshotStatus(row, key.version),
             validationEvidenceRefs: typeof row.content_hash === "string" ? [row.content_hash] : []
           });
           continue;
@@ -222,6 +223,22 @@ function worldReferenceSnapshotStatus(
   const descriptorObjectVersion = text(row.descriptor_object_version);
   return (descriptorVersion === requestedVersion && descriptorObjectVersion === currentVersion) ||
     (descriptorVersion === currentVersion && descriptorObjectVersion === requestedVersion)
+    ? "CURRENT"
+    : "STALE";
+}
+function catalogReferenceSnapshotStatus(
+  row: Row,
+  requestedVersion: string
+): NonNullable<ReferenceRecord["snapshotStatus"]> {
+  if (row.current_version === null || row.current_version === undefined) return "UNKNOWN";
+  if (row.stale === true || row.revalidation_required === true) return "STALE";
+  const currentVersion = String(row.current_version);
+  if (currentVersion === requestedVersion) return "CURRENT";
+  const descriptorVersion = row.descriptor_version === null || row.descriptor_version === undefined
+    ? undefined
+    : String(row.descriptor_version);
+  const descriptorObjectVersion = text(row.descriptor_object_version);
+  return descriptorVersion === requestedVersion && descriptorObjectVersion === currentVersion
     ? "CURRENT"
     : "STALE";
 }
