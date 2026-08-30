@@ -43,6 +43,7 @@ async function main(): Promise<void> {
   process.stdout.write("projection-worker ready\n");
   while (running) {
     const result = await worker.tick();
+    const previousBackoffState = backoff.state;
     const decision = backoff.decide(result, config.projectionPollMs);
     if (decision.reason === "STAGE_FAILURE") {
       process.stderr.write(`${JSON.stringify({
@@ -50,6 +51,16 @@ async function main(): Promise<void> {
         historicalStageFailures: result.historicalStageFailures,
         failedHistoricalStages: result.failedHistoricalStages,
         consecutiveStageFailures: decision.consecutiveStageFailures,
+        delayMs: decision.delayMs
+      })}\n`);
+    }
+    if (previousBackoffState.consecutiveStageFailures > 0
+        && decision.consecutiveStageFailures === 0) {
+      process.stdout.write(`${JSON.stringify({
+        event: "historical_projection_backoff_reset",
+        previousConsecutiveStageFailures: previousBackoffState.consecutiveStageFailures,
+        consecutiveStageFailures: decision.consecutiveStageFailures,
+        reason: decision.reason,
         delayMs: decision.delayMs
       })}\n`);
     }

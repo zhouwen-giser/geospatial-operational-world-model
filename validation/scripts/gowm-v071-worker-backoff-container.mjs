@@ -112,6 +112,7 @@ try {
     throw new Error("projection work was not held unclaimed while the historical database was unavailable");
   }
   const eventsBeforeRecovery = containerBackoffEvents(workerContainer).length;
+  const resetEventsBeforeRecovery = containerBackoffResetEvents(workerContainer).length;
   docker([
     "network", "connect", "--alias", "historical-postgres",
     recoveryNetwork, databaseContainer
@@ -131,10 +132,16 @@ try {
     throw new Error("recovered projection work did not materialize interval evidence");
   }
 
-  // Queue completion happens inside the first historical stage. Give that same
-  // tick time to finish so its successful decision resets the in-memory
-  // consecutive-failure counter before making the database unavailable again.
-  await delay(1_000);
+  const recoveryResetEvent = await waitForNewBackoffResetEvent(
+    workerContainer,
+    resetEventsBeforeRecovery,
+    30_000
+  );
+  if (recoveryResetEvent.previousConsecutiveStageFailures < 1
+      || recoveryResetEvent.consecutiveStageFailures !== 0
+      || recoveryResetEvent.reason === "STAGE_FAILURE") {
+    throw new Error("successful automatic recovery did not emit a valid backoff reset event");
+  }
   const recoveredIdentity = inspectContainer(workerContainer);
   assertSameRunningProcess(initialIdentity, recoveredIdentity);
   const eventsBeforeDisconnect = containerBackoffEvents(workerContainer);
@@ -270,6 +277,9 @@ try {
       queueStateBeforeRecovery: queuedOutageState.state,
       queueAttemptsBeforeRecovery: queuedOutageState.attempts,
       recoveryAliasConnected: recoveredDatabaseAliases.includes("historical-postgres"),
+      backoffResetObserved: true,
+      backoffResetPreviousFailures: recoveryResetEvent.previousConsecutiveStageFailures,
+      backoffResetReason: recoveryResetEvent.reason,
       workerRestarted: false
     },
     resetAfterDisconnect: {
@@ -505,6 +515,18 @@ async function waitForNewBackoffEvent(container, priorCount, timeoutMs) {
   throw new Error("worker did not emit the expected backoff event before the deadline");
 }
 
+async function waitForNewBackoffResetEvent(container, priorCount, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const events = containerBackoffResetEvents(container);
+    if (events.length > priorCount) return events[priorCount];
+    const identity = inspectContainer(container);
+    if (!identity.running) throw new Error("worker exited before emitting the expected backoff reset event");
+    await delay(100);
+  }
+  throw new Error("worker did not emit the expected backoff reset event before the deadline");
+}
+
 function terminateHistoricalWorkerConnections(container, clientAddress) {
   return integer(psql(container, `
     SELECT count(*)
@@ -537,6 +559,10 @@ async function waitForBackoffEventCount(container, requiredCount, timeoutMs) {
 
 function containerBackoffEvents(container) {
   return backoffEvents(docker(["logs", "--timestamps", container], { trim: false }));
+}
+
+function containerBackoffResetEvents(container) {
+  return backoffResetEvents(docker(["logs", "--timestamps", container], { trim: false }));
 }
 
 function backoffEvents(output) {
@@ -617,6 +643,34 @@ function containerNetworkAliases(container, network) {
   return Array.isArray(attachment?.Aliases)
     ? attachment.Aliases.map((alias) => String(alias)).sort()
     : [];
+}
+
+function backoffResetEvents(output) {
+  return output.split(/\r?\n/u).flatMap((line) => {
+    const separator = line.indexOf(" ");
+    if (separator < 1) return [];
+    const timestampMs = Date.parse(line.slice(0, separator));
+    if (!Number.isFinite(timestampMs)) return [];
+    try {
+      const value = JSON.parse(line.slice(separator + 1));
+      if (value?.event !== "historical_projection_backoff_reset") return [];
+      return [{
+        timestampMs,
+        previousConsecutiveStageFailures: integer(
+          value.previousConsecutiveStageFailures,
+          "previous consecutive stage failures"
+        ),
+        consecutiveStageFailures: integer(
+          value.consecutiveStageFailures,
+          "reset consecutive stage failures"
+        ),
+        reason: String(value.reason ?? ""),
+        delayMs: integer(value.delayMs, "reset worker delay")
+      }];
+    } catch {
+      return [];
+    }
+  }).sort((left, right) => left.timestampMs - right.timestampMs);
 }
 
 function containerNetworkAddress(container, network) {
