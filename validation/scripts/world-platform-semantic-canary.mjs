@@ -12,7 +12,8 @@ if(!process.argv.includes('--env-file')||!envPath)throw new Error('--env-file is
 const env=Object.fromEntries((await readFile(envPath,'utf8')).split(/\r?\n/u).filter(l=>l&&!l.startsWith('#')).map(l=>[l.slice(0,l.indexOf('=')),l.slice(l.indexOf('=')+1)]));
 const reportRoot=process.env.GOWM_REPORT_DIRECTORY?.trim()||'reports/gowm-v0.6.2';
 const targetedV063=process.env.GOWM_V063_TARGETED==='YES';
-const release=reportRoot.endsWith('v0.6.3')?'v063':'v062';
+const normalizedReportRoot=reportRoot.replaceAll('\\','/');
+const release=normalizedReportRoot.includes('reports/gowm-v0.7/')?'v07':reportRoot.endsWith('v0.6.3')?'v063':'v062';
 if(!new RegExp(`^gowm-${release}-[a-z0-9-]+$`,'u').test(env.COMPOSE_PROJECT_NAME))throw new Error('Refusing a non-task Compose project');
 const base=`http://127.0.0.1:${env.GATEWAY_PORT}`;
 const composeArgs=['compose','--env-file',resolve(envPath),'-f','docker-compose.yml','-f','docker-compose.world-platform.yml','--profile','world-platform'];
