@@ -50,10 +50,13 @@ if (process.argv.includes("--write-current-manifests")) {
 await mkdir(out, { recursive: true });
 // These are explicitly unit/protocol suites, never represented as live DB/H3 evidence.
 const unitPath = resolve(out, "unit-behavior.json");
-execFileSync(resolve(root, "node_modules/.bin/vitest"), ["run", "tests/platform", "tests/unit/coverage-provider-protocol.test.ts", "--reporter=json", `--outputFile=${unitPath}`], { cwd: root, stdio: ["ignore", "pipe", "inherit"] });
+const vitestEntrypoint = resolve(root, "node_modules/vitest/vitest.mjs");
+execFileSync(process.execPath, [vitestEntrypoint, "run", "tests/platform", "tests/unit/coverage-provider-protocol.test.ts", "--reporter=json", `--outputFile=${unitPath}`], { cwd: root, stdio: ["ignore", "pipe", "inherit"] });
 const units = JSON.parse(await readFile(unitPath, "utf8"));
 if (!units.success || units.numFailedTests !== 0) throw new Error("conformance unit/protocol suite failed");
-const stasOutput = execFileSync("npm", ["--prefix", "services/stas", "test"], { cwd: root, encoding: "utf8" });
+const npmEntrypoint = process.env.npm_execpath;
+if (!npmEntrypoint) throw new Error("npm_execpath is required for the STAS conformance suite");
+const stasOutput = execFileSync(process.execPath, [npmEntrypoint, "--prefix", "services/stas", "test"], { cwd: root, encoding: "utf8" });
 await writeFile(resolve(out, "stas-unit.tap"), stasOutput);
 if (!/# fail 0\b/u.test(stasOutput) || !/# pass [1-9]\d*\b/u.test(stasOutput)) throw new Error("STAS executable unit suite did not pass");
 const registry = new CapabilityRegistry();
