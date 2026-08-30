@@ -16,6 +16,7 @@ const PUBLIC_DETAIL_KEYS = new Set([
   "operationVersion",
   "path",
   "providerId",
+  "reason",
   "registeredHash",
   "requested",
   "retryAfterMs",
@@ -23,6 +24,13 @@ const PUBLIC_DETAIL_KEYS = new Set([
   "schemaUri",
   "stage",
   "status"
+]);
+
+// Public reason codes are an API surface, not an arbitrary diagnostic channel.
+// Keep this allowlist narrow so scope identities and internal policy text cannot
+// escape through otherwise safe-looking strings.
+const PUBLIC_REASON_CODES = new Set([
+  "MULTI_SCOPE_UNSUPPORTED"
 ]);
 
 const MAX_ARRAY_ITEMS = 32;
@@ -60,6 +68,10 @@ function sanitizeRecord(value: Readonly<Record<string, unknown>>, depth: number)
       continue;
     }
     if (!PUBLIC_DETAIL_KEYS.has(key)) continue;
+    if (key === "reason") {
+      if (typeof child === "string" && PUBLIC_REASON_CODES.has(child)) result[key] = child;
+      continue;
+    }
     const sanitized = sanitizeValue(child, depth + 1);
     if (sanitized !== undefined) result[key] = sanitized;
   }

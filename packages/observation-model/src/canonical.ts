@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { ObservationInputSchema } from "../../world-model-core/src/schema.js";
 import type {
   CanonicalMeasurementInput,
@@ -186,7 +187,7 @@ function sortValue(value: unknown): unknown {
     return Object.fromEntries(
       Object.entries(value as Record<string, unknown>)
         .filter(([, item]) => item !== undefined)
-        .sort(([left], [right]) => left.localeCompare(right))
+        .sort(([left], [right]) => compareUnicodeCodePoints(left, right))
         .map(([key, item]) => [key, sortValue(item)])
     );
   }

@@ -9,6 +9,12 @@ export const OPERATIONAL_REALITY_OPERATION_IDS = [
 ] as const;
 export type OperationalRealityOperationId = (typeof OPERATIONAL_REALITY_OPERATION_IDS)[number];
 
+export const TASK_IDENTITY_CATALOG_DESCRIPTOR = Object.freeze({
+  namespace: "gowm",
+  kind: "OPERATIONAL_TASK",
+  version: "1"
+} as const);
+
 const names: Record<OperationalRealityOperationId,readonly [string,string]> = {
   "operational-task.find": ["operational-query-request","operational-query-result"],
   "operational-task.get": ["operational-query-request","operational-task-snapshot"],

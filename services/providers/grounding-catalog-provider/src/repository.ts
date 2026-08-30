@@ -1,4 +1,4 @@
-import type { DataSnapshotContext, PlatformCommonDefinitionsReferenceKey as ReferenceKey } from "../../../../packages/platform/contract-runtime/src/index.js";
+import { compareUnicodeCodePoints, type DataSnapshotContext, type PlatformCommonDefinitionsReferenceKey as ReferenceKey } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "./cursor.js";
 import { decodeEvidenceCursor, encodeEvidenceCursor } from "./evidence-cursor.js";
@@ -634,7 +634,7 @@ function withSnapshotResource(
       pinning: "PINNED" as const,
       digest
     }
-  ].sort((left, right) => resourceIdentity(left).localeCompare(resourceIdentity(right)));
+  ].sort((left, right) => compareUnicodeCodePoints(resourceIdentity(left), resourceIdentity(right)));
   return { ...dataSnapshot, resources };
 }
 

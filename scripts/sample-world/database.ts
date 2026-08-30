@@ -5,7 +5,7 @@ import pg from "pg";
 import { normalizeObservationInput, canonicalJson } from "../../packages/observation-model/src/canonical.js";
 import { ObservationRepository } from "../../packages/runtime/src/observation-repository.js";
 import { ProjectionProcessor } from "../../packages/runtime/src/projection.js";
-import { validateAgainstSchema } from "../../packages/platform/contract-runtime/src/index.js";
+import { compareUnicodeCodePoints, validateAgainstSchema } from "../../packages/platform/contract-runtime/src/index.js";
 import { realizeSampleWorld, type SampleWorldRealization } from "./model.js";
 
 const { Pool } = pg;
@@ -872,7 +872,7 @@ async function loadObservations(
     versions[fixtureKey] = projection.worldVersion;
     injectSampleFault(fault, "projection");
   }
-  return Object.fromEntries(Object.entries(versions).sort(([left], [right]) => left.localeCompare(right)));
+  return Object.fromEntries(Object.entries(versions).sort(([left], [right]) => compareUnicodeCodePoints(left, right)));
 }
 
 async function ensureDescriptor(
@@ -1050,7 +1050,10 @@ async function realizedReferenceMap(pool: pg.Pool, realization: SampleWorldReali
     fixtureId: FIXTURE_ID,
     fixtureVersion: FIXTURE_VERSION,
     realizationId: (realization as AnyRecord).fixture.realizationId,
-    entries: output.sort((left, right) => String(left.fixtureKey ?? left.targetFixtureKey).localeCompare(String(right.fixtureKey ?? right.targetFixtureKey)))
+    entries: output.sort((left, right) => compareUnicodeCodePoints(
+      String(left.fixtureKey ?? left.targetFixtureKey),
+      String(right.fixtureKey ?? right.targetFixtureKey)
+    ))
   };
 }
 
@@ -1196,7 +1199,7 @@ function sortValue(value: unknown): unknown {
   if (value && typeof value === "object") {
     return Object.fromEntries(Object.entries(value as JsonObject)
       .filter(([, item]) => item !== undefined)
-      .sort(([left], [right]) => left.localeCompare(right))
+      .sort(([left], [right]) => compareUnicodeCodePoints(left, right))
       .map(([key, item]) => [key, sortValue(item)]));
   }
   return value;

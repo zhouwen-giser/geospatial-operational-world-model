@@ -430,6 +430,66 @@ describe("v0.7 effective snapshot merge", () => {
     expect(result.adherence.status).toBe("MATCHED");
   });
 
+  it.each([10, 11])("discovers a new AT_LEAST resource at or above the world-version floor (%s)", (worldVersion) => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([], {
+      mode: "AT_LEAST_WORLD_VERSION",
+      consistency: "CONSISTENT_AT_START",
+      minimumWorldVersion: 10
+    });
+    const result = coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("new-tracklet", { worldVersion })]),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "AT_LEAST_WORLD_VERSION", minimumWorldVersion: 10, allowDowngrade: false },
+      nodeId: "resolver-at-least-new"
+    });
+
+    expect(result.adherence.status).toBe("MATCHED");
+    expect(result.effective.resources).toEqual([expect.objectContaining({ worldVersion, pinning: "PINNED" })]);
+  });
+
+  it("rejects a newly discovered AT_LEAST resource below the world-version floor", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([], {
+      mode: "AT_LEAST_WORLD_VERSION",
+      consistency: "CONSISTENT_AT_START",
+      minimumWorldVersion: 10
+    });
+    const error = protocolError(() => coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("new-tracklet", { worldVersion: 9 })]),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "AT_LEAST_WORLD_VERSION", minimumWorldVersion: 10, allowDowngrade: false },
+      nodeId: "resolver-at-least-new"
+    }));
+
+    expect(error).toMatchObject({
+      code: "SCHEMA_MISMATCH",
+      details: { stage: "SNAPSHOT", reason: "WORLD_VERSION_TOO_OLD" }
+    });
+  });
+
+  it("rejects an unexpected resource under an exact PINNED snapshot", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([], { mode: "PINNED", consistency: "PINNED" });
+    const error = protocolError(() => coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([providerResource("unexpected")]),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "PINNED", allowDowngrade: false },
+      nodeId: "resolver-pinned-extra"
+    }));
+
+    expect(error).toMatchObject({
+      code: "SCHEMA_MISMATCH",
+      details: { stage: "SNAPSHOT", reason: "RESOURCE_MISSING" }
+    });
+  });
+
   it("rejects an AT_LEAST upgrade below the world-version floor", () => {
     const coordinator = new QuerySnapshotCoordinator();
     const requested = manifest([

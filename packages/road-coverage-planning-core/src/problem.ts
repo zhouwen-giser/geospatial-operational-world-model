@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { buildRoadServiceObligation, canonicalObligationLedger, obligationSetHash } from "./canonical.js";
 import { CoveragePlanningError } from "./errors.js";
 import type {
@@ -106,7 +106,7 @@ function validateProblemInput(input: CoverageProblemInput): void {
 
 function canonicalStates(states: readonly DirectedState[]): DirectedState[] {
   return [...states].map(canonicalState).sort((left, right) =>
-    left.arcKey.localeCompare(right.arcKey) || left.fractionPpm - right.fractionPpm || left.direction.localeCompare(right.direction)
+    compareUnicodeCodePoints(left.arcKey, right.arcKey) || left.fractionPpm - right.fractionPpm || compareUnicodeCodePoints(left.direction, right.direction)
   );
 }
 

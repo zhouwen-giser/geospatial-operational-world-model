@@ -1,6 +1,7 @@
 import { generateKeyPairSync, randomBytes } from "node:crypto";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { compareUnicodeCodePoints } from "../../packages/platform/contract-runtime/src/index.js";
 
 export interface SampleRuntimePaths {
   root: string;
@@ -296,7 +297,7 @@ export function parseEnv(contents: string): Record<string, string> {
 }
 
 function serializeEnv(values: Record<string, string>): string {
-  return `${Object.entries(values).sort(([left], [right]) => left.localeCompare(right))
+  return `${Object.entries(values).sort(([left], [right]) => compareUnicodeCodePoints(left, right))
     .map(([name, value]) => `${name}=${value}`).join("\n")}\n`;
 }
 

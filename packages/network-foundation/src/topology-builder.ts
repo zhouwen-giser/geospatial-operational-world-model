@@ -1,3 +1,4 @@
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { sha256 } from "./canonical.js";
 import { networkArcKey, networkEdgeKey, networkNodeKey } from "./identity.js";
 import type {
@@ -220,9 +221,9 @@ export function buildNetworkTopology(build: MaterializedNetworkBuild): BuiltNetw
     }
   }
 
-  const sortedNodes = [...nodes.values()].sort((left, right) => left.nodeKey.localeCompare(right.nodeKey));
-  edges.sort((left, right) => left.edgeKey.localeCompare(right.edgeKey));
-  arcs.sort((left, right) => left.arcKey.localeCompare(right.arcKey));
+  const sortedNodes = [...nodes.values()].sort((left, right) => compareUnicodeCodePoints(left.nodeKey, right.nodeKey));
+  edges.sort((left, right) => compareUnicodeCodePoints(left.edgeKey, right.edgeKey));
+  arcs.sort((left, right) => compareUnicodeCodePoints(left.arcKey, right.arcKey));
   const topologyHash = sha256({
     nodes: sortedNodes.map(({ nodeKey, position, topologyIdentity }) => ({ nodeKey, position, topologyIdentity })),
     edges: edges.map(({ edgeKey, sourceNodeKey, targetNodeKey, sourceFeatureReferenceKey, splitStartPpm, splitEndPpm }) => ({

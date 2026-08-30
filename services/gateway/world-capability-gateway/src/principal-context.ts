@@ -9,7 +9,7 @@ import type { GatewayPrincipal } from "./types.js";
  */
 export function principalContextHash(principal: Pick<
   GatewayPrincipal,
-  "principalRef" | "servicePrincipalRef" | "actorRef" | "dataScopeClaim" | "datasetScopeClaim" | "effectiveDataScopes" | "effectiveDatasetScopes" | "allowedOperations"
+  "mode" | "principalRef" | "servicePrincipalRef" | "actorRef" | "dataScopeClaim" | "datasetScopeClaim" | "effectiveDataScopes" | "effectiveDatasetScopes" | "allowedOperations"
 >): `sha256:${string}` {
   const scopes = normalizePrincipalScopes(principal);
   return sha256({
@@ -18,23 +18,34 @@ export function principalContextHash(principal: Pick<
     actorRef: principal.actorRef ?? principal.principalRef,
     effectiveDataScopes: scopes.effectiveDataScopes,
     effectiveDatasetScopes: scopes.effectiveDatasetScopes,
-    allowedOperations: canonicalSortStrings(principal.allowedOperations ?? [])
+    allowedOperations: canonicalSortStrings([...new Set(principal.allowedOperations ?? [])])
   });
 }
 
 export function normalizePrincipalScopes(principal: Pick<
   GatewayPrincipal,
-  "dataScopeClaim" | "datasetScopeClaim" | "effectiveDataScopes" | "effectiveDatasetScopes"
+  "mode" | "dataScopeClaim" | "datasetScopeClaim" | "effectiveDataScopes" | "effectiveDatasetScopes"
 >): {
   effectiveDataScopes: readonly [] | readonly [string];
   effectiveDatasetScopes: readonly [] | readonly [string];
   dataScopeClaim?: string;
   datasetScopeClaim?: string;
 } {
-  const dataScopes = canonicalSortStrings(principal.effectiveDataScopes ?? (principal.dataScopeClaim === undefined ? [] : [principal.dataScopeClaim]));
-  const datasetScopes = canonicalSortStrings(principal.effectiveDatasetScopes ?? (principal.datasetScopeClaim === undefined ? [] : [principal.datasetScopeClaim]));
+  const rawDataScopes = principal.effectiveDataScopes ?? (principal.dataScopeClaim === undefined ? [] : [principal.dataScopeClaim]);
+  const rawDatasetScopes = principal.effectiveDatasetScopes ?? (principal.datasetScopeClaim === undefined ? [] : [principal.datasetScopeClaim]);
+  if (
+    rawDataScopes.some((value) => typeof value !== "string")
+    || rawDatasetScopes.some((value) => typeof value !== "string")
+  ) {
+    throw scopeDenied("INVALID_SCOPE_TYPE");
+  }
+  const dataScopes = canonicalSortStrings(rawDataScopes);
+  const datasetScopes = canonicalSortStrings(rawDatasetScopes);
   if (dataScopes.length > 1 || datasetScopes.length > 1) {
     throw scopeDenied("MULTI_SCOPE_UNSUPPORTED");
+  }
+  if (principal.mode === "SIGNED_DELEGATION_V1" && dataScopes.length !== 1) {
+    throw scopeDenied("SIGNED_DATA_SCOPE_REQUIRED");
   }
   if (dataScopes.some((value) => value.trim().length === 0) || datasetScopes.some((value) => value.trim().length === 0)) {
     throw scopeDenied("EMPTY_SCOPE_UNSUPPORTED");

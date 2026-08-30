@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import type {
   AdmittedVerifiedRoute,
   CoverageRoute,
@@ -252,7 +252,7 @@ function profileEligible(arc: VerifierNetworkArc, policy: VerifierTravelPolicy):
     ((arc.accessMask ?? 0) & (policy.requiredAccessMask ?? 0)) === (policy.requiredAccessMask ?? 0);
 }
 
-function activeRules(rules: readonly VerifierTurnRule[], profileKey: string): VerifierTurnRule[] { return [...rules].filter((rule) => rule.travelProfileKeys === undefined || rule.travelProfileKeys.includes(profileKey)).sort((left, right) => left.ruleKey.localeCompare(right.ruleKey)); }
+function activeRules(rules: readonly VerifierTurnRule[], profileKey: string): VerifierTurnRule[] { return [...rules].filter((rule) => rule.travelProfileKeys === undefined || rule.travelProfileKeys.includes(profileKey)).sort((left, right) => compareUnicodeCodePoints(left.ruleKey, right.ruleKey)); }
 function segmentStartNode(segment: CoverageRoute["segments"][number], arcs: ReadonlyMap<string, VerifierNetworkArc>): string | undefined { const arc = arcs.get(segment.arcKey); return arc === undefined ? undefined : stateNode(arc, segment.startFractionPpm); }
 function segmentEndNode(segment: CoverageRoute["segments"][number], arcs: ReadonlyMap<string, VerifierNetworkArc>): string | undefined { const arc = arcs.get(segment.arcKey); return arc === undefined ? undefined : stateNode(arc, segment.endFractionPpm); }
 function stateNode(arc: VerifierNetworkArc, fraction: number): string { return fraction === 0 ? `node:${arc.fromNodeKey}` : fraction === WHOLE ? `node:${arc.toNodeKey}` : `state:${arc.arcKey}:${fraction.toString().padStart(7, "0")}`; }

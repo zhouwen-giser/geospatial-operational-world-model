@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import type {
   GowmV06CoverageAlternative as CoverageAlternative,
   GowmV06CoverageAlternativePolicy as CoverageAlternativePolicy,
@@ -156,7 +156,7 @@ function explanationFor(profile: VerifiedAlternativeCandidate["objectiveProfile"
 
 function compareCandidates(left: PreparedCandidate, right: PreparedCandidate, order: ReadonlyMap<string, number>): number {
   return (order.get(left.objectiveProfile) ?? Number.MAX_SAFE_INTEGER) - (order.get(right.objectiveProfile) ?? Number.MAX_SAFE_INTEGER) ||
-    profileScore(left) - profileScore(right) || left.admitted.route.routeSignature.localeCompare(right.admitted.route.routeSignature);
+    profileScore(left) - profileScore(right) || compareUnicodeCodePoints(left.admitted.route.routeSignature, right.admitted.route.routeSignature);
 }
 
 function profileScore(candidate: PreparedCandidate): number {

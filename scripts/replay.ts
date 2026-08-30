@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { compareUnicodeCodePoints } from "../packages/platform/contract-runtime/src/index.js";
 import { databasePool, closeDatabasePool, withTransaction } from "../packages/runtime/src/db.js";
 import { ProjectionProcessor } from "../packages/runtime/src/projection.js";
 import { WorldRepository } from "../packages/runtime/src/world-repository.js";
@@ -89,7 +90,7 @@ function stable(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(stable).join(",")}]`;
   if (value && typeof value === "object") {
     return `{${Object.entries(value as Record<string, unknown>)
-      .sort(([a], [b]) => a.localeCompare(b))
+      .sort(([a], [b]) => compareUnicodeCodePoints(a, b))
       .map(([key, entry]) => `${JSON.stringify(key)}:${stable(entry)}`)
       .join(",")}}`;
   }

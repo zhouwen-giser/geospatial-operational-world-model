@@ -1,3 +1,4 @@
+import { compareUnicodeCodePoints } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { NetworkRepository, shortestPath, type DirectedState, type LoadedNetwork, type NetworkProviderOptions, type NetworkSqlPool, type Objective, type Row, type RoutingSnapshot } from "../../../../packages/network-query-core/src/index.js";
 import { verifyRouteCandidate } from "./verifier.js";
@@ -38,7 +39,7 @@ export class RoutePlanner {
       }
       const distinct = new Map<string, Row>();
       for (const path of paths) { const signature = routeSignature(path); if (!distinct.has(signature)) distinct.set(signature, path); }
-      const ranked = [...distinct.entries()].sort(([, left], [, right]) => metric(left, objective(input.objective)) - metric(right, objective(input.objective)) || routeSignature(left).localeCompare(routeSignature(right)));
+      const ranked = [...distinct.entries()].sort(([, left], [, right]) => metric(left, objective(input.objective)) - metric(right, objective(input.objective)) || compareUnicodeCodePoints(routeSignature(left), routeSignature(right)));
       const wanted = alternatives ? Math.min(integer(input.alternativeCount ?? 1, "alternativeCount"), 5) : 1;
       const candidates = ranked.slice(0, wanted).flatMap(([signature, path], index) => { const candidate = { rank: index + 1, routeSignature: signature, segments: path.segments, metrics: path.metrics }; const verification=verifyRouteCandidate(network,candidate); return verification.status==="VALID"?[{...candidate,verification}]:[]; }).map((candidate,index)=>({...candidate,rank:index+1}));
       const status = candidates.length ? "COMPLETED" : "NO_PATH";

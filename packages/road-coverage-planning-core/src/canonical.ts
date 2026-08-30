@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import type {
   ReferenceKey,
   RoadServiceObligation,
@@ -44,10 +44,10 @@ export function buildRoadServiceObligation(input: ObligationIdentityInput): Road
 }
 
 export function compareObligations(left: RoadServiceObligation, right: RoadServiceObligation): number {
-  return left.arcKey.localeCompare(right.arcKey) ||
+  return compareUnicodeCodePoints(left.arcKey, right.arcKey) ||
     left.startFractionPpm - right.startFractionPpm ||
     left.endFractionPpm - right.endFractionPpm ||
-    left.obligationId.localeCompare(right.obligationId);
+    compareUnicodeCodePoints(left.obligationId, right.obligationId);
 }
 
 export function canonicalObligationLedger(obligations: readonly RoadServiceObligation[]): RoadServiceObligation[] {

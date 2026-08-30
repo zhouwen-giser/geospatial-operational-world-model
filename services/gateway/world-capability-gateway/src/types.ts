@@ -57,6 +57,18 @@ export interface GatewayPrincipal {
   allowExperimental?: boolean;
 }
 
+export interface SignedDelegationGatewayPrincipal extends GatewayPrincipal {
+  mode: "SIGNED_DELEGATION_V1";
+  servicePrincipalRef: string;
+  actorRef: string;
+  dataScopeClaim: string;
+  effectiveDataScopes: readonly [string];
+  effectiveDatasetScopes: readonly [] | readonly [string];
+  allowedOperations: readonly string[];
+  delegationJtiHash: `sha256:${string}`;
+  authorizationContextHash: `sha256:${string}`;
+}
+
 export interface AuditEvent {
   eventId: string;
   occurredAt: string;

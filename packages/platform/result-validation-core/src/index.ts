@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../contract-runtime/src/index.js";
 
 export type NormalizedResultStatus = "COMPLETED" | "PARTIAL" | "NO_DATA" | "AMBIGUOUS" | "INDETERMINATE" | "NO_FEASIBLE_RESULT" | "STALE" | "FAILED";
 
@@ -59,7 +59,11 @@ export function createDataSnapshot(
   resources: readonly SnapshotResource[],
   capturedAt = new Date().toISOString()
 ): DataSnapshotManifest {
-  const ordered = [...resources].map((item) => structuredClone(item)).sort((left, right) => `${left.resourceKind}\u0000${left.resourceId}\u0000${left.version}`.localeCompare(`${right.resourceKind}\u0000${right.resourceId}\u0000${right.version}`));
+  const ordered = [...resources].map((item) => structuredClone(item)).sort((left, right) =>
+    compareUnicodeCodePoints(left.resourceKind, right.resourceKind)
+    || compareUnicodeCodePoints(left.resourceId, right.resourceId)
+    || compareUnicodeCodePoints(left.version, right.version)
+  );
   const identity = { consistency, resources: ordered };
   return { schemaVersion: "1.0", snapshotId: canonicalSha256(identity), consistency, resources: ordered, capturedAt, snapshotHash: canonicalSha256(identity) };
 }

@@ -1,5 +1,5 @@
 import { ProviderProtocolError, sha256 } from "../../platform/provider-sdk/src/index.js";
-import type { PlatformCommonDefinitionsReferenceKey } from "../../platform/contract-runtime/src/index.js";
+import { compareUnicodeCodePoints, type PlatformCommonDefinitionsReferenceKey } from "../../platform/contract-runtime/src/index.js";
 import { matrix, shortestPath, verifyPath, type Objective } from "./engine.js";
 import type { RoutingSnapshotCurrentnessResult } from "./currentness.js";
 import { readRoutingSnapshotCurrentness } from "./currentness-reader.js";
@@ -225,7 +225,7 @@ export class NetworkRepository {
         ...(difference === undefined ? {} : { headingDifferenceMicrodegrees: difference }),
         candidateScore
       }];
-    }).sort((a, b) => a.candidateScore - b.candidateScore || a.state.arcKey.localeCompare(b.state.arcKey)).slice(0, limit);
+    }).sort((a, b) => a.candidateScore - b.candidateScore || compareUnicodeCodePoints(a.state.arcKey, b.state.arcKey)).slice(0, limit);
     const status = candidates.length === 0 ? "UNREACHABLE"
       : candidates.length > 1 && candidates[1]!.candidateScore - candidates[0]!.candidateScore <= this.ambiguityScoreTolerance ? "AMBIGUOUS"
       : "RESOLVED_UNIQUE";

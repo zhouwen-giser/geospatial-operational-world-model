@@ -20,6 +20,11 @@ const canonical = (value) => JSON.stringify(value, (_key, item) => {
 const sha256 = (value) => `sha256:${createHash("sha256").update(typeof value === "string" ? value : canonical(value)).digest("hex")}`;
 const sha512Integrity = (value) => `sha512-${createHash("sha512").update(value).digest("base64")}`;
 const json = async (path) => JSON.parse(await readFile(path, "utf8"));
+const authorizationBreakingChanges = [
+  "SIGNED_DELEGATION_V1 dataScopes cardinality is now exactly one instead of up to 32.",
+  "SIGNED_DELEGATION_V1 datasetScopes cardinality is now at most one instead of up to 32.",
+  "Gateway replay and idempotency authorization identity is now bound to the SINGLE_SCOPE_V1 canonical principal context."
+];
 const emitJson = async (path, value) => {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`);
@@ -92,7 +97,8 @@ async function fileRecords(root) {
   return records.sort((a, b) => compareCanonicalText(a.path, b.path));
 }
 
-export async function buildConsumerContracts(destination = defaultOutputRoot) {
+export async function buildConsumerContracts(destination = defaultOutputRoot, options = {}) {
+  const { writeSourceLock = false } = options;
   const outputRoot = resolve(destination);
   await rm(outputRoot, { recursive: true, force: true });
   await mkdir(outputRoot, { recursive: true });
@@ -131,10 +137,16 @@ export async function buildConsumerContracts(destination = defaultOutputRoot) {
   await emitJson(join(outputRoot, "revisions/semantic-catalog.json"), {
     schemaVersion: "1.1", contractCatalogRevision: registryReport.contractCatalogRevision, semanticCatalogHash
   });
-  await emitJson(join(outputRoot, "compatibility/report.json"), {
+  const compatibilityReport = {
     schemaVersion: "1.0", packageVersion: "0.7.1", baselineVersion: "0.7.0", classification: "BREAKING_AUTHORIZATION_HARDENING",
-    breakingChanges: [], promotedOperations: (await json(resolve(repositoryRoot, "contracts/gowm-v0.6.3/manifests/grounding-core-promotion-set.json"))).operations
-  });
+    breakingChanges: authorizationBreakingChanges,
+    // The v0.6.3 promotion set was already Stable in the 0.7.0 baseline.
+    promotedOperations: []
+  };
+  if (compatibilityReport.classification.startsWith("BREAKING") && compatibilityReport.breakingChanges.length === 0) {
+    throw new Error("Breaking compatibility classifications require at least one explicit breaking change");
+  }
+  await emitJson(join(outputRoot, "compatibility/report.json"), compatibilityReport);
 
   const contractHashes = {
     availabilityContractHash: sha256(await json(resolve(repositoryRoot, "contracts/gowm-v0.6.3/operation-availability-list.schema.json"))),
@@ -154,7 +166,9 @@ export async function buildConsumerContracts(destination = defaultOutputRoot) {
     defaultOperations: projected.filter((operation) => operation.maturity === "STABLE"),
     previewOperations: projected.filter((operation) => operation.maturity === "PREVIEW")
   };
-  await emitJson(resolve(repositoryRoot, "contracts/consumers/wsgs-southbound-operation-lock-v2.json"), lock);
+  if (writeSourceLock) {
+    await emitJson(resolve(repositoryRoot, "contracts/consumers/wsgs-southbound-operation-lock-v2.json"), lock);
+  }
   await emitJson(join(outputRoot, "locks/wsgs-southbound-operation-lock-v2.json"), lock);
   const files = await fileRecords(outputRoot);
   await emitJson(join(outputRoot, "MANIFEST.json"), {
@@ -165,5 +179,5 @@ export async function buildConsumerContracts(destination = defaultOutputRoot) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  process.stdout.write(`${JSON.stringify(await buildConsumerContracts())}\n`);
+  process.stdout.write(`${JSON.stringify(await buildConsumerContracts(defaultOutputRoot, { writeSourceLock: true }))}\n`);
 }

@@ -14,7 +14,7 @@ import { OperationalCorrelationRepository } from "../../../../packages/runtime/s
 import { OperationalObservabilityRepository } from "../../../../packages/runtime/src/operational-observability-repository.js";
 import { OperationalPredicateRepository } from "../../../../packages/runtime/src/operational-predicate-repository.js";
 import { OperationalReadRepository } from "../../../../packages/runtime/src/operational-read-repository.js";
-import type { OperationalRealityOperationId } from "./schemas.js";
+import { TASK_IDENTITY_CATALOG_DESCRIPTOR, type OperationalRealityOperationId } from "./schemas.js";
 
 export interface OperationalProviderResult {
   output?: unknown;status?: "COMPLETED"|"PARTIAL"|"NO_DATA"|"INDETERMINATE";dataSnapshot: DataSnapshotContext;
@@ -390,10 +390,18 @@ function validCapturedAt(value:string):string {
 }
 
 function assertTaskIdentityCatalogReference(referenceKey:GowmV071TaskExecutionIntervalQuery["taskReferenceKey"]):void {
-  if (referenceKey.namespace!=="gowm"||referenceKey.kind!=="OPERATIONAL_TASK"||referenceKey.version!=="1") {
+  if (
+    referenceKey.namespace!==TASK_IDENTITY_CATALOG_DESCRIPTOR.namespace
+    || referenceKey.kind!==TASK_IDENTITY_CATALOG_DESCRIPTOR.kind
+    || referenceKey.version!==TASK_IDENTITY_CATALOG_DESCRIPTOR.version
+  ) {
     throw new ProviderProtocolError("REFERENCE_VERSION_MISMATCH","task reference differs from the Task Identity Catalog descriptor",{
       retryable:false,
-      details:{expectedNamespace:"gowm",expectedKind:"OPERATIONAL_TASK",expectedVersion:"1"}
+      details:{
+        expectedNamespace:TASK_IDENTITY_CATALOG_DESCRIPTOR.namespace,
+        expectedKind:TASK_IDENTITY_CATALOG_DESCRIPTOR.kind,
+        expectedVersion:TASK_IDENTITY_CATALOG_DESCRIPTOR.version
+      }
     });
   }
 }

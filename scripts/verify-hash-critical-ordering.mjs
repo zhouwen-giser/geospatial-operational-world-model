@@ -5,7 +5,19 @@ const repositoryRoot = resolve(import.meta.dirname, "..");
 const directoryRoots = [
   "packages/platform/contract-runtime",
   "packages/platform/semantic-conformance",
-  "services/gateway/world-capability-gateway"
+  "packages/platform/result-validation-core/src",
+  "packages/network-foundation/src",
+  "packages/network-query-core/src",
+  "packages/observation-model/src",
+  "packages/runtime/src",
+  "packages/road-coverage-planning-core/src",
+  "packages/road-coverage-verifier-core/src",
+  "packages/road-coverage-alternatives-core/src",
+  "packages/integrations/h3-toolkit-bridge/src",
+  "services/gateway/world-capability-gateway",
+  "services/providers/grounding-catalog-provider/src",
+  "services/providers/route-planning-provider/src",
+  "services/stas/src/domain"
 ];
 const forbidden = [
   ["localeCompare", /\.localeCompare\s*\(/u],
@@ -17,7 +29,12 @@ const forbidden = [
 const candidates = [];
 for (const directory of directoryRoots) candidates.push(...await sourceFiles(resolve(repositoryRoot, directory)));
 for (const path of await sourceFiles(resolve(repositoryRoot, "scripts"))) {
-  if (/^(materialize-|generate-)/u.test(basename(path))) candidates.push(path);
+  const relativePath = relative(resolve(repositoryRoot, "scripts"), path).replaceAll("\\", "/");
+  if (
+    /^(materialize-|generate-)/u.test(basename(path))
+    || relativePath === "replay.ts"
+    || relativePath.startsWith("sample-world/")
+  ) candidates.push(path);
 }
 
 const violations = [];
@@ -40,7 +57,9 @@ async function sourceFiles(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const path = join(directory, entry.name);
     if (entry.isDirectory()) {
-      if (entry.name !== "generated" && entry.name !== "bundle") output.push(...await sourceFiles(path));
+      if (!["generated", "bundle", "dist", "node_modules", "coverage"].includes(entry.name)) {
+        output.push(...await sourceFiles(path));
+      }
     } else if ([".ts", ".mts", ".cts", ".js", ".mjs", ".cjs"].includes(extname(entry.name))) {
       output.push(path);
     }

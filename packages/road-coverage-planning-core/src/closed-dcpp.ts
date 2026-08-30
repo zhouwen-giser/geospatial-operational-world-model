@@ -1,4 +1,4 @@
-import { canonicalSha256 } from "../../platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { CoveragePlanningError } from "./errors.js";
 import type {
   ClosedDcppAugmentation,
@@ -268,7 +268,7 @@ export function solveOpenDcpp(problem: CoverageProblem, traversableArcs: readonl
 
 function validateGraphAndObligations(problem: CoverageProblem, input: readonly CoverageTraversalArc[]): CoverageTraversalArc[] {
   if (input.length === 0) throw new CoveragePlanningError("NO_FEASIBLE_PLAN", "closed DCPP requires a non-empty traversable graph");
-  const arcs = [...input].sort((left, right) => left.arcKey.localeCompare(right.arcKey));
+  const arcs = [...input].sort((left, right) => compareUnicodeCodePoints(left.arcKey, right.arcKey));
   const byArc = new Map<string, CoverageTraversalArc>();
   for (const arc of arcs) {
     if (byArc.has(arc.arcKey)) throw new CoveragePlanningError("NO_FEASIBLE_PLAN", `duplicate traversable Arc: ${arc.arcKey}`);
@@ -315,7 +315,7 @@ function shortestPath(arcs: readonly CoverageTraversalArc[], from: string, to: s
     list.push(arc);
     outgoing.set(arc.fromNodeKey, list);
   }
-  for (const list of outgoing.values()) list.sort((left, right) => left.arcKey.localeCompare(right.arcKey));
+  for (const list of outgoing.values()) list.sort((left, right) => compareUnicodeCodePoints(left.arcKey, right.arcKey));
   const distance = new Map<string, number>(nodes.map((node) => [node, Number.POSITIVE_INFINITY]));
   const previous = new Map<string, CoverageTraversalArc>();
   const settled = new Set<string>();
@@ -470,7 +470,7 @@ function eulerTrail(
         if (left.id === preferred.id) return -1;
         if (right.id === preferred.id) return 1;
       }
-      return left.arc.arcKey.localeCompare(right.arc.arcKey) || left.id.localeCompare(right.id);
+      return compareUnicodeCodePoints(left.arc.arcKey, right.arc.arcKey) || compareUnicodeCodePoints(left.id, right.id);
     });
   }
   const cursors = new Map<string, number>();
@@ -645,7 +645,7 @@ function sortedImbalances(balance: ReadonlyMap<string, number>, predicate: (valu
   return [...balance.entries()]
     .filter(([, value]) => predicate(value))
     .map(([nodeKey, value]) => ({ nodeKey, quantity: quantity(value) }))
-    .sort((left, right) => left.nodeKey.localeCompare(right.nodeKey));
+    .sort((left, right) => compareUnicodeCodePoints(left.nodeKey, right.nodeKey));
 }
 
 function addResidualEdge(graph: ResidualEdge[][], from: number, to: number, capacity: number, cost: number): void {

@@ -80,7 +80,7 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
     const token = compactJws(claims, privateKey);
     const context = {
       servicePrincipalRef: "service:wsgs", requestId: "request:bound",
-      allowedDataScopes: ["tenant:a"], allowedDatasetScopes: ["dataset:roads"],
+      allowedDataScopes: ["tenant:a"] as const, allowedDatasetScopes: ["dataset:roads"] as const,
       registeredOperations: ["reference.get@1.0"], allowExperimental: false
     };
     const first = verifier.verify(token, context);
@@ -101,6 +101,46 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
       multiScopeError = error as ProviderProtocolError;
     }
     expect(multiScopeError).toMatchObject({ code: "SCOPE_DENIED", details: { reason: "MULTI_SCOPE_UNSUPPORTED" } });
+
+    const dataOnly = verifier.verify(compactJws({
+      ...claims,
+      jti: "delegation-jti-data-only",
+      datasetScopes: []
+    }, privateKey), context);
+    expect(dataOnly).toMatchObject({
+      dataScopeClaim: "tenant:a",
+      effectiveDataScopes: ["tenant:a"],
+      effectiveDatasetScopes: []
+    });
+    expect(dataOnly).not.toHaveProperty("datasetScopeClaim");
+    expect(dataOnly.authorizationContextHash).not.toBe(first.authorizationContextHash);
+
+    expect(captureProtocolError(() => verifier.verify(compactJws({
+      ...claims,
+      dataScopes: ["tenant:other"]
+    }, privateKey), context))).toMatchObject({ code: "SCOPE_DENIED" });
+    expect(captureProtocolError(() => verifier.verify(compactJws({
+      ...claims,
+      datasetScopes: ["dataset:other"]
+    }, privateKey), context))).toMatchObject({ code: "SCOPE_DENIED" });
+    expect(captureProtocolError(() => verifier.verify(token, {
+      ...context,
+      allowedDatasetScopes: []
+    }))).toMatchObject({ code: "SCOPE_DENIED" });
+    expect(captureProtocolError(() => verifier.verify(token, {
+      ...context,
+      allowedDataScopes: []
+    } as never))).toMatchObject({
+      code: "SCOPE_DENIED",
+      details: { reason: "MULTI_SCOPE_UNSUPPORTED" }
+    });
+    expect(captureProtocolError(() => verifier.verify(compactJws({
+      ...claims,
+      datasetScopes: ["dataset:roads", "dataset:forged"]
+    }, privateKey), context))).toMatchObject({
+      code: "SCOPE_DENIED",
+      details: { reason: "MULTI_SCOPE_UNSUPPORTED" }
+    });
 
     for (const mutation of [
       { aud: "other" }, { iss: "https://evil.example.test" }, { sub: "service:other" },
@@ -146,6 +186,13 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
       nodeId: "current",
       adherenceStatus: "MISMATCHED"
     });
+  });
+
+  it("publishes only the stable non-sensitive multi-scope denial reason", () => {
+    expect(redactPublicDetails({ reason: "MULTI_SCOPE_UNSUPPORTED" })).toEqual({
+      reason: "MULTI_SCOPE_UNSUPPORTED"
+    });
+    expect(redactPublicDetails({ reason: "tenant:a" })).toBeUndefined();
   });
 
   it("projects authorized availability with bounded cache and no provider topology", async () => {
@@ -247,6 +294,15 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
 function compactJws(claims: unknown, privateKey: Parameters<typeof sign>[2]): string {
   const input = `${encoded({ alg: "RS256", typ: "JWT" })}.${encoded(claims)}`;
   return `${input}.${sign("RSA-SHA256", Buffer.from(input), privateKey).toString("base64url")}`;
+}
+
+function captureProtocolError(action: () => unknown): ProviderProtocolError {
+  try {
+    action();
+  } catch (error) {
+    return error as ProviderProtocolError;
+  }
+  throw new Error("expected ProviderProtocolError");
 }
 
 function snapshotSubmission(): WorldQuerySubmission {

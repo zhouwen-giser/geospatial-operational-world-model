@@ -1,11 +1,12 @@
 import { createHash } from "node:crypto";
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 
 function normalize(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(normalize);
   if (value && typeof value === "object") {
     return Object.fromEntries(
       Object.entries(value as Record<string, unknown>)
-        .sort(([left], [right]) => left.localeCompare(right))
+        .sort(([left], [right]) => compareUnicodeCodePoints(left, right))
         .map(([key, item]) => [key, normalize(item)])
     );
   }

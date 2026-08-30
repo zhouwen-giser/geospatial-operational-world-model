@@ -161,7 +161,14 @@ export class QuerySnapshotCoordinator {
       const existing = current.get(identity);
       if (!existing) {
         if (behavior === "DISCOVER_RESOURCES") {
-          if (strictPolicy(effectivePolicy) && observed.pinning !== "PINNED") {
+          if (effectivePolicy.mode === "PINNED") {
+            mismatches.push(mismatch(observed, undefined, "RESOURCE_MISSING"));
+          } else if (
+            effectivePolicy.mode === "AT_LEAST_WORLD_VERSION"
+            && !providerVersionSatisfiesPolicy(observed, effectivePolicy)
+          ) {
+            mismatches.push(mismatch(observed, undefined, versionMismatchReason(effectivePolicy, observed)));
+          } else if (strictPolicy(effectivePolicy) && observed.pinning !== "PINNED") {
             mismatches.push(mismatch(observed, undefined, "PINNING_UNSUPPORTED"));
           } else {
             current.set(identity, pinObservedResource(observed));
@@ -322,7 +329,7 @@ export class QuerySnapshotCoordinator {
     for (const expected of manifest.resources) {
       const observed = actual.resources.find((resource) =>
         resource.referenceKey.kind === expected.resourceKind &&
-        `${resource.referenceKey.namespace}:${resource.referenceKey.id}` === expected.resourceId
+        snapshotResourceIdFromReferenceKey(resource.referenceKey) === expected.resourceId
       );
       if (!observed) {
         mismatches.push({ resourceKind: expected.resourceKind, resourceId: expected.resourceId, expectedVersion: expected.version, reason: "RESOURCE_MISSING" });
@@ -502,23 +509,17 @@ function resourceIdentity(resource: SnapshotResource): string {
 }
 
 function compareResources(left: SnapshotResource, right: SnapshotResource): number {
-  const leftKey = [
-    left.resourceKind,
-    left.resourceId,
-    left.version,
-    left.contentHash ?? "",
-    String(left.worldVersion ?? -1).padStart(20, "0"),
-    left.pinning
-  ].join("\u0000");
-  const rightKey = [
-    right.resourceKind,
-    right.resourceId,
-    right.version,
-    right.contentHash ?? "",
-    String(right.worldVersion ?? -1).padStart(20, "0"),
-    right.pinning
-  ].join("\u0000");
-  return compareUnicodeCodePoints(leftKey, rightKey);
+  for (const [leftValue, rightValue] of [
+    [left.resourceKind, right.resourceKind],
+    [left.resourceId, right.resourceId],
+    [left.version, right.version],
+    [left.contentHash ?? "", right.contentHash ?? ""]
+  ] as const) {
+    const compared = compareUnicodeCodePoints(leftValue, rightValue);
+    if (compared !== 0) return compared;
+  }
+  const worldVersion = (left.worldVersion ?? -1) - (right.worldVersion ?? -1);
+  return worldVersion !== 0 ? worldVersion : compareUnicodeCodePoints(left.pinning, right.pinning);
 }
 
 function sameResource(left: SnapshotResource, right: SnapshotResource): boolean {

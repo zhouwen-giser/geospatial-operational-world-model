@@ -45,6 +45,36 @@ describe("P16 controlled production configuration", () => {
     }
   });
 
+  it("fails closed when SIGNED_DELEGATION_V1 has no singleton configured data scope", async () => {
+    const signed = {
+      ...gatewayEnv(REGISTRY_PATH),
+      GATEWAY_AUTH_MODE: "SIGNED_DELEGATION_V1",
+      GATEWAY_DATA_SCOPE_CLAIM: "tenant:a",
+      GATEWAY_DATASET_SCOPE_CLAIM: "dataset:roads",
+      GATEWAY_DELEGATION_ISSUER: "https://identity.example.test",
+      GATEWAY_DELEGATION_AUDIENCE: "gowm-world-gateway",
+      GATEWAY_DELEGATION_PUBLIC_KEY: "configured-public-key"
+    };
+    await expect(loadGatewayServerConfig(signed)).resolves.toMatchObject({
+      authenticationMode: "SIGNED_DELEGATION_V1",
+      dataScopeClaim: "tenant:a",
+      datasetScopeClaim: "dataset:roads"
+    });
+
+    const missingData = { ...signed };
+    delete missingData.GATEWAY_DATA_SCOPE_CLAIM;
+    await expect(loadGatewayServerConfig(missingData)).rejects.toThrow(/GATEWAY_DATA_SCOPE_CLAIM/u);
+
+    const datasetOnly = { ...signed };
+    delete datasetOnly.GATEWAY_DATA_SCOPE_CLAIM;
+    await expect(loadGatewayServerConfig(datasetOnly)).rejects.toThrow(/GATEWAY_DATA_SCOPE_CLAIM/u);
+
+    const staticConfig = await loadGatewayServerConfig(gatewayEnv(REGISTRY_PATH));
+    expect(staticConfig.authenticationMode).toBe("STATIC_SERVICE");
+    expect(staticConfig.dataScopeClaim).toBeUndefined();
+    expect(staticConfig.datasetScopeClaim).toBeUndefined();
+  });
+
   it("rejects absolute/traversing/unknown manifest locations before filesystem access", async () => {
     const source = JSON.parse(await readFile(REGISTRY_PATH, "utf8")) as { providers: Array<Record<string, unknown>> };
     for (const malicious of [

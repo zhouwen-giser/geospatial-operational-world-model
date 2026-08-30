@@ -1,3 +1,4 @@
+import { compareUnicodeCodePoints } from "../../platform/contract-runtime/src/index.js";
 import { sha256, stableKey } from "./canonical.js";
 import type {
   BuiltNetworkArc,
@@ -104,7 +105,7 @@ export function createConditionSnapshot(input: Omit<NetworkConditionSnapshot, "c
       evidence: [...condition.evidence]
     };
     return { ...normalized, contentHash: sha256(normalized) };
-  }).sort((left, right) => left.arcKey.localeCompare(right.arcKey));
+  }).sort((left, right) => compareUnicodeCodePoints(left.arcKey, right.arcKey));
   if (new Set(conditions.map((condition) => condition.arcKey)).size !== conditions.length) {
     throw new Error("condition snapshot contains duplicate Arc overrides");
   }

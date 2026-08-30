@@ -1,16 +1,17 @@
 import { describe,expect,it } from "vitest";
 import type pg from "pg";
-import { validateContract,type GowmV071QuerySnapshotManifest,type GowmV071TaskExecutionIntervalResult } from "../../packages/platform/contract-runtime/src/index.js";
+import { validateContract,type GowmV071QuerySnapshotManifest,type GowmV071TaskExecutionIntervalResult,type ProviderExecutionRequest } from "../../packages/platform/contract-runtime/src/index.js";
 import { createOperationalRealityProvider } from "../../services/providers/operational-reality-provider/src/provider.js";
 import { OperationalRealityProviderRepository } from "../../services/providers/operational-reality-provider/src/repository.js";
 import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 
 const HASH=`sha256:${"a".repeat(64)}` as const;
 const CAPTURED_AT="2026-08-30T10:00:00.000Z";
-const effective:GowmV071QuerySnapshotManifest={
+const effectiveContent:Omit<GowmV071QuerySnapshotManifest,"manifestHash">={
   querySnapshotId:"snapshot-interval-test",mode:"LATEST_AT_START",consistency:"CONSISTENT_AT_START",
-  capturedAt:CAPTURED_AT,resources:[],manifestHash:HASH
+  capturedAt:CAPTURED_AT,resources:[]
 };
+const effective:GowmV071QuerySnapshotManifest={...effectiveContent,manifestHash:sha256(effectiveContent)};
 const input={
   taskReferenceKey:{namespace:"gowm",kind:"OPERATIONAL_TASK" as const,id:"task-ref-1",version:"1"},
   selection:{kind:"LATEST" as const},phaseScope:"EXECUTION_ENVELOPE" as const
@@ -103,11 +104,28 @@ describe("operational task execution interval provider",()=>{
 
   it("rejects a Task Reference Version outside the authoritative descriptor",async()=>{
     const {pool}=fakePool(()=>[]);
-    await expect(new OperationalRealityProviderRepository(pool).execute(
-      "operational-task.get-execution-intervals",
-      {...input,taskReferenceKey:{...input.taskReferenceKey,version:"2"}},
-      "scope-a",effective,5_000
-    )).rejects.toMatchObject({code:"REFERENCE_VERSION_MISMATCH"});
+    const provider=createOperationalRealityProvider({pool,now:()=>new Date(CAPTURED_AT)});
+    const descriptor=provider.runtime.manifest.capabilities.find(
+      (item)=>item.operationId==="operational-task.get-execution-intervals"
+    );
+    if (!descriptor) throw new Error("execution interval capability is unavailable");
+    const request:ProviderExecutionRequest={
+      providerProtocolVersion:"1.0",requestId:"task_version_mismatch",gatewayRequestId:"gateway_task_version_mismatch",
+      idempotencyKey:"idempotency-task-version-mismatch",operation:{
+        operationId:descriptor.operationId,operationVersion:descriptor.operationVersion,
+        inputSchemaHash:descriptor.inputSchemaHash,outputSchemaHash:descriptor.outputSchemaHash
+      },input:{...input,taskReferenceKey:{...input.taskReferenceKey,version:"2"}},
+      securityContext:{
+        principalRef:"principal:task-version-test",authenticationMethod:"TEST",authenticatedAt:"2026-08-30T09:59:00.000Z",
+        dataScopeClaim:"scope-a",scopeAttestation:{issuer:"test",issuedAt:"2026-08-30T09:59:00.000Z",
+          expiresAt:"2026-08-30T10:01:00.000Z",claimDigest:sha256({dataScopeClaim:"scope-a"})}
+      },gatewayContext:{gatewayId:"gateway-test",registryVersion:"v0.7.1",policyVersion:"v0.7.1"},
+      effectiveSnapshot:effective,executionPolicy:{deadlineAt:"2026-08-30T10:00:30.000Z",maximumInputBytes:1_048_576,
+        maximumResultBytes:16_777_216,maximumRows:1_000,maximumCandidates:5_000,maximumCostClass:"MEDIUM"}
+    };
+    const requestValidation=validateContract("provider-execution-request.schema.json",request);
+    if (!requestValidation.valid) throw new Error(JSON.stringify(requestValidation.issues));
+    await expect(provider.runtime.execute(request)).rejects.toMatchObject({code:"REFERENCE_VERSION_MISMATCH"});
   });
 
   it("reports materialization lag as PARTIAL/PROJECTION_PENDING",async()=>{
