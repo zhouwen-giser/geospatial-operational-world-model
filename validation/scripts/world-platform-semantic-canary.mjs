@@ -9,7 +9,7 @@ import {createDataSnapshot} from '../../packages/platform/result-validation-core
 if(process.env.ALLOW_GOWM_WORLD_PLATFORM_CANARY!=='YES') throw new Error('Set ALLOW_GOWM_WORLD_PLATFORM_CANARY=YES for isolated real-process acceptance');
 const envPath=process.argv[process.argv.indexOf('--env-file')+1];
 if(!process.argv.includes('--env-file')||!envPath)throw new Error('--env-file is required');
-const env=Object.fromEntries((await readFile(envPath,'utf8')).split('\n').filter(l=>l&&!l.startsWith('#')).map(l=>[l.slice(0,l.indexOf('=')),l.slice(l.indexOf('=')+1)]));
+const env=Object.fromEntries((await readFile(envPath,'utf8')).split(/\r?\n/u).filter(l=>l&&!l.startsWith('#')).map(l=>[l.slice(0,l.indexOf('=')),l.slice(l.indexOf('=')+1)]));
 const reportRoot=process.env.GOWM_REPORT_DIRECTORY?.trim()||'reports/gowm-v0.6.2';
 const targetedV063=process.env.GOWM_V063_TARGETED==='YES';
 const release=reportRoot.endsWith('v0.6.3')?'v063':'v062';

@@ -339,7 +339,10 @@ export class WorldQueryRuntime {
               nodeId: node.nodeId,
               ...(context.principal.dataScopeClaim === undefined
                 ? {}
-                : { dataScopeClaim: context.principal.dataScopeClaim })
+                : { dataScopeClaim: context.principal.dataScopeClaim }),
+              ...(context.principal.datasetScopeClaim === undefined
+                ? {}
+                : { datasetScopeClaim: context.principal.datasetScopeClaim })
             });
         const adherence = merge.adherence;
         this.#snapshots.assertAdherence(context.submission.snapshotPolicy, adherence);

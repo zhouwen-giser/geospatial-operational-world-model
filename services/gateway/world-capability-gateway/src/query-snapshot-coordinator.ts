@@ -21,6 +21,7 @@ export interface MergeProviderSnapshotArgs {
   policy?: QuerySnapshotPolicy;
   nodeId: string;
   dataScopeClaim?: string;
+  datasetScopeClaim?: string;
 }
 
 export interface MergeProviderSnapshotResult {
@@ -117,8 +118,16 @@ export class QuerySnapshotCoordinator {
       });
     }
 
-    const providerResources = normalizeProviderResources(args.providerSnapshot, args.dataScopeClaim);
-    const warnings = ["Provider scopeDigest is retained as evidence but is not recomputed by the Gateway"];
+    const scopeDigestVerified = verifyProviderScopeBinding(
+      args.providerSnapshot,
+      args.descriptor.scopePolicy,
+      args.dataScopeClaim,
+      args.datasetScopeClaim
+    );
+    const providerResources = normalizeProviderResources(args.providerSnapshot);
+    const warnings = [scopeDigestVerified
+      ? "Provider scopeDigest was verified against the delegated Gateway scope"
+      : "Provider scopeDigest is retained as evidence but is not recomputed by the Gateway"];
     const current = new Map(args.effective.resources.map((resource) => [resourceIdentity(resource), structuredClone(resource)]));
     const requested = new Map(args.requested.resources.map((resource) => [resourceIdentity(resource), resource]));
     const mismatches: SnapshotMismatch[] = [];
@@ -359,7 +368,50 @@ function collectResources(submission: WorldQuerySubmission, mode: QuerySnapshotM
   return [...resources.values()].sort(compareResources);
 }
 
-function normalizeProviderResources(snapshot: DataSnapshotContext, dataScopeClaim?: string): SnapshotResource[] {
+function verifyProviderScopeBinding(
+  snapshot: DataSnapshotContext,
+  scopePolicy: CapabilityDescriptor["scopePolicy"],
+  dataScopeClaim?: string,
+  datasetScopeClaim?: string
+): boolean {
+  if (scopePolicy !== "DATA_SCOPE_REQUIRED" && scopePolicy !== "DATASET_SCOPE_REQUIRED") return false;
+  if (scopePolicy === "DATA_SCOPE_REQUIRED" && (dataScopeClaim === undefined || dataScopeClaim.trim().length === 0)) {
+    throw new ProviderProtocolError("SCOPE_DENIED", "provider data-scope snapshot lacks a delegated Gateway scope", {
+      retryable: false,
+      details: { stage: "SNAPSHOT" }
+    });
+  }
+  if (scopePolicy === "DATASET_SCOPE_REQUIRED" && (datasetScopeClaim === undefined || datasetScopeClaim.trim().length === 0)) {
+    throw new ProviderProtocolError("SCOPE_DENIED", "provider dataset-scope snapshot lacks a delegated Gateway scope", {
+      retryable: false,
+      details: { stage: "SNAPSHOT" }
+    });
+  }
+  // DATA_SCOPE ids are immutable catalog/native identities and are not required
+  // to expose the authorization claim. Verify the provider's canonical scope
+  // binding instead. Dataset-scoped providers include the dataset claim while
+  // data-scope-only providers bind only the data claim.
+  const expected = scopePolicy === "DATASET_SCOPE_REQUIRED"
+    ? new Set<string>([sha256({
+        ...(dataScopeClaim === undefined ? {} : { dataScopeKey: dataScopeClaim }),
+        datasetScopeKey: datasetScopeClaim
+      })])
+    : new Set<string>([
+        sha256({ dataScopeKey: dataScopeClaim }),
+        ...(datasetScopeClaim === undefined
+          ? []
+          : [sha256({ dataScopeKey: dataScopeClaim, datasetScopeKey: datasetScopeClaim })])
+      ]);
+  if (!expected.has(snapshot.scopeDigest)) {
+    throw new ProviderProtocolError("SCOPE_DENIED", "provider data snapshot is not bound to the delegated Gateway scope", {
+      retryable: false,
+      details: { stage: "SNAPSHOT" }
+    });
+  }
+  return true;
+}
+
+function normalizeProviderResources(snapshot: DataSnapshotContext): SnapshotResource[] {
   const resources = new Map<string, SnapshotResource>();
   for (const resource of snapshot.resources) {
     const { namespace, kind, id, version } = resource.referenceKey;
@@ -371,12 +423,6 @@ function normalizeProviderResources(snapshot: DataSnapshotContext, dataScopeClai
     }
     if (resource.worldVersion !== undefined && (!Number.isSafeInteger(resource.worldVersion) || resource.worldVersion < 0)) {
       throw snapshotError("provider data snapshot contains an invalid world version", { reason: "VERSION_MISMATCH" });
-    }
-    if (dataScopeClaim !== undefined && kind === "DATA_SCOPE" && id !== dataScopeClaim) {
-      throw new ProviderProtocolError("SCOPE_DENIED", "provider data snapshot contains a resource outside the delegated data scope", {
-        retryable: false,
-        details: { stage: "SNAPSHOT" }
-      });
     }
     const normalized: SnapshotResource = {
       resourceKind: kind,
