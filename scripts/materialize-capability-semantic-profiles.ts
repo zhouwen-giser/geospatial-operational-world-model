@@ -41,6 +41,10 @@ const render = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
 const portablePath = (path: string): string => path.replaceAll("\\", "/");
 const canonicalTextBytes = (bytes: Buffer): Buffer => Buffer.from(bytes.toString("utf8").replace(/\r\n/gu, "\n"), "utf8");
 
+export function generatedTextMatches(actual: string, expected: string): boolean {
+  return actual.replace(/\r\n/gu, "\n") === expected.replace(/\r\n/gu, "\n");
+}
+
 export function operationEvidenceDigest(records: readonly OperationEvidenceRecord[]): string {
   const normalized = records
     .filter((record) => record.kind !== "BLACK_BOX_TEST")
@@ -336,7 +340,10 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
   artifacts.set(`${output}/semantic-implementation-report.json`, render(implementationReport));
   const stale: string[] = [];
   for (const [path, content] of artifacts) {
-    if (check) { if (await readFile(resolve(repositoryRoot, path), "utf8").catch(() => "") !== content) stale.push(path); }
+    if (check) {
+      const actual = await readFile(resolve(repositoryRoot, path), "utf8").catch(() => "");
+      if (!generatedTextMatches(actual, content)) stale.push(path);
+    }
     else { await mkdir(dirname(resolve(repositoryRoot, path)), { recursive: true }); await writeFile(resolve(repositoryRoot, path), content); }
   }
   if (stale.length) throw new Error(`Stale semantic artifacts: ${stale.join(", ")}`);
