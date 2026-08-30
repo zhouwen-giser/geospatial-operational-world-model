@@ -1,6 +1,6 @@
 import type {
+  GowmV07QuerySnapshotManifest as QuerySnapshotManifest,
   JobRecord,
-  QuerySnapshotManifest,
   WorldQueryResultNodeResult,
   WorldQuerySubmission
 } from "../../../../packages/platform/contract-runtime/src/index.js";
@@ -17,6 +17,10 @@ export interface QueryJobContext {
   /** Internal PostgreSQL Gateway Job identity; never accepted from a public request. */
   gatewayJobId?: string;
   executionFence?: QueryExecutionFence;
+  requestedSnapshotManifest: QuerySnapshotManifest;
+  effectiveSnapshotManifest: QuerySnapshotManifest;
+  effectiveSnapshotRevision: number;
+  /** @deprecated Accepted only at legacy construction boundaries. */
   snapshotManifest?: QuerySnapshotManifest;
 }
 
@@ -38,6 +42,15 @@ export interface QueryPlanStore {
   getByQueryIdForPrincipal(queryId: string, principalHash: string): Promise<QueryJobContext | undefined>;
   getByJobIdForPrincipal(jobId: string, principalHash: string): Promise<QueryJobContext | undefined>;
   putNode(jobId: string, node: WorldQueryResultNodeResult, fence?: QueryExecutionFence): Promise<void>;
+  commitNodeResult(
+    jobId: string,
+    node: WorldQueryResultNodeResult,
+    snapshotUpdate?: {
+      expectedManifestHash: QuerySnapshotManifest["manifestHash"];
+      nextEffectiveManifest: QuerySnapshotManifest;
+    },
+    fence?: QueryExecutionFence
+  ): Promise<void>;
   listNodes(jobId: string): Promise<WorldQueryResultNodeResult[]>;
   requestCancellation(queryId: string, principalHash: string): Promise<QueryJobContext | undefined>;
   cancellationRequested(jobId: string): Promise<boolean>;
@@ -50,25 +63,26 @@ export class MemoryQueryPlanStore implements QueryPlanStore {
   readonly #nodes = new Map<string, Map<string, WorldQueryResultNodeResult>>();
 
   async create(context: QueryJobContext): Promise<QueryJobCreateResult> {
-    const principalHash = principalContextHash(context.principal);
-    const key = `${principalHash}:${context.submission.idempotencyKey}`;
+    const canonical = canonicalContext(context);
+    const principalHash = principalContextHash(canonical.principal);
+    const key = `${principalHash}:${canonical.submission.idempotencyKey}`;
     const existingJobId = this.#idempotency.get(key);
     if (existingJobId) {
       const existing = this.#byJob.get(existingJobId);
       if (!existing) throw new Error("query idempotency index is inconsistent");
-      if (existing.requestHash !== context.requestHash) {
+      if (existing.requestHash !== canonical.requestHash) {
         throw new ProviderProtocolError("IDEMPOTENCY_CONFLICT", "world query idempotency key was reused with a different request");
       }
       return { context: clone(existing), replayed: true };
     }
-    if (this.#jobByQuery.has(context.submission.plan.queryId)) {
+    if (this.#jobByQuery.has(canonical.submission.plan.queryId)) {
       throw new ProviderProtocolError("IDEMPOTENCY_CONFLICT", "world query id is already registered");
     }
-    const stored = clone(context);
-    this.#byJob.set(context.job.jobId, stored);
-    this.#jobByQuery.set(context.submission.plan.queryId, context.job.jobId);
-    this.#idempotency.set(key, context.job.jobId);
-    this.#nodes.set(context.job.jobId, new Map(context.submission.plan.nodes.map((node) => [
+    const stored = clone(canonical);
+    this.#byJob.set(canonical.job.jobId, stored);
+    this.#jobByQuery.set(canonical.submission.plan.queryId, canonical.job.jobId);
+    this.#idempotency.set(key, canonical.job.jobId);
+    this.#nodes.set(canonical.job.jobId, new Map(canonical.submission.plan.nodes.map((node) => [
       node.nodeId,
       { nodeId: node.nodeId, operation: structuredClone(node.operation), status: "QUEUED", attempt: 0 }
     ])));
@@ -108,12 +122,40 @@ export class MemoryQueryPlanStore implements QueryPlanStore {
   }
 
   async putNode(jobId: string, node: WorldQueryResultNodeResult, fence?: QueryExecutionFence): Promise<void> {
+    await this.commitNodeResult(jobId, node, undefined, fence);
+  }
+
+  async commitNodeResult(
+    jobId: string,
+    node: WorldQueryResultNodeResult,
+    snapshotUpdate?: {
+      expectedManifestHash: QuerySnapshotManifest["manifestHash"];
+      nextEffectiveManifest: QuerySnapshotManifest;
+    },
+    fence?: QueryExecutionFence
+  ): Promise<void> {
     const context = this.#byJob.get(jobId);
     if (!context) throw new Error(`query job ${jobId} is not registered`);
     assertFence(context.executionFence, fence);
     const nodes = this.#nodes.get(jobId);
     if (!nodes) throw new Error(`query job ${jobId} is not registered`);
-    nodes.set(node.nodeId, clone(node));
+    // Prepare every value before mutating either map so structured-clone failures
+    // cannot leave a snapshot revision without its corresponding node result.
+    const nextNode = clone(node);
+    const nextEffectiveManifest = snapshotUpdate === undefined
+      ? undefined
+      : clone(snapshotUpdate.nextEffectiveManifest);
+    if (snapshotUpdate !== undefined) {
+      if (context.effectiveSnapshotManifest.manifestHash !== snapshotUpdate.expectedManifestHash) {
+        throw new ProviderProtocolError("PROVIDER_NOT_READY", "effective snapshot compare-and-swap failed", {
+          retryable: true,
+          details: { stage: "EXECUTION_FENCE" }
+        });
+      }
+      context.effectiveSnapshotManifest = nextEffectiveManifest!;
+      context.effectiveSnapshotRevision += 1;
+    }
+    nodes.set(node.nodeId, nextNode);
   }
 
   async listNodes(jobId: string): Promise<WorldQueryResultNodeResult[]> {
@@ -151,7 +193,10 @@ function assertFence(expected: QueryExecutionFence | undefined, supplied: QueryE
     expected === undefined || supplied === undefined ||
     expected.leaseOwner !== supplied.leaseOwner || expected.attempt !== supplied.attempt
   ) {
-    throw new ProviderProtocolError("PROVIDER_NOT_READY", "world query execution lease was superseded", { retryable: false });
+    throw new ProviderProtocolError("PROVIDER_NOT_READY", "world query execution lease was superseded", {
+      retryable: false,
+      details: { stage: "EXECUTION_FENCE" }
+    });
   }
 }
 
@@ -161,4 +206,19 @@ function terminalJobStatus(status: JobRecord["status"]): boolean {
 
 function clone<T>(value: T): T {
   return structuredClone(value);
+}
+
+function canonicalContext(context: QueryJobContext): QueryJobContext {
+  const requested = context.requestedSnapshotManifest ?? context.snapshotManifest;
+  const effective = context.effectiveSnapshotManifest ?? requested;
+  if (requested === undefined || effective === undefined) {
+    throw new TypeError("query job context requires requested and effective snapshots");
+  }
+  const { snapshotManifest: _legacySnapshot, ...canonical } = clone(context);
+  return {
+    ...canonical,
+    requestedSnapshotManifest: clone(requested),
+    effectiveSnapshotManifest: clone(effective),
+    effectiveSnapshotRevision: context.effectiveSnapshotRevision ?? 0
+  };
 }

@@ -2,10 +2,10 @@ import type {
   CapabilityDescriptor,
   CapabilityResultEnvelope,
   GatewayExecuteRequest,
+  GowmV07QuerySnapshotAdherence as QuerySnapshotAdherence,
+  GowmV07QuerySnapshotManifest as QuerySnapshotManifest,
   JobRecord,
   PlatformError,
-  QuerySnapshotAdherence,
-  QuerySnapshotManifest,
   WorldQueryPlanV2InputBinding,
   WorldQueryPlanV2Node,
   WorldQueryPlanV2SchemaPort,
@@ -74,7 +74,7 @@ export class WorldQueryRuntime {
   ): Promise<WorldQuerySubmitResult> {
     this.#assertParameterContract(submission);
     const validated = this.options.validator.validate(submission, principal);
-    const snapshotManifest = this.#snapshots.resolve(submission);
+    const requestedSnapshotManifest = this.#snapshots.resolveRequested(submission);
     const now = this.#now().toISOString();
     const job: JobRecord = {
       jobId: newOpaqueId("query_job"),
@@ -92,7 +92,9 @@ export class WorldQueryRuntime {
       principal: structuredClone(principal),
       requestHash: sha256(submission),
       cancellationRequested: false,
-      snapshotManifest
+      requestedSnapshotManifest,
+      effectiveSnapshotManifest: structuredClone(requestedSnapshotManifest),
+      effectiveSnapshotRevision: 0
     });
     if (created.replayed) {
       return {
@@ -145,7 +147,7 @@ export class WorldQueryRuntime {
         updatedAt: now,
         finishedAt: now
       };
-      await this.options.store.updateJob(job);
+      await this.options.store.updateJob(job, context.executionFence);
       return job;
     }
     return context.job;
@@ -155,6 +157,7 @@ export class WorldQueryRuntime {
     const context = await this.options.store.getByJobId(jobId);
     if (!context || ["COMPLETED", "PARTIAL", "FAILED", "CANCELLED"].includes(context.job.status)) return;
     const mapped = mapProviderError(error);
+    if (mapped.details?.stage === "EXECUTION_FENCE") return;
     const now = this.#now().toISOString();
     await this.options.store.updateJob({
       ...context.job,
@@ -170,7 +173,7 @@ export class WorldQueryRuntime {
         undefined,
         redactPublicDetails(mapped.details)
       )
-    });
+    }, context.executionFence);
   }
 
   async #execute(jobId: string): Promise<WorldQueryResult> {
@@ -179,7 +182,7 @@ export class WorldQueryRuntime {
     if (isWorldQueryResult(context.job.result)) return context.job.result;
     if (context.job.status === "CANCELLED") {
       const result = this.#cancelledResult(context);
-      await this.options.store.updateJob({ ...context.job, result });
+      await this.options.store.updateJob({ ...context.job, result }, context.executionFence);
       return result;
     }
 
@@ -188,7 +191,9 @@ export class WorldQueryRuntime {
       throw new ProviderProtocolError("DEADLINE_EXCEEDED", "world query deadline elapsed while queued");
     }
     const validated = this.options.validator.validate(context.submission, context.principal);
-    const snapshotManifest = context.snapshotManifest ?? this.#snapshots.resolve(context.submission);
+    const requestedSnapshotManifest = context.requestedSnapshotManifest;
+    this.#snapshots.assertManifestHash(requestedSnapshotManifest);
+    this.#snapshots.assertManifestHash(context.effectiveSnapshotManifest);
     const startedAt = context.job.startedAt ?? this.#now().toISOString();
     const runningJob: JobRecord = {
       ...context.job,
@@ -196,7 +201,7 @@ export class WorldQueryRuntime {
       startedAt,
       updatedAt: this.#now().toISOString()
     };
-    await this.options.store.updateJob(runningJob);
+    await this.options.store.updateJob(runningJob, context.executionFence);
 
     const nodeResults = new Map(
       (await this.options.store.listNodes(jobId)).map((node) => [node.nodeId, node])
@@ -208,16 +213,20 @@ export class WorldQueryRuntime {
       const prior = nodeResults.get(node.nodeId);
       if (prior && terminalNodeStatus(prior.status) && prior.status !== "QUEUED") continue;
       if (await this.options.store.cancellationRequested(jobId)) break;
+      const persisted = await this.options.store.getByJobId(jobId);
+      if (!persisted) throw new Error(`query job ${jobId} disappeared during execution`);
+      const effectiveSnapshotManifest = persisted.effectiveSnapshotManifest;
+      const fence = persisted.executionFence;
       if (failFast) {
         const skipped = skippedNode(node, "Skipped after an upstream FAIL_FAST error", this.#now().toISOString());
         nodeResults.set(node.nodeId, skipped);
-        await this.options.store.putNode(jobId, skipped);
+        await this.options.store.putNode(jobId, skipped, fence);
         continue;
       }
       if (!this.#preconditionsMet(node, context.submission.parameters, nodeResults, validated.routes)) {
         const skipped = skippedNode(node, "Node precondition evaluated false", this.#now().toISOString());
         nodeResults.set(node.nodeId, skipped);
-        await this.options.store.putNode(jobId, skipped);
+        await this.options.store.putNode(jobId, skipped, fence);
         warnings.push(`${node.nodeId}: precondition false`);
         continue;
       }
@@ -226,8 +235,22 @@ export class WorldQueryRuntime {
       if (!route) throw new Error(`validated route for ${node.nodeId} disappeared`);
       let runningNode: WorldQueryResultNodeResult | undefined;
       try {
-        if (snapshotManifest.resources.length === 0 && context.submission.snapshotPolicy?.mode === "LATEST_AT_START" && route.descriptor.dataBinding !== "WORLD_INDEPENDENT") {
-          this.#snapshots.assertAdherence(context.submission.snapshotPolicy, this.#snapshots.adherence(node.nodeId, route.descriptor, snapshotManifest));
+        this.#snapshots.assertProviderMayExecute({
+          requested: requestedSnapshotManifest,
+          effective: effectiveSnapshotManifest,
+          descriptor: route.descriptor,
+          ...(context.submission.snapshotPolicy === undefined
+            ? {}
+            : { policy: context.submission.snapshotPolicy }),
+          nodeId: node.nodeId
+        });
+        if (
+          effectiveSnapshotManifest.resources.length === 0 &&
+          context.submission.snapshotPolicy?.mode === "LATEST_AT_START" &&
+          route.descriptor.dataBinding !== "WORLD_INDEPENDENT" &&
+          route.descriptor.snapshotPolicy.resourceResolution !== "DISCOVER_RESOURCES"
+        ) {
+          this.#snapshots.assertAdherence(context.submission.snapshotPolicy, this.#snapshots.adherence(node.nodeId, route.descriptor, effectiveSnapshotManifest));
         }
         if (this.#now().getTime() >= deadline) {
           throw new ProviderProtocolError("DEADLINE_EXCEEDED", "world query plan deadline elapsed");
@@ -246,7 +269,7 @@ export class WorldQueryRuntime {
         };
         nodeResults.set(node.nodeId, running);
         runningNode = running;
-        await this.options.store.putNode(jobId, running);
+        await this.options.store.putNode(jobId, running, fence);
 
         const nodeDeadlineMs = Math.min(
           deadline,
@@ -256,7 +279,12 @@ export class WorldQueryRuntime {
         const request: GatewayExecuteRequest = {
           requestVersion: "1.0",
           requestId: newOpaqueId("query_node"),
-          idempotencyKey: nodeIdempotencyKey(context.submission.idempotencyKey, node.nodeId, inputHash),
+          idempotencyKey: nodeIdempotencyKey(
+            context.submission.idempotencyKey,
+            node.nodeId,
+            inputHash,
+            effectiveSnapshotManifest.manifestHash
+          ),
           operationVersion: node.operation.operationVersion,
           inputSchemaHash: node.operation.inputSchemaHash,
           outputSchemaHash: node.operation.outputSchemaHash,
@@ -282,17 +310,38 @@ export class WorldQueryRuntime {
             ...(context.gatewayJobId === undefined ? {} : { gatewayJobId: context.gatewayJobId }),
             gatewayQueryId: context.submission.plan.queryId,
             gatewayNodeId: node.nodeId,
-            requestedSnapshot: snapshotManifest
+            requestedSnapshot: requestedSnapshotManifest,
+            effectiveSnapshot: effectiveSnapshotManifest
           }
         );
         if (await this.options.store.cancellationRequested(jobId)) {
           const cancelled = cancelledNode(node, this.#now().toISOString(), running.attempt);
           nodeResults.set(node.nodeId, cancelled);
-          await this.options.store.putNode(jobId, cancelled);
+          await this.options.store.putNode(jobId, cancelled, fence);
           break;
         }
         const envelope = executed.result;
-        const adherence = this.#snapshots.adherence(node.nodeId, route.descriptor, snapshotManifest, envelope);
+        const merge = envelope.dataSnapshot === undefined
+          ? {
+              effective: effectiveSnapshotManifest,
+              adherence: this.#snapshots.adherence(node.nodeId, route.descriptor, effectiveSnapshotManifest, envelope),
+              discoveredResourceCount: 0,
+              warnings: [] as string[]
+            }
+          : this.#snapshots.mergeProviderSnapshot({
+              requested: requestedSnapshotManifest,
+              effective: effectiveSnapshotManifest,
+              providerSnapshot: envelope.dataSnapshot,
+              descriptor: route.descriptor,
+              ...(context.submission.snapshotPolicy === undefined
+                ? {}
+                : { policy: context.submission.snapshotPolicy }),
+              nodeId: node.nodeId,
+              ...(context.principal.dataScopeClaim === undefined
+                ? {}
+                : { dataScopeClaim: context.principal.dataScopeClaim })
+            });
+        const adherence = merge.adherence;
         this.#snapshots.assertAdherence(context.submission.snapshotPolicy, adherence);
         if (["ADVANCED_COMPATIBLE", "MISMATCHED", "UNSUPPORTED"].includes(adherence.status)) {
           warnings.push(`${node.nodeId}: snapshot ${adherence.status}`);
@@ -309,7 +358,10 @@ export class WorldQueryRuntime {
         if (byteLength(envelope) > node.budget.maximumOutputBytes) {
           throw new ProviderProtocolError("BUDGET_EXCEEDED", "DAG node result exceeds its output budget");
         }
-        const status = nodeStatusFor(envelope);
+        const providerStatus = nodeStatusFor(envelope);
+        const status = providerStatus === "COMPLETED" && adherence.status === "MISMATCHED"
+          ? "PARTIAL" as const
+          : providerStatus;
         const finishedAt = this.#now().toISOString();
         const completed: WorldQueryResultNodeResult = {
           nodeId: node.nodeId,
@@ -325,13 +377,30 @@ export class WorldQueryRuntime {
           ...(envelope.error === undefined ? {} : { error: withNodeIdentity(envelope.error, node.nodeId, route.manifest.provider.providerId) })
         };
         nodeResults.set(node.nodeId, completed);
-        await this.options.store.putNode(jobId, completed);
+        await this.options.store.commitNodeResult(
+          jobId,
+          completed,
+          merge.effective.manifestHash === effectiveSnapshotManifest.manifestHash
+            ? undefined
+            : {
+                expectedManifestHash: effectiveSnapshotManifest.manifestHash,
+                nextEffectiveManifest: merge.effective
+              },
+          fence
+        );
+        warnings.push(...merge.warnings);
         warnings.push(...envelope.warnings.map((warning) => `${node.nodeId}: ${warning}`));
         if (status === "FAILED") {
           warnings.push(`${node.nodeId}: provider returned ${envelope.status}`);
           failFast = node.failurePolicy === "FAIL_FAST";
         }
       } catch (error) {
+        const mapped = mapProviderError(error);
+        if (mapped.details?.stage === "EXECUTION_FENCE") {
+          // A superseded worker must not borrow the replacement worker's fence
+          // to publish either a failure or a cancellation.
+          throw mapped;
+        }
         if (await this.options.store.cancellationRequested(jobId)) {
           const cancelled = cancelledNode(
             node,
@@ -339,15 +408,18 @@ export class WorldQueryRuntime {
             runningNode?.attempt ?? prior?.attempt ?? 0
           );
           nodeResults.set(node.nodeId, cancelled);
-          await this.options.store.putNode(jobId, cancelled);
+          const latest = await this.options.store.getByJobId(jobId);
+          await this.options.store.putNode(jobId, cancelled, latest?.executionFence);
           break;
         }
-        const mapped = mapProviderError(error);
         const failed = failedNode(node, route, mapped, runningNode ?? prior, this.#now().toISOString());
         nodeResults.set(node.nodeId, failed);
-        await this.options.store.putNode(jobId, failed);
+        const latest = await this.options.store.getByJobId(jobId);
+        await this.options.store.putNode(jobId, failed, latest?.executionFence);
         warnings.push(`${node.nodeId}: ${mapped.code}`);
-        failFast = mapped.details?.stage === "SNAPSHOT" || node.failurePolicy === "FAIL_FAST";
+        // Snapshot failures preserve the last valid Effective Snapshot, then
+        // obey the plan's declared failure policy like every other node error.
+        failFast = node.failurePolicy === "FAIL_FAST";
       }
     }
 
@@ -357,7 +429,8 @@ export class WorldQueryRuntime {
         if (!value || ["QUEUED", "RUNNING"].includes(value.status)) {
           const cancelled = cancelledNode(node, this.#now().toISOString(), value?.attempt ?? 0);
           nodeResults.set(node.nodeId, cancelled);
-          await this.options.store.putNode(jobId, cancelled);
+          const latest = await this.options.store.getByJobId(jobId);
+          await this.options.store.putNode(jobId, cancelled, latest?.executionFence);
         }
       }
     }
@@ -369,7 +442,10 @@ export class WorldQueryRuntime {
     const failed = orderedResults.some((node) => node.status === "FAILED");
     const partial = orderedResults.some((node) => ["PARTIAL", "NO_DATA", "SKIPPED"].includes(node.status));
     const outputs = this.#assembleOutputs(context.submission, nodeResults, validated.routes, warnings);
-    const snapshotAdherence = this.#snapshotAdherence(context.submission, orderedResults, validated.routes, snapshotManifest);
+    const finalContext = await this.options.store.getByJobId(jobId);
+    if (!finalContext) throw new Error(`query job ${jobId} disappeared during result assembly`);
+    const effectiveSnapshotManifest = finalContext.effectiveSnapshotManifest;
+    const snapshotAdherence = this.#snapshotAdherence(context.submission, orderedResults, validated.routes, effectiveSnapshotManifest);
     const finishedAt = this.#now().toISOString();
     const status: WorldQueryResult["status"] = cancelled
       ? "CANCELLED"
@@ -386,11 +462,13 @@ export class WorldQueryRuntime {
       nodes: orderedResults,
       outputs,
       warnings,
-      snapshotManifest,
+      snapshotManifest: effectiveSnapshotManifest,
+      requestedSnapshotManifest,
+      effectiveSnapshotManifest,
       snapshotAdherence,
       startedAt,
       finishedAt,
-      outputHash: sha256(outputs)
+      outputHash: sha256({ outputs, effectiveSnapshotManifest })
     };
     if (byteLength(result) > context.submission.plan.budgets.maximumOutputBytes) {
       throw new ProviderProtocolError("BUDGET_EXCEEDED", "world query result exceeds the aggregate output budget", {
@@ -413,7 +491,7 @@ export class WorldQueryRuntime {
         ? { error: firstNodeError(orderedResults) ?? platformError(context.job.requestId, "WORLD_QUERY_FAILED", "World query failed", false) }
         : {})
     };
-    await this.options.store.updateJob(terminalJob);
+    await this.options.store.updateJob(terminalJob, finalContext.executionFence);
     return result;
   }
 
@@ -590,6 +668,8 @@ export class WorldQueryRuntime {
 
   #cancelledResult(context: QueryJobContext): WorldQueryResult {
     const finishedAt = context.job.finishedAt ?? this.#now().toISOString();
+    const requestedSnapshotManifest = context.requestedSnapshotManifest;
+    const effectiveSnapshotManifest = context.effectiveSnapshotManifest;
     return {
       queryPlanVersion: "2.0",
       queryId: context.submission.plan.queryId,
@@ -598,7 +678,9 @@ export class WorldQueryRuntime {
       nodes: context.submission.plan.nodes.map((node) => cancelledNode(node, finishedAt, 0)),
       outputs: {},
       warnings: ["Query was cancelled before execution"],
-      snapshotManifest: context.snapshotManifest ?? this.#snapshots.resolve(context.submission),
+      snapshotManifest: effectiveSnapshotManifest,
+      requestedSnapshotManifest,
+      effectiveSnapshotManifest,
       snapshotAdherence: context.submission.plan.nodes.map((node) => ({
         nodeId: node.nodeId,
         status: "UNSUPPORTED" as const,
@@ -607,7 +689,7 @@ export class WorldQueryRuntime {
       })),
       startedAt: context.job.startedAt ?? context.job.createdAt,
       finishedAt,
-      outputHash: sha256({})
+      outputHash: sha256({ outputs: {}, effectiveSnapshotManifest })
     };
   }
 
@@ -769,9 +851,16 @@ function escapePointerSegment(value: string): string {
   return value.replaceAll("~", "~0").replaceAll("/", "~1");
 }
 
-function nodeIdempotencyKey(base: string, nodeId: string, inputHash: string): string {
-  const candidate = `${base}:${nodeId}:${inputHash}`;
-  return candidate.length <= 256 ? candidate : `dag:${sha256({ base, nodeId, inputHash }).slice("sha256:".length)}`;
+function nodeIdempotencyKey(
+  base: string,
+  nodeId: string,
+  inputHash: string,
+  effectiveManifestHash: string
+): string {
+  const candidate = `${base}:${nodeId}:${inputHash}:${effectiveManifestHash}`;
+  return candidate.length <= 256
+    ? candidate
+    : `dag:${sha256({ base, nodeId, inputHash, effectiveManifestHash }).slice("sha256:".length)}`;
 }
 
 function platformError(

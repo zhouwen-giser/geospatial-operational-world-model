@@ -4,7 +4,7 @@ import type {
   CapabilityResultEnvelope,
   GatewayExecuteRequest,
   ProviderExecutionRequest,
-  QuerySnapshotManifest
+  GowmV07QuerySnapshotManifest as QuerySnapshotManifest
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import {
   validateCapabilityResultSemantics,
@@ -42,6 +42,7 @@ export interface TrustedGatewayJobContext {
   gatewayQueryId: string;
   gatewayNodeId: string;
   requestedSnapshot?: QuerySnapshotManifest;
+  effectiveSnapshot?: QuerySnapshotManifest;
 }
 
 export class DirectExecutionService {
@@ -230,6 +231,7 @@ export class DirectExecutionService {
     const maximumRows = effectiveLimit(limits.maximumRows, request.executionPolicy.maximumRows);
     const maximumCandidates = effectiveLimit(limits.maximumCandidates, request.executionPolicy.maximumCandidates);
     const requestedSnapshot = trustedJobContext?.requestedSnapshot;
+    const effectiveSnapshot = trustedJobContext?.effectiveSnapshot;
     const gatewayJobContext = trustedJobContext === undefined ? undefined : {
       ...(trustedJobContext.gatewayJobId === undefined ? {} : { gatewayJobId: trustedJobContext.gatewayJobId }),
       gatewayQueryId: trustedJobContext.gatewayQueryId,
@@ -282,7 +284,8 @@ export class DirectExecutionService {
         ...(limits.maximumBatchItems === undefined ? {} : { maximumBatchItems: limits.maximumBatchItems }),
         maximumCostClass: request.executionPolicy.maximumCostClass
       },
-      ...(requestedSnapshot === undefined ? {} : { requestedSnapshot })
+      ...(requestedSnapshot === undefined ? {} : { requestedSnapshot }),
+      ...(effectiveSnapshot === undefined ? {} : { effectiveSnapshot })
     };
   }
 
