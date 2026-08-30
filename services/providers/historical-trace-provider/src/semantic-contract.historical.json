@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.historical-trace",
+  "operations": {
+    "history.get-trajectory@1.0": {
+      "profile": {
+        "profileVersion": "1.1",
+        "domain": "ANALYSIS",
+        "acceptedReferenceKinds": [
+          "WORLD_OBJECT",
+          "SPATIAL_OBJECT",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "DERIVED_REFERENCE",
+          "TASK_EXECUTION_INTERVAL",
+          "HISTORY_METHOD_PROFILE"
+        ],
+        "producedReferenceKinds": [
+          "HISTORICAL_TRAJECTORY",
+          "TRACKLET_VERSION",
+          "TRACKLET_FINALIZATION",
+          "HISTORY_INPUT_SET"
+        ],
+        "relationSemantics": [
+          "TEMPORALLY_OVERLAPS"
+        ],
+        "spatialSemantics": "EXACT",
+        "timeSemantics": "HISTORICAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETED": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        },
+        "notes": [
+          "The operation returns one stored source-selected trajectory revision and never performs hidden multi-source fusion.",
+          "Every interval, tracklet, finalization, watermark, profile, and analysis-space input is frozen by the returned snapshot or its HISTORY_INPUT_SET resource."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/historical-trace-provider/src/provider.ts",
+          "symbol": "createHistoricalTraceProvider"
+        },
+        {
+          "path": "services/providers/historical-trace-provider/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "tests/platform/historical-trace-provider.test.ts"
+      ],
+      "rationale": "The preview provider performs only scoped, head-free reads of immutable trajectory revisions and their complete persisted lineage. Source selection and trajectory construction remain projection-owned."
+    }
+  }
+}

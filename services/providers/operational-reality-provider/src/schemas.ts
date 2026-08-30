@@ -4,7 +4,8 @@ import type { JsonSchema } from "../../../../packages/platform/provider-sdk/src/
 export const OPERATIONAL_REALITY_OPERATION_IDS = [
   "operational-task.find","operational-task.get","operational-task.get-timeline",
   "operational-task.find-by-correlation","world-event.find-by-correlation",
-  "correlation.resolve","predicate.evaluate","observability.evaluate"
+  "correlation.resolve","predicate.evaluate","observability.evaluate",
+  "operational-task.get-execution-intervals"
 ] as const;
 export type OperationalRealityOperationId = (typeof OPERATIONAL_REALITY_OPERATION_IDS)[number];
 
@@ -16,7 +17,8 @@ const names: Record<OperationalRealityOperationId,readonly [string,string]> = {
   "world-event.find-by-correlation": ["operational-query-request","operational-event-timeline"],
   "correlation.resolve": ["operational-query-request","correlation-finding"],
   "predicate.evaluate": ["external-predicate","predicate-evaluation"],
-  "observability.evaluate": ["operational-query-request","observability-assessment"]
+  "observability.evaluate": ["operational-query-request","observability-assessment"],
+  "operational-task.get-execution-intervals": ["task-execution-interval-query","task-execution-interval-result"]
 };
 
 export interface OperationalSchemas {
@@ -25,8 +27,9 @@ export interface OperationalSchemas {
 }
 export const OPERATIONAL_REALITY_SCHEMAS = Object.fromEntries(
   Object.entries(names).map(([operationId,[inputName,outputName]]) => {
-    const inputSchemaUri=`urn:gowm:v0.4:${inputName}`;
-    const outputSchemaUri=`urn:gowm:v0.4:${outputName}`;
+    const version=operationId==="operational-task.get-execution-intervals"?"v0.7":"v0.4";
+    const inputSchemaUri=`urn:gowm:${version}:${inputName}`;
+    const outputSchemaUri=`urn:gowm:${version}:${outputName}`;
     return [operationId,{
       input:getContractSchema(inputSchemaUri),output:getContractSchema(outputSchemaUri),
       inputSchemaUri,outputSchemaUri,inputSchemaHash:getContractSchemaHash(inputSchemaUri),

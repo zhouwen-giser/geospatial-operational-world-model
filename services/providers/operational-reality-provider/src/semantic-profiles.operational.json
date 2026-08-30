@@ -264,5 +264,36 @@
     "resultNature": "PROJECTION",
     "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
     "freshnessSemantics": "SNAPSHOT_CURRENTNESS"
+  },
+  "operational-task.get-execution-intervals@1.0": {
+    "profileVersion": "1.1",
+    "domain": "TEMPORAL",
+    "acceptedReferenceKinds": [
+      "OPERATIONAL_TASK"
+    ],
+    "producedReferenceKinds": [
+      "TASK_EXECUTION_INTERVAL",
+      "TASK_EXECUTION_EVENT_SET",
+      "HISTORY_METHOD_PROFILE"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "INTERVAL",
+    "resultNature": "PROJECTION",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "COMPLETED": "COMPLETED",
+        "PARTIAL": "PARTIAL",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    },
+    "notes": [
+      "Intervals are immutable as-of projections over scoped Operational Task Events.",
+      "Open database ranges are rendered only through the effective snapshot capturedAt."
+    ]
   }
 }

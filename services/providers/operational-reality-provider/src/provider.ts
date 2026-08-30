@@ -4,7 +4,7 @@ const DECLARED_SEMANTICS = { ...semanticProfiles0 };
 import type pg from "pg";
 import type { CapabilityDescriptor,CapabilityProviderManifest } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { getContractSchemaHash } from "../../../../packages/platform/contract-runtime/src/index.js";
-import { createProviderRuntime,sha256,type ProviderOperation,type ProviderRuntime } from "../../../../packages/platform/provider-sdk/src/index.js";
+import { createProviderRuntime,ProviderProtocolError,sha256,type ProviderOperation,type ProviderRuntime } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { OperationalRealityProviderRepository } from "./repository.js";
 import { OPERATIONAL_REALITY_OPERATION_IDS,OPERATIONAL_REALITY_SCHEMAS,type OperationalRealityOperationId } from "./schemas.js";
 
@@ -27,6 +27,7 @@ export function createOperationalRealityProvider(options:{pool:pg.Pool;now?:()=>
 function operation(operationId:OperationalRealityOperationId,repository:OperationalRealityProviderRepository):ProviderOperation {
   const schemas=OPERATIONAL_REALITY_SCHEMAS[operationId];
   const analysis=["correlation.resolve","predicate.evaluate","observability.evaluate"].includes(operationId);
+  const intervalProjection=operationId==="operational-task.get-execution-intervals";
   const descriptor:CapabilityDescriptor={
     operationId,operationVersion:"1.0", semanticProfile: declaredSemanticProfile(DECLARED_SEMANTICS, operationId, "1.0"),semanticRole:analysis?"DOMAIN_ANALYSIS":"PROJECTION_QUERY",
     dataBinding:"WORLD_SNAPSHOT_BOUND",resultSemantics:analysis?"DERIVED_ANALYSIS":"WORLD_PROJECTION",
@@ -35,7 +36,7 @@ function operation(operationId:OperationalRealityOperationId,repository:Operatio
     outputSchemaUri:schemas.outputSchemaUri,outputSchemaHash:schemas.outputSchemaHash,
     scopePolicy:"DATA_SCOPE_REQUIRED",execution:{mode:"SYNC",defaultTimeoutMs:10000,maximumTimeoutMs:30000,costClass:"MEDIUM"},
     limits:{maximumInputBytes:1048576,maximumOutputBytes:16777216,maximumRows:1000,maximumCandidates:5000},
-    snapshotPolicy:{dataSnapshot:"REQUIRED",computeSnapshot:"REQUIRED"},
+    snapshotPolicy:{dataSnapshot:"REQUIRED",computeSnapshot:"REQUIRED",...(intervalProjection?{resourceResolution:"DISCOVER_RESOURCES" as const}:{})},
     ports:{
       inputs:[{name:"request",schemaUri:schemas.inputSchemaUri,schemaHash:schemas.inputSchemaHash,valueKind:"ANY",unitSemantics:"UNSPECIFIED"}],
       outputs:[
@@ -46,12 +47,19 @@ function operation(operationId:OperationalRealityOperationId,repository:Operatio
   };
   return {descriptor,inputSchema:schemas.input,outputSchema:schemas.output,method:{
     engine:"PostgreSQL",engineVersion:"18",methodId:`gowm-operational-reality-v1/${operationId}`,methodVersion:"1.0",
-    artifacts:[{kind:"DATABASE",name:"gowm_operational_reality_v1",version:"migration-032"}]
+    artifacts:[
+      {kind:"DATABASE",name:"gowm_operational_reality_v1",version:"migration-032"},
+      ...(intervalProjection?[{kind:"DATABASE" as const,name:"gowm_history_v1",version:"migration-065"}]:[])
+    ]
   },async handle(input,context){
     const scope=context.security.dataScopeClaim;
     if (!scope) throw new Error("authorized data scope is required");
-    const result=await repository.execute(operationId,input,scope);
+    if (intervalProjection&&!context.snapshots.effective) {
+      throw new ProviderProtocolError("SCHEMA_MISMATCH","effective query snapshot is required for execution interval as-of selection");
+    }
+    const result=await repository.execute(operationId,input,scope,context.snapshots.effective,context.deadline.remainingMs());
     return {status:result.status??"COMPLETED",...(result.output===undefined?{}:{value:result.output}),dataSnapshot:result.dataSnapshot,
+      ...(result.evidenceReferences===undefined?{}:{evidenceReferences:result.evidenceReferences}),
       consumption:{rows:result.rows,candidates:result.candidates},warnings:result.warnings,changes:{repairApplied:false,typeChanged:false}};
   }};
 }

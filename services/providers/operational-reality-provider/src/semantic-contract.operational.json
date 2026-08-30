@@ -387,6 +387,52 @@
         "tests/platform/operational-reality-provider.test.ts"
       ],
       "rationale": "Provider-owned declaration reconciled against the descriptor, input/output schema, adapter handler and tests. Reference kinds describe accepted/produced contract syntax, not guaranteed matches; empty results do not prove absence."
+    },
+    "operational-task.get-execution-intervals@1.0": {
+      "profile": {
+        "profileVersion": "1.1",
+        "domain": "TEMPORAL",
+        "acceptedReferenceKinds": [
+          "OPERATIONAL_TASK"
+        ],
+        "producedReferenceKinds": [
+          "TASK_EXECUTION_INTERVAL",
+          "TASK_EXECUTION_EVENT_SET",
+          "HISTORY_METHOD_PROFILE"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "INTERVAL",
+        "resultNature": "PROJECTION",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "COMPLETED": "COMPLETED",
+            "PARTIAL": "PARTIAL",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        },
+        "notes": [
+          "Intervals are immutable as-of projections over scoped Operational Task Events.",
+          "Open database ranges are rendered only through the effective snapshot capturedAt."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/operational-reality-provider/src/provider.ts",
+          "symbol": "createOperationalRealityProvider"
+        },
+        {
+          "path": "services/providers/operational-reality-provider/src/repository.ts"
+        }
+      ],
+      "tests": [
+        "tests/platform/operational-interval-provider.test.ts"
+      ],
+      "rationale": "The preview query reads immutable interval revisions at the effective snapshot capturedAt, exposes projection lag as PARTIAL, and discovers all scoped interval, event-set, task, and method-profile resources used by the result."
     }
   }
 }
