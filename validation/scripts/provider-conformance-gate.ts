@@ -26,7 +26,7 @@ for (const schema of listContractSchemas()) {
 for (const file of await files(resolve(root, "contracts"))) {
   if (!file.endsWith(".schema.json")) continue;
   const bytes = await readFile(file), schema = JSON.parse(bytes.toString());
-  const digests = { canonical: sha256(schema), sourceBytes: byteHash(bytes) };
+  const digests = { canonical: sha256(schema), sourceBytes: portableTextByteHash(bytes) };
   index.set(relative(root, file), digests); index.set(file, digests);
   if (typeof schema.$id === "string") index.set(schema.$id, digests);
 }
@@ -35,8 +35,8 @@ const nativeRegistry = new ToolRegistry();
 const nativeTools = nativeRegistry.list();
 const stasLock = {
   schemaVersion: "1.0", protocol: "STAS_NATIVE_1.0", hashPolicy: "EXECUTABLE_SOURCE_AND_OPENAPI_BYTES",
-  inputs: { path: "services/stas/src/tools/schemas.ts", sha256: byteHash(await readFile(resolve(root, "services/stas/src/tools/schemas.ts"))) },
-  openapi: { path: "services/stas/openapi/openapi.yaml", sha256: byteHash(await readFile(resolve(root, "services/stas/openapi/openapi.yaml"))) },
+  inputs: { path: "services/stas/src/tools/schemas.ts", sha256: portableTextByteHash(await readFile(resolve(root, "services/stas/src/tools/schemas.ts"))) },
+  openapi: { path: "services/stas/openapi/openapi.yaml", sha256: portableTextByteHash(await readFile(resolve(root, "services/stas/openapi/openapi.yaml"))) },
   operations: nativeTools.map((item) => nativeRegistry.describe(item))
 };
 const stasLockPath = resolve(root, "contracts/gowm-v0.6.1/manifests/stas-native-lock.json");
@@ -50,6 +50,9 @@ if (process.argv.includes("--write-current-manifests")) {
 await mkdir(out, { recursive: true });
 // These are explicitly unit/protocol suites, never represented as live DB/H3 evidence.
 const unitPath = resolve(out, "unit-behavior.json");
+const unitEvidenceRef = relative(root, unitPath).replaceAll("\\", "/");
+const stasUnitPath = resolve(out, "stas-unit.tap");
+const stasUnitEvidenceRef = relative(root, stasUnitPath).replaceAll("\\", "/");
 const vitestEntrypoint = resolve(root, "node_modules/vitest/vitest.mjs");
 execFileSync(process.execPath, [vitestEntrypoint, "run", "tests/platform", "tests/unit/coverage-provider-protocol.test.ts", "--reporter=json", `--outputFile=${unitPath}`], { cwd: root, stdio: ["ignore", "pipe", "inherit"] });
 const units = JSON.parse(await readFile(unitPath, "utf8"));
@@ -57,7 +60,7 @@ if (!units.success || units.numFailedTests !== 0) throw new Error("conformance u
 const npmEntrypoint = process.env.npm_execpath;
 if (!npmEntrypoint) throw new Error("npm_execpath is required for the STAS conformance suite");
 const stasOutput = execFileSync(process.execPath, [npmEntrypoint, "--prefix", "services/stas", "test"], { cwd: root, encoding: "utf8" });
-await writeFile(resolve(out, "stas-unit.tap"), stasOutput);
+await writeFile(stasUnitPath, stasOutput);
 if (!/# fail 0\b/u.test(stasOutput) || !/# pass [1-9]\d*\b/u.test(stasOutput)) throw new Error("STAS executable unit suite did not pass");
 const registry = new CapabilityRegistry();
 for (const { slug, runtime } of definitions) registry.register({ approved: true, approvalId: `conformance-${slug}`, endpoint: new URL("http://127.0.0.1:1/"), manifest: runtime.manifest, client: new InProcessProviderClient(runtime) });
@@ -96,7 +99,7 @@ for (const definition of definitions) {
     check("MANIFEST", validateContract("capability-provider-manifest.schema.json", manifest).valid && sha256(manifest) === sha256(JSON.parse(await readFile(resolve(root, manifestPath), "utf8"))), manifestPath),
     check("SCHEMA_HASH", schemaChecks.every((lock) => lock.valid), "Exact canonical JSON or actual source-byte hash; unknown URI/path fails closed", schemaChecks.filter((lock) => !lock.valid)),
     check("OPERATION_VERSION", new Set(capabilities.map((c) => `${c.operationId}@${c.operationVersion}`)).size === capabilities.length, "Runtime factory validates operation/handler parity"),
-    check("SEMANTIC_PROFILE", validateContract("urn:gowm:v0.6.2:capability-semantic-catalog", profiles).valid && profiles.profiles.length === capabilities.length, "Explicit projection from every current descriptor"),
+    check("SEMANTIC_PROFILE", validateContract("urn:gowm:v0.7:capability-semantic-catalog", profiles).valid && profiles.profiles.length === capabilities.length, "Explicit v0.7 catalog projection from every current descriptor"),
     check("SCOPE_SNAPSHOT_LIMITS", validateSemanticManifest(manifest).valid && capabilities.every((c) => c.execution.maximumTimeoutMs >= c.execution.defaultTimeoutMs && (c.limits.maximumInputBytes ?? 0) > 0 && (c.limits.maximumOutputBytes ?? 0) > 0), "Executable manifest schema and cross-field semantic rules"),
     check("HASH_ERROR_FAIL_CLOSED", negativeCases.every((item) => item.passed), "Real runtime rejects forged input hash before IO", negativeCases),
     check("CO_REGISTRATION", registry.catalog().length === operationCount, "All current protocol Provider factories registered together without duplicate routes"),
@@ -106,7 +109,7 @@ for (const definition of definitions) {
     check("VERSIONED_READ_CONTRACT", sources.every(({ source }) => !/\b(?:FROM|JOIN)\s+public\.(?!ST_|spans\b)[a-z_][a-z0-9_]*/iu.test(source)), "Provider source has no public base-table read; database grants and SQL assertions are independently checked by D00"),
     check("UNIT_PROTOCOL_BEHAVIOR", units.success === true, "Executed unit/protocol suite: status mapping, receipts/evidence, scope, limits, health, idempotency and errors; not live readiness")
   ];
-  const report = finish({ providerId: manifest.provider.providerId, providerVersion: manifest.provider.providerVersion, checks, manifestHash: sha256(manifest), evidenceLevel: "CONTRACT_AND_UNIT_PROTOCOL", runtimeReadiness: "NOT_CLAIMED", unitEvidenceRef: "reports/gowm-v0.6.1/provider-conformance/unit-behavior.json" });
+  const report = finish({ providerId: manifest.provider.providerId, providerVersion: manifest.provider.providerVersion, checks, manifestHash: sha256(manifest), evidenceLevel: "CONTRACT_AND_UNIT_PROTOCOL", runtimeReadiness: "NOT_CLAIMED", unitEvidenceRef });
   reports.push(report);
   await json(resolve(out, `${definition.slug}.json`), report);
 }
@@ -122,7 +125,7 @@ const stasChecks = [
   check("NO_SIBLING_PROVIDER_HTTP", nativeSources.every(({ source }) => !/https?:\/\/(?:[^\s"']*provider|(?:localhost|127\.0\.0\.1):\d+\/v1\/operations)/iu.test(source)), "Native STAS has no hardcoded sibling HTTP call"),
   check("VERSIONED_READ_CONTRACT", nativeSources.every(({ source }) => !/\b(?:FROM|JOIN)\s+public\.(?!ST_|spans\b)[a-z_][a-z0-9_]*/iu.test(source)), "STAS reads its owned/versioned SQL APIs, not public base tables")
 ];
-const stas = finish({ providerId: "gowm.stas", providerVersion: "0.1.0", checks: stasChecks, evidenceLevel: "NATIVE_CONTRACT_AND_UNIT", runtimeReadiness: "NOT_CLAIMED", unitEvidenceRef: "reports/gowm-v0.6.1/provider-conformance/stas-unit.tap" });
+const stas = finish({ providerId: "gowm.stas", providerVersion: "0.1.0", checks: stasChecks, evidenceLevel: "NATIVE_CONTRACT_AND_UNIT", runtimeReadiness: "NOT_CLAIMED", unitEvidenceRef: stasUnitEvidenceRef });
 reports.push(stas); await json(resolve(out, "stas.json"), stas);
 const sourceAfter = await runtimeSourceFingerprint(root);
 const aggregate = finish({ providers: reports.map(({ providerId, providerVersion, status, reportHash }) => ({ providerId, providerVersion, status, reportHash })), checks: [check("ALL_PROVIDER_REPORTS", reports.every((r) => r.status === "PASS"), "Required nine domains plus H3 interactive and Platform Validation"), check("REGISTRY_UNIQUE", registry.catalog().length === operationCount, `${operationCount} unique operations`), check("SOURCE_STABLE", sourceBefore.digest === sourceAfter.digest, "Source fingerprint captured before and after this executable gate")], sourceBefore, sourceAfter, evidenceLevel: "CONTRACT_AND_UNIT_PROTOCOL", runtimeReadiness: "NOT_CLAIMED" });
@@ -134,6 +137,9 @@ if (aggregate.status !== "PASS") process.exitCode = 1;
 function check(id: string, passed: boolean, message: string, details?: unknown) { return { id, status: passed ? "PASS" : "FAIL", message, ...(details === undefined ? {} : { details }) }; }
 function finish<T extends { checks: ReturnType<typeof check>[] }>(body: T) { const value = { schemaVersion: "1.0", ...body, status: body.checks.every((c) => c.status === "PASS") ? "PASS" : "FAIL" }; return { ...value, generatedAt, reportHash: sha256(value) }; }
 function byteHash(value: Uint8Array) { return `sha256:${createHash("sha256").update(value).digest("hex")}`; }
+function portableTextByteHash(value: Uint8Array) {
+  return byteHash(Buffer.from(value).toString("utf8").replaceAll("\r\n", "\n"));
+}
 async function json(path: string, value: unknown) {
   if (value !== null && typeof value === "object" && "providerId" in value && "checks" in value) {
     const validation = validateContract("urn:gowm:v0.6.1:provider-conformance-report", value);

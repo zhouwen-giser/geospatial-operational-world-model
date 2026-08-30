@@ -248,6 +248,7 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "gowm-v0.6/road-service-obligation.schema.json": "sha256:0e2344520ab9fcf4d076dfd77cf36223bda8d3676317b37ac30874e532f81cb1",
   "gowm-v0.7/analysis-input-set.schema.json": "sha256:7ce3611beba29da905ea0a797dcac39b55dee8ca7fdeaf7654d94d15154e6eef",
   "gowm-v0.7/analysis-resource-reference.schema.json": "sha256:d3e46fb7897ea3eb4c41836cbbfc3557c15ff91749c4486700b7039f2c444933",
+  "gowm-v0.7/capability-semantic-catalog-v1.1.schema.json": "sha256:02dbba15d838aafa0383160ec15f25ee9e4e4707287718678cad834ffa8413b0",
   "gowm-v0.7/capability-semantic-profile-v1.1.schema.json": "sha256:5c1f237823147d95adbd9ba3d23ec638b962a82566a869aec3a48a24518211c0",
   "gowm-v0.7/consumer-contract-bundle-manifest.schema.json": "sha256:2ff6888a824761dfc991f301801ec3bbb473d9cc5f42cb14e35198a4960c7b7d",
   "gowm-v0.7/historical-gap.schema.json": "sha256:0d3ab53f05149aab39615289e52b8b02be611f90208ca33d8c0338dcec56115a",

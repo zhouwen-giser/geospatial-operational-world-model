@@ -13,7 +13,7 @@
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
       "bytes": 65560,
-      "sha256": "fd76b4613bfd86814247a15c35bc4df5ab6821fb26449e5ed2d863dc16edaa55"
+      "sha256": "14a9008359cf41146ebb3a57118adcca4049f4d29056b87c1c2a101a86f4ae8d"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -174,6 +174,11 @@
       "path": "schemas/gowm-v0.7/analysis-resource-reference.schema.json",
       "bytes": 1084,
       "sha256": "27341cf3200451d5266229dc838932217ccb5733ccd3ba9d6e230488c85655a2"
+    },
+    {
+      "path": "schemas/gowm-v0.7/capability-semantic-catalog-v1.1.schema.json",
+      "bytes": 1510,
+      "sha256": "6a22e46443061c96ba68bc71e76f7a1dfa34999cd5a98512a03e659a54cfd8e7"
     },
     {
       "path": "schemas/gowm-v0.7/capability-semantic-profile-v1.1.schema.json",
@@ -382,8 +387,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 138461,
-      "sha256": "7527fac25fcfb125a08c2c018f65f00dcbee8caff34fd6b5141957e4fc01eaa1"
+      "bytes": 138811,
+      "sha256": "43e959349dcba5aac1d252f0caaed1a103015f2ac27843bfc41d1d7fb43b34f1"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -406,5 +411,5 @@
       "sha256": "cea3932eccd0316513bb6b9c56e906536767b109b7b5d64440d22571ab1acc31"
     }
   ],
-  "packageIntegrity": "sha512-qjYSWW/rnlGl6af7wZtlee+HWOWq8flunG79A6yEhg7vOiwMs+e+Bdh3ja22J1Mt4tsoh/O51aHyzQxGRGhi5A=="
+  "packageIntegrity": "sha512-E3jkCvGT1G6HnqLrBlvOPgFKYv5CxLxHiE+M8jA1yHx5aijYrX13OkN6FZIrYCzGfCUiO75z9S+XWcU/gciwwg=="
 }

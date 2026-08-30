@@ -7,7 +7,7 @@ import { CapabilityRegistry } from "../../services/gateway/world-capability-gate
 import type { ProviderClient } from "../../services/gateway/world-capability-gateway/src/types.js";
 import { createSouthboundOperationLock } from "../../scripts/generate-wsgs-operation-lock.js";
 
-const sourceSlugs = ["reference-catalog", "world-evidence", "spatial", "h3-interactive", "network", "route", "road-coverage", "platform-validation", "dataset-catalog"];
+const sourceSlugs = ["reference-catalog", "world-evidence", "spatial", "h3-interactive", "network", "route", "road-coverage", "platform-validation", "dataset-catalog", "historical-trace"];
 const officialDescriptors: CapabilityDescriptor[] = sourceSlugs.flatMap((slug) => JSON.parse(readFileSync(new URL(`../../contracts/manifests/providers/${slug}-provider.json`, import.meta.url), "utf8")).capabilities);
 function descriptor(operationId: string): CapabilityDescriptor {
   const declared = officialDescriptors.find((c) => c.operationId === operationId);
@@ -46,6 +46,21 @@ describe("capability semantic projection", () => {
     expect(first.profiles.find((item) => item.operationId === "coverage.road.plan")).toMatchObject({ semanticProfile: { resultNature: "PLAN", freshnessSemantics: "SNAPSHOT_CURRENTNESS" } });
     expect(first.catalogHash).toMatch(/^sha256:[0-9a-f]{64}$/u);
     expect(projectCapabilitySemantics(descriptors.slice(1), revision).profiles.some((item) => item.operationId === "h3.geometry.cover")).toBe(false);
+  });
+
+  it("validates a complete v0.7 catalog containing v1.1 historical semantics", () => {
+    const catalog = projectCapabilitySemantics([
+      descriptor("spatial.find-in-area"),
+      descriptor("history.get-trajectory")
+    ], revision);
+    expect(validateContract("urn:gowm:v0.7:capability-semantic-catalog", catalog)).toMatchObject({ valid: true });
+    expect(catalog.profiles.find((item) => item.operationId === "history.get-trajectory")).toMatchObject({
+      semanticProfile: {
+        profileVersion: "1.1",
+        producedReferenceKinds: expect.arrayContaining(["HISTORICAL_TRAJECTORY", "HISTORY_INPUT_SET"])
+      }
+    });
+    expect(validateContract("urn:gowm:v0.6.2:capability-semantic-catalog", catalog).valid).toBe(false);
   });
 
   it("serves the ten locked semantic profiles from the live Gateway registry", async () => {

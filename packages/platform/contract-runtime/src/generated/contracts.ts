@@ -3425,6 +3425,20 @@ export type GowmV07AnalysisResourceReference = {
   worldVersion?: number;
 };
 
+export type CapabilitySemanticCatalogV1_1 = {
+  bindingRevision: string;
+  catalogHash: string;
+  contractCatalogRevision: string;
+  profiles: Array<{
+  operationId: string;
+  operationVersion: string;
+  semanticProfile: GowmV07CapabilitySemanticProfileV11;
+  semanticProfileHash: string;
+}>;
+  registryRevision?: string;
+  schemaVersion: "1.1";
+};
+
 export type GowmV07CapabilitySemanticProfileV11 = ({
   acceptedReferenceKinds: Array<GowmV07CapabilitySemanticProfileV11ReferenceKindV11>;
   domain: "REFERENCE" | "CATALOG" | "WORLD_STATE" | "SPATIAL" | "TEMPORAL" | "H3" | "NETWORK" | "ROUTING" | "COVERAGE" | "ANALYSIS" | "PLATFORM";
