@@ -1999,7 +1999,7 @@ export type GowmV04OperationalTaskEvent = {
   correlationClaims?: Array<GowmV04ExternalCorrelationClaim>;
   eventId: string;
   eventTime: GowmV04CommonDateTime;
-  eventType: "CONTROL_REQUEST_OBSERVED" | "CONTROL_ACCEPTED_OBSERVED" | "CONTROL_REJECTED_OBSERVED" | "EXECUTION_STARTED_OBSERVED" | "EXECUTION_PROGRESS_OBSERVED" | "EXECUTION_PAUSED_OBSERVED" | "EXECUTION_RESUMED_OBSERVED" | "EXECUTION_STOPPED_OBSERVED" | "CONTROL_COMPLETED_REPORTED" | "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED" | "PHYSICAL_EFFECT_CONFIRMED" | "PHYSICAL_EFFECT_CONTRADICTED" | "EXECUTION_FAILED_OBSERVED" | "EXECUTION_CANCELLED_OBSERVED" | "OBSERVATION_GAP_OPENED" | "OBSERVATION_GAP_CLOSED";
+  eventType: "CONTROL_REQUEST_OBSERVED" | "CONTROL_ACCEPTED_OBSERVED" | "CONTROL_REJECTED_OBSERVED" | "EXECUTION_STARTED_OBSERVED" | "EXECUTION_PROGRESS_OBSERVED" | "EXECUTION_PAUSED_OBSERVED" | "EXECUTION_STOPPED_OBSERVED" | "CONTROL_COMPLETED_REPORTED" | "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED" | "PHYSICAL_EFFECT_CONFIRMED" | "PHYSICAL_EFFECT_CONTRADICTED" | "EXECUTION_FAILED_OBSERVED" | "EXECUTION_CANCELLED_OBSERVED" | "OBSERVATION_GAP_OPENED" | "OBSERVATION_GAP_CLOSED";
   geometryRef?: string;
   operationalTaskId: string;
   payload: Record<string, unknown>;
@@ -3589,6 +3589,31 @@ export type GowmV07HistoricalTrajectoryResultTrajectoryReferenceKey = {
   kind: "HISTORICAL_TRAJECTORY";
   namespace: string;
   version: string;
+};
+
+export type GowmV07OperationalEventTimeline = {
+  events: Array<GowmV07OperationalTaskEvent>;
+  nextCursor?: string;
+  operationalTaskReferenceKey?: GowmV04CommonReferenceKey;
+  schemaVersion: "1.0";
+  truncated: boolean;
+};
+
+export type GowmV07OperationalTaskEvent = {
+  actorReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  confidence?: number;
+  correlationClaims?: Array<GowmV04ExternalCorrelationClaim>;
+  eventId: string;
+  eventTime: GowmV04CommonDateTime;
+  eventType: "CONTROL_REQUEST_OBSERVED" | "CONTROL_ACCEPTED_OBSERVED" | "CONTROL_REJECTED_OBSERVED" | "EXECUTION_STARTED_OBSERVED" | "EXECUTION_PROGRESS_OBSERVED" | "EXECUTION_PAUSED_OBSERVED" | "EXECUTION_RESUMED_OBSERVED" | "EXECUTION_STOPPED_OBSERVED" | "CONTROL_COMPLETED_REPORTED" | "PHYSICAL_EFFECT_PARTIALLY_CONFIRMED" | "PHYSICAL_EFFECT_CONFIRMED" | "PHYSICAL_EFFECT_CONTRADICTED" | "EXECUTION_FAILED_OBSERVED" | "EXECUTION_CANCELLED_OBSERVED" | "OBSERVATION_GAP_OPENED" | "OBSERVATION_GAP_CLOSED";
+  geometryRef?: string;
+  operationalTaskId: string;
+  payload: Record<string, unknown>;
+  provenance: Array<GowmV04CommonEvidenceRef>;
+  receivedTime: GowmV04CommonDateTime;
+  subjectReferenceKey?: GowmV04CommonReferenceKey;
+  targetReferenceKeys: Array<GowmV04CommonReferenceKey>;
+  worldVersion: number;
 };
 
 export type GowmV07QuerySnapshotAdherence = {

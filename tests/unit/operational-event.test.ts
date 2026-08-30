@@ -1,4 +1,5 @@
 import { describe,expect,it } from "vitest";
+import { validateContract } from "../../packages/platform/contract-runtime/src/index.js";
 import {
   OPERATIONAL_EVENT_TYPES,
   OperationalEventIngestSchema,
@@ -30,7 +31,7 @@ function eventInput() {
   };
 }
 
-describe("v0.4 operational event ingest",() => {
+describe("v0.7 operational event ingest",() => {
   it("accepts every frozen event type and rejects boundary-owned output fields",() => {
     expect(OPERATIONAL_EVENT_TYPES).toHaveLength(16);
     expect(OPERATIONAL_EVENT_TYPES).toContain("EXECUTION_RESUMED_OBSERVED");
@@ -40,6 +41,18 @@ describe("v0.4 operational event ingest",() => {
     expect(OperationalEventIngestSchema.safeParse({
       ...eventInput(),receivedTime: "2026-08-24T01:00:01.000Z",worldVersion: 1
     }).success).toBe(false);
+  });
+
+  it("accepts RESUMED only through the v0.7 event contract and preserves v0.4",() => {
+    const output:Record<string,unknown>={
+      ...eventInput(),eventType:"EXECUTION_RESUMED_OBSERVED",
+      receivedTime:"2026-08-24T01:00:01.000Z",worldVersion:1
+    };
+    for(const boundaryOwned of ["dataScopeKey","sourceAuthority","sourceEventKey","sourceRevisionNo"]){
+      delete output[boundaryOwned];
+    }
+    expect(validateContract("urn:gowm:v0.7:operational-task-event",output).valid).toBe(true);
+    expect(validateContract("urn:gowm:v0.4:operational-task-event",output).valid).toBe(false);
   });
 
   it("keeps internal task identity distinct from propagated external identity",() => {

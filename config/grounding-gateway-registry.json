@@ -40,8 +40,8 @@
     {
       "providerId": "gowm.operational-reality",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:2919af05d0dbe1517b523126fa6dfdea5573bfbeaedba4fb432b7b4d73adc6a2",
-      "manifestHash": "sha256:e0e99981dc87ae595f96d94e037243f58899df110fc56e15904bc484016a78bb",
+      "implementationDigest": "sha256:e2e17f588a279843e1b79005fe3437e97c90407dc05915aaf1bbb6eafe081321",
+      "manifestHash": "sha256:979f36d17637eb7ba5f6109500a41eabd61e73ae14fdaf4b0847bdb54addeded",
       "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
       "endpoint": "http://operational-reality-provider:8094",
       "approvalId": "operational-reality-v1.0",

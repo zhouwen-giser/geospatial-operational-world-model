@@ -27,9 +27,10 @@ export interface OperationalSchemas {
 }
 export const OPERATIONAL_REALITY_SCHEMAS = Object.fromEntries(
   Object.entries(names).map(([operationId,[inputName,outputName]]) => {
-    const version=operationId==="operational-task.get-execution-intervals"?"v0.7":"v0.4";
-    const inputSchemaUri=`urn:gowm:${version}:${inputName}`;
-    const outputSchemaUri=`urn:gowm:${version}:${outputName}`;
+    const inputVersion=operationId==="operational-task.get-execution-intervals"?"v0.7":"v0.4";
+    const outputVersion=operationId==="operational-task.get-execution-intervals"||outputName==="operational-event-timeline"?"v0.7":"v0.4";
+    const inputSchemaUri=`urn:gowm:${inputVersion}:${inputName}`;
+    const outputSchemaUri=`urn:gowm:${outputVersion}:${outputName}`;
     return [operationId,{
       input:getContractSchema(inputSchemaUri),output:getContractSchema(outputSchemaUri),
       inputSchemaUri,outputSchemaUri,inputSchemaHash:getContractSchemaHash(inputSchemaUri),

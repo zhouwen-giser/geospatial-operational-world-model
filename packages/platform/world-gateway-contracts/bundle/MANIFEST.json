@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "packageName": "@gowm/world-gateway-contracts",
   "packageVersion": "0.7.0",
-  "contractCatalogRevision": "sha256:dbc8adb8c087798257fda99f5e9a77e056d7df71228e2dd2ab542d175afe1fb8",
+  "contractCatalogRevision": "sha256:628aec5e651ebf162ffa827ad0ffc5cb52faaca524bffe6c973294924c17a604",
   "semanticCatalogHash": "sha256:8bf2daf5926f2253d7be84500f804049b81f49d95dc8408ff6558f308b1e686f",
   "files": [
     {
@@ -13,7 +13,7 @@
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
       "bytes": 65560,
-      "sha256": "227e08ddff161e297ee7c7ceef3f1a9b7b8c5933bf1e6ac495fefad7019533c9"
+      "sha256": "15698feb058fe6b3a4b4573b6fe33e3f580e0f1a5863accaaa3f70eeadcfa7aa"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -28,12 +28,12 @@
     {
       "path": "revisions/contract-catalog.json",
       "bytes": 229,
-      "sha256": "180460ae0bb3eefe61a8b7ee4a4061b1b0c107c8ca4c30006800588a49ccd096"
+      "sha256": "1c50e7229ae52725d5669b5a11272bc53d92b3aed23208c202fb9906babdb98f"
     },
     {
       "path": "revisions/semantic-catalog.json",
       "bytes": 233,
-      "sha256": "78bff948f63d041a274a2977bc092644e786eb03365387a9b6b4a40a3f981d76"
+      "sha256": "ce14181b5c0b06a99cf4526f28976599aec5254009c8340b090c2aa2fe6794db"
     },
     {
       "path": "schemas/gowm-v0.6.2/capability-descriptor-v1.1.schema.json",
@@ -206,6 +206,16 @@
       "sha256": "1eb3c407a74fd51e279252fc7edc214bc99341b0664beadb96419af78b07cabc"
     },
     {
+      "path": "schemas/gowm-v0.7/operational-event-timeline.schema.json",
+      "bytes": 670,
+      "sha256": "dbd8bf948e28a48e8c7a8432ea7fabe9603e036adf6d1b522163993ecc5a1ce3"
+    },
+    {
+      "path": "schemas/gowm-v0.7/operational-task-event.schema.json",
+      "bytes": 2377,
+      "sha256": "50eb9d3e312063ae5fffc81acdd1d12ef88fa4077e16be16d2498dc071c08d74"
+    },
+    {
       "path": "schemas/gowm-v0.7/query-snapshot-adherence.schema.json",
       "bytes": 1293,
       "sha256": "4281aba792da58cf8874a386beb65255e13a22c0ca0712e19908cf70e486cceb"
@@ -372,8 +382,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 137208,
-      "sha256": "f79d4e1d71eef6547eb931e916e0670a52483d4f979a9379881e4938402c12ad"
+      "bytes": 138461,
+      "sha256": "7527fac25fcfb125a08c2c018f65f00dcbee8caff34fd6b5141957e4fc01eaa1"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -396,5 +406,5 @@
       "sha256": "cea3932eccd0316513bb6b9c56e906536767b109b7b5d64440d22571ab1acc31"
     }
   ],
-  "packageIntegrity": "sha512-kru673hkbTydOjFalPsOcrZ6Z4aza3b8MHFHppn6LJg4nHzQzJ7+EB12VSZDrk6Z3iHRZ/xA9M325Cm6tauUJw=="
+  "packageIntegrity": "sha512-q/fb5ogGn49TDrMtOZMq3Xqpscbe8hBU+3eNARKf80WiFLl58HH1m4WWLmoIsx1cWwsqEEZNRgnlTG/I/+Z+Dw=="
 }

@@ -4,9 +4,9 @@
   "consumerContractPackage": {
     "name": "@gowm/world-gateway-contracts",
     "version": "0.7.0",
-    "integrity": "sha512-kru673hkbTydOjFalPsOcrZ6Z4aza3b8MHFHppn6LJg4nHzQzJ7+EB12VSZDrk6Z3iHRZ/xA9M325Cm6tauUJw=="
+    "integrity": "sha512-q/fb5ogGn49TDrMtOZMq3Xqpscbe8hBU+3eNARKf80WiFLl58HH1m4WWLmoIsx1cWwsqEEZNRgnlTG/I/+Z+Dw=="
   },
-  "contractCatalogRevision": "sha256:dbc8adb8c087798257fda99f5e9a77e056d7df71228e2dd2ab542d175afe1fb8",
+  "contractCatalogRevision": "sha256:628aec5e651ebf162ffa827ad0ffc5cb52faaca524bffe6c973294924c17a604",
   "semanticCatalogHash": "sha256:8bf2daf5926f2253d7be84500f804049b81f49d95dc8408ff6558f308b1e686f",
   "availabilityContractHash": "sha256:66d6cfe2679d6bdd0cf6f22cb7153d1f5f4c934ebc286f6bac33ab6bd7eb4036",
   "snapshotContractHash": "sha256:350044225667ce00c2850e9a9d7c86762fc2e042793b6a8666c724c763135ca0",
@@ -1098,7 +1098,7 @@
       "operationId": "operational-task.get-timeline",
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:8a0a79c862deaa88c082958698f19726fde04c9209a2ea3cc72da4b3d67c8c59",
-      "outputSchemaHash": "sha256:d6879e490c02b9e97ef62d2370d81821b48889e78ebf26f5d85ee7ba98a802fc",
+      "outputSchemaHash": "sha256:abf856b70a5369e8dc9f560a5e4f6637dd1b4849e9c6e09bd98b619bf54cc9c8",
       "semanticProfileHash": "sha256:2457793708b3c144eae88ee189d57bdf01816d58472dec8ce02b88106fdbca3b",
       "maturity": "PREVIEW",
       "requiredPermissions": [
@@ -1434,7 +1434,7 @@
       "operationId": "world-event.find-by-correlation",
       "operationVersion": "1.0",
       "inputSchemaHash": "sha256:8a0a79c862deaa88c082958698f19726fde04c9209a2ea3cc72da4b3d67c8c59",
-      "outputSchemaHash": "sha256:d6879e490c02b9e97ef62d2370d81821b48889e78ebf26f5d85ee7ba98a802fc",
+      "outputSchemaHash": "sha256:abf856b70a5369e8dc9f560a5e4f6637dd1b4849e9c6e09bd98b619bf54cc9c8",
       "semanticProfileHash": "sha256:ff1343dd39a7582549e881b59e83aee7b4a6246c7c0d5941991e4175ed46e5a6",
       "maturity": "PREVIEW",
       "requiredPermissions": [
