@@ -2,8 +2,8 @@
   "schemaVersion": "1.0",
   "packageName": "@gowm/world-gateway-contracts",
   "packageVersion": "0.7.0",
-  "contractCatalogRevision": "sha256:628aec5e651ebf162ffa827ad0ffc5cb52faaca524bffe6c973294924c17a604",
-  "semanticCatalogHash": "sha256:8bf2daf5926f2253d7be84500f804049b81f49d95dc8408ff6558f308b1e686f",
+  "contractCatalogRevision": "sha256:cebc90e797cfdb256c4e5ae27472dd2ef7b47733337c4ac0fbd32251ef092e2f",
+  "semanticCatalogHash": "sha256:9cb540bbda32d50bdcf9bd3f60d2974bd3fe02393a5c4914e30940dccb719ae2",
   "files": [
     {
       "path": "compatibility/report.json",
@@ -13,7 +13,7 @@
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
       "bytes": 65560,
-      "sha256": "15698feb058fe6b3a4b4573b6fe33e3f580e0f1a5863accaaa3f70eeadcfa7aa"
+      "sha256": "fd76b4613bfd86814247a15c35bc4df5ab6821fb26449e5ed2d863dc16edaa55"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -28,12 +28,12 @@
     {
       "path": "revisions/contract-catalog.json",
       "bytes": 229,
-      "sha256": "1c50e7229ae52725d5669b5a11272bc53d92b3aed23208c202fb9906babdb98f"
+      "sha256": "1f28b5381383661afdd110d65fa713432e3eb8ad1ff4b2b6d3ca263e77352138"
     },
     {
       "path": "revisions/semantic-catalog.json",
       "bytes": 233,
-      "sha256": "ce14181b5c0b06a99cf4526f28976599aec5254009c8340b090c2aa2fe6794db"
+      "sha256": "8e42319533cf86010b3468834752c91529e7bb0a4a0b2331e2ab86f4baef6044"
     },
     {
       "path": "schemas/gowm-v0.6.2/capability-descriptor-v1.1.schema.json",
@@ -406,5 +406,5 @@
       "sha256": "cea3932eccd0316513bb6b9c56e906536767b109b7b5d64440d22571ab1acc31"
     }
   ],
-  "packageIntegrity": "sha512-q/fb5ogGn49TDrMtOZMq3Xqpscbe8hBU+3eNARKf80WiFLl58HH1m4WWLmoIsx1cWwsqEEZNRgnlTG/I/+Z+Dw=="
+  "packageIntegrity": "sha512-qjYSWW/rnlGl6af7wZtlee+HWOWq8flunG79A6yEhg7vOiwMs+e+Bdh3ja22J1Mt4tsoh/O51aHyzQxGRGhi5A=="
 }

@@ -5,7 +5,7 @@
     "providerId": "gowm.historical-trace",
     "providerVersion": "0.7.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:bf0ad8f730ec3062cc76ce42b6f2c3bfd5419195daaea196622e1bcd61f17b58",
+    "implementationDigest": "sha256:5558e64bc2c4f187c851543bc7a3bd2cdc0284dbd7565cc1fdfe700e8b22800c",
     "sourceRef": "urn:gowm:source:in-tree:historical-trace:0.7.0"
   },
   "endpoints": {
@@ -56,7 +56,8 @@
         },
         "notes": [
           "The operation returns one stored source-selected trajectory revision and never performs hidden multi-source fusion.",
-          "Every interval, tracklet, finalization, watermark, profile, and analysis-space input is frozen by the returned snapshot or its HISTORY_INPUT_SET resource."
+          "Every interval, tracklet, finalization, watermark, profile, and analysis-space input is frozen by the returned snapshot or its HISTORY_INPUT_SET resource.",
+          "When no as-of revision or outcome exists, the Provider only idempotently enqueues the exact frozen request and returns PROJECTION_PENDING; construction remains worker-owned."
         ]
       },
       "semanticRole": "DOMAIN_ANALYSIS",
