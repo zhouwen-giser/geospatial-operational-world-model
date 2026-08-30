@@ -192,6 +192,20 @@ describe("GOWM v0.7.1 exact-head evidence contracts", () => {
     }, lock);
     expect(sourceDrift.status).not.toBe(0);
     expect(sourceDrift.stderr).toContain("CI source identity drifted");
+
+    const commitDrift = runHistoricalLockBindingVerification({
+      ...lock,
+      candidateCommit: "d".repeat(40)
+    }, lock);
+    expect(commitDrift.status).not.toBe(0);
+    expect(commitDrift.stderr).toContain("candidateCommit drifted");
+
+    const treeDrift = runHistoricalLockBindingVerification({
+      ...lock,
+      candidateTree: "d".repeat(40)
+    }, lock);
+    expect(treeDrift.status).not.toBe(0);
+    expect(treeDrift.stderr).toContain("candidateTree drifted");
   });
 
   it("accepts only the canonical repository workflow run as CI evidence authority", () => {
@@ -208,6 +222,36 @@ describe("GOWM v0.7.1 exact-head evidence contracts", () => {
       const rejected = runCiAuthority(environment);
       expect(rejected.status).not.toBe(0);
       expect(rejected.stderr).toContain("canonical GitHub Actions workflow");
+    }
+  });
+
+  it("binds the exact-head runtime marker to every prerequisite report byte", async () => {
+    const evidenceRoot = await mkdtemp(resolve(tmpdir(), "gowm-v071-runtime-evidence-"));
+    try {
+      const fixture = await writeExactHeadRuntimeFixture(evidenceRoot);
+      expect(runRuntimeQualificationVerification(evidenceRoot).status).toBe(0);
+
+      await writeFile(resolve(evidenceRoot, "exact-head-runtime-report.json"), `${JSON.stringify({
+        ...fixture.runtimeReport,
+        marker: "GOWM_V071_RUNTIME_MARKER_DRIFTED"
+      })}\n`);
+      const markerDrift = runRuntimeQualificationVerification(evidenceRoot);
+      expect(markerDrift.status).not.toBe(0);
+      expect(markerDrift.stderr).toContain("runtime qualification marker drifted");
+
+      await writeFile(
+        resolve(evidenceRoot, "exact-head-runtime-report.json"),
+        `${JSON.stringify(fixture.runtimeReport)}\n`
+      );
+      await writeFile(resolve(evidenceRoot, "gateway-runtime-report.json"), `${JSON.stringify({
+        ...fixture.prerequisiteReports.get("gateway-runtime-report")!,
+        reason: "valid report bytes changed after runtime qualification"
+      })}\n`);
+      const prerequisiteDrift = runRuntimeQualificationVerification(evidenceRoot);
+      expect(prerequisiteDrift.status).not.toBe(0);
+      expect(prerequisiteDrift.stderr).toContain("do not bind the prerequisite report bytes");
+    } finally {
+      await rm(evidenceRoot, { recursive: true, force: true });
     }
   });
 
@@ -305,6 +349,80 @@ function runEvidenceVerification(evidenceRoot: string, reportId: string) {
   });
 }
 
+function runRuntimeQualificationVerification(evidenceRoot: string) {
+  const helperUrl = pathToFileURL(resolve(repositoryRoot, "validation/scripts/gowm-v071-evidence-verification.mjs")).href;
+  const source = [
+    `import { readVerifiedExactHeadRuntimeQualification } from ${JSON.stringify(helperUrl)};`,
+    "await readVerifiedExactHeadRuntimeQualification({",
+    "  evidenceRoot: process.env.TEST_EVIDENCE_ROOT,",
+    `  commit: ${JSON.stringify(COMMIT)},`,
+    `  tree: ${JSON.stringify(TREE)},`,
+    `  ciSource: ${JSON.stringify(CI_SOURCE)}`,
+    "});"
+  ].join("\n");
+  return spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", source], {
+    cwd: repositoryRoot,
+    encoding: "utf8",
+    env: { ...process.env, TEST_EVIDENCE_ROOT: evidenceRoot },
+    windowsHide: true
+  });
+}
+
+async function writeExactHeadRuntimeFixture(evidenceRoot: string) {
+  const prerequisites = [
+    ["source-lock", "PASS"],
+    ["protocol-closure-report", "PASS"],
+    ["deterministic-hash-report", "PASS"],
+    ["database-fresh-report", "PASS"],
+    ["database-upgrade-report", "PASS"],
+    ["gateway-runtime-report", "PASS"],
+    ["node-adherence-report", "PASS"],
+    ["worker-backoff-report", "PASS"],
+    ["artifact-roundtrip-report", "DEFERRED"],
+    ["historical-two-provider-dag-report", "PASS"]
+  ] as const;
+  const prerequisiteReports = new Map<string, Record<string, unknown>>();
+  const checks = [];
+  for (const [reportId, status] of prerequisites) {
+    const report = qualificationReport(reportId, status, reportId === "source-lock"
+      ? { trackedWorktreeCleanAtStart: true }
+      : {});
+    const bytes = Buffer.from(`${JSON.stringify(report)}\n`, "utf8");
+    prerequisiteReports.set(reportId, report);
+    await writeFile(resolve(evidenceRoot, `${reportId}.json`), bytes);
+    checks.push({
+      reportId,
+      status,
+      sha256: `sha256:${createHash("sha256").update(bytes).digest("hex")}`
+    });
+  }
+  const runtimeReport = qualificationReport("exact-head-runtime-report", "PASS", {
+    gate: "exact-head runtime qualification",
+    marker: "GOWM_V071_EXACT_HEAD_RUNTIME_QUALIFIED",
+    checks
+  });
+  await writeFile(resolve(evidenceRoot, "exact-head-runtime-report.json"), `${JSON.stringify(runtimeReport)}\n`);
+  return { prerequisiteReports, runtimeReport };
+}
+
+function qualificationReport(
+  reportId: string,
+  status: "PASS" | "DEFERRED",
+  fields: Record<string, unknown> = {}
+) {
+  return {
+    schemaVersion: "1.0",
+    candidateCommit: COMMIT,
+    candidateTree: TREE,
+    generatedAt: "2026-08-30T12:00:00.000Z",
+    evidenceAuthority: "IMMUTABLE_CI_ARTIFACT",
+    ciSource: CI_SOURCE,
+    reportId,
+    status,
+    ...fields
+  };
+}
+
 function runOperationSelection(consumerLock: Record<string, unknown>) {
   const helperUrl = pathToFileURL(resolve(repositoryRoot, "validation/scripts/gowm-v071-evidence-verification.mjs")).href;
   const source = [
@@ -331,6 +449,8 @@ function runHistoricalLockBindingVerification(
     "const expected = JSON.parse(process.env.TEST_EXPECTED_HISTORICAL_LOCK);",
     "assertValidHistoricalConsumerLock(lock, {",
     "  ciSource: expected.ciSource,",
+    "  commit: expected.candidateCommit,",
+    "  tree: expected.candidateTree,",
     "  bindingRevision: expected.bindingRevision,",
     "  operations: expected.operations,",
     "  providerManifests: expected.providerManifests",

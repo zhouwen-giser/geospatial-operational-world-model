@@ -121,6 +121,9 @@ jobs:
       - name: Record honest Artifact deferral
         run: node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs defer-artifact
 
+      - name: Finalize exact-head runtime qualification
+        run: node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs finalize-runtime
+
       - name: Generate exact-head WSGS Historical Consumer Baseline
         run: npm run validate:v071-wsgs-historical-lock
 

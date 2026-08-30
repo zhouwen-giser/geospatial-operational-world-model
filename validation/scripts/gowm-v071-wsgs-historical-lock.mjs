@@ -7,7 +7,7 @@ import { assertPostMergeMainCi } from "./gowm-v071-ci-authority.mjs";
 import {
   assertValidHistoricalConsumerLock,
   readHistoricalConsumerBindingAuthority,
-  readVerifiedQualificationReport,
+  readVerifiedExactHeadRuntimeQualification,
 } from "./gowm-v071-evidence-verification.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -22,36 +22,17 @@ if (git(["status", "--porcelain=v1", "--untracked-files=all"]).length !== 0) {
   throw new Error("WSGS lock generation requires a clean worktree, including staged and untracked files");
 }
 
-const prerequisiteIds = [
-  "source-lock",
-  "protocol-closure-report",
-  "deterministic-hash-report",
-  "database-fresh-report",
-  "database-upgrade-report",
-  "gateway-runtime-report",
-  "node-adherence-report",
-  "worker-backoff-report",
-  "artifact-roundtrip-report",
-  "historical-two-provider-dag-report"
-];
-const evidenceFiles = [];
-for (const reportId of prerequisiteIds) {
-  const acceptedStatuses = reportId === "artifact-roundtrip-report" ? ["DEFERRED"] : ["PASS"];
-  const { bytes } = await readVerifiedQualificationReport({
-    evidenceRoot,
-    reportId,
-    commit,
-    tree,
-    ciSource: authority.ciSource,
-    acceptedStatuses
-  });
-  evidenceFiles.push({ reportId, sha256: createHash("sha256").update(bytes).digest("hex") });
-}
+const { bytes: runtimeQualificationBytes } = await readVerifiedExactHeadRuntimeQualification({
+  evidenceRoot,
+  commit,
+  tree,
+  ciSource: authority.ciSource
+});
 
 const bindingAuthority = await readHistoricalConsumerBindingAuthority(root);
 const { consumerLock, operations, providerManifests, bindingRevision } = bindingAuthority;
 const runtimeQualificationEvidenceDigest = `sha256:${createHash("sha256")
-  .update(JSON.stringify(evidenceFiles.sort((left, right) => left.reportId < right.reportId ? -1 : left.reportId > right.reportId ? 1 : 0)))
+  .update(runtimeQualificationBytes)
   .digest("hex")}`;
 const lock = {
   schemaVersion: "1.0",
@@ -93,6 +74,8 @@ const lock = {
 };
 assertValidHistoricalConsumerLock(lock, {
   ciSource: authority.ciSource,
+  commit,
+  tree,
   bindingRevision,
   operations,
   providerManifests

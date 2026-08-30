@@ -15,6 +15,21 @@ const HISTORICAL_OPERATION_BINDINGS = [
 
 const HISTORICAL_PROVIDER_IDS = HISTORICAL_OPERATION_BINDINGS.map(({ providerId }) => providerId);
 
+export const EXACT_HEAD_RUNTIME_REPORT_ID = "exact-head-runtime-report";
+export const EXACT_HEAD_RUNTIME_MARKER = "GOWM_V071_EXACT_HEAD_RUNTIME_QUALIFIED";
+export const EXACT_HEAD_RUNTIME_PREREQUISITES = [
+  { reportId: "source-lock", acceptedStatuses: ["PASS"] },
+  { reportId: "protocol-closure-report", acceptedStatuses: ["PASS"] },
+  { reportId: "deterministic-hash-report", acceptedStatuses: ["PASS"] },
+  { reportId: "database-fresh-report", acceptedStatuses: ["PASS"] },
+  { reportId: "database-upgrade-report", acceptedStatuses: ["PASS"] },
+  { reportId: "gateway-runtime-report", acceptedStatuses: ["PASS"] },
+  { reportId: "node-adherence-report", acceptedStatuses: ["PASS"] },
+  { reportId: "worker-backoff-report", acceptedStatuses: ["PASS"] },
+  { reportId: "artifact-roundtrip-report", acceptedStatuses: ["DEFERRED"] },
+  { reportId: "historical-two-provider-dag-report", acceptedStatuses: ["PASS"] }
+];
+
 export async function readVerifiedQualificationReport({
   evidenceRoot,
   reportId,
@@ -62,6 +77,45 @@ export async function readVerifiedQualificationReport({
     throw new Error("source-lock did not attest a clean worktree");
   }
   return { report, bytes };
+}
+
+export async function readVerifiedExactHeadRuntimeQualification({
+  evidenceRoot,
+  commit,
+  tree,
+  ciSource
+}) {
+  const prerequisiteChecks = [];
+  for (const { reportId, acceptedStatuses } of EXACT_HEAD_RUNTIME_PREREQUISITES) {
+    const { report, bytes } = await readVerifiedQualificationReport({
+      evidenceRoot,
+      reportId,
+      commit,
+      tree,
+      ciSource,
+      acceptedStatuses
+    });
+    prerequisiteChecks.push({
+      reportId,
+      status: report.status,
+      sha256: `sha256:${createHash("sha256").update(bytes).digest("hex")}`
+    });
+  }
+  const verified = await readVerifiedQualificationReport({
+    evidenceRoot,
+    reportId: EXACT_HEAD_RUNTIME_REPORT_ID,
+    commit,
+    tree,
+    ciSource,
+    acceptedStatuses: ["PASS"]
+  });
+  if (verified.report.marker !== EXACT_HEAD_RUNTIME_MARKER) {
+    throw new Error("exact-head runtime qualification marker drifted");
+  }
+  if (!sameRecordSet(verified.report.checks, prerequisiteChecks, "reportId")) {
+    throw new Error("exact-head runtime qualification checks do not bind the prerequisite report bytes");
+  }
+  return { ...verified, prerequisiteChecks };
 }
 
 export function selectHistoricalConsumerOperations(consumerLock) {
@@ -154,6 +208,12 @@ export function assertValidHistoricalConsumerLock(lock, expected = {}) {
   }
   if (expected.ciSource !== undefined && !sameCiSource(lock.ciSource, expected.ciSource)) {
     throw new Error("WSGS Historical Consumer Lock CI source identity drifted");
+  }
+  if (expected.commit !== undefined && lock.candidateCommit !== expected.commit) {
+    throw new Error("WSGS Historical Consumer Lock candidateCommit drifted");
+  }
+  if (expected.tree !== undefined && lock.candidateTree !== expected.tree) {
+    throw new Error("WSGS Historical Consumer Lock candidateTree drifted");
   }
   if (expected.bindingRevision !== undefined && lock.bindingRevision !== expected.bindingRevision) {
     throw new Error("WSGS Historical Consumer Lock bindingRevision drifted");

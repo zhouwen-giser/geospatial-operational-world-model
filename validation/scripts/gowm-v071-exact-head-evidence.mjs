@@ -6,8 +6,12 @@ import { fileURLToPath } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
 import { assertPostMergeMainCi } from "./gowm-v071-ci-authority.mjs";
 import {
+  EXACT_HEAD_RUNTIME_MARKER,
+  EXACT_HEAD_RUNTIME_PREREQUISITES,
+  EXACT_HEAD_RUNTIME_REPORT_ID,
   assertValidHistoricalConsumerLock,
   readHistoricalConsumerBindingAuthority,
+  readVerifiedExactHeadRuntimeQualification,
   readVerifiedQualificationReport
 } from "./gowm-v071-evidence-verification.mjs";
 
@@ -23,8 +27,9 @@ if (command === "initialize") await initialize();
 else if (command === "run") await runGate();
 else if (command === "defer-artifact") await deferArtifact();
 else if (command === "alias") await aliasReport();
+else if (command === "finalize-runtime") await finalizeRuntime();
 else if (command === "finalize") await finalize();
-else throw new Error("usage: gowm-v071-exact-head-evidence.mjs initialize|run|defer-artifact|alias|finalize");
+else throw new Error("usage: gowm-v071-exact-head-evidence.mjs initialize|run|defer-artifact|alias|finalize-runtime|finalize");
 
 async function initialize() {
   await mkdir(resolve(evidenceRoot, "logs"), { recursive: true });
@@ -136,6 +141,41 @@ async function aliasReport() {
   }));
 }
 
+async function finalizeRuntime() {
+  if (!worktreeClean()) {
+    throw new Error("exact-head runtime qualification cannot finalize from a dirty worktree");
+  }
+  const checks = [];
+  for (const { reportId, acceptedStatuses } of EXACT_HEAD_RUNTIME_PREREQUISITES) {
+    const { report, bytes } = await readVerifiedQualificationReport({
+      evidenceRoot,
+      reportId,
+      commit: identity.commit,
+      tree: identity.tree,
+      ciSource: authority.ciSource,
+      acceptedStatuses
+    });
+    checks.push({
+      reportId,
+      status: report.status,
+      sha256: `sha256:${createHash("sha256").update(bytes).digest("hex")}`
+    });
+  }
+  const report = envelope(EXACT_HEAD_RUNTIME_REPORT_ID, "PASS", {
+    gate: "GOWM v0.7.1 exact-head PostgreSQL, MobilityDB, Gateway and Docker runtime qualification",
+    marker: EXACT_HEAD_RUNTIME_MARKER,
+    checks
+  });
+  await writeReport(EXACT_HEAD_RUNTIME_REPORT_ID, report);
+  await readVerifiedExactHeadRuntimeQualification({
+    evidenceRoot,
+    commit: identity.commit,
+    tree: identity.tree,
+    ciSource: authority.ciSource
+  });
+  process.stdout.write(`${JSON.stringify(report)}\n`);
+}
+
 async function finalize() {
   if (!worktreeClean()) {
     throw new Error("exact-head qualification cannot finalize from a dirty worktree");
@@ -151,19 +191,27 @@ async function finalize() {
     "worker-backoff-report",
     "artifact-roundtrip-report",
     "historical-two-provider-dag-report",
+    EXACT_HEAD_RUNTIME_REPORT_ID,
     "wsgs-historical-consumer-lock"
   ];
   const checks = [];
   for (const reportId of required) {
     const acceptedStatuses = reportId === "artifact-roundtrip-report" ? ["DEFERRED"] : ["PASS"];
-    const { report, bytes } = await readVerifiedQualificationReport({
-      evidenceRoot,
-      reportId,
-      commit: identity.commit,
-      tree: identity.tree,
-      ciSource: authority.ciSource,
-      acceptedStatuses
-    });
+    const { report, bytes } = reportId === EXACT_HEAD_RUNTIME_REPORT_ID
+      ? await readVerifiedExactHeadRuntimeQualification({
+        evidenceRoot,
+        commit: identity.commit,
+        tree: identity.tree,
+        ciSource: authority.ciSource
+      })
+      : await readVerifiedQualificationReport({
+        evidenceRoot,
+        reportId,
+        commit: identity.commit,
+        tree: identity.tree,
+        ciSource: authority.ciSource,
+        acceptedStatuses
+      });
     if (reportId === "wsgs-historical-consumer-lock") {
       const lockBytes = await readFile(resolve(evidenceRoot, "GOWM_HISTORICAL_CONSUMER_LOCK.json"));
       const lockDigest = `sha256:${createHash("sha256").update(lockBytes).digest("hex")}`;
@@ -177,6 +225,8 @@ async function finalize() {
       const bindingAuthority = await readHistoricalConsumerBindingAuthority(root);
       assertValidHistoricalConsumerLock(JSON.parse(lockBytes.toString("utf8")), {
         ciSource: authority.ciSource,
+        commit: identity.commit,
+        tree: identity.tree,
         bindingRevision: bindingAuthority.bindingRevision,
         operations: bindingAuthority.operations,
         providerManifests: bindingAuthority.providerManifests
