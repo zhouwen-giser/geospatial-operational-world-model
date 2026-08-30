@@ -1,6 +1,6 @@
 import type pg from "pg";
 import type {
-  GowmV07QuerySnapshotManifest as QuerySnapshotManifest,
+  GowmV071QuerySnapshotManifest as QuerySnapshotManifest,
   JobRecord,
   PlatformError,
   WorldQueryResult,

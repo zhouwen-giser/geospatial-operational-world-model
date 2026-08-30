@@ -1,6 +1,6 @@
 {
   "name": "geospatial-operational-world-model",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "description": "GOWM+ unified geospatial data foundation with independently deployable STAS analysis service",
   "type": "module",
@@ -17,7 +17,9 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && npm --prefix services/stas run build",
-    "check": "npm run verify:contracts && npm run validate:grounding-provider-contracts && npm run validate:world-platform-manifests && npm run validate:spatial-architecture && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "check": "npm run verify:contracts && npm run verify:hash-ordering && npm run validate:grounding-provider-contracts && npm run validate:world-platform-manifests && npm run validate:spatial-architecture && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "verify:hash-ordering": "node scripts/verify-hash-critical-ordering.mjs",
+    "validate:v071-canonical-order": "node --import tsx validation/scripts/gowm-v071-canonical-order-matrix.ts",
     "generate:contracts": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs",
     "verify:contracts": "node packages/platform/contract-runtime/scripts/generate-contract-types.mjs --check",
     "verify:sql": "node scripts/verify-sql.mjs",

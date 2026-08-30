@@ -3,7 +3,7 @@ import type {
   CapabilityDescriptor,
   CapabilityProviderManifest,
   DataSnapshotContext,
-  GowmV07QuerySnapshotManifest,
+  GowmV071QuerySnapshotManifest,
   WorldQueryPlanV2Node,
   WorldQueryResultNodeResult,
   WorldQuerySubmission
@@ -61,10 +61,10 @@ interface Harness {
   calls: Record<"resolver" | ConsumerKind, number>;
 }
 
-function snapshot(version: "v1" | "v2"): DataSnapshotContext {
+function snapshot(version: "v1" | "v2", capturedAt: string): DataSnapshotContext {
   return {
     consistency: "PINNED",
-    capturedAt: "2026-08-30T00:00:00.000Z",
+    capturedAt,
     scopeDigest: sha256({ dataScopeKey: "scope-a" }),
     resources: [{
       referenceKey: {
@@ -159,7 +159,7 @@ function createHarness(store: MemoryQueryPlanStore = new MemoryQueryPlanStore())
       return {
         status: "COMPLETED",
         value: { ...input as Record<string, unknown>, resolvedTracklet: "tracklet-1" },
-        dataSnapshot: snapshot("v1"),
+        dataSnapshot: snapshot("v1", context.snapshots.effective!.capturedAt),
         consumption: { rows: 1, candidates: 1 }
       };
     }
@@ -179,7 +179,7 @@ function createHarness(store: MemoryQueryPlanStore = new MemoryQueryPlanStore())
       return {
         status: "COMPLETED",
         value: { ...input as Record<string, unknown>, consumedVersion: "v1" },
-        dataSnapshot: snapshot("v1"),
+        dataSnapshot: snapshot("v1", context.snapshots.effective!.capturedAt),
         consumption: { rows: 1, candidates: 1 }
       };
     }
@@ -199,7 +199,7 @@ function createHarness(store: MemoryQueryPlanStore = new MemoryQueryPlanStore())
       return {
         status: "COMPLETED",
         value: { ...input as Record<string, unknown>, consumedVersion: "v2" },
-        dataSnapshot: snapshot("v2"),
+        dataSnapshot: snapshot("v2", context.snapshots.effective!.capturedAt),
         consumption: { rows: 1, candidates: 1 }
       };
     }
@@ -383,8 +383,8 @@ class InterruptAfterResolverCommitStore extends MemoryQueryPlanStore {
     jobId: string,
     result: WorldQueryResultNodeResult,
     snapshotUpdate?: {
-      expectedManifestHash: GowmV07QuerySnapshotManifest["manifestHash"];
-      nextEffectiveManifest: GowmV07QuerySnapshotManifest;
+      expectedManifestHash: GowmV071QuerySnapshotManifest["manifestHash"];
+      nextEffectiveManifest: GowmV071QuerySnapshotManifest;
     },
     fence?: QueryExecutionFence
   ): Promise<void> {

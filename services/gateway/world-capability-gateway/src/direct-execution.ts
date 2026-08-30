@@ -4,7 +4,7 @@ import type {
   CapabilityResultEnvelope,
   GatewayExecuteRequest,
   ProviderExecutionRequest,
-  GowmV07QuerySnapshotManifest as QuerySnapshotManifest
+  GowmV071QuerySnapshotManifest as QuerySnapshotManifest
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import {
   validateCapabilityResultSemantics,
@@ -21,7 +21,7 @@ import { ProviderCircuitBreaker } from "./circuit-breaker.js";
 import type { GatewayIdempotencyStore } from "./idempotency.js";
 import type { GatewayRecordStore } from "./records.js";
 import { CapabilityRegistry } from "./registry.js";
-import { operationAllowed, principalContextHash } from "./principal-context.js";
+import { normalizePrincipalScopes, operationAllowed, principalContextHash } from "./principal-context.js";
 
 const COST = { LOW: 0, MEDIUM: 1, HIGH: 2 } as const;
 
@@ -60,6 +60,9 @@ export class DirectExecutionService {
   ): Promise<{ result: CapabilityResultEnvelope; replayed: boolean }> {
     const started = performance.now();
     const requestHash = sha256(publicRequest);
+    const normalizedScopes = normalizePrincipalScopes(principal);
+    const dataScopeSetHash = sha256(normalizedScopes.effectiveDataScopes);
+    const datasetScopeSetHash = sha256(normalizedScopes.effectiveDatasetScopes);
     const eventBase = {
       occurredAt: this.#now().toISOString(),
       requestId: publicRequest.requestId,
@@ -67,7 +70,9 @@ export class DirectExecutionService {
       operationId,
       operationVersion: publicRequest.operationVersion,
       inputHash: requestHash,
-      ...(principal.dataScopeClaim === undefined ? {} : { dataScopeHash: sha256(principal.dataScopeClaim) })
+      ...(normalizedScopes.dataScopeClaim === undefined ? {} : { dataScopeHash: sha256(normalizedScopes.dataScopeClaim) }),
+      dataScopeSetHash,
+      datasetScopeSetHash
     };
     try {
       this.#assertGatewayRequest(publicRequest);
@@ -227,6 +232,7 @@ export class DirectExecutionService {
     trustedJobContext?: TrustedGatewayJobContext
   ): ProviderExecutionRequest {
     const issuedAt = this.#now();
+    const normalizedScopes = normalizePrincipalScopes(principal);
     const expiresAt = new Date(Math.min(Date.parse(request.executionPolicy.deadlineAt), issuedAt.getTime() + 300_000));
     const maximumRows = effectiveLimit(limits.maximumRows, request.executionPolicy.maximumRows);
     const maximumCandidates = effectiveLimit(limits.maximumCandidates, request.executionPolicy.maximumCandidates);
@@ -261,8 +267,8 @@ export class DirectExecutionService {
           expiresAt: expiresAt.toISOString(),
           claimDigest: sha256({
             principalRef: principal.principalRef,
-            dataScopeClaim: principal.dataScopeClaim ?? null,
-            datasetScopeClaim: principal.datasetScopeClaim ?? null,
+            effectiveDataScopes: normalizedScopes.effectiveDataScopes,
+            effectiveDatasetScopes: normalizedScopes.effectiveDatasetScopes,
             gatewayRequestId: request.requestId
           })
         }

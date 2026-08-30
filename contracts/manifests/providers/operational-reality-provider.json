@@ -5,7 +5,7 @@
     "providerId": "gowm.operational-reality",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:e2e17f588a279843e1b79005fe3437e97c90407dc05915aaf1bbb6eafe081321",
+    "implementationDigest": "sha256:33319cc67dc11180b91a6e41137d93e39a45f97d4cbcf9ec812c92e06dbfe263",
     "sourceRef": "urn:gowm:source:in-tree:operational-reality:1.0.0"
   },
   "endpoints": {
@@ -781,10 +781,10 @@
       ],
       "criticalPathPolicy": "REMOTE_ONLY",
       "maturity": "PREVIEW",
-      "inputSchemaUri": "urn:gowm:v0.7:task-execution-interval-query",
-      "inputSchemaHash": "sha256:7cd0e8b57d49bfb073e1f3c37626230b81a55bc66854db3642728a34e290a2d4",
-      "outputSchemaUri": "urn:gowm:v0.7:task-execution-interval-result",
-      "outputSchemaHash": "sha256:f95e9c45c7c7e2dadd683b36d133e1fb1e5785f03e9245c67bc391e48a3ad4ee",
+      "inputSchemaUri": "urn:gowm:v0.7.1:task-execution-interval-query",
+      "inputSchemaHash": "sha256:d738b6fa2736e82f7b8145da8f87ac7387d7668341e8e32ee4102aa09c7e5495",
+      "outputSchemaUri": "urn:gowm:v0.7.1:task-execution-interval-result",
+      "outputSchemaHash": "sha256:1927cc0a68542eeaa8887f698748578ea23b9b305d97b3cafb73dd7dc53011ee",
       "scopePolicy": "DATA_SCOPE_REQUIRED",
       "execution": {
         "mode": "SYNC",
@@ -807,8 +807,8 @@
         "inputs": [
           {
             "name": "request",
-            "schemaUri": "urn:gowm:v0.7:task-execution-interval-query",
-            "schemaHash": "sha256:7cd0e8b57d49bfb073e1f3c37626230b81a55bc66854db3642728a34e290a2d4",
+            "schemaUri": "urn:gowm:v0.7.1:task-execution-interval-query",
+            "schemaHash": "sha256:d738b6fa2736e82f7b8145da8f87ac7387d7668341e8e32ee4102aa09c7e5495",
             "valueKind": "ANY",
             "unitSemantics": "UNSPECIFIED"
           }
@@ -816,8 +816,8 @@
         "outputs": [
           {
             "name": "result",
-            "schemaUri": "urn:gowm:v0.7:task-execution-interval-result",
-            "schemaHash": "sha256:f95e9c45c7c7e2dadd683b36d133e1fb1e5785f03e9245c67bc391e48a3ad4ee",
+            "schemaUri": "urn:gowm:v0.7.1:task-execution-interval-result",
+            "schemaHash": "sha256:1927cc0a68542eeaa8887f698748578ea23b9b305d97b3cafb73dd7dc53011ee",
             "valueKind": "ANY",
             "unitSemantics": "UNSPECIFIED"
           },

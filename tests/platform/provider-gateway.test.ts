@@ -223,6 +223,8 @@ describe("Capability Registry and direct execution", () => {
     expect(replay.result).toEqual(first.result);
     expect(audit.events().map((event) => event.outcome)).toEqual(["COMPLETED", "REPLAYED"]);
     expect(audit.events().every((event) => event.dataScopeHash === sha256("tenant:test"))).toBe(true);
+    expect(audit.events().every((event) => event.dataScopeSetHash === sha256(["tenant:test"]))).toBe(true);
+    expect(audit.events().every((event) => event.datasetScopeSetHash === sha256([]))).toBe(true);
   });
 
   it("enforces the caller output budget even when a nonconforming provider ignores it", async () => {

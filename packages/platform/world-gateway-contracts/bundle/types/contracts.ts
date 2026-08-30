@@ -3390,6 +3390,173 @@ export type GowmV06RoadServiceObligation = {
   startFractionPpm: number;
 };
 
+export type ConsumerContractBundleManifestV071 = {
+  builtAtSourceCommit?: string;
+  contractCatalogRevision: string;
+  files: Array<{
+  bytes: number;
+  path: string;
+  sha256: string;
+}>;
+  packageIntegrity: string;
+  packageName: "@gowm/world-gateway-contracts";
+  packageVersion: "0.7.1";
+  schemaVersion: "1.0";
+  semanticCatalogHash: string;
+};
+
+export type GowmV071DelegationTokenClaims = {
+  act: {
+  sub: string;
+  type?: string;
+};
+  allowedOperations: Array<string>;
+  aud: string;
+  dataScopes: [string];
+  datasetScopes: Array<string>;
+  delegationDepth: 1;
+  exp: number;
+  iat: number;
+  iss: string;
+  jti: string;
+  nbf: number;
+  requestId: string;
+  sub: string;
+};
+
+export type GowmV071QuerySnapshotAdherence = {
+  actualCapturedAt?: string;
+  actualConsistency?: "PINNED" | "CONSISTENT_AT_START" | "BEST_EFFORT";
+  checkedResources: number;
+  expectedCapturedAt?: string;
+  expectedConsistency?: "PINNED" | "CONSISTENT_AT_START" | "BEST_EFFORT";
+  mismatches?: Array<{
+  actualVersion?: string;
+  expectedVersion?: string;
+  reason: "VERSION_MISMATCH" | "CONTENT_HASH_MISMATCH" | "WORLD_VERSION_TOO_OLD" | "RESOURCE_MISSING" | "PINNING_UNSUPPORTED" | "CONSISTENCY_LEVEL_TOO_WEAK" | "CAPTURED_AT_BEFORE_QUERY_BOUNDARY" | "CAPTURED_AT_AFTER_QUERY_BOUNDARY" | "CAPTURED_AT_MISMATCH" | "PROVIDER_SNAPSHOT_TIME_INVALID" | "NODE_NOT_EXECUTED" | "LEGACY_ADHERENCE_NOT_RECORDED" | "NODE_CANCELLED";
+  resourceId: string;
+  resourceKind: string;
+}>;
+  nodeId: string;
+  status: "MATCHED" | "ADVANCED_COMPATIBLE" | "MISMATCHED" | "UNSUPPORTED" | "NOT_APPLICABLE";
+};
+
+export type GowmV071QuerySnapshotManifest = {
+  capturedAt: string;
+  consistency: "PINNED" | "CONSISTENT_AT_START" | "BEST_EFFORT";
+  manifestHash: string;
+  minimumWorldVersion?: number;
+  mode: "LATEST_AT_START" | "PINNED" | "AT_LEAST_WORLD_VERSION" | "BEST_EFFORT";
+  querySnapshotId: string;
+  resources: Array<{
+  contentHash?: string;
+  pinning: "PINNED" | "AT_LEAST" | "BEST_EFFORT";
+  resourceId: string;
+  resourceKind: string;
+  version: string;
+  worldVersion?: number;
+}>;
+};
+
+export type GowmV071QuerySnapshotPolicy = ({
+  allowDowngrade?: boolean;
+  minimumWorldVersion?: number;
+  mode: "LATEST_AT_START" | "PINNED" | "AT_LEAST_WORLD_VERSION" | "BEST_EFFORT";
+  pinnedSnapshot?: GowmV071QuerySnapshotManifest;
+}) & ((Record<string, unknown>) & (Record<string, unknown>));
+
+export type GowmV071TaskExecutionIntervalQuery = {
+  phaseScope: "EXECUTION_ENVELOPE" | "ACTIVE_PHASES_ONLY";
+  selection: ({
+  kind: "LATEST";
+}) | ({
+  executionNo: number;
+  kind: "EXECUTION_NO";
+}) | ({
+  kind: "ALL";
+  limit: number;
+});
+  taskReferenceKey: GowmV071TaskExecutionIntervalQueryTaskReferenceKey;
+};
+
+export type GowmV071TaskExecutionIntervalQueryTaskReferenceKey = {
+  id: string;
+  kind: "OPERATIONAL_TASK";
+  namespace: "gowm";
+  version: "1";
+};
+
+export type GowmV071TaskExecutionIntervalResult = {
+  intervals: Array<GowmV071TaskExecutionIntervalResultInterval>;
+  reasonCode: string;
+  requestedPhaseScope: "EXECUTION_ENVELOPE" | "ACTIVE_PHASES_ONLY";
+  schemaVersion: "1.1";
+  status: "COMPLETED" | "PARTIAL" | "NO_DATA" | "INDETERMINATE";
+  truncated: boolean;
+};
+
+export type GowmV071TaskExecutionIntervalResultExecutionIntervalReferenceKey = {
+  id: string;
+  kind: "TASK_EXECUTION_INTERVAL";
+  namespace: string;
+  version: string;
+};
+
+export type GowmV071TaskExecutionIntervalResultInterval = {
+  activePeriods: Array<GowmV071TaskExecutionIntervalResultTimeRange>;
+  confidence?: number;
+  derivationKind: "OBSERVED" | "INFERRED" | "MIXED";
+  end?: string;
+  executionIntervalReferenceKey: GowmV071TaskExecutionIntervalResultExecutionIntervalReferenceKey;
+  executionNo: number;
+  lifecycleState: "OPEN" | "CLOSED" | "CONFLICTED";
+  pausedPeriods: Array<GowmV071TaskExecutionIntervalResultTimeRange>;
+  reasonCodes: Array<string>;
+  revisionNo: number;
+  selectedPeriods: Array<GowmV071TaskExecutionIntervalResultTimeRange>;
+  stabilityState: "PROVISIONAL" | "SEALED" | "CONFLICTED";
+  start?: string;
+};
+
+export type GowmV071TaskExecutionIntervalResultTimeRange = {
+  bounds?: "[)";
+  end: string;
+  start: string;
+};
+
+export type GowmV071WorldQueryResult = WorldQueryResult;
+
+export type WsgsSouthboundOperationLockV2V071 = {
+  availabilityContractHash: string;
+  canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1";
+  consumerContractPackage: {
+  integrity: string;
+  name: "@gowm/world-gateway-contracts";
+  version: "0.7.1";
+};
+  contractCatalogRevision: string;
+  defaultOperations: WsgsSouthboundOperationLockV2V071OperationList;
+  delegationContractHash: string;
+  gatewayContractVersion: "0.7.1";
+  previewOperations: WsgsSouthboundOperationLockV2V071OperationList;
+  resourceIdEncodingRevision: "SNAPSHOT_RESOURCE_ID_V1_512";
+  schemaVersion: "2.0";
+  scopeModel: "SINGLE_SCOPE_V1";
+  semanticCatalogHash: string;
+  snapshotContractHash: string;
+};
+
+export type WsgsSouthboundOperationLockV2V071OperationList = Array<{
+  inputSchemaHash: string;
+  maturity: "STABLE" | "PREVIEW";
+  operationId: string;
+  operationVersion: string;
+  outputSchemaHash: string;
+  requiredPermissions: Array<string>;
+  semanticProfileHash: string;
+  snapshotSupport: "NONE" | "BEST_EFFORT" | "CONSISTENT_AT_START" | "PINNED";
+}>;
+
 export type GowmV07AnalysisInputSet = {
   authority: string;
   inputSetKind: string;
@@ -4077,7 +4244,7 @@ export type PlatformError = {
 
 export type ProviderExecutionRequest = {
   dataSnapshot?: DataSnapshotContext;
-  effectiveSnapshot?: GowmV07QuerySnapshotManifest;
+  effectiveSnapshot?: GowmV071QuerySnapshotManifest;
   executionPolicy: {
   deadlineAt: string;
   maximumBatchItems?: number;
@@ -4103,7 +4270,7 @@ export type ProviderExecutionRequest = {
   operation: PlatformCommonDefinitionsOperationRef;
   providerProtocolVersion: "1.0";
   requestId: PlatformCommonDefinitionsIdentifier;
-  requestedSnapshot?: GowmV07QuerySnapshotManifest;
+  requestedSnapshot?: GowmV071QuerySnapshotManifest;
   securityContext: {
   authenticatedAt: string;
   authenticationMethod: string;
@@ -4253,7 +4420,7 @@ export type WorldQueryPlanV2SchemaPort = {
 export type WorldQueryPlanV2TargetPath = string;
 
 export type WorldQueryResult = {
-  effectiveSnapshotManifest?: GowmV07QuerySnapshotManifest;
+  effectiveSnapshotManifest?: GowmV071QuerySnapshotManifest;
   finishedAt: string;
   jobId: PlatformCommonDefinitionsIdentifier;
   nodes: Array<WorldQueryResultNodeResult>;
@@ -4261,9 +4428,9 @@ export type WorldQueryResult = {
   outputs: Record<string, unknown>;
   queryId: PlatformCommonDefinitionsIdentifier;
   queryPlanVersion: "2.0";
-  requestedSnapshotManifest?: GowmV07QuerySnapshotManifest;
-  snapshotAdherence: Array<GowmV07QuerySnapshotAdherence>;
-  snapshotManifest: GowmV07QuerySnapshotManifest;
+  requestedSnapshotManifest?: GowmV071QuerySnapshotManifest;
+  snapshotAdherence: Array<GowmV071QuerySnapshotAdherence>;
+  snapshotManifest: GowmV071QuerySnapshotManifest;
   startedAt: string;
   status: "COMPLETED" | "PARTIAL" | "FAILED" | "CANCELLED";
   warnings: Array<string>;
@@ -4289,5 +4456,5 @@ export type WorldQuerySubmission = {
   parameters: Record<string, unknown>;
   plan: WorldQueryPlanV2;
   requestId: PlatformCommonDefinitionsIdentifier;
-  snapshotPolicy?: QuerySnapshotPolicy;
+  snapshotPolicy?: GowmV071QuerySnapshotPolicy;
 };

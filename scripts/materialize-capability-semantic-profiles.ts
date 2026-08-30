@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { readFile, readdir, mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { canonicalJson, canonicalSha256, validateContract, type CapabilityDescriptor, type CapabilityProviderManifest } from "../packages/platform/contract-runtime/src/index.js";
+import { canonicalJson, canonicalSha256, compareCanonicalJson, compareUnicodeCodePoints, validateContract, type CapabilityDescriptor, type CapabilityProviderManifest } from "../packages/platform/contract-runtime/src/index.js";
 import { byteHash, inspectSchema, inspectSql, inspectTypeScript, materializeProfile, operationKey, semanticSourceFingerprint, type ImplementationEvidence, type SemanticProfile } from "../packages/platform/semantic-conformance/src/index.js";
 import { buildSpatialQuery } from "../services/providers/spatial-provider-bridge/src/sql.js";
 import type { SpatialOperationId } from "../services/providers/spatial-provider-bridge/src/schemas.js";
@@ -50,7 +50,7 @@ export function operationEvidenceDigest(records: readonly OperationEvidenceRecor
       sha256: record.sha256,
       ...(record.symbol ? { symbol: record.symbol } : {})
     }))
-    .sort((left, right) => canonicalJson(left).localeCompare(canonicalJson(right)));
+    .sort(compareCanonicalJson);
   return canonicalSha256(normalized);
 }
 
@@ -180,11 +180,11 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
     receipt?: BlackBoxReceipt | undefined;
     legacyAttestation?: LegacySemanticAttestation | undefined;
   }>();
-  for (const source of [...sources].sort((a, b) => a.providerId.localeCompare(b.providerId))) {
+  for (const source of [...sources].sort((a, b) => compareUnicodeCodePoints(a.providerId, b.providerId))) {
     const manifest = manifests.get(source.providerId)!;
     const generated: Record<string, SemanticProfile> = {};
     const authority = authorities.authorities.find((a: any) => a.providerId === source.providerId);
-    for (const descriptor of [...manifest.capabilities].sort((a, b) => operationKey(a).localeCompare(operationKey(b)))) {
+    for (const descriptor of [...manifest.capabilities].sort((a, b) => compareUnicodeCodePoints(operationKey(a), operationKey(b)))) {
       const op = operationKey(descriptor), declaration = declarations.get(op);
       const evidenceRecords: OperationEvidenceRecord[] = [];
       const record = async (kind: string, path: string, symbol?: string) => {
@@ -326,7 +326,7 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
     artifacts.set(`${output}/semantic-attestations/${op}.json`, render(attestation));
   }
   const report = { schemaVersion: "1.0", resolved: resolved.sort(), conflicts, insufficient,
-    determinismHash: canonicalSha256({ declarations: [...declarations].sort(([a], [b]) => a.localeCompare(b)), profiles: catalog.map((c) => ({ operation: operationKey(c), profile: c.semanticProfile ?? null })).sort((a,b) => a.operation.localeCompare(b.operation)), attestations }),
+    determinismHash: canonicalSha256({ declarations: [...declarations].sort(([a], [b]) => compareUnicodeCodePoints(a, b)), profiles: catalog.map((c) => ({ operation: operationKey(c), profile: c.semanticProfile ?? null })).sort((a,b) => compareUnicodeCodePoints(a.operation, b.operation)), attestations }),
     status: conflicts.length || insufficient.length ? "FAIL" : "PASS" };
   if (report.status === "FAIL") {
     if (!check) { await mkdir(resolve(repositoryRoot, output), { recursive: true }); await writeFile(resolve(repositoryRoot, `${output}/semantic-materializer-report.json`), render(report)); }

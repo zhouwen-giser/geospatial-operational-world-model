@@ -246,6 +246,15 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "gowm-v0.6/road-coverage-request.schema.json": "sha256:35f57cc87f5ebc183af19f899f99405d0c83870d2bf72d804d398ed464f21acf",
   "gowm-v0.6/road-selection-policy.schema.json": "sha256:1e33220c31d546882920e327590b5c0e844f71ea28fc83e1d3911f43b0a80e6c",
   "gowm-v0.6/road-service-obligation.schema.json": "sha256:0e2344520ab9fcf4d076dfd77cf36223bda8d3676317b37ac30874e532f81cb1",
+  "gowm-v0.7.1/consumer-contract-bundle-manifest.schema.json": "sha256:f085e3701652d24b1fa41b04b3f0004d70a934a7c90672a591430a77f528f29c",
+  "gowm-v0.7.1/delegation-token-claims.schema.json": "sha256:a80e51793f46a90b2f627937fce06bc31fa3489a87a509185b9813f82ede1c4a",
+  "gowm-v0.7.1/query-snapshot-adherence.schema.json": "sha256:3d43fbda0bd1c1f503abe2a6230087326a287337aa7814cf98a8d0ac81ccdbc0",
+  "gowm-v0.7.1/query-snapshot-manifest.schema.json": "sha256:7a984eef06eec1ed19b21a6649644cc1b8a7e1d653c8b6f9b06490a8d316d185",
+  "gowm-v0.7.1/query-snapshot-policy.schema.json": "sha256:84cb6abc57a9716eda532d20144342c30859a105fb9b8ddbef792b3f382dd61b",
+  "gowm-v0.7.1/task-execution-interval-query.schema.json": "sha256:d738b6fa2736e82f7b8145da8f87ac7387d7668341e8e32ee4102aa09c7e5495",
+  "gowm-v0.7.1/task-execution-interval-result.schema.json": "sha256:1927cc0a68542eeaa8887f698748578ea23b9b305d97b3cafb73dd7dc53011ee",
+  "gowm-v0.7.1/world-query-result-v0.7.1.schema.json": "sha256:c78a38ea20704208c97cd9813f2266349d62756dff36877ce33cb3411fc696fb",
+  "gowm-v0.7.1/wsgs-southbound-operation-lock-v2.schema.json": "sha256:aa20c9779d78dffc69978ed05361acd1cd95cd7fd00e8d2f4956fa8a7beb7c0d",
   "gowm-v0.7/analysis-input-set.schema.json": "sha256:7ce3611beba29da905ea0a797dcac39b55dee8ca7fdeaf7654d94d15154e6eef",
   "gowm-v0.7/analysis-resource-reference.schema.json": "sha256:d3e46fb7897ea3eb4c41836cbbfc3557c15ff91749c4486700b7039f2c444933",
   "gowm-v0.7/capability-semantic-catalog-v1.1.schema.json": "sha256:02dbba15d838aafa0383160ec15f25ee9e4e4707287718678cad834ffa8413b0",
@@ -278,7 +287,7 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "platform/gateway-execute-request.schema.json": "sha256:72646dfb429ea47d0d5392c51465b8b8e6817c23befacd6ce80b52ea64991c5e",
   "platform/job-record.schema.json": "sha256:8ab5d9879463a07183b1edd902873014acd297c9d5140e1e793a635bde866c34",
   "platform/platform-error.schema.json": "sha256:5db2f8ca7362ceca80edca7de32d4dd1c7a21f71061c60858fb9e42ff5576253",
-  "platform/provider-execution-request.schema.json": "sha256:89eb88c20482eb2865edb1283ed2a442eaab6fbc47b5f57a3dd0c455cef3870f",
+  "platform/provider-execution-request.schema.json": "sha256:52019b30c27d96510c3e39feedfe41389e5cc6c5e94edd47c46fb12ff6a59c49",
   "platform/provider-lock.schema.json": "sha256:e3cf8ce2fb72e662680e3f2db86b64f116aa74b438e115f4d5a051fed85845ee",
   "platform/value-array.schema.json": "sha256:8e1e4dd66e9483d8341c51dc5ec424d8e6510ae35cdbc53040d0bab497459945",
   "platform/value-boolean.schema.json": "sha256:7f17d695204279bf96eee346c482a8525470b30e5685c0a8fe2d8c3d291c6837",
@@ -288,6 +297,6 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "platform/value-string.schema.json": "sha256:a71d355802de7ff21b9c9d9214a1ba71b3648866bcf1b7c0f4ff3b656485c6d5",
   "platform/world-query-parameters.schema.json": "sha256:12435544345b96060988d2260be7d2cd3356df710442023888a8c02911c26c97",
   "platform/world-query-plan-v2.schema.json": "sha256:bb155872e977aa9d60a0a62872e8507eb4a93137bd9cdfd309e13e800058e057",
-  "platform/world-query-result.schema.json": "sha256:e90c5ecf61bbc3218de60845426c0fff1312972ab18c52090a0c3bb931e2d97c",
-  "platform/world-query-submission.schema.json": "sha256:44e66620f15d0fdef61817e7e9e30c92f36483017c86620aba986f0bb5cf5cec"
+  "platform/world-query-result.schema.json": "sha256:d73356adaca1c59fb5eb7cd9cc6ff524e5945d4799a0c0f528b362d7db4b6ac2",
+  "platform/world-query-submission.schema.json": "sha256:defd6281650cb11020f2a1e7ebea63e09537a600c5a1efcb6819d2e4f5f6cb06"
 };

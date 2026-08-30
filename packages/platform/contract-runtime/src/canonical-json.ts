@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { canonicalSortStrings } from "./canonical-order.js";
 
 export function canonicalJson(value: unknown): string {
   if (value === null || typeof value !== "object") {
@@ -8,8 +9,7 @@ export function canonicalJson(value: unknown): string {
   }
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
   const object = value as Record<string, unknown>;
-  return `{${Object.keys(object)
-    .sort()
+  return `{${canonicalSortStrings(Object.keys(object))
     .map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`)
     .join(",")}}`;
 }

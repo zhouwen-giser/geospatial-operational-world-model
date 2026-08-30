@@ -4,7 +4,7 @@ import type {
   CapabilityResultEnvelope,
   DataSnapshotContext,
   EvidenceReference,
-  GowmV07QuerySnapshotManifest,
+  GowmV071QuerySnapshotManifest,
   ProviderExecutionRequest
 } from "../../contract-runtime/src/index.js";
 import type { ResourceConsumption } from "./budget.js";
@@ -52,8 +52,8 @@ export interface ProviderHandlerContext {
 }
 
 export interface ProviderSnapshotContext {
-  requested?: GowmV07QuerySnapshotManifest;
-  effective?: GowmV07QuerySnapshotManifest;
+  requested?: GowmV071QuerySnapshotManifest;
+  effective?: GowmV071QuerySnapshotManifest;
 }
 
 export interface ProviderOperation<Input = unknown, Output = unknown> {

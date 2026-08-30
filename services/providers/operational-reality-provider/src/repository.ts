@@ -3,11 +3,11 @@ import type {
   DataSnapshotContext,
   EvidenceReference,
   GowmV04OperationalQueryRequest,
-  GowmV07QuerySnapshotManifest,
-  GowmV07TaskExecutionIntervalQuery,
-  GowmV07TaskExecutionIntervalResult,
-  GowmV07TaskExecutionIntervalResultInterval,
-  GowmV07TaskExecutionIntervalResultTimeRange
+  GowmV071QuerySnapshotManifest,
+  GowmV071TaskExecutionIntervalQuery,
+  GowmV071TaskExecutionIntervalResult,
+  GowmV071TaskExecutionIntervalResultInterval,
+  GowmV071TaskExecutionIntervalResultTimeRange
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError,sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import { OperationalCorrelationRepository } from "../../../../packages/runtime/src/operational-correlation-repository.js";
@@ -56,12 +56,12 @@ export class OperationalRealityProviderRepository {
 
   async execute(
     operationId:OperationalRealityOperationId,input:unknown,dataScopeKey:string,
-    effectiveSnapshot?:GowmV07QuerySnapshotManifest,deadlineRemainingMs=10_000
+    effectiveSnapshot?:GowmV071QuerySnapshotManifest,deadlineRemainingMs=10_000
   ):Promise<OperationalProviderResult> {
     if (!dataScopeKey.trim()) throw new ProviderProtocolError("SCOPE_DENIED","data scope is required");
     if (operationId==="operational-task.get-execution-intervals") {
       if (!effectiveSnapshot) throw new ProviderProtocolError("SCHEMA_MISMATCH","effective query snapshot is required");
-      return this.executionIntervals(input as GowmV07TaskExecutionIntervalQuery,dataScopeKey,effectiveSnapshot,deadlineRemainingMs);
+      return this.executionIntervals(input as GowmV071TaskExecutionIntervalQuery,dataScopeKey,effectiveSnapshot,deadlineRemainingMs);
     }
     const query=input as GowmV04OperationalQueryRequest;
     if (operationId==="predicate.evaluate") {
@@ -137,9 +137,10 @@ export class OperationalRealityProviderRepository {
   }
 
   private async executionIntervals(
-    input:GowmV07TaskExecutionIntervalQuery,dataScopeKey:string,effectiveSnapshot:GowmV07QuerySnapshotManifest,
+    input:GowmV071TaskExecutionIntervalQuery,dataScopeKey:string,effectiveSnapshot:GowmV071QuerySnapshotManifest,
     deadlineRemainingMs:number
   ):Promise<OperationalProviderResult> {
+    assertTaskIdentityCatalogReference(input.taskReferenceKey);
     const capturedAt=validCapturedAt(effectiveSnapshot.capturedAt);
     const client=await this.pool.connect().catch((error:unknown)=>{
       throw new ProviderProtocolError("PROVIDER_NOT_READY","operational interval read pool is unavailable",{retryable:true,cause:error});
@@ -192,8 +193,9 @@ export class OperationalRealityProviderRepository {
       const mapped=selected.map((row)=>mapExecutionInterval(row,phases,capturedAt,input.phaseScope));
       const pending=projectionPending(input,selected,executionEvents);
       const outcome=intervalOutcome(mapped,eventRows.rows.length,executionEvents.length,pending);
-      const output:GowmV07TaskExecutionIntervalResult={
-        schemaVersion:"1.0",status:outcome.status,reasonCode:outcome.reasonCode,intervals:mapped,truncated
+      const output:GowmV071TaskExecutionIntervalResult={
+        schemaVersion:"1.1",status:outcome.status,reasonCode:outcome.reasonCode,
+        requestedPhaseScope:input.phaseScope,intervals:mapped,truncated
       };
       const dataSnapshot=executionIntervalSnapshot(dataScopeKey,capturedAt,input,selected,eventRows.rows,effectiveSnapshot);
       return {
@@ -248,13 +250,13 @@ export class OperationalRealityProviderRepository {
 
 function mapExecutionInterval(
   row:TaskExecutionIntervalRow,phases:TaskExecutionPhaseRow[],capturedAt:string,
-  _phaseScope:GowmV07TaskExecutionIntervalQuery["phaseScope"]
-):GowmV07TaskExecutionIntervalResultInterval {
+  phaseScope:GowmV071TaskExecutionIntervalQuery["phaseScope"]
+):GowmV071TaskExecutionIntervalResultInterval {
   const range=parseRange(row.execution_range,capturedAt);
   const revisionId=String(row.interval_revision_id);
   const matching=phases.filter((phase)=>String(phase.interval_revision_id)===revisionId);
-  const activePeriods:GowmV07TaskExecutionIntervalResultTimeRange[]=[];
-  const pausedPeriods:GowmV07TaskExecutionIntervalResultTimeRange[]=[];
+  const activePeriods:GowmV071TaskExecutionIntervalResultTimeRange[]=[];
+  const pausedPeriods:GowmV071TaskExecutionIntervalResultTimeRange[]=[];
   for (const phase of matching) {
     const phaseRange=parseRange(phase.phase_range,capturedAt);
     if (!phaseRange) continue;
@@ -268,7 +270,8 @@ function mapExecutionInterval(
     executionIntervalReferenceKey:intervalReferenceKey(row),executionNo:positiveInteger(row.execution_no,"execution_no"),
     revisionNo:positiveInteger(row.revision_no,"revision_no"),
     ...(range?{start:range.start,...(lifecycleState==="OPEN"?{}:{end:range.end})}:{}),
-    lifecycleState,activePeriods,pausedPeriods,
+    lifecycleState,selectedPeriods:phaseScope==="EXECUTION_ENVELOPE"&&range?[range]:activePeriods,
+    activePeriods,pausedPeriods,
     derivationKind:publicDerivationKind(row.derivation_kind),
     stabilityState:enumValue(row.stability_state,["PROVISIONAL","SEALED","CONFLICTED"] as const,"stability_state"),
     ...(row.confidence===null||row.confidence===undefined?{}:{confidence:unitNumber(row.confidence,"confidence")}),
@@ -276,7 +279,7 @@ function mapExecutionInterval(
   };
 }
 
-function intervalReferenceKey(row:TaskExecutionIntervalRow):GowmV07TaskExecutionIntervalResultInterval["executionIntervalReferenceKey"] {
+function intervalReferenceKey(row:TaskExecutionIntervalRow):GowmV071TaskExecutionIntervalResultInterval["executionIntervalReferenceKey"] {
   const value=jsonRecord(row.reference_key);
   return {
     namespace:typeof value?.namespace==="string"?value.namespace:"gowm",
@@ -287,7 +290,7 @@ function intervalReferenceKey(row:TaskExecutionIntervalRow):GowmV07TaskExecution
 }
 
 function projectionPending(
-  input:GowmV07TaskExecutionIntervalQuery,intervals:TaskExecutionIntervalRow[],events:TaskEventStateRow[]
+  input:GowmV071TaskExecutionIntervalQuery,intervals:TaskExecutionIntervalRow[],events:TaskEventStateRow[]
 ):boolean {
   if (events.length===0) return false;
   if (input.selection.kind==="EXECUTION_NO") {
@@ -301,8 +304,8 @@ function projectionPending(
 }
 
 function intervalOutcome(
-  intervals:GowmV07TaskExecutionIntervalResultInterval[],taskEventCount:number,executionEventCount:number,pending:boolean
-):{status:GowmV07TaskExecutionIntervalResult["status"];reasonCode:string} {
+  intervals:GowmV071TaskExecutionIntervalResultInterval[],taskEventCount:number,executionEventCount:number,pending:boolean
+):{status:GowmV071TaskExecutionIntervalResult["status"];reasonCode:string} {
   if (taskEventCount===0) return {status:"NO_DATA",reasonCode:"TASK_NOT_FOUND"};
   if (executionEventCount===0) return {status:"NO_DATA",reasonCode:"NO_EXECUTION_EVENTS"};
   if (pending) return {status:"PARTIAL",reasonCode:"PROJECTION_PENDING"};
@@ -318,8 +321,8 @@ function intervalOutcome(
 }
 
 function executionIntervalSnapshot(
-  dataScopeKey:string,capturedAt:string,input:GowmV07TaskExecutionIntervalQuery,intervals:TaskExecutionIntervalRow[],
-  events:TaskEventStateRow[],effective:GowmV07QuerySnapshotManifest
+  dataScopeKey:string,capturedAt:string,input:GowmV071TaskExecutionIntervalQuery,intervals:TaskExecutionIntervalRow[],
+  events:TaskEventStateRow[],effective:GowmV071QuerySnapshotManifest
 ):DataSnapshotContext {
   const authority="gowm_history_v1";
   const eventSetHashes=intervals.map((row)=>digest(row.input_event_set_hash,{intervalRevisionId:row.interval_revision_id}));
@@ -361,7 +364,7 @@ function executionIntervalSnapshot(
   };
 }
 
-function parseRange(value:unknown,capturedAt:string):GowmV07TaskExecutionIntervalResultTimeRange|undefined {
+function parseRange(value:unknown,capturedAt:string):GowmV071TaskExecutionIntervalResultTimeRange|undefined {
   if (value===null||value===undefined) return undefined;
   if (typeof value==="object"&&!Array.isArray(value)) {
     const record=value as Record<string,unknown>;
@@ -384,6 +387,15 @@ function validCapturedAt(value:string):string {
   const parsed=new Date(value);
   if (!Number.isFinite(parsed.getTime())) throw new ProviderProtocolError("SCHEMA_MISMATCH","effective snapshot capturedAt is invalid");
   return parsed.toISOString();
+}
+
+function assertTaskIdentityCatalogReference(referenceKey:GowmV071TaskExecutionIntervalQuery["taskReferenceKey"]):void {
+  if (referenceKey.namespace!=="gowm"||referenceKey.kind!=="OPERATIONAL_TASK"||referenceKey.version!=="1") {
+    throw new ProviderProtocolError("REFERENCE_VERSION_MISMATCH","task reference differs from the Task Identity Catalog descriptor",{
+      retryable:false,
+      details:{expectedNamespace:"gowm",expectedKind:"OPERATIONAL_TASK",expectedVersion:"1"}
+    });
+  }
 }
 
 function digest(value:unknown,fallback:unknown):`sha256:${string}` {

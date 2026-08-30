@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0",
+  "evidenceStatus": "LOCAL_CANDIDATE_STATIC",
+  "notAuthoritativeForExactHeadRuntime": true,
+  "sourceBaseline": "reports/gowm-v0.7.1/pr-a/c00-source-lock.json",
+  "contractPackage": {
+    "name": "@gowm/world-gateway-contracts",
+    "version": "0.7.1",
+    "integrity": "sha512-7RKMpBJhsSHXsLNOI6PpTsMEPwInrQArmnUhk128SxRBBds+hv4Rt8id11KJlQCFx/9uENeuQwQIAzfggkbPhg==",
+    "contractCatalogRevision": "sha256:9078619f060a79e3c8af9c81a47db19cbe81ec507c5ee065ae7e80854ab05ee9",
+    "bindingRevision": "sha256:c8f2b83da7e7b9dbb5fa3a199c83b76ea9d29887ecc55492941bfdece1bee118"
+  },
+  "gates": {
+    "npmRunCheck": "PASS",
+    "npmTest": {
+      "status": "PASS",
+      "testFilesPassed": 83,
+      "testFilesSkipped": 3,
+      "testsPassed": 553,
+      "testsSkipped": 9
+    },
+    "npmRunVerifySql": {
+      "status": "PASS",
+      "migrationHead": "067_historical_trajectory_contract.sql",
+      "sqlAssertionHead": "051_historical_security_negative_assertions.sql"
+    },
+    "localeMatrix": {
+      "status": "PASS",
+      "locales": ["C", "en_US.UTF-8", "zh_CN.UTF-8"]
+    },
+    "consumerContractValidation": "PASS"
+  },
+  "completionMarkers": [
+    "GOWM_V071_STRICT_SNAPSHOT_CLOSED",
+    "GOWM_V071_SINGLE_SCOPE_CONTRACT_CLOSED",
+    "GOWM_V071_DETERMINISTIC_HASHING_READY",
+    "GOWM_V071_SNAPSHOT_RESOURCE_ID_READY",
+    "GOWM_V071_HISTORICAL_INTERVAL_CONTRACT_CLOSED"
+  ],
+  "runtimeQualification": "NOT_RUN",
+  "publicationState": "LOCAL_UNPUBLISHED"
+}

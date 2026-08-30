@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7.1:query-snapshot-policy",
+  "title": "GowmV071QuerySnapshotPolicy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mode"],
+  "properties": {
+    "mode": { "enum": ["LATEST_AT_START", "PINNED", "AT_LEAST_WORLD_VERSION", "BEST_EFFORT"] },
+    "pinnedSnapshot": { "$ref": "query-snapshot-manifest.schema.json" },
+    "minimumWorldVersion": { "type": "integer", "minimum": 0 },
+    "allowDowngrade": { "type": "boolean", "default": false }
+  },
+  "allOf": [
+    { "if": { "properties": { "mode": { "const": "PINNED" } } }, "then": { "required": ["pinnedSnapshot"] } },
+    { "if": { "properties": { "mode": { "const": "AT_LEAST_WORLD_VERSION" } } }, "then": { "required": ["minimumWorldVersion"] } }
+  ]
+}

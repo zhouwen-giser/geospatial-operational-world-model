@@ -1,9 +1,10 @@
 import type {
-  GowmV07QuerySnapshotManifest as QuerySnapshotManifest,
+  GowmV071QuerySnapshotManifest as QuerySnapshotManifest,
   JobRecord,
   WorldQueryResultNodeResult,
   WorldQuerySubmission
 } from "../../../../packages/platform/contract-runtime/src/index.js";
+import { compareUnicodeCodePoints } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError } from "../../../../packages/platform/provider-sdk/src/index.js";
 import type { GatewayPrincipal } from "./types.js";
 import { principalContextHash } from "./principal-context.js";
@@ -161,7 +162,7 @@ export class MemoryQueryPlanStore implements QueryPlanStore {
   async listNodes(jobId: string): Promise<WorldQueryResultNodeResult[]> {
     return [...(this.#nodes.get(jobId)?.values() ?? [])]
       .map(clone)
-      .sort((left, right) => left.nodeId.localeCompare(right.nodeId));
+      .sort((left, right) => compareUnicodeCodePoints(left.nodeId, right.nodeId));
   }
 
   async requestCancellation(queryId: string, principalHash: string): Promise<QueryJobContext | undefined> {

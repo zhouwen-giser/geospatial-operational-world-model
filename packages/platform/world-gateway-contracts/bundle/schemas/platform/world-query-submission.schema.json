@@ -14,7 +14,7 @@
       "$ref": "common-definitions.schema.json#/$defs/sha256Digest"
     },
     "snapshotPolicy": {
-      "$ref": "../gowm-v0.6.3/query-snapshot-policy.schema.json"
+      "$ref": "../gowm-v0.7.1/query-snapshot-policy.schema.json"
     }
   }
 }

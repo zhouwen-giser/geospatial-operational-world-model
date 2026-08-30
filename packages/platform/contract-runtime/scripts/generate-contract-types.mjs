@@ -2,6 +2,10 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { dirname, posix, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { register } from "tsx/esm/api";
+
+register();
+const { compareUnicodeCodePoints } = await import("../src/canonical-order.ts");
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(scriptDirectory, "../../../..");
@@ -14,7 +18,8 @@ const contractRoots = [
   resolve(repositoryRoot, "contracts/gowm-v0.6.1"),
   resolve(repositoryRoot, "contracts/gowm-v0.6.2"),
   resolve(repositoryRoot, "contracts/gowm-v0.6.3"),
-  resolve(repositoryRoot, "contracts/gowm-v0.7")
+  resolve(repositoryRoot, "contracts/gowm-v0.7"),
+  resolve(repositoryRoot, "contracts/gowm-v0.7.1")
 ];
 const generatedDirectory = resolve(repositoryRoot, "packages/platform/contract-runtime/src/generated");
 const contractsOutput = resolve(generatedDirectory, "contracts.ts");
@@ -52,7 +57,7 @@ async function collectSchemaFiles(directory) {
 
 const files = (await Promise.all(contractRoots.map(collectSchemaFiles)))
   .flat()
-  .sort((left, right) => toPosix(relative(repositoryRoot, left)).localeCompare(toPosix(relative(repositoryRoot, right))));
+  .sort((left, right) => compareUnicodeCodePoints(toPosix(relative(repositoryRoot, left)), toPosix(relative(repositoryRoot, right))));
 
 const documents = new Map();
 for (const path of files) {

@@ -1,8 +1,9 @@
 import { createPublicKey, verify as verifySignature } from "node:crypto";
 import type { FastifyRequest } from "fastify";
 import {
+  compareUnicodeCodePoints,
   validateContract,
-  type DelegationTokenClaims
+  type GowmV071DelegationTokenClaims
 } from "../../../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import type { GatewayServerConfig } from "./config.js";
@@ -57,9 +58,10 @@ export class SignedDelegationVerifier implements DelegationVerifier {
     }
 
     const claims = parseSegment(encodedPayload, "delegation JWS claims") as unknown;
-    const validation = validateContract("urn:gowm:v0.6.3:delegation-token-claims", claims);
+    assertSingleScopeClaims(claims);
+    const validation = validateContract("urn:gowm:v0.7.1:delegation-token-claims", claims);
     if (!validation.valid) throw denied("delegation claims violate the contract");
-    const token = claims as DelegationTokenClaims;
+    const token = claims as GowmV071DelegationTokenClaims;
     const now = Math.floor((this.options.now?.() ?? new Date()).getTime() / 1_000);
     const maximumTtl = this.options.maximumTtlSeconds ?? 300;
     if (token.iss !== this.options.issuer || token.aud !== this.options.audience) throw denied("delegation issuer or audience is invalid");
@@ -84,9 +86,9 @@ export class SignedDelegationVerifier implements DelegationVerifier {
       actorRef: token.act.sub,
       authenticationMethod: "SERVICE_BEARER+JWS_DELEGATION",
       authenticatedAt: new Date(now * 1_000).toISOString(),
-      effectiveDataScopes,
-      effectiveDatasetScopes,
-      ...(effectiveDataScopes[0] === undefined ? {} : { dataScopeClaim: effectiveDataScopes[0] }),
+      effectiveDataScopes: [effectiveDataScopes[0]!],
+      effectiveDatasetScopes: effectiveDatasetScopes[0] === undefined ? [] : [effectiveDatasetScopes[0]],
+      dataScopeClaim: effectiveDataScopes[0]!,
       ...(effectiveDatasetScopes[0] === undefined ? {} : { datasetScopeClaim: effectiveDatasetScopes[0] }),
       allowedOperations,
       delegationJtiHash: sha256(token.jti),
@@ -144,11 +146,11 @@ export function staticBearer(
       authenticatedAt: new Date().toISOString(),
       ...(config.dataScopeClaim === undefined ? {} : {
         dataScopeClaim: config.dataScopeClaim,
-        effectiveDataScopes: [config.dataScopeClaim]
+        effectiveDataScopes: [config.dataScopeClaim] as const
       }),
       ...(config.datasetScopeClaim === undefined ? {} : {
         datasetScopeClaim: config.datasetScopeClaim,
-        effectiveDatasetScopes: [config.datasetScopeClaim]
+        effectiveDatasetScopes: [config.datasetScopeClaim] as const
       }),
       allowExperimental: config.allowExperimental
     };
@@ -176,11 +178,23 @@ function parseSegment(segment: string, name: string): Record<string, unknown> {
 
 function intersection(left: readonly string[], right: readonly string[]): string[] {
   const allowed = new Set(right);
-  return [...new Set(left.filter((value) => allowed.has(value)))].sort();
+  return [...new Set(left.filter((value) => allowed.has(value)))].sort(compareUnicodeCodePoints);
 }
 
-function denied(message: string): ProviderProtocolError {
-  return new ProviderProtocolError("SCOPE_DENIED", message, { retryable: false });
+function assertSingleScopeClaims(claims: unknown): void {
+  if (claims === null || typeof claims !== "object" || Array.isArray(claims)) return;
+  const value = claims as Record<string, unknown>;
+  if ((Array.isArray(value.dataScopes) && value.dataScopes.length > 1) ||
+      (Array.isArray(value.datasetScopes) && value.datasetScopes.length > 1)) {
+    throw denied("delegation token contains multiple scopes", "MULTI_SCOPE_UNSUPPORTED");
+  }
+}
+
+function denied(message: string, reason?: string): ProviderProtocolError {
+  return new ProviderProtocolError("SCOPE_DENIED", message, {
+    retryable: false,
+    ...(reason === undefined ? {} : { details: { reason } })
+  });
 }
 
 function timingSafeEqualLocal(left: Buffer, right: Buffer): boolean {

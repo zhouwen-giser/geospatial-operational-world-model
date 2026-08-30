@@ -4,7 +4,7 @@ import type {
   CapabilityDescriptor,
   CapabilityProviderManifest,
   CapabilityResultEnvelope,
-  GowmV07QuerySnapshotManifest,
+  GowmV071QuerySnapshotManifest,
   H3CellSetEnvelope,
   PlatformCommonDefinitionsOperationRef,
   ProviderExecutionRequest,
@@ -204,7 +204,7 @@ export function validateProviderExecutionRequestSemantics(
 }
 
 export function validateQuerySnapshotManifestHash(
-  manifest: GowmV07QuerySnapshotManifest,
+  manifest: GowmV071QuerySnapshotManifest,
   path = ""
 ): ValidationResult {
   const { manifestHash, ...canonicalManifest } = manifest;
@@ -601,7 +601,7 @@ export function validateNamedContractSemantics(nameOrId: string, value: unknown)
     return validateProviderExecutionRequestSemantics(value as ProviderExecutionRequest).issues;
   }
   if (normalized.includes("query-snapshot-manifest") || normalized === "gowmv07querysnapshotmanifest") {
-    return validateQuerySnapshotManifestHash(value as GowmV07QuerySnapshotManifest).issues;
+    return validateQuerySnapshotManifestHash(value as GowmV071QuerySnapshotManifest).issues;
   }
   if (normalized.includes("world-query-result") || normalized === "worldqueryresult") {
     return validateWorldQueryResultSemantics(value as WorldQueryResult).issues;

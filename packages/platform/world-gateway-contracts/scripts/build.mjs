@@ -2,13 +2,17 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { register } from "tsx/esm/api";
+
+register();
+const { compareUnicodeCodePoints } = await import("../../contract-runtime/src/canonical-order.ts");
 
 const packageRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const repositoryRoot = resolve(packageRoot, "../../..");
 const defaultOutputRoot = resolve(process.argv[2] || join(packageRoot, "bundle"));
-const reportRoot = resolve(repositoryRoot, process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7/pr2/world-platform");
+const reportRoot = resolve(repositoryRoot, process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-a/world-platform");
 
-const compareCanonicalText = (left, right) => left < right ? -1 : left > right ? 1 : 0;
+const compareCanonicalText = compareUnicodeCodePoints;
 const canonical = (value) => JSON.stringify(value, (_key, item) => {
   if (!item || typeof item !== "object" || Array.isArray(item)) return item;
   return Object.fromEntries(Object.entries(item).sort(([a], [b]) => compareCanonicalText(a, b)));
@@ -36,7 +40,7 @@ const walk = async (root) => {
 };
 
 async function copySchemas(outputRoot) {
-  for (const sourceRoot of ["contracts/platform", "contracts/gowm-v0.6.2", "contracts/gowm-v0.6.3", "contracts/gowm-v0.7"]) {
+  for (const sourceRoot of ["contracts/platform", "contracts/gowm-v0.6.2", "contracts/gowm-v0.6.3", "contracts/gowm-v0.7", "contracts/gowm-v0.7.1"]) {
     const absolute = resolve(repositoryRoot, sourceRoot);
     for (const path of await walk(absolute)) {
       const portablePath = path.replaceAll("\\", "/");
@@ -128,21 +132,24 @@ export async function buildConsumerContracts(destination = defaultOutputRoot) {
     schemaVersion: "1.1", contractCatalogRevision: registryReport.contractCatalogRevision, semanticCatalogHash
   });
   await emitJson(join(outputRoot, "compatibility/report.json"), {
-    schemaVersion: "1.0", packageVersion: "0.7.0", baselineVersion: "0.6.3", classification: "ADDITIVE",
+    schemaVersion: "1.0", packageVersion: "0.7.1", baselineVersion: "0.7.0", classification: "BREAKING_AUTHORIZATION_HARDENING",
     breakingChanges: [], promotedOperations: (await json(resolve(repositoryRoot, "contracts/gowm-v0.6.3/manifests/grounding-core-promotion-set.json"))).operations
   });
 
   const contractHashes = {
     availabilityContractHash: sha256(await json(resolve(repositoryRoot, "contracts/gowm-v0.6.3/operation-availability-list.schema.json"))),
-    snapshotContractHash: sha256(await json(resolve(repositoryRoot, "contracts/gowm-v0.6.3/query-snapshot-manifest.schema.json"))),
-    delegationContractHash: sha256(await json(resolve(repositoryRoot, "contracts/gowm-v0.6.3/delegation-token-claims.schema.json")))
+    snapshotContractHash: sha256(await json(resolve(repositoryRoot, "contracts/gowm-v0.7.1/query-snapshot-manifest.schema.json"))),
+    delegationContractHash: sha256(await json(resolve(repositoryRoot, "contracts/gowm-v0.7.1/delegation-token-claims.schema.json")))
   };
   const preLockRecords = await fileRecords(outputRoot);
   const packageIntegrity = sha512Integrity(canonical(preLockRecords));
   const projected = catalog.filter((operation) => operation.maturity === "STABLE" || operation.maturity === "PREVIEW").map(operationProjection);
   const lock = {
-    schemaVersion: "2.0", gatewayContractVersion: "0.7.0",
-    consumerContractPackage: { name: "@gowm/world-gateway-contracts", version: "0.7.0", integrity: packageIntegrity },
+    schemaVersion: "2.0", gatewayContractVersion: "0.7.1",
+    consumerContractPackage: { name: "@gowm/world-gateway-contracts", version: "0.7.1", integrity: packageIntegrity },
+    scopeModel: "SINGLE_SCOPE_V1",
+    resourceIdEncodingRevision: "SNAPSHOT_RESOURCE_ID_V1_512",
+    canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1",
     contractCatalogRevision: registryReport.contractCatalogRevision, semanticCatalogHash, ...contractHashes,
     defaultOperations: projected.filter((operation) => operation.maturity === "STABLE"),
     previewOperations: projected.filter((operation) => operation.maturity === "PREVIEW")
@@ -151,7 +158,7 @@ export async function buildConsumerContracts(destination = defaultOutputRoot) {
   await emitJson(join(outputRoot, "locks/wsgs-southbound-operation-lock-v2.json"), lock);
   const files = await fileRecords(outputRoot);
   await emitJson(join(outputRoot, "MANIFEST.json"), {
-    schemaVersion: "1.0", packageName: "@gowm/world-gateway-contracts", packageVersion: "0.7.0",
+    schemaVersion: "1.0", packageName: "@gowm/world-gateway-contracts", packageVersion: "0.7.1",
     contractCatalogRevision: registryReport.contractCatalogRevision, semanticCatalogHash, files, packageIntegrity
   });
   return { outputRoot, fileCount: files.length + 1, packageIntegrity, defaultOperations: lock.defaultOperations.length, previewOperations: lock.previewOperations.length };

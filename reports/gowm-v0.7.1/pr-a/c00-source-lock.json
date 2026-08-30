@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "evidenceStatus": "BASELINE_LOCK",
+  "repository": "zhouwen-giser/geospatial-operational-world-model",
+  "baseBranch": "origin/main",
+  "actualMainSha": "d69db9b137061f73e07fb75205b0c1fdaa506045",
+  "actualMainTreeSha": "bb944d712fd7d0c374574d328886a4f6e6001a10",
+  "workingBranch": "codex/gowm-v0.7.1-snapshot-scope-determinism",
+  "actualMigrationHead": "067_historical_trajectory_contract.sql",
+  "frozenMigrationRange": "001-067",
+  "v07ContractBundle": {
+    "packageName": "@gowm/world-gateway-contracts",
+    "packageVersion": "0.7.0",
+    "packageIntegrity": "sha512-SVUXmQLtP1ZXm7l8I61bnBG+vKINxlHMIYs9DMb+PWrc1nibQdj75v3Z9ivx930mWetwTZ49xmQzrbR7lZxDJg=="
+  },
+  "consumerLockFileSha256": "sha256:218145fb630733e5e8bf5f4c1d2dca1af696cb1fa281d6e44e4b21ba7b2857f4",
+  "remoteCandidateHeads": {
+    "origin/codex/gowm-v0.7-pr1-effective-snapshot": "b06a43ec88141aeeafb6ce0a01e81206868a4b7a",
+    "origin/codex/gowm-v0.7-pr2-task-trajectory": "aef5e017554c6f522a7fb0a8a78776c3056b56a8",
+    "origin/codex/gowm-v0.7-integrated-review": "b06a43ec88141aeeafb6ce0a01e81206868a4b7a"
+  },
+  "historicalReportsAuthoritativeForCurrentHead": false,
+  "publicationState": "LOCAL_UNPUBLISHED",
+  "completionMarker": "GOWM_V071_SOURCE_BASELINE_LOCKED",
+  "generatedAt": "2026-08-30T12:39:38.4177246Z"
+}

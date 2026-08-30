@@ -1,16 +1,19 @@
 {
   "schemaVersion": "2.0",
-  "gatewayContractVersion": "0.7.0",
+  "gatewayContractVersion": "0.7.1",
   "consumerContractPackage": {
     "name": "@gowm/world-gateway-contracts",
-    "version": "0.7.0",
-    "integrity": "sha512-SVUXmQLtP1ZXm7l8I61bnBG+vKINxlHMIYs9DMb+PWrc1nibQdj75v3Z9ivx930mWetwTZ49xmQzrbR7lZxDJg=="
+    "version": "0.7.1",
+    "integrity": "sha512-7RKMpBJhsSHXsLNOI6PpTsMEPwInrQArmnUhk128SxRBBds+hv4Rt8id11KJlQCFx/9uENeuQwQIAzfggkbPhg=="
   },
-  "contractCatalogRevision": "sha256:cebc90e797cfdb256c4e5ae27472dd2ef7b47733337c4ac0fbd32251ef092e2f",
+  "scopeModel": "SINGLE_SCOPE_V1",
+  "resourceIdEncodingRevision": "SNAPSHOT_RESOURCE_ID_V1_512",
+  "canonicalOrderingRevision": "UNICODE_CODE_POINT_BINARY_V1",
+  "contractCatalogRevision": "sha256:9078619f060a79e3c8af9c81a47db19cbe81ec507c5ee065ae7e80854ab05ee9",
   "semanticCatalogHash": "sha256:9cb540bbda32d50bdcf9bd3f60d2974bd3fe02393a5c4914e30940dccb719ae2",
   "availabilityContractHash": "sha256:66d6cfe2679d6bdd0cf6f22cb7153d1f5f4c934ebc286f6bac33ab6bd7eb4036",
-  "snapshotContractHash": "sha256:350044225667ce00c2850e9a9d7c86762fc2e042793b6a8666c724c763135ca0",
-  "delegationContractHash": "sha256:6edf49002dc75e6701c9c56b8795539b3512884d31b66f7f12f122abdee9344b",
+  "snapshotContractHash": "sha256:7a984eef06eec1ed19b21a6649644cc1b8a7e1d653c8b6f9b06490a8d316d185",
+  "delegationContractHash": "sha256:a80e51793f46a90b2f627937fce06bc31fa3489a87a509185b9813f82ede1c4a",
   "defaultOperations": [
     {
       "operationId": "catalog.get",
@@ -1085,8 +1088,8 @@
     {
       "operationId": "operational-task.get-execution-intervals",
       "operationVersion": "1.0",
-      "inputSchemaHash": "sha256:7cd0e8b57d49bfb073e1f3c37626230b81a55bc66854db3642728a34e290a2d4",
-      "outputSchemaHash": "sha256:f95e9c45c7c7e2dadd683b36d133e1fb1e5785f03e9245c67bc391e48a3ad4ee",
+      "inputSchemaHash": "sha256:d738b6fa2736e82f7b8145da8f87ac7387d7668341e8e32ee4102aa09c7e5495",
+      "outputSchemaHash": "sha256:1927cc0a68542eeaa8887f698748578ea23b9b305d97b3cafb73dd7dc53011ee",
       "semanticProfileHash": "sha256:0a1b8baaa16665dd31b78f0ef3e06db3081c660a8d0ac45de7da77e26114bad6",
       "maturity": "PREVIEW",
       "requiredPermissions": [

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7.1:world-query-result",
+  "title": "GowmV071WorldQueryResult",
+  "$ref": "../platform/world-query-result.schema.json"
+}

@@ -1,7 +1,7 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { canonicalSha256, validateContract, type CapabilityDescriptor } from "../packages/platform/contract-runtime/src/index.js";
+import { canonicalSha256, compareUnicodeCodePoints, validateContract, type CapabilityDescriptor } from "../packages/platform/contract-runtime/src/index.js";
 import { projectCapabilitySemantics } from "../services/gateway/world-capability-gateway/src/capability-semantics.js";
 import { buildWorldPlatformRegistry } from "./build-world-platform-registry.js";
 import { validateSemanticCatalog } from "./validate-semantic-catalog.js";
@@ -9,7 +9,7 @@ import { validateSemanticCatalog } from "./validate-semantic-catalog.js";
 export function createSouthboundOperationLock(catalog: readonly CapabilityDescriptor[], contractCatalogRevision: string, stableAdmissionPassed: boolean) {
   if (catalog.some((c) => !c.semanticProfile)) throw new Error("Cannot lock an operation with missing explicit semantics");
   const project = (c: CapabilityDescriptor) => ({ operationId:c.operationId,operationVersion:c.operationVersion,inputSchemaHash:c.inputSchemaHash,outputSchemaHash:c.outputSchemaHash,semanticProfileHash:canonicalSha256(c.semanticProfile!),maturity:c.maturity });
-  const ordered = [...catalog].sort((a,b) => `${a.operationId}@${a.operationVersion}`.localeCompare(`${b.operationId}@${b.operationVersion}`));
+  const ordered = [...catalog].sort((a,b) => compareUnicodeCodePoints(`${a.operationId}@${a.operationVersion}`, `${b.operationId}@${b.operationVersion}`));
   const lock = { schemaVersion:"1.0",gatewayContractVersion:"0.6.2",contractCatalogRevision,
     semanticCatalogHash:projectCapabilitySemantics(ordered,contractCatalogRevision).catalogHash,
     defaultOperations:stableAdmissionPassed ? ordered.filter((c) => c.maturity === "STABLE").map(project) : [],

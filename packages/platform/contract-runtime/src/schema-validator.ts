@@ -3,6 +3,7 @@ import { isIP } from "node:net";
 
 import { contractSchemas } from "./generated/schema-bundle.js";
 import { contractSchemaHashes } from "./generated/schema-hashes.js";
+import { compareUnicodeCodePoints } from "./canonical-order.js";
 import { validateNamedContractSemantics } from "./semantic-validation.js";
 
 export type JsonSchema = boolean | Record<string, unknown>;
@@ -159,7 +160,7 @@ export function listContractSchemas(): Array<{ key: string; id?: string; title?:
       if (typeof schema?.title === "string") result.title = schema.title;
       return result;
     })
-    .sort((left, right) => left.key.localeCompare(right.key));
+    .sort((left, right) => compareUnicodeCodePoints(left.key, right.key));
 }
 
 function escapePointer(value: string): string {

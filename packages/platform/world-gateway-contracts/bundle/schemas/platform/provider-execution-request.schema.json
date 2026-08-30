@@ -92,11 +92,11 @@
     "dataSnapshot": { "$ref": "data-snapshot-context.schema.json" },
     "requestedSnapshot": {
       "description": "Gateway-resolved logical resource-version constraints. This is not a shared database transaction snapshot.",
-      "$ref": "../gowm-v0.7/query-snapshot-manifest.schema.json"
+      "$ref": "../gowm-v0.7.1/query-snapshot-manifest.schema.json"
     },
     "effectiveSnapshot": {
       "description": "Persisted logical resource versions actually selected so far. This is not a shared database transaction snapshot.",
-      "$ref": "../gowm-v0.7/query-snapshot-manifest.schema.json"
+      "$ref": "../gowm-v0.7.1/query-snapshot-manifest.schema.json"
     }
   }
 }
