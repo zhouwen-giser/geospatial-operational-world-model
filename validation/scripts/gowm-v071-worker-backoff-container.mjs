@@ -165,6 +165,7 @@ try {
   if (terminatedHistoricalConnections < 1) {
     throw new Error("qualification did not identify an established Historical worker connection");
   }
+  const resetQueue = enqueueProjectionWork(databaseContainer, `${taskId}-reset`);
   const resetEvent = await waitForNewBackoffEvent(
     workerContainer,
     eventsBeforeDisconnect.length,
@@ -173,6 +174,12 @@ try {
   if (resetEvent.consecutiveStageFailures !== 1 || resetEvent.delayMs !== 100
       || !isHistoricalDatabaseUnavailable(resetEvent)) {
     throw new Error("successful automatic recovery did not reset the worker backoff state");
+  }
+  const resetOutageState = projectionQueueState(databaseContainer, resetQueue);
+  if (resetOutageState.state !== "QUEUED"
+      || resetOutageState.attempts !== 0
+      || resetOutageState.generation !== 0) {
+    throw new Error("reset qualification work was claimed while the Historical database was unavailable");
   }
   const identityAfterReset = inspectContainer(workerContainer);
   assertSameRunningProcess(initialIdentity, identityAfterReset);
@@ -286,6 +293,9 @@ try {
       consecutiveStageFailures: resetEvent.consecutiveStageFailures,
       delayMs: resetEvent.delayMs,
       terminatedHistoricalConnections,
+      queueState: resetOutageState.state,
+      queueAttempts: resetOutageState.attempts,
+      queueGeneration: resetOutageState.generation,
       sameContainerId: initialIdentity.id === identityAfterReset.id,
       sameProcessId: initialIdentity.pid === identityAfterReset.pid
     },
