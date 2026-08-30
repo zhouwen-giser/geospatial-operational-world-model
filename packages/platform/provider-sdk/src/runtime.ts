@@ -20,6 +20,7 @@ import { assertManifestMatchesOperations } from "./manifest.js";
 import { assertTrustedScope, type TrustedSecurityContext } from "./scope.js";
 import { createTraceContext } from "./trace.js";
 import type { ProviderOperation, ProviderOperationResult, ProviderRuntime, ProviderRuntimeOptions } from "./types.js";
+import type { ProviderSnapshotContext } from "./types.js";
 
 function operationKey(operationId: string, operationVersion: string): string {
   return `${operationId}@${operationVersion}`;
@@ -30,6 +31,16 @@ function trustedSecurity(request: ProviderExecutionRequest): TrustedSecurityCont
     principalRef: request.securityContext.principalRef,
     ...(request.securityContext.dataScopeClaim === undefined ? {} : { dataScopeClaim: request.securityContext.dataScopeClaim }),
     ...(request.securityContext.datasetScopeClaim === undefined ? {} : { datasetScopeClaims: [request.securityContext.datasetScopeClaim] })
+  };
+}
+
+function providerSnapshots(request: ProviderExecutionRequest): ProviderSnapshotContext {
+  const requested = request.requestedSnapshot === undefined ? undefined : structuredClone(request.requestedSnapshot);
+  const effectiveSource = request.effectiveSnapshot ?? request.requestedSnapshot;
+  const effective = effectiveSource === undefined ? undefined : structuredClone(effectiveSource);
+  return {
+    ...(requested === undefined ? {} : { requested }),
+    ...(effective === undefined ? {} : { effective })
   };
 }
 
@@ -60,18 +71,26 @@ export function createProviderRuntime(options: ProviderRuntimeOptions): Provider
       assertCostClass(operation.descriptor.execution.costClass, request.executionPolicy.maximumCostClass);
       const limits = intersectLimits(operation.descriptor.limits, request.executionPolicy);
       assertWithinBudget(limits, inputConsumption(request.input));
+      const snapshots = providerSnapshots(request);
 
       return await cache.execute(request.idempotencyKey, {
         operation: request.operation,
         input: request.input,
         principalRef: request.securityContext.principalRef,
         ...(request.securityContext.dataScopeClaim === undefined ? {} : { dataScopeClaim: request.securityContext.dataScopeClaim }),
-        ...(request.securityContext.datasetScopeClaim === undefined ? {} : { datasetScopeClaim: request.securityContext.datasetScopeClaim })
+        ...(request.securityContext.datasetScopeClaim === undefined ? {} : { datasetScopeClaim: request.securityContext.datasetScopeClaim }),
+        snapshots
       }, async () => {
         const started = performance.now();
         const result = await runWithDeadline(request.executionPolicy.deadlineAt, (deadline) => operation.handle(
           request.input,
-          { security, deadline, trace: createTraceContext(request.requestId, traceId), gateway: request.gatewayContext }
+          {
+            security,
+            deadline,
+            trace: createTraceContext(request.requestId, traceId),
+            gateway: request.gatewayContext,
+            snapshots
+          }
         ), () => now().getTime());
         return assembleResult(operation, request, result, {
           providerId: provider.providerId,
@@ -128,14 +147,13 @@ function assembleResult(
   assertReportedNodeConsumption(request, consumption);
   assertWithinBudget(limits, consumption);
 
-  const dataBound = descriptor.dataBinding === "WORLD_SNAPSHOT_BOUND" || descriptor.dataBinding === "DATASET_VERSION_BOUND";
-  if (dataBound && descriptor.snapshotPolicy.dataSnapshot === "REQUIRED" && result.dataSnapshot === undefined) {
-    throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "data-bound result requires a data snapshot");
+  if (descriptor.snapshotPolicy.dataSnapshot === "REQUIRED" && result.dataSnapshot === undefined) {
+    throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "the capability contract requires a data snapshot");
   }
-  if (!dataBound && result.dataSnapshot !== undefined) {
-    throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "world-independent result must not fabricate a data snapshot");
+  if (descriptor.snapshotPolicy.dataSnapshot === "NONE" && result.dataSnapshot !== undefined) {
+    throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "the capability contract forbids a data snapshot");
   }
-  if (!dataBound && (result.evidenceReferences?.length ?? 0) > 0) {
+  if (descriptor.dataBinding === "WORLD_INDEPENDENT" && (result.evidenceReferences?.length ?? 0) > 0) {
     throw new ProviderProtocolError("INTERNAL_PROVIDER_ERROR", "generic computation must not fabricate world evidence");
   }
 

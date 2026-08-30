@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7:historical-trajectory-result",
+  "title": "GowmV07HistoricalTrajectoryResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "reasonCode", "subjectReferenceKey", "executionIntervalReferenceKey", "requestedPeriods", "definedPeriods", "excludedPeriods", "gaps", "inputTrackletVersions", "completeness", "finalization", "preview", "warnings"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "status": { "enum": ["COMPLETED", "PARTIAL", "NO_DATA", "INDETERMINATE"] },
+    "reasonCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,127}$" },
+    "subjectReferenceKey": { "$ref": "../platform/common-definitions.schema.json#/$defs/referenceKey" },
+    "executionIntervalReferenceKey": { "$ref": "#/$defs/executionIntervalReferenceKey" },
+    "trajectoryReferenceKey": { "$ref": "#/$defs/trajectoryReferenceKey" },
+    "requestedPeriods": { "type": "array", "maxItems": 4096, "items": { "$ref": "#/$defs/timeRange" } },
+    "definedPeriods": { "type": "array", "maxItems": 4096, "items": { "$ref": "#/$defs/timeRange" } },
+    "excludedPeriods": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["range", "reason"],
+        "properties": {
+          "range": { "$ref": "#/$defs/timeRange" },
+          "reason": { "const": "EXCLUDED_PAUSED_PHASE" }
+        }
+      }
+    },
+    "gaps": { "type": "array", "maxItems": 4096, "items": { "$ref": "historical-gap.schema.json" } },
+    "inputTrackletVersions": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": { "$ref": "#/$defs/inputTrackletVersion" }
+    },
+    "completeness": { "$ref": "#/$defs/completeness" },
+    "finalization": { "$ref": "#/$defs/finalization" },
+    "preview": { "type": "array", "maxItems": 10000, "items": { "$ref": "#/$defs/previewPoint" } },
+    "artifactReference": { "$ref": "#/$defs/artifactReference" },
+    "warnings": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    }
+  },
+  "$defs": {
+    "timeRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" },
+        "bounds": { "const": "[)", "default": "[)" }
+      }
+    },
+    "executionIntervalReferenceKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "kind", "id", "version"],
+      "properties": {
+        "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$" },
+        "kind": { "const": "TASK_EXECUTION_INTERVAL" },
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "trajectoryReferenceKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "kind", "id", "version"],
+      "properties": {
+        "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$" },
+        "kind": { "const": "HISTORICAL_TRAJECTORY" },
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "inputTrackletVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trackletId", "trackletVersionId", "versionNo", "sourceKey", "trackerSessionKey", "contentHash"],
+      "properties": {
+        "trackletId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "trackletVersionId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "versionNo": { "type": "integer", "minimum": 1 },
+        "sourceKey": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "trackerSessionKey": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "contentHash": { "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest" }
+      }
+    },
+    "completeness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["temporalCoverageRatio", "sampleCount", "sequenceCount", "gapCount", "prefixComplete", "suffixComplete"],
+      "properties": {
+        "temporalCoverageRatio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "sampleCount": { "type": "integer", "minimum": 0 },
+        "sequenceCount": { "type": "integer", "minimum": 0 },
+        "gapCount": { "type": "integer", "minimum": 0 },
+        "prefixComplete": { "type": "boolean" },
+        "suffixComplete": { "type": "boolean" }
+      }
+    },
+    "finalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["PROVISIONAL", "SEALED", "CONFLICTED"] },
+        "observedThrough": { "type": "string", "format": "date-time" }
+      }
+    },
+    "previewPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observedAt", "position"],
+      "properties": {
+        "observedAt": { "type": "string", "format": "date-time" },
+        "position": { "$ref": "../gowm-v0.6.2/geojson-point.schema.json" }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "digest", "mediaType"],
+      "properties": {
+        "artifactId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "digest": { "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest" },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    }
+  }
+}

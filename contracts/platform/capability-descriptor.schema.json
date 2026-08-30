@@ -199,6 +199,13 @@
         },
         "computeSnapshot": {
           "const": "REQUIRED"
+        },
+        "resourceResolution": {
+          "enum": [
+            "DISCOVER_RESOURCES",
+            "REQUIRE_PINNED",
+            "NOT_APPLICABLE"
+          ]
         }
       }
     },
@@ -249,7 +256,7 @@
       }
     },
     "semanticProfile": {
-      "$ref": "../gowm-v0.6.2/capability-semantic-profile-v1.schema.json"
+      "$ref": "../gowm-v0.7/capability-semantic-profile-v1.1.schema.json"
     }
   },
   "$defs": {

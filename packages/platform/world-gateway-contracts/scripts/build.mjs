@@ -36,7 +36,7 @@ const walk = async (root) => {
 };
 
 async function copySchemas(outputRoot) {
-  for (const sourceRoot of ["contracts/platform", "contracts/gowm-v0.6.2", "contracts/gowm-v0.6.3"]) {
+  for (const sourceRoot of ["contracts/platform", "contracts/gowm-v0.6.2", "contracts/gowm-v0.6.3", "contracts/gowm-v0.7"]) {
     const absolute = resolve(repositoryRoot, sourceRoot);
     for (const path of await walk(absolute)) {
       const portablePath = path.replaceAll("\\", "/");
@@ -106,6 +106,9 @@ export async function buildConsumerContracts(destination = defaultOutputRoot) {
   await writeFile(join(outputRoot, "openapi/world-gateway-v0.6.3.yaml"), extension);
   await copy(resolve(repositoryRoot, "packages/platform/contract-runtime/src/generated/contracts.ts"), join(outputRoot, "types/contracts.ts"));
   for (const path of await walk(resolve(repositoryRoot, "contracts/gowm-v0.6.2/vocabularies"))) {
+    await copy(path, join(outputRoot, "vocabularies", basename(path)));
+  }
+  for (const path of await walk(resolve(repositoryRoot, "contracts/gowm-v0.7/vocabularies"))) {
     await copy(path, join(outputRoot, "vocabularies", basename(path)));
   }
 

@@ -4,7 +4,7 @@
   "consumerContractPackage": {
     "name": "@gowm/world-gateway-contracts",
     "version": "0.6.3",
-    "integrity": "sha512-KekpsVw943+iWwWcKepSxl408uBqH6oQ/ZzHcsrQrq2EjP+r2zYtljOfFekP6Vksxx1oSbE66rqaHE2rUGv6xw=="
+    "integrity": "sha512-u6nSNmIPZQblvlUK4rPaCDaNqPtpVFhzU6Z07q2o70xeu7rUHDXUcfVTzMeCCeNxvTi2ZWFBm4/PopxdOE2ZqQ=="
   },
   "contractCatalogRevision": "sha256:efd0395dbd05c884c781f964b22147efcb38c4cef91704597706ec4b8332075a",
   "semanticCatalogHash": "sha256:418fc328861e846801c6e8109bf6d48b876c7814c650a391b84076f71e588b61",

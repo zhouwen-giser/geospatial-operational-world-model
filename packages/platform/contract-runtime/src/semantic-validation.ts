@@ -4,10 +4,12 @@ import type {
   CapabilityDescriptor,
   CapabilityProviderManifest,
   CapabilityResultEnvelope,
+  GowmV07QuerySnapshotManifest,
   H3CellSetEnvelope,
   PlatformCommonDefinitionsOperationRef,
   ProviderExecutionRequest,
   ProviderLock,
+  WorldQueryResult,
   WorldQueryPlanV2,
   WorldQueryPlanV2InputBinding
 } from "./generated/contracts.js";
@@ -43,12 +45,29 @@ export function validateCapabilityDescriptorSemantics(
   if (descriptor.execution.defaultTimeoutMs > descriptor.execution.maximumTimeoutMs) {
     issues.push(issue(`${path}/execution/defaultTimeoutMs`, "timeoutOrder", "must not exceed maximumTimeoutMs"));
   }
-  const worldBound = descriptor.dataBinding === "WORLD_SNAPSHOT_BOUND" || descriptor.dataBinding === "DATASET_VERSION_BOUND";
-  if (worldBound && descriptor.snapshotPolicy.dataSnapshot !== "REQUIRED") {
-    issues.push(issue(`${path}/snapshotPolicy/dataSnapshot`, "snapshotPolicy", "data-bound operations require a Data Snapshot"));
-  }
-  if (!worldBound && descriptor.snapshotPolicy.dataSnapshot !== "NONE") {
-    issues.push(issue(`${path}/snapshotPolicy/dataSnapshot`, "snapshotPolicy", "world-independent and caller-data operations must not create a Data Snapshot"));
+  const resourceResolution = descriptor.snapshotPolicy.resourceResolution;
+  if (resourceResolution === undefined) {
+    const worldBound = descriptor.dataBinding === "WORLD_SNAPSHOT_BOUND" || descriptor.dataBinding === "DATASET_VERSION_BOUND";
+    if (worldBound && descriptor.snapshotPolicy.dataSnapshot !== "REQUIRED") {
+      issues.push(issue(`${path}/snapshotPolicy/dataSnapshot`, "snapshotPolicy", "data-bound operations require a Data Snapshot"));
+    }
+    if (!worldBound && descriptor.snapshotPolicy.dataSnapshot !== "NONE") {
+      issues.push(issue(`${path}/snapshotPolicy/dataSnapshot`, "snapshotPolicy", "world-independent and caller-data operations must not create a Data Snapshot"));
+    }
+  } else if (resourceResolution === "DISCOVER_RESOURCES" || resourceResolution === "REQUIRE_PINNED") {
+    if (descriptor.dataBinding === "WORLD_INDEPENDENT") {
+      issues.push(issue(`${path}/snapshotPolicy/resourceResolution`, "resourceResolution", `${resourceResolution} requires a data-bound operation`));
+    }
+    if (descriptor.snapshotPolicy.dataSnapshot !== "REQUIRED") {
+      issues.push(issue(`${path}/snapshotPolicy/dataSnapshot`, "resourceResolution", `${resourceResolution} requires a Data Snapshot`));
+    }
+  } else if (resourceResolution === "NOT_APPLICABLE") {
+    if (descriptor.dataBinding !== "WORLD_INDEPENDENT") {
+      issues.push(issue(`${path}/snapshotPolicy/resourceResolution`, "resourceResolution", "NOT_APPLICABLE is valid only for world-independent operations"));
+    }
+    if (descriptor.snapshotPolicy.dataSnapshot !== "NONE") {
+      issues.push(issue(`${path}/snapshotPolicy/dataSnapshot`, "resourceResolution", "NOT_APPLICABLE requires dataSnapshot NONE"));
+    }
   }
   if (descriptor.dataBinding === "WORLD_SNAPSHOT_BOUND" && descriptor.scopePolicy !== "DATA_SCOPE_REQUIRED") {
     issues.push(issue(`${path}/scopePolicy`, "scopePolicy", "world-snapshot operations require DATA_SCOPE_REQUIRED"));
@@ -173,6 +192,46 @@ export function validateProviderExecutionRequestSemantics(
   if (deadlineAt > expiresAt) {
     issues.push(issue("/executionPolicy/deadlineAt", "attestationWindow", "must not outlive the scope attestation"));
   }
+  for (const [field, manifest] of [
+    ["requestedSnapshot", request.requestedSnapshot],
+    ["effectiveSnapshot", request.effectiveSnapshot]
+  ] as const) {
+    if (manifest !== undefined) {
+      issues.push(...validateQuerySnapshotManifestHash(manifest, `/${field}`).issues);
+    }
+  }
+  return result(issues);
+}
+
+export function validateQuerySnapshotManifestHash(
+  manifest: GowmV07QuerySnapshotManifest,
+  path = ""
+): ValidationResult {
+  const { manifestHash, ...canonicalManifest } = manifest;
+  return result(manifestHash === canonicalSha256(canonicalManifest) ? [] : [
+    issue(`${path}/manifestHash`, "manifestHash", "must match the canonical manifest without manifestHash")
+  ]);
+}
+
+export function validateWorldQueryResultSemantics(value: WorldQueryResult): ValidationResult {
+  const issues: ValidationIssue[] = [];
+  issues.push(...validateQuerySnapshotManifestHash(value.snapshotManifest, "/snapshotManifest").issues);
+  if ((value.requestedSnapshotManifest === undefined) !== (value.effectiveSnapshotManifest === undefined)) {
+    issues.push(issue(
+      "/requestedSnapshotManifest",
+      "snapshotManifestPair",
+      "requestedSnapshotManifest and effectiveSnapshotManifest must either both be present or both be absent"
+    ));
+  }
+  if (value.requestedSnapshotManifest !== undefined) {
+    issues.push(...validateQuerySnapshotManifestHash(value.requestedSnapshotManifest, "/requestedSnapshotManifest").issues);
+  }
+  if (value.effectiveSnapshotManifest !== undefined) {
+    issues.push(...validateQuerySnapshotManifestHash(value.effectiveSnapshotManifest, "/effectiveSnapshotManifest").issues);
+    if (canonicalSha256(value.snapshotManifest) !== canonicalSha256(value.effectiveSnapshotManifest)) {
+      issues.push(issue("/snapshotManifest", "effectiveSnapshotAlias", "must equal effectiveSnapshotManifest when the latter is present"));
+    }
+  }
   return result(issues);
 }
 
@@ -237,14 +296,13 @@ export function validateCapabilityResultSemantics(
         envelope.computeSnapshot.schemas.outputSchemaHash !== descriptor.outputSchemaHash) {
       issues.push(issue("/computeSnapshot/schemas", "schemaHash", "does not match selected operation schemas"));
     }
-    const dataBound = descriptor.dataBinding === "WORLD_SNAPSHOT_BOUND" || descriptor.dataBinding === "DATASET_VERSION_BOUND";
-    if (dataBound && !envelope.dataSnapshot) {
-      issues.push(issue("/dataSnapshot", "snapshotRequired", "data-bound results require a Data Snapshot"));
+    if (descriptor.snapshotPolicy.dataSnapshot === "REQUIRED" && !envelope.dataSnapshot) {
+      issues.push(issue("/dataSnapshot", "snapshotRequired", "the capability contract requires a Data Snapshot"));
     }
-    if (!dataBound && envelope.dataSnapshot) {
-      issues.push(issue("/dataSnapshot", "fakeDataSnapshot", "world-independent results must not create a Data Snapshot"));
+    if (descriptor.snapshotPolicy.dataSnapshot === "NONE" && envelope.dataSnapshot) {
+      issues.push(issue("/dataSnapshot", "fakeDataSnapshot", "the capability contract forbids a Data Snapshot"));
     }
-    if (!dataBound && envelope.evidenceReferences.length > 0) {
+    if (descriptor.dataBinding === "WORLD_INDEPENDENT" && envelope.evidenceReferences.length > 0) {
       issues.push(issue("/evidenceReferences", "fakeEvidence", "world-independent computation must not create World Evidence"));
     }
   }
@@ -541,6 +599,12 @@ export function validateNamedContractSemantics(nameOrId: string, value: unknown)
   }
   if (normalized.includes("provider-execution-request") || normalized === "providerexecutionrequest") {
     return validateProviderExecutionRequestSemantics(value as ProviderExecutionRequest).issues;
+  }
+  if (normalized.includes("query-snapshot-manifest") || normalized === "gowmv07querysnapshotmanifest") {
+    return validateQuerySnapshotManifestHash(value as GowmV07QuerySnapshotManifest).issues;
+  }
+  if (normalized.includes("world-query-result") || normalized === "worldqueryresult") {
+    return validateWorldQueryResultSemantics(value as WorldQueryResult).issues;
   }
   if (normalized.includes("capability-result-envelope") || normalized === "capabilityresultenvelope") {
     return validateCapabilityResultSemantics(value as CapabilityResultEnvelope).issues;

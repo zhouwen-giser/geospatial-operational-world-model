@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7:task-execution-interval-query",
+  "title": "GowmV07TaskExecutionIntervalQuery",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["taskReferenceKey", "selection", "phaseScope"],
+  "properties": {
+    "taskReferenceKey": { "$ref": "#/$defs/taskReferenceKey" },
+    "selection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "LATEST" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "executionNo"],
+          "properties": {
+            "kind": { "const": "EXECUTION_NO" },
+            "executionNo": { "type": "integer", "minimum": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "limit"],
+          "properties": {
+            "kind": { "const": "ALL" },
+            "limit": { "type": "integer", "minimum": 1, "maximum": 1000 }
+          }
+        }
+      ]
+    },
+    "phaseScope": { "enum": ["EXECUTION_ENVELOPE", "ACTIVE_PHASES_ONLY"] }
+  },
+  "$defs": {
+    "taskReferenceKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "kind", "id", "version"],
+      "properties": {
+        "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$" },
+        "kind": { "const": "OPERATIONAL_TASK" },
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    }
+  }
+}

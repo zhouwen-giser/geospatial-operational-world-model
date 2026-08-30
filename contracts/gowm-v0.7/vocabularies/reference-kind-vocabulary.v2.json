@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0",
+  "vocabularyId": "gowm-reference-kind",
+  "version": "2.0",
+  "terms": [
+    { "id": "WORLD_OBJECT", "definition": "A persistent object in the current or historical world model." },
+    { "id": "SPATIAL_OBJECT", "definition": "A persistent spatial object with geometry and version semantics." },
+    { "id": "DATASET", "definition": "A versioned data product dataset." },
+    { "id": "LAYER", "definition": "A versioned layer within a dataset." },
+    { "id": "LAYER_FEATURE", "definition": "A versioned feature identity within a layer." },
+    { "id": "OPERATIONAL_TASK", "definition": "A GOWM operational reality task identity, not an SDAR planning task." },
+    { "id": "DERIVED_REFERENCE", "definition": "A revalidatable reference derived by a capability execution." },
+    { "id": "REFERENCE_SET", "definition": "An immutable, paged set of reference identities." },
+    { "id": "QUERY_RESULT", "definition": "A public reference to an immutable query or plan result." },
+    { "id": "TASK_EXECUTION_INTERVAL", "definition": "An immutable revision of a task execution interval derived from operational task events." },
+    { "id": "TASK_EXECUTION_EVENT_SET", "definition": "A pinned, ordered set of operational task events used to derive an execution interval revision." },
+    { "id": "TRACKLET_VERSION", "definition": "An immutable source-local mobility tracklet version with explicit segment and gap lineage." },
+    { "id": "TRACKLET_FINALIZATION", "definition": "An immutable finalization revision describing whether a tracklet input window is provisional, sealed, or conflicted." },
+    { "id": "HISTORICAL_TRAJECTORY", "definition": "An immutable, gap-preserving historical trajectory revision for one subject, task interval, and selected source." },
+    { "id": "HISTORY_INPUT_SET", "definition": "A content-addressed deterministic set of historical input resource identities and versions." },
+    { "id": "HISTORY_METHOD_PROFILE", "definition": "A versioned policy and method profile controlling deterministic historical reconstruction or source selection." }
+  ],
+  "compatibilityPolicy": "ADD_ONLY"
+}
