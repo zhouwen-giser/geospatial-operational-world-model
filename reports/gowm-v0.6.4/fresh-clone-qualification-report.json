@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "targetVersion": "0.6.4",
+  "candidateCommit": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
+  "generatedAt": "2026-08-30T00:51:29.023Z",
+  "status": "PASS",
+  "sourceIdentity": {
+    "gitHead": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
+    "imageOciRevision": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
+    "imageOciVersion": "0.6.4",
+    "semanticSourceDigest": "sha256:f6b18e6d4ab908913add1d0c876d25e7cc2c6051d8269acd4afac7ae33706b87",
+    "gitRemoteCount": 0
+  },
+  "qualification": {
+    "runtimeClass": "ISOLATED_Q",
+    "runtimeInstanceIdHash": "sha256:495cf2e16efe599ef67a63948e1eff7c0e56f8b78d987f76eb88ba29aebb1fa1",
+    "freshClone": true,
+    "freshDatabase": true,
+    "manualPatchApplied": false,
+    "migrationCount": 62,
+    "migrationSetHash": "sha256:c5d998e50d414afbe3c361a28b1d2bcac6e3374e0c4c8fc92783d7e92d865838",
+    "requiredAvailability": {
+      "passed": 12,
+      "total": 12,
+      "status": "PASS"
+    },
+    "canary": {
+      "passed": 37,
+      "total": 37,
+      "status": "PASS"
+    },
+    "idempotency": {
+      "status": "PASS",
+      "beforeLoadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a",
+      "afterLoadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a",
+      "liveLoadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a",
+      "loaderInternalRepeat": true
+    },
+    "handoff": {
+      "status": "PASS",
+      "runtimeIdentityBound": true,
+      "signedDelegation": true,
+      "independentConsumerContainer": true,
+      "manifestSha256": "sha256:a58ad15145f3d4664eb9096b1eab14cc3a11bba094a14770a421b330e1ec5d28",
+      "bindingSha256": "sha256:0c513dafda7c44ce4fd0aaa7e78dc03df92ffcf956629b6cd4081b0d34d04077",
+      "connectivitySha256": "sha256:a4a8ab5bad792c3c84abbc17c2a006d755c681c5645f875cea2e2de3f8ccfd17",
+      "canarySha256": "sha256:67fb0f2418c5dffeed85c6ef7ba838738ee5fa15e79e5ede05fd418b44ed2756"
+    }
+  },
+  "fixture": {
+    "fixtureVersion": "1.0.0",
+    "realizationId": "sample-realization-6a0af047-04f2-53c7-ae22-38d9d74121b5",
+    "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025",
+    "generatedArtifactHash": "sha256:e9a0beb8014ba2478a231a614bc5b78d67230a2abc8d00bae43305ee8bf59846",
+    "realizationHash": "sha256:fe0935c93a4b292bf5e91554019f87abbbfdafb3011da02b0fc313debbc96f3e",
+    "loadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a"
+  },
+  "sourceEvidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f",
+  "nonClaims": [
+    "PRODUCTION_READY",
+    "RELEASE_ACCEPTED",
+    "FULL_QUALIFICATION_COMPLETE"
+  ],
+  "evidenceHash": "sha256:fa51937b73ab1c21e2765b541e4a0616318af08dd2502da2dd0d93baca5f7303"
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "baselineCommit": "17dd221330d9af540ec815a39eca96550690299a",
+  "producerOperation": "reference.resolve",
+  "consumerOperation": "world.get-geometry",
+  "referenceKind": "LAYER_FEATURE",
+  "identityPreserved": true,
+  "producerReferenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+  "consumerReferenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+  "status": "PASS",
+  "evidenceIds": [
+    "baseline:sha256:daa31cc9315de152a90ee2eb1b8e48880fc69342a3c41c68918ae7ccac182ff9",
+    "upgrade:sha256:68261b2faa16d767b7303b3ad15ae04d5055cd148e61bb0418f12eb8cebceb74",
+    "runtime:sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+  ]
+}

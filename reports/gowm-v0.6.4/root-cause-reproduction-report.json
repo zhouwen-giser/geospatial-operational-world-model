@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "targetVersion": "0.6.4",
+  "candidateCommit": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
+  "generatedAt": "2026-08-30T00:51:29.023Z",
+  "status": "PASS",
+  "baseline": {
+    "migrationCount": 61,
+    "databaseIdentityHash": "sha256:e2daa74bd8adfcfeed065d1e2dbc8f7aaad2edd1f88e834ea7cde541719b8d83",
+    "sameCandidateAndDatabaseAsUpgrade": true,
+    "descriptorPresent": true,
+    "descriptorCurrentObjectVersion": true,
+    "sameReferenceGeometryRows": 0,
+    "observedOutcome": "GEOMETRY_UNAVAILABLE",
+    "defectReproduced": true,
+    "evidenceHash": "sha256:617c1b030f74d4d2f194d3e43a5b6824e789572bf13dfcd8d5bd297feeb2ce9f"
+  },
+  "repaired": {
+    "migrationCount": 62,
+    "migration": {
+      "version": "062_reference_geometry_composability.sql",
+      "executedSqlChecksum": "sha256:7b8a606e3258baa2f3e68c88e81abacb289615cf960a1af20c8a9f4c2074539c"
+    },
+    "sameReferenceGeometryRows": 1,
+    "descriptorPinComposes": true,
+    "immutableFeaturePinComposes": true,
+    "geometryType": "POLYGON",
+    "crs": "EPSG:4326",
+    "expectedVehicleCovered": true
+  },
+  "identity": {
+    "referenceKind": "LAYER_FEATURE",
+    "descriptorReferenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+    "pinnedCatalogReferenceHash": "sha256:2f028a51397c427154da229694c41ebe1124b374207a150a08a212b951dd16f7",
+    "sameEntity": true,
+    "descriptorVersionHash": "sha256:6b889fc1b5d505a02b1e449e415a5ff65644115877a7802a7c8fc5b077006c50",
+    "featureVersionHash": "sha256:39fe4a40977d0585fd5704359e3685b0ada5cf5ee061e5d97385601d120cd0ec",
+    "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025"
+  },
+  "sourceEvidenceSha256": {
+    "baseline": "sha256:daa31cc9315de152a90ee2eb1b8e48880fc69342a3c41c68918ae7ccac182ff9",
+    "upgrade": "sha256:68261b2faa16d767b7303b3ad15ae04d5055cd148e61bb0418f12eb8cebceb74"
+  },
+  "nonClaims": [
+    "PRODUCTION_READY",
+    "RELEASE_ACCEPTED",
+    "FULL_QUALIFICATION_COMPLETE"
+  ],
+  "evidenceHash": "sha256:e1020ae2674417cc6f0353c51a8a645f13c06c089440e0dfbcdfca200daae6ef"
+}

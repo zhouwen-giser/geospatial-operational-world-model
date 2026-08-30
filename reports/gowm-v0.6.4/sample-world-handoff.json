@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "targetVersion": "0.6.4",
+  "candidateCommit": "34a0e885566c88c3bc7d37fc0fd5dd02ce694437",
+  "seedVersion": "1.0.0",
+  "dataScope": "wsgs-demo",
+  "datasetScope": "wsgs-demo-main",
+  "areaFeature": {
+    "displayName": "A区",
+    "referenceKind": "LAYER_FEATURE",
+    "geometryType": "Polygon",
+    "referenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e"
+  },
+  "vehicleObject": {
+    "displayName": "2号车",
+    "referenceKind": "WORLD_OBJECT",
+    "referenceHash": "sha256:40306efd87b0ec57814fe80a7fb9562cc28602b7f8fb7214eb9c395430bed267",
+    "currentStatePositionAvailable": true
+  },
+  "realizationId": "sample-realization-6a0af047-04f2-53c7-ae22-38d9d74121b5",
+  "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025",
+  "generatedArtifactHash": "sha256:e9a0beb8014ba2478a231a614bc5b78d67230a2abc8d00bae43305ee8bf59846",
+  "realizationHash": "sha256:fe0935c93a4b292bf5e91554019f87abbbfdafb3011da02b0fc313debbc96f3e",
+  "loadedStateHash": "e0f3a281575c0337b4facf3b44d6e38d650b0e79d983351785042ece8932415a",
+  "runtimeInstanceIdHash": "sha256:495cf2e16efe599ef67a63948e1eff7c0e56f8b78d987f76eb88ba29aebb1fa1",
+  "requiredAvailability": {
+    "passed": 12,
+    "total": 12,
+    "status": "PASS"
+  },
+  "reproducible": true,
+  "manualPatchRequired": false,
+  "signedDelegationVerified": true,
+  "independentConsumerVerified": true,
+  "sourceEvidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f",
+  "evidenceHash": "sha256:68f56b1f73bc17e0efd4ea4266ad4a8a127f4d3ecbb39a03d6dee060eda8582c"
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "canaryId": "C4",
+  "steps": [
+    {
+      "operationId": "reference.resolve",
+      "status": "PASS",
+      "resultHash": "sha256:17aecf11c77300456593de4e3f8a8801fbf792d29946829cb79c95efa3b7dc42",
+      "candidateCount": 2,
+      "downstreamExecutionCount": 0,
+      "timestamp": "2026-08-29T16:17:16.261Z",
+      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+    }
+  ],
+  "status": "PASS",
+  "hardcodedReferenceUsed": false,
+  "notes": [
+    "Ambiguity stopped execution before any downstream world or spatial operation."
+  ]
+}

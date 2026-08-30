@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0",
+  "canaryId": "C1",
+  "steps": [
+    {
+      "operationId": "reference.resolve",
+      "status": "PASS",
+      "referenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+      "resultHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+      "timestamp": "2026-08-29T16:17:16.261Z",
+      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+    },
+    {
+      "operationId": "reference.validate",
+      "status": "PASS",
+      "referenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+      "resultHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+      "currentAndUsable": true,
+      "timestamp": "2026-08-29T16:17:16.261Z",
+      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+    },
+    {
+      "operationId": "world.get-geometry",
+      "status": "PASS",
+      "referenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+      "resultHash": "sha256:237d3edc4f97428ac3bebe418a9c201283baba62a78a3cfd7141a2cb0b82c8a7",
+      "timestamp": "2026-08-29T16:17:16.261Z",
+      "evidenceSha256": "sha256:22dff5be270c52eeafad704d12598c72618975b681e92ab5c4b8509cddc3050f"
+    }
+  ],
+  "status": "PASS",
+  "hardcodedReferenceUsed": false,
+  "notes": [
+    "Only candidate-bound hashes retained; no raw ReferenceKey or credential materialized."
+  ]
+}
