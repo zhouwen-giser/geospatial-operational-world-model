@@ -471,13 +471,13 @@ function psql(container, sql, variables = {}, fieldSeparator = "|") {
     "--set", `${name}=${String(value)}`
   ]);
   return docker([
-    "exec", container,
+    "exec", "--interactive", container,
     "psql", "--username", "gowm", "--dbname", "gowm",
     "--quiet", "--tuples-only", "--no-align", "--set", "ON_ERROR_STOP=1",
     "--field-separator", fieldSeparator,
     ...variableArguments,
-    "--command", sql
-  ]);
+    "--file", "-"
+  ], { input: sql });
 }
 
 async function waitForNewBackoffEvent(container, priorCount, timeoutMs) {
@@ -638,6 +638,7 @@ function docker(arguments_, options = {}) {
     cwd: root,
     encoding: "utf8",
     windowsHide: true,
+    input: options.input,
     maxBuffer: 8 * 1024 * 1024
   });
   if (result.status !== 0 && options.allowFailure !== true) {
