@@ -14,7 +14,10 @@ import {
   type ProviderOperation,
   type ProviderRuntime
 } from "../../../../packages/platform/provider-sdk/src/index.js";
-import { GroundingCatalogRepository } from "./repository.js";
+import {
+  GroundingCatalogRepository,
+  REFERENCE_RESOLUTION_POLICY_IDENTITY
+} from "./repository.js";
 import {
   GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256,
   GROUNDING_CATALOG_OPERATION_SCHEMAS,
@@ -35,28 +38,51 @@ export interface GroundingCatalogProvider {
   repository: GroundingCatalogRepository;
 }
 
+export function groundingCatalogImplementationIdentity(mode: GroundingCatalogMode) {
+  const providerId = providerIdForMode(mode);
+  const operationIds = operationsForMode(mode);
+  return {
+    providerId,
+    version: "1.0.0",
+    readContract: readContractForMode(mode),
+    ...(mode === "reference" ? { resolutionPolicy: REFERENCE_RESOLUTION_POLICY_IDENTITY } : {}),
+    ...(mode === "evidence" ? { catalogFeatureMigrationDigest: GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 } : {}),
+    operations: operationIds.map((operationId) => ({
+      operationId,
+      inputSchemaHash: GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId].inputSchemaHash,
+      outputSchemaHash: GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId].outputSchemaHash
+    }))
+  } as const;
+}
+
+export function groundingCatalogPolicy(mode: GroundingCatalogMode) {
+  return {
+    version: mode === "reference" ? "gowm-reference-catalog-policy/1.1" : `gowm-${mode}-catalog-policy/1.0`,
+    readContract: readContractForMode(mode),
+    ...(mode === "reference" ? { resolutionPolicy: REFERENCE_RESOLUTION_POLICY_IDENTITY } : {}),
+    scopeBeforeQuery: true,
+    baseTableAccess: false,
+    readOnlyTransaction: true,
+    isolation: "REPEATABLE READ",
+    stableOrdering: "reference_key ASC",
+    signedScopeBoundCursors: true,
+    providerToProviderCalls: false
+  } as const;
+}
+
 export function createGroundingCatalogProvider(options: GroundingCatalogProviderOptions): GroundingCatalogProvider {
   const repository = new GroundingCatalogRepository(options);
   const operationIds = operationsForMode(options.mode);
   const operations = operationIds.map((operationId) => operation(operationId, repository));
-  const providerId = options.mode === "reference" ? "gowm.reference-catalog" : options.mode === "dataset" ? "gowm.dataset-catalog" : "gowm.world-evidence";
+  const implementationIdentity = groundingCatalogImplementationIdentity(options.mode);
+  const providerId = implementationIdentity.providerId;
   const manifest: CapabilityProviderManifest = {
     providerProtocolVersion: "1.0", manifestSchemaVersion: "1.1",
     provider: {
       providerId,
       providerVersion: "1.0.0",
       owner: "gowm-platform",
-      implementationDigest: sha256({
-        providerId,
-        version: "1.0.0",
-        readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1+reference-geometry-composability@062",
-        ...(options.mode === "evidence" ? { catalogFeatureMigrationDigest: GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 } : {}),
-        operations: operationIds.map((operationId) => ({
-          operationId,
-          inputSchemaHash: GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId].inputSchemaHash,
-          outputSchemaHash: GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId].outputSchemaHash
-        }))
-      }),
+      implementationDigest: sha256(implementationIdentity),
       sourceRef: "urn:gowm:source:in-tree:grounding-catalog:1.0.0"
     },
     endpoints: {
@@ -68,17 +94,7 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
     },
     capabilities: operations.map((candidate) => candidate.descriptor)
   };
-  const policy = {
-    version: `gowm-${options.mode}-catalog-policy/1.0`,
-    readContract: options.mode === "reference" ? "gowm_reference_v1" : options.mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1+reference-geometry-composability@062",
-    scopeBeforeQuery: true,
-    baseTableAccess: false,
-    readOnlyTransaction: true,
-    isolation: "REPEATABLE READ",
-    stableOrdering: "reference_key ASC",
-    signedScopeBoundCursors: true,
-    providerToProviderCalls: false
-  } as const;
+  const policy = groundingCatalogPolicy(options.mode);
   return {
     mode: options.mode,
     repository,
@@ -91,6 +107,14 @@ export function createGroundingCatalogProvider(options: GroundingCatalogProvider
       ...(options.receiptId === undefined ? {} : { receiptId: options.receiptId })
     })
   };
+}
+
+function providerIdForMode(mode: GroundingCatalogMode): "gowm.reference-catalog" | "gowm.dataset-catalog" | "gowm.world-evidence" {
+  return mode === "reference" ? "gowm.reference-catalog" : mode === "dataset" ? "gowm.dataset-catalog" : "gowm.world-evidence";
+}
+
+function readContractForMode(mode: GroundingCatalogMode): string {
+  return mode === "reference" ? "gowm_reference_v1" : mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1+gowm_result_v1+reference-geometry-composability@062";
 }
 
 const STABLE_GROUNDING_OPERATIONS = new Set<GroundingCatalogOperationId>([

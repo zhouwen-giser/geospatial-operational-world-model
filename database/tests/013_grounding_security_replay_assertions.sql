@@ -53,13 +53,23 @@ WITH job AS (
 INSERT INTO gowm_capability.world_query_job(
   query_id,job_id,public_job_id,request_id,principal_ref,principal_hash,
   idempotency_key,request_hash,parameter_schema_hash,plan_hash,submission,
-  authentication_method,authenticated_at,data_scope_claim
+  authentication_method,authenticated_at,data_scope_claim,
+  query_snapshot_manifest,principal_context
 )
 SELECT 'g07-query',job_id,'g07-job','g07-request','principal:g07',
        'sha256:' || repeat('1',64),'g07-idempotency','sha256:' || repeat('2',64),
        'sha256:' || repeat('3',64),'sha256:' || repeat('4',64),
        '{"requestId":"g07-request","idempotencyKey":"g07-idempotency","parameterSchemaHash":"sha256:3333333333333333333333333333333333333333333333333333333333333333","plan":{"queryId":"g07-query"}}',
-       'TEST_ATTESTED',clock_timestamp(),'grounding-replay-a'
+       'TEST_ATTESTED',clock_timestamp(),'grounding-replay-a',
+       jsonb_build_object(
+         'querySnapshotId','snapshot-g07','mode','PINNED','consistency','SNAPSHOT',
+         'capturedAt','2026-08-24T00:00:00.000Z','resources','[]'::jsonb,
+         'manifestHash','sha256:' || repeat('5',64)
+       ),
+       jsonb_build_object(
+         'mode','STATIC_SERVICE','principalRef','principal:g07',
+         'authenticationMethod','TEST_ATTESTED','dataScopeClaim','grounding-replay-a'
+       )
 FROM job;
 
 UPDATE gowm_capability.world_query_job

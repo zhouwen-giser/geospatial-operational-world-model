@@ -1079,7 +1079,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -1087,6 +1090,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -1099,12 +1104,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -1116,6 +1125,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -1283,7 +1293,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -1337,7 +1347,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -1382,7 +1392,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a79de0aa25cd50ffc3fc2a1574588cfd4d500b49a78fb0c7b8b42e1c566fab8a"
+    "operationEvidenceDigest": "sha256:efe117a6e18a592a479a47c77a9013bfb5cd39b4a842b6f0e075b90ebb5f52f8"
   },
   "catalog.get-capabilities@1.0": {
     "contractHash": "sha256:990762eb68a231e5f2b956a6d792325ed439b02e296c5a1b5b87708cda22c90b",
@@ -1474,7 +1484,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -1482,6 +1495,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -1494,12 +1509,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -1511,6 +1530,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -1678,7 +1698,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -1732,7 +1752,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -1777,7 +1797,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a79de0aa25cd50ffc3fc2a1574588cfd4d500b49a78fb0c7b8b42e1c566fab8a"
+    "operationEvidenceDigest": "sha256:efe117a6e18a592a479a47c77a9013bfb5cd39b4a842b6f0e075b90ebb5f52f8"
   },
   "catalog.get-lineage@1.0": {
     "contractHash": "sha256:e36e037c0a041708bbfa08148ca27493ec4792dbd172da92ddf0ee246c6ad55f",
@@ -1869,7 +1889,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -1877,6 +1900,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -1889,12 +1914,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -1906,6 +1935,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -2073,7 +2103,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -2127,7 +2157,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -2172,7 +2202,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a79de0aa25cd50ffc3fc2a1574588cfd4d500b49a78fb0c7b8b42e1c566fab8a"
+    "operationEvidenceDigest": "sha256:efe117a6e18a592a479a47c77a9013bfb5cd39b4a842b6f0e075b90ebb5f52f8"
   },
   "catalog.get-quality@1.0": {
     "contractHash": "sha256:9919cd1407aa4e6ebffa6a5d9581d7ff71d8ea8b6e07fd8dd5822e6c39d81a20",
@@ -2264,7 +2294,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -2272,6 +2305,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -2284,12 +2319,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -2301,6 +2340,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -2468,7 +2508,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -2522,7 +2562,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -2567,7 +2607,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a79de0aa25cd50ffc3fc2a1574588cfd4d500b49a78fb0c7b8b42e1c566fab8a"
+    "operationEvidenceDigest": "sha256:efe117a6e18a592a479a47c77a9013bfb5cd39b4a842b6f0e075b90ebb5f52f8"
   },
   "catalog.get@1.0": {
     "contractHash": "sha256:eeabc67d48d2e987e0348403acff783e7e81d6a4ab65241bef4eefb194099864",
@@ -2704,7 +2744,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -2712,6 +2755,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -2724,12 +2769,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -2741,6 +2790,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -2908,7 +2958,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -2962,7 +3012,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -3007,7 +3057,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2174ebacc159dd25ab12460e9290f98069ad0f8d82c4296c4967a2c1cb2032df"
+    "operationEvidenceDigest": "sha256:59a6da8b99192787ee3f3b23c6be4b94327516b63ff4c9df9c7416b7af3f3151"
   },
   "catalog.list-versions@1.0": {
     "contractHash": "sha256:7283c07908ccd9a9868e5ab432228aa567e8dbc1728238fc6991afe9127513f1",
@@ -3099,7 +3149,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -3107,6 +3160,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -3119,12 +3174,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -3136,6 +3195,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -3303,7 +3363,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -3357,7 +3417,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -3402,7 +3462,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a79de0aa25cd50ffc3fc2a1574588cfd4d500b49a78fb0c7b8b42e1c566fab8a"
+    "operationEvidenceDigest": "sha256:efe117a6e18a592a479a47c77a9013bfb5cd39b4a842b6f0e075b90ebb5f52f8"
   },
   "catalog.search@1.0": {
     "contractHash": "sha256:1baad329d82fb656cdddf3b2ce758ac99b9189d214a01338618eb5a9e67e085c",
@@ -3538,7 +3598,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -3546,6 +3609,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -3558,12 +3623,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -3575,6 +3644,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -3742,7 +3812,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -3796,7 +3866,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -3841,7 +3911,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:18b1d2129123ce0b5e77ecec6b75dc6d2ef545da21b5b32bd3001cbe73e1ede8"
+    "operationEvidenceDigest": "sha256:1ab5ce7222bc4de4c267eb7d6aae2f16df7c9a0c18c6d1262a065138ae72cbf4"
   },
   "dataset.get@1.0": {
     "contractHash": "sha256:18166d957dc2981313952bec43a4a446fc63dba1b645dec4042882933b76bb30",
@@ -3961,7 +4031,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -3969,6 +4042,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -3981,12 +4056,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -3998,6 +4077,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -4165,7 +4245,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -4219,7 +4299,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -4264,7 +4344,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:524870234cb7f36300641d7a8e7eb78f44f059d25dec5bc0268b8c9d825393af"
+    "operationEvidenceDigest": "sha256:ef3e06bff1c6f83973143ded026762bbc925d5f2cc6726098f9d264825afdb3c"
   },
   "dataset.list@1.0": {
     "contractHash": "sha256:977241d53f836c5d019e34b7810ba5d2ebc6e5c4eb056a6ab180afca7dea1f17",
@@ -4346,7 +4426,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -4354,6 +4437,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -4366,12 +4451,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -4383,6 +4472,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -4550,7 +4640,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -4604,7 +4694,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -4649,7 +4739,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a37188188c7bd774efac008f0dc212f18ad2999a9ab444a96ca2dc2320025f6c"
+    "operationEvidenceDigest": "sha256:136c7e9a008353aa0dfd3c5ab8121364b537c88abaa2949a4671ac9ca2952a44"
   },
   "feature.get@1.0": {
     "contractHash": "sha256:4f210a6a29984d1b7d42596ebcb3d496950f01960152ab1664e681b14e425dc8",
@@ -4782,7 +4872,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -4790,6 +4883,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -4802,12 +4897,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -4819,6 +4918,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -4986,7 +5086,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -5040,7 +5140,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -5085,7 +5185,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3893e103f0c64fd857cbf79d773228da27ef3189dc1371a74f14fe0f56727998"
+    "operationEvidenceDigest": "sha256:fcac899a88e48fa19fcc483c75bf45989041f54e1c98e8d5d4ad2c54ec24c1e0"
   },
   "layer.find-features@1.0": {
     "contractHash": "sha256:eab88620e32b0d04d346c924ff35942769c792c041da3e153ae059c91661d0e1",
@@ -5167,7 +5267,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -5175,6 +5278,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -5187,12 +5292,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -5204,6 +5313,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -5371,7 +5481,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -5425,7 +5535,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -5470,7 +5580,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a37188188c7bd774efac008f0dc212f18ad2999a9ab444a96ca2dc2320025f6c"
+    "operationEvidenceDigest": "sha256:136c7e9a008353aa0dfd3c5ab8121364b537c88abaa2949a4671ac9ca2952a44"
   },
   "layer.get@1.0": {
     "contractHash": "sha256:076e495ebc35362eb6899ca83ef317b3027a733a285bd9c44fb53d4454f20c62",
@@ -5593,7 +5703,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -5601,6 +5714,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -5613,12 +5728,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -5630,6 +5749,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -5797,7 +5917,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -5851,7 +5971,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -5896,7 +6016,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:327a5a4ffdf57c0f667ac5cbb060d5629d34204ed001761eb6d37e78d0788c47"
+    "operationEvidenceDigest": "sha256:ee0a6aa1011a3ed7e99bc387c14bd8082a73cd820c0dfa4404a757a7548310e4"
   },
   "layer.list@1.0": {
     "contractHash": "sha256:5a14ed8b138090812b3f159a3fc4d387cbbb81c0746b7acf677d8d3bd8d8dfe8",
@@ -5978,7 +6098,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -5986,6 +6109,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -5998,12 +6123,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -6015,6 +6144,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -6182,7 +6312,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -6236,7 +6366,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -6281,7 +6411,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a37188188c7bd774efac008f0dc212f18ad2999a9ab444a96ca2dc2320025f6c"
+    "operationEvidenceDigest": "sha256:136c7e9a008353aa0dfd3c5ab8121364b537c88abaa2949a4671ac9ca2952a44"
   },
   "geometry.bounding-box@1.0": {
     "contractHash": "sha256:35ae176a29a8eae3240934f71e0b0ca106f3027378f44f44a44d01631e3334a1",
@@ -6458,7 +6588,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -6673,7 +6803,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -6880,7 +7010,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -7102,7 +7232,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -7309,7 +7439,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -7531,7 +7661,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -7738,7 +7868,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -7898,7 +8028,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -8120,7 +8250,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -8327,7 +8457,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -8534,7 +8664,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -8705,7 +8835,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -8914,7 +9044,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -9136,7 +9266,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -9345,7 +9475,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -9554,7 +9684,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -9776,7 +9906,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -9998,7 +10128,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -10160,7 +10290,7 @@
           "GEOMETRY_OPERATION_IDS.map",
           "HIGH_COST_OPERATIONS.has",
           "String",
-          "[\r\n    \"geometry.intersection\",\r\n    \"geometry.union\",\r\n    \"geometry.difference\",\r\n    \"geometry.symmetric-difference\",\r\n    \"geometry.closest-point\",\r\n    \"geometry.shortest-line\"\r\n  ].includes",
+          "[\n    \"geometry.intersection\",\n    \"geometry.union\",\n    \"geometry.difference\",\n    \"geometry.symmetric-difference\",\n    \"geometry.closest-point\",\n    \"geometry.shortest-line\"\n  ].includes",
           "asRecord",
           "consumption",
           "createOperation",
@@ -10330,7 +10460,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -10548,7 +10678,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -10750,7 +10880,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -10948,7 +11078,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -11148,7 +11278,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -11331,7 +11461,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -11511,7 +11641,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -11694,7 +11824,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -11877,7 +12007,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -12062,7 +12192,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -12247,7 +12377,7 @@
           "Object.values",
           "Object.values(value).reduce",
           "Promise.race",
-          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\r\n    .reduce",
+          "[\"requiredCells\", \"visitedCells\", \"missingCells\", \"duplicateCells\"]\n    .reduce",
           "[...cells].sort",
           "[...new Set(cells as string[])].sort",
           "arrayLength",
@@ -16727,7 +16857,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3dea943af0315814b7e1db2f1edab147e89d17f411ada8d2256062aea5ab8555"
+    "operationEvidenceDigest": "sha256:403e2e55ee99a1e584f91a7f87f6b39f2f6a3c2ab6e74550011be5720ee8a1cb"
   },
   "result.validate@1.0": {
     "contractHash": "sha256:4f26c8efc231dc3199ee17438a5f98ed99913fdf9434971ff5ad2bddf566de6b",
@@ -16881,7 +17011,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3dea943af0315814b7e1db2f1edab147e89d17f411ada8d2256062aea5ab8555"
+    "operationEvidenceDigest": "sha256:403e2e55ee99a1e584f91a7f87f6b39f2f6a3c2ab6e74550011be5720ee8a1cb"
   },
   "snapshot.get@1.0": {
     "contractHash": "sha256:3efc4d2e3e2cba3393ad6bcc589918dc04833e656b18c6ba8d495262c3da0c3c",
@@ -17016,7 +17146,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:e3d2e56cca8581a28f5052caf5213d2dd725e2c533b7d23c4c0f59274dc0f0f0"
+    "operationEvidenceDigest": "sha256:fa767210ac67ba39abb7fd00bfdf28a5aa1d5fa162f9bdb133fe15a07ffd3108"
   },
   "snapshot.validate@1.0": {
     "contractHash": "sha256:03712f9cbdbb68c29e65611ec22d6d7c53dffe49f971fe9dfebac2ea45735c1e",
@@ -17177,7 +17307,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:b2100df0691cddf60a2c1a5e0125d9ce781d03d6cf4df342c2bec0908b498e14"
+    "operationEvidenceDigest": "sha256:7698ec7198674a9561967d151b2aeab33e55e9ab34d4d8757286a7f2799ec031"
   },
   "reference.batch-get@1.0": {
     "contractHash": "sha256:72a96477d4082902bde8c046bab6bc95c6ffcbd1fe64a07115ad2d2490fb12e1",
@@ -17259,7 +17389,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -17267,6 +17400,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -17279,12 +17414,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -17296,6 +17435,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -17463,7 +17603,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -17517,7 +17657,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -17562,7 +17702,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:bd0b73e3d489be46467972b2d8b61eb793eb24694c3749c2769bc72c5e930098"
+    "operationEvidenceDigest": "sha256:2ed2fcf8ed0322d2fcd6cee05988d4c44fc2c65b80cd6b56a117c14e1228a4cd"
   },
   "reference.get@1.0": {
     "contractHash": "sha256:1bd953038be68d94d2b2d45308eba7ea38a618ddf7eec986a418817ed965a29d",
@@ -17708,7 +17848,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -17716,6 +17859,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -17728,12 +17873,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -17745,6 +17894,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -17912,7 +18062,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -17966,7 +18116,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -18011,7 +18161,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2fb793e55a332134d4690e67bee91ebc8cd6a9253f48e89bd0487b4eb49738c9"
+    "operationEvidenceDigest": "sha256:275c551d9fe01615a40c541c3ac913815be29c9f7014437b33886606f44ea1c9"
   },
   "reference.resolve@1.0": {
     "contractHash": "sha256:755741b8a57d612ac3a7db8b52f639e3bf0730c9ec02a7a76407da9295f09649",
@@ -18197,7 +18347,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -18205,6 +18358,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -18217,12 +18372,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -18234,6 +18393,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -18401,7 +18561,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -18455,7 +18615,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -18500,7 +18660,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:d1c1b358ba2401c3c4478126e119a5dcd6d3b7a7e20dc39b1cba191d4e526e63"
+    "operationEvidenceDigest": "sha256:1e620949b2d9b54e3d98f279e1cbb310ffb9b662e64274e18a7c502930efca80"
   },
   "reference.search@1.0": {
     "contractHash": "sha256:b09f69d011d1e4a63023e92554791f25f6f2a83820ce5baab7bc7b559707e818",
@@ -18686,7 +18846,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -18694,6 +18857,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -18706,12 +18871,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -18723,6 +18892,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -18890,7 +19060,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -18944,7 +19114,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -18989,7 +19159,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:d1c1b358ba2401c3c4478126e119a5dcd6d3b7a7e20dc39b1cba191d4e526e63"
+    "operationEvidenceDigest": "sha256:1e620949b2d9b54e3d98f279e1cbb310ffb9b662e64274e18a7c502930efca80"
   },
   "coverage.road.expand-geojson@1.0": {
     "contractHash": "sha256:6d174071389ec0d1f269a1114f9e6f86b0f8e668bfcbb8bd94c2da1522cd3d00",
@@ -22698,7 +22868,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c891d326e8673f6cb140e380b8687685bd4981b2a75e57b9010ba36490966ffe"
+    "operationEvidenceDigest": "sha256:ce17e6c1af89ee51f7cfd899e7546b781a1485ccd1b0e3eba32973131a48427f"
   },
   "spatial.count-in-area@1.0": {
     "contractHash": "sha256:6b00726f6f320781f37e797520a288cd2c32ba7132dd3f69f5078ebf4ed86cc8",
@@ -23030,7 +23200,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ea37489ddd200377b9ed13d2e57db42f6dc02a062ea4e945b701fd3ea17b8a52"
+    "operationEvidenceDigest": "sha256:adb57e2c8f7cacd929bbeaa33676c5da751860a298910df0970b7f4b01f48a20"
   },
   "spatial.find-containing-area@1.0": {
     "contractHash": "sha256:40ed984607f14df47e4d61bb69757f3bb831eba134d8400a3b54a6507cf1c680",
@@ -23453,7 +23623,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2bc295110c7754b35af94023f05e24b0891f4fb43369c0a2e2046b3a29a06ebb"
+    "operationEvidenceDigest": "sha256:26f41327e6f0d54cc6bdb01319feaebcac8b76f8442d3984eb71f4edd61c318f"
   },
   "spatial.find-in-area@1.0": {
     "contractHash": "sha256:50803d622ad0df8dfd2e486fbdb9691734de14dc0128af3881825d413f7cba7d",
@@ -23864,7 +24034,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:e5c53a59c2396e7b5241f49afe10691dc41e8bc47b92d4a1751c0ce1e746bee5"
+    "operationEvidenceDigest": "sha256:b7abd171c3fac1eaa49887fa8ae680ff81b5150a999f233eb993cf2ee0850bd6"
   },
   "spatial.find-intersections@1.0": {
     "contractHash": "sha256:9a250484024692041b664688334c80e7c826295ebd0398927ab1d0925bd2b2f6",
@@ -24292,7 +24462,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:b4198b6f641d23e689a9818be8affe8d3d7002688b8f0cccf6b67870ab7515e0"
+    "operationEvidenceDigest": "sha256:6e6a3381c2c6abaa5e85a03e5de6c666307fab679280a00bd794687615fa43ca"
   },
   "spatial.find-near-route@1.0": {
     "contractHash": "sha256:066ae450d495f0e51522fe8eb6af18267d8da3a9daee37c16fc219343c3bd96f",
@@ -24698,7 +24868,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:20fbe53dbd24220409680a3acec210bb521de247adf7732bedf584e66d89e665"
+    "operationEvidenceDigest": "sha256:70586fed6befab24bd64e07386ef3e169675e8f1102115bece089e7aa04a772a"
   },
   "spatial.find-nearby@1.0": {
     "contractHash": "sha256:95693f4131a702f4b009a99810fd2282d8d94fc4ac4417ce834d17a5bae0cbf7",
@@ -25099,7 +25269,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:0e8323754c2746b0adce6b5a694ac5c3ca43134edc42cfc2404f531e908dae7b"
+    "operationEvidenceDigest": "sha256:35431e88d9683cc63b288b71102f25e4e2aee60f2842598303b0a716b156c07c"
   },
   "spatial.find-nearest@1.0": {
     "contractHash": "sha256:af03f0f93285c62b87da66ca81375f86de961aae8cb4b8c0ee85a5e7c85958b0",
@@ -25501,7 +25671,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a452e99b8bd7d34246d9f8d0e6b5a7819984842d45287675959ffffd1bd0e184"
+    "operationEvidenceDigest": "sha256:abe98c6f4ee554d6bda4d4041bc60a370d32068bdaec3654a6544ff71a404889"
   },
   "spatial.join@1.0": {
     "contractHash": "sha256:9667f56f4786a29b64529fb6b7d221a6818fbfd31bf3f8ed0b122f591aeff9ee",
@@ -25828,7 +25998,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:cdfd8d48197d39f563b57e216c7999e5b4f4d77f25cbd4c7a9467dd5d75af822"
+    "operationEvidenceDigest": "sha256:49ed23512b9ae991ed07a3297e2326add84871cd60c1879ab1c8a07dff85555e"
   },
   "spatial.summarize-area@1.0": {
     "contractHash": "sha256:220518ce04a7464e732dc435861c6a79f383af0b2e3d213825c9f7ebc0789ebf",
@@ -26168,7 +26338,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2fc27f8a3875131dabecdb02ec4d511b32b5d45cd98b42cb4f7cbd9970fe5746"
+    "operationEvidenceDigest": "sha256:35116562f28d5ec70dee2967d5b0e29cab62638eeb72dc8d4a971f5f45f3aec5"
   },
   "stas.compare-pair-features@1.0": {
     "contractHash": "sha256:53a4983dc1e571c085b727a1a95fc84482e2372e0d8a00af8188da16a0cdde52",
@@ -34921,7 +35091,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -34929,6 +35102,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -34941,12 +35116,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -34958,6 +35137,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -35125,7 +35305,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -35179,7 +35359,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -35224,7 +35404,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:b9ff18e66e61ea1244d20cc89290b6252e555750048bd9fdaa4d0d3855750b7a"
+    "operationEvidenceDigest": "sha256:260c6d2238dd3fad540a283a9cf2a0a46f0d16716ebf9f222c6e9b0e7ef60799"
   },
   "result.get@1.0": {
     "contractHash": "sha256:15f3ef9359c2a54d4345a6ece663f7b7f0effdb8b2643887f04a7678311cc4d5",
@@ -35359,7 +35539,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -35367,6 +35550,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -35379,12 +35564,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -35396,6 +35585,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -35563,7 +35753,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -35617,7 +35807,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -35662,7 +35852,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:32f1b0a7f41254417130cf1ec23268567ea4d822a0413192bbbb8b373aa55f6a"
+    "operationEvidenceDigest": "sha256:5b370a7fc8a50085ea54df09ce67e7f557262c3450946e0779a12a880e2e3bb8"
   },
   "world.get-current-state@1.0": {
     "contractHash": "sha256:2f5e78d177a71349b61d9f326da83233b88c2643e00e13ec81d18a6a89b1f472",
@@ -35780,7 +35970,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -35788,6 +35981,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -35800,12 +35995,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -35817,6 +36016,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -35984,7 +36184,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -36038,7 +36238,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -36083,7 +36283,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:7d35a4e6f1115750bd88500a8f70f285d509d0c1d9ca07b1bd16a7b2f8f14696"
+    "operationEvidenceDigest": "sha256:3c834986f82d4487ef82eefa79b7a86e2f2a648a683c42c4c9b2ae8c94aeffa0"
   },
   "world.get-event-timeline@1.0": {
     "contractHash": "sha256:b002b2be6efef4d084385d52c149163f5862954252d7573a45505e17bb70ad9c",
@@ -36165,7 +36365,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -36173,6 +36376,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -36185,12 +36390,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -36202,6 +36411,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -36369,7 +36579,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -36423,7 +36633,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -36468,7 +36678,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c00467de49571122a94fb57e1a147c39ec58bd4952b6febe9ed670dfbe8f5591"
+    "operationEvidenceDigest": "sha256:036306c6f5af9c3a59477c102a5d1c9e597ccb5367e5926e1ade1cea407f659a"
   },
   "world.get-geometry@1.0": {
     "contractHash": "sha256:a72ab5a6cbd33303cff21364a23c940cddec513e137df0163e7b85f6c863d718",
@@ -36586,7 +36796,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -36594,6 +36807,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -36606,12 +36821,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -36623,6 +36842,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -36790,7 +37010,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -36844,7 +37064,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -36889,7 +37109,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:e42d726fde2125c6bfdb954a0e50150ca24d05ce4eb0fd819a5b3454a10b20f1"
+    "operationEvidenceDigest": "sha256:43322d1b80cc3b879a0cd02448d4d0c6c1dc9bf68894275c6b153f2421397adb"
   },
   "world.get-observations@1.0": {
     "contractHash": "sha256:9f4b5c84594e110d2faa409104616677845ed1c86396a4b4c902b8942849e13f",
@@ -36971,7 +37191,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -36979,6 +37202,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -36991,12 +37216,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -37008,6 +37237,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -37175,7 +37405,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -37229,7 +37459,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -37274,7 +37504,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c00467de49571122a94fb57e1a147c39ec58bd4952b6febe9ed670dfbe8f5591"
+    "operationEvidenceDigest": "sha256:036306c6f5af9c3a59477c102a5d1c9e597ccb5367e5926e1ade1cea407f659a"
   },
   "world.get-provenance@1.0": {
     "contractHash": "sha256:da495973a4244e5ac97bb61586987faf6df331ed2a5921f31ea4d18875456136",
@@ -37392,7 +37622,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -37400,6 +37633,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -37412,12 +37647,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -37429,6 +37668,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -37596,7 +37836,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -37650,7 +37890,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -37695,7 +37935,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:7d35a4e6f1115750bd88500a8f70f285d509d0c1d9ca07b1bd16a7b2f8f14696"
+    "operationEvidenceDigest": "sha256:3c834986f82d4487ef82eefa79b7a86e2f2a648a683c42c4c9b2ae8c94aeffa0"
   },
   "world.get-state-history@1.0": {
     "contractHash": "sha256:164e16a8b2388a7ac0c42a5f698b605eb5a6afd0b550d437e8f4a8715be42105",
@@ -37777,7 +38017,10 @@
           "datasetScopeKey",
           "descriptor",
           "evidenceOperation",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "handle",
+          "implementationIdentity",
           "listOperation",
           "manifest",
           "operation",
@@ -37785,6 +38028,8 @@
           "operations",
           "policy",
           "providerId",
+          "providerIdForMode",
+          "readContractForMode",
           "repository",
           "result",
           "resultOperation",
@@ -37797,12 +38042,16 @@
           "createProviderRuntime",
           "declaredSemanticProfile",
           "getContractSchemaHash",
+          "groundingCatalogImplementationIdentity",
+          "groundingCatalogPolicy",
           "operation",
           "operationId.endsWith",
           "operationId.startsWith",
           "operationIds.map",
           "operations.map",
           "operationsForMode",
+          "providerIdForMode",
+          "readContractForMode",
           "repository.execute",
           "sha256"
         ],
@@ -37814,6 +38063,7 @@
         "symbols": [
           "DATA_KINDS",
           "GroundingCatalogRepository",
+          "REFERENCE_RESOLUTION_POLICY_IDENTITY",
           "activeCapabilityBindings",
           "after",
           "afterId",
@@ -37981,7 +38231,7 @@
           "activeCapabilityBindings",
           "asRecord",
           "bindings.filter",
-          "bindings.filter(({ operationId, dataBinding }) => {\r\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\r\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\r\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\r\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\r\n  }).map",
+          "bindings.filter(({ operationId, dataBinding }) => {\n    if (dataKind === \"CURRENT_PROJECTION\") return dataBinding === \"WORLD_SNAPSHOT_BOUND\" && operationId.startsWith(\"world.\");\n    if (dataKind === \"NETWORK\") return [\"WORLD_SNAPSHOT_BOUND\", \"DATASET_VERSION_BOUND\"].includes(dataBinding) && /^(network|route|coverage)\\./u.test(operationId);\n    if (dataBinding !== \"DATASET_VERSION_BOUND\") return false;\n    return /^(dataset|layer|feature|spatial)\\./u.test(operationId);\n  }).map",
           "bounded",
           "budgetExceeded",
           "candidates.push",
@@ -38035,7 +38285,7 @@
           "query.rows.at",
           "query.rows.map",
           "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter",
-          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\r\n        .filter",
+          "query.rows.map((row) => dataProduct(row, capabilityBindings)).filter((item) => requirements.size === 0 || [...requirements].every((capability) => (item.supportedCapabilities as string[]).includes(capability)))\n        .filter",
           "query.rows.slice",
           "rawQuality.knownLimitations.filter",
           "referenceId",
@@ -38080,6 +38330,6 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c00467de49571122a94fb57e1a147c39ec58bd4952b6febe9ed670dfbe8f5591"
+    "operationEvidenceDigest": "sha256:036306c6f5af9c3a59477c102a5d1c9e597ccb5367e5926e1ade1cea407f659a"
   }
 }

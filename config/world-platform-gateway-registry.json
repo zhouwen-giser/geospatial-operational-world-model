@@ -101,8 +101,8 @@
     {
       "providerId": "gowm.reference-catalog",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba",
-      "manifestHash": "sha256:b8bc8e309b23af59f88708110387f8e7ed077c272fcea82ff35e242f914b6d2b",
+      "implementationDigest": "sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51",
+      "manifestHash": "sha256:cf41ac533a7e266fc5534baf7f32b123097d6364a49d4a83f19e08096e96ac29",
       "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
       "endpoint": "http://reference-catalog-provider:8090",
       "approvalId": "grounding-reference-catalog-v1.0",
@@ -149,8 +149,8 @@
     {
       "providerId": "gowm.spatial-analysis.bridge",
       "providerVersion": "0.2.0",
-      "implementationDigest": "sha256:d257d2e9d46f379b0b9a6343fcc4830edb5c7168d2237dba38da3e5b1984ece7",
-      "manifestHash": "sha256:837c4a212b4ff0e302e400d8d6b0f14d104bc2c9f92e1290400339c7d8544239",
+      "implementationDigest": "sha256:e89d1f3c0131a4123152e8599e70de0c5d8fbef6aaad31dbf1e78bb505d0b51f",
+      "manifestHash": "sha256:6fcbaed7fd34478131f287d901d5189b0d2a2595f934edfd70490da2c559165c",
       "manifestPath": "contracts/manifests/providers/spatial-provider.json",
       "endpoint": "http://spatial-provider-bridge:8091",
       "approvalId": "compose-spatial-provider-v0.2",

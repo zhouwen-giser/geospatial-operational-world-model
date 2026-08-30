@@ -2,18 +2,19 @@
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
 Capability Service Plane and a controlled World Capability Gateway.
-Version `0.6.3` stabilizes the ten-operation Grounding Core and adds a
-deterministic `@gowm/world-gateway-contracts` consumer artifact, bounded signed
-delegation, logical query snapshot coordination, and an authenticated
-operation-level availability view. Execution Protocol remains 1.0. Existing
-Foundation, GIS, H3, STAS, routing and coverage authorities remain unchanged.
+Version `0.6.4` is the development candidate for Reference Composability
+Repair. It preserves the public `@gowm/world-gateway-contracts@0.6.3` wire
+bundle and Execution Protocol 1.0 while making resolver-issued immutable
+references compose directly with current validation, geometry, state, and
+spatial reads. Existing Foundation, GIS, H3, STAS, routing and coverage
+authorities remain unchanged.
 
 Use the [World Platform guide](docs/architecture/WORLD_PLATFORM_GATEWAY_V0.6.2.md)
 for the single consumer endpoint, isolated Compose profile, exact/candidate
 semantics, runtime qualifications and acceptance commands. Completion is bound
-to fresh machine evidence and exact local/remote/PR SHA agreement; historical
-v0.6.1 reports are not evidence for this candidate. No merge, tag, release or
-production deployment is performed.
+to fresh machine evidence and exact source-candidate identity; historical
+v0.6.3 reports are investigation inputs, not evidence for this candidate. No
+merge, tag, release or production deployment is performed.
 
 See the [v0.6.3 Grounding Core guide](docs/architecture/GROUNDING_CORE_V0.6.3.md)
 for the promoted operations and consumer contracts, and the

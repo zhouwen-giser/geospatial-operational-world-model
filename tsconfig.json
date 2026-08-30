@@ -32,6 +32,7 @@
     "validation/scripts/network-routing-gateway-e2e.ts",
     "validation/scripts/gowm-v05-migration-e2e.ts",
     "validation/scripts/gowm-v05-routing-performance.ts",
+    "validation/scripts/gowm-v064-upgrade-probe.ts",
     "validation/scripts/coverage-selection-runtime-client.ts",
     "validation/scripts/coverage-endpoint-runtime-client.ts",
     "validation/scripts/coverage-async-runtime-client.ts",

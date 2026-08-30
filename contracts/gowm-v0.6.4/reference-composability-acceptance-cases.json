@@ -1,0 +1,534 @@
+{
+  "schemaVersion": "1.0",
+  "count": 66,
+  "cases": [
+    {
+      "id": "A001",
+      "category": "BASELINE",
+      "title": "Frozen baseline commit verified",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A002",
+      "category": "BASELINE",
+      "title": "Expected baseline version verified",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A003",
+      "category": "BASELINE",
+      "title": "Migrations 001-061 unchanged",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A004",
+      "category": "BASELINE",
+      "title": "017 reference catalog inspected",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A005",
+      "category": "BASELINE",
+      "title": "019 feature catalog inspected",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A006",
+      "category": "BASELINE",
+      "title": "023 evidence geometry read contract inspected",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A007",
+      "category": "BASELINE",
+      "title": "world.get-geometry repository path inspected",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A008",
+      "category": "BASELINE",
+      "title": "Pre-fix defect reproduced or baseline divergence proven",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A009",
+      "category": "MIGRATION",
+      "title": "062 applies on fresh DB",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A010",
+      "category": "MIGRATION",
+      "title": "062 applies on upgraded baseline DB",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A011",
+      "category": "MIGRATION",
+      "title": "WORLD_OBJECT current_geometry regression passes",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A012",
+      "category": "MIGRATION",
+      "title": "LAYER_FEATURE current geometry row exposed",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A013",
+      "category": "MIGRATION",
+      "title": "Current feature version selection deterministic",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A014",
+      "category": "MIGRATION",
+      "title": "Retired feature version not selected",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A015",
+      "category": "MIGRATION",
+      "title": "Feature geometry CRS remains compatible",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A016",
+      "category": "MIGRATION",
+      "title": "Feature bbox derived correctly",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A017",
+      "category": "MIGRATION",
+      "title": "Invalid geometry rejected by authoritative store",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A018",
+      "category": "MIGRATION",
+      "title": "No base-table privilege widening",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A019",
+      "category": "SEED",
+      "title": "Fresh seed creates resolvable A区 feature",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A020",
+      "category": "SEED",
+      "title": "A区 reference kind is LAYER_FEATURE",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A021",
+      "category": "SEED",
+      "title": "A区 geometry Polygon or MultiPolygon",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A022",
+      "category": "SEED",
+      "title": "At least one world object is inside A区",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A023",
+      "category": "SEED",
+      "title": "2号车 or canonical test vehicle resolves",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A024",
+      "category": "SEED",
+      "title": "Test vehicle has current-state position",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A025",
+      "category": "SEED",
+      "title": "Seed follows project determinism/idempotency rules",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A026",
+      "category": "SEED",
+      "title": "No manual post-start SQL patch required",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A027",
+      "category": "COMPOSABILITY",
+      "title": "Resolve A区 returns usable LAYER_FEATURE ref",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A028",
+      "category": "COMPOSABILITY",
+      "title": "Same A区 identity passed to world.get-geometry",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A029",
+      "category": "COMPOSABILITY",
+      "title": "world.get-geometry completes for A区",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A030",
+      "category": "COMPOSABILITY",
+      "title": "A区 geometry feeds spatial.find-in-area",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A031",
+      "category": "COMPOSABILITY",
+      "title": "find-in-area returns expected vehicle",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A032",
+      "category": "COMPOSABILITY",
+      "title": "2号车 ref feeds current-state unchanged",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A033",
+      "category": "COMPOSABILITY",
+      "title": "Position feeds nearby 1000m",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A034",
+      "category": "COMPOSABILITY",
+      "title": "Ambiguity produces zero downstream execution",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A035",
+      "category": "COMPOSABILITY",
+      "title": "Cross-scope ref cannot be realized",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A036",
+      "category": "CONTRACT",
+      "title": "ReferenceKey public schema hash unchanged",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A037",
+      "category": "CONTRACT",
+      "title": "reference.resolve operation ID unchanged",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A038",
+      "category": "CONTRACT",
+      "title": "world.get-geometry operation ID unchanged",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A039",
+      "category": "CONTRACT",
+      "title": "reference.resolve wire schema compatible",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A040",
+      "category": "CONTRACT",
+      "title": "world.get-geometry wire schema compatible",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A041",
+      "category": "CONTRACT",
+      "title": "Semantic profiles remain compatible",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A042",
+      "category": "CONTRACT",
+      "title": "Provider implementation/realization digest refreshed",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A043",
+      "category": "CONTRACT",
+      "title": "No WSGS adapter change required",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A044",
+      "category": "SNAPSHOT",
+      "title": "Geometry realization/version traceable",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A045",
+      "category": "SNAPSHOT",
+      "title": "Snapshot changes or typed debt recorded on geometry version change",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A046",
+      "category": "SECURITY",
+      "title": "Data scope applied before geometry query",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A047",
+      "category": "SECURITY",
+      "title": "Dataset scope honored for feature realization",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A048",
+      "category": "SECURITY",
+      "title": "Provider remains read-only",
+      "level": "REAL_DB",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A049",
+      "category": "SECURITY",
+      "title": "Evidence/logs contain no credentials",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A050",
+      "category": "CANARY",
+      "title": "C1 resolve A区 -> geometry without hardcoded ref",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A051",
+      "category": "CANARY",
+      "title": "C2 A区 -> geometry -> find-in-area",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A052",
+      "category": "CANARY",
+      "title": "C3 vehicle -> state -> nearby",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A053",
+      "category": "CANARY",
+      "title": "C4 ambiguity stop",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A054",
+      "category": "REPRO",
+      "title": "Fresh clone migrate-seed-start succeeds",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A055",
+      "category": "REPRO",
+      "title": "Fresh clone C1-C4 needs no manual patch",
+      "level": "REAL_E2E",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A056",
+      "category": "WSGS_SMOKE",
+      "title": "R1 vehicle location smoke",
+      "level": "REAL_E2E",
+      "required": false,
+      "notes": "Optional if WSGS environment unavailable"
+    },
+    {
+      "id": "A057",
+      "category": "WSGS_SMOKE",
+      "title": "R2 ambiguity smoke",
+      "level": "REAL_E2E",
+      "required": false,
+      "notes": "Optional if WSGS environment unavailable"
+    },
+    {
+      "id": "A058",
+      "category": "WSGS_SMOKE",
+      "title": "R3 A区 in-area smoke",
+      "level": "REAL_E2E",
+      "required": false,
+      "notes": "Optional if WSGS environment unavailable"
+    },
+    {
+      "id": "A059",
+      "category": "WSGS_SMOKE",
+      "title": "R4 nearby smoke",
+      "level": "REAL_E2E",
+      "required": false,
+      "notes": "Optional if WSGS environment unavailable"
+    },
+    {
+      "id": "A060",
+      "category": "WSGS_SMOKE",
+      "title": "R5 current reference validation smoke",
+      "level": "REAL_E2E",
+      "required": false,
+      "notes": "Optional if WSGS environment unavailable"
+    },
+    {
+      "id": "A061",
+      "category": "DELIVERY",
+      "title": "Version target is 0.6.4",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A062",
+      "category": "DELIVERY",
+      "title": "Draft PR updated with evidence",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A063",
+      "category": "DELIVERY",
+      "title": "No merge/tag/release/deploy",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A064",
+      "category": "DELIVERY",
+      "title": "Development readiness report generated",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A065",
+      "category": "DELIVERY",
+      "title": "Markers emitted only after gates",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    },
+    {
+      "id": "A066",
+      "category": "DELIVERY",
+      "title": "Production readiness claims absent",
+      "level": "STATIC",
+      "required": true,
+      "notes": ""
+    }
+  ]
+}

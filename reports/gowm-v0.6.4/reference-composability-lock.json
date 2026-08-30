@@ -5,12 +5,12 @@
   "consumerOperation": "world.get-geometry",
   "referenceKind": "LAYER_FEATURE",
   "identityPreserved": true,
-  "producerReferenceHash": "sha256:598046a793490141eda1d8259f1414dcfd172b4b9d53dccc10f692f115e95dc5",
-  "consumerReferenceHash": "sha256:598046a793490141eda1d8259f1414dcfd172b4b9d53dccc10f692f115e95dc5",
+  "producerReferenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
+  "consumerReferenceHash": "sha256:28185c15882cada03f9e8d1fe45b98cab05e10fdb93c9f74de2b9b6a45bb165e",
   "status": "PASS",
   "evidenceIds": [
-    "CHAIN-REFERENCE-ZONE-A",
-    "CHAIN-GEOMETRY-ZONE-A",
-    "CHAIN-SPATIAL-ZONE-A"
+    "baseline:sha256:d6844c25db06df1710ef567fc13641a33932a6391d78792d810c31e39cc03ba5",
+    "upgrade:sha256:d4a42e23d114a7fc8db3621ed0ab381b5caebb29872bc066c220eefe01ae5f0f",
+    "runtime:sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010"
   ]
 }

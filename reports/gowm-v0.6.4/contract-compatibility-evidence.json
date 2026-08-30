@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "1.0",
+  "baseline": {
+    "version": "0.6.3",
+    "source": "17dd221330d9af540ec815a39eca96550690299a"
+  },
+  "target": {
+    "version": "0.6.4",
+    "source": "WORKTREE_CONTENT"
+  },
+  "migrationLock": {
+    "frozenCount": 61,
+    "beforeHash": "sha256:615bd889f80949001ff67e165d177f25e3e7a4cef8e3337fa9e458d7a88dd9e3",
+    "afterHash": "sha256:615bd889f80949001ff67e165d177f25e3e7a4cef8e3337fa9e458d7a88dd9e3",
+    "unchanged": true,
+    "additiveMigration": {
+      "path": "database/migrations/062_reference_geometry_composability.sql",
+      "sha256": "sha256:7b8a606e3258baa2f3e68c88e81abacb289615cf960a1af20c8a9f4c2074539c"
+    }
+  },
+  "referenceKey": {
+    "path": "contracts/gowm-v0.4/reference-key.schema.json",
+    "normalization": "CANONICAL_JSON_SORTED_KEYS_UTF8",
+    "beforeHash": "sha256:240470501ee453cf97ce536b62b81ce2a32efc6cf01d02accab0a88b7ca2a403",
+    "afterHash": "sha256:240470501ee453cf97ce536b62b81ce2a32efc6cf01d02accab0a88b7ca2a403",
+    "compatible": true
+  },
+  "operations": [
+    {
+      "operationId": "reference.resolve",
+      "operationVersion": "1.0",
+      "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
+      "inputSchema": {
+        "path": "contracts/gowm-v0.4/reference-resolve-request.schema.json",
+        "normalization": "CANONICAL_JSON_SORTED_KEYS_UTF8",
+        "beforeHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+        "afterHash": "sha256:90f4610871c7077358e9ce09bbf139194bf10feebc5eacd448fec0bd81817329",
+        "compatible": true
+      },
+      "outputSchema": {
+        "path": "contracts/gowm-v0.4/reference-resolve-result.schema.json",
+        "normalization": "CANONICAL_JSON_SORTED_KEYS_UTF8",
+        "beforeHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+        "afterHash": "sha256:5e0779610b6e8f0ec12c2d47cbfa99d23a2e92f503eaabf06969b732fa21cb41",
+        "compatible": true
+      },
+      "semanticProfile": {
+        "beforeHash": "sha256:2345427b162f36cc0792116f20cd337f1e95e0e8284b000ab556b876c45328ad",
+        "afterHash": "sha256:2345427b162f36cc0792116f20cd337f1e95e0e8284b000ab556b876c45328ad",
+        "publicContractBeforeHash": "sha256:2345427b162f36cc0792116f20cd337f1e95e0e8284b000ab556b876c45328ad",
+        "publicContractAfterHash": "sha256:2345427b162f36cc0792116f20cd337f1e95e0e8284b000ab556b876c45328ad",
+        "classification": "UNCHANGED",
+        "compatible": true
+      },
+      "implementationDigestBefore": "sha256:dcb084382a3b53245df4e64e10948eadb27ff564ccdce0bc4efb17c10e5fe1ba",
+      "implementationDigestAfter": "sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51",
+      "implementationIdentityRefreshed": true,
+      "schemaCompatible": true
+    },
+    {
+      "operationId": "world.get-geometry",
+      "operationVersion": "1.0",
+      "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
+      "inputSchema": {
+        "path": "contracts/gowm-v0.4/catalog-query-request.schema.json",
+        "normalization": "CANONICAL_JSON_SORTED_KEYS_UTF8",
+        "beforeHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+        "afterHash": "sha256:dbfccaff85081bcc161d9e83c4e8959f6ecc35c3c726e01ce83547925dcc7772",
+        "compatible": true
+      },
+      "outputSchema": {
+        "path": "contracts/gowm-v0.4/world-fact-result.schema.json",
+        "normalization": "CANONICAL_JSON_SORTED_KEYS_UTF8",
+        "beforeHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
+        "afterHash": "sha256:56a451b6f9c62e15cb6dfb67821f907124551d96410be1f0cd8626284e46abf9",
+        "compatible": true
+      },
+      "semanticProfile": {
+        "beforeHash": "sha256:de483d463f1056e9a1696e24bf4d606239513647e7e60d576065c66acf8c7c1c",
+        "afterHash": "sha256:cc8df371406aff181616832bf4b6824e30d2cbc50186164b21c1a55e61680d11",
+        "publicContractBeforeHash": "sha256:de483d463f1056e9a1696e24bf4d606239513647e7e60d576065c66acf8c7c1c",
+        "publicContractAfterHash": "sha256:de483d463f1056e9a1696e24bf4d606239513647e7e60d576065c66acf8c7c1c",
+        "classification": "ADDITIVE_DOCUMENTATION",
+        "compatible": true
+      },
+      "implementationDigestBefore": "sha256:b5789214d855894ec391cfb67f5036830e90b413fb46bc624b04dbad36adaffb",
+      "implementationDigestAfter": "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317",
+      "implementationIdentityRefreshed": true,
+      "schemaCompatible": true
+    }
+  ],
+  "wsgsAdapter": {
+    "changeRequired": false,
+    "basis": "ReferenceKey plus reference.resolve and world.get-geometry public input/output schemas are byte-semantically unchanged."
+  },
+  "status": "PASS"
+}

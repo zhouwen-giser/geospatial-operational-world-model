@@ -5,6 +5,7 @@ const command = process.argv[2];
 const targets: Record<string, string[]> = {
   materialize: ["scripts/materialize-capability-semantic-profiles.ts", "--write"],
   "validate-materializer": ["scripts/materialize-capability-semantic-profiles.ts"],
+  "build-registry": ["scripts/build-world-platform-registry.ts", "--write"],
   "validate-registry": ["scripts/build-world-platform-registry.ts"]
 };
 const target = targets[command ?? ""];

@@ -1,84 +1,65 @@
 {
   "schemaVersion": "1.0",
   "targetVersion": "0.6.4",
-  "baselineCommit": "17dd221330d9af540ec815a39eca96550690299a",
-  "qualificationCandidateCommit": "c00cf03f1f51c18a0b1cf867287c97d20384fd82",
-  "candidateKind": "LOCAL_ONLY_NO_REMOTE",
-  "qualifiedAt": "2026-08-29T04:24:22.8525609Z",
-  "freshClone": {
-    "cleanWorktree": true,
-    "remotePresent": false,
-    "dependencyInstall": "PASS",
-    "manualSourcePatchRequired": false
+  "candidateCommit": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+  "generatedAt": "2026-08-30T01:09:23.710Z",
+  "status": "PASS",
+  "sourceIdentity": {
+    "gitHead": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+    "imageOciRevision": "fceed92398a0b86c0a0121aa2188a7f1d328e577",
+    "imageOciVersion": "0.6.4",
+    "semanticSourceDigest": "sha256:a5582bf07a6757de0c97efab7cc21801f2511dc04ae0af721b24dd9eda7fc88f",
+    "gitRemoteCount": 0
   },
-  "staticValidation": {
-    "contractArtifacts": "PASS",
-    "typescript": "PASS",
-    "sqlAst": {
-      "migrationFilesPassed": 62,
-      "assertionFilesPassed": 45
-    },
-    "rootTests": {
-      "status": "PASS",
-      "passed": 383,
-      "skipped": 1,
-      "maxWorkers": 1,
-      "note": "The default parallel run exhausted host memory after 353 passing tests; the complete suite passed with one worker and no assertion failures."
-    },
-    "stasTests": {
-      "status": "PASS",
-      "passed": 40
-    },
-    "build": "PASS"
-  },
-  "runtimeValidation": {
-    "database": "FRESH_ISOLATED",
+  "qualification": {
+    "runtimeClass": "ISOLATED_Q",
+    "runtimeInstanceIdHash": "sha256:17b113246c326cf8780bd99e0506c040e2fd83c56d88b2ae4da57476ce11f9c2",
+    "freshClone": true,
+    "freshDatabase": true,
+    "manualPatchApplied": false,
     "migrationCount": 62,
-    "seed": "PASS",
-    "gatewayReady": true,
-    "requiredAvailability": "12/12",
-    "authenticationLifecycle": {
-      "visibleStaticService": "PASS",
-      "hiddenStaticService": "PASS",
-      "signedDelegationV1": "PASS"
+    "migrationSetHash": "sha256:c5d998e50d414afbe3c361a28b1d2bcac6e3374e0c4c8fc92783d7e92d865838",
+    "requiredAvailability": {
+      "passed": 12,
+      "total": 12,
+      "status": "PASS"
     },
     "canary": {
-      "status": "PASS",
-      "passed": 36,
-      "total": 36,
-      "zoneAReferenceHash": "sha256:b87c1b2d5655d4be2619a78d6dbe330040ff3bea280e88b02f9d8cf7943a3f44",
-      "vehicleReferenceHash": "sha256:92fa86aa56c04a59894bf31eba8d26007a666cad6a4b18974efbef1e74e9ac10",
-      "ambiguityCandidateCount": 2,
-      "ambiguityDownstreamExecutionCount": 0
+      "passed": 37,
+      "total": 37,
+      "status": "PASS"
     },
+    "idempotency": {
+      "status": "PASS",
+      "beforeLoadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd",
+      "afterLoadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd",
+      "liveLoadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd",
+      "loaderInternalRepeat": true
+    },
+    "handoff": {
+      "status": "PASS",
+      "runtimeIdentityBound": true,
+      "signedDelegation": true,
+      "independentConsumerContainer": true,
+      "manifestSha256": "sha256:fe22f6128f32f950e92cc04d475ae63f39e997f35deea63423f089adf1e7c5ea",
+      "bindingSha256": "sha256:57c51ebe724f59c843994ca4ed5ec75cc44d1d1bdf7312d409477cee455e3ff3",
+      "connectivitySha256": "sha256:d681743fb33154cb8dfb03a7864da50545f1f5008ccbd036db9ec77edb61d518",
+      "canarySha256": "sha256:34832c55cbc30e762a2d9952bd863ff5f98f72baa8c7b1c83f60b34555c8face"
+    }
+  },
+  "fixture": {
+    "fixtureVersion": "1.0.0",
+    "realizationId": "sample-realization-c6f9c8b9-6745-5098-b2bf-0f44b72339bf",
     "sourceFixtureHash": "sha256:732172f75e4a7756635a5aefceee909cd2cb79acb8e3b3fd74b70d82095c4025",
-    "realizationId": "sample-realization-d92e18f9-e263-5eed-8958-24d28f9f6c37",
-    "realizationHash": "sha256:001ec4edde76797a88866e327075e96d2a2e5e2853e8fdc3fc12ec01b3ffac91",
-    "loadedStateHash": "c77405314e0ad7386cbb6eee14d5a54831d84e837acd09dd2bd5549a17076414",
-    "contractCatalogRevision": "sha256:efd0395dbd05c884c781f964b22147efcb38c4cef91704597706ec4b8332075a",
-    "semanticCatalogHash": "sha256:418fc328861e846801c6e8109bf6d48b876c7814c650a391b84076f71e588b61",
-    "sourceDigest": "sha256:7b1af944b320349c7aa556b0c4736bffa612a18289b37d060e7c320bf01042e5",
-    "imageId": "sha256:d72c42e1a5f874cc553ecc65623d7ba73d4899d3130425c22b9edf0a1394ba0e"
+    "generatedArtifactHash": "sha256:61c6d95b493ecbd486be7f88052d4aab2171a36e3998cbc802c81476698c9597",
+    "realizationHash": "sha256:beb4eee7f71832634a82a52b63e3d5bba9eb291b348492724253736136c6aa4d",
+    "loadedStateHash": "aa395ee8966377ae463d05bc1f8c3a3c767d093bb559705b9153855dbb1b19dd"
   },
-  "cleanup": {
-    "isolatedContainersRemoved": true,
-    "isolatedNetworksRemoved": true,
-    "isolatedVolumesRemoved": true,
-    "isolatedImageRemoved": true,
-    "temporaryFreshCloneDirectoryRemoved": true,
-    "sharedInstanceReverified": true,
-    "sharedInstanceRequiredAvailability": "12/12",
-    "sharedInstanceCanary": "36/36"
-  },
-  "delivery": {
-    "implementationCommit": "b6d5f65dde5e58ba620d1e0a40d3e2323908d588",
-    "branch": "codex/gowm-v0.6.4-reference-composability",
-    "draftPullRequest": 9,
-    "status": "PUBLISHED_DRAFT"
-  },
-  "status": "PASS",
+  "sourceEvidenceSha256": "sha256:3080888af2de1b4707d712544db753388869990b5b039c793a998c68f4ecb010",
   "nonClaims": [
     "PRODUCTION_READY",
-    "RELEASE_ACCEPTED"
-  ]
+    "RELEASE_ACCEPTED",
+    "FULL_QUALIFICATION_COMPLETE"
+  ],
+  "evidenceHash": "sha256:a204a40678d4db1e37bebc9333076def5809ba510673a26be1e955ce8e6f5762"
 }

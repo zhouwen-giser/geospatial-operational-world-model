@@ -1,17 +1,37 @@
 # Project status
 
-Last updated: 2026-08-27
+Last updated: 2026-08-29
 
 ## Current candidate
 
-GOWM+ **0.6.3 — Grounding Core Stabilization & Consumer Integration Surface**.
-Baseline: merged `main@537fd7ec9e73fa7ab945d1ebec7dd3a6913aa9ee`
-(0.6.2). Work is isolated on
-`codex/gowm-grounding-core-stabilization-v0.6.3`.
+GOWM+ **0.6.4 — Reference Composability Repair** is a qualification candidate
+based on the merged v0.6.3 line. Development Ready is asserted only after the
+exact candidate passes all 61 required gates and the coherent optional WSGS
+group. Work is isolated on
+`codex/gowm-v0.6.4-reference-composability` and reviewed in Draft PR #10.
 
-The 0.6.2 Unified World Gateway & Explicit Capability Semantics work was merged
-by PR #7. Its reports remain historical evidence; the 0.6.3 decision is bound
-to fresh evidence under `reports/gowm-v0.6.3` and the exact candidate SHA.
+The public consumer bundle remains frozen at
+`@gowm/world-gateway-contracts@0.6.3`; the root product candidate version is
+0.6.4. Historical v0.6.3 reports are investigation inputs only. The v0.6.4
+decision is bound to fresh evidence from one exact source candidate and its
+isolated database/runtime realization.
+
+## v0.6.4 scope
+
+- Resolver descriptors bind to the corresponding immutable catalog/object
+  version so their ReferenceKeys can be passed unchanged to current validation,
+  geometry, world-state, and spatial operations.
+- Additive migration 062 projects current LayerFeature geometry through the
+  existing scoped read contract; migrations 001–061 remain frozen.
+- Qualification uses a unique Compose project, database, ports, volumes, and
+  image identity, with source revision embedded as OCI metadata.
+- Readiness is derived from the task package's 61 required acceptance cases;
+  the five WSGS cases are optional and must be reported consistently as one run.
+
+This candidate does not authorize or claim merge, tag, release, package
+publication, production deployment, or production SLO qualification.
+
+## Historical v0.6.3 candidate
 
 ## Scope and authority
 

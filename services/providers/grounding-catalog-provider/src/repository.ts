@@ -11,6 +11,15 @@ import type {
 
 type Row = Record<string, unknown>;
 
+export const REFERENCE_RESOLUTION_POLICY_IDENTITY = {
+  policyId: "gowm.reference.resolve.exact-over-fuzzy",
+  policyVersion: "1.0",
+  fuzzyMatchedBy: "FUZZY_NAME",
+  selectionRule: "KEEP_NON_FUZZY_ROWS_WHEN_PRESENT",
+  fallbackRule: "KEEP_ALL_ROWS_WHEN_ONLY_FUZZY",
+  orderingRule: "PRESERVE_INPUT_ORDER"
+} as const;
+
 export class GroundingCatalogRepository {
   private readonly statementTimeoutMs: number;
   private readonly lockTimeoutMs: number;
@@ -630,7 +639,7 @@ function withSnapshotResource(
 }
 
 export function preferExactResolutionRows<T extends Row>(rows: readonly T[]): T[] {
-  const exact = rows.filter((row) => row.matched_by !== "FUZZY_NAME");
+  const exact = rows.filter((row) => row.matched_by !== REFERENCE_RESOLUTION_POLICY_IDENTITY.fuzzyMatchedBy);
   return exact.length === 0 ? [...rows] : exact;
 }
 

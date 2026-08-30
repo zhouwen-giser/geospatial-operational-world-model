@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/reference-catalog-provider.json",
-      "sha256": "6cfd3272c6e2492db9a8cce994e0f21b2d2fe6f671208af239bc7d623c926d05"
+      "sha256": "cdea2de7b94e583846893311c7c9d69f737e506b9918a50be8fac241a376b4ec"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/reference-catalog-provider.json",
-      "sha256": "6cfd3272c6e2492db9a8cce994e0f21b2d2fe6f671208af239bc7d623c926d05"
+      "sha256": "cdea2de7b94e583846893311c7c9d69f737e506b9918a50be8fac241a376b4ec"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,18 +44,18 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/provider.ts",
-      "sha256": "cdd12e87c8210dc521364788d0e2f3bc37f85d2273536f6901415aa941ca6b8e",
+      "sha256": "4a09ae7ae822e9abb394537a749a8cf66e4f169156f9b29aa69ad6105d12a70f",
       "symbol": "createGroundingCatalogProvider"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/repository.ts",
-      "sha256": "ed1ab8ef0e44941a051ee01db7973adbdf538b37d4bb31e8191983d005f7913b"
+      "sha256": "7831fec3aa37a1f16ad345e7f0cc973715fd41e2c965ef690d791d6866b45c3a"
     },
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/grounding-catalog-provider.test.ts",
-      "sha256": "20a96fcf92abcf5a8be85a07f213572c7998c6f51d9d4b4ce344c617858626b4"
+      "sha256": "39ce4bf561b877ca9c976533773d6763ce93160dc69ac60c758c7f0cef2219dc"
     }
   ],
   "status": "PROVEN",

@@ -230,7 +230,40 @@ async function verifyBaseline(
       result: chainResolve,
       descriptor: client.descriptor("reference.resolve")
     }),
-    comparison: { referenceHash: zoneReferenceHash }
+    comparison: {
+      referenceHash: zoneReferenceHash,
+      referenceKind: "LAYER_FEATURE",
+      hardcodedReferenceUsed: false
+    }
+  });
+
+  const zoneValidateInput = {
+    schemaVersion: "1.0",
+    references: [{ referenceKey: candidateReferenceKey, requireCurrentSnapshot: true }]
+  };
+  const zoneValidate = await client.execute(
+    "reference.validate",
+    zoneValidateInput,
+    "CHAIN-VALIDATE-ZONE-A"
+  );
+  if (!validationIsCurrent(zoneValidate.output?.value)) {
+    throw new Error("Zone-A resolver descriptor pin was not CURRENT at the validation authority");
+  }
+  cases.push({
+    ...envelopeCaseReport({
+      caseId: "CHAIN-VALIDATE-ZONE-A",
+      operationId: "reference.validate",
+      principal: "VISIBLE",
+      input: zoneValidateInput,
+      result: zoneValidate,
+      descriptor: client.descriptor("reference.validate")
+    }),
+    comparison: {
+      referenceHash: zoneReferenceHash,
+      inputReferenceHash: canonicalSha256(zoneValidateInput.references[0]!.referenceKey),
+      requireCurrentSnapshot: true,
+      currentAndUsable: true
+    }
   });
 
   const chainGeometryInput = { schemaVersion: "1.0", referenceKey: candidateReferenceKey };
@@ -250,7 +283,11 @@ async function verifyBaseline(
       result: chainGeometry,
       descriptor: client.descriptor("world.get-geometry")
     }),
-    comparison: { referenceHash: zoneReferenceHash }
+    comparison: {
+      referenceHash: zoneReferenceHash,
+      inputReferenceHash: canonicalSha256(chainGeometryInput.referenceKey),
+      geometryHash: canonicalSha256(geometry)
+    }
   });
 
   const chainSpatialInput = {
@@ -275,7 +312,13 @@ async function verifyBaseline(
       result: chainSpatial,
       descriptor: client.descriptor("spatial.find-in-area")
     }),
-    comparison: { referenceHash: zoneReferenceHash }
+    comparison: {
+      referenceHash: zoneReferenceHash,
+      geometryHash: canonicalSha256(geometry),
+      inputGeometryHash: canonicalSha256(chainSpatialInput.geometry),
+      expectedVehicleReferenceHash: canonicalSha256(referenceFor(realization, "ugv-002", "world")),
+      expectedVehiclePresent: true
+    }
   });
 
   const vehicleResolveInput = {
@@ -307,7 +350,11 @@ async function verifyBaseline(
       result: vehicleResolve,
       descriptor: client.descriptor("reference.resolve")
     }),
-    comparison: { referenceHash: vehicleReferenceHash }
+    comparison: {
+      referenceHash: vehicleReferenceHash,
+      referenceKind: "WORLD_OBJECT",
+      hardcodedReferenceUsed: false
+    }
   });
 
   const vehicleValidateInput = {
@@ -331,7 +378,12 @@ async function verifyBaseline(
       result: vehicleValidate,
       descriptor: client.descriptor("reference.validate")
     }),
-    comparison: { referenceHash: vehicleReferenceHash }
+    comparison: {
+      referenceHash: vehicleReferenceHash,
+      inputReferenceHash: canonicalSha256(vehicleValidateInput.references[0]!.referenceKey),
+      requireCurrentSnapshot: true,
+      currentAndUsable: true
+    }
   });
 
   const vehicleStateInput = { schemaVersion: "1.0", referenceKey: vehicleCandidateReferenceKey };
@@ -350,7 +402,12 @@ async function verifyBaseline(
       result: vehicleState,
       descriptor: client.descriptor("world.get-current-state")
     }),
-    comparison: { referenceHash: vehicleReferenceHash }
+    comparison: {
+      referenceHash: vehicleReferenceHash,
+      inputReferenceHash: canonicalSha256(vehicleStateInput.referenceKey),
+      positionHash: canonicalSha256(vehiclePosition),
+      positionCoordinatesHash: canonicalSha256(vehiclePosition.coordinates.slice(0, 2))
+    }
   });
 
   const nearbyInput = {
@@ -376,7 +433,15 @@ async function verifyBaseline(
       result: nearby,
       descriptor: client.descriptor("spatial.find-nearby")
     }),
-    comparison: { referenceHash: vehicleReferenceHash }
+    comparison: {
+      referenceHash: vehicleReferenceHash,
+      positionHash: canonicalSha256(vehiclePosition),
+      positionCoordinatesHash: canonicalSha256(vehiclePosition.coordinates.slice(0, 2)),
+      inputPositionHash: canonicalSha256(nearbyInput.location),
+      radiusM: nearbyInput.radiusM,
+      expectedReferenceHash: canonicalSha256(referenceFor(realization, "target-01", "world")),
+      expectedReferencePresent: true
+    }
   });
 
   const ambiguityInput = {
@@ -714,7 +779,7 @@ async function verifySecurityMatrix(
   reports.push(await compareHiddenIdentifier({
     client,
     caseId: "SECURITY-DIRECT-HIDDEN-FEATURE",
-    operationId: "catalog.get",
+    operationId: "world.get-geometry",
     hiddenInput: { schemaVersion: "1.0", referenceKey: hiddenFeature },
     controlInput: { schemaVersion: "1.0", referenceKey: absentReference("LAYER_FEATURE", "hidden-feature-control", hiddenFeature.version) },
     attackVector: "HIDDEN_FEATURE_ID"
@@ -763,6 +828,17 @@ async function compareHiddenIdentifier(options: {
   if (!["SCOPE_DENIED", "NO_DATA", "NOT_FOUND", "UNKNOWN"].includes(hiddenCategory)) {
     throw new Error(`${options.caseId} did not use a governed non-disclosure category: ${hiddenCategory}`);
   }
+  const hiddenPublicResponse = normalizedNonDisclosureResponse(hidden.body, options.hiddenInput);
+  const controlPublicResponse = normalizedNonDisclosureResponse(control.body, options.controlInput);
+  const hiddenPublicResponseHash = canonicalSha256(hiddenPublicResponse);
+  const controlPublicResponseHash = canonicalSha256(controlPublicResponse);
+  const hiddenIdentifiers = submittedReferenceIdentifiers(options.hiddenInput);
+  if (hiddenIdentifiers.some((identifier) => JSON.stringify(hiddenPublicResponse).includes(identifier))) {
+    throw new Error(`${options.caseId} disclosed a hidden identifier outside the submitted-reference echo`);
+  }
+  if (hiddenPublicResponseHash !== controlPublicResponseHash) {
+    throw new Error(`${options.caseId} leaked existence through its normalized public response shape`);
+  }
   if (hidden.statusCode !== 200) {
     return {
       ...httpSecurityCase(
@@ -778,6 +854,10 @@ async function compareHiddenIdentifier(options: {
         httpStatus: control.statusCode,
         submittedRequestHash: canonicalSha256(controlRequest),
         httpResponseHash: canonicalSha256(control.body),
+        hiddenPublicResponseHash,
+        controlPublicResponseHash,
+        publicResponseEqual: true,
+        hiddenIdentifierDisclosed: false,
         clientElapsedMs: control.clientElapsedMs,
         elapsedDeltaMs: Math.abs(hidden.clientElapsedMs - control.clientElapsedMs)
       }
@@ -805,11 +885,78 @@ async function compareHiddenIdentifier(options: {
       normalizedStatus: String(control.body.status),
       inputHash: String(controlReceipt.inputHash),
       outputHash: String(controlReceipt.outputHash),
+      hiddenPublicResponseHash,
+      controlPublicResponseHash,
+      publicResponseEqual: true,
+      hiddenIdentifierDisclosed: false,
       elapsedMs: Number(control.body.execution?.elapsedMs),
       clientElapsedMs: control.clientElapsedMs,
       elapsedDeltaMs: Math.abs(hidden.clientElapsedMs - control.clientElapsedMs)
     }
   };
+}
+
+export function normalizedNonDisclosureResponse(body: unknown, submittedInput: unknown): unknown {
+  const submittedReferences = new Set<string>();
+  const collect = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      value.forEach(collect);
+      return;
+    }
+    if (value === null || typeof value !== "object") return;
+    const record = value as AnyRecord;
+    if (isReferenceKeyLike(record)) submittedReferences.add(canonicalSha256(record));
+    Object.values(record).forEach(collect);
+  };
+  collect(submittedInput);
+  const volatileKeys = new Set([
+    "requestId", "receiptId", "generatedAt", "capturedAt", "durationMs", "elapsedMs",
+    "clientElapsedMs", "inputHash", "outputHash", "computeSnapshotHash", "resultHash",
+    "submittedRequestHash", "httpResponseHash", "instance", "traceId"
+  ]);
+  const normalize = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(normalize);
+    if (value === null || typeof value !== "object") return value;
+    const record = value as AnyRecord;
+    if (isReferenceKeyLike(record) && submittedReferences.has(canonicalSha256(record))) {
+      return {
+        namespace: "<SUBMITTED>",
+        kind: record.kind,
+        id: "<SUBMITTED>",
+        version: "<SUBMITTED>"
+      };
+    }
+    return Object.fromEntries(Object.entries(record)
+      .filter(([key]) => !volatileKeys.has(key))
+      .map(([key, child]) => [key, normalize(child)]));
+  };
+  return normalize(body);
+}
+
+export function submittedReferenceIdentifiers(value: unknown): string[] {
+  const identifiers = new Set<string>();
+  const visit = (candidate: unknown): void => {
+    if (Array.isArray(candidate)) {
+      candidate.forEach(visit);
+      return;
+    }
+    if (candidate === null || typeof candidate !== "object") return;
+    const record = candidate as AnyRecord;
+    if (isReferenceKeyLike(record) && record.id.length >= 8) identifiers.add(record.id);
+    Object.values(record).forEach(visit);
+  };
+  visit(value);
+  return [...identifiers];
+}
+
+function isReferenceKeyLike(value: AnyRecord): value is AnyRecord & {
+  namespace: string;
+  kind: string;
+  id: string;
+  version: string;
+} {
+  return typeof value.namespace === "string" && typeof value.kind === "string" &&
+    typeof value.id === "string" && typeof value.version === "string";
 }
 
 export function assertPinnedSnapshotMismatch(response: AnyRecord): void {
@@ -1338,8 +1485,7 @@ function validationIsCurrent(value: unknown): boolean {
   const results = (value as AnyRecord | undefined)?.results;
   return Array.isArray(results) && results.length > 0 && results.every((entry: AnyRecord) =>
     entry.existence === "AVAILABLE" && entry.usable === "YES" &&
-    ["CURRENT", "NOT_APPLICABLE"].includes(String(entry.freshness)) &&
-    ["CURRENT", "NOT_APPLICABLE"].includes(String(entry.snapshot))
+    entry.freshness === "CURRENT" && entry.snapshot === "CURRENT"
   );
 }
 
