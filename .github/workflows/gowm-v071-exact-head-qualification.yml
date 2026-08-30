@@ -69,7 +69,7 @@ jobs:
             --env POSTGRES_DB=gowm --env POSTGRES_USER=gowm --env POSTGRES_PASSWORD=gowm \
             "gowm-v071-db:${GITHUB_SHA}"
           for attempt in $(seq 1 60); do
-            if docker exec "$database" pg_isready -U gowm -d gowm; then break; fi
+            if docker exec "$database" sh -ec 'test "$(head -1 "${PGDATA}/postmaster.pid")" = 1 && pg_isready -h 127.0.0.1 -U gowm -d gowm >/dev/null && test "$(psql -h 127.0.0.1 -U gowm -d gowm -Atqc "SELECT 1")" = 1'; then break; fi
             if [ "$attempt" = 60 ]; then docker logs "$database"; exit 1; fi
             sleep 2
           done
