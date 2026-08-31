@@ -52,7 +52,7 @@ if (before.processId === after.processId) {
 
 process.stdout.write(`${JSON.stringify({
   status: "PASS",
-  marker: "GOWM_V071_NODE_ADHERENCE_RESTART_READY",
+  marker: "GOWM_V071_NODE_ADHERENCE_CORRECT",
   runId,
   queryId: before.queryId,
   jobId: before.jobId,
