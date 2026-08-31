@@ -3,6 +3,8 @@ name: GOWM v0.7.1 exact-head qualification
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -13,7 +15,60 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  candidate-required-check:
+    name: gowm-v071-candidate-required-check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GOWM_V071_DATABASE_CONTAINER: gowm-v071-candidate-db-${{ github.run_id }}-${{ github.run_attempt }}
+      STAS_DB_PASSWORD: v071_ci_stas_password_20260830
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Static candidate qualification
+        run: npm run verify
+
+      - name: Build and start isolated candidate database
+        run: |
+          database="$GOWM_V071_DATABASE_CONTAINER"
+          docker build --file database/Dockerfile --tag "gowm-v071-candidate-db:${GITHUB_SHA}" .
+          docker run --detach --name "$database" \
+            --publish 127.0.0.1::5432 \
+            --env POSTGRES_DB=gowm --env POSTGRES_USER=gowm --env POSTGRES_PASSWORD=gowm \
+            "gowm-v071-candidate-db:${GITHUB_SHA}"
+          for attempt in $(seq 1 60); do
+            if docker exec "$database" sh -ec 'test "$(head -1 "${PGDATA}/postmaster.pid")" = 1 && pg_isready -h 127.0.0.1 -U gowm -d gowm >/dev/null && test "$(psql -h 127.0.0.1 -U gowm -d gowm -Atqc "SELECT 1")" = 1'; then break; fi
+            if [ "$attempt" = 60 ]; then docker logs "$database"; exit 1; fi
+            sleep 2
+          done
+          host_port="$(docker port "$database" 5432/tcp | sed -E 's/.*:([0-9]+)$/\1/')"
+          echo "DATABASE_ADMIN_URL=postgresql://gowm:gowm@127.0.0.1:${host_port}/gowm" >> "$GITHUB_ENV"
+          echo "DATABASE_URL=postgresql://gowm:gowm@127.0.0.1:${host_port}/gowm" >> "$GITHUB_ENV"
+
+      - name: Candidate 001-to-069 and 067-to-069 database qualification
+        run: npm run validate:v071-database-upgrade
+
+      - name: Candidate P1 Gateway scenario qualification
+        run: npm run validate:v07-history-gateway
+
+      - name: Stop isolated candidate database
+        if: always()
+        run: docker rm --force --volumes "$GOWM_V071_DATABASE_CONTAINER" || true
+
   qualify:
+    name: gowm-v071-exact-head-qualification
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
@@ -82,17 +137,17 @@ jobs:
       - name: Migrate persistent worker qualification database
         run: npm run db:migrate
 
-      - name: Fresh 001-to-068 and 067-to-068 database gates
+      - name: Fresh 001-to-069 and 067-to-069 database gates
         run: >-
           node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs run
-          database-fresh-report "fresh install 001 through 068 and upgrade 067 through 068"
+          database-fresh-report "fresh install 001 through 069 and upgrade 067 through 069"
           -- npm run validate:v071-database-upgrade
 
       - name: Bind upgrade evidence to the same database execution
         run: >-
           node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs alias
           database-upgrade-report database-fresh-report
-          "migration 067 to 068 with frozen predecessor ledger and checksum-stable replay"
+          "migration 067 through 069 with frozen predecessor ledgers and checksum-stable replay"
 
       - name: Real Gateway two-provider DAG gate
         run: >-
@@ -105,6 +160,18 @@ jobs:
           node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs alias
           historical-two-provider-dag-report gateway-runtime-report
           "Operational Reality Provider to Task Execution Interval to Historical Trace Provider"
+
+      - name: Bind downgraded actual-resource retention evidence to the same execution
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs alias
+          snapshot-downgrade-resource-retention-report gateway-runtime-report
+          "LATEST_AT_START authorized downgrade retains actual Provider resources without pinning strengthening"
+
+      - name: Bind current-event-set advancement evidence to the same execution
+        run: >-
+          node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs alias
+          historical-event-set-advancement-report gateway-runtime-report
+          "pending interval input set remains stable while the current visible event set advances and later catches up"
 
       - name: Node adherence persistence and restart gate
         run: >-

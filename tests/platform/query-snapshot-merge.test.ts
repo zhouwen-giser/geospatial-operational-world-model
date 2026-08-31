@@ -136,19 +136,39 @@ describe("v0.7 effective snapshot merge", () => {
   it("downgrades the effective snapshot and reports mismatch evidence when allowed", () => {
     const coordinator = new QuerySnapshotCoordinator();
     const requested = manifest([], { mode: "LATEST_AT_START", consistency: "CONSISTENT_AT_START" });
+    const before = structuredClone(requested);
+    const observed = providerSnapshot([
+      providerResource("tracklet-late", {
+        digest: digest("a"),
+        worldVersion: 23,
+        pinning: "BEST_EFFORT"
+      })
+    ], digest("9"), {
+      consistency: "BEST_EFFORT",
+      capturedAt: "2026-08-31T00:00:00.000Z"
+    });
     const result = coordinator.mergeProviderSnapshot({
       requested,
       effective: requested,
-      providerSnapshot: providerSnapshot([providerResource("tracklet-late")], digest("9"), {
-        consistency: "BEST_EFFORT",
-        capturedAt: "2026-08-31T00:00:00.000Z"
-      }),
+      providerSnapshot: observed,
       descriptor: descriptor("DISCOVER_RESOURCES"),
       policy: { mode: "LATEST_AT_START", allowDowngrade: true },
       nodeId: "resolver-late"
     });
 
-    expect(result.effective).toMatchObject({ consistency: "BEST_EFFORT", resources: [] });
+    expect(requested).toEqual(before);
+    expect(result.discoveredResourceCount).toBe(1);
+    expect(result.effective).toMatchObject({
+      consistency: "BEST_EFFORT",
+      resources: [{
+        resourceKind: "TRACKLET_VERSION",
+        resourceId: "scope:tracklet-late",
+        version: "v1",
+        contentHash: digest("a"),
+        worldVersion: 23,
+        pinning: "BEST_EFFORT"
+      }]
+    });
     expect(result.adherence).toMatchObject({
       status: "MISMATCHED",
       expectedConsistency: "CONSISTENT_AT_START",
@@ -161,6 +181,54 @@ describe("v0.7 effective snapshot merge", () => {
       "CONSISTENCY_LEVEL_TOO_WEAK"
     ]);
     expect(result.effective.manifestHash).not.toBe(requested.manifestHash);
+    coordinator.assertManifestHash(result.effective);
+
+    const replay = coordinator.mergeProviderSnapshot({
+      requested,
+      effective: result.effective,
+      providerSnapshot: observed,
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "LATEST_AT_START", allowDowngrade: true },
+      nodeId: "resolver-late"
+    });
+    expect(replay.discoveredResourceCount).toBe(0);
+    expect(replay.adherence.status).toBe("MISMATCHED");
+    expect(replay.effective).toEqual(result.effective);
+    expect(replay.effective.manifestHash).toBe(result.effective.manifestHash);
+  });
+
+  it("does not merge a true resource conflict merely because a boundary downgrade is allowed", () => {
+    const coordinator = new QuerySnapshotCoordinator();
+    const requested = manifest([
+      snapshotResource("tracklet-a", { contentHash: digest("a") })
+    ], { mode: "LATEST_AT_START", consistency: "CONSISTENT_AT_START" });
+    const result = coordinator.mergeProviderSnapshot({
+      requested,
+      effective: requested,
+      providerSnapshot: providerSnapshot([
+        providerResource("tracklet-a", { version: "v2", digest: digest("b"), pinning: "BEST_EFFORT" })
+      ], digest("9"), {
+        consistency: "BEST_EFFORT",
+        capturedAt: "2026-08-31T00:00:00.000Z"
+      }),
+      descriptor: descriptor("DISCOVER_RESOURCES"),
+      policy: { mode: "LATEST_AT_START", allowDowngrade: true },
+      nodeId: "resolver-conflict"
+    });
+
+    expect(result.effective).toMatchObject({
+      consistency: "BEST_EFFORT",
+      resources: [expect.objectContaining({ version: "v1", contentHash: digest("a"), pinning: "PINNED" })]
+    });
+    expect(result.discoveredResourceCount).toBe(0);
+    expect(result.adherence).toMatchObject({
+      status: "MISMATCHED",
+      mismatches: [
+        expect.objectContaining({ reason: "CAPTURED_AT_AFTER_QUERY_BOUNDARY" }),
+        expect.objectContaining({ reason: "CONSISTENCY_LEVEL_TOO_WEAK" }),
+        expect.objectContaining({ reason: "VERSION_MISMATCH" })
+      ]
+    });
   });
 
   it("marks later BEST_EFFORT data as advanced compatible under BEST_EFFORT", () => {

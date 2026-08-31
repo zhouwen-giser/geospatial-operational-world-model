@@ -4,7 +4,7 @@
   "title": "WsgsSouthboundOperationLockV2V071",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "gatewayContractVersion", "consumerContractPackage", "contractCatalogRevision", "semanticCatalogHash", "availabilityContractHash", "snapshotContractHash", "delegationContractHash", "scopeModel", "resourceIdEncodingRevision", "canonicalOrderingRevision", "defaultOperations", "previewOperations"],
+  "required": ["schemaVersion", "gatewayContractVersion", "consumerContractPackage", "contractCatalogRevision", "semanticCatalogHash", "availabilityContractHash", "snapshotContractHash", "delegationContractHash", "scopeModel", "resourceIdEncodingRevision", "canonicalOrderingRevision", "authorizedDowngradeResourceRetentionRevision", "historicalEventSetSeparationRevision", "defaultOperations", "previewOperations"],
   "properties": {
     "schemaVersion": { "const": "2.0" },
     "gatewayContractVersion": { "const": "0.7.1" },
@@ -24,6 +24,8 @@
     "scopeModel": { "const": "SINGLE_SCOPE_V1" },
     "resourceIdEncodingRevision": { "const": "SNAPSHOT_RESOURCE_ID_V1_512" },
     "canonicalOrderingRevision": { "const": "UNICODE_CODE_POINT_BINARY_V1" },
+    "authorizedDowngradeResourceRetentionRevision": { "const": "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1" },
+    "historicalEventSetSeparationRevision": { "const": "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1" },
     "defaultOperations": { "$ref": "#/$defs/operationList" },
     "previewOperations": { "$ref": "#/$defs/operationList" }
   },

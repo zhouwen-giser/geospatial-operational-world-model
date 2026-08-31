@@ -257,6 +257,8 @@ describe("GOWM v0.6.3 grounding core stabilization", () => {
       scopeModel: _scopeModel,
       resourceIdEncodingRevision: _resourceIdEncodingRevision,
       canonicalOrderingRevision: _canonicalOrderingRevision,
+      authorizedDowngradeResourceRetentionRevision: _authorizedDowngradeResourceRetentionRevision,
+      historicalEventSetSeparationRevision: _historicalEventSetSeparationRevision,
       ...legacyLock
     } = lock;
     expect(validateContract("urn:gowm:v0.7:wsgs-southbound-operation-lock-v2", {

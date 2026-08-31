@@ -2,8 +2,8 @@
   "schemaVersion": "1.0",
   "packageName": "@gowm/world-gateway-contracts",
   "packageVersion": "0.7.1",
-  "contractCatalogRevision": "sha256:062a366e8e633a820e9e30062fc41fa488914c1c09be08d996f40c238d76ba50",
-  "semanticCatalogHash": "sha256:e86a293444dbbfd761d3550812f17f0869bf27b5ee5e91bab77607a79c2be6d7",
+  "contractCatalogRevision": "sha256:e68d228765332806eb61e2fb83b51c2b63a247fd8c167fa9f567397bbdb0c641",
+  "semanticCatalogHash": "sha256:566b1a90f2d38fd65e78d59ebfc0a54de5c7d598a4e36fbe10c8591814b4be7d",
   "files": [
     {
       "path": "compatibility/report.json",
@@ -12,8 +12,8 @@
     },
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
-      "bytes": 65721,
-      "sha256": "ad972e153559ed8df240d9f766894e75bc9d2e039382345bf819472eee3af295"
+      "bytes": 65937,
+      "sha256": "494795c496fe6fae99b4b76a7c14f4341b28abb5af754a43b1530d0c676b325f"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -28,12 +28,12 @@
     {
       "path": "revisions/contract-catalog.json",
       "bytes": 229,
-      "sha256": "db2ea4b850618d27dd313b5f5f03526e21473e10769c96eb44e7daab846c212d"
+      "sha256": "72086fbab5ce2cbb3eea55ccf4eab62026d3bd1009ae4a50134adc4b9ccc3135"
     },
     {
       "path": "revisions/semantic-catalog.json",
       "bytes": 233,
-      "sha256": "27050485a834fd1e8321bab92cab6baa49b46153fb4a1c79c56be6cef7193ef4"
+      "sha256": "0b643ff8d6ceb3dbd7426cd0e054185b0c9847c773a5bd7214411d04d4f65e3d"
     },
     {
       "path": "schemas/gowm-v0.6.2/capability-descriptor-v1.1.schema.json",
@@ -177,8 +177,8 @@
     },
     {
       "path": "schemas/gowm-v0.7.1/exact-head-qualification-report.schema.json",
-      "bytes": 7051,
-      "sha256": "77734c582a5abaa93b4d378631721894f693f8f9fa0d86a8b1a8fb2eb20e6d3b"
+      "bytes": 11850,
+      "sha256": "349204c7de556d7d00637b7e513dac4f933ad63ca4fdaef9a12ea78ad62b92e4"
     },
     {
       "path": "schemas/gowm-v0.7.1/historical-trajectory-result.schema.json",
@@ -217,13 +217,13 @@
     },
     {
       "path": "schemas/gowm-v0.7.1/wsgs-historical-consumer-lock.schema.json",
-      "bytes": 6219,
-      "sha256": "170ec17ccaf5c3e4e3e84111384c5e9e3d4b568ffec5f6255e984603fcb968c2"
+      "bytes": 6559,
+      "sha256": "99b191c17e9163e28cf2907db7c20541e199b5c4352d1a1b69b1cc6eab6123e1"
     },
     {
       "path": "schemas/gowm-v0.7.1/wsgs-southbound-operation-lock-v2.schema.json",
-      "bytes": 2769,
-      "sha256": "a3318221841d0a68825eb46dabd8b31bf176c184d21d1027a5fb1cb90ef3c39b"
+      "bytes": 3103,
+      "sha256": "dbdd3db886533a4d74dc29f256ca1caa8d5b7696f5c8ce5f8d5f93622d7ab978"
     },
     {
       "path": "schemas/gowm-v0.7/analysis-input-set.schema.json",
@@ -242,8 +242,8 @@
     },
     {
       "path": "schemas/gowm-v0.7/capability-semantic-profile-v1.1.schema.json",
-      "bytes": 3895,
-      "sha256": "00f48f0c54451e9c7e8bd26f58878036941e5ccbe2dc54d713de30d76159fc27"
+      "bytes": 3932,
+      "sha256": "03a509be3772fce854bf281b0d4fa3f421ec25a645c87745cb2a6cbbe65534ae"
     },
     {
       "path": "schemas/gowm-v0.7/consumer-contract-bundle-manifest.schema.json",
@@ -447,8 +447,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 151093,
-      "sha256": "1de2f628228afb9dca498affff95de7a816ee2413ab1946bca908ba591f60a0f"
+      "bytes": 151653,
+      "sha256": "d5b827399bd267d6f0aed1c2cbba0251810b076836e0adb6b4c1e089d4afe377"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -462,8 +462,8 @@
     },
     {
       "path": "vocabularies/reference-kind-vocabulary.v2.json",
-      "bytes": 2144,
-      "sha256": "72e31365e5b1161f64f88ed309d47f62a752ebad587d803ac880e7822b3cbf7f"
+      "bytes": 2318,
+      "sha256": "d9693d7cf3ab5a3eda7ba925fcd10a4768867c6a401954821e1c558211cb0e0a"
     },
     {
       "path": "vocabularies/relation-semantic-vocabulary.v1.json",
@@ -471,5 +471,5 @@
       "sha256": "5d21c0213e291939e9cbfce2cb3aa65f739d69a486d270dc4725bffe7f208428"
     }
   ],
-  "packageIntegrity": "sha512-Ne5DezQ3C5fL7BzJ4NgzIwIEmrylHQpEyU0rBAfeIl6bfnp5Z8J9n8tPujkXUMNDGw+g8EShrfuoo0tjqOCvIA=="
+  "packageIntegrity": "sha512-1aPxB/aTfNgDul3Y13g29R/9auSV0TM1jIb/PnKC1ufhChiybWMsUL9AgXp6XtB3s2OJjcrGsuiRifSjjlf73w=="
 }

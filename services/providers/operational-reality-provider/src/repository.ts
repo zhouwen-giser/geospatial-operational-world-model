@@ -44,6 +44,12 @@ interface TaskEventStateRow extends Record<string,unknown> {
   event_id: unknown;event_type: unknown;created_at: unknown;world_version: unknown;
 }
 
+interface TaskExecutionEventSetRow extends Record<string,unknown> {
+  event_set_hash: unknown;event_count: unknown;max_world_version: unknown;
+}
+
+const MAX_INTERVAL_SNAPSHOT_ROWS=84;
+
 export class OperationalRealityProviderRepository {
   private readonly reads: OperationalReadRepository;
   private readonly correlations: OperationalCorrelationRepository;
@@ -131,6 +137,9 @@ export class OperationalRealityProviderRepository {
     try {
       await this.pool.query("SELECT * FROM gowm_operational_reality_v1.task_snapshot LIMIT 0");
       await this.pool.query("SELECT * FROM gowm_history_v1.task_execution_interval_effective LIMIT 0");
+      await this.pool.query(
+        "SELECT * FROM gowm_history_v1.task_execution_event_set_as_of('readiness-probe',clock_timestamp()) LIMIT 0"
+      );
       return {ready:true,reasons:[]};
     }
     catch { return {ready:false,reasons:["operational reality SQL contract is unavailable"]}; }
@@ -155,7 +164,13 @@ export class OperationalRealityProviderRepository {
       await client.query("SELECT set_config('statement_timeout',$1::text,true)",[`${timeout}ms`]);
       await client.query("SELECT set_config('lock_timeout',$1::text,true)",[`${Math.min(timeout,1_000)}ms`]);
 
-      const limit=input.selection.kind==="ALL"?Math.min(input.selection.limit,250):1;
+      // Each interval contributes its immutable revision, its input event set,
+      // and (in the worst case) one distinct method profile.  Keep enough room
+      // for the task and current event-set resources under the 256-item
+      // DataSnapshotContext limit.
+      const limit=input.selection.kind==="ALL"
+        ?Math.min(input.selection.limit,MAX_INTERVAL_SNAPSHOT_ROWS)
+        :1;
       const values:unknown[]=[input.taskReferenceKey.id,capturedAt];
       const filters:string[]=[];
       if (input.selection.kind==="EXECUTION_NO") {
@@ -180,6 +195,21 @@ export class OperationalRealityProviderRepository {
          ORDER BY created_at,event_id`,[input.taskReferenceKey.id,capturedAt]
       );
       const executionEvents=eventRows.rows.filter((row)=>EXECUTION_EVENT_TYPES.has(String(row.event_type)));
+      const eventSetRows=await client.query<TaskExecutionEventSetRow>(
+        `SELECT event_set_hash,event_count,max_world_version
+         FROM gowm_history_v1.task_execution_event_set_as_of($1::text,$2::timestamptz)`,
+        [input.taskReferenceKey.id,capturedAt]
+      );
+      const currentEventSet=eventSetRows.rows[0];
+      if (eventSetRows.rows.length>1) {
+        throw new ProviderProtocolError("SCHEMA_MISMATCH","current task event-set read returned multiple rows");
+      }
+      if (!currentEventSet&&(eventRows.rows.length>0||selected.length>0)) {
+        throw new ProviderProtocolError("SCHEMA_MISMATCH","current task event-set read omitted a visible task");
+      }
+      if (currentEventSet&&nonNegativeInteger(currentEventSet.event_count,"event_count")!==eventRows.rows.length) {
+        throw new ProviderProtocolError("SCHEMA_MISMATCH","current task event-set read disagrees with visible task events");
+      }
 
       const revisionIds=selected.map((row)=>String(row.interval_revision_id));
       const phases=revisionIds.length===0?[]:(await client.query<TaskExecutionPhaseRow>(
@@ -191,17 +221,18 @@ export class OperationalRealityProviderRepository {
       transactionOpen=false;
 
       const mapped=selected.map((row)=>mapExecutionInterval(row,phases,capturedAt,input.phaseScope));
-      const pending=projectionPending(input,selected,executionEvents);
+      const pending=projectionPending(input,selected,executionEvents,currentEventSet);
       const outcome=intervalOutcome(mapped,eventRows.rows.length,executionEvents.length,pending);
       const output:GowmV071TaskExecutionIntervalResult={
         schemaVersion:"1.1",status:outcome.status,reasonCode:outcome.reasonCode,
         requestedPhaseScope:input.phaseScope,intervals:mapped,truncated
       };
-      const dataSnapshot=executionIntervalSnapshot(dataScopeKey,capturedAt,input,selected,eventRows.rows,effectiveSnapshot);
+      const dataSnapshot=executionIntervalSnapshot(dataScopeKey,capturedAt,input,selected,currentEventSet,effectiveSnapshot);
       return {
         output,status:outcome.status,dataSnapshot,rows:mapped.length,candidates:allRows.length,warnings:[
           "operationalIntervals.readContract=gowm_history_v1",
           "operationalIntervals.asOf=effectiveSnapshot.capturedAt",
+          "operationalIntervals.eventSets=current-and-interval-input-distinct-v1",
           ...(truncated?["operationalIntervals.truncated=true"]:[])
         ]
       };
@@ -290,17 +321,22 @@ function intervalReferenceKey(row:TaskExecutionIntervalRow):GowmV071TaskExecutio
 }
 
 function projectionPending(
-  input:GowmV071TaskExecutionIntervalQuery,intervals:TaskExecutionIntervalRow[],events:TaskEventStateRow[]
+  input:GowmV071TaskExecutionIntervalQuery,intervals:TaskExecutionIntervalRow[],events:TaskEventStateRow[],
+  currentEventSet:TaskExecutionEventSetRow|undefined
 ):boolean {
   if (events.length===0) return false;
+  if (intervals.length>0) {
+    if (currentEventSet) {
+      return intervals.some((row)=>String(row.input_event_set_hash)!==String(currentEventSet.event_set_hash));
+    }
+    const latestEvent=Math.max(...events.map((row)=>Date.parse(iso(row.created_at))));
+    const latestProjection=Math.max(...intervals.map((row)=>Date.parse(iso(row.created_at))));
+    return latestEvent>latestProjection;
+  }
   if (input.selection.kind==="EXECUTION_NO") {
-    if (intervals.length>0) return false;
     return events.filter((row)=>String(row.event_type)==="EXECUTION_STARTED_OBSERVED").length>=input.selection.executionNo;
   }
-  if (intervals.length===0) return true;
-  const latestEvent=Math.max(...events.map((row)=>Date.parse(iso(row.created_at))));
-  const latestProjection=Math.max(...intervals.map((row)=>Date.parse(iso(row.created_at))));
-  return latestEvent>latestProjection;
+  return true;
 }
 
 function intervalOutcome(
@@ -322,28 +358,51 @@ function intervalOutcome(
 
 function executionIntervalSnapshot(
   dataScopeKey:string,capturedAt:string,input:GowmV071TaskExecutionIntervalQuery,intervals:TaskExecutionIntervalRow[],
-  events:TaskEventStateRow[],effective:GowmV071QuerySnapshotManifest
+  currentEventSet:TaskExecutionEventSetRow|undefined,effective:GowmV071QuerySnapshotManifest
 ):DataSnapshotContext {
   const authority="gowm_history_v1";
-  const eventSetHashes=intervals.map((row)=>digest(row.input_event_set_hash,{intervalRevisionId:row.interval_revision_id}));
-  const eventSetDigest=eventSetHashes.length===1?eventSetHashes[0] as `sha256:${string}`:sha256(
-    eventSetHashes.length?eventSetHashes:events.map((row)=>({
-      eventId:String(row.event_id),eventType:String(row.event_type),createdAt:iso(row.created_at),worldVersion:nonNegativeInteger(row.world_version,"world_version")
-    }))
-  );
   const resources:DataSnapshotContext["resources"]=[{
     referenceKey:{...input.taskReferenceKey},authority,pinning:"PINNED",
     digest:sha256({referenceKey:input.taskReferenceKey})
   }];
-  for (const row of intervals) resources.push({
-    referenceKey:intervalReferenceKey(row),authority,pinning:"PINNED",digest:digest(row.content_hash,{intervalRevisionId:row.interval_revision_id}),
-    worldVersion:nonNegativeInteger(row.world_version,"world_version")
-  });
-  resources.push({
-    referenceKey:{namespace:"gowm",kind:"TASK_EXECUTION_EVENT_SET",id:`event-set-${eventSetDigest.slice(7)}`,version:capturedAt},
-    authority,pinning:"PINNED",digest:eventSetDigest,
-    ...(events.length?{worldVersion:Math.max(...events.map((row)=>nonNegativeInteger(row.world_version,"world_version")))}:{})
-  });
+  for (const row of intervals) {
+    const intervalKey=intervalReferenceKey(row);
+    resources.push({
+      referenceKey:intervalKey,authority,pinning:"PINNED",digest:digest(row.content_hash,{intervalRevisionId:row.interval_revision_id}),
+      worldVersion:nonNegativeInteger(row.world_version,"world_version")
+    });
+    resources.push({
+      referenceKey:{
+        namespace:"gowm.history",kind:"TASK_EXECUTION_INTERVAL_INPUT_SET",
+        id:`interval-input-${sha256({
+          intervalReferenceKey:intervalKey,
+          profileKey:String(row.profile_key),
+          profileVersion:String(row.profile_version)
+        }).slice(7)}`,
+        version:String(row.revision_no)
+      },
+      authority,pinning:"PINNED",digest:requiredDigest(row.input_event_set_hash,"input_event_set_hash"),
+      worldVersion:nonNegativeInteger(row.world_version,"world_version")
+    });
+  }
+  if (currentEventSet) {
+    const currentDigest=requiredDigest(currentEventSet.event_set_hash,"event_set_hash");
+    resources.push({
+      referenceKey:{
+        namespace:"gowm",kind:"TASK_EXECUTION_EVENT_SET",
+        id:`event-set-${sha256({
+          namespace:input.taskReferenceKey.namespace,
+          kind:input.taskReferenceKey.kind,
+          id:input.taskReferenceKey.id
+        }).slice(7)}`,
+        version:currentDigest
+      },
+      authority,pinning:"PINNED",digest:currentDigest,
+      ...(currentEventSet.max_world_version===null||currentEventSet.max_world_version===undefined
+        ?{}
+        :{worldVersion:nonNegativeInteger(currentEventSet.max_world_version,"max_world_version")})
+    });
+  }
   const profiles=new Map<string,TaskExecutionIntervalRow>();
   for (const row of intervals) profiles.set(`${String(row.profile_key)}@${String(row.profile_version)}`,row);
   if (profiles.size===0) resources.push({
@@ -409,6 +468,14 @@ function assertTaskIdentityCatalogReference(referenceKey:GowmV071TaskExecutionIn
 function digest(value:unknown,fallback:unknown):`sha256:${string}` {
   const candidate=String(value??"");
   return /^sha256:[0-9a-f]{64}$/.test(candidate)?candidate as `sha256:${string}`:sha256(fallback);
+}
+
+function requiredDigest(value:unknown,name:string):`sha256:${string}` {
+  const candidate=String(value??"");
+  if (!/^sha256:[0-9a-f]{64}$/.test(candidate)) {
+    throw new ProviderProtocolError("SCHEMA_MISMATCH",`${name} must be a canonical sha256 digest`);
+  }
+  return candidate as `sha256:${string}`;
 }
 
 function jsonRecord(value:unknown):Record<string,unknown>|undefined {

@@ -3456,11 +3456,12 @@ export type GowmV071ExactHeadQualificationReport = ({
   marker?: string;
   reason?: string;
   reportId: string;
+  scenarioChecks?: Record<string, boolean>;
   schemaVersion: "1.0";
   status: "PASS" | "FAIL" | "PARTIAL" | "DEFERRED" | "NOT_RUN";
   trackedWorktreeCleanAfter?: boolean;
   trackedWorktreeCleanAtStart?: boolean;
-}) & ((Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>));
+}) & ((Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>) & (Record<string, unknown>));
 
 export type GowmV071HistoricalTrajectoryResult = {
   completeness: GowmV071HistoricalTrajectoryResultCompleteness;
@@ -3653,7 +3654,7 @@ export type GowmV071WsgsHistoricalConsumerLock = {
 };
   explicitNonClaims: ["MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT", "MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT", "MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT", "MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT", "MAP_MATCHING" | "TEMPORAL_SPATIAL_EVENTS" | "LAST_INTERSECTION" | "HISTORICAL_SIGNAL_RANKING" | "COMPLETE_TRAJECTORY_ARTIFACT"];
   marker: "GOWM_V071_WSGS_HISTORICAL_BASELINE_READY";
-  migrationHead: "068_effective_snapshot_consistency_downgrade.sql";
+  migrationHead: "069_task_execution_event_set_read_contract.sql";
   operations: ([{
   inputSchemaHash: string;
   maturity: "PREVIEW";
@@ -3685,13 +3686,16 @@ export type GowmV071WsgsHistoricalConsumerLock = {
   runtimeQualificationEvidenceDigest: string;
   schemaVersion: "1.0";
   snapshotBehavior: {
+  authorizedDowngradeResourceRetentionRevision: "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1";
   canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1";
+  historicalEventSetSeparationRevision: "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1";
   resourceIdEncodingRevision: "SNAPSHOT_RESOURCE_ID_V1_512";
   scopeModel: "SINGLE_SCOPE_V1";
 };
 };
 
 export type WsgsSouthboundOperationLockV2V071 = {
+  authorizedDowngradeResourceRetentionRevision: "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1";
   availabilityContractHash: string;
   canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1";
   consumerContractPackage: {
@@ -3703,6 +3707,7 @@ export type WsgsSouthboundOperationLockV2V071 = {
   defaultOperations: WsgsSouthboundOperationLockV2V071OperationList;
   delegationContractHash: string;
   gatewayContractVersion: "0.7.1";
+  historicalEventSetSeparationRevision: "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1";
   previewOperations: WsgsSouthboundOperationLockV2V071OperationList;
   resourceIdEncodingRevision: "SNAPSHOT_RESOURCE_ID_V1_512";
   schemaVersion: "2.0";
@@ -3795,7 +3800,7 @@ export type GowmV07CapabilitySemanticProfileV11 = ({
 
 export type GowmV07CapabilitySemanticProfileV11ReferenceKindV1 = "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT";
 
-export type GowmV07CapabilitySemanticProfileV11ReferenceKindV11 = "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT" | "TASK_EXECUTION_INTERVAL" | "TASK_EXECUTION_EVENT_SET" | "TRACKLET_VERSION" | "TRACKLET_FINALIZATION" | "HISTORICAL_TRAJECTORY" | "HISTORY_INPUT_SET" | "HISTORY_METHOD_PROFILE";
+export type GowmV07CapabilitySemanticProfileV11ReferenceKindV11 = "WORLD_OBJECT" | "SPATIAL_OBJECT" | "DATASET" | "LAYER" | "LAYER_FEATURE" | "OPERATIONAL_TASK" | "DERIVED_REFERENCE" | "REFERENCE_SET" | "QUERY_RESULT" | "TASK_EXECUTION_INTERVAL" | "TASK_EXECUTION_EVENT_SET" | "TASK_EXECUTION_INTERVAL_INPUT_SET" | "TRACKLET_VERSION" | "TRACKLET_FINALIZATION" | "HISTORICAL_TRAJECTORY" | "HISTORY_INPUT_SET" | "HISTORY_METHOD_PROFILE";
 
 export type ConsumerContractBundleManifestV07 = {
   builtAtSourceCommit?: string;

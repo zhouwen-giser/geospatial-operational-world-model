@@ -10,6 +10,7 @@ import {
   EXACT_HEAD_RUNTIME_PREREQUISITES,
   EXACT_HEAD_RUNTIME_REPORT_ID,
   assertValidHistoricalConsumerLock,
+  gatewayScenarioChecks,
   readHistoricalConsumerBindingAuthority,
   readVerifiedExactHeadRuntimeQualification,
   readVerifiedQualificationReport
@@ -129,14 +130,20 @@ async function aliasReport() {
     acceptedStatuses: ["PASS"]
   });
   if (source.log === undefined) throw new Error(`${sourceReportId} has no reusable immutable log`);
+  const sourceLogBytes = await readFile(resolve(evidenceRoot, source.log.relativePath));
+  const scenarioChecks = gatewayScenarioChecks(reportId, sourceLogBytes);
+  if (scenarioChecks !== undefined && sourceReportId !== "gateway-runtime-report") {
+    throw new Error(`${reportId} must derive from gateway-runtime-report`);
+  }
   const aliasLogPath = resolve(evidenceRoot, "logs", `${reportId}.log`);
-  await writeFile(aliasLogPath, await readFile(resolve(evidenceRoot, source.log.relativePath)));
+  await writeFile(aliasLogPath, sourceLogBytes);
   await writeReport(reportId, envelope(reportId, "PASS", {
     gate,
     command: source.command,
     exitCode: source.exitCode,
     log: { ...source.log, relativePath: `logs/${reportId}.log` },
     trackedWorktreeCleanAfter: source.trackedWorktreeCleanAfter,
+    ...(scenarioChecks === undefined ? {} : { scenarioChecks }),
     reason: `The ${sourceReportId} execution directly covers this gate; this report reuses its immutable log digest without rerunning or weakening the check.`
   }));
 }
@@ -187,6 +194,8 @@ async function finalize() {
     "database-fresh-report",
     "database-upgrade-report",
     "gateway-runtime-report",
+    "snapshot-downgrade-resource-retention-report",
+    "historical-event-set-advancement-report",
     "node-adherence-report",
     "worker-backoff-report",
     "artifact-roundtrip-report",

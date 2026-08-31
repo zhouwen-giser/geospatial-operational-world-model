@@ -1,6 +1,6 @@
 {
   "lockVersion": "1.0",
-  "baseline": "gowm-v0.7.0-migration-head-067",
+  "baseline": "gowm-v0.7.1-migration-head-068",
   "migrations": {
     "001_initial_schema.sql": "9491075269f48755a83787fa3649d0b12c1ed03eda1e0925ef8a9ce484cf427e",
     "002_views_and_functions.sql": "56eb394285aca3d55f67ddd951f91f2c1035abda458edfa22b0ade3836611297",
@@ -68,6 +68,7 @@
     "064_analysis_resource_inputs.sql": "7288bbf0b6eeb2c43eac8f28469ac06fe9b4fb7f080d24434614b2bb5d99f224",
     "065_task_execution_intervals.sql": "b6f04d6e41ed2e962ee40b3f7b113792b8b82cef2e32eb20f4182c66e0582b1a",
     "066_tracklet_finalization_runtime.sql": "c4dfc18608595bdc28fced597009801fcd54ab3a16b3dd0e5a6872381f4a440e",
-    "067_historical_trajectory_contract.sql": "02c268c947f4b0b181682b46d327cb80cd2de60ab634e00f587c0f0078736256"
+    "067_historical_trajectory_contract.sql": "02c268c947f4b0b181682b46d327cb80cd2de60ab634e00f587c0f0078736256",
+    "068_effective_snapshot_consistency_downgrade.sql": "9fd38004c246640980ad2c7fa6bb30e72e8f2cab95cb921ca2fb3494116760fd"
   }
 }

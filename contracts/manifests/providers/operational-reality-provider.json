@@ -5,7 +5,7 @@
     "providerId": "gowm.operational-reality",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:4b9b913f404fcd6a4a3d70ee7b7d328ebde00500df7b7aaf598f233e7dde06c9",
+    "implementationDigest": "sha256:6f0d5550ec0db379b3b0829fadf2d4d16913962b1a6ed3b53d39d3739e8cdde2",
     "sourceRef": "urn:gowm:source:in-tree:operational-reality:1.0.0"
   },
   "endpoints": {
@@ -750,6 +750,7 @@
         "producedReferenceKinds": [
           "TASK_EXECUTION_INTERVAL",
           "TASK_EXECUTION_EVENT_SET",
+          "TASK_EXECUTION_INTERVAL_INPUT_SET",
           "HISTORY_METHOD_PROFILE"
         ],
         "relationSemantics": [],
@@ -769,7 +770,8 @@
         },
         "notes": [
           "Intervals are immutable as-of projections over scoped Operational Task Events.",
-          "Open database ranges are rendered only through the effective snapshot capturedAt."
+          "Open database ranges are rendered only through the effective snapshot capturedAt.",
+          "Interval input event sets remain bound to their immutable revisions while the current event set advances independently at capturedAt."
         ]
       },
       "semanticRole": "PROJECTION_QUERY",

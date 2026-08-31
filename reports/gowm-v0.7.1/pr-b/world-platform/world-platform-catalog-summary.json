@@ -65,7 +65,7 @@
     {
       "providerId": "gowm.operational-reality",
       "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
-      "manifestHash": "sha256:96fbc0a103adce7b6da11b3ec93b9b38d91352fe76ac842484ed64558c19e1cf",
+      "manifestHash": "sha256:04d1701c914691c5e9742cb7f3211bb0cdbeafc32a87551807196dcd28a94bd0",
       "operationCount": 9
     },
     {

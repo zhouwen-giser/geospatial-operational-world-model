@@ -398,6 +398,7 @@
         "producedReferenceKinds": [
           "TASK_EXECUTION_INTERVAL",
           "TASK_EXECUTION_EVENT_SET",
+          "TASK_EXECUTION_INTERVAL_INPUT_SET",
           "HISTORY_METHOD_PROFILE"
         ],
         "relationSemantics": [],
@@ -417,7 +418,8 @@
         },
         "notes": [
           "Intervals are immutable as-of projections over scoped Operational Task Events.",
-          "Open database ranges are rendered only through the effective snapshot capturedAt."
+          "Open database ranges are rendered only through the effective snapshot capturedAt.",
+          "Interval input event sets remain bound to their immutable revisions while the current event set advances independently at capturedAt."
         ]
       },
       "implementation": [
@@ -432,7 +434,7 @@
       "tests": [
         "tests/platform/operational-interval-provider.test.ts"
       ],
-      "rationale": "The preview query reads immutable interval revisions at the effective snapshot capturedAt, exposes projection lag as PARTIAL, and discovers all scoped interval, event-set, task, and method-profile resources used by the result."
+      "rationale": "The preview query reads immutable interval revisions at the effective snapshot capturedAt, exposes projection lag as PARTIAL, and separately discovers each interval input event set and the current query-visible event set alongside scoped task and method-profile resources."
     }
   }
 }

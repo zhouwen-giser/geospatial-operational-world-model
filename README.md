@@ -2,8 +2,8 @@
 
 GOWM+ combines an authoritative geospatial data foundation with an extensible
 Capability Service Plane and a controlled World Capability Gateway.
-Version `0.7.0` adds runtime-discovered effective snapshots, immutable task
-execution intervals, generation-fenced Tracklet finalization, and pinned
+Version `0.7.1` strengthens runtime-discovered effective snapshots, immutable
+task execution intervals, generation-fenced Tracklet finalization, and pinned
 historical trajectory reconstruction with explicit lineage and gaps. The new
 historical operations remain Preview. It retains the v0.6.4 Reference
 Composability Repair, so resolver-issued immutable references compose directly

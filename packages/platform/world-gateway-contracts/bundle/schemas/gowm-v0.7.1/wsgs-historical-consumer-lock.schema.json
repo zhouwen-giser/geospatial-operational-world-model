@@ -126,14 +126,16 @@
     "snapshotBehavior": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["scopeModel", "resourceIdEncodingRevision", "canonicalOrderingRevision"],
+      "required": ["scopeModel", "resourceIdEncodingRevision", "canonicalOrderingRevision", "authorizedDowngradeResourceRetentionRevision", "historicalEventSetSeparationRevision"],
       "properties": {
         "scopeModel": { "const": "SINGLE_SCOPE_V1" },
         "resourceIdEncodingRevision": { "const": "SNAPSHOT_RESOURCE_ID_V1_512" },
-        "canonicalOrderingRevision": { "const": "UNICODE_CODE_POINT_BINARY_V1" }
+        "canonicalOrderingRevision": { "const": "UNICODE_CODE_POINT_BINARY_V1" },
+        "authorizedDowngradeResourceRetentionRevision": { "const": "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1" },
+        "historicalEventSetSeparationRevision": { "const": "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1" }
       }
     },
-    "migrationHead": { "const": "068_effective_snapshot_consistency_downgrade.sql" },
+    "migrationHead": { "const": "069_task_execution_event_set_read_contract.sql" },
     "runtimeQualificationEvidenceDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
     "allowedConsumerCapabilities": {
       "type": "array",
