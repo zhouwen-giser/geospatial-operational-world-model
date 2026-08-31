@@ -14,6 +14,7 @@
     { "id": "QUERY_RESULT", "definition": "A public reference to an immutable query or plan result." },
     { "id": "TASK_EXECUTION_INTERVAL", "definition": "An immutable revision of a task execution interval derived from operational task events." },
     { "id": "TASK_EXECUTION_EVENT_SET", "definition": "A pinned, ordered set of operational task events used to derive an execution interval revision." },
+    { "id": "TASK_EXECUTION_INTERVAL_INPUT_SET", "definition": "The immutable, pinned operational task event set consumed to derive one task execution interval revision." },
     { "id": "TRACKLET_VERSION", "definition": "An immutable source-local mobility tracklet version with explicit segment and gap lineage." },
     { "id": "TRACKLET_FINALIZATION", "definition": "An immutable finalization revision describing whether a tracklet input window is provisional, sealed, or conflicted." },
     { "id": "HISTORICAL_TRAJECTORY", "definition": "An immutable, gap-preserving historical trajectory revision for one subject, task interval, and selected source." },

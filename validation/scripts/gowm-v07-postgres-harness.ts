@@ -7,7 +7,7 @@ import pg from "pg";
 
 export const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const V07_MIGRATION_HEAD = "067_historical_trajectory_contract.sql";
-const V071_MIGRATION_HEAD = "068_effective_snapshot_consistency_downgrade.sql";
+const V071_MIGRATION_HEAD = "069_task_execution_event_set_read_contract.sql";
 
 export interface V07DatabaseEvidence {
   migrationCount: number;

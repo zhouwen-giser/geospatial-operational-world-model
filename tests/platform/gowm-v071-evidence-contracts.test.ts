@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -24,6 +24,8 @@ const EXACT_HEAD_RUNTIME_PREREQUISITES = [
   { reportId: "database-fresh-report", status: "PASS" },
   { reportId: "database-upgrade-report", status: "PASS" },
   { reportId: "gateway-runtime-report", status: "PASS" },
+  { reportId: "snapshot-downgrade-resource-retention-report", status: "PASS" },
+  { reportId: "historical-event-set-advancement-report", status: "PASS" },
   { reportId: "node-adherence-report", status: "PASS" },
   { reportId: "worker-backoff-report", status: "PASS" },
   { reportId: "artifact-roundtrip-report", status: "DEFERRED" },
@@ -104,6 +106,59 @@ describe("GOWM v0.7.1 exact-head evidence contracts", () => {
     })).toMatchObject({ valid: false });
   });
 
+  it("requires the two P1 scenario reports and their exact passing checks", () => {
+    const snapshot = qualificationReport("snapshot-downgrade-resource-retention-report", "PASS", {
+      gate: "snapshot downgrade resource retention",
+      command: ["npm", "run", "validate:v07-history-gateway"],
+      exitCode: 0,
+      log: { relativePath: "logs/snapshot-downgrade-resource-retention-report.log", bytes: 42, sha256: HASH },
+      trackedWorktreeCleanAfter: true,
+      scenarioChecks: snapshotDowngradeScenarioChecks()
+    });
+    const historical = qualificationReport("historical-event-set-advancement-report", "PASS", {
+      gate: "historical event set advancement",
+      command: ["npm", "run", "validate:v07-history-gateway"],
+      exitCode: 0,
+      log: { relativePath: "logs/historical-event-set-advancement-report.log", bytes: 42, sha256: HASH },
+      trackedWorktreeCleanAfter: true,
+      scenarioChecks: historicalEventSetScenarioChecks()
+    });
+    const validate = (candidate: unknown) =>
+      validateContract("urn:gowm:v0.7.1:exact-head-qualification-report", candidate);
+
+    expect(validate(snapshot)).toMatchObject({ valid: true });
+    expect(validate(historical)).toMatchObject({ valid: true });
+    expect(validate({
+      ...snapshot,
+      scenarioChecks: { ...snapshotDowngradeScenarioChecks(), case2DowngradedProviderResourceRetained: false }
+    })).toMatchObject({ valid: false });
+    expect(validate({
+      ...historical,
+      scenarioChecks: { ...historicalEventSetScenarioChecks(), pendingEventSetDigestsDiffer: false }
+    })).toMatchObject({ valid: false });
+    expect(validate({ ...snapshot, scenarioChecks: undefined })).toMatchObject({ valid: false });
+  });
+
+  it("locks final closure to the exact 14-report ledger", () => {
+    const checks = [
+      ...exactHeadRuntimeChecks(),
+      { reportId: "exact-head-runtime-report", status: "PASS", sha256: HASH },
+      { reportId: "wsgs-historical-consumer-lock", status: "PASS", sha256: HASH }
+    ];
+    const report = qualificationReport("final-closure-report", "PASS", {
+      gate: "protocol and runtime closure",
+      marker: "GOWM_V0_7_1_PROTOCOL_AND_RUNTIME_CLOSURE_COMPLETE",
+      checks
+    });
+    const validate = (candidate: unknown) =>
+      validateContract("urn:gowm:v0.7.1:exact-head-qualification-report", candidate);
+
+    expect(validate(report)).toMatchObject({ valid: true });
+    expect(validate({ ...report, checks: checks.slice(0, -1) })).toMatchObject({ valid: false });
+    expect(validate({ ...report, marker: "GOWM_V071_CLOSURE_MARKER_DRIFTED" })).toMatchObject({ valid: false });
+    expect(validate({ ...report, checks: [checks[1], checks[0], ...checks.slice(2)] })).toMatchObject({ valid: false });
+  });
+
   it("accepts the bounded WSGS Historical Consumer Baseline and rejects non-exact source", () => {
     const lock = {
       schemaVersion: "1.0",
@@ -129,9 +184,11 @@ describe("GOWM v0.7.1 exact-head evidence contracts", () => {
       snapshotBehavior: {
         scopeModel: "SINGLE_SCOPE_V1",
         resourceIdEncodingRevision: "SNAPSHOT_RESOURCE_ID_V1_512",
-        canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1"
+        canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1",
+        authorizedDowngradeResourceRetentionRevision: "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1",
+        historicalEventSetSeparationRevision: "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1"
       },
-      migrationHead: "068_effective_snapshot_consistency_downgrade.sql",
+      migrationHead: "069_task_execution_event_set_read_contract.sql",
       runtimeQualificationEvidenceDigest: HASH,
       allowedConsumerCapabilities: [
         "TASK_EXECUTION_INTERVAL",
@@ -373,6 +430,52 @@ describe("GOWM v0.7.1 exact-head evidence contracts", () => {
       await rm(evidenceRoot, { recursive: true, force: true });
     }
   });
+
+  it("keeps the PR required check non-authoritative and reserves immutable evidence for main", async () => {
+    const workflow = await readFile(
+      resolve(repositoryRoot, ".github/workflows/gowm-v071-exact-head-qualification.yml"),
+      "utf8"
+    );
+    const candidateStart = workflow.indexOf("  candidate-required-check:");
+    const authoritativeStart = workflow.indexOf("  qualify:");
+    expect(candidateStart).toBeGreaterThan(0);
+    expect(authoritativeStart).toBeGreaterThan(candidateStart);
+    const candidateJob = workflow.slice(candidateStart, authoritativeStart);
+    const authoritativeJob = workflow.slice(authoritativeStart);
+
+    expect(candidateJob).toContain("name: gowm-v071-candidate-required-check");
+    expect(candidateJob).toContain("github.event_name == 'pull_request'");
+    expect(candidateJob).toContain("npm run validate:v071-database-upgrade");
+    expect(candidateJob).toContain("npm run validate:v07-history-gateway");
+    expect(candidateJob).not.toContain("gowm-v071-exact-head-evidence.mjs");
+    expect(candidateJob).not.toContain("actions/upload-artifact");
+    expect(authoritativeJob).toContain("github.ref == 'refs/heads/main'");
+    expect(authoritativeJob).toContain("snapshot-downgrade-resource-retention-report gateway-runtime-report");
+    expect(authoritativeJob).toContain("historical-event-set-advancement-report gateway-runtime-report");
+  });
+
+  it("rejects scenario aliases when their immutable Gateway checks are missing or false", async () => {
+    const evidenceRoot = await mkdtemp(resolve(tmpdir(), "gowm-v071-scenario-evidence-"));
+    const reportId = "snapshot-downgrade-resource-retention-report";
+    try {
+      await mkdir(resolve(evidenceRoot, "logs"), { recursive: true });
+      const passingLog = gatewaySummaryLog();
+      const report = scenarioQualificationReport(reportId, passingLog, snapshotDowngradeScenarioChecks());
+      await writeFile(resolve(evidenceRoot, "logs", `${reportId}.log`), passingLog);
+      await writeFile(resolve(evidenceRoot, `${reportId}.json`), `${JSON.stringify(report)}\n`);
+      expect(runEvidenceVerification(evidenceRoot, reportId).status).toBe(0);
+
+      const failingLog = gatewaySummaryLog({ case2DowngradedProviderResourceRetained: false });
+      const falseCheckReport = scenarioQualificationReport(reportId, failingLog, snapshotDowngradeScenarioChecks());
+      await writeFile(resolve(evidenceRoot, "logs", `${reportId}.log`), failingLog);
+      await writeFile(resolve(evidenceRoot, `${reportId}.json`), `${JSON.stringify(falseCheckReport)}\n`);
+      const falseCheck = runEvidenceVerification(evidenceRoot, reportId);
+      expect(falseCheck.status).not.toBe(0);
+      expect(falseCheck.stderr).toContain("case2DowngradedProviderResourceRetained is not true");
+    } finally {
+      await rm(evidenceRoot, { recursive: true, force: true });
+    }
+  });
 });
 
 function runEvidenceVerification(evidenceRoot: string, reportId: string) {
@@ -423,9 +526,16 @@ async function writeExactHeadRuntimeFixture(evidenceRoot: string) {
   const prerequisiteReports = new Map<string, Record<string, unknown>>();
   const checks = [];
   for (const { reportId, status } of EXACT_HEAD_RUNTIME_PREREQUISITES) {
+    const scenarioLog = scenarioLogForReport(reportId);
+    if (scenarioLog !== undefined) {
+      await mkdir(resolve(evidenceRoot, "logs"), { recursive: true });
+      await writeFile(resolve(evidenceRoot, "logs", `${reportId}.log`), scenarioLog);
+    }
     const report = qualificationReport(reportId, status, reportId === "source-lock"
       ? { trackedWorktreeCleanAtStart: true }
-      : {});
+      : scenarioLog === undefined
+        ? {}
+        : scenarioReportFields(reportId, scenarioLog));
     const bytes = Buffer.from(`${JSON.stringify(report)}\n`, "utf8");
     prerequisiteReports.set(reportId, report);
     await writeFile(resolve(evidenceRoot, `${reportId}.json`), bytes);
@@ -446,6 +556,71 @@ async function writeExactHeadRuntimeFixture(evidenceRoot: string) {
 
 function exactHeadRuntimeChecks() {
   return EXACT_HEAD_RUNTIME_PREREQUISITES.map((check) => ({ ...check, sha256: HASH }));
+}
+
+function snapshotDowngradeScenarioChecks() {
+  return {
+    case2DowngradedProviderResourceRetained: true,
+    case2DowngradedResourceNotFalselyPinned: true,
+    case2DowngradeChangesEffectiveSnapshotHash: true
+  } as const;
+}
+
+function historicalEventSetScenarioChecks() {
+  return {
+    pendingIntervalInputSetRemainsD1: true,
+    pendingCurrentEventSetAdvancesToD2: true,
+    pendingEventSetDigestsDiffer: true,
+    pendingEventSetAdvancesEffectiveSnapshotHash: true,
+    rebuiltIntervalInputMatchesCurrentEventSet: true
+  } as const;
+}
+
+function gatewaySummaryLog(overrides: Record<string, boolean> = {}) {
+  return Buffer.from(`${JSON.stringify({
+    status: "PASS",
+    gate: "GOWM_V07_HISTORY_GATEWAY_E2E",
+    checks: {
+      ...snapshotDowngradeScenarioChecks(),
+      ...historicalEventSetScenarioChecks(),
+      ...overrides
+    }
+  })}\n`, "utf8");
+}
+
+function scenarioLogForReport(reportId: string) {
+  return reportId === "snapshot-downgrade-resource-retention-report"
+    || reportId === "historical-event-set-advancement-report"
+    ? gatewaySummaryLog()
+    : undefined;
+}
+
+function scenarioReportFields(reportId: string, logBytes: Buffer) {
+  return {
+    gate: reportId,
+    command: ["npm", "run", "validate:v07-history-gateway"],
+    exitCode: 0,
+    log: {
+      relativePath: `logs/${reportId}.log`,
+      bytes: logBytes.length,
+      sha256: `sha256:${createHash("sha256").update(logBytes).digest("hex")}`
+    },
+    trackedWorktreeCleanAfter: true,
+    scenarioChecks: reportId === "snapshot-downgrade-resource-retention-report"
+      ? snapshotDowngradeScenarioChecks()
+      : historicalEventSetScenarioChecks()
+  };
+}
+
+function scenarioQualificationReport(
+  reportId: string,
+  logBytes: Buffer,
+  scenarioChecks: Readonly<Record<string, boolean>>
+) {
+  return qualificationReport(reportId, "PASS", {
+    ...scenarioReportFields(reportId, logBytes),
+    scenarioChecks
+  });
 }
 
 function qualificationReport(
@@ -555,9 +730,11 @@ function historicalLockFixture() {
     snapshotBehavior: {
       scopeModel: "SINGLE_SCOPE_V1",
       resourceIdEncodingRevision: "SNAPSHOT_RESOURCE_ID_V1_512",
-      canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1"
+      canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1",
+      authorizedDowngradeResourceRetentionRevision: "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1",
+      historicalEventSetSeparationRevision: "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1"
     },
-    migrationHead: "068_effective_snapshot_consistency_downgrade.sql",
+    migrationHead: "069_task_execution_event_set_read_contract.sql",
     runtimeQualificationEvidenceDigest: HASH,
     allowedConsumerCapabilities: [
       "TASK_EXECUTION_INTERVAL",

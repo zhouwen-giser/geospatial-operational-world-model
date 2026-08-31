@@ -55,11 +55,15 @@ sequence is:
 - `066_tracklet_finalization_runtime.sql`
 - `067_historical_trajectory_contract.sql`
 - `068_effective_snapshot_consistency_downgrade.sql`
+- `069_task_execution_event_set_read_contract.sql`
 
-Migrations 001–067 remain byte-frozen. Migration 068 corrects the persisted
+Migrations 001–068 remain byte-frozen. Migration 068 corrects the persisted
 Effective Snapshot constraint so an explicitly authorized consistency downgrade
 can be recorded without changing query identity, mode, minimum world version, or
-Data Scope membership.
+Data Scope membership. Migration 069 adds a scoped, capturedAt-bounded read
+function that computes the current operational-task event-set hash from the same
+canonical event fields and ordering used by interval projection without granting
+the history reader direct access to operational event base tables.
 
 The historical trajectory foundation is not the same as complete Historical
 Reasoning. The following capabilities remain explicitly outside the candidate:
@@ -98,7 +102,7 @@ fact/job-table mutation privilege.
 - `packages/platform/world-gateway-contracts/bundle`: deterministic consumer
   schemas, OpenAPI, generated types, vocabularies, revisions, lock, and manifest.
 - `database/migrations/063_effective_query_snapshot.sql` through
-  `068_effective_snapshot_consistency_downgrade.sql`: additive durable history
+  `069_task_execution_event_set_read_contract.sql`: additive durable history
   model, scoped read/write contracts, and monotonic consistency downgrade
   persistence.
 

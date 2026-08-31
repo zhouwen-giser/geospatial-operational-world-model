@@ -168,7 +168,7 @@ export class QuerySnapshotCoordinator {
       : args.effective;
     const current = new Map(effectiveAtBoundary.resources.map((resource) => [resourceIdentity(resource), structuredClone(resource)]));
     const requested = new Map(args.requested.resources.map((resource) => [resourceIdentity(resource), resource]));
-    const mismatches: SnapshotMismatch[] = [...boundaryMismatches];
+    const resourceMismatches: SnapshotMismatch[] = [];
     let discoveredResourceCount = 0;
 
     for (const observed of providerResources) {
@@ -177,20 +177,20 @@ export class QuerySnapshotCoordinator {
       if (!existing) {
         if (behavior === "DISCOVER_RESOURCES") {
           if (effectivePolicy.mode === "PINNED") {
-            mismatches.push(mismatch(observed, undefined, "RESOURCE_MISSING"));
+            resourceMismatches.push(mismatch(observed, undefined, "RESOURCE_MISSING"));
           } else if (
             effectivePolicy.mode === "AT_LEAST_WORLD_VERSION"
             && !providerVersionSatisfiesPolicy(observed, effectivePolicy)
           ) {
-            mismatches.push(mismatch(observed, undefined, versionMismatchReason(effectivePolicy, observed)));
+            resourceMismatches.push(mismatch(observed, undefined, versionMismatchReason(effectivePolicy, observed)));
           } else if (strictPolicy(effectivePolicy) && observed.pinning !== "PINNED") {
-            mismatches.push(mismatch(observed, undefined, "PINNING_UNSUPPORTED"));
+            resourceMismatches.push(mismatch(observed, undefined, "PINNING_UNSUPPORTED"));
           } else {
-            current.set(identity, pinObservedResource(observed));
+            current.set(identity, resolvedObservedResource(observed, boundary.downgradeRequired));
             discoveredResourceCount += 1;
           }
         } else if (behavior === "REQUIRE_PINNED") {
-          mismatches.push(mismatch(observed, undefined, "RESOURCE_MISSING"));
+          resourceMismatches.push(mismatch(observed, undefined, "RESOURCE_MISSING"));
         }
         continue;
       }
@@ -202,13 +202,13 @@ export class QuerySnapshotCoordinator {
         existing.pinning !== "PINNED";
 
       if (mayResolveFlexibleRequestedPin && !providerVersionSatisfiesPolicy(observed, effectivePolicy)) {
-        mismatches.push(mismatch(observed, existing, versionMismatchReason(effectivePolicy, observed)));
+        resourceMismatches.push(mismatch(observed, existing, versionMismatchReason(effectivePolicy, observed)));
         continue;
       }
 
       if (existing.version !== observed.version) {
         if (mayResolveFlexibleRequestedPin && providerVersionSatisfiesPolicy(observed, effectivePolicy)) {
-          current.set(identity, pinObservedResource({
+          current.set(identity, resolvedObservedResource({
             ...observed,
             ...((observed.contentHash ?? existing.contentHash) === undefined
               ? {}
@@ -216,35 +216,39 @@ export class QuerySnapshotCoordinator {
             ...((observed.worldVersion ?? existing.worldVersion) === undefined
               ? {}
               : { worldVersion: observed.worldVersion ?? existing.worldVersion! })
-          }));
+          }, boundary.downgradeRequired));
           continue;
         }
-        mismatches.push(mismatch(observed, existing, versionMismatchReason(effectivePolicy, observed)));
+        resourceMismatches.push(mismatch(observed, existing, versionMismatchReason(effectivePolicy, observed)));
         continue;
       }
       if (existing.contentHash !== undefined && observed.contentHash === undefined) {
-        mismatches.push(mismatch(observed, existing, "CONTENT_HASH_MISMATCH"));
+        resourceMismatches.push(mismatch(observed, existing, "CONTENT_HASH_MISMATCH"));
         continue;
       }
       if (existing.contentHash !== undefined && observed.contentHash !== undefined && existing.contentHash !== observed.contentHash) {
-        mismatches.push(mismatch(observed, existing, "CONTENT_HASH_MISMATCH"));
+        resourceMismatches.push(mismatch(observed, existing, "CONTENT_HASH_MISMATCH"));
         continue;
       }
       if (existing.worldVersion !== undefined && observed.worldVersion !== undefined && existing.worldVersion !== observed.worldVersion) {
-        mismatches.push(mismatch(observed, existing, "VERSION_MISMATCH"));
+        resourceMismatches.push(mismatch(observed, existing, "VERSION_MISMATCH"));
         continue;
       }
       if (existing.pinning === "PINNED" && observed.pinning !== "PINNED") {
-        mismatches.push(mismatch(observed, existing, "PINNING_UNSUPPORTED"));
+        resourceMismatches.push(mismatch(observed, existing, "PINNING_UNSUPPORTED"));
         continue;
       }
       current.set(identity, {
         ...existing,
         ...(existing.contentHash === undefined && observed.contentHash !== undefined ? { contentHash: observed.contentHash } : {}),
         ...(existing.worldVersion === undefined && observed.worldVersion !== undefined ? { worldVersion: observed.worldVersion } : {}),
-        ...(mayResolveFlexibleRequestedPin ? { pinning: "PINNED" as const } : {})
+        ...(mayResolveFlexibleRequestedPin
+          ? { pinning: resolvedObservedPinning(observed, boundary.downgradeRequired) }
+          : {})
       });
     }
+
+    const mismatches = [...boundaryMismatches, ...resourceMismatches];
 
     const adherenceEvidence = {
       expectedConsistency: boundary.expectedConsistency,
@@ -285,16 +289,21 @@ export class QuerySnapshotCoordinator {
           resourceId: first.resourceId
         });
       }
-      warnings.push(...mismatches.map((item) =>
+      warnings.push(...resourceMismatches.map((item) =>
         `${args.nodeId}: retained prior effective pin for ${item.resourceKind}/${item.resourceId} (${item.reason})`
       ));
-      return {
-        effective: structuredClone(effectiveAtBoundary),
-        adherence,
-        discoveredResourceCount: 0,
-        observedResourceIdentities,
-        warnings
-      };
+      if (resourceMismatches.length > 0) {
+        return {
+          effective: structuredClone(effectiveAtBoundary),
+          adherence,
+          discoveredResourceCount: 0,
+          observedResourceIdentities,
+          warnings
+        };
+      }
+      warnings.push(...boundaryMismatches.map((item) =>
+        `${args.nodeId}: downgraded the effective snapshot for Provider boundary mismatch (${item.reason})`
+      ));
     }
 
     if (behavior === undefined) {
@@ -524,8 +533,18 @@ function assertUniqueManifestResources(resources: readonly SnapshotResource[]): 
   }
 }
 
-function pinObservedResource(resource: SnapshotResource): SnapshotResource {
-  return { ...structuredClone(resource), pinning: "PINNED" };
+function resolvedObservedResource(resource: SnapshotResource, preserveProviderPinning: boolean): SnapshotResource {
+  return {
+    ...structuredClone(resource),
+    pinning: resolvedObservedPinning(resource, preserveProviderPinning)
+  };
+}
+
+function resolvedObservedPinning(
+  resource: SnapshotResource,
+  preserveProviderPinning: boolean
+): SnapshotResource["pinning"] {
+  return preserveProviderPinning ? resource.pinning : "PINNED";
 }
 
 function resourceIdentity(resource: SnapshotResource): string {

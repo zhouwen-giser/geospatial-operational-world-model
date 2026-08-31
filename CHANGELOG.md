@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.1 - 2026-08-31
+
+- Retained actual Provider resources when a permitted `LATEST_AT_START` boundary downgrade produces an effective `BEST_EFFORT` snapshot, without falsely upgrading those observations to `PINNED`.
+- Separated immutable task-interval input lineage from the current query-visible task-event set so projection-pending reads expose both identities truthfully.
+- Aligned the repository, historical trace packages, package lock, and current consumer bundle metadata on version 0.7.1.
+- Extended the immutable migration freeze through migration 068; migrations 001–068 remain byte-locked for this patch.
+
 ## 0.7.0 - 2026-08-30
 
 - Added runtime-discovered effective query snapshots, generic analysis-resource inputs, and exact pinned replay without rewriting Provider reference keys.

@@ -49,7 +49,7 @@ function operation(operationId:OperationalRealityOperationId,repository:Operatio
     engine:"PostgreSQL",engineVersion:"18",methodId:`gowm-operational-reality-v1/${operationId}`,methodVersion:"1.0",
     artifacts:[
       {kind:"DATABASE",name:"gowm_operational_reality_v1",version:"migration-032"},
-      ...(intervalProjection?[{kind:"DATABASE" as const,name:"gowm_history_v1",version:"migration-065"}]:[])
+      ...(intervalProjection?[{kind:"DATABASE" as const,name:"gowm_history_v1",version:"migration-069"}]:[])
     ]
   },async handle(input,context){
     const scope=context.security.dataScopeClaim;

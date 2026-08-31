@@ -17,6 +17,20 @@ const HISTORICAL_PROVIDER_IDS = HISTORICAL_OPERATION_BINDINGS.map(({ providerId 
 
 export const EXACT_HEAD_RUNTIME_REPORT_ID = "exact-head-runtime-report";
 export const EXACT_HEAD_RUNTIME_MARKER = "GOWM_V071_EXACT_HEAD_RUNTIME_QUALIFIED";
+export const GATEWAY_SCENARIO_REPORT_REQUIREMENTS = Object.freeze({
+  "snapshot-downgrade-resource-retention-report": Object.freeze([
+    "case2DowngradedProviderResourceRetained",
+    "case2DowngradedResourceNotFalselyPinned",
+    "case2DowngradeChangesEffectiveSnapshotHash"
+  ]),
+  "historical-event-set-advancement-report": Object.freeze([
+    "pendingIntervalInputSetRemainsD1",
+    "pendingCurrentEventSetAdvancesToD2",
+    "pendingEventSetDigestsDiffer",
+    "pendingEventSetAdvancesEffectiveSnapshotHash",
+    "rebuiltIntervalInputMatchesCurrentEventSet"
+  ])
+});
 export const EXACT_HEAD_RUNTIME_PREREQUISITES = [
   { reportId: "source-lock", acceptedStatuses: ["PASS"] },
   { reportId: "protocol-closure-report", acceptedStatuses: ["PASS"] },
@@ -24,6 +38,8 @@ export const EXACT_HEAD_RUNTIME_PREREQUISITES = [
   { reportId: "database-fresh-report", acceptedStatuses: ["PASS"] },
   { reportId: "database-upgrade-report", acceptedStatuses: ["PASS"] },
   { reportId: "gateway-runtime-report", acceptedStatuses: ["PASS"] },
+  { reportId: "snapshot-downgrade-resource-retention-report", acceptedStatuses: ["PASS"] },
+  { reportId: "historical-event-set-advancement-report", acceptedStatuses: ["PASS"] },
   { reportId: "node-adherence-report", acceptedStatuses: ["PASS"] },
   { reportId: "worker-backoff-report", acceptedStatuses: ["PASS"] },
   { reportId: "artifact-roundtrip-report", acceptedStatuses: ["DEFERRED"] },
@@ -67,6 +83,7 @@ export async function readVerifiedQualificationReport({
     if (report.log.bytes !== logBytes.length || report.log.sha256 !== digest) {
       throw new Error(`${reportId} log bytes or digest differ from the report`);
     }
+    assertGatewayScenarioReport(report, logBytes);
   }
   if (report.command !== undefined) {
     if (report.exitCode !== 0 || report.log === undefined || report.trackedWorktreeCleanAfter !== true) {
@@ -77,6 +94,48 @@ export async function readVerifiedQualificationReport({
     throw new Error("source-lock did not attest a clean worktree");
   }
   return { report, bytes };
+}
+
+export function gatewayScenarioChecks(reportId, logBytes) {
+  const requiredChecks = GATEWAY_SCENARIO_REPORT_REQUIREMENTS[reportId];
+  if (requiredChecks === undefined) return undefined;
+  const summary = lastGatewayQualificationSummary(logBytes);
+  if (summary.status !== "PASS" || summary.gate !== "GOWM_V07_HISTORY_GATEWAY_E2E") {
+    throw new Error(`${reportId} immutable log does not end in a passing Gateway qualification summary`);
+  }
+  const checks = summary.checks;
+  if (checks === null || typeof checks !== "object" || Array.isArray(checks)) {
+    throw new Error(`${reportId} Gateway qualification summary does not expose scenario checks`);
+  }
+  const scenarioChecks = {};
+  for (const check of requiredChecks) {
+    if (checks[check] !== true) {
+      throw new Error(`${reportId} Gateway qualification check ${check} is not true`);
+    }
+    scenarioChecks[check] = true;
+  }
+  return scenarioChecks;
+}
+
+function assertGatewayScenarioReport(report, logBytes) {
+  const expected = gatewayScenarioChecks(report.reportId, logBytes);
+  if (expected !== undefined && canonicalJson(report.scenarioChecks) !== canonicalJson(expected)) {
+    throw new Error(`${report.reportId} scenarioChecks do not bind the required Gateway qualification checks`);
+  }
+}
+
+function lastGatewayQualificationSummary(logBytes) {
+  const lines = Buffer.from(logBytes).toString("utf8").split(/\r?\n/u).map((line) => line.trim()).filter(Boolean);
+  try {
+    const candidate = JSON.parse(lines.at(-1) ?? "");
+    if (candidate !== null && typeof candidate === "object" && !Array.isArray(candidate)
+      && candidate.gate === "GOWM_V07_HISTORY_GATEWAY_E2E") {
+      return candidate;
+    }
+  } catch {
+    // Only the final complete JSON summary is authoritative; diagnostics cannot satisfy a scenario gate.
+  }
+  throw new Error("immutable log does not end in a Gateway qualification JSON summary");
 }
 
 export async function readVerifiedExactHeadRuntimeQualification({

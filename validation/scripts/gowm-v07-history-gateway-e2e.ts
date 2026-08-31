@@ -401,15 +401,13 @@ async function runGatewayHistoricalE2e(
     // Run Case 2 after the independent identity/scope cases so any database
     // persistence conflict in the downgrade path cannot hide their evidence.
     const downgradeQueryId = `gateway-case2-downgrade-${runId}`;
-    const downgrade = await submit(
-      gatewayQualificationSubmission(
-        downgradeQueryId,
-        qualificationProvider.descriptor,
-        "LATER_BEST_EFFORT",
-        true
-      ),
-      fixture.scopeA
+    const downgradeSubmission = gatewayQualificationSubmission(
+      downgradeQueryId,
+      qualificationProvider.descriptor,
+      "LATER_BEST_EFFORT",
+      true
     );
+    const downgrade = await submit(downgradeSubmission, fixture.scopeA);
     gatewayHttpSubmissions += 1;
     assert.equal(downgrade.status, 200, JSON.stringify(downgrade.body));
     assert.equal(downgrade.body.status, "PARTIAL", "Case 2 allowed downgrade must be fail-visible");
@@ -422,22 +420,73 @@ async function runGatewayHistoricalE2e(
     assert.equal(downgradeAdherence.status, "MISMATCHED");
     assert(snapshotMismatchReasons(downgradeAdherence).includes("CONSISTENCY_LEVEL_TOO_WEAK"));
     assert(snapshotMismatchReasons(downgradeAdherence).includes("CAPTURED_AT_AFTER_QUERY_BOUNDARY"));
-    assert.equal(
-      requiredRecord(downgrade.body.effectiveSnapshotManifest, "Case 2 effective snapshot").consistency,
-      "BEST_EFFORT"
+    const downgradeRequested = requiredRecord(
+      downgrade.body.requestedSnapshotManifest,
+      "Case 2 requested snapshot"
+    ) as unknown as GowmV07QuerySnapshotManifest;
+    const downgradeEffective = snapshotManifest(downgrade);
+    assert.equal(downgradeEffective.consistency, "BEST_EFFORT");
+    const downgradeProviderSnapshot = nodeProviderSnapshot(downgrade, "snapshotQualification");
+    const downgradeProviderResource = snapshotResource(
+      downgradeProviderSnapshot,
+      "QUALIFICATION_RESOURCE",
+      "later-best-effort"
     );
+    assert.equal(downgradeProviderResource.pinning, "BEST_EFFORT");
+    const downgradeEffectiveResource = manifestResource(
+      downgradeEffective,
+      "QUALIFICATION_RESOURCE",
+      "gowm.validation:later-best-effort"
+    );
+    assert.equal(
+      downgradeEffectiveResource.pinning,
+      "BEST_EFFORT",
+      "Case 2 must not falsely upgrade the downgraded Provider resource to PINNED"
+    );
+    assert.equal(downgradeEffectiveResource.contentHash, downgradeProviderResource.digest);
+    assert.equal(downgradeEffectiveResource.version, downgradeProviderResource.referenceKey.version);
+    assert.notEqual(
+      downgradeEffective.manifestHash,
+      downgradeRequested.manifestHash,
+      "Case 2 must hash the retained Provider resource into the downgraded Effective Snapshot"
+    );
+    const case2DowngradedProviderResourceRetained = assertProviderSnapshotMerged(
+      downgradeProviderSnapshot,
+      downgradeEffective
+    );
+    const case2DowngradedResourceNotFalselyPinned = downgradeProviderResource.pinning === "BEST_EFFORT"
+      && downgradeEffectiveResource.pinning === "BEST_EFFORT";
+    const case2DowngradeChangesEffectiveSnapshotHash = downgradeEffective.manifestHash
+      !== downgradeRequested.manifestHash;
     const persistedDowngrade = await gateway.store.getByQueryId(downgradeQueryId);
     assert.equal(persistedDowngrade?.effectiveSnapshotRevision, 1);
     assert.equal(persistedDowngrade?.effectiveSnapshotManifest.consistency, "BEST_EFFORT");
     assert.deepEqual(
       persistedDowngrade?.effectiveSnapshotManifest.resources,
-      [],
-      "Case 2 must persist the consistency downgrade without accepting the mismatched resource"
+      downgradeEffective.resources,
+      "Case 2 response and PostgreSQL state must retain the same downgraded Provider resource"
     );
+    assert.equal(persistedDowngrade?.effectiveSnapshotManifest.manifestHash, downgradeEffective.manifestHash);
     const downgradeWarnings = requiredStringArray(downgrade.body.warnings, "Case 2 warnings");
     assert(
       downgradeWarnings.some((warning) => warning.includes("snapshot MISMATCHED")),
       "Case 2 must expose the downgrade mismatch in warnings"
+    );
+    const qualificationCallsAfterDowngrade = qualificationProvider.executeCalls();
+    const downgradeReplay = await submit(structuredClone(downgradeSubmission), fixture.scopeA);
+    gatewayHttpSubmissions += 1;
+    assert.equal(downgradeReplay.status, 200, JSON.stringify(downgradeReplay.body));
+    assert.equal(downgradeReplay.replayed, true, "Case 2 replay must come from durable Gateway idempotency");
+    assert.deepEqual(downgradeReplay.body, downgrade.body, "Case 2 replay must preserve the downgraded response exactly");
+    assert.equal(
+      qualificationProvider.executeCalls(),
+      qualificationCallsAfterDowngrade,
+      "Case 2 replay must not call the qualification Provider again"
+    );
+    assert.equal(
+      (await gateway.store.getByQueryId(downgradeQueryId))?.effectiveSnapshotRevision,
+      1,
+      "Case 2 replay must not create another Effective Snapshot revision"
     );
     assert.deepEqual(
       qualificationProvider.observedDataScopes,
@@ -653,9 +702,27 @@ async function runGatewayHistoricalE2e(
     const q1HistoricalProviderSnapshot = nodeProviderSnapshot(q1, "historicalTrajectory");
     const q1OperationalSnapshotMerged = assertProviderSnapshotMerged(q1OperationalProviderSnapshot, q1Snapshot);
     const q1HistoricalSnapshotMerged = assertProviderSnapshotMerged(q1HistoricalProviderSnapshot, q1Snapshot);
-    assert(q1OperationalProviderSnapshot.resources.some((resource) =>
-      resource.referenceKey.kind === "TASK_EXECUTION_EVENT_SET"
-    ), "operational Provider snapshot must contribute its event-set pin");
+    const q1IntervalInputSetResource = snapshotResource(
+      q1OperationalProviderSnapshot,
+      "TASK_EXECUTION_INTERVAL_INPUT_SET"
+    );
+    const q1CurrentEventSetResource = snapshotResource(
+      q1OperationalProviderSnapshot,
+      "TASK_EXECUTION_EVENT_SET"
+    );
+    const eventSetD1 = digest(q1CurrentEventSetResource.digest, "Q1 current event-set digest D1");
+    const intervalInputD1 = digest(q1IntervalInputSetResource.digest, "Q1 interval input-set digest D1");
+    assert.equal(
+      intervalInputD1,
+      eventSetD1,
+      "R1 interval input set and the current event set must both bind D1 before event advancement"
+    );
+    const q1CurrentEventSetEffectiveResource = manifestResource(
+      q1Snapshot,
+      "TASK_EXECUTION_EVENT_SET",
+      `${q1CurrentEventSetResource.referenceKey.namespace}:${q1CurrentEventSetResource.referenceKey.id}`
+    );
+    assert.equal(q1CurrentEventSetEffectiveResource.contentHash, eventSetD1);
     assert(q1HistoricalProviderSnapshot.resources.some((resource) =>
       resource.referenceKey.kind === "HISTORICAL_TRAJECTORY"
     ), "historical Provider snapshot must contribute its trajectory pin");
@@ -691,6 +758,147 @@ async function runGatewayHistoricalE2e(
     assert.equal(sha256(trajectoryOutput(q1Replay)), q1ValueHash);
     assert.equal(providerHttpExecuteCalls, providerCallsAfterQ1, "Q1 replay must not re-call the Provider");
     assert.equal(operationalProviderHttpExecuteCalls, operationalCallsAfterQ1, "Q1 replay must not re-call the interval Provider");
+
+    // Advance the task event set without running either projection worker.  The
+    // Provider must keep returning immutable R1/D1 lineage while publishing the
+    // independently observed current D2 set and fail visibly as projection lag.
+    const projectionAdvancementCreatedAt = await seedProjectionAdvancementEvent(pool, fixture);
+    await waitForLocalClockAfter(projectionAdvancementCreatedAt);
+    const pendingSubmission = intervalOnlySubmission(
+      `projection-pending-${runId}`,
+      intervalDescriptor,
+      intervalQuery
+    );
+    const operationalCallsBeforePending = operationalProviderHttpExecuteCalls;
+    const pendingInterval = await submit(pendingSubmission, fixture.scopeA);
+    gatewayHttpSubmissions += 1;
+    assert.equal(pendingInterval.status, 200, JSON.stringify(pendingInterval.body));
+    assert.equal(pendingInterval.body.status, "PARTIAL");
+    const pendingNode = worldQueryNode(pendingInterval, "executionIntervals");
+    assert.equal(pendingNode.status, "PARTIAL");
+    assert.equal(
+      requiredRecord(pendingNode.snapshotAdherence, "pending interval snapshot adherence").status,
+      "MATCHED",
+      "projection lag must not be mislabeled as a snapshot-boundary mismatch"
+    );
+    const pendingOutput = intervalOutput(pendingInterval);
+    assert.equal(pendingOutput.status, "PARTIAL");
+    assert.equal(pendingOutput.reasonCode, "PROJECTION_PENDING");
+    assert.equal(pendingOutput.intervals.length, 1);
+    assert.deepEqual(
+      pendingOutput.intervals[0]?.executionIntervalReferenceKey,
+      intervalPin.referenceKey,
+      "projection-pending query must retain immutable R1"
+    );
+    assert.equal(
+      operationalProviderHttpExecuteCalls,
+      operationalCallsBeforePending + 1,
+      "projection-pending proof must cross the real Operational Provider HTTP boundary"
+    );
+    const pendingProviderSnapshot = nodeProviderSnapshot(pendingInterval, "executionIntervals");
+    const pendingSnapshot = snapshotManifest(pendingInterval);
+    const pendingSnapshotMerged = assertProviderSnapshotMerged(pendingProviderSnapshot, pendingSnapshot);
+    const pendingInputResource = snapshotResource(
+      pendingProviderSnapshot,
+      "TASK_EXECUTION_INTERVAL_INPUT_SET"
+    );
+    const pendingCurrentResource = snapshotResource(
+      pendingProviderSnapshot,
+      "TASK_EXECUTION_EVENT_SET"
+    );
+    const pendingInputDigest = digest(pendingInputResource.digest, "pending interval input-set digest");
+    const eventSetD2 = digest(pendingCurrentResource.digest, "pending current event-set digest D2");
+    const pendingIntervalInputSetRemainsD1 = pendingInputDigest === intervalInputD1;
+    const pendingCurrentEventSetAdvancesToD2 = eventSetD2 !== eventSetD1
+      && pendingCurrentResource.referenceKey.id === q1CurrentEventSetResource.referenceKey.id;
+    const pendingEventSetDigestsDiffer = pendingInputDigest !== eventSetD2;
+    assert(pendingIntervalInputSetRemainsD1, "stale R1 must continue to expose immutable interval input D1");
+    assert(pendingCurrentEventSetAdvancesToD2, "current query-visible task event set must advance from D1 to D2");
+    assert(pendingEventSetDigestsDiffer, "projection lag must expose different interval-input and current-event digests");
+    const pendingCurrentEffectiveResource = manifestResource(
+      pendingSnapshot,
+      "TASK_EXECUTION_EVENT_SET",
+      `${pendingCurrentResource.referenceKey.namespace}:${pendingCurrentResource.referenceKey.id}`
+    );
+    assert.equal(pendingCurrentEffectiveResource.contentHash, eventSetD2);
+    const { manifestHash: _pendingManifestHash, ...pendingManifestContent } = pendingSnapshot;
+    const pendingCounterfactualHash = sha256({
+      ...pendingManifestContent,
+      resources: pendingSnapshot.resources.map((resource) =>
+        resource.resourceKind === "TASK_EXECUTION_EVENT_SET"
+          && resource.resourceId === pendingCurrentEffectiveResource.resourceId
+          ? structuredClone(q1CurrentEventSetEffectiveResource)
+          : structuredClone(resource)
+      )
+    });
+    const pendingEventSetAdvancesEffectiveSnapshotHash = pendingSnapshot.manifestHash !== q1Snapshot.manifestHash
+      && pendingSnapshot.manifestHash !== pendingCounterfactualHash;
+    assert(
+      pendingEventSetAdvancesEffectiveSnapshotHash,
+      "D1 to D2 event-set advancement must change the Effective Snapshot hash"
+    );
+    const persistedPending = await gateway.store.getByQueryId(pendingSubmission.plan.queryId);
+    assert.equal(persistedPending?.job.status, "PARTIAL");
+    assert.equal(persistedPending?.effectiveSnapshotRevision, 1);
+    assert.deepEqual(persistedPending?.effectiveSnapshotManifest, pendingSnapshot);
+
+    // Rebuild the interval projection.  R2 must consume D2, while durable
+    // replays of both pre-rebuild queries remain byte-semantically unchanged.
+    await projectOperationalAndHistory(pool, fixture, `event-set-rebuild-${runId}`);
+    const rebuiltIntervalPin = await loadCurrentIntervalPin(pool, fixture);
+    assert.notEqual(rebuiltIntervalPin.revisionId, intervalPin.revisionId, "event advancement must create R2");
+    assert.notEqual(rebuiltIntervalPin.referenceKey.version, intervalPin.referenceKey.version);
+    const rebuiltSubmission = intervalOnlySubmission(
+      `projection-rebuilt-${runId}`,
+      intervalDescriptor,
+      intervalQuery
+    );
+    const operationalCallsBeforeRebuilt = operationalProviderHttpExecuteCalls;
+    const rebuiltInterval = await submit(rebuiltSubmission, fixture.scopeA);
+    gatewayHttpSubmissions += 1;
+    assert.equal(rebuiltInterval.status, 200, JSON.stringify(rebuiltInterval.body));
+    assert.equal(rebuiltInterval.body.status, "COMPLETED");
+    const rebuiltOutput = intervalOutput(rebuiltInterval);
+    assert.equal(rebuiltOutput.status, "COMPLETED");
+    assert.equal(rebuiltOutput.reasonCode, "INTERVALS_AVAILABLE");
+    assert.deepEqual(rebuiltOutput.intervals[0]?.executionIntervalReferenceKey, rebuiltIntervalPin.referenceKey);
+    assert.equal(operationalProviderHttpExecuteCalls, operationalCallsBeforeRebuilt + 1);
+    const rebuiltProviderSnapshot = nodeProviderSnapshot(rebuiltInterval, "executionIntervals");
+    const rebuiltSnapshot = snapshotManifest(rebuiltInterval);
+    const rebuiltSnapshotMerged = assertProviderSnapshotMerged(rebuiltProviderSnapshot, rebuiltSnapshot);
+    const rebuiltInputResource = snapshotResource(
+      rebuiltProviderSnapshot,
+      "TASK_EXECUTION_INTERVAL_INPUT_SET"
+    );
+    const rebuiltCurrentResource = snapshotResource(
+      rebuiltProviderSnapshot,
+      "TASK_EXECUTION_EVENT_SET"
+    );
+    const rebuiltIntervalInputDigest = digest(rebuiltInputResource.digest, "rebuilt interval input-set digest");
+    const rebuiltCurrentEventDigest = digest(rebuiltCurrentResource.digest, "rebuilt current event-set digest");
+    const rebuiltIntervalInputMatchesCurrentEventSet = rebuiltIntervalInputDigest === eventSetD2
+      && rebuiltCurrentEventDigest === eventSetD2;
+    assert(rebuiltIntervalInputMatchesCurrentEventSet, "R2 input and current event set must converge on D2");
+
+    const operationalCallsBeforeOldReplays = operationalProviderHttpExecuteCalls;
+    const pendingReplay = await submit(structuredClone(pendingSubmission), fixture.scopeA);
+    gatewayHttpSubmissions += 1;
+    assert.equal(pendingReplay.replayed, true);
+    assert.deepEqual(pendingReplay.body, pendingInterval.body, "pending R1/D1/D2 replay must remain immutable after R2");
+    const q1PostRebuildReplay = await submit(structuredClone(q1Submission), fixture.scopeA);
+    gatewayHttpSubmissions += 1;
+    assert.equal(q1PostRebuildReplay.replayed, true);
+    assert.deepEqual(q1PostRebuildReplay.body, q1.body, "completed R1/D1 replay must remain immutable after R2");
+    assert.equal(
+      operationalProviderHttpExecuteCalls,
+      operationalCallsBeforeOldReplays,
+      "old interval replays must not re-call either Provider after R2 exists"
+    );
+    const intervalEventSetOldReplaysPreserved = pendingReplay.replayed
+      && q1PostRebuildReplay.replayed
+      && sha256(pendingReplay.body) === sha256(pendingInterval.body)
+      && sha256(q1PostRebuildReplay.body) === sha256(q1.body);
+    assert(intervalEventSetOldReplaysPreserved);
 
     // Q4 is submitted first so the Gateway durably fixes capturedAt, then the
     // late observation advances Tracklet/Trajectory heads before execution.
@@ -939,7 +1147,7 @@ async function runGatewayHistoricalE2e(
     assert(q1DurableIdempotentReplay);
     const expectedProviderExecutions = 6; // Q1, Q4, Q2, ACTIVE, pinned h1, cross-scope.
     assert.equal(providerHttpExecuteCalls, expectedProviderExecutions);
-    const expectedOperationalProviderExecutions = 3; // version mismatch, open task, and Q1 interval discovery.
+    const expectedOperationalProviderExecutions = 5; // version mismatch, open task, Q1, pending R1, and rebuilt R2.
     assert.equal(operationalProviderHttpExecuteCalls, expectedOperationalProviderExecutions);
     process.stdout.write(`${JSON.stringify({
       status: "PASS",
@@ -975,8 +1183,14 @@ async function runGatewayHistoricalE2e(
           && strictWeakReasons.includes("CAPTURED_AT_AFTER_QUERY_BOUNDARY")
           && strictWeakEffective.manifestHash === strictWeakRequested.manifestHash,
         case2AllowedDowngradeIsPartial: downgrade.body.status === "PARTIAL"
-          && requiredRecord(downgrade.body.effectiveSnapshotManifest, "Case 2 effective snapshot").consistency === "BEST_EFFORT"
+          && downgradeEffective.consistency === "BEST_EFFORT"
           && persistedDowngrade?.effectiveSnapshotRevision === 1,
+        case2DowngradedProviderResourceRetained,
+        case2DowngradedResourceNotFalselyPinned,
+        case2DowngradeChangesEffectiveSnapshotHash,
+        case2DowngradeReplayIdempotent: downgradeReplay.replayed
+          && sha256(downgradeReplay.body) === sha256(downgrade.body)
+          && qualificationProvider.executeCalls() === qualificationCallsAfterDowngrade,
         case4MaximumReferenceKeyAccepted: maximumReferenceResources[0]?.resourceId === expectedMaximumResourceId
           && [...expectedMaximumResourceId].length === 321
           && persistedMaximumReference?.effectiveSnapshotRevision === 1,
@@ -994,6 +1208,15 @@ async function runGatewayHistoricalE2e(
         intervalProviderPreview: intervalDescriptor.maturity === "PREVIEW",
         intervalProviderDiscoversResources: intervalDescriptor.snapshotPolicy.resourceResolution === "DISCOVER_RESOURCES",
         intervalProviderSnapshotPinVerified,
+        initialIntervalInputMatchesCurrentEventSet: intervalInputD1 === eventSetD1,
+        pendingIntervalInputSetRemainsD1,
+        pendingCurrentEventSetAdvancesToD2,
+        pendingEventSetDigestsDiffer,
+        pendingEventSetAdvancesEffectiveSnapshotHash,
+        rebuiltIntervalInputMatchesCurrentEventSet,
+        pendingSnapshotMerged,
+        rebuiltSnapshotMerged,
+        intervalEventSetOldReplaysPreserved,
         q1SingleSubmissionTwoProviderDag,
         q1OperationalSnapshotMerged,
         q1HistoricalSnapshotMerged,
@@ -1158,6 +1381,41 @@ async function seedTaskEvents(pool: pg.Pool, fixture: FixtureIdentity): Promise<
       observedAt: "2026-08-30T00:00:20.000Z"
     }]
   }, new Date().toISOString());
+}
+
+async function seedProjectionAdvancementEvent(pool: pg.Pool, fixture: FixtureIdentity): Promise<string> {
+  const repository = new OperationalEventRepository(pool);
+  const eventId = `history-event-protocol-closure-e3-${fixture.operationalTaskId}`;
+  const eventTime = "2026-08-30T00:00:08.500Z";
+  await repository.insert({
+    dataScopeKey: fixture.scopeA,
+    sourceAuthority: "history-gateway-e2e",
+    sourceEventKey: eventId,
+    sourceRevisionNo: 1,
+    eventId,
+    operationalTaskId: fixture.operationalTaskId,
+    eventType: "EXECUTION_PROGRESS_OBSERVED",
+    eventTime,
+    actorReferenceKeys: [],
+    targetReferenceKeys: [],
+    payload: { taskType: "HISTORY_GATEWAY_E2E", protocolClosureEvent: "E3" },
+    confidence: 1,
+    provenance: [{
+      evidenceId: `evidence-${eventId}`,
+      authority: "history-gateway-e2e",
+      evidenceType: "VALIDATION_EVENT",
+      observedAt: eventTime
+    }]
+  }, new Date().toISOString());
+  const stored = await pool.query<{ created_at: Date | string }>(
+    `SELECT created_at
+     FROM public.operational_task_event
+     WHERE data_scope_key=$1 AND event_id=$2`,
+    [fixture.scopeA, eventId]
+  );
+  const createdAt = stored.rows[0]?.created_at;
+  if (createdAt === undefined) throw new Error("projection-advancement event was not persisted");
+  return iso(createdAt);
 }
 
 async function seedInitialPositions(pool: pg.Pool, fixture: FixtureIdentity): Promise<void> {
@@ -2228,6 +2486,32 @@ function assertProviderSnapshotMerged(
   return true;
 }
 
+function snapshotResource(
+  snapshot: DataSnapshotContext,
+  resourceKind: string,
+  resourceId?: string
+): DataSnapshotContext["resources"][number] {
+  const resource = snapshot.resources.find((candidate) =>
+    candidate.referenceKey.kind === resourceKind
+      && (resourceId === undefined || candidate.referenceKey.id === resourceId)
+  );
+  assert(resource, `${resourceKind}${resourceId === undefined ? "" : `:${resourceId}`} is absent from Provider snapshot`);
+  return resource;
+}
+
+function manifestResource(
+  snapshot: GowmV07QuerySnapshotManifest,
+  resourceKind: string,
+  resourceId?: string
+): GowmV07QuerySnapshotManifest["resources"][number] {
+  const resource = snapshot.resources.find((candidate) =>
+    candidate.resourceKind === resourceKind
+      && (resourceId === undefined || candidate.resourceId === resourceId)
+  );
+  assert(resource, `${resourceKind}${resourceId === undefined ? "" : `:${resourceId}`} is absent from Effective Snapshot`);
+  return resource;
+}
+
 function snapshotManifest(response: GatewayResponse): GowmV07QuerySnapshotManifest {
   return requiredRecord(response.body.effectiveSnapshotManifest, "effective snapshot") as unknown as GowmV07QuerySnapshotManifest;
 }
@@ -2263,6 +2547,14 @@ async function waitForDatabaseClockAfter(pool: pg.Pool, timestamp: string): Prom
     `SELECT pg_sleep(GREATEST(0,EXTRACT(epoch FROM ($1::timestamptz-clock_timestamp())))+0.02)`,
     [timestamp]
   );
+}
+
+async function waitForLocalClockAfter(timestamp: string): Promise<void> {
+  const delayMs = Date.parse(timestamp) - Date.now() + 20;
+  if (delayMs > 5_000) {
+    throw new Error(`database clock is too far ahead of the Gateway clock: ${delayMs}ms`);
+  }
+  if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
 function listenerUrl(app: { server: { address(): string | { port: number } | null } }): URL {

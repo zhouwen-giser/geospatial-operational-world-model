@@ -182,7 +182,7 @@ export function inspectSchema(schema: unknown, resolveReference: (ref: string, p
       for (const k of node.enum ?? (node.const ? [node.const] : [])) if ([
         "WORLD_OBJECT", "SPATIAL_OBJECT", "DATASET", "LAYER", "LAYER_FEATURE", "OPERATIONAL_TASK",
         "DERIVED_REFERENCE", "REFERENCE_SET", "QUERY_RESULT", "TASK_EXECUTION_INTERVAL",
-        "TASK_EXECUTION_EVENT_SET", "TRACKLET_VERSION", "TRACKLET_FINALIZATION",
+        "TASK_EXECUTION_EVENT_SET", "TASK_EXECUTION_INTERVAL_INPUT_SET", "TRACKLET_VERSION", "TRACKLET_FINALIZATION",
         "HISTORICAL_TRAJECTORY", "HISTORY_INPUT_SET", "HISTORY_METHOD_PROFILE"
       ].includes(k)) kinds.add(k);
     }

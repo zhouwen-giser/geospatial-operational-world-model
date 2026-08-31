@@ -132,6 +132,7 @@ describe("GOWM v0.7 contract prerelease", () => {
     expect(candidate.terms.map((term: { id: string }) => term.id)).toEqual(expect.arrayContaining([
       "TASK_EXECUTION_INTERVAL",
       "TASK_EXECUTION_EVENT_SET",
+      "TASK_EXECUTION_INTERVAL_INPUT_SET",
       "TRACKLET_VERSION",
       "TRACKLET_FINALIZATION",
       "HISTORICAL_TRAJECTORY",

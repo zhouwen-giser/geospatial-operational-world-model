@@ -170,6 +170,8 @@ export async function buildConsumerContracts(destination = defaultOutputRoot, op
     scopeModel: "SINGLE_SCOPE_V1",
     resourceIdEncodingRevision: "SNAPSHOT_RESOURCE_ID_V1_512",
     canonicalOrderingRevision: "UNICODE_CODE_POINT_BINARY_V1",
+    authorizedDowngradeResourceRetentionRevision: "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1",
+    historicalEventSetSeparationRevision: "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1",
     contractCatalogRevision: registryReport.contractCatalogRevision, semanticCatalogHash, ...contractHashes,
     defaultOperations: projected.filter((operation) => operation.maturity === "STABLE"),
     previewOperations: projected.filter((operation) => operation.maturity === "PREVIEW")

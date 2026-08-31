@@ -16284,8 +16284,8 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
               "const": "GOWM_V071_EXACT_HEAD_RUNTIME_QUALIFIED"
             },
             "checks": {
-              "minItems": 10,
-              "maxItems": 10,
+              "minItems": 12,
+              "maxItems": 12,
               "uniqueItems": true,
               "prefixItems": [
                 {
@@ -16379,6 +16379,34 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
                   ],
                   "properties": {
                     "reportId": {
+                      "const": "snapshot-downgrade-resource-retention-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "reportId",
+                    "status"
+                  ],
+                  "properties": {
+                    "reportId": {
+                      "const": "historical-event-set-advancement-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "reportId",
+                    "status"
+                  ],
+                  "properties": {
+                    "reportId": {
                       "const": "node-adherence-report"
                     },
                     "status": {
@@ -16437,6 +16465,102 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
         "if": {
           "properties": {
             "reportId": {
+              "const": "snapshot-downgrade-resource-retention-report"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "gate",
+            "command",
+            "exitCode",
+            "log",
+            "trackedWorktreeCleanAfter",
+            "scenarioChecks"
+          ],
+          "properties": {
+            "status": {
+              "const": "PASS"
+            },
+            "scenarioChecks": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "case2DowngradedProviderResourceRetained",
+                "case2DowngradedResourceNotFalselyPinned",
+                "case2DowngradeChangesEffectiveSnapshotHash"
+              ],
+              "properties": {
+                "case2DowngradedProviderResourceRetained": {
+                  "const": true
+                },
+                "case2DowngradedResourceNotFalselyPinned": {
+                  "const": true
+                },
+                "case2DowngradeChangesEffectiveSnapshotHash": {
+                  "const": true
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "reportId": {
+              "const": "historical-event-set-advancement-report"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "gate",
+            "command",
+            "exitCode",
+            "log",
+            "trackedWorktreeCleanAfter",
+            "scenarioChecks"
+          ],
+          "properties": {
+            "status": {
+              "const": "PASS"
+            },
+            "scenarioChecks": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "pendingIntervalInputSetRemainsD1",
+                "pendingCurrentEventSetAdvancesToD2",
+                "pendingEventSetDigestsDiffer",
+                "pendingEventSetAdvancesEffectiveSnapshotHash",
+                "rebuiltIntervalInputMatchesCurrentEventSet"
+              ],
+              "properties": {
+                "pendingIntervalInputSetRemainsD1": {
+                  "const": true
+                },
+                "pendingCurrentEventSetAdvancesToD2": {
+                  "const": true
+                },
+                "pendingEventSetDigestsDiffer": {
+                  "const": true
+                },
+                "pendingEventSetAdvancesEffectiveSnapshotHash": {
+                  "const": true
+                },
+                "rebuiltIntervalInputMatchesCurrentEventSet": {
+                  "const": true
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "reportId": {
               "const": "wsgs-historical-consumer-lock"
             }
           }
@@ -16457,8 +16581,165 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
         },
         "then": {
           "required": [
+            "gate",
+            "marker",
             "checks"
-          ]
+          ],
+          "properties": {
+            "status": {
+              "const": "PASS"
+            },
+            "marker": {
+              "const": "GOWM_V0_7_1_PROTOCOL_AND_RUNTIME_CLOSURE_COMPLETE"
+            },
+            "checks": {
+              "minItems": 14,
+              "maxItems": 14,
+              "uniqueItems": true,
+              "prefixItems": [
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "source-lock"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "protocol-closure-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "deterministic-hash-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "database-fresh-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "database-upgrade-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "gateway-runtime-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "snapshot-downgrade-resource-retention-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "historical-event-set-advancement-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "node-adherence-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "worker-backoff-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "artifact-roundtrip-report"
+                    },
+                    "status": {
+                      "const": "DEFERRED"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "historical-two-provider-dag-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "exact-head-runtime-report"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "reportId": {
+                      "const": "wsgs-historical-consumer-lock"
+                    },
+                    "status": {
+                      "const": "PASS"
+                    }
+                  }
+                }
+              ]
+            }
+          }
         }
       }
     ],
@@ -16594,6 +16875,12 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
               "pattern": "^sha256:[0-9a-f]{64}$"
             }
           }
+        }
+      },
+      "scenarioChecks": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "boolean"
         }
       },
       "lock": {
@@ -17767,7 +18054,9 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
         "required": [
           "scopeModel",
           "resourceIdEncodingRevision",
-          "canonicalOrderingRevision"
+          "canonicalOrderingRevision",
+          "authorizedDowngradeResourceRetentionRevision",
+          "historicalEventSetSeparationRevision"
         ],
         "properties": {
           "scopeModel": {
@@ -17778,11 +18067,17 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
           },
           "canonicalOrderingRevision": {
             "const": "UNICODE_CODE_POINT_BINARY_V1"
+          },
+          "authorizedDowngradeResourceRetentionRevision": {
+            "const": "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1"
+          },
+          "historicalEventSetSeparationRevision": {
+            "const": "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1"
           }
         }
       },
       "migrationHead": {
-        "const": "068_effective_snapshot_consistency_downgrade.sql"
+        "const": "069_task_execution_event_set_read_contract.sql"
       },
       "runtimeQualificationEvidenceDigest": {
         "type": "string",
@@ -17841,6 +18136,8 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       "scopeModel",
       "resourceIdEncodingRevision",
       "canonicalOrderingRevision",
+      "authorizedDowngradeResourceRetentionRevision",
+      "historicalEventSetSeparationRevision",
       "defaultOperations",
       "previewOperations"
     ],
@@ -17900,6 +18197,12 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       },
       "canonicalOrderingRevision": {
         "const": "UNICODE_CODE_POINT_BINARY_V1"
+      },
+      "authorizedDowngradeResourceRetentionRevision": {
+        "const": "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1"
+      },
+      "historicalEventSetSeparationRevision": {
+        "const": "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1"
       },
       "defaultOperations": {
         "$ref": "#/$defs/operationList"
@@ -18419,6 +18722,7 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
           "QUERY_RESULT",
           "TASK_EXECUTION_INTERVAL",
           "TASK_EXECUTION_EVENT_SET",
+          "TASK_EXECUTION_INTERVAL_INPUT_SET",
           "TRACKLET_VERSION",
           "TRACKLET_FINALIZATION",
           "HISTORICAL_TRAJECTORY",

@@ -141,6 +141,7 @@
     "producedReferenceKinds": [
       "TASK_EXECUTION_INTERVAL",
       "TASK_EXECUTION_EVENT_SET",
+      "TASK_EXECUTION_INTERVAL_INPUT_SET",
       "HISTORY_METHOD_PROFILE"
     ],
     "relationSemantics": [],
@@ -160,7 +161,8 @@
     },
     "notes": [
       "Intervals are immutable as-of projections over scoped Operational Task Events.",
-      "Open database ranges are rendered only through the effective snapshot capturedAt."
+      "Open database ranges are rendered only through the effective snapshot capturedAt.",
+      "Interval input event sets remain bound to their immutable revisions while the current event set advances independently at capturedAt."
     ]
   },
   "operational-task.get-timeline@1.0": {

@@ -52,9 +52,11 @@ const lock = {
   snapshotBehavior: {
     scopeModel: consumerLock.scopeModel,
     resourceIdEncodingRevision: consumerLock.resourceIdEncodingRevision,
-    canonicalOrderingRevision: consumerLock.canonicalOrderingRevision
+    canonicalOrderingRevision: consumerLock.canonicalOrderingRevision,
+    authorizedDowngradeResourceRetentionRevision: consumerLock.authorizedDowngradeResourceRetentionRevision,
+    historicalEventSetSeparationRevision: consumerLock.historicalEventSetSeparationRevision
   },
-  migrationHead: "068_effective_snapshot_consistency_downgrade.sql",
+  migrationHead: "069_task_execution_event_set_read_contract.sql",
   runtimeQualificationEvidenceDigest,
   allowedConsumerCapabilities: [
     "TASK_EXECUTION_INTERVAL",

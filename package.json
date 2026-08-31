@@ -17,7 +17,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && npm --prefix services/stas run build",
-    "check": "npm run verify:contracts && npm run verify:migration-freeze && npm run verify:hash-ordering && npm run validate:grounding-provider-contracts && npm run validate:world-platform-manifests && npm run validate:semantic-static && npm run validate:spatial-architecture && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "check": "npm run verify:contracts && npm run verify:version-consistency && npm run verify:migration-freeze && npm run verify:hash-ordering && npm run validate:grounding-provider-contracts && npm run validate:world-platform-manifests && npm run validate:semantic-static && npm run validate:spatial-architecture && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "verify:version-consistency": "node scripts/verify-v071-version-consistency.mjs",
     "verify:migration-freeze": "node scripts/verify-v071-migration-freeze.mjs",
     "verify:hash-ordering": "node scripts/verify-hash-critical-ordering.mjs",
     "validate:v071-canonical-order": "node --import tsx validation/scripts/gowm-v071-canonical-order-matrix.ts",
