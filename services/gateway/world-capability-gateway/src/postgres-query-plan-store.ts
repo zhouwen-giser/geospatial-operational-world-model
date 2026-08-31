@@ -270,6 +270,13 @@ export class PostgresQueryPlanStore implements QueryPlanStore {
       await client.query("COMMIT");
     } catch (error) {
       await client.query("ROLLBACK");
+      if (isWorldQueryScopeClaimResolutionFailure(error)) {
+        throw new ProviderProtocolError(
+          "SCOPE_DENIED",
+          "world query data scope is unavailable",
+          { retryable: false, details: { stage: "DAG_EXECUTION" }, cause: error }
+        );
+      }
       throw error;
     } finally {
       client.release();
@@ -533,4 +540,13 @@ function iso(value: Date | string): string {
 
 function isUniqueViolation(error: unknown): error is { code: "23505" } {
   return error !== null && typeof error === "object" && (error as { code?: unknown }).code === "23505";
+}
+
+function isWorldQueryScopeClaimResolutionFailure(
+  error: unknown
+): error is { code: "42501"; constraint: "world_query_result_scope_claim_resolution" } {
+  if (error === null || typeof error !== "object") return false;
+  const databaseError = error as { code?: unknown; constraint?: unknown };
+  return databaseError.code === "42501" &&
+    databaseError.constraint === "world_query_result_scope_claim_resolution";
 }

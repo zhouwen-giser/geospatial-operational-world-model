@@ -119,6 +119,7 @@
     "generate:gowm-v064-contract-compatibility": "node validation/scripts/gowm-v064-contract-compatibility.mjs --write",
     "validate:gowm-v064-contract-compatibility": "node validation/scripts/gowm-v064-contract-compatibility.mjs",
     "validate:gowm-v064-final-candidate": "node validation/scripts/gowm-v064-final-candidate.mjs",
+    "validate:gowm-v064-derived-result-scope": "node --import tsx validation/scripts/gowm-v064-derived-result-scope-e2e.ts",
     "sample-world:generate": "node --import tsx scripts/sample-world/cli.ts generate",
     "sample-world:up": "node --import tsx scripts/sample-world/cli.ts up",
     "sample-world:wait": "node --import tsx scripts/sample-world/cli.ts wait",

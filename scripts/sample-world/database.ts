@@ -13,8 +13,10 @@ const FIXTURE_ID = "gowm-wsgs-sample-world";
 const FIXTURE_VERSION = "1.0.0";
 const FIXTURE_SCHEMA_VERSION = "gowm-wsgs-sample-world/1.0";
 const SCOPES = ["wsgs-demo", "wsgs-hidden"] as const;
+const PRIMARY_SAMPLE_SCOPE = SCOPES[0];
 const SAMPLE_DATABASE_NAME = /^gowm_wsgs_sample(?:_q_[a-z0-9](?:[a-z0-9_]{0,29}[a-z0-9])?)?$/u;
 const SAMPLE_RUNTIME_INSTANCE_ID = /^(?:shared|q-[a-z0-9](?:[a-z0-9-]{0,29}[a-z0-9])?)$/u;
+const PLATFORM_IDENTIFIER = /^[A-Za-z][A-Za-z0-9._:-]{0,255}$/u;
 
 type JsonObject = Record<string, unknown>;
 type AnyRecord = Record<string, any>;
@@ -89,6 +91,10 @@ export async function loadSampleWorldDatabase(options: {
   const pool = new Pool({ connectionString, max: 4 });
   try {
     await assertMarker(pool, databaseName);
+    const gatewayScopeClaim = sampleGatewayScopeClaimFromEnvironment(
+      process.env,
+      sampleRuntimeInstanceIdForDatabaseName(databaseName)
+    );
     const beforeCounts = await fixtureCounts(pool);
     const initialFixtureWasEmpty = fixtureIsEmpty(beforeCounts);
     const fault = sampleFaultInjectionFromEnvironment();
@@ -100,6 +106,9 @@ export async function loadSampleWorldDatabase(options: {
       try {
         await client.query("BEGIN");
         await ensureSampleScopes(client as unknown as pg.Pool);
+        if (gatewayScopeClaim) {
+          await ensureSampleGatewayScopeClaim(client as unknown as pg.Pool, gatewayScopeClaim);
+        }
         await loadReferenceIdentities(client as unknown as pg.Pool, realization);
         await loadCatalog(client as unknown as pg.Pool, realization);
         injectSampleFault(fault, "catalog");
@@ -210,6 +219,26 @@ export function parseSampleWorldFaultInjection(
     observedCount: 0,
     triggered: false
   };
+}
+
+export function sampleGatewayScopeClaimFromEnvironment(
+  environment: Readonly<Record<string, string | undefined>>,
+  verifiedRuntimeInstanceId: string
+): string | undefined {
+  const raw = environment.SAMPLE_WORLD_GATEWAY_DATA_SCOPE_CLAIM;
+  if (raw === undefined || raw === "") return undefined;
+  if (raw !== raw.trim() || !PLATFORM_IDENTIFIER.test(raw) || raw.includes("*")) {
+    throw new Error("SAMPLE_WORLD_GATEWAY_DATA_SCOPE_CLAIM must be one exact platform identifier");
+  }
+  const instanceId = environment.SAMPLE_WORLD_INSTANCE_ID;
+  if (!instanceId || instanceId !== verifiedRuntimeInstanceId ||
+      !SAMPLE_RUNTIME_INSTANCE_ID.test(instanceId) || !instanceId.startsWith("q-")) {
+    throw new Error("Additional Gateway data-scope claims are allowed only for bounded q-* sample instances");
+  }
+  if ((SCOPES as readonly string[]).includes(raw)) {
+    throw new Error("Additional Gateway data-scope claim must differ from every internal sample scope");
+  }
+  return raw;
 }
 
 function sampleFaultInjectionFromEnvironment(): SampleFaultInjection | undefined {
@@ -338,6 +367,72 @@ async function ensureSampleScopes(pool: pg.Pool): Promise<void> {
        VALUES ($1,'SIMULATION',$2) ON CONFLICT (scope_key) DO NOTHING`,
       [scope, `${FIXTURE_ID} isolated synthetic scope`]
     );
+  }
+}
+
+async function ensureSampleGatewayScopeClaim(pool: pg.Pool, claim: string): Promise<void> {
+  await pool.query(
+    "SELECT pg_advisory_xact_lock(hashtextextended('sample-world:gateway-data-scope:' || $1::text,0))",
+    [claim]
+  );
+  const identity = await pool.query<{ reference_key: string }>(
+    `SELECT reference_key
+     FROM world_reference_identity
+     WHERE entity_kind='DATA_SCOPE'
+       AND internal_id=$1
+       AND data_scope_key=$1`,
+    [PRIMARY_SAMPLE_SCOPE]
+  );
+  if (identity.rows.length !== 1 || !identity.rows[0]?.reference_key) {
+    throw new Error("Primary sample DATA_SCOPE identity is unavailable");
+  }
+  const referenceKey = identity.rows[0].reference_key;
+  await pool.query(
+    `INSERT INTO world_reference_external_identifier(
+       external_identifier_id,reference_key,data_scope_key,authority,identifier_kind,
+       identifier_value,normalized_value,confidence,evidence,valid_from,valid_to
+     ) VALUES (
+       $1,$2,$3,'GOWM_GATEWAY','DATA_SCOPE_CLAIM',$4,
+       normalize_reference_text($4),1,$5::jsonb,'-infinity','infinity'
+     )
+     ON CONFLICT (data_scope_key,authority,identifier_kind,normalized_value,reference_key)
+     DO NOTHING`,
+    [
+      stableUuid(`sample-world:gateway-data-scope:${claim}`),
+      referenceKey,
+      PRIMARY_SAMPLE_SCOPE,
+      claim,
+      JSON.stringify([{
+        kind: "SAMPLE_WORLD_SCOPE_AUTHORITY_SEED",
+        fixtureId: FIXTURE_ID,
+        fixtureVersion: FIXTURE_VERSION
+      }])
+    ]
+  );
+  const candidates = await pool.query<{
+    reference_key: string;
+    data_scope_key: string;
+  }>(
+    `SELECT identity.reference_key,identity.data_scope_key
+     FROM world_reference_external_identifier external
+     JOIN world_reference_identity identity
+       ON identity.reference_key=external.reference_key
+      AND identity.data_scope_key=external.data_scope_key
+     JOIN data_scope scope ON scope.scope_key=identity.internal_id
+     WHERE identity.entity_kind='DATA_SCOPE'
+       AND identity.internal_id=identity.data_scope_key
+       AND external.authority='GOWM_GATEWAY'
+       AND external.identifier_kind='DATA_SCOPE_CLAIM'
+       AND external.identifier_value COLLATE "C"=$1::text COLLATE "C"
+       AND external.confidence=1
+       AND external.valid_from<=statement_timestamp()
+       AND statement_timestamp()<external.valid_to`,
+    [claim]
+  );
+  if (candidates.rows.length !== 1 ||
+      candidates.rows[0]?.reference_key !== referenceKey ||
+      candidates.rows[0]?.data_scope_key !== PRIMARY_SAMPLE_SCOPE) {
+    throw new Error("Gateway data-scope claim does not resolve to one authoritative sample scope");
   }
 }
 
