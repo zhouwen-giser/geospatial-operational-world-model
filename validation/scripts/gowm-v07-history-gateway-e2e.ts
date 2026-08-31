@@ -147,6 +147,12 @@ async function runGatewayHistoricalE2e(
   runId: string
 ): Promise<void> {
   const pool = new pg.Pool({ connectionString: databaseUrl, max: 12 });
+  let poolCleanupStarted = false;
+  pool.on("error", (error) => {
+    if (poolCleanupStarted && isAdministratorTermination(error)) return;
+    process.stderr.write(`GOWM_V07_E2E_DATABASE_POOL_ERROR ${error.message}\n`);
+    process.exitCode = 1;
+  });
   const fixture = fixtureIdentity(runId);
   const transportToken = `HistoryGatewayTransport_${runId}_ValidationOnly`;
   let providerApp: ReturnType<typeof buildHistoricalTraceApp> | undefined;
@@ -1251,6 +1257,7 @@ async function runGatewayHistoricalE2e(
       externalModelQualification: false
     })}\n`);
   } finally {
+    poolCleanupStarted = true;
     await Promise.allSettled([
       gatewayApp?.close(),
       providerApp?.close(),
@@ -1259,6 +1266,10 @@ async function runGatewayHistoricalE2e(
     ]);
     await pool.end();
   }
+}
+
+function isAdministratorTermination(error: Error): boolean {
+  return (error as Error & { code?: string }).code === "57P01";
 }
 
 function fixtureIdentity(runId: string): FixtureIdentity {
