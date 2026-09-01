@@ -15,3 +15,6 @@ gowm-stas-platform-v*.zip
 gowm-stas-platform-v*/
 GOWM_Network_Basic_Routing_v0.5_Codex_Goal/
 GOWM_Road_Coverage_Planning_v0.6_Codex_Goal/
+/.pnpm-store/
+/.worktrees/
+/task-packages/
