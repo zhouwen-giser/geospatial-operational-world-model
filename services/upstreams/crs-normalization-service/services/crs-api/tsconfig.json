@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "references": [
+    { "path": "../../packages/crs-contract" },
+    { "path": "../../adapters/proj" },
+    { "path": "../../packages/crs-core" }
+  ],
+  "include": ["src/**/*.ts"]
+}

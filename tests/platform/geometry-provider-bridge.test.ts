@@ -58,7 +58,7 @@ function bridgeOptions(fetchImplementation: typeof globalThis.fetch, overrides: 
       integration: "geos-wasm",
       integrationVersion: POC_INTEGRATION_VERSION,
       workerPoolEnabled: true,
-      projectLicense: "UNSPECIFIED"
+      projectLicense: "MIT"
     },
     fetch: fetchImplementation,
     now: () => NOW,
@@ -301,14 +301,14 @@ describe("P07 Geometry provider bridge", () => {
       providerId: "gowm.geometry.bridge",
       registeredOperations: GEOMETRY_OPERATION_IDS.map((operationId) => `${operationId}@1.0`),
       unregisteredBoundaryOperations: UNSUPPORTED_GEOMETRY_OPERATION_IDS,
-      sourcePublication: "PROHIBITED_LICENSE_UNSPECIFIED"
+      sourcePublication: "ALLOWED_MIT"
     });
     expect(sourceLock).toMatchObject({
       providerId: "gowm.geometry.bridge",
       sourceSha256: POC_SOURCE_ZIP_SHA256.slice("sha256:".length),
       openApiSha256: POC_OPENAPI_SHA256.slice("sha256:".length),
-      licenseStatus: "UNSPECIFIED",
-      redistributionAllowed: false,
+      licenseStatus: "APPROVED",
+      redistributionAllowed: true,
       engine: "GEOS-WASM-WORKER-POOL",
       integration: "geos-wasm"
     });

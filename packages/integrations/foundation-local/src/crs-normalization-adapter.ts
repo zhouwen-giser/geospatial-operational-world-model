@@ -28,7 +28,7 @@ export class Canonical4326CrsNormalizationAdapter implements CrsNormalizationPor
     if (input.sourceCrs !== "EPSG:4326") {
       throw new FoundationPortError(
         "FOUNDATION_CRS_TRANSFORMATION_UNAVAILABLE",
-        "Foundation v0.2 accepts only canonical EPSG:4326 geometry; no distributable local CRS core is approved",
+        "Foundation v0.2 accepts only canonical EPSG:4326 geometry; non-identity transformation requires the CRS Provider",
         {
           stage: "POLICY",
           retryable: false,
@@ -36,8 +36,8 @@ export class Canonical4326CrsNormalizationAdapter implements CrsNormalizationPor
             sourceCrs: input.sourceCrs,
             targetCrs: "EPSG:4326",
             requiredCapability: "crs.normalize.geometry@1.0",
-            licenseStatus: "UNSPECIFIED",
-            redistributionAllowed: false,
+            licenseStatus: "APPROVED",
+            redistributionAllowed: true,
             fallbackApplied: false
           }
         }

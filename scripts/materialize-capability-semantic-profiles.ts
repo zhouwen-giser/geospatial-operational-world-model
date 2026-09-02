@@ -36,6 +36,7 @@ export interface LegacySemanticAttestation {
 }
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const output = process.env.GOWM_REPORT_DIRECTORY?.trim() || "reports/gowm-v0.7.1/pr-b/world-platform";
+const preserveHistoricalReports = process.argv.includes("--preserve-historical-reports");
 const readJson = async (path: string): Promise<any> => JSON.parse(await readFile(path, "utf8"));
 const render = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
 const portablePath = (path: string): string => path.replaceAll("\\", "/");
@@ -342,7 +343,8 @@ export async function scanAndMaterialize(repositoryRoot = root, check = true) {
   for (const [path, content] of artifacts) {
     if (check) {
       const actual = await readFile(resolve(repositoryRoot, path), "utf8").catch(() => "");
-      if (!generatedTextMatches(actual, content)) stale.push(path);
+      const historicalOutput = path === output || path.startsWith(`${output}/`);
+      if (!generatedTextMatches(actual, content) && !(preserveHistoricalReports && historicalOutput)) stale.push(path);
     }
     else { await mkdir(dirname(resolve(repositoryRoot, path)), { recursive: true }); await writeFile(resolve(repositoryRoot, path), content); }
   }

@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/crs-contract" },
+    { "path": "adapters/proj" },
+    { "path": "packages/crs-core" },
+    { "path": "services/crs-api" }
+  ]
+}

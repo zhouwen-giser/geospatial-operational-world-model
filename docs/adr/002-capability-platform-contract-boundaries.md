@@ -68,7 +68,9 @@ topology remains a Spatial/PostGIS responsibility.
   registration.
 - Schema, receipt, evidence, and snapshot drift fail closed at protocol
   boundaries.
-- External Provider source and build output remain outside this repository; only
-  bridges, contracts, locks, and integration evidence are committed.
-- CRS and Geometry redistribution remains disabled until their project-level
-  licensing is resolved; H3 and Spatial retain Apache-2.0 notice/SBOM evidence.
+- Project-owned CRS and Geometry runtime sources are approved under MIT only in
+  their locked `services/upstreams/` paths; other external source and build
+  output remain outside this repository.
+- CRS and Geometry source, packages, and images may be redistributed with their
+  LICENSE, NOTICE, SBOM, and provenance locks; H3 and Spatial retain Apache-2.0
+  notice/SBOM evidence.

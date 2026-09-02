@@ -41,5 +41,5 @@
     "tests/**/*.ts",
     "vitest.config.ts"
   ],
-  "exclude": ["node_modules", "dist", "services/stas"]
+  "exclude": ["node_modules", "dist", "services/stas", "services/upstreams"]
 }

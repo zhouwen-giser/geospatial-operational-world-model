@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "baseUrl": ".",
+    "paths": {
+      "@geospatial/geometry-contract": ["packages/geometry-contract/src/index.ts"],
+      "@geospatial/geometry-adapter-geos": ["adapters/geos/src/index.ts"],
+      "@geospatial/geometry-adapter-postgis": ["adapters/postgis/src/index.ts"],
+      "@geospatial/geometry-core": ["packages/geometry-core/src/index.ts"]
+    },
+    "types": ["node", "geojson"]
+  },
+  "include": [
+    "packages/**/*.ts",
+    "adapters/**/*.ts",
+    "services/**/*.ts"
+  ]
+}

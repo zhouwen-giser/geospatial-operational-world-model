@@ -6,7 +6,7 @@
     "providerVersion": "0.2.0",
     "owner": "gowm-platform",
     "implementationDigest": "sha256:46f982fbdbab77c2fccd9141796d6f4db9474e4b048fd3fc3d361305e5d34ae7",
-    "sourceRef": "urn:gowm:source:zip:crs-normalization-service:1.0.0"
+    "sourceRef": "urn:gowm:source:in-tree:crs-normalization-service:1.0.0"
   },
   "endpoints": {
     "manifest": "/v1/manifest",

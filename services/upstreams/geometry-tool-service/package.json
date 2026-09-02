@@ -1,0 +1,32 @@
+{
+  "name": "geometry-tool-service",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Database-free, contract-first geometry service backed by GEOS",
+  "workspaces": [
+    "packages/geometry-contract",
+    "packages/geometry-core",
+    "adapters/geos",
+    "adapters/postgis",
+    "services/geometry-api"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "npm run build -w @geospatial/geometry-contract && npm run build -w @geospatial/geometry-adapter-geos && npm run build -w @geospatial/geometry-adapter-postgis && npm run build -w @geospatial/geometry-core && npm run build -w @geospatial/geometry-api",
+    "typecheck": "tsc --noEmit",
+    "start:api": "node services/geometry-api/dist/main.js",
+    "dev:api": "node --import tsx services/geometry-api/src/main.ts"
+  },
+  "devDependencies": {
+    "@types/geojson": "7946.0.16",
+    "@types/node": "26.2.0",
+    "@types/pg": "8.15.6",
+    "tsup": "8.5.0",
+    "tsx": "4.23.12",
+    "typescript": "5.9.3"
+  }
+}

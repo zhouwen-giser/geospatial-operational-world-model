@@ -1,11 +1,16 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repositoryRoot = resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const baselineSha = "d1ff3b81b8bf577965b00edc1bd06acaaeda706c";
 const findings = [];
+const approvedVendoredSources = new Set([
+  "services/upstreams/crs-normalization-service",
+  "services/upstreams/geometry-tool-service"
+]);
 
 const baselineMigrations = readdirSync(join(repositoryRoot, "database", "migrations"))
   .filter((name) => /^(?:00[1-9]|010)_.+\.sql$/u.test(name))
@@ -33,8 +38,12 @@ for (const path of candidateFiles) {
     findings.push(`${path} exposes isolated intake source`);
   }
   if (/\.zip$/iu.test(path)) findings.push(`${path} is a ZIP in the release candidate inventory`);
-  if (/(?:^|\/)(?:crs-normalization-service|geometry-tool-service|spatial-analysis-service)(?:\/|$)/iu.test(path)) {
+  const approved = [...approvedVendoredSources].some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+  if (!approved && /(?:^|\/)(?:crs-normalization-service|geometry-tool-service|spatial-analysis-service)(?:\/|$)/iu.test(path)) {
     findings.push(`${path} appears to contain expanded external Provider source`);
+  }
+  if (approved && /(?:^|\/)(?:dist|output|node_modules|benchmark|benchmarks|spikes|sdk|mcp|test|tests)(?:\/|$)/iu.test(path)) {
+    findings.push(`${path} is a forbidden generated or non-runtime vendored artifact`);
   }
 }
 
@@ -43,15 +52,25 @@ const expectedLocks = [
     file: "contracts/manifests/providers/crs-provider-source-lock.json",
     shaField: "sourceSha256",
     sha: "3110e7b344d138908d27e759ede70701b8a20dd7bbbd9795b3a57d02b8d70995",
-    licenseStatus: "UNSPECIFIED",
-    redistributionAllowed: false
+    licenseStatus: "APPROVED",
+    license: "MIT",
+    redistributionAllowed: true,
+    vendoredPath: "services/upstreams/crs-normalization-service",
+    vendoredTreeSha256: "sha256:0040e6f9c1aaca9885f745ad234816e45d3f7cde0d0e280ea7d55ff3d58de34d",
+    noticePath: "services/upstreams/crs-normalization-service/THIRD_PARTY_NOTICES.md",
+    sbomPath: "services/upstreams/crs-normalization-service/sbom.cdx.json"
   },
   {
     file: "contracts/manifests/providers/geometry-provider-source-lock.json",
     shaField: "sourceSha256",
     sha: "3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d",
-    licenseStatus: "UNSPECIFIED",
-    redistributionAllowed: false
+    licenseStatus: "APPROVED",
+    license: "MIT",
+    redistributionAllowed: true,
+    vendoredPath: "services/upstreams/geometry-tool-service",
+    vendoredTreeSha256: "sha256:7fb7977997e8f148d93d8757938b507ca3efba900baadc58d1e702e229a3fecd",
+    noticePath: "services/upstreams/geometry-tool-service/THIRD_PARTY_NOTICES.md",
+    sbomPath: "services/upstreams/geometry-tool-service/sbom.cdx.json"
   },
   {
     file: "contracts/manifests/providers/spatial-provider-source-lock.json",
@@ -83,6 +102,24 @@ for (const expected of expectedLocks) {
   if (lock.licenseStatus !== expected.licenseStatus) findings.push(`${expected.file} license status drifted`);
   if (lock.redistributionAllowed !== expected.redistributionAllowed) {
     findings.push(`${expected.file} redistribution policy drifted`);
+  }
+  if (expected.license && lock.license !== expected.license) findings.push(`${expected.file} license drifted`);
+  if (expected.vendoredPath) {
+    if (lock.vendoredPath !== expected.vendoredPath || !approvedVendoredSources.has(lock.vendoredPath)) {
+      findings.push(`${expected.file} has an unapproved vendoredPath`);
+    } else {
+      const licensePath = join(repositoryRoot, lock.vendoredPath, "LICENSE");
+      if (!existsSync(licensePath) || !readFileSync(licensePath, "utf8").includes("MIT License")) {
+        findings.push(`${expected.file} vendored source lacks an MIT LICENSE`);
+      }
+      const actualTreeSha256 = vendoredTreeSha256(join(repositoryRoot, lock.vendoredPath));
+      if (lock.vendoredTreeSha256 !== expected.vendoredTreeSha256 || actualTreeSha256 !== expected.vendoredTreeSha256) {
+        findings.push(`${expected.file} vendored tree hash drifted (actual ${actualTreeSha256})`);
+      }
+    }
+    if (Object.hasOwn(lock, "forbiddenReleaseArtifacts")) {
+      findings.push(`${expected.file} retains obsolete forbiddenReleaseArtifacts`);
+    }
   }
   for (const field of ["noticePath", "sbomPath"]) {
     const expectedPath = expected[field];
@@ -138,4 +175,23 @@ function git(args) {
 
 function errorMessage(error) {
   return error instanceof Error ? error.message.split("\n", 1)[0] : String(error);
+}
+
+function vendoredTreeSha256(root) {
+  const files = [];
+  walk(root, files);
+  const listing = files.sort().map((path) => {
+    const digest = createHash("sha256").update(readFileSync(path)).digest("hex");
+    return `${digest}  ${relative(root, path).replaceAll("\\", "/")}\n`;
+  }).join("");
+  return `sha256:${createHash("sha256").update(listing).digest("hex")}`;
+}
+
+function walk(directory, files) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (["node_modules", "dist", "output"].includes(entry.name)) continue;
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) walk(path, files);
+    else if (entry.isFile()) files.push(path);
+  }
 }

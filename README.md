@@ -18,6 +18,12 @@ to fresh machine evidence and exact source identity; historical reports are not
 evidence for this candidate. No merge to `main`, tag, release, or production
 deployment is performed by these qualification steps.
 
+`docker compose --profile world-platform up --build` builds and starts the
+project-owned CRS and Geometry upstreams plus both Bridges by default. Their
+resource limits and required CRS artifact attestations are documented in
+`.env.example`; no separate bridge profile or externally supplied image is
+required.
+
 See the [v0.6.3 Grounding Core guide](docs/architecture/GROUNDING_CORE_V0.6.3.md)
 for the promoted operations and consumer contracts, and the
 [operator runbook](docs/21_GROUNDING_CORE_OPERATIONS_RUNBOOK.md) for identity,
@@ -160,6 +166,11 @@ AnalysisRecords; it does not become a Gateway or Foundation authority.
 Node.js 22 or newer is required. On Windows PowerShell, use `npm.cmd` in place
 of `npm`.
 
+For a complete trusted-network development server, including the default CRS
+and Geometry upstreams/Bridges, use `./scripts/dev-deploy.sh up`. See the
+[development deployment guide](docs/DEV_DEPLOYMENT.md) for prerequisites,
+published ports, credential handling and shutdown behavior.
+
 ```bash
 npm ci
 npm run check
@@ -180,10 +191,10 @@ upgrade runs retained in D00 are supplemental evidence, not compatibility promis
 
 ## License and release boundaries
 
-- CRS and Geometry source inputs have no selected project-level license.
-  Their expanded source, packages, and images must not be distributed as GOWM+
-  artifacts. Only original GOWM bridge code, contracts, locks, tests, and
-  evidence are eligible for this repository.
+- CRS and Geometry are project-owned POCs released under MIT. Their curated,
+  reproducible REST runtime sources live under `services/upstreams/`; source
+  packages and container images may be distributed with their LICENSE, NOTICE,
+  SBOM, and locked provenance metadata.
 - H3 Spatial Toolkit `0.3.0` is locked to commit
   `74fc8657072dd58a2f8e4317c1caef8bfd10e024` and Apache-2.0 attribution/SBOM
   material is retained.

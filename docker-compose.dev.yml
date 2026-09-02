@@ -1,0 +1,141 @@
+# Development-only exposure overlay. Apply this file after docker-compose.yml
+# and docker-compose.world-platform.yml. Every published service also joins the
+# non-internal world-edge network so it is reachable from a trusted LAN/VPN.
+x-dev-edge: &dev-edge
+  networks:
+    - default
+    - world-edge
+
+services:
+  postgres:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${POSTGRES_PORT:-5432}:5432"
+
+  mqtt:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${MQTT_PORT:-1883}:1883"
+
+  world-api:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${WORLD_API_PORT:-3000}:3000"
+
+  observation-ingest:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${OBSERVATION_API_PORT:-3002}:3002"
+
+  stas:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${STAS_PORT:-8080}:8080"
+
+  world-mcp-server:
+    <<: *dev-edge
+    environment:
+      CAPABILITY_GATEWAY_URL: http://world-capability-gateway:8090
+      CAPABILITY_GATEWAY_AUTHORIZATION: "Bearer ${GATEWAY_AUTH_SHARED_TOKEN}"
+      GOWM_DATA_SCOPE: ${GATEWAY_DATA_SCOPE_CLAIM:-default}
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${MCP_PORT:-3001}:3001"
+
+  crs-upstream:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${CRS_UPSTREAM_PUBLISHED_PORT:-18080}:8080"
+
+  geometry-upstream:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${GEOMETRY_UPSTREAM_PUBLISHED_PORT:-18081}:8080"
+
+  crs-provider-bridge:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${CRS_BRIDGE_PUBLISHED_PORT:-18086}:8086"
+
+  geometry-provider-bridge:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${GEOMETRY_BRIDGE_PUBLISHED_PORT:-18087}:8087"
+
+  h3-interactive-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${H3_INTERACTIVE_PUBLISHED_PORT:-18088}:8088"
+
+  h3-analysis-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${H3_ANALYSIS_PUBLISHED_PORT:-18089}:8089"
+
+  reference-catalog-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${REFERENCE_PROVIDER_PUBLISHED_PORT:-18090}:8090"
+
+  dataset-catalog-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${DATASET_PROVIDER_PUBLISHED_PORT:-18091}:8091"
+
+  gowm-situation-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${SITUATION_PROVIDER_PUBLISHED_PORT:-18092}:8092"
+
+  world-evidence-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${EVIDENCE_PROVIDER_PUBLISHED_PORT:-18093}:8093"
+
+  operational-reality-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${OPERATIONAL_PROVIDER_PUBLISHED_PORT:-18094}:8094"
+
+  platform-validation-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${VALIDATION_PROVIDER_PUBLISHED_PORT:-18095}:8095"
+
+  network-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${NETWORK_PROVIDER_PUBLISHED_PORT:-18096}:8096"
+
+  route-planning-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${ROUTE_PROVIDER_PUBLISHED_PORT:-18097}:8097"
+
+  road-coverage-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${COVERAGE_PROVIDER_PUBLISHED_PORT:-18098}:8098"
+
+  stas-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${STAS_PROVIDER_PUBLISHED_PORT:-18099}:8099"
+
+  historical-trace-provider:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${HISTORICAL_PROVIDER_PUBLISHED_PORT:-18100}:8100"
+
+  spatial-provider-bridge:
+    <<: *dev-edge
+    ports:
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${SPATIAL_PROVIDER_PUBLISHED_PORT:-18101}:8091"
+
+  world-capability-gateway:
+    <<: *dev-edge
+    ports: !override
+      - "${DEV_BIND_ADDRESS:-0.0.0.0}:${GATEWAY_PORT:-8090}:8090"
+
+networks:
+  world-edge:
+    internal: false

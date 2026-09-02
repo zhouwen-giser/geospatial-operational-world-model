@@ -6,20 +6,23 @@
   "sourceRef": "inputs/crs-normalization-service-v1.0.zip",
   "version": "1.0.0",
   "sourceSha256": "3110e7b344d138908d27e759ede70701b8a20dd7bbbd9795b3a57d02b8d70995",
+  "vendoredPath": "services/upstreams/crs-normalization-service",
+  "vendoredTreeSha256": "sha256:0040e6f9c1aaca9885f745ad234816e45d3f7cde0d0e280ea7d55ff3d58de34d",
+  "noticePath": "services/upstreams/crs-normalization-service/THIRD_PARTY_NOTICES.md",
+  "sbomPath": "services/upstreams/crs-normalization-service/sbom.cdx.json",
   "openApiSha256": "cd261d963c074394e01addeff32fad16dcdaef03bd2ae9f44dafae57ab9f6c06",
   "contractTreeSha256": "9aa3e3415f1de2e4751dc428138f416c3da7057b7f6f7c3df4cad89b7b3b4e93",
-  "licenseStatus": "UNSPECIFIED",
-  "redistributionAllowed": false,
+  "licenseStatus": "APPROVED",
+  "license": "MIT",
+  "redistributionAllowed": true,
   "publishableArtifacts": [
     "GOWM bridge source",
     "GOWM provider manifest and source lock",
     "GOWM conformance tests",
-    "GOWM execution evidence"
-  ],
-  "forbiddenReleaseArtifacts": [
-    "expanded POC source",
-    "POC package",
-    "POC container image"
+    "GOWM execution evidence",
+    "MIT-licensed upstream source",
+    "upstream package",
+    "upstream container image"
   ],
   "upstreamRoutes": {
     "crs.check-source": "GET /v1/crs/{epsg}",

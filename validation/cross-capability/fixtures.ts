@@ -337,7 +337,7 @@ function geometryOptions(): GeometryProviderBridgeOptions {
       integration: "geos-wasm" as const,
       integrationVersion: POC_INTEGRATION_VERSION,
       workerPoolEnabled: true as const,
-      projectLicense: "UNSPECIFIED" as const
+      projectLicense: "MIT" as const
     },
     fetch: geometryFetch(),
     receiptId: sequentialId("receipt_geometry_p13")

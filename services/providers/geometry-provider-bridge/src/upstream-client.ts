@@ -430,7 +430,7 @@ function assertDeploymentAttestation(attestation: GeometryDeploymentAttestation)
       retryable: false
     });
   }
-  if (attestation.integration !== "geos-wasm" || attestation.projectLicense !== "UNSPECIFIED") {
+  if (attestation.integration !== "geos-wasm" || attestation.projectLicense !== "MIT") {
     throw new ProviderProtocolError("PROVIDER_NOT_READY", "Geometry deployment attestation violates the locked integration/license boundary", {
       retryable: false
     });

@@ -21,7 +21,7 @@ export function formalProviderRuntimes() {
     createOperationalRealityProvider({ pool }).runtime,
     createGowmSituationProvider({ acceptedDataScope: "manifest-inspection", port: { getCells: noIO, candidateReferences: noIO, areaCells: noIO, ranked: noIO, worldVersion: noIO } }).runtime,
     createCrsProviderBridge({ endpoint, attestation: { sourceZipSha256: CRS_ZIP, openApiSha256: CRS_API, projVersion: "9.5.1", integration: "gdal-async", integrationVersion: "3.11.4", projDbVersion: "inspection", projDbSha256: sha256("inspection"), gridBundleVersion: "inspection", gridBundleSha256: sha256("inspection"), strictBestOperation: true, networkEnabled: false }, fetch: noIO }).runtime,
-    createGeometryProviderBridge({ endpoint, attestation: { sourceZipSha256: GEOMETRY_ZIP, openApiSha256: GEOMETRY_API, engine: "GEOS-WASM-WORKER-POOL", geosVersion: POC_GEOS_VERSION, integration: "geos-wasm", integrationVersion: POC_INTEGRATION_VERSION, workerPoolEnabled: true, projectLicense: "UNSPECIFIED" }, fetch: noIO }).runtime,
+    createGeometryProviderBridge({ endpoint, attestation: { sourceZipSha256: GEOMETRY_ZIP, openApiSha256: GEOMETRY_API, engine: "GEOS-WASM-WORKER-POOL", geosVersion: POC_GEOS_VERSION, integration: "geos-wasm", integrationVersion: POC_INTEGRATION_VERSION, workerPoolEnabled: true, projectLicense: "MIT" }, fetch: noIO }).runtime,
     createStasProvider({ withTransaction: noIO }, { execute: noIO }).runtime
   ];
 }

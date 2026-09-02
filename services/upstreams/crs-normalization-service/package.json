@@ -1,0 +1,27 @@
+{
+  "name": "crs-normalization-service",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Normalize supported EPSG coordinates and GeoJSON to EPSG:4326 [longitude, latitude].",
+  "workspaces": [
+    "packages/crs-contract",
+    "packages/crs-core",
+    "adapters/proj",
+    "services/crs-api"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false",
+    "start": "node services/crs-api/dist/main.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.0",
+    "rimraf": "6.1.3",
+    "typescript": "5.9.3"
+  }
+}

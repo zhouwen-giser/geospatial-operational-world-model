@@ -33,6 +33,6 @@
     "geometry.shortest-path",
     "geometry.h3-polyfill"
   ],
-  "sourcePublication": "PROHIBITED_LICENSE_UNSPECIFIED",
+  "sourcePublication": "ALLOWED_MIT",
   "upstreamRouteAllowlist": ["POST /v1/geometry/execute", "GET /ready"]
 }

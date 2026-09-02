@@ -123,7 +123,7 @@
     "build:world-platform-registry:v0.6.3": "node --import tsx scripts/run-v063-semantic-command.ts build-registry",
     "validate:world-platform-registry:v0.6.3": "node --import tsx scripts/run-v063-semantic-command.ts validate-registry",
     "validate:semantic-catalog": "node --import tsx scripts/validate-semantic-catalog.ts --write",
-    "validate:semantic-static": "node --import tsx scripts/validate-semantic-catalog.ts --static-only",
+    "validate:semantic-static": "node --import tsx scripts/validate-semantic-catalog.ts --static-only --preserve-historical-reports",
     "sync:grounding-provider-contracts": "node --import tsx scripts/sync-grounding-provider-contracts.ts",
     "validate:grounding-provider-contracts": "node --import tsx scripts/sync-grounding-provider-contracts.ts --check",
     "sync:world-platform-manifests": "node --import tsx scripts/sync-world-platform-manifests.ts --write",
@@ -155,7 +155,10 @@
     "sample-world:handoff": "node --import tsx scripts/sample-world/cli.ts handoff",
     "sample-world:upgrade-proof": "node --import tsx scripts/sample-world/cli.ts upgrade-proof",
     "sample-world:evidence": "node --import tsx scripts/sample-world/cli.ts evidence",
-    "sample-world:all": "node --import tsx scripts/sample-world/cli.ts all"
+    "sample-world:all": "node --import tsx scripts/sample-world/cli.ts all",
+    "validate:deployment-env": "node scripts/validate-deployment-env.mjs",
+    "dev-deploy": "bash scripts/dev-deploy.sh up",
+    "package:dev-deployment": "bash scripts/package-dev-deployment.sh"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",

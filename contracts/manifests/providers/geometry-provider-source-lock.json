@@ -6,23 +6,26 @@
   "sourceRef": "inputs/geometry-tool-service-v1.0.zip",
   "version": "1.0.0",
   "sourceSha256": "3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d",
+  "vendoredPath": "services/upstreams/geometry-tool-service",
+  "vendoredTreeSha256": "sha256:7fb7977997e8f148d93d8757938b507ca3efba900baadc58d1e702e229a3fecd",
+  "noticePath": "services/upstreams/geometry-tool-service/THIRD_PARTY_NOTICES.md",
+  "sbomPath": "services/upstreams/geometry-tool-service/sbom.cdx.json",
   "openApiSha256": "f45ad64ab0781289e960e826dde220db85c295d45d2d69e4f1afbf163e7cd600",
   "engine": "GEOS-WASM-WORKER-POOL",
   "engineVersion": "3.13.0-CAPI-1.19.0",
   "integration": "geos-wasm",
   "integrationVersion": "3.1.1",
-  "licenseStatus": "UNSPECIFIED",
-  "redistributionAllowed": false,
+  "licenseStatus": "APPROVED",
+  "license": "MIT",
+  "redistributionAllowed": true,
   "publishableArtifacts": [
     "GOWM bridge source",
     "GOWM provider operation registration and source lock",
     "GOWM conformance tests",
-    "GOWM execution evidence"
-  ],
-  "forbiddenReleaseArtifacts": [
-    "expanded Geometry POC source",
-    "Geometry POC package",
-    "Geometry POC container image"
+    "GOWM execution evidence",
+    "MIT-licensed upstream source",
+    "upstream package",
+    "upstream container image"
   ],
   "upstreamRoutes": {
     "execute": "POST /v1/geometry/execute",
@@ -42,7 +45,7 @@
     "GEOS version",
     "geos-wasm version",
     "GEOS worker pool enabled",
-    "project license remains unspecified",
+    "project license is MIT",
     "approved Registry endpoint configuration digest"
   ]
 }

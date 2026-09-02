@@ -66,7 +66,7 @@ export function createCrsProviderBridge(options: CrsProviderBridgeOptions): CrsP
         openApiSha256: options.attestation.openApiSha256,
         allowedOperations: OPERATION_IDS
       }),
-      sourceRef: "urn:gowm:source:zip:crs-normalization-service:1.0.0"
+      sourceRef: "urn:gowm:source:in-tree:crs-normalization-service:1.0.0"
     },
     endpoints: {
       manifest: "/v1/manifest",

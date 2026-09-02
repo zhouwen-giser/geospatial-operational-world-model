@@ -1,0 +1,7 @@
+node_modules
+**/dist
+.git
+output
+*.zip
+SHA256SUMS
+

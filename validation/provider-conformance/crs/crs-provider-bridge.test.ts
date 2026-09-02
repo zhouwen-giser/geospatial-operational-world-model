@@ -34,8 +34,8 @@ describe("CRS provider bridge", () => {
       "utf8"
     )) as { licenseStatus: string; redistributionAllowed: boolean; sourceSha256: string; openApiSha256: string };
     expect(sourceLock).toMatchObject({
-      licenseStatus: "UNSPECIFIED",
-      redistributionAllowed: false,
+      licenseStatus: "APPROVED",
+      redistributionAllowed: true,
       sourceSha256: POC_SOURCE_ZIP_SHA256.slice("sha256:".length),
       openApiSha256: POC_OPENAPI_SHA256.slice("sha256:".length)
     });

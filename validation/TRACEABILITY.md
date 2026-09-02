@@ -62,7 +62,7 @@ Status vocabulary:
 
 | Requirement | Implementation | Evidence/status |
 |---|---|---|
-| External source excluded (AC-003, AC-092) | `.gitignore`, source locks, release-boundary validator | PASS for repository inventory; no release artifact was produced |
+| Source release boundary (AC-003, AC-092) | `.gitignore`, approved vendored paths, source locks, release-boundary validator | PASS for repository inventory; only locked CRS/Geometry MIT source paths are publishable |
 | Gateway has no domain engine/arbitrary execution (AC-004) | Gateway packages, frozen API, architecture validator | controlled architecture PASS |
 | Providers never call Providers (AC-005) | Provider bridge dependency boundary | controlled architecture PASS |
 | Foundation critical path is local (AC-006, AC-025..029) | Foundation ports and projection transaction | implementation PASS; live receipt/full outage PARTIAL |
@@ -83,6 +83,7 @@ Status vocabulary:
 ## Protected actions
 
 No merge, tag, release, or deployment was performed. CRS and Geometry upstream
-source/packages/images were not published. Promotion requires the remaining
-real gates, a committed/pushed candidate SHA, updated machine evidence, and
-explicit user control.
+source/packages/images are now approved for MIT publication but were not
+published by this change. Promotion still requires the remaining real gates, a
+committed/pushed candidate SHA, updated machine evidence, and explicit user
+control.

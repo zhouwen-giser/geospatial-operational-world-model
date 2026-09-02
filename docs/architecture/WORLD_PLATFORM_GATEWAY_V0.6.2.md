@@ -72,9 +72,9 @@ docker compose --env-file /private/world-platform.env \
 Only Gateway publishes a host port, bound to loopback by default. PostgreSQL and
 thirteen required Provider processes use an internal network. Bootstrap owns
 migrations and controlled registry registration; Gateway and Providers receive
-separate restricted database credentials. The optional CRS/Geometry bridge
-profile requires its upstream deployment attestations and is not silently
-substituted with an in-memory implementation.
+separate restricted database credentials. CRS/Geometry upstreams and bridges
+are included in the default `world-platform` profile, retain their deployment
+attestations, and are not silently substituted with in-memory implementations.
 
 `/health/live` checks the Gateway process; `/health/ready` checks its registry,
 database and runtime. `/health` reports individual Provider degradation. An

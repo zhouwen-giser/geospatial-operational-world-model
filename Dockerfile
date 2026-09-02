@@ -24,12 +24,12 @@ COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY services/stas/package.json services/stas/package-lock.json services/stas/
 RUN npm --prefix services/stas ci --omit=dev --ignore-scripts && npm cache clean --force
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/services/stas/dist ./services/stas/dist
-COPY database ./database
-COPY config ./config
-COPY contracts ./contracts
-COPY scripts ./scripts
-COPY test-data ./test-data
+COPY --from=build --chown=node:node /app/dist ./dist
+COPY --from=build --chown=node:node /app/services/stas/dist ./services/stas/dist
+COPY --chown=node:node database ./database
+COPY --chown=node:node config ./config
+COPY --chown=node:node contracts ./contracts
+COPY --chown=node:node scripts ./scripts
+COPY --chown=node:node test-data ./test-data
 USER node
 CMD ["node", "dist/services/world-api/src/index.js"]

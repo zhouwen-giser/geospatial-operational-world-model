@@ -29,7 +29,10 @@ services:
       SITUATION_DB_PASSWORD: ${SITUATION_DB_PASSWORD:?set a unique URL-safe 32+ byte Situation password}
 
   crs-upstream:
-    image: ${CRS_UPSTREAM_IMAGE:?supply the locally built, source-locked CRS POC image; it is not redistributed by GOWM}
+    image: ${CRS_UPSTREAM_IMAGE:-gowm-crs-normalization-service:1.0.0}
+    build:
+      context: services/upstreams/crs-normalization-service
+      dockerfile: Dockerfile
     user: node
     read_only: true
     tmpfs: [/tmp:rw,noexec,nosuid,size=128m]
@@ -39,6 +42,10 @@ services:
       PORT: 8080
       PROJ_NETWORK: "OFF"
       PROJ_ONLY_BEST_DEFAULT: "YES"
+      CRS_MAX_POINTS: ${CRS_MAX_POINTS:-100000}
+      CRS_MAX_VERTICES: ${CRS_MAX_VERTICES:-100000}
+      CRS_MAX_REQUEST_BYTES: ${CRS_MAX_REQUEST_BYTES:-16777216}
+      CRS_REQUEST_TIMEOUT_MS: ${CRS_REQUEST_TIMEOUT_MS:-30000}
     healthcheck:
       <<: *provider-health
       test: ["CMD", "node", "-e", "fetch('http://localhost:8080/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
@@ -51,7 +58,10 @@ services:
     networks: [crs_upstream]
 
   geometry-upstream:
-    image: ${GEOMETRY_UPSTREAM_IMAGE:?supply the locally built, source-locked Geometry POC image; it is not redistributed by GOWM}
+    image: ${GEOMETRY_UPSTREAM_IMAGE:-gowm-geometry-tool-service:1.0.0}
+    build:
+      context: services/upstreams/geometry-tool-service
+      dockerfile: Dockerfile
     user: node
     read_only: true
     tmpfs: [/tmp:rw,noexec,nosuid,size=128m]
@@ -59,9 +69,10 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 8080
+      GEOMETRY_EXECUTION: worker-pool
       GEOMETRY_WORKERS: ${GEOMETRY_WORKERS:-2}
       GEOMETRY_MAX_IN_FLIGHT: ${GEOMETRY_MAX_IN_FLIGHT:-32}
-      GEOMETRY_MAX_QUEUE_SIZE: ${GEOMETRY_MAX_QUEUE_SIZE:-128}
+      GEOMETRY_MAX_WORKER_QUEUE: ${GEOMETRY_MAX_QUEUE_SIZE:-128}
     healthcheck:
       <<: *provider-health
       test: ["CMD", "node", "-e", "fetch('http://localhost:8080/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]

@@ -177,9 +177,9 @@ contains no publish tools and trusts no dynamic tool catalog.
   `74fc8657072dd58a2f8e4317c1caef8bfd10e024`.
 
 Expanded external source remains ignored and must not be committed. CRS and
-Geometry project licenses are unspecified, so their upstream source, packages,
-and images cannot be published by GOWM+. H3 and Spatial retain Apache-2.0 Notice
-and SBOM artifacts.
+CRS and Geometry are project-owned MIT POCs; their approved curated source,
+packages, and images may be published with locked provenance, Notice, and SBOM
+artifacts. H3 and Spatial retain Apache-2.0 Notice and SBOM artifacts.
 
 ## Evidence boundary and current qualification
 

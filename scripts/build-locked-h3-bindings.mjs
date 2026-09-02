@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFile, writeFile, mkdtemp, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { resolve, join } from "node:path";
+import { dirname, resolve, join } from "node:path";
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 import { build, version as esbuildVersion } from "esbuild";
@@ -10,6 +10,10 @@ import { build, version as esbuildVersion } from "esbuild";
 const require = createRequire(import.meta.url);
 const option = (key) => { const at = process.argv.indexOf(key); if (at < 0 || !process.argv[at+1]) throw new Error(`${key} is required`); return resolve(process.argv[at+1]); };
 const sourceRepository = option("--source-repo"), output = option("--out");
+const reportAt = process.argv.indexOf("--report");
+const reportPath = reportAt >= 0 && process.argv[reportAt + 1]
+  ? resolve(process.argv[reportAt + 1])
+  : resolve("reports/gowm-v0.6.2/h3-bindings-build-report.json");
 const lockPath = "contracts/manifests/providers/h3-toolkit-source-lock.json";
 const lock = JSON.parse(await readFile(lockPath,"utf8"));
 if (require("h3-js/package.json").version !== lock.engineVersion || esbuildVersion !== "0.28.2") throw new Error("Pinned build tool/engine version mismatch");
@@ -49,11 +53,12 @@ if (bindings.gridDisk(cell,1).length !== 7 || bindings.getParent(cell,8).resolut
 const artifactDigest=sha(builds[0]);
 await writeFile(`${output}.LICENSE`, await readFile(require.resolve("h3-js/LICENSE")));
 const report={status:"PASS",sourceGitCommit:lock.sourceGitCommit,sourceArchiveHash:sha(archive),engineVersion:lock.engineVersion,engineArtifact:"h3-js/dist/browser/h3-js.es.js",engineArtifactHash:sha(await readFile(require.resolve("h3-js/dist/browser/h3-js.es.js"))),esbuildVersion,wrapperHash:sha(wrapper),artifactDigest,artifactBytes:builds[0].length,independentBuilds:2,externalImports:0,checks:["source-commit-export","pinned-engine","independent-build-byte-equality","self-check","disk","parent","cell-geometry"]};
-await writeFile("reports/gowm-v0.6.2/h3-bindings-build-report.json",`${JSON.stringify(report,null,2)}\n`);
+await mkdir(dirname(reportPath), { recursive: true });
+await writeFile(reportPath,`${JSON.stringify(report,null,2)}\n`);
 if (process.argv.includes("--write-lock")) {
  lock.bindingsArtifactPolicy.approvedArtifactDigests=[artifactDigest];
  lock.bindingsArtifactPolicy.approvalState="VERIFIED_REPRODUCIBLE_BUILD";
- lock.bindingsArtifactPolicy.evidence="reports/gowm-v0.6.2/h3-bindings-build-report.json";
+ lock.bindingsArtifactPolicy.evidence=reportPath;
  await writeFile(lockPath,`${JSON.stringify(lock,null,2)}\n`);
 }
 process.stdout.write(`${JSON.stringify(report)}\n`);

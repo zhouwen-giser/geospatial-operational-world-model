@@ -18,6 +18,7 @@ PROJ network access is enabled, or if strict best-operation policy is disabled.
 Execution receipts carry input/output hashes through the Provider SDK and add
 machine-readable source/target/axis/version/policy/artifact attestations.
 
-The supplied CRS POC has no project-level license. Its source, package, image,
-and expanded files are not GOWM release artifacts. Only this independently
-written bridge, schemas, lock metadata, tests, and evidence may be published.
+The CRS POC is project-owned MIT source vendored at
+`services/upstreams/crs-normalization-service`. Its source, packages, and image
+may be published with the retained LICENSE, NOTICE, SBOM, and source lock. The
+original ZIP remains provenance input and is never included in release artifacts.

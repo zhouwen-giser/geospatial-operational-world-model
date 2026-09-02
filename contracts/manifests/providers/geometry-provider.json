@@ -6,7 +6,7 @@
     "providerVersion": "0.2.0",
     "owner": "gowm-platform",
     "implementationDigest": "sha256:b1eb384a02a8de948f11520b9fdbd882bddc4288c502782bff888b25c8d9b548",
-    "sourceRef": "urn:gowm:source:zip:geometry-tool-service:1.0.0"
+    "sourceRef": "urn:gowm:source:in-tree:geometry-tool-service:1.0.0"
   },
   "endpoints": {
     "manifest": "/v1/manifest",

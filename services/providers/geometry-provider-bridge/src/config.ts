@@ -34,7 +34,7 @@ export function loadGeometryBridgeServerConfig(env: NodeJS.ProcessEnv = process.
         integration: "geos-wasm",
         integrationVersion: required(env, "GEOMETRY_BRIDGE_INTEGRATION_VERSION"),
         workerPoolEnabled: true,
-        projectLicense: "UNSPECIFIED"
+        projectLicense: "MIT"
       },
       maximumInFlight: integer(env.GEOMETRY_BRIDGE_MAX_IN_FLIGHT, 32, "GEOMETRY_BRIDGE_MAX_IN_FLIGHT", 1, 1_024),
       maximumQueueSize: integer(env.GEOMETRY_BRIDGE_MAX_QUEUE_SIZE, 128, "GEOMETRY_BRIDGE_MAX_QUEUE_SIZE", 0, 100_000)

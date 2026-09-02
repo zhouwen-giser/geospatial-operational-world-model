@@ -93,7 +93,7 @@ export interface GeometryDeploymentAttestation {
   integration: "geos-wasm";
   integrationVersion: string;
   workerPoolEnabled: true;
-  projectLicense: "UNSPECIFIED";
+  projectLicense: "MIT";
 }
 
 export interface GeometryProviderBridgeOptions {

@@ -1,0 +1,550 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "WGS84 Coordinate Normalization Service",
+    "version": "1.0.0",
+    "description": "Transforms supported EPSG coordinates and GeoJSON to EPSG:4326. API input uses traditional GIS order; output is always [longitude, latitude]."
+  },
+  "servers": [{ "url": "http://localhost:8080" }],
+  "tags": [
+    { "name": "Normalization" },
+    { "name": "CRS" },
+    { "name": "Health" }
+  ],
+  "paths": {
+    "/health/live": {
+      "get": {
+        "tags": ["Health"],
+        "operationId": "liveness",
+        "responses": { "200": { "description": "Process is alive" } }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": ["Health"],
+        "operationId": "readiness",
+        "responses": { "200": { "description": "PROJ engine and proj.db are ready" } }
+      }
+    },
+    "/v1/crs/{epsg}": {
+      "get": {
+        "tags": ["CRS"],
+        "operationId": "checkSourceCrs",
+        "parameters": [
+          {
+            "name": "epsg",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "minimum": 1, "maximum": 999999 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CRS recognized by the deployed proj.db",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CheckSourceCrsResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/CrsError" }
+        }
+      }
+    },
+    "/v1/normalize/point": {
+      "post": {
+        "tags": ["Normalization"],
+        "operationId": "normalizePoint",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PointNormalizeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Normalized coordinate",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NormalizedPointResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/CrsError" },
+          "413": { "$ref": "#/components/responses/CrsError" },
+          "422": { "$ref": "#/components/responses/CrsError" }
+        }
+      }
+    },
+    "/v1/normalize/points": {
+      "post": {
+        "tags": ["Normalization"],
+        "operationId": "normalizePoints",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PointsNormalizeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ordered normalized coordinate batch",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NormalizedPointsResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/CrsError" },
+          "413": { "$ref": "#/components/responses/CrsError" },
+          "422": { "$ref": "#/components/responses/CrsError" }
+        }
+      }
+    },
+    "/v1/normalize/geometry": {
+      "post": {
+        "tags": ["Normalization"],
+        "operationId": "normalizeGeometry",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GeometryNormalizeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Normalized GeoJSON geometry",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NormalizedGeometryResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/CrsError" },
+          "413": { "$ref": "#/components/responses/CrsError" },
+          "422": { "$ref": "#/components/responses/CrsError" }
+        }
+      }
+    },
+    "/v1/normalize/feature": {
+      "post": {
+        "tags": ["Normalization"],
+        "operationId": "normalizeFeature",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FeatureNormalizeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Normalized Feature; id/properties/order preserved",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NormalizedFeatureResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/CrsError" },
+          "413": { "$ref": "#/components/responses/CrsError" },
+          "422": { "$ref": "#/components/responses/CrsError" }
+        }
+      }
+    },
+    "/v1/normalize/feature-collection": {
+      "post": {
+        "tags": ["Normalization"],
+        "operationId": "normalizeFeatureCollection",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FeatureCollectionNormalizeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Normalized FeatureCollection; feature ordering and properties preserved",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NormalizedFeatureCollectionResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/CrsError" },
+          "413": { "$ref": "#/components/responses/CrsError" },
+          "422": { "$ref": "#/components/responses/CrsError" }
+        }
+      }
+    },
+    "/v1/normalize": {
+      "post": {
+        "tags": ["Normalization"],
+        "operationId": "normalizeUnified",
+        "description": "Convenience endpoint. The explicit type-specific endpoints remain the canonical stable contract.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UnifiedNormalizeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Type-specific normalization response" },
+          "400": { "$ref": "#/components/responses/CrsError" },
+          "413": { "$ref": "#/components/responses/CrsError" },
+          "422": { "$ref": "#/components/responses/CrsError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "CrsError": {
+        "description": "Controlled normalization error",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/CrsErrorEnvelope" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "SourceCrs": {
+        "type": "string",
+        "pattern": "^(?:[Ee][Pp][Ss][Gg]\\s*:\\s*[1-9][0-9]{0,5}|[Ww][Gg][Ss]\\s*84)$",
+        "examples": ["EPSG:3857", "EPSG:32654", "WGS84"]
+      },
+      "Position": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 4,
+        "items": { "type": "number" },
+        "description": "[x,y], [x,y,z], or [x,y,z,m]. Input uses traditional GIS axis order."
+      },
+      "GeoJsonGeometry": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "enum": [
+              "Point",
+              "MultiPoint",
+              "LineString",
+              "MultiLineString",
+              "Polygon",
+              "MultiPolygon",
+              "GeometryCollection"
+            ]
+          },
+          "coordinates": { "type": "array" },
+          "geometries": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GeoJsonGeometry" }
+          }
+        },
+        "additionalProperties": true
+      },
+      "GeoJsonFeature": {
+        "type": "object",
+        "required": ["type", "geometry", "properties"],
+        "properties": {
+          "type": { "const": "Feature" },
+          "id": { "oneOf": [{ "type": "string" }, { "type": "number" }] },
+          "geometry": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/GeoJsonGeometry" },
+              { "type": "null" }
+            ]
+          },
+          "properties": {
+            "oneOf": [{ "type": "object" }, { "type": "null" }]
+          }
+        },
+        "additionalProperties": true
+      },
+      "GeoJsonFeatureCollection": {
+        "type": "object",
+        "required": ["type", "features"],
+        "properties": {
+          "type": { "const": "FeatureCollection" },
+          "features": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GeoJsonFeature" }
+          }
+        },
+        "additionalProperties": true
+      },
+      "PointNormalizeRequest": {
+        "type": "object",
+        "required": ["sourceCrs", "coordinate"],
+        "properties": {
+          "sourceCrs": { "$ref": "#/components/schemas/SourceCrs" },
+          "coordinate": { "$ref": "#/components/schemas/Position" }
+        }
+      },
+      "PointsNormalizeRequest": {
+        "type": "object",
+        "required": ["sourceCrs", "coordinates"],
+        "properties": {
+          "sourceCrs": { "$ref": "#/components/schemas/SourceCrs" },
+          "coordinates": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100000,
+            "items": { "$ref": "#/components/schemas/Position" }
+          }
+        }
+      },
+      "GeometryNormalizeRequest": {
+        "type": "object",
+        "required": ["sourceCrs", "geometry"],
+        "properties": {
+          "sourceCrs": { "$ref": "#/components/schemas/SourceCrs" },
+          "geometry": { "$ref": "#/components/schemas/GeoJsonGeometry" }
+        }
+      },
+      "FeatureNormalizeRequest": {
+        "type": "object",
+        "required": ["sourceCrs", "feature"],
+        "properties": {
+          "sourceCrs": { "$ref": "#/components/schemas/SourceCrs" },
+          "feature": { "$ref": "#/components/schemas/GeoJsonFeature" }
+        }
+      },
+      "FeatureCollectionNormalizeRequest": {
+        "type": "object",
+        "required": ["sourceCrs", "featureCollection"],
+        "properties": {
+          "sourceCrs": { "$ref": "#/components/schemas/SourceCrs" },
+          "featureCollection": { "$ref": "#/components/schemas/GeoJsonFeatureCollection" }
+        }
+      },
+      "UnifiedNormalizeRequest": {
+        "oneOf": [
+          {
+            "allOf": [
+              { "$ref": "#/components/schemas/PointNormalizeRequest" },
+              { "type": "object", "required": ["kind"], "properties": { "kind": { "const": "point" } } }
+            ]
+          },
+          {
+            "allOf": [
+              { "$ref": "#/components/schemas/PointsNormalizeRequest" },
+              { "type": "object", "required": ["kind"], "properties": { "kind": { "const": "points" } } }
+            ]
+          },
+          {
+            "allOf": [
+              { "$ref": "#/components/schemas/GeometryNormalizeRequest" },
+              { "type": "object", "required": ["kind"], "properties": { "kind": { "const": "geometry" } } }
+            ]
+          },
+          {
+            "allOf": [
+              { "$ref": "#/components/schemas/FeatureNormalizeRequest" },
+              { "type": "object", "required": ["kind"], "properties": { "kind": { "const": "feature" } } }
+            ]
+          },
+          {
+            "allOf": [
+              { "$ref": "#/components/schemas/FeatureCollectionNormalizeRequest" },
+              { "type": "object", "required": ["kind"], "properties": { "kind": { "const": "featureCollection" } } }
+            ]
+          }
+        ]
+      },
+      "Warning": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "enum": [
+              "SOURCE_ALREADY_WGS84",
+              "GRID_FALLBACK",
+              "LOW_ACCURACY_TRANSFORMATION",
+              "Z_NOT_TRANSFORMED",
+              "BBOX_DROPPED"
+            ]
+          },
+          "message": { "type": "string" }
+        }
+      },
+      "TransformationProvenance": {
+        "type": "object",
+        "required": [
+          "engine",
+          "engineVersion",
+          "integration",
+          "integrationVersion",
+          "sourceCrs",
+          "targetCrs",
+          "strictBestOperation",
+          "networkEnabled",
+          "cacheHit"
+        ],
+        "properties": {
+          "engine": { "const": "PROJ" },
+          "engineVersion": { "type": "string" },
+          "integration": { "const": "gdal-async" },
+          "integrationVersion": { "type": "string" },
+          "sourceCrs": { "type": "string" },
+          "targetCrs": { "const": "EPSG:4326" },
+          "strictBestOperation": { "const": true },
+          "networkEnabled": { "const": false },
+          "cacheHit": { "type": "boolean" }
+        }
+      },
+      "NormalizationMetadata": {
+        "type": "object",
+        "required": [
+          "crs",
+          "axisOrder",
+          "coordinateCount",
+          "zTransformed",
+          "transformation",
+          "warnings"
+        ],
+        "properties": {
+          "crs": { "const": "EPSG:4326" },
+          "axisOrder": {
+            "type": "array",
+            "prefixItems": [{ "const": "longitude" }, { "const": "latitude" }],
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "coordinateCount": { "type": "integer", "minimum": 0 },
+          "zTransformed": { "const": false },
+          "transformation": { "$ref": "#/components/schemas/TransformationProvenance" },
+          "warnings": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Warning" }
+          }
+        }
+      },
+      "NormalizedPointResponse": {
+        "allOf": [
+          { "$ref": "#/components/schemas/NormalizationMetadata" },
+          {
+            "type": "object",
+            "required": ["coordinate"],
+            "properties": { "coordinate": { "$ref": "#/components/schemas/Position" } }
+          }
+        ]
+      },
+      "NormalizedPointsResponse": {
+        "allOf": [
+          { "$ref": "#/components/schemas/NormalizationMetadata" },
+          {
+            "type": "object",
+            "required": ["coordinates"],
+            "properties": {
+              "coordinates": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/Position" }
+              }
+            }
+          }
+        ]
+      },
+      "NormalizedGeometryResponse": {
+        "allOf": [
+          { "$ref": "#/components/schemas/NormalizationMetadata" },
+          {
+            "type": "object",
+            "required": ["geometry"],
+            "properties": { "geometry": { "$ref": "#/components/schemas/GeoJsonGeometry" } }
+          }
+        ]
+      },
+      "NormalizedFeatureResponse": {
+        "allOf": [
+          { "$ref": "#/components/schemas/NormalizationMetadata" },
+          {
+            "type": "object",
+            "required": ["feature"],
+            "properties": { "feature": { "$ref": "#/components/schemas/GeoJsonFeature" } }
+          }
+        ]
+      },
+      "NormalizedFeatureCollectionResponse": {
+        "allOf": [
+          { "$ref": "#/components/schemas/NormalizationMetadata" },
+          {
+            "type": "object",
+            "required": ["featureCollection"],
+            "properties": {
+              "featureCollection": { "$ref": "#/components/schemas/GeoJsonFeatureCollection" }
+            }
+          }
+        ]
+      },
+      "CheckSourceCrsResponse": {
+        "type": "object",
+        "required": [
+          "sourceCrs",
+          "recognized",
+          "kind",
+          "traditionalGisInputOrder",
+          "normalizationTarget",
+          "operationAvailability"
+        ],
+        "properties": {
+          "sourceCrs": { "type": "string" },
+          "recognized": { "const": true },
+          "kind": { "enum": ["geographic", "projected"] },
+          "traditionalGisInputOrder": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": { "type": "string" }
+          },
+          "normalizationTarget": { "const": "EPSG:4326" },
+          "operationAvailability": { "const": "coordinate-and-grid-dependent" }
+        }
+      },
+      "CrsErrorEnvelope": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message", "retryable"],
+            "properties": {
+              "code": {
+                "enum": [
+                  "UNKNOWN_SOURCE_CRS",
+                  "INVALID_CRS",
+                  "INVALID_COORDINATE",
+                  "INVALID_GEOMETRY",
+                  "COORDINATE_OUT_OF_RANGE",
+                  "GRID_REQUIRED",
+                  "GRID_NOT_AVAILABLE",
+                  "TRANSFORMATION_UNAVAILABLE",
+                  "TRANSFORMATION_FAILED",
+                  "TOO_MANY_COORDINATES",
+                  "PAYLOAD_TOO_LARGE",
+                  "INTERNAL_ERROR"
+                ]
+              },
+              "message": { "type": "string" },
+              "retryable": { "type": "boolean" },
+              "details": { "type": "object" },
+              "requestId": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

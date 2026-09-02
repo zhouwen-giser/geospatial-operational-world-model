@@ -94,7 +94,7 @@ export function createGeometryProviderBridge(options: GeometryProviderBridgeOpti
         integration: `${options.attestation.integration}@${options.attestation.integrationVersion}`,
         allowedOperations: GEOMETRY_OPERATION_IDS
       }),
-      sourceRef: "urn:gowm:source:zip:geometry-tool-service:1.0.0"
+      sourceRef: "urn:gowm:source:in-tree:geometry-tool-service:1.0.0"
     },
     endpoints: {
       manifest: "/v1/manifest",
@@ -115,7 +115,7 @@ export function createGeometryProviderBridge(options: GeometryProviderBridgeOpti
     providerCallsAllowed: false,
     arbitraryUrlAllowed: false,
     workerPoolRequired: true,
-    sourceRedistributionAllowed: false,
+    sourceRedistributionAllowed: true,
     approvedEndpoint: {
       endpointId: options.endpoint.endpointId,
       configurationDigest: options.endpoint.configurationDigest
