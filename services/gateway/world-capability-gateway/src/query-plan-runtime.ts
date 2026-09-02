@@ -683,6 +683,11 @@ function nodeStatusFor(result: CapabilityResultEnvelope): WorldQueryResultNodeRe
   if (result.status === "COMPLETED") return "COMPLETED";
   if (result.status === "PARTIAL") return "PARTIAL";
   if (result.status === "NO_DATA") return "NO_DATA";
+  // The World Query node contract has no INDETERMINATE member. Preserve the
+  // provider envelope as the semantic authority while keeping the DAG result
+  // non-terminally successful and non-assertive instead of fabricating a
+  // provider failure without a PlatformError.
+  if (result.status === "INDETERMINATE") return "PARTIAL";
   return "FAILED";
 }
 

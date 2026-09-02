@@ -124,7 +124,11 @@ function descriptor(
   };
 }
 
-function harness(autoRunAsync = false, configure?: (descriptors: Harness["descriptors"]) => void): Harness {
+function harness(
+  autoRunAsync = false,
+  configure?: (descriptors: Harness["descriptors"]) => void,
+  sampleStatus: "COMPLETED" | "INDETERMINATE" = "COMPLETED"
+): Harness {
   const positionHash = getContractSchemaHash(positionSchemaUri);
   const elevationHash = getContractSchemaHash(elevationSchemaUri);
   const nestedHash = getContractSchemaHash(nestedSchemaUri);
@@ -175,7 +179,7 @@ function harness(autoRunAsync = false, configure?: (descriptors: Harness["descri
       async handle() {
         calls.sample += 1;
         return {
-          status: "COMPLETED",
+          status: sampleStatus,
           value: { elevationMeters: 88.5, source: "MOCK_FIXED" },
           consumption: { rows: 1, candidates: 1 }
         };
@@ -443,6 +447,26 @@ describe("World Query DAG runtime", () => {
     expect(replay.replayed).toBe(true);
     expect(replay.result).toEqual(first.result);
     expect(test.calls).toMatchObject({ source: 1, sample: 1 });
+  });
+
+  it("preserves an indeterminate provider result without fabricating a node failure", async () => {
+    const test = harness(false, undefined, "INDETERMINATE");
+    const sample = node("sample", test.descriptors.sample, literalInput(test.descriptors.sample));
+    const request = submission("query_indeterminate", [sample], "sample", test.descriptors.sample);
+
+    const executed = await test.runtime.submit(request, principal);
+    const persisted = await test.store.listNodes(executed.job.jobId);
+
+    expect(executed.result?.status).toBe("PARTIAL");
+    expect(executed.result?.nodes[0]).toMatchObject({
+      nodeId: "sample",
+      status: "PARTIAL",
+      result: { status: "INDETERMINATE" }
+    });
+    expect(persisted[0]).toMatchObject({
+      status: "PARTIAL",
+      result: { status: "INDETERMINATE" }
+    });
   });
 
   it("rejects cycles and aggregate budget overflow before any provider call", async () => {
