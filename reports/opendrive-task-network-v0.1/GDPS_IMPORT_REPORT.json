@@ -1,21 +1,58 @@
 {
+  "compiler": {
+    "artifactHashes": {
+      "SHA256SUMS": "sha256:a3dbebb97db8f4ce5daa9d8787e3c157664c5c1f2c1449661aceae0f322f4e61",
+      "admission-plan.json": "sha256:50186705a22749fc1e5a6aa21beb4e4c00d02852a3cc262db74e7eb83a7ee24a",
+      "allowed-transitions.json": "sha256:5a706a17231cc08fa4d9d12d09049e27b415bd24896c5d3fbc41b04732a3946d",
+      "compile-manifest.json": "sha256:0afced0c566cde8855f608df93f2395472a89a69ff3cdc5bdf76e1cbe0920ef6",
+      "compile-report.json": "sha256:6ae86d53af150a06af9ac2d2e285fd8c8f23c492ce4600448a4311b6e795d287",
+      "identity-map.json": "sha256:eb6a058802c404163f42c1dc90b63d8eb1ffe6627c9e81e96087f04731a6b8aa",
+      "physical-roads.geojson": "sha256:2c4bc7f20bed4a142c8a949dc921f87630e6d5dd4e209197b6a923e27af6fefc",
+      "quarantine.json": "sha256:968bfac507c1f21c66cb939c8a5cbb40cfe6985fe35758b7dc618ded5fd69994",
+      "routing-channels.geojson": "sha256:a90b5597f18165e69e2d3f6273ec453663936ecab92860a63f9196089c7ada79"
+    },
+    "buildHash": "sha256:be1ae19c93593aeb3deafe1915cb3c6a21581e953adb251306fc3a4f7129b13e",
+    "contentHash": "sha256:707c95ef6821c50df08afeabe5d67625ff28d9b8ec73bb5bd84b47f9054db910",
+    "counts": {
+      "activeDirectedChannels": 244,
+      "allowedDirectedTransitions": 336,
+      "drivableJunctionConnectors": 164,
+      "excludedNonDrivingConnectors": 60,
+      "physicalRoads": 40,
+      "quarantinedDrivingChannels": 2
+    },
+    "datasetReferenceKey": "wrf_dc6ad99f4e8d1e27f41f1af147d5bfbb",
+    "datasetVersionKey": "dsv_20245e0ae92c989ec9e308456808e44be853ef0eb11a92d7fd8015190ee2dc81",
+    "graphVersionKey": "gv_62c358a52d01a49f10334531dfca7271fbbe732b62dcfd66f90eaf9ba90ef9ff",
+    "topologyHash": "sha256:872538d2082f4f3bdb8125af45a6bff36afde457b2fd37919c2ea6c458b39533",
+    "transformContentHash": "sha256:7c05f0a351b42ea790fef5be184fb8c81173dcc776ee4ce2c6e8a539b3f8b9b1",
+    "version": "opendrive-task-network-compiler-v0.1.0"
+  },
   "databaseIsolation": {
     "disposition": "DROPPED",
-    "expectedDatabaseFingerprint": "sha256:ee416f09007958a4f4c1be12c9d4d115ae1eb0eea0800220ad5eab0b71047828",
+    "expectedDatabaseFingerprint": "sha256:ada8811010c8f546884c650e2aafbe2f7e64e199f749c038f1462d80b587d4c8",
     "kind": "DISPOSABLE_SCHEMA",
     "mutationAuthorized": true,
-    "schema": "gdps_od_accept_4234360881b9462e"
+    "schema": "gdps_od_accept_f2764852711148ed"
   },
   "executionLayer": "ProviderRuntime.execute",
-  "generatedAt": "2026-09-04T08:48:18.156825Z",
+  "generatedAt": "2026-09-04T09:25:39.983010Z",
   "productId": "airport2-physical-roads",
+  "providerImplementation": {
+    "capabilityCount": 30,
+    "implementationDigest": "sha256:a4d7c7a419dcc2ecfa65c428433ecdde390000b715e6b36333d186fe00fa249b",
+    "manifestHash": "sha256:108991cd2cbc82af1500582b2eaffe5554d85d622d2a122a00f3c7d082f8103f",
+    "providerId": "gdps.geospatial-products",
+    "providerVersion": "0.2.2"
+  },
   "schemaVersion": "gdps-opendrive-import-acceptance/1.0",
-  "scope": "acceptance-opendrive",
+  "scope": "acceptance-opendrive-final",
   "source": {
     "compileManifestHash": "sha256:0afced0c566cde8855f608df93f2395472a89a69ff3cdc5bdf76e1cbe0920ef6",
-    "compilerBuildHash": "sha256:be1ae19c93593aeb3deafe1915cb3c6a21581e953adb251306fc3a4f7129b13e",
-    "compilerContentHash": "sha256:707c95ef6821c50df08afeabe5d67625ff28d9b8ec73bb5bd84b47f9054db910",
+    "oracleBytes": 1828,
+    "oracleHash": "sha256:be045dba9c2bbee109439e0280a28b563b50f1a3ceee4c8783ce34fed8d1429d",
     "physicalRoadsHash": "sha256:2c4bc7f20bed4a142c8a949dc921f87630e6d5dd4e209197b6a923e27af6fefc",
+    "sourceLockHash": "sha256:77818d5520afc3f5a24f8b5bcf11016369057a788b06ad624bb3790ebaccbcc1",
     "xodrBytes": 2101550,
     "xodrHash": "sha256:f9119c2fa0c73093c2c2d15d262ede56fbcefd3de091f652523559aca13d3481"
   },
@@ -25,13 +62,15 @@
       "status": "PASS"
     },
     {
+      "compilerArtifactCount": 9,
+      "exactCompilerIdentityMatched": true,
       "featureCount": 40,
       "name": "INPUT_LOCK",
       "status": "PASS",
       "storedPropertyCount": 15
     },
     {
-      "databaseFingerprint": "sha256:ee416f09007958a4f4c1be12c9d4d115ae1eb0eea0800220ad5eab0b71047828",
+      "databaseFingerprint": "sha256:ada8811010c8f546884c650e2aafbe2f7e64e199f749c038f1462d80b587d4c8",
       "name": "DATABASE_PREREQUISITES",
       "postgisExtensionSchema": "public",
       "postgisVersion": "3.6.4",
@@ -39,7 +78,7 @@
       "status": "PASS"
     },
     {
-      "databaseFingerprint": "sha256:ee416f09007958a4f4c1be12c9d4d115ae1eb0eea0800220ad5eab0b71047828",
+      "databaseFingerprint": "sha256:ada8811010c8f546884c650e2aafbe2f7e64e199f749c038f1462d80b587d4c8",
       "name": "CREATE_DISPOSABLE_SCHEMA",
       "status": "PASS"
     },

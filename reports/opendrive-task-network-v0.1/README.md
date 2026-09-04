@@ -6,7 +6,7 @@ This directory is the machine-readable handoff boundary for the locked `airport2
 - `artifacts/` contains deterministic compiler output and `SHA256SUMS`.
 - `GOWM_GRAPH_REPORT.json` is produced by `admit`; dry-run is explicitly `NOT_RUN` for database acceptance.
 - `ROUTING_E2E_REPORT.json` is produced by `verify`; it may claim `PASS` only after real Network Provider calls.
-- `GDPS_IMPORT_REPORT.json` is the redacted real PG18/PostGIS acceptance evidence produced by the authoritative GDPS repository workflow and consumed here as cross-repository evidence.
+- `GDPS_IMPORT_REPORT.json` is the redacted real PG18/PostGIS acceptance evidence produced by the authoritative GDPS repository workflow. It binds the trusted GDPS source lock, all nine compiler artifacts, exact compiler/Dataset/Graph identities, and the GDPS Provider implementation digest.
 - `FINAL_ACCEPTANCE_REPORT.json` aggregates the current-run evidence without upgrading `NOT_RUN` or `BLOCKED` states.
 
 Reports must not contain database credentials, Provider tokens, or unnecessary absolute host paths. The only valid gate states are `PASS`, `FAIL`, `NOT_RUN`, and `BLOCKED`.
