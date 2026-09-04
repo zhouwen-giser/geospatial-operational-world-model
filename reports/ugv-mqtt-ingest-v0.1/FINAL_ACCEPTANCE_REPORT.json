@@ -1,9 +1,17 @@
 {
   "status": "BLOCKED",
   "baselineSha": "8eeb3cfc3dad19e0d4480a6b22cfd43e7b6cd89b",
+  "finalImplementationSha": "99614d7fba7baec2ab3855b6970950eb9a9c0b95",
   "branch": "codex/ugv-mqtt-canonical-ingest-v0.1",
   "sourceRevision": "c10620572a7e1f0a881a8bd97198618bcf5d3d5a",
   "sourceModified": false,
+  "modifiedFileCategories": ["environment and Compose configuration", "migration 070", "UGV ingest service", "canonical contracts and mapping", "focused unit/integration tests", "runtime validation scripts", "acceptance reports"],
+  "identityExamples": {
+    "observationId": "ugvobs_03d8934f7c5c8c755516ee43785072db475139b2fd02a7e9a1dbeff10a4f7676",
+    "eventId": "ugvevt_1087eef50e2c10d940a486448ce7336ed1cc537550ceb904eed5bc5f979eab96",
+    "trackletId": "fc37aca1-c84f-4116-9fb4-41be7386269d"
+  },
+  "canonicalScope": { "dataScopeKey": "airport-sim-ugv-01", "sourceKey": "ugv-airport-sim-mqtt", "analysisSpaceKey": "airport-utm48n", "analysisSrid": 32648 },
   "blockers": [
     "Generated source contracts mqtt_topics.json, mcp_ugv.json and error_codes.json are absent from doc/equipment/schema.",
     "Source bridge_config.yaml and the live broker publish /ugv/speed at QoS 0; consumer subscription QoS 1 cannot upgrade it or create a PUBACK.",

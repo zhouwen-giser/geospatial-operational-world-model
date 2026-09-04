@@ -9,6 +9,7 @@
     "outbox": { "delivered": 37, "pending": 0, "deadLetter": 0 },
     "topicAccepted": { "status/ugv": 2, "/ugv/area_recon/exception": 1, "/ugv/area_recon/status": 9, "/ugv/area_recon/targets": 6, "/ugv/gnss": 4, "/ugv/mission_state": 5, "/ugv/speed": 3 },
     "intentionalInvalidGnssDeadLetters": 1,
+    "identityExamples": { "observationId": "ugvobs_03d8934f7c5c8c755516ee43785072db475139b2fd02a7e9a1dbeff10a4f7676", "eventId": "ugvevt_1087eef50e2c10d940a486448ce7336ed1cc537550ceb904eed5bc5f979eab96" },
     "marker": "PASS_CONSUMER_HARNESS_NOT_SOURCE_ACCEPTANCE"
   },
   "brokerProbe": {
@@ -25,5 +26,6 @@
     "evidenceSha256": "7975150bce05ef60cd239495a22de793ab1dfe4c5509335d42e66f211bbd601f"
   },
   "sourceTopicConflict": "bridge_config.yaml declares device_id ugv1 and mqtt_topic status/ugv1, while the fixed task contract requires status/ugv",
-  "authorityIsolation": { "speedMirrorSuppressed": true, "missionMirrorSuppressed": true, "chassisReconEnumsSeparated": true }
+  "authorityIsolation": { "speedMirrorSuppressed": true, "missionMirrorSuppressed": true, "chassisReconEnumsSeparated": true },
+  "canonicalScope": { "dataScopeKey": "airport-sim-ugv-01", "sourceKey": "ugv-airport-sim-mqtt", "analysisSpaceKey": "airport-utm48n", "analysisSrid": 32648 }
 }

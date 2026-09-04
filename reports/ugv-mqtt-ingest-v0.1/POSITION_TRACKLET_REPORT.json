@@ -9,7 +9,7 @@
   "mismatchedCallerPositionError": "POSITION_TRANSFORM_MISMATCH",
   "consumerHarness": {
     "status": "PASS",
-    "vehicleTracklet": { "srid": 32648, "sampleCount": 3 },
+    "vehicleTracklet": { "trackletId": "fc37aca1-c84f-4116-9fb4-41be7386269d", "srid": 32648, "sampleCount": 3 },
     "trackletsRebuilt": 7,
     "trackletsFinalized": 7,
     "currentProjectionRows": 8,
