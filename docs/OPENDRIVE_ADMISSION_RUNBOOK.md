@@ -65,7 +65,7 @@ The destructive real-database regression is opt-in and must point only at the ad
 
 ```bash
 GOWM_OPENDRIVE_DEV_REGRESSION_ADMIN_URL='postgresql://<user>:<password>@127.0.0.1:<isolated-port>/postgres' \
-  npm run validate:opendrive-development-db
+  npx vitest run tests/integration/opendrive-development-scope-postgres.test.ts
 ```
 
 It verifies successful bootstrap-scope reuse, single-scope Situation Provider readiness, atomic repeated-admission rejection, and rejection of extra-scope, incorrect-metadata, and existing-graph collisions.
