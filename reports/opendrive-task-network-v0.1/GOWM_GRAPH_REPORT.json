@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "reportKind": "GOWM_OPENDRIVE_GRAPH_ADMISSION",
   "status": "PASS",
-  "generatedAt": "2026-09-04T08:06:17.051Z",
+  "generatedAt": "2026-09-04T10:40:02.282Z",
   "checks": [
     {
       "id": "ARTIFACT_CONTRACT",
@@ -20,7 +20,7 @@
       "summary": "Explicit mutation switch, permitted database identity, instance fingerprint, and development project gates matched",
       "evidence": {
         "database": "gowm",
-        "fingerprint": "sha256:d3d6497e3167384f494222b09fa2e7a74f9d4d93709c4e76bbc817cef4990a5d"
+        "fingerprint": "sha256:e96b4b895634e875bcc3fd40ee8086b65241545bdfe539159644530d752511eb"
       }
     },
     {
@@ -38,6 +38,38 @@
         "arc_cost_count": 488,
         "partial_snapshot_count": 1,
         "activation_count": 1
+      }
+    },
+    {
+      "id": "DEVELOPMENT_BASELINE_SCOPE_REUSE",
+      "status": "PASS",
+      "summary": "The explicitly authorized gowm database reused the unique exact default bootstrap scope without inserting another scope",
+      "evidence": {
+        "scopeCount": 1,
+        "scopeKey": "default",
+        "operationalDomain": "TEST",
+        "description": "GOWM v1.1 compatibility scope",
+        "scopeInserted": false
+      }
+    },
+    {
+      "id": "DEVELOPMENT_SCOPE_COLLISION_REGRESSION",
+      "status": "PASS",
+      "summary": "Real PostgreSQL regression proved single-scope Provider readiness and atomic failure for every protected collision",
+      "evidence": {
+        "situationProviderReady": true,
+        "situationProviderScopeCount": 1,
+        "successfulAdmission": {
+          "edges": 244,
+          "arcs": 244,
+          "turns": 336
+        },
+        "rejectedWithoutMutation": [
+          "repeat-identical-admission",
+          "extra-data-scope",
+          "incorrect-bootstrap-scope-metadata",
+          "existing-target-graph"
+        ]
       }
     }
   ],

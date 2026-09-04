@@ -93,13 +93,16 @@ export function catalogGeoJson(feature: Pick<PlannedCatalogFeature, "coordinates
 async function insertCatalog(
   client: PoolClient,
   materialized: OpenDriveAdmissionMaterialization,
-  configuration: AdmissionConfiguration
+  configuration: AdmissionConfiguration,
+  createScope: boolean
 ): Promise<{ datasetId: string; datasetVersionId: string }> {
-  await client.query(
-    `INSERT INTO data_scope(scope_key,operational_domain,description)
-     VALUES($1,'TEST','Disposable OpenDRIVE task-network acceptance scope')`,
-    [configuration.dataScopeKey]
-  );
+  if (createScope) {
+    await client.query(
+      `INSERT INTO data_scope(scope_key,operational_domain,description)
+       VALUES($1,'TEST','Disposable OpenDRIVE task-network acceptance scope')`,
+      [configuration.dataScopeKey]
+    );
+  }
   const dataset = await client.query<{ dataset_id: string }>(
     `INSERT INTO spatial_dataset(reference_key,data_scope_key,dataset_scope_key,dataset_key,name)
      VALUES($1,$2,$3,$4,$5) RETURNING dataset_id::text`,
@@ -359,10 +362,37 @@ async function verifyDatabaseState(
   return counts;
 }
 
+export interface AdmissionCollisionState {
+  readonly scopeCount: number;
+  readonly targetScopeCount: number;
+  readonly targetScopeExact: boolean;
+  readonly graphCollision: boolean;
+  readonly datasetCollision: boolean;
+  readonly datasetVersionCollision: boolean;
+  readonly graphVersionCollision: boolean;
+}
+
+export function assertAdmissionPreconditions(
+  state: AdmissionCollisionState,
+  reuseExistingDevelopmentScope: boolean
+): void {
+  if (state.graphCollision || state.datasetCollision || state.datasetVersionCollision || state.graphVersionCollision) {
+    throw new Error("target graph, Dataset identity/version, or graph content already exists; admission is not repeatable");
+  }
+  if (reuseExistingDevelopmentScope) {
+    if (state.scopeCount !== 1 || state.targetScopeCount !== 1 || !state.targetScopeExact) {
+      throw new Error("development admission requires the unique exact GOWM v1.1 baseline data scope");
+    }
+  } else if (state.targetScopeCount !== 0) {
+    throw new Error("disposable admission target scope already exists; use a new one-time database scope");
+  }
+}
+
 async function mutateDatabase(
   client: PoolClient,
   materialized: OpenDriveAdmissionMaterialization,
-  configuration: AdmissionConfiguration
+  configuration: AdmissionConfiguration,
+  reuseExistingDevelopmentScope: boolean
 ): Promise<{ graphVersionId: string; counts: Record<string, number> }> {
   await client.query("BEGIN ISOLATION LEVEL SERIALIZABLE");
   try {
@@ -370,13 +400,37 @@ async function mutateDatabase(
       `SELECT count(*)::text AS migration_count FROM schema_migration WHERE version ~ '^069_'`
     );
     if (Number(migration.rows[0]?.migration_count ?? 0) !== 1) throw new Error("database is not at the required migration 069 baseline");
-    const existing = await client.query(
-      `SELECT 1 FROM data_scope WHERE scope_key=$1
-       UNION ALL SELECT 1 FROM network_graph WHERE graph_key=$2 LIMIT 1`,
-      [configuration.dataScopeKey, configuration.graphKey]
+    const collision = await client.query<{
+      scope_count: string; target_scope_count: string; target_scope_exact: boolean;
+      graph_collision: boolean; dataset_collision: boolean; dataset_version_collision: boolean;
+      graph_version_collision: boolean;
+    }>(`SELECT
+          (SELECT count(*)::text FROM data_scope) AS scope_count,
+          (SELECT count(*)::text FROM data_scope WHERE scope_key=$1) AS target_scope_count,
+          EXISTS(SELECT 1 FROM data_scope WHERE scope_key=$1 AND operational_domain='TEST'
+            AND description='GOWM v1.1 compatibility scope') AS target_scope_exact,
+          EXISTS(SELECT 1 FROM network_graph WHERE graph_key=$2) AS graph_collision,
+          EXISTS(SELECT 1 FROM spatial_dataset WHERE reference_key=$3 OR
+            (data_scope_key=$1 AND dataset_scope_key=$4 AND dataset_key=$5)) AS dataset_collision,
+          EXISTS(SELECT 1 FROM spatial_dataset_version WHERE version=$6 OR content_hash=$7) AS dataset_version_collision,
+          EXISTS(SELECT 1 FROM network_graph_version WHERE graph_version=$8 OR content_hash=$9 OR topology_hash=$10) AS graph_version_collision`,
+      [configuration.dataScopeKey, configuration.graphKey, materialized.datasetReferenceKey,
+        configuration.datasetScopeKey, `opendrive:${configuration.graphKey}`, materialized.datasetVersion,
+        materialized.datasetContentHash, materialized.graphVersion, materialized.graphContentHash,
+        materialized.topology.topologyHash]
     );
-    if ((existing.rowCount ?? 0) > 0) throw new Error("disposable admission scope or graph already exists; use a new one-time database");
-    const { datasetId, datasetVersionId } = await insertCatalog(client, materialized, configuration);
+    const state = collision.rows[0];
+    if (!state) throw new Error("admission collision state is unavailable");
+    assertAdmissionPreconditions({
+      scopeCount: Number(state.scope_count),
+      targetScopeCount: Number(state.target_scope_count),
+      targetScopeExact: state.target_scope_exact,
+      graphCollision: state.graph_collision,
+      datasetCollision: state.dataset_collision,
+      datasetVersionCollision: state.dataset_version_collision,
+      graphVersionCollision: state.graph_version_collision
+    }, reuseExistingDevelopmentScope);
+    const { datasetId, datasetVersionId } = await insertCatalog(client, materialized, configuration, !reuseExistingDevelopmentScope);
     const graph = await client.query<{ graph_id: string }>(
       `INSERT INTO network_graph(data_scope_key,dataset_scope_key,dataset_id,graph_key,description)
        VALUES($1,$2,$3,$4,$5) RETURNING graph_id::text`,
@@ -557,7 +611,7 @@ export async function runAdmission(
         const identity = await inspectDatabaseIdentity(client);
         const fingerprint = assertMutationAuthorized(authorization, identity);
         checks.push({ id: "DATABASE_MUTATION_GUARD", status: "PASS", summary: "Explicit mutation switch, permitted database identity, instance fingerprint, and development project gates matched", evidence: { database: identity.database, fingerprint } });
-        const admitted = await mutateDatabase(client, materialized, configuration);
+        const admitted = await mutateDatabase(client, materialized, configuration, identity.database === "gowm");
         checks.push({ id: "REAL_DATABASE_ADMISSION", status: "PASS", summary: "Catalog, immutable graph content, profiles, costs, partial conditions, receipt, and activation committed in one transaction", evidence: admitted.counts });
         result = {
           status: "PASS",

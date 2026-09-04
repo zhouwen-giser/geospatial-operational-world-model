@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "reportKind": "OPENDRIVE_TASK_NETWORK_FINAL_ACCEPTANCE",
   "status": "PASS",
-  "generatedAt": "2026-09-04T09:25:39.983010Z",
+  "generatedAt": "2026-09-04T10:40:02.282Z",
   "checks": [
     {
       "id": "SOURCE",
@@ -17,7 +17,7 @@
     {
       "id": "GOWMDATABASE",
       "status": "PASS",
-      "summary": "gowmDatabase current-run evidence is PASS"
+      "summary": "gowmDatabase current-run evidence is PASS, including fail-closed reuse of the unique default development scope"
     },
     {
       "id": "GDPSDATABASE",

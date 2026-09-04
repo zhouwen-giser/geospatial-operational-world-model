@@ -59,6 +59,17 @@ unset GOWM_OPENDRIVE_ALLOW_DB_MUTATION GOWM_OPENDRIVE_ALLOW_DEVELOPMENT_DATABASE
 
 `GOWM_OPENDRIVE_EXPECTED_COMPOSE_PROJECT` and `COMPOSE_PROJECT_NAME` must both be valid, non-empty, and byte-identical. The fingerprint includes the database name, server address/port, and PostgreSQL system identifier. Copying a fingerprint or project name from another deployment therefore does not authorize the current instance. `admit --show-db-fingerprint` is read-only even if mutation variables happen to be present.
 
+The `gowm` development database is the only admission target allowed to reuse a scope. It reuses, but never reinserts, the normal bootstrap row only when the database contains exactly one scope and that row exactly matches `GOWM_OPENDRIVE_DATA_SCOPE_KEY=default`, operational domain `TEST`, and description `GOWM v1.1 compatibility scope`. An extra scope, changed metadata, existing target graph, Dataset identity/version, or target graph content fails the transaction closed. A second admission of the same artifacts is therefore rejected without changing any catalog or graph rows. Disposable `gowm_opendrive_*` databases continue to require an absent target scope.
+
+The destructive real-database regression is opt-in and must point only at the administrator URL of an isolated PostgreSQL instance whose `gowm` database may be dropped and recreated:
+
+```bash
+GOWM_OPENDRIVE_DEV_REGRESSION_ADMIN_URL='postgresql://<user>:<password>@127.0.0.1:<isolated-port>/postgres' \
+  npm run validate:opendrive-development-db
+```
+
+It verifies successful bootstrap-scope reuse, single-scope Situation Provider readiness, atomic repeated-admission rejection, and rejection of extra-scope, incorrect-metadata, and existing-graph collisions.
+
 Required scope settings are `GOWM_OPENDRIVE_DATA_SCOPE_KEY`, `GOWM_OPENDRIVE_DATASET_SCOPE_KEY`, and `GOWM_OPENDRIVE_GRAPH_KEY`. Successful admission creates two Catalog layers, 244 routing Features/Edges/Arcs/bindings, 336 pairwise `ALLOWED_ONLY` rules, one 5000 mm/s service TravelProfile, distance and fastest CostProfiles with complete ArcCost coverage, one empty `PARTIAL` ConditionSnapshot, BuildRun/ValidationIssue evidence, and an active GraphVersion.
 
 ## Provider verification
