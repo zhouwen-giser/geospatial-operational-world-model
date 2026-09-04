@@ -7,5 +7,14 @@
   "statePatchProjected": true,
   "mismatchedCallerPositionHttpStatus": 422,
   "mismatchedCallerPositionError": "POSITION_TRANSFORM_MISMATCH",
-  "tracklet": "Projection queue creation is proven; multi-point MobilityDB tracklet is NOT_RUN because seven-stream E2E is source-blocked."
+  "consumerHarness": {
+    "status": "PASS",
+    "vehicleTracklet": { "srid": 32648, "sampleCount": 3 },
+    "trackletsRebuilt": 7,
+    "trackletsFinalized": 7,
+    "currentProjectionRows": 8,
+    "targetEvidenceComplete": "4/4",
+    "projectionRestartIdempotent": true,
+    "sourceContractAuthority": "NOT_ASSERTED"
+  }
 }

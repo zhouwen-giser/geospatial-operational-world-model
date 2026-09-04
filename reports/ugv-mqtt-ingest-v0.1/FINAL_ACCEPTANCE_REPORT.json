@@ -14,10 +14,18 @@
     { "name": "position-auto-projection", "status": "PASS" },
     { "name": "migration-001-070", "status": "PASS" },
     { "name": "seven-stream-contract", "status": "BLOCKED" },
-    { "name": "qos1-crash-redelivery", "status": "BLOCKED" },
-    { "name": "real-seven-stream-e2e", "status": "NOT_RUN" },
-    { "name": "performance-100mps-10m", "status": "NOT_RUN" }
+    { "name": "qos1-crash-redelivery-consumer-harness", "status": "PASS" },
+    { "name": "seven-stream-mapping-consumer-harness", "status": "PASS" },
+    { "name": "api-db-broker-adapter-recovery", "status": "PASS" },
+    { "name": "projection-tracklet-timeline", "status": "PASS" },
+    { "name": "performance-100mps-10m", "status": "PASS" },
+    { "name": "real-source-seven-stream-reliability", "status": "BLOCKED" }
   ],
-  "allowedClaim": "Consumer implementation is present for seven authority streams, but final reliable seven-stream acceptance is blocked by the immutable source contract.",
+  "consumerAcceptance": {
+    "status": "PASS",
+    "performance": { "durationSeconds": 600.0120182709999, "rateMessagesPerSecond": 109.99779669444989, "durableMessages": 66000, "deadLetters": 0 },
+    "evidenceScope": "disposable PostgreSQL/Mosquitto/HTTP stack with contract-shaped fixtures; not source-contract authority"
+  },
+  "allowedClaim": "The consumer implementation passes durable seven-stream mapping, recovery, projection and 100 msg/s-class local acceptance; final reliable source acceptance is blocked by the immutable source contract.",
   "forbiddenClaims": ["end-to-end exactly once", "validated source event time", "validated positioning accuracy", "production deployment"]
 }

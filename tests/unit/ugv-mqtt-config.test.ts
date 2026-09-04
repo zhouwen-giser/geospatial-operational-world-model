@@ -13,7 +13,7 @@ describe("UGV MQTT ingest configuration",() => {
   it("loads the fixed safe defaults",async () => {
     const config = await loadUgvIngestConfig();
     expect(config).toMatchObject({ clientId: "gowm-ugv-ingest-airport-01",originKind: "SIMULATION",
-      analysisSpaceKey: "airport-utm48n",analysisSrid: 32648,receiveMaximum: 1,
+      analysisSpaceKey: "airport-utm48n",analysisSrid: 32648,receiveMaximum: 1,processConcurrency: 8,deliveryConcurrency: 8,
       worldEpoch: "airport-run-test",trackerSessionKey: "airport-run-test:ugv" });
   });
 
@@ -32,6 +32,9 @@ describe("UGV MQTT ingest configuration",() => {
     vi.stubEnv("UGV_MQTT_RECEIVE_MAXIMUM","65536");
     await expect(loadUgvIngestConfig()).rejects.toThrow(/at most 65535/u);
     vi.stubEnv("UGV_MQTT_RECEIVE_MAXIMUM","1");
+    vi.stubEnv("UGV_MQTT_PROCESS_CONCURRENCY","65");
+    await expect(loadUgvIngestConfig()).rejects.toThrow(/must not exceed 64/u);
+    vi.stubEnv("UGV_MQTT_PROCESS_CONCURRENCY","8");
     vi.stubEnv("UGV_ANALYSIS_SRID","32650");
     await expect(loadUgvIngestConfig()).rejects.toThrow(/EPSG:32648/u);
     vi.stubEnv("UGV_ANALYSIS_SRID","32648");

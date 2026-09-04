@@ -9,7 +9,8 @@ export interface UgvIngestConfig {
   worldEpoch: string; trackerSessionKey: string; analysisSpaceKey: string; analysisSrid: number;
   observationApiUrl: string; arrivalUncertaintyMs: number; port: number; codeVersion: string;
   maximumPendingInbox: number; maxTargetsPerFrame: number; httpTimeoutMs: number;
-  receiveMaximum: number;
+  receiveMaximum: number; processConcurrency: number; deliveryConcurrency: number;
+  faultExitAfterInboxCommits?: number;
   samplingPolicy: UgvSamplingPolicy;
 }
 
@@ -26,6 +27,13 @@ function integer(name: string, fallback: number): number {
 function numeric(name: string,fallback: number): number {
   const value = Number(process.env[name] ?? fallback);
   if (!Number.isFinite(value) || value <= 0) throw new Error(`${name} must be a positive number`);
+  return value;
+}
+function optionalPositiveInteger(name: string): number | undefined {
+  const raw = process.env[name]?.trim();
+  if (!raw) return undefined;
+  const value = Number(raw);
+  if (!Number.isSafeInteger(value) || value <= 0) throw new Error(`${name} must be a positive safe integer when set`);
   return value;
 }
 async function optionalFile(name: string): Promise<Buffer | undefined> {
@@ -59,6 +67,10 @@ export async function loadUgvIngestConfig(): Promise<UgvIngestConfig> {
   if (maxTargetsPerFrame > 256) throw new Error("UGV_MQTT_MAX_TARGETS_PER_FRAME must not exceed the source contract ceiling of 256");
   const receiveMaximum = integer("UGV_MQTT_RECEIVE_MAXIMUM",1);
   if (receiveMaximum > 65_535) throw new Error("UGV_MQTT_RECEIVE_MAXIMUM must be at most 65535");
+  const processConcurrency = integer("UGV_MQTT_PROCESS_CONCURRENCY",8);
+  const deliveryConcurrency = integer("UGV_MQTT_DELIVERY_CONCURRENCY",8);
+  if (processConcurrency > 64 || deliveryConcurrency > 64) throw new Error("UGV MQTT worker concurrency must not exceed 64");
+  const faultExitAfterInboxCommits = optionalPositiveInteger("UGV_MQTT_FAULT_EXIT_AFTER_INBOX_COMMITS");
   const samplingPolicy: UgvSamplingPolicy = {
     version: process.env.UGV_MQTT_SAMPLING_POLICY_VERSION ?? DEFAULT_UGV_SAMPLING_POLICY.version,
     gnssMinimumIntervalMs: integer("UGV_MQTT_GNSS_MIN_INTERVAL_MS",DEFAULT_UGV_SAMPLING_POLICY.gnssMinimumIntervalMs),
@@ -89,6 +101,7 @@ export async function loadUgvIngestConfig(): Promise<UgvIngestConfig> {
       process.env.GOWM_OBSERVATION_API_URL ?? "http://observation-ingest:3002",["http:","https:"]),
     arrivalUncertaintyMs: integer("UGV_MQTT_ARRIVAL_TIME_UNCERTAINTY_MS",1000),port: integer("UGV_MQTT_INGEST_PORT",3010),
     codeVersion: process.env.SERVICE_REVISION ?? "dev",maximumPendingInbox: integer("UGV_MQTT_MAX_PENDING_INBOX",10_000),
-    maxTargetsPerFrame,httpTimeoutMs: integer("UGV_MQTT_HTTP_TIMEOUT_MS",5_000),receiveMaximum,samplingPolicy
+    maxTargetsPerFrame,httpTimeoutMs: integer("UGV_MQTT_HTTP_TIMEOUT_MS",5_000),receiveMaximum,processConcurrency,deliveryConcurrency,
+    ...(faultExitAfterInboxCommits === undefined ? {} : { faultExitAfterInboxCommits }),samplingPolicy
   };
 }

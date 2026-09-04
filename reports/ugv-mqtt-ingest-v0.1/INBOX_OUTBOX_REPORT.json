@@ -4,7 +4,14 @@
   "database": { "postgresql": "18.6", "postgis": "3.6.x", "mobilitydb": "1.3.x", "migrationsApplied": 70 },
   "tables": ["mqtt_session", "inbox_message", "packet_slot", "stream_cursor", "outbox_message"],
   "rawBeforeAck": true,
+  "atomicAcceptFunction": "ugv_ingest.accept_message",
+  "ackDatabaseRoundTripsPerPublish": 1,
+  "workerConcurrency": { "mappingDefault": 8, "deliveryDefault": 8, "maximumEach": 64 },
   "poisonMessageAudit": true,
   "outboxUniqueness": ["inbox_message_id+ordinal", "destination_kind+idempotency_key"],
-  "secretsStored": false
+  "mapperContextPersisted": true,
+  "mapperContextSecretFieldsStored": false,
+  "pendingIsolation": ["mqtt client", "broker", "mapper context hash"],
+  "secretsStored": false,
+  "integrationTests": { "database": "disposable v9", "tests": 4, "status": "PASS" }
 }

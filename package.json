@@ -173,7 +173,12 @@
     "validate:ugv-mqtt-redelivery": "vitest run tests/unit/ugv-mqtt-redelivery.test.ts && npm run validate:ugv-mqtt-db",
     "validate:ugv-mqtt-db": "vitest run tests/integration/ugv-mqtt-repository.integration.test.ts",
     "validate:ugv-mqtt-e2e": "node --import tsx validation/scripts/ugv-mqtt-e2e.ts",
+    "validate:ugv-mqtt-publish-fixtures": "node --import tsx validation/scripts/ugv-mqtt-publish-fixtures.ts",
+    "validate:ugv-mqtt-consumer-harness": "node --import tsx validation/scripts/ugv-mqtt-consumer-harness.ts",
+    "validate:ugv-mqtt-reliability": "node --import tsx validation/scripts/ugv-mqtt-reliability-e2e.ts",
+    "validate:ugv-mqtt-source-probe": "node --import tsx validation/scripts/ugv-mqtt-source-probe.ts",
     "validate:ugv-mqtt-performance": "node --import tsx validation/scripts/ugv-mqtt-performance.ts",
+    "validate:ugv-mqtt-performance-run": "node --import tsx validation/scripts/ugv-mqtt-performance-run.ts",
     "validate:ugv-mqtt-final": "node --import tsx validation/scripts/ugv-mqtt-final.ts",
     "dev-deploy": "bash scripts/dev-deploy.sh up",
     "package:dev-deployment": "bash scripts/package-dev-deployment.sh"

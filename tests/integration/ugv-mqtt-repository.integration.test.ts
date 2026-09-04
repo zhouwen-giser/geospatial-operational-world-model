@@ -47,7 +47,7 @@ integration("UGV MQTT durable repository on isolated PostgreSQL",() => {
   afterAll(async () => { await pool?.end(); });
 
   it("commits before ACK, deduplicates DUP and preserves immutable outbox bytes",async () => {
-    const session = await repository.startSession("gowm-ugv-test","broker:1883",false,lock,"integration-test");
+    const session = await repository.startSession("gowm-ugv-test","broker:1883",false,lock,"integration-test",mapperConfig);
     const payload = Buffer.from('{"latitude":29.7195,"longitude":106.81485,"altitude":500}');
     const first = await repository.accept(session.sessionId,"/ugv/gnss",payload,
       { messageId: 7,qos: 1,dup: false,retain: false },"2026-09-04T00:00:00.000Z");
@@ -62,13 +62,17 @@ integration("UGV MQTT durable repository on isolated PostgreSQL",() => {
     const beforeAck = await repository.accept(session.sessionId,"/ugv/gnss",payload,
       { messageId: 7,qos: 1,dup: true,retain: false },"2026-09-04T00:00:00.100Z");
     expect(beforeAck).toMatchObject({ messageId: first.messageId,redelivery: true,packetGeneration: 1 });
+    expect((await pool.query("SELECT redelivery_count FROM ugv_ingest.inbox_message WHERE message_id=$1",[first.messageId])).rows[0]?.redelivery_count).toBe(1);
     await expect(repository.accept(session.sessionId,"/ugv/gnss",Buffer.from('{"latitude":0,"longitude":0,"altitude":0}'),
       { messageId: 7,qos: 1,dup: true },"2026-09-04T00:00:00.200Z")).rejects.toMatchObject({ code: "MQTT_PACKET_CONFLICT" });
     await expect(repository.markPuback(session.sessionId,7,2)).rejects.toThrow(/generation/u);
     await repository.markPuback(session.sessionId,7,1);
+    await repository.markPuback(session.sessionId,7,1);
     const afterAckDup = await repository.accept(session.sessionId,"/ugv/gnss",payload,
       { messageId: 7,qos: 1,dup: true },"2026-09-04T00:00:00.300Z");
-    expect(afterAckDup.messageId).toBe(first.messageId);
+    expect(afterAckDup).toMatchObject({ redelivery: false,packetGeneration: 2 });
+    expect(afterAckDup.messageId).not.toBe(first.messageId);
+    await repository.markPuback(session.sessionId,7,2);
 
     const ackWriteRace = await repository.accept(session.sessionId,"/ugv/gnss",payload,
       { messageId: 9,qos: 1,dup: false },"2026-09-04T00:00:00.400Z");
@@ -77,7 +81,7 @@ integration("UGV MQTT durable repository on isolated PostgreSQL",() => {
     expect(safelyReused).toMatchObject({ redelivery: false,packetGeneration: 2 });
     await expect(repository.markPuback(session.sessionId,9,ackWriteRace.packetGeneration ?? 0)).rejects.toThrow(/generation/u);
 
-    const pending = await repository.nextPending();
+    const pending = await repository.nextPending("gowm-ugv-test","broker:1883");
     expect(pending?.messageId).toBe(first.messageId);
     if (!pending) throw new Error("committed inbox message was not processable");
     await repository.storeMapping(pending,mapUgvMessage(pending,mapperConfig),mapperConfig.mapperVersion);
@@ -98,7 +102,7 @@ integration("UGV MQTT durable repository on isolated PostgreSQL",() => {
 
     const reused = await repository.accept(session.sessionId,"/ugv/gnss",Buffer.from('{"latitude":29.72,"longitude":106.82,"altitude":501}'),
       { messageId: 7,qos: 1,dup: false },"2026-09-04T00:00:01.000Z");
-    expect(reused).toMatchObject({ redelivery: false,packetGeneration: 2 });
+    expect(reused).toMatchObject({ redelivery: false,packetGeneration: 3 });
     expect(reused.messageId).not.toBe(first.messageId);
 
     const poisonBytes = Buffer.from("{not-json");
@@ -110,7 +114,48 @@ integration("UGV MQTT durable repository on isolated PostgreSQL",() => {
     );
     expect(poisonRow.rows[0]?.raw_payload.equals(poisonBytes)).toBe(true);
     expect(poisonRow.rows[0]?.processing_state).toBe("DEAD_LETTER");
-    expect((await pool.query("SELECT count(*)::int AS count FROM ugv_ingest.inbox_message WHERE packet_id=7")).rows[0]?.count).toBe(2);
+    expect((await pool.query("SELECT count(*)::int AS count FROM ugv_ingest.inbox_message WHERE packet_id=7")).rows[0]?.count).toBe(3);
+  });
+
+  it("rejects a source schema change inside an active persistent session",async () => {
+    const first = await repository.startSession("gowm-schema-lock-test","broker:1883",false,lock,"integration-test",mapperConfig);
+    await expect(repository.startSession("gowm-schema-lock-test","broker:1883",true,
+      { ...lock,topicSchemaHash: "b".repeat(64) },"integration-test-next",mapperConfig))
+      .rejects.toMatchObject({ code: "SOURCE_SCHEMA_LOCK_CHANGED_WITH_ACTIVE_SESSION" });
+    expect(first.sessionLost).toBe(false);
+  });
+
+  it("isolates pending work and persistent cursors by MQTT client and mapper context",async () => {
+    const contextA = { ...mapperConfig,worldEpoch: "context-a",trackerSessionKey: "context-a:ugv" };
+    const contextB = { ...mapperConfig,worldEpoch: "context-b",trackerSessionKey: "context-b:ugv" };
+    const active = await repository.startSession("gowm-context-active","broker:1883",false,lock,"integration-test",contextA);
+    await expect(repository.startSession("gowm-context-active","broker:1883",true,lock,"integration-test",contextB))
+      .rejects.toMatchObject({ code: "MAPPER_CONTEXT_CHANGED_WITH_ACTIVE_SESSION" });
+    expect(active.sessionLost).toBe(false);
+    const storedContext = await pool.query<{ mapper_context: Record<string,unknown> }>(
+      "SELECT mapper_context FROM ugv_ingest.mqtt_session WHERE session_id=$1",[active.sessionId]
+    );
+    expect(storedContext.rows[0]?.mapper_context).toEqual(contextA);
+    expect(JSON.stringify(storedContext.rows[0]?.mapper_context)).not.toMatch(/password|databaseUrl|mqttUrl|observationApiUrl/iu);
+
+    const pendingSession = await repository.startSession("gowm-context-pending","broker:1883",false,lock,"integration-test",contextA);
+    await repository.accept(pendingSession.sessionId,"/ugv/gnss",
+      Buffer.from('{"latitude":29.7195,"longitude":106.81485,"altitude":500}'),
+      { messageId: 31,qos: 1,dup: false },"2026-09-04T02:00:00.000Z");
+    await expect(repository.startSession("gowm-context-pending","broker:1883",false,lock,"integration-test",contextB))
+      .rejects.toMatchObject({ code: "MAPPER_CONTEXT_CHANGED_WITH_PENDING_INBOX" });
+
+    const otherSession = await repository.startSession("gowm-context-other","broker:1883",false,lock,"integration-test",contextB);
+    const other = await repository.accept(otherSession.sessionId,"/ugv/gnss",
+      Buffer.from('{"latitude":29.72,"longitude":106.82,"altitude":501}'),
+      { messageId: 32,qos: 1,dup: false },"2026-09-04T02:00:01.000Z");
+    const otherPending = await repository.nextPending("gowm-context-other","broker:1883");
+    expect(otherPending).toMatchObject({ messageId: other.messageId,mapperConfig: contextB,cursor: {} });
+    if (!otherPending) throw new Error("other MQTT client had no isolated pending message");
+    await repository.storeMapping(otherPending,mapUgvMessage(otherPending,otherPending.mapperConfig),otherPending.mapperConfig.mapperVersion);
+    const originalPending = await repository.nextPending("gowm-context-pending","broker:1883");
+    expect(originalPending).toMatchObject({ mapperConfig: contextA,cursor: {} });
+    expect(originalPending?.messageId).not.toBe(other.messageId);
   });
 
   it("projects sourceGeometry in the named EPSG:32648 analysis space and rejects client drift",async () => {

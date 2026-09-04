@@ -1,6 +1,24 @@
 {
-  "status": "NOT_RUN",
+  "status": "PASS",
   "requiredRateMessagesPerSecond": 100,
   "requiredDurationSeconds": 600,
-  "reason": "Performance cannot be represented as accepted while the source contract blocks the seven-stream reliability gate."
+  "measured": {
+    "durationSeconds": 600.0120182709999,
+    "rateMessagesPerSecond": 109.99779669444989,
+    "publishedMessages": 66000,
+    "durableInboxMessages": 66000,
+    "maximumBacklog": 19,
+    "drainSeconds": 0.9972496270000701,
+    "finalInboxBacklog": 0,
+    "finalOutboxBacklog": 0,
+    "deadLetters": 0,
+    "cursorOrdered": true,
+    "latencyMs": { "inboxP50": 1.381, "inboxP95": 3.855, "inboxP99": 6.42196, "outboxP50": 91.012, "outboxP95": 183.58645, "outboxP99": 250.29294 },
+    "rssBytes": { "start": 165986304, "maximum": 176578560, "end": 161792000, "secondHalfSlopePerMinute": -3805354.49276154 },
+    "environment": { "postgresql": "18.6", "postgis": "3.6.4", "mobilitydb": "1.3.0" }
+  },
+  "topicCounts": { "status/ugv": 9429, "/ugv/area_recon/exception": 9428, "/ugv/area_recon/status": 9428, "/ugv/area_recon/targets": 9428, "/ugv/gnss": 9429, "/ugv/mission_state": 9429, "/ugv/speed": 9429 },
+  "evidenceSha256": "fd4ede8c015060ac23689ea3c864a0b95d49bc7cbecae6167fdbf5704e6deb11",
+  "marker": "UGV_MQTT_REAL_LOCAL_PERFORMANCE_NOT_SOURCE_ACCEPTANCE",
+  "sourceContractAuthority": "NOT_ASSERTED"
 }

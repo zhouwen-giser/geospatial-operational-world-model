@@ -24,7 +24,8 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
   let sourceLockError: string | undefined;
   try { sourceLock = await loadSourceSchemaLock(schemaDirectory); }
   catch (error) { sourceLockError = safeError(error); }
-  const pool = new pg.Pool({ connectionString: config.databaseUrl,max: 8 });
+  const pool = new pg.Pool({ connectionString: config.databaseUrl,
+    max: Math.max(8,Math.min(64,config.processConcurrency+config.deliveryConcurrency)) });
   await pool.query("SELECT 1");
   const repository = new UgvIngestRepository(pool,config.deviceId,config.maxPayloadBytes,config.maximumPendingInbox,
     sourceLock ? new SourceSchemaRegistry(sourceLock) : undefined);
@@ -34,21 +35,65 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
     ...(sourceLockError ? { lastError: sourceLockError } : {}) };
   let sessionId: string | undefined;
   let client: MqttClient | undefined;
+  let connectionGeneration = 0;
+  let sessionGate: {
+    generation: number;
+    promise: Promise<string | undefined>;
+    resolve: (sessionId: string | undefined) => void;
+  } = { generation: 0,promise: Promise.resolve(undefined),resolve: () => undefined };
+  const beginSession = (): number => {
+    const generation = ++connectionGeneration;
+    let resolve!: (value: string | undefined) => void;
+    const promise = new Promise<string | undefined>((resolver) => { resolve = resolver; });
+    sessionId = undefined;
+    delete state.sessionId;
+    sessionGate = { generation,promise,resolve };
+    return generation;
+  };
+  const waitForSession = (): Promise<string | undefined> => sessionId ? Promise.resolve(sessionId) : sessionGate.promise;
+  const setSession = (generation: number,value: string): boolean => {
+    if (sessionGate.generation !== generation || !state.connected) return false;
+    sessionId = value;
+    state.sessionId = value;
+    sessionGate.resolve(value);
+    return true;
+  };
+  const clearSession = (): void => {
+    sessionId = undefined;
+    delete state.sessionId;
+    sessionGate.resolve(undefined);
+    sessionGate = { generation: sessionGate.generation,promise: Promise.resolve(undefined),resolve: () => undefined };
+  };
+  const isCurrentConnection = (generation: number): boolean => sessionGate.generation === generation && state.connected;
   const pendingPubacks = new Map<number,number[]>();
+  let durableInboxCommits = 0;
   if (sourceLock) {
+    // MQTT.js can deliver a queued persistent-session PUBLISH while processing
+    // CONNACK, before its public `connect` event fires. Arm the session gate
+    // before opening the socket so customHandleAcks waits for the durable DB
+    // session instead of observing the initial resolved-empty placeholder.
+    beginSession();
     const options: IClientOptions = {
       protocolVersion: 5,clean: false,clientId: config.clientId,keepalive: config.keepaliveSeconds,
-      connectTimeout: config.connectTimeoutMs,reconnectPeriod: 1000,resubscribe: false,
+      connectTimeout: config.connectTimeoutMs,reconnectPeriod: 1000,resubscribe: false,manualConnect: true,
       properties: { sessionExpiryInterval: config.sessionExpirySeconds,receiveMaximum: config.receiveMaximum },
       ...(config.username ? { username: config.username } : {}),...(config.password ? { password: config.password } : {}),
       ...(config.ca ? { ca: config.ca } : {}),...(config.cert ? { cert: config.cert } : {}),...(config.key ? { key: config.key } : {}),
       customHandleAcks: (topic,payload,packet,done) => {
-        if (!isTopic(topic) || !sessionId) return done(135);
+        if (!isTopic(topic)) return done(135);
         const receivedAt = new Date().toISOString();
-        void repository.accept(sessionId,topic,payload,packet,receivedAt).then((accepted) => {
+        void waitForSession().then((activeSessionId) => {
+          if (!activeSessionId) throw new Error("MQTT connection closed before durable session initialization");
+          return repository.accept(activeSessionId,topic,payload,packet,receivedAt);
+        }).then((accepted) => {
           increment(state.messages,topic); if (accepted.redelivery) increment(state.redeliveries,topic);
           if (accepted.validationState !== "VALID") increment(state.invalid,`${topic}:${accepted.validationState}`);
           state.topicLastAt[topic] = Date.now();
+          durableInboxCommits += 1;
+          if (config.faultExitAfterInboxCommits === durableInboxCommits) {
+            process.kill(process.pid,"SIGKILL");
+            return;
+          }
           if (packet.messageId !== undefined && accepted.packetGeneration !== undefined) {
             const generations = pendingPubacks.get(packet.messageId) ?? [];
             generations.push(accepted.packetGeneration);
@@ -63,19 +108,23 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
       }
     };
     client = mqtt.connect(config.mqttUrl,options);
-    wireClient(client,config,sourceLock,repository,state,pendingPubacks,(value) => { sessionId = value; state.sessionId = value; });
+    wireClient(client,config,sourceLock,repository,state,pendingPubacks,
+      beginSession,() => sessionGate.generation,setSession,clearSession,isCurrentConnection,waitForSession);
+    client.connect();
   }
 
   let processing = false; let delivering = false;
   const processTimer = setInterval(() => {
     if (processing) return;
     processing = true;
-    void processOne(repository,mapperConfig(config),state).finally(() => { processing = false; });
+    void Promise.all(Array.from({ length: config.processConcurrency },() =>
+      processOne(repository,config.clientId,new URL(config.mqttUrl).host,state))).finally(() => { processing = false; });
   },25);
   const deliveryTimer = setInterval(() => {
     if (delivering) return;
     delivering = true;
-    void deliverOne(repository,config,state).finally(() => { delivering = false; });
+    void Promise.all(Array.from({ length: config.deliveryConcurrency },() =>
+      deliverOne(repository,config,state))).finally(() => { delivering = false; });
   },50);
   processTimer.unref(); deliveryTimer.unref();
 
@@ -104,17 +153,50 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
 }
 
 function wireClient(client: MqttClient,config: UgvIngestConfig,sourceLock: Awaited<ReturnType<typeof loadSourceSchemaLock>>,
-  repository: UgvIngestRepository,state: RuntimeState,pendingPubacks: Map<number,number[]>,setSession: (id: string) => void): void {
-  client.on("connect",(connack) => void (async () => {
-    state.connected = true; state.sessionPresent = connack.sessionPresent;
-    const session = await repository.startSession(config.clientId,new URL(config.mqttUrl).host,connack.sessionPresent,sourceLock,config.codeVersion);
-    setSession(session.sessionId);
-    if (session.sessionLost) { state.sessionLostTotal += 1; state.lastError = "MQTT_SESSION_LOST"; }
-    const requests = Object.fromEntries(UGV_AUTHORITY_TOPICS.map((topic) => [topic,{ qos: 1 as const }]));
-    const grants = await client.subscribeAsync(requests);
-    state.subscriptions = Object.fromEntries(grants.map((grant) => [grant.topic,grant.qos]));
-    await repository.setSubscriptions(session.sessionId,state.subscriptions);
-  })().catch((error) => { state.lastError = safeError(error); client.end(true); }));
+  repository: UgvIngestRepository,state: RuntimeState,pendingPubacks: Map<number,number[]>,beginSession: () => number,
+  currentSessionGeneration: () => number,
+  setSession: (generation: number,id: string) => boolean,clearSession: () => void,
+  isCurrentConnection: (generation: number) => boolean,waitForSession: () => Promise<string | undefined>): void {
+  client.on("reconnect",() => { beginSession(); });
+  // A resumed broker session may send queued PUBLISH packets before MQTT.js
+  // emits its public `connect` event. packetreceive(CONNACK) is the earliest
+  // ordered point where sessionPresent is known, so durable session creation
+  // must begin here to avoid a connect/PUBLISH acknowledgement deadlock.
+  client.on("packetreceive",(packet) => {
+    if (packet.cmd !== "connack") return;
+    state.connected = true;
+    state.sessionPresent = packet.sessionPresent;
+    const connectionGeneration = currentSessionGeneration();
+    void (async () => {
+      const session = await repository.startSession(config.clientId,new URL(config.mqttUrl).host,packet.sessionPresent,
+        sourceLock,config.codeVersion,mapperConfig(config));
+      if (!setSession(connectionGeneration,session.sessionId)) {
+        await repository.disconnect(session.sessionId,"mqtt_connection_closed_during_session_initialization");
+        return;
+      }
+      if (session.sessionLost) { state.sessionLostTotal += 1; state.lastError = "MQTT_SESSION_LOST"; }
+    })().catch((error) => {
+      if (!isCurrentConnection(connectionGeneration)) return;
+      state.lastError = safeError(error);
+      client.end(true);
+    });
+  });
+  client.on("connect",() => {
+    const connectionGeneration = currentSessionGeneration();
+    void (async () => {
+      const activeSessionId = await waitForSession();
+      if (!activeSessionId || !isCurrentConnection(connectionGeneration)) return;
+      const requests = Object.fromEntries(UGV_AUTHORITY_TOPICS.map((topic) => [topic,{ qos: 1 as const }]));
+      const grants = await client.subscribeAsync(requests);
+      if (!isCurrentConnection(connectionGeneration)) return;
+      state.subscriptions = Object.fromEntries(grants.map((grant) => [grant.topic,grant.qos]));
+      await repository.setSubscriptions(activeSessionId,state.subscriptions);
+    })().catch((error) => {
+      if (!isCurrentConnection(connectionGeneration)) return;
+      state.lastError = safeError(error);
+      client.end(true);
+    });
+  });
   client.on("packetsend",(packet) => {
     if (packet.cmd !== "puback" || !state.sessionId || packet.messageId === undefined) return;
     const generations = pendingPubacks.get(packet.messageId);
@@ -133,24 +215,34 @@ function wireClient(client: MqttClient,config: UgvIngestConfig,sourceLock: Await
     // MQTT.js only invokes customHandleAcks for QoS 1/2. A QoS 0 publish is
     // still durably audited, but cannot satisfy ACK-after-commit and is exposed
     // as a source-contract conflict in status/evidence.
-    if (packet.qos !== 0 || !isTopic(topic) || !state.sessionId) return;
-    void repository.accept(state.sessionId,topic,payload,packet,new Date().toISOString()).then((accepted) => {
+    if (packet.qos !== 0 || !isTopic(topic)) return;
+    const receivedAt = new Date().toISOString();
+    void waitForSession().then((activeSessionId) => {
+      if (!activeSessionId) throw new Error("MQTT connection closed before durable session initialization");
+      return repository.accept(activeSessionId,topic,payload,packet,receivedAt);
+    }).then((accepted) => {
       increment(state.messages,topic); if (accepted.validationState !== "VALID") increment(state.invalid,`${topic}:${accepted.validationState}`);
       state.topicLastAt[topic] = Date.now();
       increment(state.sourceQosConflicts,topic);
       state.lastError = `BLOCKED_SOURCE_CONTRACT_CONFLICT: ${topic} arrived at QoS 0`;
     }).catch((error) => { state.lastError = safeError(error); client.end(true); });
   });
-  client.on("close",() => { state.connected = false; state.subscriptions = {}; });
+  client.on("close",() => {
+    state.connected = false;
+    state.subscriptions = {};
+    pendingPubacks.clear();
+    clearSession();
+  });
   client.on("error",(error) => { state.lastError = safeError(error); });
 }
 
-async function processOne(repository: UgvIngestRepository,config: MapperConfig,state: RuntimeState): Promise<void> {
+async function processOne(repository: UgvIngestRepository,clientId: string,brokerId: string,state: RuntimeState): Promise<void> {
   try {
-    const pending = await repository.nextPending(); if (!pending) return;
+    const pending = await repository.nextPending(clientId,brokerId);
+    if (!pending) { state.workerHealthy = true; return; }
     try {
-      const mapping = mapUgvMessage(pending,config);
-      await repository.storeMapping(pending,mapping,config.mapperVersion);
+      const mapping = mapUgvMessage(pending,pending.mapperConfig);
+      await repository.storeMapping(pending,mapping,pending.mapperConfig.mapperVersion);
       if (mapping.ignoredReason) {
         increment(state.samplingSuppressed,`${pending.topic}:${mapping.ignoredReason}`);
         if (mapping.ignoredReason === "RETAINED_POSITION_SKIPPED") increment(state.retainedSkipped,pending.topic);
@@ -165,15 +257,16 @@ async function processOne(repository: UgvIngestRepository,config: MapperConfig,s
 
 async function deliverOne(repository: UgvIngestRepository,config: UgvIngestConfig,state: RuntimeState): Promise<void> {
   try {
-    const item = await repository.nextOutbox(); if (!item) return;
+    const item = await repository.nextOutbox();
+    if (!item) { state.workerHealthy = true; return; }
     const path = item.kind === "OBSERVATION" ? "/observations" : "/operational-events";
     try {
       const response = await fetch(`${config.observationApiUrl.replace(/\/$/u,"")}${path}`,{
         method: "POST",headers: item.headers,
         body: item.bodyBytes,signal: AbortSignal.timeout(config.httpTimeoutMs)
       });
-      state.lastApiSuccessAt = new Date().toISOString();
       const delivered = response.status === 202 || response.status === 200;
+      if (delivered) state.lastApiSuccessAt = new Date().toISOString();
       const permanent = response.status >= 400 && response.status < 500 && ![408,425,429].includes(response.status);
       await repository.deliveryResult(item.outboxId,{ delivered,permanent,status: response.status,attempts: item.attempts,
         ...(delivered ? {} : { error: `HTTP_${response.status}` }) });
@@ -186,14 +279,30 @@ async function deliverOne(repository: UgvIngestRepository,config: UgvIngestConfi
   } catch (error) { state.workerHealthy = false; state.lastError = safeError(error); }
 }
 
-function mapperConfig(config: UgvIngestConfig): MapperConfig { return { ...config,mapperVersion: "ugv-mqtt-canonical-v1" }; }
+function mapperConfig(config: UgvIngestConfig): MapperConfig {
+  return {
+    deviceId: config.deviceId,
+    dataScopeKey: config.dataScopeKey,
+    sourceKey: config.sourceKey,
+    producerPipelineKey: config.producerPipelineKey,
+    scenarioId: config.scenarioId,
+    worldEpoch: config.worldEpoch,
+    trackerSessionKey: config.trackerSessionKey,
+    analysisSpaceKey: config.analysisSpaceKey,
+    analysisSrid: config.analysisSrid,
+    arrivalUncertaintyMs: config.arrivalUncertaintyMs,
+    mapperVersion: "ugv-mqtt-canonical-v1",
+    samplingPolicy: config.samplingPolicy,
+    maxTargetsPerFrame: config.maxTargetsPerFrame
+  };
+}
 function isTopic(value: string): value is UgvAuthorityTopic { return (UGV_AUTHORITY_TOPICS as readonly string[]).includes(value); }
 function increment(record: Record<string,number>,key: string): void { record[key] = (record[key] ?? 0) + 1; }
 function safeError(error: unknown): string { return (error instanceof Error ? error.message : String(error)).slice(0,2048); }
 async function writable(pool: pg.Pool): Promise<boolean> { try { await pool.query("SELECT 1"); return true; } catch { return false; } }
 function metrics(state: RuntimeState,status: Record<string,unknown>): string {
   const lines = [`mqtt_connected ${state.connected ? 1 : 0}`,`mqtt_session_present ${state.sessionPresent ? 1 : 0}`,
-    `mqtt_session_lost_total ${state.sessionLostTotal}`,
+    `mqtt_session_lost_total ${state.sessionLostTotal}`,`mqtt_persisted_redeliveries_total ${Number(status.persisted_redelivery_count ?? 0)}`,
     `inbox_pending ${Number(status.inbox_pending ?? 0)}`,`inbox_dead_letter ${Number(status.inbox_dead_letter ?? 0)}`,
     `outbox_pending{kind="OBSERVATION"} ${Number(status.outbox_pending_observation ?? 0)}`,
     `outbox_pending{kind="OPERATIONAL_EVENT"} ${Number(status.outbox_pending_operational_event ?? 0)}`,

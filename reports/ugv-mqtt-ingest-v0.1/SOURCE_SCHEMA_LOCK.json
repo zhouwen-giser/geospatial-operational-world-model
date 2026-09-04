@@ -18,5 +18,13 @@
   "sourceTrackedWorktreeBefore": "CLEAN",
   "sourceTrackedWorktreeAfter": "CLEAN",
   "preExistingUntrackedFiles": ["ros_ws/src/模拟器控制台.zip"],
-  "sourceModifiedByThisTask": false
+  "sourceModifiedByThisTask": false,
+  "finalBrokerProbe": {
+    "observedAt": "2026-09-04T14:46:39Z/2026-09-04T14:47:09Z",
+    "durationSeconds": 30,
+    "subackAllSevenAtQos1": true,
+    "speedObservedQos": 0,
+    "status": "BLOCKED_SOURCE_CONTRACT_CONFLICT",
+    "sha256": "7975150bce05ef60cd239495a22de793ab1dfe4c5509335d42e66f211bbd601f"
+  }
 }

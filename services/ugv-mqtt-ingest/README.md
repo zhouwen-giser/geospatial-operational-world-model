@@ -44,6 +44,17 @@ lock, broker connection, all seven QoS 1 SUBACKs, a healthy worker, and no
 observed source QoS conflict. A reachable but temporarily failing GOWM API is
 reported as recoverable degradation while the durable outbox retries.
 
+`UGV_MQTT_PROCESS_CONCURRENCY` and `UGV_MQTT_DELIVERY_CONCURRENCY` bound the
+independent mapping and outbox workers (default `8` each, maximum `64`). QoS 1
+acceptance itself remains serialized by MQTT.js, so migration 070 performs the
+packet-slot, backpressure, and inbox decision in one atomic database function;
+PUBACK is still released only after that statement commits.
+
 Use a deployment-specific Compose override to mount password/TLS files. Do not
 put credentials, raw payloads, authorization headers, or large target details
 in logs or evidence reports.
+
+`UGV_MQTT_FAULT_EXIT_AFTER_INBOX_COMMITS` is a destructive, test-only crash
+injection point between durable inbox commit and PUBACK. Leave it unset during
+normal operation; a harness may set it for the first process and must restart
+without it to prove broker DUP recovery.

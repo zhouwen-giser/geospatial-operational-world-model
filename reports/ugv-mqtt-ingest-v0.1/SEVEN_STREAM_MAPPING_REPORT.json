@@ -2,17 +2,27 @@
   "status": "BLOCKED",
   "topics": ["/ugv/gnss", "/ugv/speed", "status/ugv", "/ugv/mission_state", "/ugv/area_recon/status", "/ugv/area_recon/targets", "/ugv/area_recon/exception"],
   "mapperContractTests": "PASS",
+  "consumerHarness": {
+    "status": "PASS",
+    "subackAllSevenAtQos1": true,
+    "inbox": { "delivered": 28, "ignoredByPolicy": 1, "deadLetter": 1 },
+    "outbox": { "delivered": 37, "pending": 0, "deadLetter": 0 },
+    "topicAccepted": { "status/ugv": 2, "/ugv/area_recon/exception": 1, "/ugv/area_recon/status": 9, "/ugv/area_recon/targets": 6, "/ugv/gnss": 4, "/ugv/mission_state": 5, "/ugv/speed": 3 },
+    "intentionalInvalidGnssDeadLetters": 1,
+    "marker": "PASS_CONSUMER_HARNESS_NOT_SOURCE_ACCEPTANCE"
+  },
   "brokerProbe": {
     "broker": "192.168.2.63:1883",
-    "durationSeconds": 15,
+    "durationSeconds": 30,
     "subackAllRequestedQos1": true,
     "observed": {
-      "/ugv/gnss": { "qos": 1, "retain": false },
-      "/ugv/speed": { "qos": 0, "retain": false },
-      "/ugv/mission_state": { "qos": 1, "retain": false },
-      "/ugv/area_recon/status": { "qos": 1, "retain": false }
+      "/ugv/gnss": { "messages": 599, "qos": 1, "retain": false, "shape": "JSON_OBJECT" },
+      "/ugv/speed": { "messages": 300, "qos": 0, "retain": false, "shape": "JSON_OBJECT" },
+      "/ugv/mission_state": { "messages": 30, "qos": 1, "retain": false, "shape": "JSON_OBJECT" },
+      "/ugv/area_recon/status": { "messages": 600, "qos": 1, "retain": false, "shape": "STRING_WRAPPED_JSON" }
     },
-    "notObservedInWindow": ["status/ugv", "/ugv/area_recon/targets", "/ugv/area_recon/exception"]
+    "notObservedInWindow": ["status/ugv", "/ugv/area_recon/targets", "/ugv/area_recon/exception"],
+    "evidenceSha256": "7975150bce05ef60cd239495a22de793ab1dfe4c5509335d42e66f211bbd601f"
   },
   "sourceTopicConflict": "bridge_config.yaml declares device_id ugv1 and mqtt_topic status/ugv1, while the fixed task contract requires status/ugv",
   "authorityIsolation": { "speedMirrorSuppressed": true, "missionMirrorSuppressed": true, "chassisReconEnumsSeparated": true }

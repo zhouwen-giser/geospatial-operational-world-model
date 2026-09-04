@@ -8,6 +8,16 @@
     "payloadConflictDisconnectPath": true,
     "deterministicOutbox": true
   },
-  "realCrashWindowTest": "NOT_RUN",
-  "blocker": "The immutable source publishes /ugv/speed at QoS 0, so the required seven-stream QoS1 crash/PUBACK proof is impossible without a source-side contract correction."
+  "consumerHarness": {
+    "status": "PASS",
+    "crashPoint": "after durable inbox commit and before PUBACK",
+    "recoveredInboxRows": 1,
+    "brokerRedeliveries": 1,
+    "pubackRecorded": true,
+    "outboxDelivered": 1,
+    "canonicalRows": 1,
+    "deadLetters": 0,
+    "marker": "PASS_CONSUMER_RELIABILITY_NOT_SOURCE_ACCEPTANCE"
+  },
+  "blocker": "The immutable source publishes /ugv/speed at QoS 0, so the same crash/PUBACK proof cannot cover all seven real source streams without a source-side contract correction."
 }
