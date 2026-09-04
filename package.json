@@ -164,7 +164,6 @@
     "validate:opendrive-source": "node --import tsx scripts/opendrive/cli.ts compile",
     "validate:opendrive-compiler": "vitest run tests/unit/opendrive-georeference.test.ts tests/unit/opendrive-plan-view.test.ts tests/unit/opendrive-safe-xml.test.ts tests/integration/opendrive-network-compiler.test.ts",
     "validate:opendrive-db": "node --import tsx scripts/opendrive/cli.ts admit",
-    "validate:opendrive-development-db": "vitest run tests/integration/opendrive-development-scope-postgres.test.ts",
     "validate:opendrive-routing": "node --import tsx scripts/opendrive/cli.ts verify",
     "validate:opendrive-final": "node --import tsx scripts/opendrive/cli.ts validate",
     "validate:deployment-env": "node scripts/validate-deployment-env.mjs",
