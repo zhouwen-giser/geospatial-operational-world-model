@@ -156,6 +156,16 @@ archive_test_source_failure="$(tar -tzf "$archive_path" | rg '(^|/)([^/]+\.test\
   printf 'Forbidden test source escaped into the deployment archive: %s\n' "$archive_test_source_failure" >&2
   exit 1
 }
+archive_ordinary_sample_failure="$(tar -tzf "$archive_path" | rg '(^|/)(test|tests|test-data|fixture|fixtures|example|examples)(/|$)' | head -n 1 || true)"
+[[ -z "$archive_ordinary_sample_failure" ]] || {
+  printf 'Forbidden test/fixture/example directory escaped into the deployment archive: %s\n' "$archive_ordinary_sample_failure" >&2
+  exit 1
+}
+archive_ordinary_sample_file_failure="$(tar -tzf "$archive_path" | rg '(^|/)(fixture|fixtures|example|examples)\.[^/]+$' | head -n 1 || true)"
+[[ -z "$archive_ordinary_sample_file_failure" ]] || {
+  printf 'Forbidden fixture/example file escaped into the deployment archive: %s\n' "$archive_ordinary_sample_file_failure" >&2
+  exit 1
+}
 archive_report_failure="$(tar -tzf "$archive_path" | rg '(^|/)reports(/|$)' | head -n 1 || true)"
 [[ -z "$archive_report_failure" ]] || {
   printf 'Forbidden reports directory escaped into the deployment archive: %s\n' "$archive_report_failure" >&2
