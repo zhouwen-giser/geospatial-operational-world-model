@@ -5,6 +5,25 @@ CREATE TYPE ugv_ingest.processing_state AS ENUM (
 );
 CREATE TYPE ugv_ingest.destination_kind AS ENUM ('OBSERVATION','OPERATIONAL_EVENT');
 
+-- The fixed airport simulation is explicitly EPSG:32648. Register its named
+-- analysis space independently of GOWM's general-purpose default (32650).
+INSERT INTO analysis_space(
+  analysis_space_key,canonical_srid,dimension_model,distance_model,transform_pipeline_version
+) VALUES ('airport-utm48n',32648,'2D','PLANAR_METRE_V1','ugv-airport-wgs84-to-utm48n-v1')
+ON CONFLICT (analysis_space_key) DO NOTHING;
+
+DO $guard$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM analysis_space
+    WHERE analysis_space_key='airport-utm48n' AND canonical_srid=32648
+      AND dimension_model='2D' AND distance_model='PLANAR_METRE_V1'
+  ) THEN
+    RAISE EXCEPTION 'airport-utm48n analysis space conflicts with the fixed EPSG:32648 UGV contract';
+  END IF;
+END
+$guard$;
+
 CREATE TABLE ugv_ingest.mqtt_session (
   session_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   client_id text NOT NULL,
@@ -23,6 +42,7 @@ CREATE TABLE ugv_ingest.mqtt_session (
 
 CREATE TABLE ugv_ingest.inbox_message (
   message_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  ingest_sequence bigint GENERATED ALWAYS AS IDENTITY UNIQUE,
   session_id uuid NOT NULL REFERENCES ugv_ingest.mqtt_session,
   device_id text NOT NULL,
   topic text NOT NULL,
@@ -67,6 +87,7 @@ CREATE TABLE ugv_ingest.stream_cursor (
   topic text NOT NULL,
   cursor_key text NOT NULL,
   last_source_sequence text,
+  last_inbox_sequence bigint,
   last_source_time_raw text,
   last_payload_sha256 text,
   last_emitted_at timestamptz,
@@ -84,7 +105,9 @@ CREATE TABLE ugv_ingest.outbox_message (
   inbox_message_id uuid NOT NULL REFERENCES ugv_ingest.inbox_message,
   ordinal integer NOT NULL CHECK (ordinal >= 0),
   destination_kind ugv_ingest.destination_kind NOT NULL,
+  destination_uri_kind text NOT NULL CHECK (destination_uri_kind IN ('CANONICAL_OBSERVATION_INGEST','OPERATIONAL_EVENT_INGEST')),
   idempotency_key text NOT NULL,
+  request_headers jsonb NOT NULL CHECK (jsonb_typeof(request_headers)='object'),
   request_body jsonb NOT NULL,
   request_body_bytes bytea NOT NULL,
   body_sha256 text NOT NULL CHECK (body_sha256 ~ '^[0-9a-f]{64}$'),

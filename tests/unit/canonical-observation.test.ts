@@ -171,6 +171,14 @@ describe("GOWM+ canonical observation v1.2",() => {
     expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: { platform: "x".repeat(70_000) } }).success).toBe(false);
     let deep: Record<string,unknown> = {}; for (let index=0;index<20;index+=1) deep={ nested: deep };
     expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: deep }).success).toBe(false);
+    expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: { bad: Number.NaN } }).success).toBe(false);
+    expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: { bad: Number.POSITIVE_INFINITY } }).success).toBe(false);
+    expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: { bad: new Date() } }).success).toBe(false);
+    expect(CanonicalObservationInputSchema.safeParse({
+      ...canonicalInput(),statePatch: { values: Array.from({ length: 4_097 },() => 1) }
+    }).success).toBe(false);
+    const cyclic: Record<string,unknown> = {}; cyclic.self = cyclic;
+    expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: cyclic }).success).toBe(false);
   });
 
   it("accepts sourceGeometry-only POSITION and guards optional normalized positions",() => {

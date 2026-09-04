@@ -200,36 +200,63 @@ export class ObservationRepository {
         statusCode: 409,code: "DATA_SCOPE_DOMAIN_CONFLICT"
       });
     }
-    const positionSpaces = bundle.measurements
-      .filter((measurement) => measurement.resultKind === "POSITION")
-      .map((measurement) => ({ key: measurement.analysisSpaceKey ?? this.config.analysisSpaceKey, srid: measurement.position?.srid ?? this.config.analysisSrid }));
-    if (!positionSpaces.length) positionSpaces.push({ key: this.config.analysisSpaceKey, srid: this.config.analysisSrid });
-    for (const space of positionSpaces) {
+    const requestedSpaces = new Map<string,number | undefined>();
+    for (const measurement of bundle.measurements.filter((item) => item.resultKind === "POSITION")) {
+      const key = measurement.analysisSpaceKey ?? this.config.analysisSpaceKey;
+      const requestedSrid = measurement.position?.srid;
+      const previous = requestedSpaces.get(key);
+      if (previous !== undefined && requestedSrid !== undefined && previous !== requestedSrid) {
+        throw Object.assign(new Error(`analysisSpace ${key} has conflicting requested SRIDs`), {
+          statusCode: 422,code: "ANALYSIS_SPACE_MISMATCH"
+        });
+      }
+      requestedSpaces.set(key,previous ?? requestedSrid);
+    }
+    if (!requestedSpaces.size) requestedSpaces.set(this.config.analysisSpaceKey,this.config.analysisSrid);
+    const positionSpaces: Array<{ key: string; srid: number }> = [];
+    for (const [key,requestedSrid] of requestedSpaces) {
+      const current = await client.query<{ canonical_srid: number }>(
+        "SELECT canonical_srid FROM analysis_space WHERE analysis_space_key=$1",[key]
+      );
+      const currentSrid = current.rows[0]?.canonical_srid;
+      if (currentSrid !== undefined && requestedSrid !== undefined && Number(currentSrid) !== requestedSrid) {
+        throw Object.assign(new Error(`analysisSpace ${key} SRID mismatch`), { statusCode: 422,code: "ANALYSIS_SPACE_MISMATCH" });
+      }
+      const srid = currentSrid === undefined
+        ? requestedSrid ?? (key === this.config.analysisSpaceKey ? this.config.analysisSrid : undefined)
+        : Number(currentSrid);
+      if (srid === undefined) {
+        throw Object.assign(new Error(`unknown analysis space ${key}; sourceGeometry-only POSITION cannot infer its projected CRS`), {
+          statusCode: 422,code: "UNKNOWN_ANALYSIS_SPACE"
+        });
+      }
       const registered = await client.query<{ valid: boolean }>(
         `SELECT EXISTS(
            SELECT 1 FROM spatial_ref_sys
            WHERE srid=$1 AND srtext ~* '(PROJCS|PROJCRS)'
              AND (srtext ~* '(metre|meter)' OR proj4text ~ '(^|[[:space:]])\\+units=m([[:space:]]|$)')
          ) AS valid`,
-        [space.srid]
+        [srid]
       );
       if (!registered.rows[0]?.valid) {
-        throw Object.assign(new Error(`analysisSpace ${space.key} requires a registered projected metre CRS`), {
+        throw Object.assign(new Error(`analysisSpace ${key} requires a registered projected metre CRS`), {
           statusCode: 422, code: "INVALID_ANALYSIS_CRS"
         });
       }
-      await client.query(
-        `INSERT INTO analysis_space(analysis_space_key,canonical_srid,dimension_model,distance_model,transform_pipeline_version)
-         VALUES ($1,$2,'2D','PLANAR_METRE_V1','canonical-input-v1.2') ON CONFLICT DO NOTHING`,
-        [space.key,space.srid]
-      );
-      const existing = await client.query<{ canonical_srid: number }>(
-        "SELECT canonical_srid FROM analysis_space WHERE analysis_space_key=$1",
-        [space.key]
-      );
-      if (existing.rows[0]?.canonical_srid !== space.srid) {
-        throw Object.assign(new Error(`analysisSpace ${space.key} SRID mismatch`), { statusCode: 422, code: "ANALYSIS_SPACE_MISMATCH" });
+      if (currentSrid === undefined) {
+        await client.query(
+          `INSERT INTO analysis_space(analysis_space_key,canonical_srid,dimension_model,distance_model,transform_pipeline_version)
+           VALUES ($1,$2,'2D','PLANAR_METRE_V1','canonical-input-v1.2') ON CONFLICT DO NOTHING`,
+          [key,srid]
+        );
+        const inserted = await client.query<{ canonical_srid: number }>(
+          "SELECT canonical_srid FROM analysis_space WHERE analysis_space_key=$1",[key]
+        );
+        if (Number(inserted.rows[0]?.canonical_srid) !== srid) {
+          throw Object.assign(new Error(`analysisSpace ${key} SRID mismatch`), { statusCode: 422,code: "ANALYSIS_SPACE_MISMATCH" });
+        }
       }
+      positionSpaces.push({ key,srid });
     }
     const defaultSpace = positionSpaces[0]?.key ?? this.config.analysisSpaceKey;
     await client.query(
@@ -387,22 +414,26 @@ export class ObservationRepository {
     const covariance = uncertainty.covariance;
     const position = measurement.position;
     const analysisSpaceKey = measurement.analysisSpaceKey ?? this.config.analysisSpaceKey;
+    const analysis = await client.query<{ canonical_srid: number }>(
+      "SELECT canonical_srid FROM analysis_space WHERE analysis_space_key=$1",[analysisSpaceKey]
+    );
+    const canonicalSrid = Number(analysis.rows[0]?.canonical_srid);
+    if (!Number.isInteger(canonicalSrid) || canonicalSrid <= 0) {
+      throw Object.assign(new Error(`unknown analysis space ${analysisSpaceKey}`), { statusCode: 422, code: "UNKNOWN_ANALYSIS_SPACE" });
+    }
     if (position) {
-      const validation = await client.query<{ canonical_srid: number; separation_m: number | null }>(
-        `SELECT space.canonical_srid,
-                CASE WHEN space.canonical_srid=$5 THEN ST_Distance(
+      const validation = await client.query<{ separation_m: number | null }>(
+        `SELECT CASE WHEN $1::integer=$5 THEN ST_Distance(
                   ST_SetSRID(ST_MakePoint($3,$4),$5),
-                  ST_Transform(ST_SetSRID(ST_Force2D(ST_GeomFromGeoJSON($2::jsonb)),4326),space.canonical_srid)
-                ) ELSE NULL END AS separation_m
-           FROM analysis_space space WHERE space.analysis_space_key=$1`,
-        [analysisSpaceKey,JSON.stringify(source),position.x,position.y,position.srid]
+                  ST_Transform(ST_SetSRID(ST_Force2D(ST_GeomFromGeoJSON($2::jsonb)),4326),$1::integer)
+                ) ELSE NULL END AS separation_m`,
+        [canonicalSrid,JSON.stringify(source),position.x,position.y,position.srid]
       );
       const row = validation.rows[0];
-      if (!row) throw Object.assign(new Error(`unknown analysis space ${analysisSpaceKey}`), { statusCode: 422, code: "UNKNOWN_ANALYSIS_SPACE" });
-      if (Number(row.canonical_srid) !== position.srid) {
+      if (canonicalSrid !== position.srid) {
         throw Object.assign(new Error("position SRID differs from analysis space canonical SRID"), { statusCode: 422, code: "POSITION_SRID_MISMATCH" });
       }
-      if (row.separation_m === null || Number(row.separation_m) > this.config.positionTransformToleranceM) {
+      if (!row || row.separation_m === null || Number(row.separation_m) > this.config.positionTransformToleranceM) {
         throw Object.assign(new Error("position differs from the server-projected sourceGeometry"), { statusCode: 422, code: "POSITION_TRANSFORM_MISMATCH" });
       }
     }
@@ -419,7 +450,7 @@ export class ObservationRepository {
          $7,$8,$9,$10,$11,$12,$13,$14,$15
        )`,
       [measurementId,analysisSpaceKey,JSON.stringify(source),
-       position?.x ?? null,position?.y ?? null,position?.srid ?? this.config.analysisSrid,
+       position?.x ?? null,position?.y ?? null,position?.srid ?? canonicalSrid,
        measurement.altitudeM ?? null,measurement.verticalDatum ?? null,
        covariance?.[0][0] ?? null,covariance?.[0][1] ?? null,covariance?.[1][1] ?? null,
        uncertainty.model === "STDDEV" ? uncertainty.horizontalValue ?? null : null,

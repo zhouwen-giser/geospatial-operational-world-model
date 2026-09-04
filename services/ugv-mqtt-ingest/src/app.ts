@@ -3,6 +3,7 @@ import mqtt, { type IClientOptions, type MqttClient } from "mqtt";
 import pg from "pg";
 import { loadSourceSchemaLock, UGV_AUTHORITY_TOPICS, type UgvAuthorityTopic } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/contracts.js";
 import { mapUgvMessage, type MapperConfig } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/mapper.js";
+import { SourceSchemaRegistry } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/source-schema-registry.js";
 import { loadUgvIngestConfig, type UgvIngestConfig } from "./config.js";
 import { UgvIngestRepository } from "./repository.js";
 
@@ -10,44 +11,72 @@ interface RuntimeState {
   connected: boolean; sessionPresent: boolean; sessionId?: string; subscriptions: Record<string,number>;
   sourceLockLoaded: boolean; workerHealthy: boolean; lastApiSuccessAt?: string; lastError?: string;
   messages: Record<string,number>; redeliveries: Record<string,number>; invalid: Record<string,number>;
-  sourceQosConflicts: Record<string,number>;
+  sourceQosConflicts: Record<string,number>; sessionLostTotal: number; retainedSkipped: Record<string,number>;
+  samplingSuppressed: Record<string,number>; canonicalObservations: Record<string,number>;
+  operationalEvents: Record<string,number>; outboxDelivery: Record<string,number>; topicLastAt: Record<string,number>;
 }
 
 export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; close: () => Promise<void> }> {
   const config = await loadUgvIngestConfig();
   const schemaDirectory = process.env.UGV_EQUIPMENT_SCHEMA_DIR;
   if (!schemaDirectory) throw new Error("UGV_EQUIPMENT_SCHEMA_DIR is required");
-  const sourceLock = await loadSourceSchemaLock(schemaDirectory);
+  let sourceLock: Awaited<ReturnType<typeof loadSourceSchemaLock>> | undefined;
+  let sourceLockError: string | undefined;
+  try { sourceLock = await loadSourceSchemaLock(schemaDirectory); }
+  catch (error) { sourceLockError = safeError(error); }
   const pool = new pg.Pool({ connectionString: config.databaseUrl,max: 8 });
   await pool.query("SELECT 1");
-  const repository = new UgvIngestRepository(pool,config.deviceId,config.maxPayloadBytes);
-  const state: RuntimeState = { connected: false,sessionPresent: false,subscriptions: {},sourceLockLoaded: true,
-    workerHealthy: true,messages: {},redeliveries: {},invalid: {},sourceQosConflicts: {} };
+  const repository = new UgvIngestRepository(pool,config.deviceId,config.maxPayloadBytes,config.maximumPendingInbox,
+    sourceLock ? new SourceSchemaRegistry(sourceLock) : undefined);
+  const state: RuntimeState = { connected: false,sessionPresent: false,subscriptions: {},sourceLockLoaded: Boolean(sourceLock),
+    workerHealthy: true,messages: {},redeliveries: {},invalid: {},sourceQosConflicts: {},sessionLostTotal: 0,
+    retainedSkipped: {},samplingSuppressed: {},canonicalObservations: {},operationalEvents: {},outboxDelivery: {},topicLastAt: {},
+    ...(sourceLockError ? { lastError: sourceLockError } : {}) };
   let sessionId: string | undefined;
-  const options: IClientOptions = {
-    protocolVersion: 5,clean: false,clientId: config.clientId,keepalive: config.keepaliveSeconds,
-    connectTimeout: config.connectTimeoutMs,reconnectPeriod: 1000,resubscribe: false,
-    properties: { sessionExpiryInterval: config.sessionExpirySeconds },
-    ...(config.username ? { username: config.username } : {}),...(config.password ? { password: config.password } : {}),
-    ...(config.ca ? { ca: config.ca } : {}),...(config.cert ? { cert: config.cert } : {}),...(config.key ? { key: config.key } : {}),
-    customHandleAcks: (topic,payload,packet,done) => {
-      if (!isTopic(topic) || !sessionId) return done(135);
-      const receivedAt = new Date().toISOString();
-      void repository.accept(sessionId,topic,payload,packet,receivedAt).then((accepted) => {
-        increment(state.messages,topic); if (accepted.redelivery) increment(state.redeliveries,topic);
-        if (accepted.validationState !== "VALID") increment(state.invalid,topic);
-        done(0);
-      }).catch((error) => {
-        state.lastError = safeError(error);
-        done(error instanceof Error ? error : new Error(String(error)),131);
-      });
-    }
-  };
-  const client = mqtt.connect(config.mqttUrl,options);
-  wireClient(client,config,sourceLock,repository,state,(value) => { sessionId = value; state.sessionId = value; });
+  let client: MqttClient | undefined;
+  const pendingPubacks = new Map<number,number[]>();
+  if (sourceLock) {
+    const options: IClientOptions = {
+      protocolVersion: 5,clean: false,clientId: config.clientId,keepalive: config.keepaliveSeconds,
+      connectTimeout: config.connectTimeoutMs,reconnectPeriod: 1000,resubscribe: false,
+      properties: { sessionExpiryInterval: config.sessionExpirySeconds,receiveMaximum: config.receiveMaximum },
+      ...(config.username ? { username: config.username } : {}),...(config.password ? { password: config.password } : {}),
+      ...(config.ca ? { ca: config.ca } : {}),...(config.cert ? { cert: config.cert } : {}),...(config.key ? { key: config.key } : {}),
+      customHandleAcks: (topic,payload,packet,done) => {
+        if (!isTopic(topic) || !sessionId) return done(135);
+        const receivedAt = new Date().toISOString();
+        void repository.accept(sessionId,topic,payload,packet,receivedAt).then((accepted) => {
+          increment(state.messages,topic); if (accepted.redelivery) increment(state.redeliveries,topic);
+          if (accepted.validationState !== "VALID") increment(state.invalid,`${topic}:${accepted.validationState}`);
+          state.topicLastAt[topic] = Date.now();
+          if (packet.messageId !== undefined && accepted.packetGeneration !== undefined) {
+            const generations = pendingPubacks.get(packet.messageId) ?? [];
+            generations.push(accepted.packetGeneration);
+            pendingPubacks.set(packet.messageId,generations);
+          }
+          done(0);
+        }).catch((error) => {
+          state.lastError = safeError(error);
+          done(error instanceof Error ? error : new Error(String(error)));
+          queueMicrotask(() => client?.end(true));
+        });
+      }
+    };
+    client = mqtt.connect(config.mqttUrl,options);
+    wireClient(client,config,sourceLock,repository,state,pendingPubacks,(value) => { sessionId = value; state.sessionId = value; });
+  }
 
-  const processTimer = setInterval(() => void processOne(repository,mapperConfig(config),state),25);
-  const deliveryTimer = setInterval(() => void deliverOne(repository,config,state),50);
+  let processing = false; let delivering = false;
+  const processTimer = setInterval(() => {
+    if (processing) return;
+    processing = true;
+    void processOne(repository,mapperConfig(config),state).finally(() => { processing = false; });
+  },25);
+  const deliveryTimer = setInterval(() => {
+    if (delivering) return;
+    delivering = true;
+    void deliverOne(repository,config,state).finally(() => { delivering = false; });
+  },50);
   processTimer.unref(); deliveryTimer.unref();
 
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? "info" } });
@@ -62,28 +91,43 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
   });
   app.get("/v1/ingest/status",async () => ({ ...await repository.status(),mqttConnected: state.connected,
     mqttSessionPresent: state.sessionPresent,subscriptions: state.subscriptions,sourceQosConflicts: state.sourceQosConflicts,
+    sourceSchemaLock: sourceLock ? { lockVersion: sourceLock.lockVersion,files: sourceLock.files,
+      topicSchemaHash: sourceLock.topicSchemaHash,validatedTopics: sourceLock.validatedTopics } : null,
     lastApiSuccessAt: state.lastApiSuccessAt,lastError: state.lastError ?? null }));
   app.get("/metrics",async (_request,reply) => reply.type("text/plain; version=0.0.4").send(metrics(state,await repository.status())));
   return { app,close: async () => {
     clearInterval(processTimer); clearInterval(deliveryTimer);
     if (sessionId) await repository.disconnect(sessionId,"graceful_shutdown").catch(() => undefined);
-    await new Promise<void>((resolve,reject) => client.end(false,{},(error) => error ? reject(error) : resolve())); await pool.end(); await app.close();
+    if (client) await new Promise<void>((resolve,reject) => client.end(false,{},(error) => error ? reject(error) : resolve()));
+    await pool.end(); await app.close();
   } };
 }
 
 function wireClient(client: MqttClient,config: UgvIngestConfig,sourceLock: Awaited<ReturnType<typeof loadSourceSchemaLock>>,
-  repository: UgvIngestRepository,state: RuntimeState,setSession: (id: string) => void): void {
+  repository: UgvIngestRepository,state: RuntimeState,pendingPubacks: Map<number,number[]>,setSession: (id: string) => void): void {
   client.on("connect",(connack) => void (async () => {
     state.connected = true; state.sessionPresent = connack.sessionPresent;
     const session = await repository.startSession(config.clientId,new URL(config.mqttUrl).host,connack.sessionPresent,sourceLock,config.codeVersion);
-    setSession(session);
+    setSession(session.sessionId);
+    if (session.sessionLost) { state.sessionLostTotal += 1; state.lastError = "MQTT_SESSION_LOST"; }
     const requests = Object.fromEntries(UGV_AUTHORITY_TOPICS.map((topic) => [topic,{ qos: 1 as const }]));
     const grants = await client.subscribeAsync(requests);
     state.subscriptions = Object.fromEntries(grants.map((grant) => [grant.topic,grant.qos]));
-    await repository.setSubscriptions(session,state.subscriptions);
+    await repository.setSubscriptions(session.sessionId,state.subscriptions);
   })().catch((error) => { state.lastError = safeError(error); client.end(true); }));
   client.on("packetsend",(packet) => {
-    if (packet.cmd === "puback" && state.sessionId && packet.messageId !== undefined) void repository.markPuback(state.sessionId,packet.messageId).catch((error) => { state.lastError = safeError(error); });
+    if (packet.cmd !== "puback" || !state.sessionId || packet.messageId === undefined) return;
+    const generations = pendingPubacks.get(packet.messageId);
+    const generation = generations?.shift();
+    if (!generations?.length) pendingPubacks.delete(packet.messageId);
+    if (generation === undefined) {
+      state.lastError = "PUBACK_SENT_WITHOUT_DURABLE_PACKET_GENERATION";
+      client.end(true);
+      return;
+    }
+    void repository.markPuback(state.sessionId,packet.messageId,generation).catch((error) => {
+      state.lastError = safeError(error); client.end(true);
+    });
   });
   client.on("message",(topic,payload,packet) => {
     // MQTT.js only invokes customHandleAcks for QoS 1/2. A QoS 0 publish is
@@ -91,10 +135,11 @@ function wireClient(client: MqttClient,config: UgvIngestConfig,sourceLock: Await
     // as a source-contract conflict in status/evidence.
     if (packet.qos !== 0 || !isTopic(topic) || !state.sessionId) return;
     void repository.accept(state.sessionId,topic,payload,packet,new Date().toISOString()).then((accepted) => {
-      increment(state.messages,topic); if (accepted.validationState !== "VALID") increment(state.invalid,topic);
+      increment(state.messages,topic); if (accepted.validationState !== "VALID") increment(state.invalid,`${topic}:${accepted.validationState}`);
+      state.topicLastAt[topic] = Date.now();
       increment(state.sourceQosConflicts,topic);
       state.lastError = `BLOCKED_SOURCE_CONTRACT_CONFLICT: ${topic} arrived at QoS 0`;
-    }).catch((error) => { state.lastError = safeError(error); });
+    }).catch((error) => { state.lastError = safeError(error); client.end(true); });
   });
   client.on("close",() => { state.connected = false; state.subscriptions = {}; });
   client.on("error",(error) => { state.lastError = safeError(error); });
@@ -103,8 +148,18 @@ function wireClient(client: MqttClient,config: UgvIngestConfig,sourceLock: Await
 async function processOne(repository: UgvIngestRepository,config: MapperConfig,state: RuntimeState): Promise<void> {
   try {
     const pending = await repository.nextPending(); if (!pending) return;
-    try { await repository.storeMapping(pending,mapUgvMessage(pending,config),config.mapperVersion); }
+    try {
+      const mapping = mapUgvMessage(pending,config);
+      await repository.storeMapping(pending,mapping,config.mapperVersion);
+      if (mapping.ignoredReason) {
+        increment(state.samplingSuppressed,`${pending.topic}:${mapping.ignoredReason}`);
+        if (mapping.ignoredReason === "RETAINED_POSITION_SKIPPED") increment(state.retainedSkipped,pending.topic);
+      }
+      for (const observation of mapping.observations) increment(state.canonicalObservations,observation.observationType);
+      for (const event of mapping.events) increment(state.operationalEvents,event.eventType);
+    }
     catch (error) { await repository.failMapping(pending.messageId,error); }
+    state.workerHealthy = true;
   } catch (error) { state.workerHealthy = false; state.lastError = safeError(error); }
 }
 
@@ -114,15 +169,19 @@ async function deliverOne(repository: UgvIngestRepository,config: UgvIngestConfi
     const path = item.kind === "OBSERVATION" ? "/observations" : "/operational-events";
     try {
       const response = await fetch(`${config.observationApiUrl.replace(/\/$/u,"")}${path}`,{
-        method: "POST",headers: { "content-type": "application/json",...(item.kind === "OPERATIONAL_EVENT" ? { "x-data-scope-key": config.dataScopeKey } : {}) },
-        body: item.bodyBytes,signal: AbortSignal.timeout(5000)
+        method: "POST",headers: item.headers,
+        body: item.bodyBytes,signal: AbortSignal.timeout(config.httpTimeoutMs)
       });
+      state.lastApiSuccessAt = new Date().toISOString();
       const delivered = response.status === 202 || response.status === 200;
-      const permanent = response.status === 409 || response.status === 422;
+      const permanent = response.status >= 400 && response.status < 500 && ![408,425,429].includes(response.status);
       await repository.deliveryResult(item.outboxId,{ delivered,permanent,status: response.status,attempts: item.attempts,
         ...(delivered ? {} : { error: `HTTP_${response.status}` }) });
-      if (delivered) state.lastApiSuccessAt = new Date().toISOString();
-    } catch (error) { await repository.deliveryResult(item.outboxId,{ attempts: item.attempts,error: safeError(error) }); }
+      increment(state.outboxDelivery,`${item.kind}:${delivered ? "delivered" : permanent ? "permanent_failure" : "retry"}`);
+    } catch (error) {
+      await repository.deliveryResult(item.outboxId,{ attempts: item.attempts,error: safeError(error) });
+      increment(state.outboxDelivery,`${item.kind}:retry`);
+    }
     state.workerHealthy = true;
   } catch (error) { state.workerHealthy = false; state.lastError = safeError(error); }
 }
@@ -134,13 +193,30 @@ function safeError(error: unknown): string { return (error instanceof Error ? er
 async function writable(pool: pg.Pool): Promise<boolean> { try { await pool.query("SELECT 1"); return true; } catch { return false; } }
 function metrics(state: RuntimeState,status: Record<string,unknown>): string {
   const lines = [`mqtt_connected ${state.connected ? 1 : 0}`,`mqtt_session_present ${state.sessionPresent ? 1 : 0}`,
+    `mqtt_session_lost_total ${state.sessionLostTotal}`,
     `inbox_pending ${Number(status.inbox_pending ?? 0)}`,`inbox_dead_letter ${Number(status.inbox_dead_letter ?? 0)}`,
-    `outbox_pending ${Number(status.outbox_pending ?? 0)}`];
+    `outbox_pending{kind="OBSERVATION"} ${Number(status.outbox_pending_observation ?? 0)}`,
+    `outbox_pending{kind="OPERATIONAL_EVENT"} ${Number(status.outbox_pending_operational_event ?? 0)}`,
+    `outbox_oldest_age_seconds ${Number(status.outbox_oldest_age_seconds ?? 0)}`];
   for (const topic of UGV_AUTHORITY_TOPICS) {
     lines.push(`mqtt_messages_total{topic=${JSON.stringify(topic)}} ${state.messages[topic] ?? 0}`,
       `mqtt_redeliveries_total{topic=${JSON.stringify(topic)}} ${state.redeliveries[topic] ?? 0}`,
-      `mqtt_invalid_total{topic=${JSON.stringify(topic)}} ${state.invalid[topic] ?? 0}`);
-    lines.push(`mqtt_source_qos_conflicts_total{topic=${JSON.stringify(topic)}} ${state.sourceQosConflicts[topic] ?? 0}`);
+      `mqtt_retained_skipped_total{topic=${JSON.stringify(topic)}} ${state.retainedSkipped[topic] ?? 0}`,
+      `mqtt_source_qos_conflicts_total{topic=${JSON.stringify(topic)}} ${state.sourceQosConflicts[topic] ?? 0}`,
+      `topic_last_message_age_seconds{topic=${JSON.stringify(topic)}} ${state.topicLastAt[topic] ? Math.max(0,(Date.now()-state.topicLastAt[topic])/1000) : -1}`);
+    for (const [key,count] of Object.entries(state.invalid)) {
+      const prefix = `${topic}:`; if (key.startsWith(prefix)) lines.push(`mqtt_invalid_total{topic=${JSON.stringify(topic)},reason=${JSON.stringify(key.slice(prefix.length))}} ${count}`);
+    }
+  }
+  for (const [key,count] of Object.entries(state.outboxDelivery)) {
+    const [kind,statusLabel] = key.split(":");
+    lines.push(`outbox_delivery_total{kind=${JSON.stringify(kind)},status=${JSON.stringify(statusLabel)}} ${count}`);
+  }
+  for (const [type,count] of Object.entries(state.canonicalObservations)) lines.push(`canonical_observations_total{type=${JSON.stringify(type)}} ${count}`);
+  for (const [type,count] of Object.entries(state.operationalEvents)) lines.push(`operational_events_total{type=${JSON.stringify(type)}} ${count}`);
+  for (const [key,count] of Object.entries(state.samplingSuppressed)) {
+    const separator = key.lastIndexOf(":"); const topic = key.slice(0,separator); const reason = key.slice(separator+1);
+    lines.push(`sampling_suppressed_total{topic=${JSON.stringify(topic)},reason=${JSON.stringify(reason)}} ${count}`);
   }
   return `${lines.join("\n")}\n`;
 }

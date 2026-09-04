@@ -59,19 +59,25 @@ const DANGEROUS_STATE_KEYS = new Set(["__proto__", "prototype", "constructor"]);
 const RESERVED_STATE_PATCH_KEYS = new Set(["position", "lastObservationType", "_evidenceSummary"]);
 
 function statePatchIssue(value: Record<string, unknown>): string | undefined {
-  const serialized = JSON.stringify(value);
-  if (Buffer.byteLength(serialized, "utf8") > STATE_PATCH_MAX_BYTES) return "statePatch exceeds 64 KiB";
   let nodes = 0;
+  const visited = new WeakSet<object>();
   const visit = (candidate: unknown, depth: number): string | undefined => {
     nodes += 1;
     if (nodes > STATE_PATCH_MAX_NODES) return "statePatch exceeds node limit";
     if (depth > STATE_PATCH_MAX_DEPTH) return "statePatch exceeds depth limit";
+    if (candidate === null || typeof candidate === "string" || typeof candidate === "boolean") return undefined;
+    if (typeof candidate === "number") return Number.isFinite(candidate) ? undefined : "statePatch contains a non-finite number";
+    if (typeof candidate !== "object") return "statePatch must contain only JSON values";
+    if (visited.has(candidate)) return "statePatch contains a cycle";
+    visited.add(candidate);
     if (Array.isArray(candidate)) {
       for (const item of candidate) {
         const issue = visit(item, depth + 1);
         if (issue) return issue;
       }
-    } else if (candidate && typeof candidate === "object") {
+    } else {
+      const prototype = Object.getPrototypeOf(candidate);
+      if (prototype !== Object.prototype && prototype !== null) return "statePatch contains a non-JSON object";
       for (const [key, item] of Object.entries(candidate as Record<string, unknown>)) {
         if (DANGEROUS_STATE_KEYS.has(key)) return `statePatch contains dangerous key ${key}`;
         const issue = visit(item, depth + 1);
@@ -80,7 +86,11 @@ function statePatchIssue(value: Record<string, unknown>): string | undefined {
     }
     return undefined;
   };
-  return visit(value, 1);
+  const issue = visit(value, 1);
+  if (issue) return issue;
+  const serialized = JSON.stringify(value);
+  if (Buffer.byteLength(serialized, "utf8") > STATE_PATCH_MAX_BYTES) return "statePatch exceeds 64 KiB";
+  return undefined;
 }
 
 const StatePatchSchema = z.record(z.string(), z.unknown()).superRefine((value, context) => {

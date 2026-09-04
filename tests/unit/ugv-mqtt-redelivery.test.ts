@@ -7,6 +7,8 @@ describe("UGV MQTT QoS1 durable acknowledgement architecture",() => {
     expect(migration).toContain("PRIMARY KEY (session_id,packet_id)");
     expect(migration).toContain("UNIQUE (session_id,packet_id,packet_generation)");
     expect(migration).toContain("puback_sent_at timestamptz");
+    expect(migration).toContain("destination_uri_kind text NOT NULL");
+    expect(migration).toContain("request_headers jsonb NOT NULL");
   });
 
   it("uses MQTT 5 custom acknowledgement handling before PUBACK",async () => {
@@ -14,8 +16,12 @@ describe("UGV MQTT QoS1 durable acknowledgement architecture",() => {
     const repository = await readFile("services/ugv-mqtt-ingest/src/repository.ts","utf8");
     expect(app.indexOf("customHandleAcks")).toBeLessThan(app.indexOf("done(0)"));
     expect(app).toContain("repository.accept(sessionId,topic,payload,packet,receivedAt)");
-    expect(app).toContain('packet.cmd === "puback"');
-    expect(repository).toContain("packet identifier reused with different payload before PUBACK");
+    expect(app).toContain('packet.cmd !== "puback"');
+    expect(app).toContain("accepted.packetGeneration");
+    expect(app).toContain("receiveMaximum: config.receiveMaximum");
+    expect(repository).toContain("packet identifier redelivery has different payload");
+    expect(repository).toContain("generation=$3");
+    expect(repository).toContain("immutable body hash mismatch");
     expect(repository).not.toContain("UNIQUE (topic,payload_sha256)");
   });
 });
