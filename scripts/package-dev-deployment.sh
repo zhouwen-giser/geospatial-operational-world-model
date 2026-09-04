@@ -48,6 +48,8 @@ tar \
   --exclude='*/examples' \
   --exclude='*/example.*' \
   --exclude='*/examples.*' \
+  --exclude='*.test.ts' \
+  --exclude='./GOWM_Grounding_Operational_Stable_v0.4_Codex_Goal/21_TEST_ACCEPTANCE.md' \
   --exclude='./dist' \
   --exclude='./coverage' \
   --exclude='./reports' \
@@ -120,6 +122,16 @@ ordinary_sample_file_failure="$(find "$staging_dir" -type f \( -name 'fixture.*'
   printf 'Ordinary fixture/example file is forbidden in the deployment package: %s\n' "$ordinary_sample_file_failure" >&2
   exit 1
 }
+test_source_failure="$(find "$staging_dir" -type f -name '*.test.ts' -print -quit)"
+[[ -z "$test_source_failure" ]] || {
+  printf 'Test source is forbidden in the deployment package: %s\n' "$test_source_failure" >&2
+  exit 1
+}
+test_acceptance_document="$staging_dir/GOWM_Grounding_Operational_Stable_v0.4_Codex_Goal/21_TEST_ACCEPTANCE.md"
+[[ ! -e "$test_acceptance_document" ]] || {
+  printf 'Test acceptance source document is forbidden in the deployment package: %s\n' "$test_acceptance_document" >&2
+  exit 1
+}
 
 (cd "$staging_dir" && find . -type f ! -path './SHA256SUMS' -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > SHA256SUMS)
 
@@ -141,4 +153,9 @@ tar \
 (cd "$output_dir" && sha256sum "$(basename "$archive_path")" > "$(basename "$checksum_path")")
 archive_path_failure="$(tar -tzf "$archive_path" | awk '/^\// || /(^|\/)\.\.($|\/)/ { print; exit }')"
 [[ -z "$archive_path_failure" ]] || { printf 'Unsafe archive entry: %s\n' "$archive_path_failure" >&2; exit 1; }
+archive_test_source_failure="$(tar -tzf "$archive_path" | rg '(^|/)([^/]+\.test\.ts|21_TEST_ACCEPTANCE\.md)$' | head -n 1 || true)"
+[[ -z "$archive_test_source_failure" ]] || {
+  printf 'Forbidden test source escaped into the deployment archive: %s\n' "$archive_test_source_failure" >&2
+  exit 1
+}
 printf '%s\n' "$archive_path" "$checksum_path"
