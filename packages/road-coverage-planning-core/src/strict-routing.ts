@@ -192,7 +192,7 @@ export function solveStrictCoverageRoute(
   return {
     route: { ...routeBody, routeSignature: canonicalSha256(routeBody) },
     diagnostics: {
-      solverVersion: "coverage-strict-routing/1.0",
+      solverVersion: "coverage-strict-routing/1.1",
       algorithmFamily: bothDirections(problem.obligationSet.obligations) ? "BOTH_DIRECTIONS_RPP" : "FIXED_RPP",
       exactness: "BOUNDED_HEURISTIC",
       requiredComponentCount: weakRequiredComponents(tasks),
@@ -324,7 +324,9 @@ function strictShortestPath(
 function advanceTurn(history: HistoryState, nextArcKey: string, rules: readonly CoverageTurnRule[], maxHistory: number): TurnAdvance {
   if (history.arcKeys.at(-1) === nextArcKey) return { valid: true, history, penaltyUnits: 0 };
   const candidate = [...history.arcKeys, nextArcKey];
-  for (const rule of rules) if (rule.ruleType === "ALLOWED_ONLY" && history.arcKeys.at(-1) === rule.arcSequence[0] && nextArcKey !== rule.arcSequence[1]) return { valid: false, history, penaltyUnits: 0 };
+  const previous = history.arcKeys.at(-1);
+  const allowedOnly = rules.filter((rule) => rule.ruleType === "ALLOWED_ONLY" && previous === rule.arcSequence[0]);
+  if (allowedOnly.length > 0 && !allowedOnly.some((rule) => nextArcKey === rule.arcSequence[1])) return { valid: false, history, penaltyUnits: 0 };
   let penaltyUnits = 0;
   for (const rule of rules) {
     if (rule.ruleType === "ALLOWED_ONLY" || rule.arcSequence.length > candidate.length) continue;

@@ -114,7 +114,7 @@ export function verifyCoverageRoute(input: VerifyCoverageRouteInput): CoverageVe
   };
   const body = {
     status,
-    verifierVersion: "coverage-verifier/1.1.0",
+    verifierVersion: "coverage-verifier/1.2.0",
     routingSnapshotHash: snapshotHash,
     checks,
     coverageRatioPpm: coverage.coverageRatioPpm,
@@ -221,7 +221,9 @@ function verifyCoverage(input: VerifyCoverageRouteInput, byArc: ReadonlyMap<stri
 
 function replayTurn(history: readonly string[], nextArc: string, rules: readonly VerifierTurnRule[], maxHistory: number): TurnState {
   if (history.at(-1) === nextArc) return { history: [...history], valid: true, penaltyUnits: 0 };
-  for (const rule of rules) if (rule.ruleType === "ALLOWED_ONLY" && history.at(-1) === rule.arcSequence[0] && nextArc !== rule.arcSequence[1]) return { history: [...history], valid: false, penaltyUnits: 0 };
+  const previous = history.at(-1);
+  const allowedOnly = rules.filter((rule) => rule.ruleType === "ALLOWED_ONLY" && previous === rule.arcSequence[0]);
+  if (allowedOnly.length > 0 && !allowedOnly.some((rule) => nextArc === rule.arcSequence[1])) return { history: [...history], valid: false, penaltyUnits: 0 };
   const candidate = [...history, nextArc]; let penaltyUnits = 0;
   for (const rule of rules) {
     if (rule.ruleType === "ALLOWED_ONLY" || rule.arcSequence.length > candidate.length) continue;

@@ -154,7 +154,7 @@ export function verifyPath(network: LoadedNetwork, input: Row): Row {
   return {
     status: valid ? "VALID" : "INVALID",
     checks,
-    verifierVersion: "gowm-network-independent-verifier/1.0.0",
+    verifierVersion: "gowm-network-independent-verifier/1.1.0",
     verifiedResultHash: sha256(input)
   };
 }
@@ -205,11 +205,12 @@ function noPath(snapshot: RoutingSnapshot): Row {
 
 function turnEffect(history: string[], next: string, rules: TurnRule[], ignoreSoft: boolean): { forbidden: boolean; penalty: number } {
   const candidate = [...history, next];
+  const previous = history.at(-1);
+  const allowedOnly = rules.filter((rule) => rule.ruleType === "ALLOWED_ONLY" && rule.sequence.length === 2 && rule.sequence[0] === previous);
+  if (allowedOnly.length > 0 && !allowedOnly.some((rule) => rule.sequence[1] === next)) return { forbidden: true, penalty: 0 };
   let penalty = 0;
   for (const rule of rules) {
-    if (rule.ruleType === "ALLOWED_ONLY" && rule.sequence.length === 2 && history.at(-1) === rule.sequence[0] && next !== rule.sequence[1]) {
-      return { forbidden: true, penalty: 0 };
-    }
+    if (rule.ruleType === "ALLOWED_ONLY") continue;
     if (rule.sequence.length > candidate.length) continue;
     const suffix = candidate.slice(-rule.sequence.length);
     if (!suffix.every((key, index) => key === rule.sequence[index])) continue;
