@@ -5,7 +5,7 @@ import {
   readAdmissionAuthorization,
   type DatabaseIdentity
 } from "../../scripts/opendrive/admission-safety.js";
-import { catalogGeoJson } from "../../scripts/opendrive/admit.js";
+import { assertAdmissionPreconditions, catalogGeoJson } from "../../scripts/opendrive/admit.js";
 
 const identity: DatabaseIdentity = {
   database: "gowm_opendrive_acceptance_01",
@@ -76,5 +76,54 @@ describe("OpenDRIVE admission mutation guard", () => {
       type: "LineString",
       coordinates: [[106.8, 29.7], [106.9, 29.8]]
     });
+  });
+
+  it("reuses only the unique exact default development scope", () => {
+    const clean = {
+      scopeCount: 1,
+      targetScopeCount: 1,
+      targetScopeExact: true,
+      graphCollision: false,
+      datasetCollision: false,
+      datasetVersionCollision: false,
+      graphVersionCollision: false
+    };
+    expect(() => assertAdmissionPreconditions(clean, true)).not.toThrow();
+    expect(() => assertAdmissionPreconditions({ ...clean, scopeCount: 2 }, true)).toThrow(/unique exact/u);
+    expect(() => assertAdmissionPreconditions({ ...clean, targetScopeExact: false }, true)).toThrow(/unique exact/u);
+    expect(() => assertAdmissionPreconditions({
+      ...clean,
+      targetScopeCount: 0,
+      targetScopeExact: false
+    }, true)).toThrow(/unique exact/u);
+  });
+
+  it("rejects every target identity or content collision atomically", () => {
+    const clean = {
+      scopeCount: 1,
+      targetScopeCount: 1,
+      targetScopeExact: true,
+      graphCollision: false,
+      datasetCollision: false,
+      datasetVersionCollision: false,
+      graphVersionCollision: false
+    };
+    for (const key of ["graphCollision", "datasetCollision", "datasetVersionCollision", "graphVersionCollision"] as const) {
+      expect(() => assertAdmissionPreconditions({ ...clean, [key]: true }, true)).toThrow(/already exists/u);
+    }
+  });
+
+  it("keeps disposable admissions on a new target scope", () => {
+    const clean = {
+      scopeCount: 1,
+      targetScopeCount: 0,
+      targetScopeExact: false,
+      graphCollision: false,
+      datasetCollision: false,
+      datasetVersionCollision: false,
+      graphVersionCollision: false
+    };
+    expect(() => assertAdmissionPreconditions(clean, false)).not.toThrow();
+    expect(() => assertAdmissionPreconditions({ ...clean, targetScopeCount: 1 }, false)).toThrow(/target scope already exists/u);
   });
 });
