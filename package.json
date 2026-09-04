@@ -6,6 +6,7 @@
   "type": "module",
   "license": "MIT",
   "workspaces": [
+    "packages/opendrive-network-compiler",
     "packages/platform/*",
     "packages/integrations/*",
     "packages/historical-trace-*",
@@ -17,6 +18,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && npm --prefix services/stas run build",
+    "build:runtime": "tsc -p tsconfig.runtime.json && npm --prefix services/stas run build",
     "check": "npm run verify:contracts && npm run verify:version-consistency && npm run verify:migration-freeze && npm run verify:hash-ordering && npm run validate:grounding-provider-contracts && npm run validate:world-platform-manifests && npm run validate:semantic-static && npm run validate:spatial-architecture && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
     "verify:version-consistency": "node scripts/verify-v071-version-consistency.mjs",
     "verify:migration-freeze": "node scripts/verify-v071-migration-freeze.mjs",
@@ -156,6 +158,14 @@
     "sample-world:upgrade-proof": "node --import tsx scripts/sample-world/cli.ts upgrade-proof",
     "sample-world:evidence": "node --import tsx scripts/sample-world/cli.ts evidence",
     "sample-world:all": "node --import tsx scripts/sample-world/cli.ts all",
+    "opendrive:compile": "node --import tsx scripts/opendrive/cli.ts compile",
+    "opendrive:admit": "node --import tsx scripts/opendrive/cli.ts admit",
+    "opendrive:verify": "node --import tsx scripts/opendrive/cli.ts verify",
+    "validate:opendrive-source": "node --import tsx scripts/opendrive/cli.ts compile",
+    "validate:opendrive-compiler": "vitest run tests/unit/opendrive-georeference.test.ts tests/unit/opendrive-plan-view.test.ts tests/unit/opendrive-safe-xml.test.ts tests/integration/opendrive-network-compiler.test.ts",
+    "validate:opendrive-db": "node --import tsx scripts/opendrive/cli.ts admit",
+    "validate:opendrive-routing": "node --import tsx scripts/opendrive/cli.ts verify",
+    "validate:opendrive-final": "node --import tsx scripts/opendrive/cli.ts validate",
     "validate:deployment-env": "node scripts/validate-deployment-env.mjs",
     "dev-deploy": "bash scripts/dev-deploy.sh up",
     "package:dev-deployment": "bash scripts/package-dev-deployment.sh"
