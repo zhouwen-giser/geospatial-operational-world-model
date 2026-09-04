@@ -18,7 +18,7 @@ Configure paths through environment variables; they must not be embedded in arti
 ```bash
 export OPENDRIVE_SOURCE_PATH=/absolute/path/to/airport2.xodr
 export OPENDRIVE_GEOREF_ORACLE_PATH=/absolute/path/to/gnss_transform.py
-export GOWM_OPENDRIVE_OUTPUT_ROOT=/absolute/path/to/opendrive-task-network-v0.1/artifacts
+export GOWM_OPENDRIVE_OUTPUT_ROOT=/absolute/path/to/gowm-dev-server-0.7.1/artifacts/opendrive-task-network-v0.1/artifacts
 
 ${GOWM_OPENDRIVE_COMMAND:-./scripts/opendrive-task-network.sh} compile
 ${GOWM_OPENDRIVE_COMMAND:-./scripts/opendrive-task-network.sh} admit
@@ -85,7 +85,7 @@ ${GOWM_OPENDRIVE_COMMAND:-./scripts/opendrive-task-network.sh} verify
 The routing report must remain `NOT_RUN` or `BLOCKED` when the Provider is not reachable or credentials are absent. A static SQL check must never be labeled as Provider PASS.
 Use the `validate` alias when automation must fail unless the real Provider result is `PASS`; unlike evidence-producing `verify`, it exits non-zero for `NOT_RUN`.
 
-Deterministic compiler files are written directly in `GOWM_OPENDRIVE_OUTPUT_ROOT`; reports are written in its parent directory. Both redact credentials and host paths. The required reports use the four-state vocabulary `PASS`, `FAIL`, `NOT_RUN`, and `BLOCKED`.
+Deterministic compiler files are written directly in `GOWM_OPENDRIVE_OUTPUT_ROOT`; runtime acceptance reports are written in its parent directory. The deployment archive contains only the source lock and deterministic compiler handoff under `artifacts/opendrive-task-network-v0.1/`; repository `reports/` are deliberately excluded. Generated evidence redacts credentials and host paths and uses the four-state vocabulary `PASS`, `FAIL`, `NOT_RUN`, and `BLOCKED`.
 
 The development archive includes the deterministic task-network artifacts, source-lock metadata, compiler/admission source, and the containerized management entrypoint. It intentionally excludes ordinary test data, fixtures, and examples. The locked raw XODR and Python oracle are not copied into the archive: supply their absolute host paths at compile time and the wrapper mounts only those two inputs read-only. This keeps the source authority explicit and avoids publishing unrelated local files.
 

@@ -8,7 +8,7 @@ import { collectSourceChannels, collectSourceTransitions, weakComponents, type S
 export const COMPILER_VERSION = "opendrive-task-network-compiler-v0.1.0";
 export const SOURCE_ARTIFACT_BYTES = 2_101_550;
 export const SOURCE_ARTIFACT_HASH = "sha256:f9119c2fa0c73093c2c2d15d262ede56fbcefd3de091f652523559aca13d3481";
-export const DEFAULT_OUTPUT_ROOT = "reports/opendrive-task-network-v0.1/artifacts";
+export const DEFAULT_OUTPUT_ROOT = "artifacts/opendrive-task-network-v0.1/artifacts";
 
 type Coordinate = [number, number, number];
 type GeoJsonFeature = { type: "Feature"; id: string; geometry: { type: "LineString"; coordinates: Coordinate[] }; properties: Record<string, unknown> };

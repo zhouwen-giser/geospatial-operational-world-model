@@ -24,7 +24,7 @@ describe.skipIf(!adminUrl).sequential("OpenDRIVE development database baseline-s
     databaseUrl = parsed.toString();
     temporaryRoot = await mkdtemp(join(tmpdir(), "gowm-opendrive-development-scope-"));
     artifactDirectory = resolve(temporaryRoot, "artifacts");
-    await cp(resolve("reports/opendrive-task-network-v0.1/artifacts"), artifactDirectory, { recursive: true });
+    await cp(resolve("artifacts/opendrive-task-network-v0.1/artifacts"), artifactDirectory, { recursive: true });
   });
 
   afterAll(async () => {

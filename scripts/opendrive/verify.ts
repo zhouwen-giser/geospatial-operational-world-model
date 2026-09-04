@@ -20,7 +20,7 @@ interface VerificationConfiguration {
 
 function configuration(environment: NodeJS.ProcessEnv, arguments_: readonly string[]): VerificationConfiguration {
   const positional = arguments_.find((argument) => !argument.startsWith("--"));
-  const artifactDirectory = resolve(positional ?? environment.GOWM_OPENDRIVE_OUTPUT_ROOT ?? "reports/opendrive-task-network-v0.1/artifacts");
+  const artifactDirectory = resolve(positional ?? environment.GOWM_OPENDRIVE_OUTPUT_ROOT ?? "artifacts/opendrive-task-network-v0.1/artifacts");
   return {
     artifactDirectory,
     reportDirectory: dirname(artifactDirectory),
@@ -311,7 +311,7 @@ async function readStatus(path: string): Promise<AcceptanceStatus> {
 async function writeFinalReport(reportDirectory: string, routingStatus: AcceptanceStatus, plan?: OpenDriveAdmissionPlan): Promise<void> {
   const components = {
     source: await readStatus(resolve(reportDirectory, "SOURCE_LOCK.json")),
-    compiler: await readStatus(resolve(reportDirectory, "COMPILE_REPORT.json")),
+    compiler: await readStatus(resolve(reportDirectory, "artifacts", "compile-report.json")),
     gowmDatabase: await readStatus(resolve(reportDirectory, "GOWM_GRAPH_REPORT.json")),
     gdpsDatabase: await readStatus(resolve(reportDirectory, "GDPS_IMPORT_REPORT.json")),
     routingProvider: routingStatus
