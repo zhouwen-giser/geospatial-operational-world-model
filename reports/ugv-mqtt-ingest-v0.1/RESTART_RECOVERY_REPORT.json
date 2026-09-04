@@ -7,5 +7,5 @@
     "observationApiOutage": { "status": "PASS", "durableOutboxPendingDuringOutage": true, "eventualHttpStatus": 202, "canonicalRows": 1 },
     "projectionWorkerRestart": { "status": "PASS", "historicalFailures": 0, "secondRunChanges": 0 }
   },
-  "scope": "disposable consumer harness; immutable source reliability remains independently BLOCKED"
+  "scope": "disposable consumer harness; measured immutable-source deviations are retained as user-accepted known matters"
 }

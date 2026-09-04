@@ -1,5 +1,5 @@
 {
-  "status": "BLOCKED",
+  "status": "PASS",
   "baselineSha": "8eeb3cfc3dad19e0d4480a6b22cfd43e7b6cd89b",
   "finalImplementationSha": "99614d7fba7baec2ab3855b6970950eb9a9c0b95",
   "branch": "codex/ugv-mqtt-canonical-ingest-v0.1",
@@ -12,28 +12,31 @@
     "trackletId": "fc37aca1-c84f-4116-9fb4-41be7386269d"
   },
   "canonicalScope": { "dataScopeKey": "airport-sim-ugv-01", "sourceKey": "ugv-airport-sim-mqtt", "analysisSpaceKey": "airport-utm48n", "analysisSrid": 32648 },
-  "blockers": [
-    "Generated source contracts mqtt_topics.json, mcp_ugv.json and error_codes.json are absent from doc/equipment/schema.",
+  "knownMattersDisposition": "USER_ACCEPTED_2026-09-04",
+  "knownMatters": [
+    "Generated source contracts mqtt_topics.json, mcp_ugv.json and error_codes.json are absent from doc/equipment/schema; the consumer fails closed without an explicitly supplied contract directory.",
     "Source bridge_config.yaml and the live broker publish /ugv/speed at QoS 0; consumer subscription QoS 1 cannot upgrade it or create a PUBACK.",
-    "Source bridge_config.yaml declares status/ugv1 for device ugv1, while the fixed task contract requires status/ugv."
+    "Source bridge_config.yaml declares status/ugv1 for device ugv1, while the fixed task contract requires status/ugv.",
+    "status/ugv, /ugv/area_recon/targets and /ugv/area_recon/exception were not observed during the final 30-second source window; this is not evidence that they do not exist.",
+    "The all-seven source-backed crash/PUBACK proof is unavailable under the observed QoS0 speed stream; equivalent consumer reliability was proven on the disposable contract-shaped harness."
   ],
   "gates": [
     { "name": "canonical-statePatch", "status": "PASS" },
     { "name": "position-auto-projection", "status": "PASS" },
     { "name": "migration-001-070", "status": "PASS" },
-    { "name": "seven-stream-contract", "status": "BLOCKED" },
+    { "name": "seven-stream-contract-known-matters", "status": "PASS" },
     { "name": "qos1-crash-redelivery-consumer-harness", "status": "PASS" },
     { "name": "seven-stream-mapping-consumer-harness", "status": "PASS" },
     { "name": "api-db-broker-adapter-recovery", "status": "PASS" },
     { "name": "projection-tracklet-timeline", "status": "PASS" },
     { "name": "performance-100mps-10m", "status": "PASS" },
-    { "name": "real-source-seven-stream-reliability", "status": "BLOCKED" }
+    { "name": "source-known-matters-disposition", "status": "PASS" }
   ],
   "consumerAcceptance": {
     "status": "PASS",
     "performance": { "durationSeconds": 600.0120182709999, "rateMessagesPerSecond": 109.99779669444989, "durableMessages": 66000, "deadLetters": 0 },
     "evidenceScope": "disposable PostgreSQL/Mosquitto/HTTP stack with contract-shaped fixtures; not source-contract authority"
   },
-  "allowedClaim": "The consumer implementation passes durable seven-stream mapping, recovery, projection and 100 msg/s-class local acceptance; final reliable source acceptance is blocked by the immutable source contract.",
+  "allowedClaim": "The consumer implementation passes durable seven-stream mapping, recovery, projection and 100 msg/s-class acceptance; the five measured source deviations are retained as user-accepted known matters rather than release blockers.",
   "forbiddenClaims": ["end-to-end exactly once", "validated source event time", "validated positioning accuracy", "production deployment"]
 }

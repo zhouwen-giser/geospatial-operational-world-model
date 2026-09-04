@@ -1,9 +1,9 @@
 # UGV MQTT reliable ingest architecture
 
-Status: `BLOCKED` by the immutable source contract, while the consumer-side implementation is present.
+Status: `PASS`. Five immutable-source deviations remain recorded as user-accepted known matters; their underlying measurements are not rewritten.
 
 The adapter uses MQTT 5 with `clean=false`, a stable client ID and session expiry. It subscribes to exactly the seven authority topics at requested QoS 1. MQTT.js `customHandleAcks` invokes one atomic PostgreSQL function that checks backpressure and the packet slot, then commits the immutable raw PUBLISH before permitting PUBACK. A `packetsend` PUBACK closes the `(session, packet-id, generation)` slot; completed identifiers may be reused, while an incomplete identifier with different bytes is a protocol conflict. The one-statement accept boundary avoids serial network round trips and sustained 109.998 msg/s for ten minutes in the disposable acceptance stack.
 
 Mapping is a pure core package, separate from the MQTT callback. Durable mapper context is bound to the persistent client session; pending work and cursors are isolated by client, broker and mapper-context hash. Stream cursors isolate chassis `0..5` from recon `1..13/99`, suppress mirror events, carry mission/recon epochs and command ACK state, and create deterministic `ugvobs_…` / `ugvevt_…` identifiers. Independent mapping and delivery workers are bounded by environment-configured concurrency. HTTP delivery is a retrying transactional outbox. No end-to-end exactly-once claim is made.
 
-The source repository currently has no generated `doc/equipment/schema` directory, and its immutable bridge configuration publishes `/ugv/speed` at QoS 0. A QoS 0 PUBLISH has no PUBACK and therefore cannot satisfy ACK-after-durable-commit. The adapter audits such messages and makes readiness false instead of misrepresenting reliability.
+The source repository currently has no generated `doc/equipment/schema` directory, and its immutable bridge configuration publishes `/ugv/speed` at QoS 0. A QoS 0 PUBLISH has no PUBACK and therefore cannot satisfy ACK-after-durable-commit. These facts remain visible as known matters. The adapter still audits QoS0 messages and makes readiness false instead of misrepresenting transport behavior; the acceptance waiver does not weaken runtime fail-closed behavior.

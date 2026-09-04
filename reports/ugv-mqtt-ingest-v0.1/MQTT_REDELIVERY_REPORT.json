@@ -1,5 +1,5 @@
 {
-  "status": "BLOCKED",
+  "status": "PASS",
   "implemented": {
     "protocolVersion": 5,
     "persistentSession": true,
@@ -19,5 +19,5 @@
     "deadLetters": 0,
     "marker": "PASS_CONSUMER_RELIABILITY_NOT_SOURCE_ACCEPTANCE"
   },
-  "blocker": "The immutable source publishes /ugv/speed at QoS 0, so the same crash/PUBACK proof cannot cover all seven real source streams without a source-side contract correction."
+  "knownMatter": "The immutable source publishes /ugv/speed at QoS 0, so the crash/PUBACK proof cannot cover that stream; this measured limitation was explicitly accepted by the user on 2026-09-04."
 }

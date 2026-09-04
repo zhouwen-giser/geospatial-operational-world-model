@@ -1,6 +1,7 @@
 {
-  "status": "BLOCKED",
-  "reason": "BLOCKED_SOURCE_CONTRACT_CONFLICT",
+  "status": "PASS",
+  "assessment": "SOURCE_AUDIT_PASS_WITH_USER_ACCEPTED_KNOWN_MATTERS",
+  "knownMattersDisposition": "USER_ACCEPTED_2026-09-04",
   "sourceRepository": "/home/zhouwen/code/isr-simulation",
   "sourceRevision": "c10620572a7e1f0a881a8bd97198618bcf5d3d5a",
   "generatedSchemaDirectory": "/home/zhouwen/code/isr-simulation/doc/equipment/schema",
@@ -24,7 +25,7 @@
     "durationSeconds": 30,
     "subackAllSevenAtQos1": true,
     "speedObservedQos": 0,
-    "status": "BLOCKED_SOURCE_CONTRACT_CONFLICT",
+    "probeResult": "SOURCE_CONTRACT_CONFLICT_OBSERVED",
     "sha256": "7975150bce05ef60cd239495a22de793ab1dfe4c5509335d42e66f211bbd601f"
   }
 }

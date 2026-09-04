@@ -1,5 +1,6 @@
 {
-  "status": "BLOCKED",
+  "status": "PASS",
+  "knownMattersDisposition": "USER_ACCEPTED_2026-09-04",
   "topics": ["/ugv/gnss", "/ugv/speed", "status/ugv", "/ugv/mission_state", "/ugv/area_recon/status", "/ugv/area_recon/targets", "/ugv/area_recon/exception"],
   "mapperContractTests": "PASS",
   "consumerHarness": {
