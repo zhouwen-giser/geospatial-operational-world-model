@@ -54,6 +54,8 @@ tar \
   --exclude='./dist' \
   --exclude='./coverage' \
   --exclude='./reports' \
+  --exclude='*/reports' \
+  --exclude='./artifacts/opendrive-task-network-v0.1' \
   --exclude='./output' \
   --exclude='./.runtime' \
   --exclude='./.intake' \
@@ -62,19 +64,12 @@ tar \
   --exclude='*.pid' \
   -cf - -C "$project_dir" . | tar -xf - -C "$staging_dir"
 
-# General reports are intentionally excluded because they can contain local
-# runtime evidence. The OpenDRIVE task-network handoff is a versioned,
-# deterministic interface consumed by the joint deployment package, so copy
-# only that explicitly reviewed subtree when it has been materialized.
-opendrive_report_dir="$project_dir/reports/opendrive-task-network-v0.1"
-opendrive_report_files=(
+# Reports are intentionally excluded because they can contain local runtime
+# evidence. Copy only the versioned OpenDRIVE runtime handoff: its source lock
+# and byte-stable compiler artifacts required by compile/admit/verify.
+opendrive_runtime_dir="$project_dir/artifacts/opendrive-task-network-v0.1"
+opendrive_runtime_files=(
   SOURCE_LOCK.json
-  COMPILE_REPORT.json
-  GDPS_IMPORT_REPORT.json
-  GOWM_GRAPH_REPORT.json
-  ROUTING_E2E_REPORT.json
-  FINAL_ACCEPTANCE_REPORT.json
-  README.md
   artifacts/compile-manifest.json
   artifacts/physical-roads.geojson
   artifacts/routing-channels.geojson
@@ -85,21 +80,21 @@ opendrive_report_files=(
   artifacts/admission-plan.json
   artifacts/SHA256SUMS
 )
-for report_file in "${opendrive_report_files[@]}"; do
-  report_path="$opendrive_report_dir/$report_file"
-  [[ -f "$report_path" && ! -L "$report_path" ]] || {
-    printf 'Required OpenDRIVE deployment artifact is missing or unsafe: %s\n' "$report_path" >&2
+for runtime_file in "${opendrive_runtime_files[@]}"; do
+  runtime_path="$opendrive_runtime_dir/$runtime_file"
+  [[ -f "$runtime_path" && ! -L "$runtime_path" ]] || {
+    printf 'Required OpenDRIVE runtime artifact is missing or unsafe: %s\n' "$runtime_path" >&2
     exit 1
   }
 done
-mkdir -p "$staging_dir/reports/opendrive-task-network-v0.1"
-tar -cf - -C "$opendrive_report_dir" "${opendrive_report_files[@]}" |
-  tar -xf - -C "$staging_dir/reports/opendrive-task-network-v0.1"
-(cd "$staging_dir/reports/opendrive-task-network-v0.1/artifacts" && sha256sum -c SHA256SUMS >/dev/null)
+mkdir -p "$staging_dir/artifacts/opendrive-task-network-v0.1"
+tar -cf - -C "$opendrive_runtime_dir" "${opendrive_runtime_files[@]}" |
+  tar -xf - -C "$staging_dir/artifacts/opendrive-task-network-v0.1"
+(cd "$staging_dir/artifacts/opendrive-task-network-v0.1/artifacts" && sha256sum -c SHA256SUMS >/dev/null)
 
 if rg -n '(postgres(?:ql)?://[^[:space:]@/]+:[^[:space:]@/]+@|Bearer[[:space:]]+[A-Za-z0-9._~+/-]{20,}|/home/)' \
-  "$staging_dir/reports/opendrive-task-network-v0.1"; then
-  printf '%s\n' 'OpenDRIVE reports contain a credential or host-local path; package aborted.' >&2
+  "$staging_dir/artifacts/opendrive-task-network-v0.1"; then
+  printf '%s\n' 'OpenDRIVE runtime artifacts contain a credential or host-local path; package aborted.' >&2
   exit 1
 fi
 
@@ -113,6 +108,8 @@ symlink_failure="$(find "$staging_dir" -type l -print -quit)"
 [[ -z "$symlink_failure" ]] || { printf 'Symlinks are forbidden in deployment packages: %s\n' "$symlink_failure" >&2; exit 1; }
 env_failure="$(find "$staging_dir" -name .env -print -quit)"
 [[ -z "$env_failure" ]] || { printf 'Forbidden .env entry: %s\n' "$env_failure" >&2; exit 1; }
+report_failure="$(find "$staging_dir" -type d -name reports -print -quit)"
+[[ -z "$report_failure" ]] || { printf 'Reports are forbidden in deployment packages: %s\n' "$report_failure" >&2; exit 1; }
 ordinary_sample_failure="$(find "$staging_dir" -type d \( -name test -o -name tests -o -name test-data -o -name fixture -o -name fixtures -o -name example -o -name examples \) -print -quit)"
 [[ -z "$ordinary_sample_failure" ]] || {
   printf 'Ordinary test/fixture/example content is forbidden in the deployment package: %s\n' "$ordinary_sample_failure" >&2
@@ -157,6 +154,11 @@ archive_path_failure="$(tar -tzf "$archive_path" | awk '/^\// || /(^|\/)\.\.($|\
 archive_test_source_failure="$(tar -tzf "$archive_path" | rg '(^|/)([^/]+\.test\.ts|vitest\.config\.[^/]+|21_TEST_ACCEPTANCE\.md)$' | head -n 1 || true)"
 [[ -z "$archive_test_source_failure" ]] || {
   printf 'Forbidden test source escaped into the deployment archive: %s\n' "$archive_test_source_failure" >&2
+  exit 1
+}
+archive_report_failure="$(tar -tzf "$archive_path" | rg '(^|/)reports(/|$)' | head -n 1 || true)"
+[[ -z "$archive_report_failure" ]] || {
+  printf 'Forbidden reports directory escaped into the deployment archive: %s\n' "$archive_report_failure" >&2
   exit 1
 }
 printf '%s\n' "$archive_path" "$checksum_path"

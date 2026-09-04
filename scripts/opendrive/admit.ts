@@ -67,7 +67,7 @@ export function admissionConfiguration(
   arguments_: readonly string[] = []
 ): AdmissionConfiguration {
   const positional = arguments_.find((argument) => !argument.startsWith("--"));
-  const artifactDirectory = resolve(positional ?? environment.GOWM_OPENDRIVE_OUTPUT_ROOT ?? "reports/opendrive-task-network-v0.1/artifacts");
+  const artifactDirectory = resolve(positional ?? environment.GOWM_OPENDRIVE_OUTPUT_ROOT ?? "artifacts/opendrive-task-network-v0.1/artifacts");
   return {
     artifactDirectory,
     reportDirectory: dirname(artifactDirectory),

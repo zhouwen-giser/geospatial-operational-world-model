@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0",
+  "compilerVersion": "opendrive-task-network-compiler-v0.1.0",
+  "sourceArtifact": {
+    "mediaType": "application/x-opendrive+xml",
+    "bytes": 2101550,
+    "hash": "sha256:f9119c2fa0c73093c2c2d15d262ede56fbcefd3de091f652523559aca13d3481"
+  },
+  "georeference": {
+    "schemaVersion": "1.0.0",
+    "transformId": "airport-roadrunner-linear-compat-v1",
+    "method": "LOCAL_LINEAR_DEGREES_COMPAT_V1",
+    "sourceFrame": "ROADRUNNER_LOCAL_X_EAST_Y_NORTH_Z_UP",
+    "targetCrs": "EPSG:4326",
+    "origin": {
+      "longitude": 106.81485,
+      "latitude": 29.7195,
+      "altitudeM": 500
+    },
+    "metresPerDegreeLongitude": 111320,
+    "metresPerDegreeLatitude": 110540,
+    "axisMapping": {
+      "x": "EAST",
+      "y": "NORTH",
+      "z": "UP"
+    },
+    "oracleArtifactHash": "sha256:be045dba9c2bbee109439e0280a28b563b50f1a3ceee4c8783ce34fed8d1429d",
+    "accuracyClaim": "UNVERIFIED_COMPATIBILITY_TRANSFORM",
+    "contentHash": "sha256:7c05f0a351b42ea790fef5be184fb8c81173dcc776ee4ce2c6e8a539b3f8b9b1"
+  },
+  "buildPolicy": {
+    "maximumSegmentLengthM": 1,
+    "maximumCurveChordErrorM": 0.05,
+    "endpointPolicy": "LEXICOGRAPHIC_MIN_SOURCE_COORDINATE_V1",
+    "connectAtGradeIntersections": false,
+    "isolationPolicy": "LARGEST_WEAK_COMPONENT_V1",
+    "georeferenceConflictPolicy": "FAIL_IF_EMBEDDED_V1"
+  },
+  "buildHash": "sha256:be1ae19c93593aeb3deafe1915cb3c6a21581e953adb251306fc3a4f7129b13e",
+  "contentHash": "sha256:707c95ef6821c50df08afeabe5d67625ff28d9b8ec73bb5bd84b47f9054db910",
+  "topologyHash": "sha256:872538d2082f4f3bdb8125af45a6bff36afde457b2fd37919c2ea6c458b39533",
+  "datasetReferenceKey": "wrf_dc6ad99f4e8d1e27f41f1af147d5bfbb",
+  "datasetVersionKey": "dsv_20245e0ae92c989ec9e308456808e44be853ef0eb11a92d7fd8015190ee2dc81",
+  "graphVersionKey": "gv_62c358a52d01a49f10334531dfca7271fbbe732b62dcfd66f90eaf9ba90ef9ff",
+  "counts": {
+    "roads": 265,
+    "junctions": 22,
+    "regularRoads": 41,
+    "drivingLaneCandidates": 246,
+    "physicalRoads": 40,
+    "activeDirectedChannels": 244,
+    "regularDirectedChannels": 80,
+    "allowedDirectedTransitions": 336,
+    "drivableJunctionConnectors": 164,
+    "excludedNonDrivingConnectors": 60,
+    "quarantinedDrivingChannels": 2,
+    "lineGeometries": 612,
+    "arcGeometries": 366,
+    "spiralGeometries": 64,
+    "signals": 0,
+    "objects": 1
+  },
+  "artifactHashes": {
+    "physical-roads.geojson": "sha256:2c4bc7f20bed4a142c8a949dc921f87630e6d5dd4e209197b6a923e27af6fefc",
+    "routing-channels.geojson": "sha256:a90b5597f18165e69e2d3f6273ec453663936ecab92860a63f9196089c7ada79",
+    "allowed-transitions.json": "sha256:5a706a17231cc08fa4d9d12d09049e27b415bd24896c5d3fbc41b04732a3946d",
+    "identity-map.json": "sha256:eb6a058802c404163f42c1dc90b63d8eb1ffe6627c9e81e96087f04731a6b8aa",
+    "quarantine.json": "sha256:968bfac507c1f21c66cb939c8a5cbb40cfe6985fe35758b7dc618ded5fd69994",
+    "compile-report.json": "sha256:6ae86d53af150a06af9ac2d2e285fd8c8f23c492ce4600448a4311b6e795d287",
+    "admission-plan.json": "sha256:50186705a22749fc1e5a6aa21beb4e4c00d02852a3cc262db74e7eb83a7ee24a"
+  }
+}

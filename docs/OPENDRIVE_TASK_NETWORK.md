@@ -44,7 +44,7 @@ This is an `UNVERIFIED_COMPATIBILITY_TRANSFORM`. It is not surveying-certified, 
 
 ## Deterministic artifacts and traceability
 
-The default output root is `reports/opendrive-task-network-v0.1/artifacts` and directly contains the compile manifest, physical roads, routing channels, allowed transitions, identity map, quarantine evidence, compile report, deterministic admission plan, and checksums. `admission-plan.json` is the management-plane-only materialization interface; it is not a public Provider capability. Hash-critical documents exclude absolute paths, wall-clock timestamps, random UUIDs, and database sequence values.
+The default output root is `artifacts/opendrive-task-network-v0.1/artifacts` and directly contains the compile manifest, physical roads, routing channels, allowed transitions, identity map, quarantine evidence, compile report, deterministic admission plan, and checksums. Its parent contains the versioned source lock and receives runtime acceptance reports. Deployment archives exclude every `reports/` directory and carry only this explicit runtime handoff. `admission-plan.json` is the management-plane-only materialization interface; it is not a public Provider capability. Hash-critical documents exclude absolute paths, wall-clock timestamps, random UUIDs, and database sequence values.
 
 An active Arc is traced as follows:
 
