@@ -9,7 +9,7 @@ output_dir="${GOWM_DEPLOYMENT_OUTPUT_DIR:-$project_dir/output/deployment}"
 archive_path="$output_dir/${package_name}.tar.gz"
 checksum_path="${archive_path}.sha256"
 
-for command_name in node find sort sha256sum tar rg; do
+for command_name in node find sort sha256sum tar gzip rg; do
   command -v "$command_name" >/dev/null || { printf 'Missing command: %s\n' "$command_name" >&2; exit 1; }
 done
 
@@ -131,7 +131,13 @@ if rg -n --hidden \
 fi
 
 (cd "$staging_dir" && sha256sum -c SHA256SUMS >/dev/null)
-tar -czf "$archive_path" -C "$staging_root" "$package_name"
+tar \
+  --sort=name \
+  --mtime='UTC 1970-01-01' \
+  --owner=0 \
+  --group=0 \
+  --numeric-owner \
+  -cf - -C "$staging_root" "$package_name" | gzip -n > "$archive_path"
 (cd "$output_dir" && sha256sum "$(basename "$archive_path")" > "$(basename "$checksum_path")")
 archive_path_failure="$(tar -tzf "$archive_path" | awk '/^\// || /(^|\/)\.\.($|\/)/ { print; exit }')"
 [[ -z "$archive_path_failure" ]] || { printf 'Unsafe archive entry: %s\n' "$archive_path_failure" >&2; exit 1; }
