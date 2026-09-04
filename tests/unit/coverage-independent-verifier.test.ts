@@ -93,6 +93,27 @@ describe("independent coverage verifier", () => {
     expect(sequence.violations.map((item) => item.code)).toContain("TURN_RESTRICTION_VIOLATION");
   });
 
+  it("independently accepts either ALLOWED_ONLY target and rejects an undeclared target", () => {
+    const input = fixture();
+    const [start, connector, service, back] = input.networkArcs;
+    const alternate = arc("5", "A", "D", 6);
+    const blocked = arc("6", "A", "D", 4);
+    const rules = [
+      { ruleKey: "allow-connector", arcSequence: [start!.arcKey, connector!.arcKey], ruleType: "ALLOWED_ONLY" as const },
+      { ruleKey: "allow-alternate", arcSequence: [start!.arcKey, alternate.arcKey], ruleType: "ALLOWED_ONLY" as const }
+    ];
+    const verifyTarget = (target: VerifierNetworkArc) => {
+      const networkArcs = [start!, target, service!, back!];
+      const candidate = solveStrictCoverageRoute(input.problem, networkArcs, {
+        objective: "SHORTEST_DISTANCE", travelPolicy: input.travelPolicy
+      }).route;
+      return verifyCoverageRoute({ ...input, networkArcs, candidate, turnRules: rules });
+    };
+    expect(verifyTarget(connector!).status).toBe("VALID");
+    expect(verifyTarget(alternate).status).toBe("VALID");
+    expect(verifyTarget(blocked).violations.map((item) => item.code)).toContain("TURN_RESTRICTION_VIOLATION");
+  });
+
   it("recomputes service pass counts and both coverage ratios", () => {
     const input = fixture();
     const missing = structuredClone(input.candidate);

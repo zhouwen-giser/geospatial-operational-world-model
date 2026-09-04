@@ -71,9 +71,7 @@ export function isArcEligible(
   if (arc.edgeKey !== edge.edgeKey) throw new Error("profile evaluation Arc does not belong to Edge");
   if (!profile.allowedRoadClasses.includes(edge.roadClass)) return false;
   if (profile.allowedSurfaces.length > 0 && (edge.surface === undefined || !profile.allowedSurfaces.includes(edge.surface))) return false;
-  if ((arc.defaultSpeedMmPerS > (profile.maximumSpeedMmPerS ?? Number.MAX_SAFE_INTEGER))) return false;
-  if ((arc as BuiltNetworkArc & { accessMask?: number }).accessMask !== undefined &&
-      (((arc as BuiltNetworkArc & { accessMask: number }).accessMask & profile.requiredAccessMask) !== profile.requiredAccessMask)) return false;
+  if (arc.accessMask !== undefined && ((arc.accessMask & profile.requiredAccessMask) !== profile.requiredAccessMask)) return false;
   if (profile.onewayPolicy === "STRICT" &&
       ((edge.oneway === "FORWARD_ONLY" && arc.direction !== "FORWARD") ||
        (edge.oneway === "REVERSE_ONLY" && arc.direction !== "REVERSE"))) return false;
@@ -135,7 +133,8 @@ export function evaluateArcCost(input: {
   if (!isArcEligible(input.edge, input.arc, input.travelProfile)) return null;
   const condition = input.conditionSnapshot?.conditions.find((item) => item.arcKey === input.arc.arcKey);
   if (condition && !condition.traversalAllowed) return null;
-  const speedMmPerS = condition?.speedOverrideMmPerS ?? input.arc.defaultSpeedMmPerS;
+  const baseSpeedMmPerS = condition?.speedOverrideMmPerS ?? input.arc.defaultSpeedMmPerS;
+  const speedMmPerS = Math.min(baseSpeedMmPerS, input.travelProfile.maximumSpeedMmPerS ?? Number.POSITIVE_INFINITY);
   positiveSafe(speedMmPerS, "effective speed");
   const distanceMm = nonnegativeSafe(input.arc.lengthMm, "distance");
   const durationMs = safeNumber((BigInt(distanceMm) * 1000n + BigInt(speedMmPerS) - 1n) / BigInt(speedMmPerS), "duration");

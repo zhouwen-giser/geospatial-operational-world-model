@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1.0",
+  "reportKind": "OPENDRIVE_NETWORK_PROVIDER_E2E",
+  "status": "PASS",
+  "generatedAt": "2026-09-04T08:07:52.727Z",
+  "checks": [
+    {
+      "id": "ARTIFACT_CONTRACT",
+      "status": "PASS",
+      "summary": "Compiler admission plan and deterministic GOWM identity mapping validated"
+    },
+    {
+      "id": "PROVIDER_GRAPH",
+      "status": "PASS",
+      "summary": "Real Provider returned the admitted active graph/list/diagnose identity"
+    },
+    {
+      "id": "PROVIDER_SNAP",
+      "status": "PASS",
+      "summary": "Real Provider snap.point/points resolved active channels; quarantined Road 6 has no active Edge or Arc"
+    },
+    {
+      "id": "PROVIDER_SHORTEST_FASTEST",
+      "status": "PASS",
+      "summary": "Real Provider completed Junction-crossing SHORTEST_DISTANCE and FASTEST routes",
+      "evidence": {
+        "shortestArcCount": 3
+      }
+    },
+    {
+      "id": "PROVIDER_BIDIRECTIONAL_CANARIES",
+      "status": "PASS",
+      "summary": "Forward and backward lane-direction canaries are reachable"
+    },
+    {
+      "id": "PROVIDER_MATRIX_REACHABILITY",
+      "status": "PASS",
+      "summary": "Real Provider returned a deterministic 3x3 matrix and non-empty reachability result"
+    },
+    {
+      "id": "PROVIDER_EXPAND_VERIFY",
+      "status": "PASS",
+      "summary": "Real Provider expanded valid EPSG:4326 route content and independently verified it"
+    },
+    {
+      "id": "PROVIDER_ALLOWED_ONLY_MULTI_TARGET",
+      "status": "PASS",
+      "summary": "Two distinct ALLOWED_ONLY targets from the same Arc are both routable"
+    },
+    {
+      "id": "PROVIDER_DISALLOWED_TRANSITION",
+      "status": "PASS",
+      "summary": "Solver avoided and independent verifier rejected a geometrically adjacent transition absent from XODR",
+      "evidence": {
+        "endpointGapM": 1.6489591691321275
+      }
+    },
+    {
+      "id": "PROVIDER_SPEED_CAP",
+      "status": "PASS",
+      "summary": "Source-speed Arcs remain eligible and duration honors the 5000 mm/s upper bound"
+    }
+  ],
+  "summary": {
+    "datasetVersion": "dsv_20245e0ae92c989ec9e308456808e44be853ef0eb11a92d7fd8015190ee2dc81",
+    "graphVersion": "gv_62c358a52d01a49f10334531dfca7271fbbe732b62dcfd66f90eaf9ba90ef9ff",
+    "graphContentHash": "sha256:707c95ef6821c50df08afeabe5d67625ff28d9b8ec73bb5bd84b47f9054db910",
+    "topologyHash": "sha256:872538d2082f4f3bdb8125af45a6bff36afde457b2fd37919c2ea6c458b39533",
+    "expectedArcCount": 244,
+    "expectedAllowedOnlyTurnCount": 336,
+    "providerExecution": "REAL"
+  }
+}
