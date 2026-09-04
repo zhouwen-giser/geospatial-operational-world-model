@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "statePatch": { "maxBytes": 65536, "maxDepth": 16, "maxNodes": 4096, "reservedKeysRejected": true, "dangerousKeysRejected": true },
+  "normalization": "statePatch plus _evidenceSummary; legacy primary measurement attributes preserved only when statePatch is absent",
+  "hashIncludesStatePatch": true,
+  "tests": { "files": 2, "tests": 15, "status": "PASS" }
+}

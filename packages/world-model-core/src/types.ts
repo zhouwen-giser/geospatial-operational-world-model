@@ -227,6 +227,8 @@ export interface CanonicalObservationInput extends ExternalCorrelationMetadata {
   correlationId?: string;
   qualityFlags: string[];
   metadata: Record<string, unknown>;
+  /** Stable namespaced state owned by this observation source. */
+  statePatch?: Record<string, unknown>;
   timeSolution: CanonicalTimeSolutionInput;
   measurements: CanonicalMeasurementInput[];
   assertions: ObservationAssertionInput[];

@@ -31,7 +31,14 @@ function normalizeV12(input: CanonicalObservationInput, receivedAt: string): Can
     subject: input.subject,
     observationType: input.observationType,
     ...(primaryPosition?.sourceGeometry ? { geometry: primaryPosition.sourceGeometry } : {}),
-    value: {
+    value: input.statePatch ? {
+      ...input.statePatch,
+      _evidenceSummary: {
+        measurementCount: input.measurements.length,
+        assertionCount: input.assertions.length,
+        primaryMeasurementKey: primaryPosition?.measurementKey
+      }
+    } : {
       measurementCount: input.measurements.length,
       assertionCount: input.assertions.length,
       primaryMeasurementKey: primaryPosition?.measurementKey,

@@ -1,0 +1,13 @@
+{
+  "status": "BLOCKED",
+  "implemented": {
+    "protocolVersion": 5,
+    "persistentSession": true,
+    "ackAfterInboxCommit": true,
+    "packetLifecycle": "session+packetId+generation",
+    "payloadConflictDisconnectPath": true,
+    "deterministicOutbox": true
+  },
+  "realCrashWindowTest": "NOT_RUN",
+  "blocker": "The immutable source publishes /ugv/speed at QoS 0, so the required seven-stream QoS1 crash/PUBACK proof is impossible without a source-side contract correction."
+}

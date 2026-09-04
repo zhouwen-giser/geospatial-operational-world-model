@@ -386,6 +386,26 @@ export class ObservationRepository {
     const uncertainty = measurement.uncertainty ?? { model: "UNKNOWN" as const };
     const covariance = uncertainty.covariance;
     const position = measurement.position;
+    const analysisSpaceKey = measurement.analysisSpaceKey ?? this.config.analysisSpaceKey;
+    if (position) {
+      const validation = await client.query<{ canonical_srid: number; separation_m: number | null }>(
+        `SELECT space.canonical_srid,
+                CASE WHEN space.canonical_srid=$5 THEN ST_Distance(
+                  ST_SetSRID(ST_MakePoint($3,$4),$5),
+                  ST_Transform(ST_SetSRID(ST_Force2D(ST_GeomFromGeoJSON($2::jsonb)),4326),space.canonical_srid)
+                ) ELSE NULL END AS separation_m
+           FROM analysis_space space WHERE space.analysis_space_key=$1`,
+        [analysisSpaceKey,JSON.stringify(source),position.x,position.y,position.srid]
+      );
+      const row = validation.rows[0];
+      if (!row) throw Object.assign(new Error(`unknown analysis space ${analysisSpaceKey}`), { statusCode: 422, code: "UNKNOWN_ANALYSIS_SPACE" });
+      if (Number(row.canonical_srid) !== position.srid) {
+        throw Object.assign(new Error("position SRID differs from analysis space canonical SRID"), { statusCode: 422, code: "POSITION_SRID_MISMATCH" });
+      }
+      if (row.separation_m === null || Number(row.separation_m) > this.config.positionTransformToleranceM) {
+        throw Object.assign(new Error("position differs from the server-projected sourceGeometry"), { statusCode: 422, code: "POSITION_TRANSFORM_MISMATCH" });
+      }
+    }
     await client.query(
       `INSERT INTO position_measurement(
          measurement_id,analysis_space_key,source_position,position,altitude_m,vertical_datum,
@@ -398,7 +418,7 @@ export class ObservationRepository {
               ELSE ST_SetSRID(ST_MakePoint($4,$5),$6::integer) END,
          $7,$8,$9,$10,$11,$12,$13,$14,$15
        )`,
-      [measurementId,measurement.analysisSpaceKey ?? this.config.analysisSpaceKey,JSON.stringify(source),
+      [measurementId,analysisSpaceKey,JSON.stringify(source),
        position?.x ?? null,position?.y ?? null,position?.srid ?? this.config.analysisSrid,
        measurement.altitudeM ?? null,measurement.verticalDatum ?? null,
        covariance?.[0][0] ?? null,covariance?.[0][1] ?? null,covariance?.[1][1] ?? null,

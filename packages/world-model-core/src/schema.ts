@@ -52,6 +52,46 @@ export const ObservationEnvelopeV11Schema = z.object({
 
 const NonNegativeFinite = z.number().finite().nonnegative();
 const Probability = z.number().finite().min(0).max(1);
+const STATE_PATCH_MAX_BYTES = 65_536;
+const STATE_PATCH_MAX_DEPTH = 16;
+const STATE_PATCH_MAX_NODES = 4_096;
+const DANGEROUS_STATE_KEYS = new Set(["__proto__", "prototype", "constructor"]);
+const RESERVED_STATE_PATCH_KEYS = new Set(["position", "lastObservationType", "_evidenceSummary"]);
+
+function statePatchIssue(value: Record<string, unknown>): string | undefined {
+  const serialized = JSON.stringify(value);
+  if (Buffer.byteLength(serialized, "utf8") > STATE_PATCH_MAX_BYTES) return "statePatch exceeds 64 KiB";
+  let nodes = 0;
+  const visit = (candidate: unknown, depth: number): string | undefined => {
+    nodes += 1;
+    if (nodes > STATE_PATCH_MAX_NODES) return "statePatch exceeds node limit";
+    if (depth > STATE_PATCH_MAX_DEPTH) return "statePatch exceeds depth limit";
+    if (Array.isArray(candidate)) {
+      for (const item of candidate) {
+        const issue = visit(item, depth + 1);
+        if (issue) return issue;
+      }
+    } else if (candidate && typeof candidate === "object") {
+      for (const [key, item] of Object.entries(candidate as Record<string, unknown>)) {
+        if (DANGEROUS_STATE_KEYS.has(key)) return `statePatch contains dangerous key ${key}`;
+        const issue = visit(item, depth + 1);
+        if (issue) return issue;
+      }
+    }
+    return undefined;
+  };
+  return visit(value, 1);
+}
+
+const StatePatchSchema = z.record(z.string(), z.unknown()).superRefine((value, context) => {
+  for (const key of Object.keys(value)) {
+    if (RESERVED_STATE_PATCH_KEYS.has(key)) {
+      context.addIssue({ code: "custom", path: [key], message: `statePatch key ${key} is reserved` });
+    }
+  }
+  const issue = statePatchIssue(value);
+  if (issue) context.addIssue({ code: "custom", message: issue });
+});
 
 export const PositionUncertaintySchema = z.object({
   model: z.enum(["HARD_RADIUS", "STDDEV", "COVARIANCE", "INTERVAL", "UNKNOWN"]),
@@ -117,11 +157,14 @@ const CanonicalMeasurementSchema = z.object({
   attributes: z.record(z.string(), z.unknown()).default({})
 }).strict().superRefine((measurement, context) => {
   if (measurement.resultKind === "POSITION") {
-    if (!measurement.position || !measurement.sourceGeometry || !measurement.uncertainty) {
+    if (!measurement.sourceGeometry || !measurement.uncertainty) {
       context.addIssue({
         code: "custom",
-        message: "POSITION requires normalized position, WGS84 sourceGeometry and typed uncertainty"
+        message: "POSITION requires WGS84 sourceGeometry and typed uncertainty"
       });
+    }
+    if (measurement.position && !measurement.analysisSpaceKey) {
+      context.addIssue({ code: "custom", path: ["analysisSpaceKey"], message: "provided position requires analysisSpaceKey" });
     }
   } else if (measurement.position || measurement.sourceGeometry || measurement.uncertainty) {
     context.addIssue({ code: "custom", message: "position fields are only valid for POSITION measurements" });
@@ -204,6 +247,7 @@ export const CanonicalObservationInputSchema = z.object({
   ...ExternalCorrelationFields,
   qualityFlags: z.array(z.string().min(1).max(128)).default([]),
   metadata: z.record(z.string(), z.unknown()).default({}),
+  statePatch: StatePatchSchema.optional(),
   timeSolution: CanonicalTimeSolutionSchema,
   measurements: z.array(CanonicalMeasurementSchema).min(1).max(128),
   assertions: z.array(ObservationAssertionSchema).max(128).default([]),

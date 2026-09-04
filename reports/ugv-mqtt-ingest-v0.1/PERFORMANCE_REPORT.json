@@ -1,0 +1,6 @@
+{
+  "status": "NOT_RUN",
+  "requiredRateMessagesPerSecond": 100,
+  "requiredDurationSeconds": 600,
+  "reason": "Performance cannot be represented as accepted while the source contract blocks the seven-stream reliability gate."
+}

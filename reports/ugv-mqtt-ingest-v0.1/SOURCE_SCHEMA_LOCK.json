@@ -1,0 +1,22 @@
+{
+  "status": "BLOCKED",
+  "reason": "BLOCKED_SOURCE_CONTRACT_CONFLICT",
+  "sourceRepository": "/home/zhouwen/code/isr-simulation",
+  "sourceRevision": "c10620572a7e1f0a881a8bd97198618bcf5d3d5a",
+  "generatedSchemaDirectory": "/home/zhouwen/code/isr-simulation/doc/equipment/schema",
+  "generatedSchemaFiles": {
+    "mqtt_topics.json": "MISSING",
+    "mcp_ugv.json": "MISSING",
+    "error_codes.json": "MISSING"
+  },
+  "sourceCodeEvidence": [
+    { "path": "ros_ws/src/ros2_mqtt_bridge/config/bridge_config.yaml", "sha256": "475499558949efaeffdaf8c2889e2780d768b5ede53c5486eaa54aa0e2781860" },
+    { "path": "ros_ws/src/ros2_mcp_server/ros2_mcp_server/mcp_server/schemas.py", "sha256": "223fdeb7198c73dda44c2be55c6a1729ffbe52c43329dd9a5ce99b3cff7880f4" },
+    { "path": "ros_ws/src/ros2_mcp_server/ros2_mcp_server/mcp_server/error_codes.py", "sha256": "f7e0c333361666dc242c493a4980fd0bed81c85f8e264d9b5f48387521e43f64" },
+    { "path": "ros_ws/script/export_mcp_schemas.py", "sha256": "f022335caead969fa88c5a6db37c9da57a0f09901bce51f4389e679194abefce" }
+  ],
+  "sourceTrackedWorktreeBefore": "CLEAN",
+  "sourceTrackedWorktreeAfter": "CLEAN",
+  "preExistingUntrackedFiles": ["ros_ws/src/模拟器控制台.zip"],
+  "sourceModifiedByThisTask": false
+}

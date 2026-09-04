@@ -1,0 +1,7 @@
+{
+  "status": "NOT_RUN",
+  "implemented": { "deterministicIds": true, "chassisTransitions": true, "reconTransitions": true, "commandAckEvents": true, "mirrorSuppression": true },
+  "unitContractStatus": "PASS",
+  "realTimelineStatus": "NOT_RUN",
+  "reason": "Requires the unblocked seven-stream source contract and a complete real E2E run."
+}

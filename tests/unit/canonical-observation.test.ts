@@ -147,4 +147,38 @@ describe("GOWM+ canonical observation v1.2",() => {
     expect(bundle.measurements[0]?.uncertainty).toEqual({ model: "UNKNOWN" });
     expect(bundle.measurements[0]?.continuityToken).toBeUndefined();
   });
+
+  it("projects bounded statePatch without merging measurement attributes",() => {
+    const candidate = { ...canonicalInput(),statePatch: { kinematics: { speedMps: 3.4 } } };
+    const parsed = CanonicalObservationInputSchema.parse(candidate);
+    const bundle = normalizeObservationInput(parsed,"2026-08-13T00:00:03Z");
+    expect(bundle.envelope.value).toEqual({
+      kinematics: { speedMps: 3.4 },
+      _evidenceSummary: { measurementCount: 1,assertionCount: 1,primaryMeasurementKey: "position-ground-plane" }
+    });
+    expect(bundle.measurements[0]?.attributes).toEqual({ objectType: "person" });
+    const changed = normalizeObservationInput(CanonicalObservationInputSchema.parse({
+      ...candidate,statePatch: { kinematics: { speedMps: 3.5 } }
+    }),"2026-08-13T00:00:03Z");
+    expect(changed.payloadHash).not.toBe(bundle.payloadHash);
+  });
+
+  it("rejects reserved, dangerous, oversized and deeply nested state patches",() => {
+    expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: { position: {} } }).success).toBe(false);
+    expect(CanonicalObservationInputSchema.safeParse({
+      ...canonicalInput(),statePatch: JSON.parse('{"safe":{"constructor":{}}}')
+    }).success).toBe(false);
+    expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: { platform: "x".repeat(70_000) } }).success).toBe(false);
+    let deep: Record<string,unknown> = {}; for (let index=0;index<20;index+=1) deep={ nested: deep };
+    expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: deep }).success).toBe(false);
+  });
+
+  it("accepts sourceGeometry-only POSITION and guards optional normalized positions",() => {
+    const sourceOnly = canonicalInput();
+    delete (sourceOnly.measurements[0] as { position?: unknown }).position;
+    expect(CanonicalObservationInputSchema.safeParse(sourceOnly).success).toBe(true);
+    const withPositionWithoutSpace = canonicalInput();
+    delete (withPositionWithoutSpace.measurements[0] as { analysisSpaceKey?: unknown }).analysisSpaceKey;
+    expect(CanonicalObservationInputSchema.safeParse(withPositionWithoutSpace).success).toBe(false);
+  });
 });

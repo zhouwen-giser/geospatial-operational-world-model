@@ -1,0 +1,19 @@
+{
+  "status": "BLOCKED",
+  "topics": ["/ugv/gnss", "/ugv/speed", "status/ugv", "/ugv/mission_state", "/ugv/area_recon/status", "/ugv/area_recon/targets", "/ugv/area_recon/exception"],
+  "mapperContractTests": "PASS",
+  "brokerProbe": {
+    "broker": "192.168.2.63:1883",
+    "durationSeconds": 15,
+    "subackAllRequestedQos1": true,
+    "observed": {
+      "/ugv/gnss": { "qos": 1, "retain": false },
+      "/ugv/speed": { "qos": 0, "retain": false },
+      "/ugv/mission_state": { "qos": 1, "retain": false },
+      "/ugv/area_recon/status": { "qos": 1, "retain": false }
+    },
+    "notObservedInWindow": ["status/ugv", "/ugv/area_recon/targets", "/ugv/area_recon/exception"]
+  },
+  "sourceTopicConflict": "bridge_config.yaml declares device_id ugv1 and mqtt_topic status/ugv1, while the fixed task contract requires status/ugv",
+  "authorityIsolation": { "speedMirrorSuppressed": true, "missionMirrorSuppressed": true, "chassisReconEnumsSeparated": true }
+}

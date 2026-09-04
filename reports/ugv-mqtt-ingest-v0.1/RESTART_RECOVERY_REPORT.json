@@ -1,0 +1,5 @@
+{
+  "status": "NOT_RUN",
+  "scenarios": { "adapterRestart": "NOT_RUN", "brokerRestart": "NOT_RUN", "databasePause": "NOT_RUN", "observationApiOutage": "NOT_RUN", "projectionWorkerRestart": "NOT_RUN" },
+  "reason": "The immutable speed stream is QoS 0 and prevents the mandated seven-stream reliable recovery acceptance."
+}

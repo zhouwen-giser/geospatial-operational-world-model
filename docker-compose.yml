@@ -128,6 +128,57 @@ services:
     security_opt: ["no-new-privileges:true"]
     init: true
 
+  ugv-mqtt-ingest:
+    build: .
+    profiles: ["ugv-mqtt"]
+    environment:
+      DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:-gowm}@postgres:5432/gowm
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      SERVICE_REVISION: ${SERVICE_REVISION:-dev}
+      UGV_MQTT_URL: ${UGV_MQTT_URL:-}
+      UGV_MQTT_CLIENT_ID: ${UGV_MQTT_CLIENT_ID:-gowm-ugv-ingest-airport-01}
+      UGV_MQTT_USERNAME: ${UGV_MQTT_USERNAME:-}
+      UGV_MQTT_PASSWORD_FILE: ${UGV_MQTT_PASSWORD_CONTAINER_FILE:-}
+      UGV_MQTT_CA_FILE: ${UGV_MQTT_CA_CONTAINER_FILE:-}
+      UGV_MQTT_CERT_FILE: ${UGV_MQTT_CERT_CONTAINER_FILE:-}
+      UGV_MQTT_KEY_FILE: ${UGV_MQTT_KEY_CONTAINER_FILE:-}
+      UGV_MQTT_SESSION_EXPIRY_SECONDS: ${UGV_MQTT_SESSION_EXPIRY_SECONDS:-86400}
+      UGV_MQTT_KEEPALIVE_SECONDS: ${UGV_MQTT_KEEPALIVE_SECONDS:-30}
+      UGV_MQTT_CONNECT_TIMEOUT_MS: ${UGV_MQTT_CONNECT_TIMEOUT_MS:-5000}
+      UGV_MQTT_MAX_PAYLOAD_BYTES: ${UGV_MQTT_MAX_PAYLOAD_BYTES:-1048576}
+      UGV_EQUIPMENT_SCHEMA_DIR: /source-schema
+      UGV_DEVICE_ID: ${UGV_DEVICE_ID:-ugv}
+      UGV_DATA_SCOPE_KEY: ${UGV_DATA_SCOPE_KEY:-airport-sim-ugv-01}
+      UGV_ORIGIN_KIND: ${UGV_ORIGIN_KIND:-SIMULATION}
+      UGV_SOURCE_KEY: ${UGV_SOURCE_KEY:-ugv-airport-sim-mqtt}
+      UGV_PRODUCER_PIPELINE_KEY: ${UGV_PRODUCER_PIPELINE_KEY:-ugv-airport-sim-mqtt:canonical-v1}
+      UGV_SCENARIO_ID: ${UGV_SCENARIO_ID:-airport}
+      UGV_WORLD_EPOCH: ${UGV_WORLD_EPOCH:-airport-run-001}
+      UGV_TRACKER_SESSION_KEY: ${UGV_TRACKER_SESSION_KEY:-airport-run-001:ugv}
+      UGV_ANALYSIS_SPACE_KEY: ${UGV_ANALYSIS_SPACE_KEY:-airport-utm48n}
+      UGV_ANALYSIS_SRID: ${UGV_ANALYSIS_SRID:-32648}
+      UGV_MQTT_ARRIVAL_TIME_UNCERTAINTY_MS: ${UGV_MQTT_ARRIVAL_TIME_UNCERTAINTY_MS:-1000}
+      UGV_MQTT_INGEST_PORT: 3010
+      GOWM_OBSERVATION_API_URL: http://observation-ingest:3002
+    command: ["node", "dist/services/ugv-mqtt-ingest/src/index.js"]
+    volumes:
+      - ${UGV_EQUIPMENT_SCHEMA_DIR:-./config/ugv-source-schema}:/source-schema:ro
+    ports:
+      - "${API_BIND_ADDRESS:-127.0.0.1}:${UGV_MQTT_INGEST_PORT:-3010}:3010"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      observation-ingest:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3010/health/ready').then(r=>{if(!r.ok)process.exit(1)})"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    init: true
+
   stas:
     build: .
     environment:
