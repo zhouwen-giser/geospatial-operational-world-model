@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "sourceArtifactHash": "sha256:f9119c2fa0c73093c2c2d15d262ede56fbcefd3de091f652523559aca13d3481",
+  "roadIds": [
+    "6"
+  ],
+  "channels": [
+    {
+      "sourceKey": "road:6/section:0.000000000/lane:-1",
+      "roadId": "6",
+      "laneId": -1,
+      "sourceLaneGuid": "{66aad656-d910-4224-8b4a-4d00e5d92ad9}",
+      "reasons": [
+        "ISOLATED_FROM_MAIN_COMPONENT",
+        "UNLINKED_ROAD",
+        "OVERLAPPING_SOURCE_CANDIDATE"
+      ]
+    },
+    {
+      "sourceKey": "road:6/section:0.000000000/lane:1",
+      "roadId": "6",
+      "laneId": 1,
+      "sourceLaneGuid": "{18e4d6cf-1b97-4598-96f2-c5ce927e7271}",
+      "reasons": [
+        "ISOLATED_FROM_MAIN_COMPONENT",
+        "UNLINKED_ROAD",
+        "OVERLAPPING_SOURCE_CANDIDATE"
+      ]
+    }
+  ]
+}

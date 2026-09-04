@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0",
+  "reportKind": "GOWM_OPENDRIVE_GRAPH_ADMISSION",
+  "status": "PASS",
+  "generatedAt": "2026-09-04T08:06:17.051Z",
+  "checks": [
+    {
+      "id": "ARTIFACT_CONTRACT",
+      "status": "PASS",
+      "summary": "Locked artifacts and fixed cardinalities validated"
+    },
+    {
+      "id": "CATALOG_GRAPH_PLAN",
+      "status": "PASS",
+      "summary": "Deterministic DatasetVersion, GraphVersion, topology, bindings, turns, profiles, costs, and condition plan materialized"
+    },
+    {
+      "id": "DATABASE_MUTATION_GUARD",
+      "status": "PASS",
+      "summary": "Explicit mutation switch, permitted database identity, instance fingerprint, and development project gates matched",
+      "evidence": {
+        "database": "gowm",
+        "fingerprint": "sha256:d3d6497e3167384f494222b09fa2e7a74f9d4d93709c4e76bbc817cef4990a5d"
+      }
+    },
+    {
+      "id": "REAL_DATABASE_ADMISSION",
+      "status": "PASS",
+      "summary": "Catalog, immutable graph content, profiles, costs, partial conditions, receipt, and activation committed in one transaction",
+      "evidence": {
+        "routing_features": 244,
+        "edge_count": 244,
+        "arc_count": 244,
+        "binding_count": 244,
+        "turn_count": 336,
+        "road6_count": 0,
+        "blocking_count": 0,
+        "arc_cost_count": 488,
+        "partial_snapshot_count": 1,
+        "activation_count": 1
+      }
+    }
+  ],
+  "summary": {
+    "datasetReferenceKey": "wrf_dc6ad99f4e8d1e27f41f1af147d5bfbb",
+    "datasetVersion": "dsv_20245e0ae92c989ec9e308456808e44be853ef0eb11a92d7fd8015190ee2dc81",
+    "datasetContentHash": "sha256:707c95ef6821c50df08afeabe5d67625ff28d9b8ec73bb5bd84b47f9054db910",
+    "graphVersion": "gv_62c358a52d01a49f10334531dfca7271fbbe732b62dcfd66f90eaf9ba90ef9ff",
+    "graphContentHash": "sha256:707c95ef6821c50df08afeabe5d67625ff28d9b8ec73bb5bd84b47f9054db910",
+    "compilerContentHash": "sha256:707c95ef6821c50df08afeabe5d67625ff28d9b8ec73bb5bd84b47f9054db910",
+    "compilerTopologyHash": "sha256:872538d2082f4f3bdb8125af45a6bff36afde457b2fd37919c2ea6c458b39533",
+    "counts": {
+      "physicalRoads": 40,
+      "routingChannels": 244,
+      "edges": 244,
+      "allowedOnlyTurnRules": 336,
+      "junctionConnectorChannels": 164,
+      "excludedNonDrivingConnectors": 60,
+      "quarantinedChannels": 2
+    },
+    "accuracyClaim": "UNVERIFIED_COMPATIBILITY_TRANSFORM",
+    "adapterKind": "CATALOG_VECTOR_LAYER"
+  }
+}

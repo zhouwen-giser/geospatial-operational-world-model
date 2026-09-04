@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "reportKind": "GDPS_OPENDRIVE_IMPORT_EXTERNAL_EVIDENCE",
+  "status": "NOT_RUN",
+  "checks": [
+    {
+      "id": "EXTERNAL_GDPS_WORKFLOW",
+      "status": "NOT_RUN",
+      "summary": "GDPS import is owned and executed in the separate GDPS repository; no GDPS database claim is made by GOWM+"
+    }
+  ],
+  "summary": {
+    "authority": "GDPS",
+    "expectedPhysicalRoadCount": 40,
+    "inputArtifact": "artifacts/physical-roads.geojson",
+    "sourceLockArtifact": "artifacts/compile-manifest.json"
+  }
+}

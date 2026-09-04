@@ -5,17 +5,15 @@ COPY package.json package-lock.json* ./
 RUN npm ci --ignore-scripts
 COPY services/stas/package.json services/stas/package-lock.json services/stas/
 RUN npm --prefix services/stas ci --ignore-scripts
-COPY tsconfig.json vitest.config.ts ./
+COPY tsconfig.json tsconfig.runtime.json ./
 COPY packages ./packages
 COPY services ./services
 COPY simulator ./simulator
 COPY scripts ./scripts
-COPY tests ./tests
 COPY validation ./validation
 COPY contracts ./contracts
 COPY config ./config
-COPY test-data ./test-data
-RUN npm run build
+RUN npm run build:runtime
 
 FROM ${NODE_BASE_IMAGE} AS runtime
 ENV NODE_ENV=production
@@ -30,6 +28,5 @@ COPY --chown=node:node database ./database
 COPY --chown=node:node config ./config
 COPY --chown=node:node contracts ./contracts
 COPY --chown=node:node scripts ./scripts
-COPY --chown=node:node test-data ./test-data
 USER node
 CMD ["node", "dist/services/world-api/src/index.js"]

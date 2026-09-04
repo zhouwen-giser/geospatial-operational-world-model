@@ -33,8 +33,21 @@ mkdir -p "$staging_dir" "$output_dir"
 tar \
   --exclude='./.git' \
   --exclude='./.env' \
+  --exclude='*/.env' \
   --exclude='./node_modules' \
   --exclude='*/node_modules' \
+  --exclude='./tests' \
+  --exclude='./test-data' \
+  --exclude='*/test' \
+  --exclude='*/tests' \
+  --exclude='*/fixture' \
+  --exclude='*/fixtures' \
+  --exclude='*/fixture.*' \
+  --exclude='*/fixtures.*' \
+  --exclude='*/example' \
+  --exclude='*/examples' \
+  --exclude='*/example.*' \
+  --exclude='*/examples.*' \
   --exclude='./dist' \
   --exclude='./coverage' \
   --exclude='./reports' \
@@ -46,14 +59,69 @@ tar \
   --exclude='*.pid' \
   -cf - -C "$project_dir" . | tar -xf - -C "$staging_dir"
 
+# General reports are intentionally excluded because they can contain local
+# runtime evidence. The OpenDRIVE task-network handoff is a versioned,
+# deterministic interface consumed by the joint deployment package, so copy
+# only that explicitly reviewed subtree when it has been materialized.
+opendrive_report_dir="$project_dir/reports/opendrive-task-network-v0.1"
+opendrive_report_files=(
+  SOURCE_LOCK.json
+  COMPILE_REPORT.json
+  GDPS_IMPORT_REPORT.json
+  GOWM_GRAPH_REPORT.json
+  ROUTING_E2E_REPORT.json
+  FINAL_ACCEPTANCE_REPORT.json
+  README.md
+  artifacts/compile-manifest.json
+  artifacts/physical-roads.geojson
+  artifacts/routing-channels.geojson
+  artifacts/allowed-transitions.json
+  artifacts/identity-map.json
+  artifacts/quarantine.json
+  artifacts/compile-report.json
+  artifacts/admission-plan.json
+  artifacts/SHA256SUMS
+)
+for report_file in "${opendrive_report_files[@]}"; do
+  report_path="$opendrive_report_dir/$report_file"
+  [[ -f "$report_path" && ! -L "$report_path" ]] || {
+    printf 'Required OpenDRIVE deployment artifact is missing or unsafe: %s\n' "$report_path" >&2
+    exit 1
+  }
+done
+mkdir -p "$staging_dir/reports/opendrive-task-network-v0.1"
+tar -cf - -C "$opendrive_report_dir" "${opendrive_report_files[@]}" |
+  tar -xf - -C "$staging_dir/reports/opendrive-task-network-v0.1"
+(cd "$staging_dir/reports/opendrive-task-network-v0.1/artifacts" && sha256sum -c SHA256SUMS >/dev/null)
+
+if rg -n '(postgres(?:ql)?://[^[:space:]@/]+:[^[:space:]@/]+@|Bearer[[:space:]]+[A-Za-z0-9._~+/-]{20,}|/home/)' \
+  "$staging_dir/reports/opendrive-task-network-v0.1"; then
+  printf '%s\n' 'OpenDRIVE reports contain a credential or host-local path; package aborted.' >&2
+  exit 1
+fi
+
 # The packaging process uses umask 077 so temporary/private files are never
 # exposed while staging. Normalize the distributable tree before archiving:
 # Docker build contexts must remain traversable by non-root runtime users.
 chmod -R u+rwX,go+rX "$staging_dir"
 permission_failure="$(find "$staging_dir" \( -type d ! -perm -005 -o -type f ! -perm -004 \) -print -quit)"
 [[ -z "$permission_failure" ]] || { printf 'Unreadable package entry: %s\n' "$permission_failure" >&2; exit 1; }
+symlink_failure="$(find "$staging_dir" -type l -print -quit)"
+[[ -z "$symlink_failure" ]] || { printf 'Symlinks are forbidden in deployment packages: %s\n' "$symlink_failure" >&2; exit 1; }
+env_failure="$(find "$staging_dir" -name .env -print -quit)"
+[[ -z "$env_failure" ]] || { printf 'Forbidden .env entry: %s\n' "$env_failure" >&2; exit 1; }
+ordinary_sample_failure="$(find "$staging_dir" -type d \( -name test -o -name tests -o -name test-data -o -name fixture -o -name fixtures -o -name example -o -name examples \) -print -quit)"
+[[ -z "$ordinary_sample_failure" ]] || {
+  printf 'Ordinary test/fixture/example content is forbidden in the deployment package: %s\n' "$ordinary_sample_failure" >&2
+  exit 1
+}
+ordinary_sample_file_failure="$(find "$staging_dir" -type f \( -name 'fixture.*' -o -name 'fixtures.*' -o -name 'example.*' -o -name 'examples.*' \) -print -quit)"
+[[ -z "$ordinary_sample_file_failure" ]] || {
+  printf 'Ordinary fixture/example file is forbidden in the deployment package: %s\n' "$ordinary_sample_file_failure" >&2
+  exit 1
+}
 
-(cd "$staging_dir" && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
+(cd "$staging_dir" && find . -type f ! -path './SHA256SUMS' -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > SHA256SUMS)
 
 if rg -n --hidden \
   '(BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|(^|[^A-Za-z0-9])sk-[A-Za-z0-9_-]{20,})' \
@@ -65,5 +133,6 @@ fi
 (cd "$staging_dir" && sha256sum -c SHA256SUMS >/dev/null)
 tar -czf "$archive_path" -C "$staging_root" "$package_name"
 (cd "$output_dir" && sha256sum "$(basename "$archive_path")" > "$(basename "$checksum_path")")
-tar -tzf "$archive_path" >/dev/null
+archive_path_failure="$(tar -tzf "$archive_path" | awk '/^\// || /(^|\/)\.\.($|\/)/ { print; exit }')"
+[[ -z "$archive_path_failure" ]] || { printf 'Unsafe archive entry: %s\n' "$archive_path_failure" >&2; exit 1; }
 printf '%s\n' "$archive_path" "$checksum_path"
