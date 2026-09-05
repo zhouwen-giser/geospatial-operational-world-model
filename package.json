@@ -110,6 +110,7 @@
     "test:integration": "vitest run tests/integration",
     "test:platform": "vitest run tests/platform",
     "test:stas": "npm --prefix services/stas test",
+    "test:geometry-upstream": "npm --prefix services/upstreams/geometry-tool-service run build && node --test validation/provider-conformance/geometry/upstream-regressions.test.mjs",
     "benchmark": "npm run build && node dist/tests/performance/benchmark.js",
     "benchmark:postgis": "npm run build && node dist/tests/performance/postgis-benchmark.js",
     "benchmark:mqtt": "npm run build && node dist/tests/performance/mqtt-benchmark.js",

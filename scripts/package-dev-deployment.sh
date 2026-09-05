@@ -9,7 +9,7 @@ output_dir="${GOWM_DEPLOYMENT_OUTPUT_DIR:-$project_dir/output/deployment}"
 archive_path="$output_dir/${package_name}.tar.gz"
 checksum_path="${archive_path}.sha256"
 
-for command_name in node find sort sha256sum tar rg; do
+for command_name in node find sort sha256sum tar rg git; do
   command -v "$command_name" >/dev/null || { printf 'Missing command: %s\n' "$command_name" >&2; exit 1; }
 done
 
@@ -30,21 +30,11 @@ cleanup() { rm -rf -- "$staging_root"; }
 trap cleanup EXIT
 mkdir -p "$staging_dir" "$output_dir"
 
-tar \
-  --exclude='./.git' \
-  --exclude='./.env' \
-  --exclude='./node_modules' \
-  --exclude='*/node_modules' \
-  --exclude='./dist' \
-  --exclude='./coverage' \
-  --exclude='./reports' \
-  --exclude='./output' \
-  --exclude='./.runtime' \
-  --exclude='./.intake' \
-  --exclude='./.docker-config' \
-  --exclude='*.log' \
-  --exclude='*.pid' \
-  -cf - -C "$project_dir" . | tar -xf - -C "$staging_dir"
+# Only tracked files may enter the package. The inventory also
+# rejects local/private paths even if they were accidentally staged.
+node "$project_dir/scripts/dev-deployment-inventory.mjs" "$project_dir" > "$staging_root/files.list"
+tar -cf - -C "$project_dir" --null --verbatim-files-from --no-recursion \
+  -T "$staging_root/files.list" | tar -xf - -C "$staging_dir"
 
 # The packaging process uses umask 077 so temporary/private files are never
 # exposed while staging. Normalize the distributable tree before archiving:

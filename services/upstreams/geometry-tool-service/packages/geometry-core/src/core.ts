@@ -140,6 +140,11 @@ export class GeometryCore {
         const validation = await this.adapter.execute({ operation: "validate", input: { geometry: adapterResult.geometry } });
         const inputType = request.input ? unwrapGeometry(request.input.geometry).type : undefined;
         const summary = this.metadata(adapterResult.geometry, request.input, validation.detail?.valid, inputType);
+        const inputs = request.inputs ?? [];
+        if (operation === "collect" && inputs.length > 0 && inputs.every((input) => input.srid !== undefined)) {
+          // assertSridCompatibility has already checked every collection member.
+          summary.srid = inputs[0]!.srid!;
+        }
         return { result: inspected.geometry, summary, warnings: allWarnings, execution };
       }
       if (adapterResult.scalar !== undefined) {
@@ -278,13 +283,15 @@ export class GeometryCore {
   }
 
   private assertSridCompatibility(request: OperationRequest): void {
-    if (request.input?.srid !== undefined && request.other?.srid !== undefined && request.input.srid !== request.other.srid) {
+    const srids = new Set([request.input, request.other, ...(request.inputs ?? [])]
+      .flatMap((input) => input?.srid === undefined ? [] : [input.srid]));
+    if (srids.size > 1) {
       throw new GeometryServiceError({
         code: "SRID_MISMATCH",
-        message: `SRID metadata differs (${request.input.srid} vs ${request.other.srid}); Geometry Service never reprojects`,
+        message: `SRID metadata differs (${[...srids].join(" vs ")}); Geometry Service never reprojects`,
         operation: request.operation,
         recoverable: true,
-        suggestion: "Reproject both inputs in CRS Service, then retry with matching SRID metadata.",
+        suggestion: "Reproject all inputs in CRS Service, then retry with matching SRID metadata.",
       });
     }
   }
@@ -395,7 +402,7 @@ export class GeometryCore {
   private async hashResult(request: OperationRequest, started: number, warnings: string[]): Promise<ScalarResult<string>> {
     if (!request.input) throw new Error("geometry_hash requires input");
     let geometry = unwrapGeometry(request.input.geometry);
-    const grid = request.options?.precision?.gridSize;
+    const grid = this.effectiveOptions(request).precision?.gridSize;
     if (grid !== undefined) {
       const reduced = await this.adapter.execute({ operation: "reduce_precision", input: { geometry }, options: { precision: { gridSize: grid } }, parameters: { gridSize: grid } });
       if (reduced.geometry) geometry = reduced.geometry;

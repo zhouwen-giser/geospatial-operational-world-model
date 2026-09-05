@@ -100,7 +100,7 @@ export class GeosWasmAdapter implements GeometryEngineAdapter {
             const clone = this.clone(geometry);
             const clockwise = this.booleanParam(request, "exteriorClockwise", false) ? 1 : 0;
             const status = this.api.GEOSOrientPolygons_r(this.context, clone, clockwise);
-            if (status === 0) {
+            if (status < 0) {
               this.destroy(clone);
               throw new Error("GEOSOrientPolygons failed");
             }

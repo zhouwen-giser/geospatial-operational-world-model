@@ -7,7 +7,7 @@
   "version": "1.0.0",
   "sourceSha256": "3527a06d7a6216c1bf1c2ee75690824298231917c03a8c99507a71df26f12c3d",
   "vendoredPath": "services/upstreams/geometry-tool-service",
-  "vendoredTreeSha256": "sha256:7fb7977997e8f148d93d8757938b507ca3efba900baadc58d1e702e229a3fecd",
+  "vendoredTreeSha256": "sha256:c80340fa136e3aacabab0adb4a4935c17f6bcbb383c950ad537e5b22ea64841d",
   "noticePath": "services/upstreams/geometry-tool-service/THIRD_PARTY_NOTICES.md",
   "sbomPath": "services/upstreams/geometry-tool-service/sbom.cdx.json",
   "openApiSha256": "f45ad64ab0781289e960e826dde220db85c295d45d2d69e4f1afbf163e7cd600",

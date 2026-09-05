@@ -92,6 +92,12 @@ copy the private `.env` only after reviewing template changes, point Compose at
 the existing approved volumes/project name, and run `up`. Migrations are
 forward-only; take and test a backup before upgrading retained data.
 
+Rebuilding the deployment archive with `npm run package:dev-deployment`
+requires a Git checkout. It packages only tracked files, including the verified
+H3 artifact, and excludes local worktrees, generated output, and private
+environment files at every depth. Tracked `.env*.example` templates are retained.
+Stage any new source files before packaging so they appear in the inventory.
+
 ## Security boundary
 
 The development override binds all ports to `0.0.0.0`. MQTT remains anonymous,
