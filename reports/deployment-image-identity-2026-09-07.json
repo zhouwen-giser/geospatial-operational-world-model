@@ -1,0 +1,27 @@
+{
+  "status": "PASS_LOCAL_FULL_TAR_BUILD_AND_IMAGE_IDENTITY",
+  "sourceCommit": "74b9eabd5b09bb9fd7149f331e8bc6be2d0fdb73",
+  "packageSha256": "84511f649f324ea8c90cc5a706937ea5463c6436ebeaf4954884cfcd401c89be",
+  "packageBytes": 2928239,
+  "image": "gowm-dev-package-check:84511f649f324ea8",
+  "imageManifestDigest": "sha256:b015ff8fda31a03ba72665c13c3e265dd19dd4fd6986098441fb48282ae57617",
+  "runtimeSourceFilesVerified": 541,
+  "operationalRuntimeAndDeclaredImplementationDigest": "sha256:837a3d868375540a571a8b41a51bcaed0f56d7e7a15b707c8046bf652209c78d",
+  "fullBuild": "PASS",
+  "cachedRepeatBuild": "PASS",
+  "hostSourceVersusImageBytes": "PASS",
+  "actualRuntimeVersusDeclaredManifest": "PASS",
+  "nonRootMigrationReadability": "PASS",
+  "archiveChecksumsPermissionsExclusionsReproducibility": "PASS",
+  "deploymentUnitTests": {"passed": 2, "failed": 0},
+  "knownBadImageRegression": "FAIL_AS_EXPECTED: four source COPY mismatches in original b7e5 directory-built image",
+  "buildPath": "checksum inventory -> full tar stdin -> Docker -> independently computed host hashes -> actual image/runtime verification",
+  "sharedServerMutationByThisTask": false,
+  "notes": [
+    "Previous image-content qualification withdrawn; archive b7e5 source bytes were correct",
+    "No-cache directory build reported insufficient by GSAP; tar-stream full build independently passed locally and on site",
+    "One npm ECONNRESET and one disk-full backup failure did not replace the previous deliverable; final repeat passed",
+    "Only self-created isolated test resources and exact interrupted-build cache IDs were cleaned; no shared business volumes were removed",
+    "Dependency audit warnings and business acceptance status remain separate from this build gate"
+  ]
+}
