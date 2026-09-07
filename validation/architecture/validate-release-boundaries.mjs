@@ -68,7 +68,7 @@ const expectedLocks = [
     license: "MIT",
     redistributionAllowed: true,
     vendoredPath: "services/upstreams/geometry-tool-service",
-    vendoredTreeSha256: "sha256:7fb7977997e8f148d93d8757938b507ca3efba900baadc58d1e702e229a3fecd",
+    vendoredTreeSha256: "sha256:c80340fa136e3aacabab0adb4a4935c17f6bcbb383c950ad537e5b22ea64841d",
     noticePath: "services/upstreams/geometry-tool-service/THIRD_PARTY_NOTICES.md",
     sbomPath: "services/upstreams/geometry-tool-service/sbom.cdx.json"
   },

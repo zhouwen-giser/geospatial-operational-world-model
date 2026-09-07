@@ -7,8 +7,11 @@ contracts/gowm-v0.4/**/*.yaml text eol=lf
 contracts/consumers/wsgs-southbound-operation-lock-v2.json text eol=lf
 contracts/manifests/providers/*.json text eol=lf
 config/*gateway-registry.json text eol=lf
-packages/platform/world-gateway-contracts/bundle/locks/wsgs-southbound-operation-lock-v2.json text eol=lf
+packages/platform/world-gateway-contracts/bundle/** text=auto eol=lf
 packages/integrations/**/semantic-profiles*.json text eol=lf
 services/providers/**/semantic-profiles*.json text eol=lf
 reports/gowm-v0.6.3/** text eol=lf
 database/migrations/*.sql text eol=lf
+artifacts/h3-bindings.mjs* text eol=lf
+services/upstreams/** text=auto eol=lf
+scripts/*.sh text eol=lf
