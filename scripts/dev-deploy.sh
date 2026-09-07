@@ -260,7 +260,36 @@ up() {
   timeout="$(env_value DEV_HEALTH_TIMEOUT_SECONDS)"
   [[ "$timeout" =~ ^[0-9]+$ ]] || timeout=600
   log "building and starting the complete development platform"
-  compose up -d --build --wait --wait-timeout "$timeout"
+  if [[ -f "$project_dir/SHA256SUMS" && ! -e "$project_dir/.git" ]]; then
+    local verified_image runtime_image
+    verified_image="gowm-verified-runtime:$(sha256sum "$project_dir/SHA256SUMS" | cut -c1-16)"
+    bash "$project_dir/scripts/build-verified-image.sh" "$verified_image" "$project_dir"
+    # Preserve existing Compose naming and service configuration. Only replace
+    # the common GOWM Dockerfile's image tags; never rebuild them via local delta.
+    local runtime_images
+    runtime_images="$(compose config --format json | node --input-type=module -e '
+      import path from "node:path";
+      let input=""; for await(const chunk of process.stdin) input+=chunk;
+      const config=JSON.parse(input),root=path.resolve(process.argv[1]),images=new Set();
+      for(const [name,service] of Object.entries(config.services)) {
+        const build=service.build;
+        if(!build) continue;
+        const context=typeof build==="string"?build:build.context;
+        const dockerfile=typeof build==="string"?"Dockerfile":build.dockerfile??"Dockerfile";
+        if(path.resolve(context)===root && dockerfile==="Dockerfile") {
+          if(!service.image&&!config.name) throw new Error("Missing Compose image/project identity");
+          images.add(service.image??`${config.name}-${name}`);
+        }
+      }
+      if(!images.size) throw new Error("No GOWM runtime images resolved");
+      console.log([...images].join("\n"));
+    ' "$project_dir")"
+    while IFS= read -r runtime_image; do docker tag "$verified_image" "$runtime_image"; done <<< "$runtime_images"
+    compose build postgres
+    compose up -d --no-build --wait --wait-timeout "$timeout"
+  else
+    compose up -d --build --wait --wait-timeout "$timeout"
+  fi
   smoke
   log "deployment is ready; endpoints are documented in docs/DEV_DEPLOYMENT.md"
   log "Gateway token remains private in $env_file (GATEWAY_AUTH_SHARED_TOKEN)"

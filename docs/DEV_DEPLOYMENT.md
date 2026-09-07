@@ -136,6 +136,22 @@ directory-delta source reuse. Use this path for normalized release archives and
 run the independent image check before deployment. The Dockerfile additionally
 refuses an Operational manifest/runtime mismatch.
 
+Reusable archive-only helper (Node with built-in modules, Docker and tar; no host
+`node_modules` required):
+
+```bash
+bash scripts/build-verified-image.sh <image-tag> <verified-package-directory>
+```
+
+It validates `SHA256SUMS`, streams only that inventory (not a generated `.env` or
+runtime directories), builds the normal Dockerfile, and verifies image bytes and
+runtime identity. It does not start containers other than an offline read-only
+verification process, migrate databases, tag remote releases or deploy services.
+Outer Compose coordinators should assign this verified image to GOWM runtime
+services and use `up --no-build`; do not follow this with an ordinary directory
+build that can replace it with stale COPY content. Other upstream images use
+their own independently verified build contexts.
+
 ## Security boundary
 
 The development override binds all ports to `0.0.0.0`. MQTT remains anonymous,
