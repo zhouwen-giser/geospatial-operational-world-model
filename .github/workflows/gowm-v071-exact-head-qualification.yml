@@ -62,6 +62,9 @@ jobs:
       - name: Candidate fresh and 069-to-075 history evidence qualification
         run: npm run validate:history-evidence-ci
 
+      - name: Operational Provider least-privilege fresh and upgrade gate
+        run: npm run validate:operational-read-closure
+
       - name: Candidate P1 Gateway scenario qualification
         run: npm run validate:v07-history-gateway
 
@@ -148,6 +151,9 @@ jobs:
 
       - name: Current fresh and 069-to-075 history evidence gates
         run: npm run validate:history-evidence-ci
+
+      - name: Main operational Provider least-privilege fresh and upgrade gate
+        run: npm run validate:operational-read-closure
 
       - name: Bind upgrade evidence to the same database execution
         run: >-

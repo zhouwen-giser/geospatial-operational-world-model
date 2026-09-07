@@ -14,6 +14,7 @@ import {
 export interface OperationalReadSnapshot {
   worldVersion: number;
   scopeDigest: string;
+  scopeReferenceKey: string;
 }
 
 export class OperationalReadRepository {
@@ -21,6 +22,21 @@ export class OperationalReadRepository {
 
   async snapshot(dataScopeKey: string): Promise<OperationalReadSnapshot> {
     return this.read(dataScopeKey, async (_client, snapshot) => snapshot);
+  }
+
+  async sources(dataScopeKey: string, referenceKey: string): Promise<string[]> {
+    return this.read(dataScopeKey, async (client) => {
+      const events = await client.query<{source: string}>(
+        "SELECT DISTINCT source_authority AS source FROM gowm_operational_reality_v1.task_event WHERE reference_key=$1 ORDER BY source_authority",
+        [referenceKey]
+      );
+      if (events.rows.length) return events.rows.map((row) => row.source);
+      const world = await client.query<{source: string}>(
+        "SELECT DISTINCT source FROM gowm_operational_reality_v1.world_source WHERE reference_key=$1 ORDER BY source",
+        [referenceKey]
+      );
+      return world.rows.map((row) => row.source);
+    });
   }
 
   async find(dataScopeKey: string,options: {
@@ -104,7 +120,12 @@ export class OperationalReadRepository {
       );
       const row = context.rows[0];
       if (!row) throw new Error("operational read snapshot context is unavailable");
-      const result = await action(client,{ worldVersion: Number(row.world_version),scopeDigest: row.scope_digest });
+      const identities = await client.query<{reference_key: string}>(
+        "SELECT reference_key FROM gowm_operational_reality_v1.scope_identity"
+      );
+      if (identities.rows.length !== 1) throw new Error("operational scope identity is unavailable or ambiguous");
+      const result = await action(client,{ worldVersion: Number(row.world_version),scopeDigest: row.scope_digest,
+        scopeReferenceKey: identities.rows[0]!.reference_key });
       await client.query("COMMIT");
       return result;
     } catch (error) {

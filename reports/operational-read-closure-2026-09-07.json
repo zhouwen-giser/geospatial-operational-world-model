@@ -1,0 +1,36 @@
+{
+  "status": "LOCAL_REGRESSION_PASS_AWAITING_LIVE_ACCEPTANCE",
+  "observedAt": "2026-09-07",
+  "migration": "076_operational_provider_read_closure.sql",
+  "rootCause": "Provider snapshot queried Foundation base table outside scoped read contract; readiness omitted this dependency",
+  "baselineSourceCommit": "8f9508ce8d6628970b31b10c0f8ca6455678d4a1",
+  "baselinePackageSha256": "6144a0b68f47f8414a56941b7abbddc108995f9137ddfa15a1568e597793d906",
+  "liveTaskToRevalidate": "wrf_4c6c3ea3ecb74bd0a45286469face58d@1",
+  "tests": {
+    "fresh001Through076": "PASS",
+    "upgrade075Through076": "PASS",
+    "oldLedgerChecksumsAndTaskEvidenceUnchanged": "PASS",
+    "migrationReplay": "PASS",
+    "nonSuperuserProviderRepositoryAndHttpRuntimeGet": "PASS",
+    "timelineAndTaskWorldSourceReads": "PASS",
+    "crossScopeIsolationAndTransactionScopeReset": "PASS",
+    "baseTableSelectDenied42501": "PASS",
+    "readinessMissingMigrationAndRevokedPermission503Then200": "PASS",
+    "affectedUnitTests": {"passed": 26, "failed": 0},
+    "npmRunCheck": "PASS",
+    "sqlAstCheck": "PASS"
+  },
+  "syntheticTestTasks": [
+    "wrf_929c5df17890430bb37010283d18ed4a@1",
+    "wrf_bb3d978d09ec49ffb89d9e658d5e6050@1"
+  ],
+  "isolation": "Provider used a real NOSUPERUSER login inheriting only gowm_operational_service; setup used admin; only self-created random test databases and roles were removed",
+  "sharedServerMutation": false,
+  "liveDeployment": "NOT_PERFORMED_GSAP_IS_SOLE_COORDINATOR",
+  "remaining": [
+    "Real WSGS task/T2/T3/T4/GDPS business acceptance after coordinated retained-data upgrade",
+    "Independent unresolved reference candidates[0] binding in WSGS world.get-current-state DAG",
+    "No blanket qualification of persisted correlation/predicate/observability analysis write paths",
+    "Existing production qualification and deferred items unchanged"
+  ]
+}

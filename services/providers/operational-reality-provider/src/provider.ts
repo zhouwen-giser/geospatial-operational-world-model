@@ -15,7 +15,7 @@ export function createOperationalRealityProvider(options:{pool:pg.Pool;now?:()=>
   const manifest:CapabilityProviderManifest={
     providerProtocolVersion:"1.0", manifestSchemaVersion: "1.1",provider:{
       providerId:"gowm.operational-reality",providerVersion:"1.0.0",owner:"gowm-platform",
-      implementationDigest:sha256({providerId:"gowm.operational-reality",version:"1.0.0",contract:"gowm_operational_reality_v1",operations:operations.map((item)=>item.descriptor)}),
+      implementationDigest:sha256({providerId:"gowm.operational-reality",version:"1.0.0",contract:"gowm_operational_reality_v1",readClosure:"migration-076",operations:operations.map((item)=>item.descriptor)}),
       sourceRef:"urn:gowm:source:in-tree:operational-reality:1.0.0"
     },endpoints:{manifest:"/v1/manifest",liveness:"/health/live",readiness:"/health/ready",execute:"/v1/operations/{operationId}:execute",job:"/v1/jobs/{jobId}"},
     capabilities:operations.map((item)=>item.descriptor)
@@ -46,9 +46,9 @@ function operation(operationId:OperationalRealityOperationId,repository:Operatio
     }
   };
   return {descriptor,inputSchema:schemas.input,outputSchema:schemas.output,method:{
-    engine:"PostgreSQL",engineVersion:"18",methodId:`gowm-operational-reality-v1/${operationId}`,methodVersion:"1.0",
+    engine:"PostgreSQL",engineVersion:"18",methodId:`gowm-operational-reality-v1/${operationId}`,methodVersion:"1.1",
     artifacts:[
-      {kind:"DATABASE",name:"gowm_operational_reality_v1",version:"migration-032"},
+      {kind:"DATABASE",name:"gowm_operational_reality_v1",version:"migration-076"},
       ...(intervalProjection?[{kind:"DATABASE" as const,name:"gowm_history_v1",version:"migration-069"}]:[])
     ]
   },async handle(input,context){

@@ -5,7 +5,7 @@
     "providerId": "gowm.operational-reality",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:6f0d5550ec0db379b3b0829fadf2d4d16913962b1a6ed3b53d39d3739e8cdde2",
+    "implementationDigest": "sha256:837a3d868375540a571a8b41a51bcaed0f56d7e7a15b707c8046bf652209c78d",
     "sourceRef": "urn:gowm:source:in-tree:operational-reality:1.0.0"
   },
   "endpoints": {
