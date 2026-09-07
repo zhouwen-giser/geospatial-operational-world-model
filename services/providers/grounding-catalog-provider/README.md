@@ -17,3 +17,6 @@ The hash-locked Gateway deployment set is
 Protocol manifests with `npx tsx scripts/sync-grounding-provider-contracts.ts`;
 the platform test suite compares those artifacts byte-for-byte with the runtime
 manifests before the deployment locks are accepted.
+
+Native WORLD_OBJECT projection, version semantics and controlled existing-object
+repair are documented in [the migration 077 runbook](../../../docs/world-object-catalog-repair.md).

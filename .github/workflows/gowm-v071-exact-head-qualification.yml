@@ -65,6 +65,9 @@ jobs:
       - name: Operational Provider least-privilege fresh and upgrade gate
         run: npm run validate:operational-read-closure
 
+      - name: Native WORLD_OBJECT catalog fresh and retained-upgrade gate
+        run: npm run validate:world-object-catalog
+
       - name: Candidate P1 Gateway scenario qualification
         run: npm run validate:v07-history-gateway
 
@@ -154,6 +157,9 @@ jobs:
 
       - name: Main operational Provider least-privilege fresh and upgrade gate
         run: npm run validate:operational-read-closure
+
+      - name: Main native WORLD_OBJECT catalog fresh and retained-upgrade gate
+        run: npm run validate:world-object-catalog
 
       - name: Bind upgrade evidence to the same database execution
         run: >-

@@ -100,9 +100,10 @@ describe("grounding catalog providers", () => {
 
     const referenceIdentity = groundingCatalogImplementationIdentity("reference");
     expect(referenceIdentity).toHaveProperty("resolutionPolicy", REFERENCE_RESOLUTION_POLICY_IDENTITY);
+    expect(referenceIdentity).toHaveProperty("worldObjectCatalogProjection", "migration-077/current-state-pin-metadata-only-v1");
     expect(createGroundingCatalogProvider({ mode: "reference", pool, cursorSecret }).runtime.manifest.provider.implementationDigest)
-      .toBe("sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51");
-    expect(sha256(referenceIdentity)).toBe("sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51");
+      .toBe("sha256:dacf38933316a1cb1b61337c3aeb75fdf3712017ccdcd549577df574209ddfd2");
+    expect(sha256(referenceIdentity)).toBe("sha256:dacf38933316a1cb1b61337c3aeb75fdf3712017ccdcd549577df574209ddfd2");
 
     const unchangedImplementationDigests = {
       dataset: "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",

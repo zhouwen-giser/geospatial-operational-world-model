@@ -45,7 +45,7 @@ export function groundingCatalogImplementationIdentity(mode: GroundingCatalogMod
     providerId,
     version: "1.0.0",
     readContract: readContractForMode(mode),
-    ...(mode === "reference" ? { resolutionPolicy: REFERENCE_RESOLUTION_POLICY_IDENTITY } : {}),
+    ...(mode === "reference" ? { resolutionPolicy: REFERENCE_RESOLUTION_POLICY_IDENTITY, worldObjectCatalogProjection: "migration-077/current-state-pin-metadata-only-v1" } : {}),
     ...(mode === "evidence" ? { catalogFeatureMigrationDigest: GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 } : {}),
     operations: operationIds.map((operationId) => ({
       operationId,
@@ -197,11 +197,11 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
       engine: "PostgreSQL",
       engineVersion: "18",
       methodId: `${datasetOperation ? "gowm-catalog-v1" : evidenceOperation ? "gowm-evidence-v1" : "gowm-reference-v1"}/${operationId}`,
-      methodVersion: "1.0",
+      methodVersion: datasetOperation || evidenceOperation ? "1.0" : "1.1",
       artifacts: [{
         kind: "DATABASE",
         name: datasetOperation ? "gowm_catalog_v1" : resultOperation ? "gowm_result_v1" : evidenceOperation ? "gowm_evidence_v1" : "gowm_reference_v1",
-        version: resultOperation ? "migration-022" : evidenceOperation ? "migration-023" : "migration-020"
+        version: resultOperation ? "migration-022" : evidenceOperation ? "migration-023" : datasetOperation ? "migration-020" : "migration-077"
       }, ...(operationId === "world.get-geometry" ? [{
         kind: "DATABASE" as const,
         name: "gowm_evidence_v1.current_geometry",

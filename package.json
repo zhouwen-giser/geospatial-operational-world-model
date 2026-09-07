@@ -171,6 +171,8 @@
     "validate:history-evidence": "node --import tsx validation/scripts/history-evidence-repair-e2e.ts",
     "validate:history-evidence-ci": "node --import tsx validation/scripts/history-evidence-ci.ts",
     "validate:operational-read-closure": "node --import tsx validation/scripts/operational-read-closure-ci.ts",
+    "validate:world-object-catalog": "node --import tsx validation/scripts/world-object-catalog-ci.ts",
+    "reference:catalog-backfill": "node --import tsx scripts/world-object-catalog-backfill.ts",
     "validate:ugv-mqtt-contracts": "vitest run tests/unit/ugv-mqtt-contracts.test.ts tests/unit/ugv-mqtt-config.test.ts",
     "validate:ugv-mqtt-state-patch": "vitest run tests/unit/canonical-observation.test.ts",
     "validate:ugv-mqtt-position": "npm run validate:ugv-mqtt-state-patch && npm run validate:ugv-mqtt-db",

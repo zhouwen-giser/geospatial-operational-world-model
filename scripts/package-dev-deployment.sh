@@ -184,6 +184,7 @@ if [[ "$verify_image" == true ]]; then
     if (!migrations.length) throw new Error("Missing migrations");
     for (const file of migrations) fs.accessSync("/app/database/migrations/" + file, fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/migrate.js", fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/world-object-catalog-backfill.js", fs.constants.R_OK);
     console.log("PASS: non-root runtime can read migrations");
   '
 fi
