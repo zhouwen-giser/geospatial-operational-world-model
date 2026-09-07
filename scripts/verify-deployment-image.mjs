@@ -42,9 +42,13 @@ const check = `
   const reference=createGroundingCatalogProvider({mode:'reference',pool:{},cursorSecret:'image-identity-verification-only'}).runtime.manifest;
   const referenceDeclared=JSON.parse(fs.readFileSync('/app/contracts/manifests/providers/reference-catalog-provider.json','utf8'));
   if (JSON.stringify(reference)!==JSON.stringify(referenceDeclared)) throw new Error('Reference manifest/runtime mismatch');
+  const evidence=createGroundingCatalogProvider({mode:'evidence',pool:{},cursorSecret:'image-identity-verification-only'}).runtime.manifest;
+  const evidenceDeclared=JSON.parse(fs.readFileSync('/app/contracts/manifests/providers/world-evidence-provider.json','utf8'));
+  if (JSON.stringify(evidence)!==JSON.stringify(evidenceDeclared)) throw new Error('World evidence manifest/runtime mismatch');
   if (process.getuid()===0) throw new Error('Runtime must be non-root');
   console.log(JSON.stringify({status:'PASS',gate:'IMAGE_SOURCE_AND_RUNTIME_IDENTITY',files:Object.keys(expected).length,
-    implementationDigest:actual.provider.implementationDigest,referenceImplementationDigest:reference.provider.implementationDigest}));
+    implementationDigest:actual.provider.implementationDigest,referenceImplementationDigest:reference.provider.implementationDigest,
+    evidenceImplementationDigest:evidence.provider.implementationDigest}));
 `;
 process.stdout.write(execFileSync("docker", ["run", "--rm", "--network", "none", "--read-only", "-i",
   "--entrypoint", "node", image, "--input-type=module", "-e", check], {

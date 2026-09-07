@@ -3532,6 +3532,8 @@ export type GowmV071HistoricalTrajectoryResultTrajectoryReferenceKey = {
   version: string;
 };
 
+export type HorizontalPositionCoordinates = [number, number];
+
 export type GowmV071QuerySnapshotAdherence = {
   actualCapturedAt?: string;
   actualConsistency?: "PINNED" | "CONSISTENT_AT_START" | "BEST_EFFORT";

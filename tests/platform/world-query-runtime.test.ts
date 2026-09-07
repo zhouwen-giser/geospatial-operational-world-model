@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { createGroundingCatalogProvider } from "../../services/providers/grounding-catalog-provider/src/provider.js";
+import type { CatalogSqlClient } from "../../services/providers/grounding-catalog-provider/src/types.js";
 import type {
   CapabilityDescriptor,
   CapabilityProviderManifest,
@@ -406,6 +408,29 @@ function submission(
 }
 
 describe("World Query DAG runtime", () => {
+  it("extracts the published horizontal port through the real Provider and Gateway DAG", async () => {
+    const test=harness();
+    const referenceKey={namespace:'gowm',kind:'WORLD_OBJECT',id:'wrf_11111111111111111111111111111111',version:'1'};
+    const client:CatalogSqlClient={
+      async query<Row extends Record<string,unknown>>(text:string) {
+        let rows:Record<string,unknown>[]=[];
+        if(text.includes('scope_resource')) rows=[{reference_key_value:{...referenceKey,kind:'DATA_SCOPE',id:'wrf_22222222222222222222222222222222'}}];
+        else if(text.includes('GREATEST')) rows=[{world_version:'1'}];
+        else if(text.startsWith('SELECT * FROM gowm_evidence_v1.current_state')) rows=[{reference_key_value:referenceKey,world_version:'1',state:{position:{longitude:121,latitude:31,altitude:12}},object_type:'UGV',confidence:1,freshness_ms:null}];
+        return {rows:rows as Row[],rowCount:rows.length};
+      }, release() {}
+    };
+    const provider=createGroundingCatalogProvider({mode:'evidence',pool:{async connect(){return client;}},cursorSecret:'horizontal-gateway-test-secret-only-2026'});
+    test.registry.register({approvalId:'horizontal-test',approved:true,endpoint:new URL('http://127.0.0.1:34101/'),
+      client:new InProcessProviderClient(provider.runtime),manifest:provider.runtime.manifest});
+    const source=provider.runtime.manifest.capabilities.find(c=>c.operationId==='world.get-current-state')!;
+    const horizontal=source.ports.outputs.find(p=>p.name==='horizontalPositionCoordinates')!;
+    const request=submission('query_horizontal',[node('state',source,{request:{kind:'LITERAL',port:schemaPort(source.ports.inputs[0]!),value:{schemaVersion:'1.0',referenceKey}}})],'state',source);
+    request.plan.outputs[0]!.binding={kind:'NODE_OUTPUT',nodeId:'state',outputPort:horizontal.name,path:horizontal.path!,port:schemaPort(horizontal)};
+    const executed=await test.runtime.submit(request,{...principal,dataScopeClaim:'scope_horizontal'});
+    expect(executed.result,JSON.stringify(executed.result)).toMatchObject({status:'COMPLETED',outputs:{answer:[121,31]}});
+  });
+
   it("rejects unsafe or incomplete Registry output selector declarations", () => {
     const test = harness();
     const unsafe = structuredClone(test.descriptors.source);

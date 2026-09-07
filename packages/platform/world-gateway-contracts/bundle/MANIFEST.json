@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "packageName": "@gowm/world-gateway-contracts",
   "packageVersion": "0.7.1",
-  "contractCatalogRevision": "sha256:e68d228765332806eb61e2fb83b51c2b63a247fd8c167fa9f567397bbdb0c641",
+  "contractCatalogRevision": "sha256:8a368dd91841589aed86723a86c49a382dd3a1040f1be6e17adc4fcc101806c2",
   "semanticCatalogHash": "sha256:566b1a90f2d38fd65e78d59ebfc0a54de5c7d598a4e36fbe10c8591814b4be7d",
   "files": [
     {
@@ -13,7 +13,7 @@
     {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
       "bytes": 65937,
-      "sha256": "494795c496fe6fae99b4b76a7c14f4341b28abb5af754a43b1530d0c676b325f"
+      "sha256": "8902be38bb41333989f51238050439c4c7147254d382d954c50d6f6a2fd997bf"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -28,12 +28,12 @@
     {
       "path": "revisions/contract-catalog.json",
       "bytes": 229,
-      "sha256": "72086fbab5ce2cbb3eea55ccf4eab62026d3bd1009ae4a50134adc4b9ccc3135"
+      "sha256": "496b051bdfa3dd40691535e89500bc94e5481b12a86e8fba8d7c028dbf3eec5e"
     },
     {
       "path": "revisions/semantic-catalog.json",
       "bytes": 233,
-      "sha256": "0b643ff8d6ceb3dbd7426cd0e054185b0c9847c773a5bd7214411d04d4f65e3d"
+      "sha256": "5f18812f476caa3def62ac71548b2488efa06cb94f21794f04b9df6d3ad604ce"
     },
     {
       "path": "schemas/gowm-v0.6.2/capability-descriptor-v1.1.schema.json",
@@ -184,6 +184,11 @@
       "path": "schemas/gowm-v0.7.1/historical-trajectory-result.schema.json",
       "bytes": 5366,
       "sha256": "8529155099f294da9a8ef22de9de5d0aa9f43ad7fa33c1d8712b51a044b33206"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/horizontal-position-coordinates.schema.json",
+      "bytes": 600,
+      "sha256": "563d9c62f7bd30a3a780fbfa3e74dc2be107203833c2bbf5b285e1bf537e6298"
     },
     {
       "path": "schemas/gowm-v0.7.1/query-snapshot-adherence.schema.json",
@@ -447,8 +452,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 151653,
-      "sha256": "d5b827399bd267d6f0aed1c2cbba0251810b076836e0adb6b4c1e089d4afe377"
+      "bytes": 151716,
+      "sha256": "a449772c39a33d7fb8d1eec0d77808043322b7ec863d8686b728109439c112d9"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -471,5 +476,5 @@
       "sha256": "5d21c0213e291939e9cbfce2cb3aa65f739d69a486d270dc4725bffe7f208428"
     }
   ],
-  "packageIntegrity": "sha512-1aPxB/aTfNgDul3Y13g29R/9auSV0TM1jIb/PnKC1ufhChiybWMsUL9AgXp6XtB3s2OJjcrGsuiRifSjjlf73w=="
+  "packageIntegrity": "sha512-1XtXNrTb7CWl5+b3t/sqhetvIm2zcOkArFcs1OUBW1SxT77Jf1s+vRSqUw8TnikBUehu3DUfwkSCJI1ilYMGEg=="
 }

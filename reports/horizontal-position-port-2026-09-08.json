@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "scope": "local contract, Provider runtime and in-process Gateway DAG qualification; not onsite GDPS acceptance",
+  "operation": "world.get-current-state@1.0",
+  "outputPort": "horizontalPositionCoordinates",
+  "path": "/facts/0/horizontalPositionCoordinates",
+  "schemaUri": "urn:gowm:v0.7.1:horizontal-position-coordinates",
+  "schemaHash": "sha256:47fab9352acb2f1845012758611940049393149275a34a60a980405baeb2f1f5",
+  "implementationDigest": "sha256:a49a1999d9e2a6faccf2cbad8c6a2369663040187d42856e9bc8ea39a1285eae",
+  "crs": "WGS84 longitude, latitude; angular degrees; no CRS transformation",
+  "empty2D3DAndInvalidPosition": "PASS",
+  "original3DFieldsAndOldPortDefinitionsPreserved": "PASS",
+  "sameStateReadVersionScopeAndEvidence": "PASS",
+  "missingScopeRejected": "PASS",
+  "providerReceiptsAndGatewayControlledSelector": "PASS",
+  "relatedTests": 40,
+  "consumerContractFiles": 95,
+  "staticAndTypeChecks": "PASS",
+  "databaseMigration": "NONE",
+  "onsiteGDPS": "NOT_RUN",
+  "historicalTaskAssociation": "Independent unresolved evidence boundary; not modified or waived"
+}

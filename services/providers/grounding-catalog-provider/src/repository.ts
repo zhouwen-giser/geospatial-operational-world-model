@@ -472,6 +472,7 @@ export class GroundingCatalogRepository {
           factKind: "CURRENT_PROJECTION",
           fields: isRecord(row.state) ? row.state : {},
           position: projectedPosition(row.state),
+          horizontalPositionCoordinates: projectedHorizontalPosition(row.state),
           objectType: requiredString(row.object_type, "object_type"),
           ...(optionalString(row.subtype) ? { subtype: optionalString(row.subtype) } : {}),
           properties: isRecord(row.properties) ? row.properties : {},
@@ -902,6 +903,11 @@ function requiredString(value: unknown, name: string): string {
   return value;
 }
 /** Packs already projected WGS84 coordinates; never estimates a missing position. */
+export function projectedHorizontalPosition(state: unknown): [number, number] | undefined {
+  const position = projectedPosition(state);
+  return position ? [position.coordinates[0]!, position.coordinates[1]!] : undefined;
+}
+
 export function projectedPosition(state: unknown): { type: "Point"; coordinates: number[] } | undefined {
   const value = isRecord(state) && isRecord(state.position) ? state.position : undefined;
   if (!value || typeof value.longitude !== "number" || typeof value.latitude !== "number" ||

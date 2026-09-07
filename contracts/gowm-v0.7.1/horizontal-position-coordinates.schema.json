@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7.1:horizontal-position-coordinates",
+  "title": "HorizontalPositionCoordinates",
+  "description": "WGS84 horizontal longitude/latitude in degrees, projected from the same authoritative current position. Altitude is omitted, not zeroed or transformed. No position means this optional output is absent.",
+  "type": "array",
+  "minItems": 2,
+  "maxItems": 2,
+  "prefixItems": [
+    { "type": "number", "minimum": -180, "maximum": 180 },
+    { "type": "number", "minimum": -90, "maximum": 90 }
+  ],
+  "items": false
+}

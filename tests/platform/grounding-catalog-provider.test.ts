@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { getContractSchemaHash } from "../../packages/platform/contract-runtime/src/index.js";
+import { getContractSchemaHash, validateContract } from "../../packages/platform/contract-runtime/src/index.js";
 import { ProviderProtocolError, sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 import { catalogScopeDigest, decodeCatalogCursor, encodeCatalogCursor } from "../../services/providers/grounding-catalog-provider/src/cursor.js";
 import { decodeEvidenceCursor, encodeEvidenceCursor } from "../../services/providers/grounding-catalog-provider/src/evidence-cursor.js";
@@ -15,6 +15,7 @@ import {
   GroundingCatalogRepository,
   preferExactResolutionRows,
   projectedPosition,
+  projectedHorizontalPosition,
   REFERENCE_RESOLUTION_POLICY_IDENTITY
 } from "../../services/providers/grounding-catalog-provider/src/repository.js";
 import { GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 } from "../../services/providers/grounding-catalog-provider/src/schemas.js";
@@ -47,14 +48,42 @@ describe("grounding catalog providers", () => {
     expect(manifest.capabilities.find((c)=>c.operationId==="world.get-current-state")?.ports?.outputs.find((p)=>p.name==="position"))
       .toMatchObject({path:"/facts/0/position",valueKind:"GEOMETRY",schemaHash:getContractSchemaHash("urn:gowm:v0.6.2:geojson-point")});
   });
-  it.each(["world.get-current-state", "world.get-geometry", "world.get-provenance"])("serializes and receipts %s with absent optional dates", async (operationId) => {
+
+  it("publishes a strict optional horizontal port without changing the original position", () => {
+    const schema="urn:gowm:v0.7.1:horizontal-position-coordinates";
+    for(const altitude of [undefined,12,-5]) {
+      const state={position:{longitude:121,latitude:31,...(altitude===undefined?{}:{altitude})}};
+      const original=structuredClone(state);
+      expect(projectedHorizontalPosition(state)).toEqual([121,31]);
+      expect(validateContract(schema,projectedHorizontalPosition(state)).valid).toBe(true);
+      expect(projectedPosition(state)?.coordinates).toEqual(altitude===undefined?[121,31]:[121,31,altitude]);
+      expect(state).toEqual(original);
+    }
+    for(const state of [{},null,{position:{longitude:0}},{position:{longitude:181,latitude:0}}]) expect(projectedHorizontalPosition(state)).toBeUndefined();
+    for(const value of [[],[1],[1,2,3],[181,0],[0,91]]) expect(validateContract(schema,value).valid).toBe(false);
+    const ports=createGroundingCatalogProvider({mode:"evidence",pool,cursorSecret}).runtime.manifest.capabilities
+      .find(c=>c.operationId==='world.get-current-state')!.ports!.outputs;
+    expect(ports.find(p=>p.name==='horizontalPositionCoordinates')).toMatchObject({path:'/facts/0/horizontalPositionCoordinates',schemaUri:schema,schemaHash:getContractSchemaHash(schema)});
+    expect(ports.find(p=>p.name==='positionCoordinates')).toMatchObject({path:'/facts/0/position/coordinates',schemaUri:'urn:gowm:v0.6.2:geojson-position'});
+  });
+
+  it("does not bypass the evidence Scope gate for the horizontal projection", async () => {
+    const repository=new GroundingCatalogRepository({pool,cursorSecret});
+    const referenceKey={namespace:'gowm',kind:'WORLD_OBJECT',id:'wrf_11111111111111111111111111111111',version:'1'};
+    await expect(repository.execute('world.get-current-state',{schemaVersion:'1.0',referenceKey},{dataScopeKey:''},1000))
+      .rejects.toMatchObject({code:'SCOPE_DENIED'});
+  });
+  it.each(["world.get-current-state", "world.get-geometry", "world.get-provenance"].flatMap(operationId=>[
+    {operationId,state:{}}, {operationId,state:{position:{longitude:121,latitude:31}}},
+    {operationId,state:{position:{longitude:121,latitude:31,altitude:12}}}
+  ]))("serializes and receipts $operationId with optional position and dates", async ({operationId,state}) => {
     const referenceKey = { namespace: "gowm", kind: "WORLD_OBJECT", id: `wrf_${"1".repeat(32)}`, version: "1" };
     const client: CatalogSqlClient = {
       async query<Row extends Record<string, unknown> = Record<string, unknown>>(text: string) {
         let rows: Record<string, unknown>[] = [];
         if (text.includes("scope_resource")) rows = [{ reference_key_value: { ...referenceKey, kind: "DATA_SCOPE" } }];
         else if (text.includes("GREATEST")) rows = [{ world_version: "1" }];
-        else if (text.startsWith("SELECT * FROM gowm_evidence_v1.")) rows = [{ reference_key_value: referenceKey, world_version: "1", state: {}, object_type: "AREA", confidence: 1, freshness_ms: null, geometry: { type: "Point", coordinates: [0, 0] }, geometry_type: "POINT", bbox: [0, 0, 0, 0], crs: "EPSG:4326", observed_at: null, received_at: null }];
+        else if (text.startsWith("SELECT * FROM gowm_evidence_v1.")) rows = [{ reference_key_value: referenceKey, world_version: "1", state, object_type: "AREA", confidence: 1, freshness_ms: null, geometry: { type: "Point", coordinates: [0, 0] }, geometry_type: "POINT", bbox: [0, 0, 0, 0], crs: "EPSG:4326", observed_at: null, received_at: null }];
         return { rows: rows as Row[], rowCount: rows.length };
       }, release() {}
     };
@@ -70,6 +99,12 @@ describe("grounding catalog providers", () => {
     expect(output.status).toBe("COMPLETED");
     expect(output.receipts[0]?.outputHash).toBe(sha256(output.output?.value));
     expect(output.output?.value).toEqual(JSON.parse(JSON.stringify(output.output?.value)));
+    if(operationId==='world.get-current-state') {
+      const fact=(output.output!.value as {facts:Array<Record<string,unknown>>}).facts[0]!;
+      expect(fact.position).toEqual(projectedPosition(state));
+      expect(fact.horizontalPositionCoordinates).toEqual(projectedHorizontalPosition(state));
+      expect(fact.fields).toEqual(state);
+    }
     if (operationId === "world.get-current-state" || operationId === "world.get-geometry") {
       expect(output.dataSnapshot?.resources).toContainEqual({
         referenceKey,
@@ -107,7 +142,7 @@ describe("grounding catalog providers", () => {
 
     const unchangedImplementationDigests = {
       dataset: "sha256:596e17316305924e9aa22dc62b4ce7c19f83a924d36f22d0eb1857cf9561de34",
-      evidence: "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317"
+      evidence: "sha256:a49a1999d9e2a6faccf2cbad8c6a2369663040187d42856e9bc8ea39a1285eae"
     } as const;
     const unchangedPolicyDigests = {
       dataset: "sha256:8a52322f10218ff3dd1d2c20193a712e39b2e3da94dbb084fc88e830ec019fb3",
