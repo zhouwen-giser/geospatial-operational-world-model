@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "status": "PASS",
+  "sourceArtifact": {
+    "mediaType": "application/x-opendrive+xml",
+    "bytes": 2101550,
+    "hash": "sha256:f9119c2fa0c73093c2c2d15d262ede56fbcefd3de091f652523559aca13d3481"
+  },
+  "oracleArtifactHash": "sha256:be045dba9c2bbee109439e0280a28b563b50f1a3ceee4c8783ce34fed8d1429d",
+  "transformContentHash": "sha256:7c05f0a351b42ea790fef5be184fb8c81173dcc776ee4ce2c6e8a539b3f8b9b1",
+  "compilerVersion": "opendrive-task-network-compiler-v0.1.0"
+}

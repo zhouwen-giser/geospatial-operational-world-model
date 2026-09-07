@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gowm.example/contracts/georeference/airport-roadrunner-linear-compat-v1.schema.json",
+  "title": "GOWM versioned compatibility georeference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "transformId", "method", "sourceFrame", "targetCrs", "origin", "metresPerDegreeLongitude", "metresPerDegreeLatitude", "axisMapping", "oracleArtifactHash", "accuracyClaim", "contentHash"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "transformId": { "const": "airport-roadrunner-linear-compat-v1" },
+    "method": { "const": "LOCAL_LINEAR_DEGREES_COMPAT_V1" },
+    "sourceFrame": { "const": "ROADRUNNER_LOCAL_X_EAST_Y_NORTH_Z_UP" },
+    "targetCrs": { "const": "EPSG:4326" },
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["longitude", "latitude", "altitudeM"],
+      "properties": {
+        "longitude": { "const": 106.81485 },
+        "latitude": { "const": 29.7195 },
+        "altitudeM": { "const": 500 }
+      }
+    },
+    "metresPerDegreeLongitude": { "const": 111320 },
+    "metresPerDegreeLatitude": { "const": 110540 },
+    "axisMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "z"],
+      "properties": { "x": { "const": "EAST" }, "y": { "const": "NORTH" }, "z": { "const": "UP" } }
+    },
+    "oracleArtifactHash": { "const": "sha256:be045dba9c2bbee109439e0280a28b563b50f1a3ceee4c8783ce34fed8d1429d" },
+    "accuracyClaim": { "const": "UNVERIFIED_COMPATIBILITY_TRANSFORM" },
+    "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

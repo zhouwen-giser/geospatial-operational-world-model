@@ -58,13 +58,17 @@ export class PostgresNetworkTopologyWriter {
         `INSERT INTO network_edge(
            graph_version_id,data_scope_key,edge_key,source_node_id,target_node_id,
            source_feature_reference_key,geometry,length_mm,road_class,surface,
-           is_bridge,is_tunnel,layer_level,oneway
+           is_bridge,is_tunnel,layer_level,width_mm,height_limit_mm,weight_limit_grams,
+           lane_count,oneway,access_attributes
          ) VALUES (
-           $1,$2,$3,$4,$5,$6,ST_SetSRID(ST_GeomFromGeoJSON($7),4326),$8,$9,$10,$11,$12,$13,$14
+           $1,$2,$3,$4,$5,$6,ST_SetSRID(ST_GeomFromGeoJSON($7),4326),$8,$9,$10,$11,$12,$13,
+           $14,$15,$16,$17,$18,$19::jsonb
          ) RETURNING edge_id::text`,
         [request.graphVersionId, request.dataScopeKey, edge.edgeKey, sourceNodeId, targetNodeId,
           edge.sourceFeatureReferenceKey, geoJsonLine(edge.positions), edge.lengthMm, edge.roadClass,
-          edge.surface ?? null, edge.isBridge, edge.isTunnel, edge.layerLevel, edge.oneway]
+          edge.surface ?? null, edge.isBridge, edge.isTunnel, edge.layerLevel, edge.widthMm ?? null,
+          edge.heightLimitMm ?? null, edge.weightLimitGrams ?? null, edge.laneCount ?? null, edge.oneway,
+          JSON.stringify(edge.accessAttributes ?? {})]
       );
       const edgeId = result.rows[0]?.edge_id;
       if (!edgeId) throw new Error("network edge insert did not return an identity");
@@ -78,13 +82,15 @@ export class PostgresNetworkTopologyWriter {
       const result = await this.database.query<{ arc_id: string }>(
         `INSERT INTO network_arc(
            graph_version_id,data_scope_key,arc_key,edge_id,source_node_id,target_node_id,
-           direction,oriented_geometry,length_mm,default_speed_mm_per_s
+           direction,oriented_geometry,length_mm,default_speed_mm_per_s,transit_eligible,
+           service_eligible,access_mask,profile_constraints
          ) VALUES (
-           $1,$2,$3,$4,$5,$6,$7,ST_SetSRID(ST_GeomFromGeoJSON($8),4326),$9,$10
+           $1,$2,$3,$4,$5,$6,$7,ST_SetSRID(ST_GeomFromGeoJSON($8),4326),$9,$10,$11,$12,$13,$14::jsonb
          ) RETURNING arc_id::text`,
         [request.graphVersionId, request.dataScopeKey, arc.arcKey, edgeId, sourceNodeId,
           targetNodeId, arc.direction, geoJsonLine(arc.positions), arc.lengthMm,
-          arc.defaultSpeedMmPerS]
+          arc.defaultSpeedMmPerS, arc.transitEligible ?? false, arc.serviceEligible ?? false,
+          arc.accessMask ?? 0, JSON.stringify(arc.profileConstraints ?? {})]
       );
       const arcId = result.rows[0]?.arc_id;
       if (!arcId) throw new Error("network arc insert did not return an identity");

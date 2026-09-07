@@ -108,6 +108,25 @@ describe("network profiles, costs and conditions", () => {
     expect(left).toEqual(right);
   });
 
+  it("treats maximumSpeedMmPerS as a traversal cap instead of an eligibility ceiling", () => {
+    const topology = buildNetworkTopology(build);
+    const sourceArc = topology.arcs.find((candidate) => topology.edges.find((edge) => edge.edgeKey === candidate.edgeKey)?.roadClass === "PRIMARY")!;
+    const edge = topology.edges.find((candidate) => candidate.edgeKey === sourceArc.edgeKey)!;
+    const arc = { ...sourceArc, defaultSpeedMmPerS: 17_882 };
+    const cappedProfile = createTravelProfile({
+      ...roadProfile,
+      version: "speed-cap-5000",
+      maximumSpeedMmPerS: 5_000
+    });
+    const result = evaluateArcCost({
+      edge, arc, travelProfile: cappedProfile, costProfile,
+      baseRiskMicroUnits: 0, baseEnergyMwh: 0, surfacePenaltyUnits: 0
+    });
+    expect(isArcEligible(edge, arc, cappedProfile)).toBe(true);
+    expect(result?.speedMmPerS).toBe(5_000);
+    expect(result?.durationMs).toBe(Math.ceil(arc.lengthMm * 1000 / 5_000));
+  });
+
   it("pins closure, speed and risk overrides without mutating the Arc or old snapshot", () => {
     const topology = buildNetworkTopology(build);
     const arc = topology.arcs.find((candidate) => topology.edges.find((edge) => edge.edgeKey === candidate.edgeKey)?.roadClass === "PRIMARY")!;

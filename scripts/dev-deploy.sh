@@ -39,6 +39,20 @@ compose() {
   docker compose --env-file "$env_file" "${compose_files[@]}" "${compose_profiles[@]}" "$@"
 }
 
+# Convert the published bind address into a URL-safe address that the host can
+# actually probe. Wildcard listeners are not valid HTTP destinations, while
+# literal IPv6 destinations must be bracketed in URLs.
+host_probe_address() {
+  local bind_address="${1:-${GOWM_DEV_BIND_ADDRESS:-$(env_value DEV_BIND_ADDRESS)}}"
+  case "$bind_address" in
+    0.0.0.0) printf '%s\n' '127.0.0.1' ;;
+    ::|'[::]') printf '%s\n' '[::1]' ;;
+    \[*\]) printf '%s\n' "$bind_address" ;;
+    *:*) printf '[%s]\n' "$bind_address" ;;
+    *) printf '%s\n' "$bind_address" ;;
+  esac
+}
+
 random_secret() {
   openssl rand -hex 32
 }
@@ -200,6 +214,9 @@ doctor() {
     docker compose --env-file "$project_dir/.env.world-platform.example" \
       "${compose_files[@]}" "${compose_profiles[@]}" config --quiet
   fi
+  if [[ -f "$env_file" && -n "$(compose ps -q 2>/dev/null)" ]]; then
+    smoke
+  fi
   log "preflight checks passed"
 }
 
@@ -216,13 +233,14 @@ smoke() {
     "$(env_value CRS_BRIDGE_PUBLISHED_PORT):/health/ready"
     "$(env_value GEOMETRY_BRIDGE_PUBLISHED_PORT):/health/ready"
   )
-  local check port path
+  local check port path probe_address
+  probe_address="$(host_probe_address)"
   for check in "${checks[@]}"; do
     port="${check%%:*}"
     path="${check#*:}"
-    curl --fail --silent --show-error "http://127.0.0.1:${port}${path}" >/dev/null
+    curl --noproxy '*' --fail --silent --show-error "http://${probe_address}:${port}${path}" >/dev/null
   done
-  log "public health probes passed"
+  log "public health probes passed via $probe_address"
 }
 
 up() {
@@ -244,18 +262,20 @@ usage() {
   printf '%s\n' 'Usage: scripts/dev-deploy.sh [up|init|doctor|prepare-h3|prepare-artifacts|status|logs|down|smoke] [service...]'
 }
 
-command_name="${1:-up}"
-shift || true
-case "$command_name" in
-  up) up ;;
-  init) init_env ;;
-  doctor) doctor ;;
-  prepare-h3) init_env; prepare_h3 ;;
-  prepare-artifacts) init_env; prepare_h3; prepare_crs_attestation ;;
-  status) init_env; compose ps ;;
-  logs) init_env; compose logs --tail 200 "$@" ;;
-  down) init_env; compose down ;;
-  smoke) init_env; smoke ;;
-  -h|--help|help) usage ;;
-  *) usage >&2; exit 2 ;;
-esac
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  command_name="${1:-up}"
+  shift || true
+  case "$command_name" in
+    up) up ;;
+    init) init_env ;;
+    doctor) init_env; doctor ;;
+    prepare-h3) init_env; prepare_h3 ;;
+    prepare-artifacts) init_env; prepare_h3; prepare_crs_attestation ;;
+    status) init_env; compose ps; [[ -z "$(compose ps -q 2>/dev/null)" ]] || smoke ;;
+    logs) init_env; compose logs --tail 200 "$@" ;;
+    down) init_env; compose down ;;
+    smoke) init_env; smoke ;;
+    -h|--help|help) usage ;;
+    *) usage >&2; exit 2 ;;
+  esac
+fi

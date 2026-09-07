@@ -1,0 +1,33 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "packages/**/*.ts",
+    "services/**/*.ts",
+    "simulator/**/*.ts",
+    "scripts/**/*.ts",
+    "validation/scripts/network-topology-runtime-client.ts",
+    "validation/scripts/network-turn-runtime-client.ts",
+    "validation/scripts/network-profile-runtime-client.ts",
+    "validation/scripts/network-activation-runtime-client.ts",
+    "validation/scripts/network-provider-runtime-gate.ts",
+    "validation/scripts/route-planning-runtime-gate.ts",
+    "validation/scripts/route-verifier-runtime-gate.ts",
+    "validation/scripts/network-routing-gateway-e2e.ts",
+    "validation/scripts/gowm-v05-migration-e2e.ts",
+    "validation/scripts/gowm-v05-routing-performance.ts",
+    "validation/scripts/gowm-v064-upgrade-probe.ts",
+    "validation/scripts/coverage-selection-runtime-client.ts",
+    "validation/scripts/coverage-endpoint-runtime-client.ts",
+    "validation/scripts/coverage-async-runtime-client.ts",
+    "validation/scripts/coverage-gateway-runtime-client.ts",
+    "validation/scripts/coverage-security-performance-recovery-client.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "services/stas",
+    "services/upstreams",
+    "tests",
+    "test-data"
+  ]
+}

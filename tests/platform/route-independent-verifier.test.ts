@@ -3,7 +3,7 @@ import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
 import { verifyRouteCandidate } from "../../services/providers/route-planning-provider/src/verifier.js";
 import type { LoadedNetwork, NetworkArc, Row } from "../../services/providers/network-provider/src/types.js";
 
-const arcs: NetworkArc[] = [arc("arc_" + "1".repeat(64), "a", "b", 100), arc("arc_" + "2".repeat(64), "b", "c", 200), arc("arc_" + "3".repeat(64), "b", "d", 300)];
+const arcs: NetworkArc[] = [arc("arc_" + "1".repeat(64), "a", "b", 100), arc("arc_" + "2".repeat(64), "b", "c", 200), arc("arc_" + "3".repeat(64), "b", "d", 300), arc("arc_" + "4".repeat(64), "b", "e", 400)];
 const network: LoadedNetwork = {
   routingSnapshot: { networkDatasetVersion: "1", graphVersion: "g1", travelProfileVersion: "t1", costProfileVersion: "c1", graphContentHash: `sha256:${"a".repeat(64)}`, costContentHash: `sha256:${"b".repeat(64)}` },
   graph: {}, arcs, turnRules: [{ sequence: [arcs[0]!.key, arcs[2]!.key], ruleType: "FORBIDDEN", penaltyUnits: 0 }],
@@ -22,6 +22,19 @@ describe("independent route verifier", () => {
     const illegal = candidate([segment(arcs[0]!, 100), segment(arcs[2]!, 300)]);
     expect(verifyRouteCandidate(network, illegal).status).toBe("INVALID");
     expect((verifyRouteCandidate(network, illegal).checks as Row[]).find((check) => check.code === "TURN_LEGALITY")?.status).toBe("FAIL");
+  });
+
+  it("independently accepts either ALLOWED_ONLY target and rejects an undeclared target", () => {
+    const allowedOnly = {
+      ...network,
+      turnRules: [
+        { sequence: [arcs[0]!.key, arcs[1]!.key], ruleType: "ALLOWED_ONLY" as const, penaltyUnits: 0 },
+        { sequence: [arcs[0]!.key, arcs[2]!.key], ruleType: "ALLOWED_ONLY" as const, penaltyUnits: 0 }
+      ]
+    };
+    expect(verifyRouteCandidate(allowedOnly, candidate([segment(arcs[0]!, 100), segment(arcs[1]!, 200)])).status).toBe("VALID");
+    expect(verifyRouteCandidate(allowedOnly, candidate([segment(arcs[0]!, 100), segment(arcs[2]!, 300)])).status).toBe("VALID");
+    expect(verifyRouteCandidate(allowedOnly, candidate([segment(arcs[0]!, 100), segment(arcs[3]!, 400)])).status).toBe("INVALID");
   });
 
   it("marks a valid immutable candidate stale when graph/profile/condition freshness changes", () => {

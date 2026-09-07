@@ -91,6 +91,26 @@ describe("gowm.network provider", () => {
     expect((penalized.segments as Array<Record<string, number>>).reduce((sum, item) => sum + (item.turnPenaltyUnits ?? 0), 0)).toBe(7);
   });
 
+  it("allows either declared ALLOWED_ONLY target and rejects every undeclared target", () => {
+    const a = arc("a", "n1", "n2", 10);
+    const b = arc("b", "n2", "n3", 10);
+    const c = arc("c", "n2", "n4", 10);
+    const d = arc("d", "n2", "n5", 10);
+    const rules: TurnRule[] = [
+      { sequence: [a.key, b.key], ruleType: "ALLOWED_ONLY", penaltyUnits: 0 },
+      { sequence: [a.key, c.key], ruleType: "ALLOWED_ONLY", penaltyUnits: 0 }
+    ];
+    const allowedB = shortestPath(network([a, b, c, d], rules), state(a, 0), state(b, 1_000_000), "SHORTEST_DISTANCE", 10);
+    const allowedC = shortestPath(network([a, b, c, d], rules), state(a, 0), state(c, 1_000_000), "SHORTEST_DISTANCE", 10);
+    const unrestrictedD = shortestPath(network([a, b, c, d]), state(a, 0), state(d, 1_000_000), "SHORTEST_DISTANCE", 10);
+    expect(allowedB.status).toBe("COMPLETED");
+    expect(allowedC.status).toBe("COMPLETED");
+    expect(shortestPath(network([a, b, c, d], rules), state(a, 0), state(d, 1_000_000), "SHORTEST_DISTANCE", 10).status).toBe("NO_PATH");
+    expect(verifyPath(network([a, b, c, d], rules), allowedB).status).toBe("VALID");
+    expect(verifyPath(network([a, b, c, d], rules), allowedC).status).toBe("VALID");
+    expect(verifyPath(network([a, b, c, d], rules), unrestrictedD).status).toBe("INVALID");
+  });
+
   it("independently rejects continuity, turn, metric, and result-hash mutations", () => {
     const a = arc("a", "n1", "n2", 10);
     const b = arc("b", "n2", "n3", 10);
@@ -105,3 +125,5 @@ describe("gowm.network provider", () => {
     expect((verifyPath(forbiddenNetwork, turnMutated).checks as Array<Record<string, string>>).find((item) => item.code === "TURN_LEGALITY")?.status).toBe("FAIL");
   });
 });
+
+function state(value: NetworkArc, fractionPpm: number) { return { arcKey: value.key, fractionPpm, direction: value.direction }; }

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "reportKind": "OPENDRIVE_TASK_NETWORK_FINAL_ACCEPTANCE",
+  "status": "PASS",
+  "generatedAt": "2026-09-04T10:40:02.282Z",
+  "checks": [
+    {
+      "id": "SOURCE",
+      "status": "PASS",
+      "summary": "source current-run evidence is PASS"
+    },
+    {
+      "id": "COMPILER",
+      "status": "PASS",
+      "summary": "compiler current-run evidence is PASS"
+    },
+    {
+      "id": "GOWMDATABASE",
+      "status": "PASS",
+      "summary": "gowmDatabase current-run evidence is PASS, including fail-closed reuse of the unique default development scope"
+    },
+    {
+      "id": "GDPSDATABASE",
+      "status": "PASS",
+      "summary": "gdpsDatabase current-run evidence is PASS"
+    },
+    {
+      "id": "ROUTINGPROVIDER",
+      "status": "PASS",
+      "summary": "routingProvider current-run evidence is PASS"
+    }
+  ],
+  "summary": {
+    "completionClaimPermitted": true,
+    "datasetVersion": "dsv_20245e0ae92c989ec9e308456808e44be853ef0eb11a92d7fd8015190ee2dc81",
+    "graphVersion": "gv_62c358a52d01a49f10334531dfca7271fbbe732b62dcfd66f90eaf9ba90ef9ff",
+    "contentHash": "sha256:707c95ef6821c50df08afeabe5d67625ff28d9b8ec73bb5bd84b47f9054db910",
+    "topologyHash": "sha256:872538d2082f4f3bdb8125af45a6bff36afde457b2fd37919c2ea6c458b39533",
+    "counts": {
+      "physicalRoads": 40,
+      "activeChannels": 244,
+      "regularChannels": 80,
+      "junctionConnectorChannels": 164,
+      "allowedTransitions": 336,
+      "excludedNonDrivingConnectors": 60,
+      "quarantinedChannels": 2
+    },
+    "accuracyClaim": "UNVERIFIED_COMPATIBILITY_TRANSFORM"
+  }
+}

@@ -80,7 +80,12 @@ export interface BuiltNetworkEdge {
   readonly isBridge: boolean;
   readonly isTunnel: boolean;
   readonly layerLevel: number;
+  readonly widthMm?: number;
+  readonly heightLimitMm?: number;
+  readonly weightLimitGrams?: number;
+  readonly laneCount?: number;
   readonly oneway: "BIDIRECTIONAL" | "FORWARD_ONLY" | "REVERSE_ONLY";
+  readonly accessAttributes?: Readonly<Record<string, unknown>>;
 }
 
 export interface BuiltNetworkArc {
@@ -92,6 +97,10 @@ export interface BuiltNetworkArc {
   readonly positions: readonly NormalizedPosition[];
   readonly lengthMm: number;
   readonly defaultSpeedMmPerS: number;
+  readonly transitEligible?: boolean;
+  readonly serviceEligible?: boolean;
+  readonly accessMask?: number;
+  readonly profileConstraints?: Readonly<Record<string, unknown>>;
 }
 
 export interface BuiltNetworkTopology {

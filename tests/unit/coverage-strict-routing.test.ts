@@ -64,6 +64,22 @@ describe("strict turn-aware coverage routing", () => {
       .toEqual([fixture.first.arcKey, fixture.second.arcKey, fixture.service.arcKey, fixture.back.arcKey]);
   });
 
+  it("allows either ALLOWED_ONLY target from one Arc and blocks a third target", () => {
+    const fixture = turnFixture();
+    const blocked = arc("7", "A", "F", fixed(1));
+    const blockedJoin = arc("8", "F", "D", fixed(1));
+    const rules: CoverageTurnRule[] = [
+      { ruleKey: "allow-direct", arcSequence: [fixture.start.arcKey, fixture.direct.arcKey], ruleType: "ALLOWED_ONLY" },
+      { ruleKey: "allow-first", arcSequence: [fixture.start.arcKey, fixture.first.arcKey], ruleType: "ALLOWED_ONLY" }
+    ];
+    const viaFirst = solveStrictCoverageRoute(fixture.problem, [...fixture.graph, blocked, blockedJoin], options({ turnRules: rules }));
+    expect(viaFirst.route.segments.map((segment) => segment.arcKey)).toContain(fixture.first.arcKey);
+    const directGraph = [fixture.start, fixture.direct, fixture.service, fixture.back];
+    expect(solveStrictCoverageRoute(fixture.problem, directGraph, options({ turnRules: rules })).route.segments.map((segment) => segment.arcKey)).toContain(fixture.direct.arcKey);
+    expect(() => solveStrictCoverageRoute(fixture.problem, [fixture.start, blocked, blockedJoin, fixture.service, fixture.back], options({ turnRules: rules })))
+      .toThrowError(expect.objectContaining({ code: "NO_FEASIBLE_PLAN" }));
+  });
+
   it("carries multi-edge automaton context from a connector into the service boundary", () => {
     const fixture = turnFixture();
     const sequence: CoverageTurnRule = { ruleKey: "forbid-sequence", arcSequence: [fixture.first.arcKey, fixture.second.arcKey, fixture.service.arcKey], ruleType: "FORBIDDEN" };

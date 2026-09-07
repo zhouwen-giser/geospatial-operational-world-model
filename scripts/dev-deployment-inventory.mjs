@@ -5,7 +5,8 @@ import { join, resolve } from "node:path";
 const root = resolve(process.argv[2] ?? ".");
 const excludedDirectories = new Set([
   ".git", ".worktrees", ".pnpm-store", "task-packages", ".codex", ".agents",
-  ".runtime", ".intake", ".docker-config", "node_modules", "dist", "coverage"
+  ".runtime", ".intake", ".docker-config", "node_modules", "dist", "coverage",
+  "reports", "test", "tests", "test-data", "fixture", "fixtures", "example", "examples"
 ]);
 const tracked = execFileSync("git", ["-C", root, "ls-files", "--cached", "-z"], {
   encoding: "utf8", windowsHide: true
@@ -16,6 +17,10 @@ for (const path of [...new Set(tracked)].sort()) {
   const name = parts.at(-1);
   if (parts.some((part) => excludedDirectories.has(part))) continue;
   if (["reports", "output"].includes(parts[0]) || path === "SHA256SUMS") continue;
+  // OpenDRIVE's runtime context is included separately through its exact whitelist.
+  if (path.startsWith("artifacts/opendrive-task-network-v0.1/")) continue;
+  if (path === "GOWM_Grounding_Operational_Stable_v0.4_Codex_Goal/21_TEST_ACCEPTANCE.md") continue;
+  if (/^(?:fixtures?|examples?)\./u.test(name) || /\.test\.ts$/u.test(name) || /^vitest\.config\./u.test(name)) continue;
   if (name.startsWith(".env") && !name.endsWith(".example")) continue;
   if (/\.(?:log|pid|zip)$/iu.test(name)) continue;
   // Do not allow a tracked link, submodule, or a locally replaced directory to
