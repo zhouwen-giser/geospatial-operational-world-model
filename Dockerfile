@@ -29,4 +29,6 @@ COPY --chown=node:node config ./config
 COPY --chown=node:node contracts ./contracts
 COPY --chown=node:node scripts ./scripts
 USER node
+# Fail closed when a normalized archive context produces stale COPY bytes.
+RUN node --input-type=module -e 'import fs from "node:fs"; import {createOperationalRealityProvider} from "./dist/services/providers/operational-reality-provider/src/provider.js"; const actual=createOperationalRealityProvider({pool:{}}).runtime.manifest; const declared=JSON.parse(fs.readFileSync("contracts/manifests/providers/operational-reality-provider.json","utf8")); if(JSON.stringify(actual)!==JSON.stringify(declared)) throw new Error("Operational Provider manifest/runtime mismatch");'
 CMD ["node", "dist/services/world-api/src/index.js"]

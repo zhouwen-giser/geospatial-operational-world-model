@@ -72,3 +72,26 @@ their successful downstream findings still require real execution after upgrade.
 No changes to persisted correlation/predicate/observability analysis write paths
 are asserted by this read-closure gate; any failures there require independent
 request-level diagnosis, not a broader table grant.
+
+## Image-delivery correction (2026-09-07)
+
+The b7e5ddc6 deployment archive has correct source bytes, but the original local
+image built from its normalized directory did NOT have matching COPY content.
+The prior compile/non-root gate was insufficient; its image-content qualification
+is withdrawn. Actual image inspection found stale Grounding/World Platform
+registry files, the geometry source lock, and the Operational manifest. The
+compiled Operational runtime was new (`837a3d...`), but its manifest was old
+(`6f0d555...`). The Gateway correctly rejected this mismatch.
+
+GSAP independently reported the same mismatch after `--no-cache`; do not treat
+that flag as a solution. A local diagnostic image derived from the bad image and
+fed config/contracts via full tar stdin passed independent hashes for all 539
+runtime source files and runtime/manifest equality. This is a COPY-path
+counterexample, not a substitute for a new full build or live acceptance.
+
+Packaging now streams the full verified context and invokes
+`scripts/verify-deployment-image.mjs` after building. That verifier hashes source
+files on the host and checks their actual image bytes plus the compiled manifest;
+the Dockerfile also fails on Operational runtime/manifest disagreement. The
+complete new package build must pass this gate before its image is qualified.
+Shared-server builds/deployment remain the GSAP coordinator's responsibility.

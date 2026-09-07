@@ -176,7 +176,10 @@ tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
 cmp "$archive_path" "$staging_root/reproduced.tar.gz"
 if [[ "$verify_image" == true ]]; then
   image_tag="gowm-dev-package-check:$(sha256sum "$archive_path" | cut -c1-16)"
-  docker build --tag "$image_tag" "$verified_dir"
+  # Send full bytes, not a directory delta: normalized timestamps and equal
+  # file sizes can otherwise conceal changed files in local-source snapshots.
+  tar -C "$verified_dir" -cf - . | docker build --tag "$image_tag" -
+  node "$project_dir/scripts/verify-deployment-image.mjs" "$image_tag" "$verified_dir"
   docker run --rm --network none --read-only --entrypoint node "$image_tag" -e '
     const fs = require("node:fs");
     if (process.getuid() === 0) throw new Error("Runtime must be non-root");

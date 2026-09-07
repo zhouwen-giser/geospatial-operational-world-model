@@ -123,6 +123,19 @@ clean commit; a build with tracked local edits is a local candidate, not a clean
 commit release. Reproducibility means the same source bytes and executable modes
 produce identical archive bytes; image dependency downloads are a separate gate.
 
+Image verification also compares every runtime COPY source file against SHA-256
+computed from the verified host context, and compares the actual compiled
+Operational Provider manifest with its image-declared manifest. Build success
+alone is insufficient. To check an already built image independently, run
+`node scripts/verify-deployment-image.mjs <image> <verified-extracted-package>`.
+Any mismatch blocks publication; do not bypass registry identity checks. A
+`docker build --no-cache` retry is not sufficient: a real counterexample retained
+stale source bytes even without layer reuse. The package command streams the full
+verified context (`tar -C <context> -cf - . | docker build --tag <image> -`) to avoid
+directory-delta source reuse. Use this path for normalized release archives and
+run the independent image check before deployment. The Dockerfile additionally
+refuses an Operational manifest/runtime mismatch.
+
 ## Security boundary
 
 The development override binds all ports to `0.0.0.0`. MQTT remains anonymous,
