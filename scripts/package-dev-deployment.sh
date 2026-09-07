@@ -8,12 +8,21 @@ package_name="gowm-dev-server-${version}"
 output_dir="${GOWM_DEPLOYMENT_OUTPUT_DIR:-$project_dir/output/deployment}"
 archive_path="$output_dir/${package_name}.tar.gz"
 checksum_path="${archive_path}.sha256"
+force=false
+verify_image=false
+for argument in "$@"; do
+  case "$argument" in
+    --force) force=true ;;
+    --verify-image) verify_image=true ;;
+    *) printf 'Usage: %s [--force] [--verify-image]\n' "$0" >&2; exit 2 ;;
+  esac
+done
 
 for command_name in node find sort sha256sum tar gzip rg git; do
   command -v "$command_name" >/dev/null || { printf 'Missing command: %s\n' "$command_name" >&2; exit 1; }
 done
 
-if [[ -e "$archive_path" && "${1:-}" != "--force" ]]; then
+if [[ -e "$archive_path" && "$force" != true ]]; then
   printf 'Refusing to overwrite %s; pass --force to replace it.\n' "$archive_path" >&2
   exit 1
 fi
@@ -105,6 +114,8 @@ test_acceptance_document="$staging_dir/GOWM_Grounding_Operational_Stable_v0.4_Co
 }
 
 (cd "$staging_dir" && find . -type f ! -path './SHA256SUMS' -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > SHA256SUMS)
+# SHA256SUMS is created after the tree normalization, under umask 077.
+chmod 0644 "$staging_dir/SHA256SUMS"
 
 if rg -n --hidden \
   '(BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|(^|[^A-Za-z0-9])sk-[A-Za-z0-9_-]{20,})' \
@@ -114,6 +125,11 @@ if rg -n --hidden \
 fi
 
 (cd "$staging_dir" && sha256sum -c SHA256SUMS >/dev/null)
+# Never replace the previous deliverable until every requested gate succeeds.
+final_archive_path="$archive_path"
+final_checksum_path="$checksum_path"
+archive_path="$staging_root/${package_name}.tar.gz"
+checksum_path="${archive_path}.sha256"
 tar \
   --sort=name \
   --mtime='UTC 1970-01-01' \
@@ -121,7 +137,7 @@ tar \
   --group=0 \
   --numeric-owner \
   -cf - -C "$staging_root" "$package_name" | gzip -n > "$archive_path"
-(cd "$output_dir" && sha256sum "$(basename "$archive_path")" > "$(basename "$checksum_path")")
+(cd "$staging_root" && sha256sum "$(basename "$archive_path")" > "$(basename "$checksum_path")")
 archive_path_failure="$(tar -tzf "$archive_path" | awk '/^\// || /(^|\/)\.\.($|\/)/ { print; exit }')"
 [[ -z "$archive_path_failure" ]] || { printf 'Unsafe archive entry: %s\n' "$archive_path_failure" >&2; exit 1; }
 archive_test_source_failure="$(tar -tzf "$archive_path" | rg '(^|/)([^/]+\.test\.ts|vitest\.config\.[^/]+|21_TEST_ACCEPTANCE\.md)$' | head -n 1 || true)"
@@ -144,4 +160,42 @@ archive_report_failure="$(tar -tzf "$archive_path" | rg '(^|/)reports(/|$)' | he
   printf 'Forbidden reports directory escaped into the deployment archive: %s\n' "$archive_report_failure" >&2
   exit 1
 }
-printf '%s\n' "$archive_path" "$checksum_path"
+mkdir "$staging_root/verify"
+tar --same-permissions -xzf "$archive_path" -C "$staging_root/verify"
+verified_dir="$staging_root/verify/$package_name"
+(cd "$verified_dir" && sha256sum -c SHA256SUMS >/dev/null)
+permission_failure="$(find "$verified_dir" \( -type d ! -perm -005 -o -type f ! -perm -004 \) -print -quit)"
+[[ -z "$permission_failure" ]] || { printf 'Unreadable archived entry: %s\n' "$permission_failure" >&2; exit 1; }
+for entrypoint in scripts/dev-deploy.sh scripts/opendrive-task-network.sh; do
+  [[ -x "$verified_dir/$entrypoint" ]]
+  bash -n "$verified_dir/$entrypoint"
+done
+(cd "$verified_dir" && node scripts/validate-deployment-env.mjs && bash scripts/opendrive-task-network.sh --help >/dev/null)
+tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
+  -cf - -C "$staging_root/verify" "$package_name" | gzip -n > "$staging_root/reproduced.tar.gz"
+cmp "$archive_path" "$staging_root/reproduced.tar.gz"
+if [[ "$verify_image" == true ]]; then
+  image_tag="gowm-dev-package-check:$(sha256sum "$archive_path" | cut -c1-16)"
+  docker build --tag "$image_tag" "$verified_dir"
+  docker run --rm --network none --read-only --entrypoint node "$image_tag" -e '
+    const fs = require("node:fs");
+    if (process.getuid() === 0) throw new Error("Runtime must be non-root");
+    const migrations = fs.readdirSync("/app/database/migrations");
+    if (!migrations.length) throw new Error("Missing migrations");
+    for (const file of migrations) fs.accessSync("/app/database/migrations/" + file, fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/migrate.js", fs.constants.R_OK);
+    console.log("PASS: non-root runtime can read migrations");
+  '
+fi
+if [[ -e "$final_archive_path" ]]; then
+  backup_dir="$(mktemp -d "$output_dir/previous-${package_name}.XXXXXX")"
+  cp -p "$final_archive_path" "$backup_dir/"
+  if [[ -e "$final_checksum_path" ]]; then cp -p "$final_checksum_path" "$backup_dir/"; fi
+  printf 'Previous package preserved: %s\n' "$backup_dir"
+fi
+chmod 0644 "$archive_path" "$checksum_path"
+mv "$archive_path" "$final_archive_path"
+mv "$checksum_path" "$final_checksum_path"
+(cd "$output_dir" && sha256sum -c "$(basename "$final_checksum_path")")
+printf 'PASS: archive checksums, permissions, exclusions, entrypoints and reproducibility\n'
+printf '%s\n' "$final_archive_path" "$final_checksum_path"

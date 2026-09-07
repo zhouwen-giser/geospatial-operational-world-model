@@ -98,6 +98,31 @@ H3 artifact, and excludes local worktrees, generated output, and private
 environment files at every depth. Tracked `.env*.example` templates are retained.
 Stage any new source files before packaging so they appear in the inventory.
 
+### Reproducible package command
+
+```bash
+npm run package:dev-deployment -- --force --verify-image
+```
+
+Run this from the repository root. It validates environment templates, packages
+the tracked runtime inventory, normalizes non-root read permissions (including
+the generated `SHA256SUMS`), checks exclusions and extracted checksums, validates
+shell entrypoints, and compares a deterministic repack byte for byte. With
+`--verify-image`, it also builds the extracted Docker context and checks migration
+readability as the image's non-root user without starting services or using a
+database. Docker access and dependency-download connectivity are required for
+this option; omit it for archive-only validation.
+
+Outputs are `output/deployment/gowm-dev-server-<version>.tar.gz` and `.tar.gz.sha256`.
+Set `GOWM_DEPLOYMENT_OUTPUT_DIR` to select another directory. Existing outputs are
+refused unless `--force` is given; replacement preserves the old archive and
+companion in a unique `previous-*` directory and occurs only after gates pass.
+The command does not commit, push, publish, or deploy. Dependency audit warnings
+are not remediated automatically. For a formal release, run from the reviewed
+clean commit; a build with tracked local edits is a local candidate, not a clean
+commit release. Reproducibility means the same source bytes and executable modes
+produce identical archive bytes; image dependency downloads are a separate gate.
+
 ## Security boundary
 
 The development override binds all ports to `0.0.0.0`. MQTT remains anonymous,
