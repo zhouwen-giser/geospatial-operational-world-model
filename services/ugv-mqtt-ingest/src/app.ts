@@ -2,7 +2,7 @@ import Fastify, { type FastifyInstance } from "fastify";
 import mqtt, { type IClientOptions, type MqttClient } from "mqtt";
 import pg from "pg";
 import { loadSourceSchemaLock, UGV_AUTHORITY_TOPICS, type UgvAuthorityTopic } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/contracts.js";
-import { mapUgvMessage, type MapperConfig } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/mapper.js";
+import { mapUgvMessage, VEHICLE_SPEED_MAPPER_VERSION, type MapperConfig } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/mapper.js";
 import { SourceSchemaRegistry } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/source-schema-registry.js";
 import { loadUgvIngestConfig, type UgvIngestConfig } from "./config.js";
 import { UgvIngestRepository } from "./repository.js";
@@ -12,6 +12,7 @@ interface RuntimeState {
   sourceLockLoaded: boolean; workerHealthy: boolean; lastApiSuccessAt?: string; lastError?: string;
   messages: Record<string,number>; redeliveries: Record<string,number>; invalid: Record<string,number>;
   sourceQosConflicts: Record<string,number>; sessionLostTotal: number; retainedSkipped: Record<string,number>;
+  sourceQos0Accepted: Record<string,number>;
   samplingSuppressed: Record<string,number>; canonicalObservations: Record<string,number>;
   operationalEvents: Record<string,number>; outboxDelivery: Record<string,number>; topicLastAt: Record<string,number>;
 }
@@ -28,9 +29,9 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
     max: Math.max(8,Math.min(64,config.processConcurrency+config.deliveryConcurrency)) });
   await pool.query("SELECT 1");
   const repository = new UgvIngestRepository(pool,config.deviceId,config.maxPayloadBytes,config.maximumPendingInbox,
-    sourceLock ? new SourceSchemaRegistry(sourceLock) : undefined);
+    sourceLock ? new SourceSchemaRegistry(sourceLock) : undefined,config.speedQos0Compat);
   const state: RuntimeState = { connected: false,sessionPresent: false,subscriptions: {},sourceLockLoaded: Boolean(sourceLock),
-    workerHealthy: true,messages: {},redeliveries: {},invalid: {},sourceQosConflicts: {},sessionLostTotal: 0,
+    workerHealthy: true,messages: {},redeliveries: {},invalid: {},sourceQosConflicts: {},sourceQos0Accepted: {},sessionLostTotal: 0,
     retainedSkipped: {},samplingSuppressed: {},canonicalObservations: {},operationalEvents: {},outboxDelivery: {},topicLastAt: {},
     ...(sourceLockError ? { lastError: sourceLockError } : {}) };
   let sessionId: string | undefined;
@@ -140,6 +141,8 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
   });
   app.get("/v1/ingest/status",async () => ({ ...await repository.status(),mqttConnected: state.connected,
     mqttSessionPresent: state.sessionPresent,subscriptions: state.subscriptions,sourceQosConflicts: state.sourceQosConflicts,
+    sourceQos0Accepted: state.sourceQos0Accepted,
+    qos0Policy: { speedEnabled: config.speedQos0Compat,deliveryGuarantee: "BEST_EFFORT_NO_PUBACK" },
     sourceSchemaLock: sourceLock ? { lockVersion: sourceLock.lockVersion,files: sourceLock.files,
       topicSchemaHash: sourceLock.topicSchemaHash,validatedTopics: sourceLock.validatedTopics } : null,
     lastApiSuccessAt: state.lastApiSuccessAt,lastError: state.lastError ?? null }));
@@ -223,8 +226,11 @@ function wireClient(client: MqttClient,config: UgvIngestConfig,sourceLock: Await
     }).then((accepted) => {
       increment(state.messages,topic); if (accepted.validationState !== "VALID") increment(state.invalid,`${topic}:${accepted.validationState}`);
       state.topicLastAt[topic] = Date.now();
-      increment(state.sourceQosConflicts,topic);
-      state.lastError = `BLOCKED_SOURCE_CONTRACT_CONFLICT: ${topic} arrived at QoS 0`;
+      if (topic === "/ugv/speed" && config.speedQos0Compat) increment(state.sourceQos0Accepted,topic);
+      else {
+        increment(state.sourceQosConflicts,topic);
+        state.lastError = `BLOCKED_SOURCE_CONTRACT_CONFLICT: ${topic} arrived at QoS 0`;
+      }
     }).catch((error) => { state.lastError = safeError(error); client.end(true); });
   });
   client.on("close",() => {
@@ -291,7 +297,8 @@ function mapperConfig(config: UgvIngestConfig): MapperConfig {
     analysisSpaceKey: config.analysisSpaceKey,
     analysisSrid: config.analysisSrid,
     arrivalUncertaintyMs: config.arrivalUncertaintyMs,
-    mapperVersion: "ugv-mqtt-canonical-v1",
+    mapperVersion: VEHICLE_SPEED_MAPPER_VERSION,
+    sourceQosPolicy: config.speedQos0Compat ? "SPEED_ONLY_QOS0_V1" : "QOS1_REQUIRED_V1",
     samplingPolicy: config.samplingPolicy,
     maxTargetsPerFrame: config.maxTargetsPerFrame
   };
@@ -312,6 +319,7 @@ function metrics(state: RuntimeState,status: Record<string,unknown>): string {
       `mqtt_redeliveries_total{topic=${JSON.stringify(topic)}} ${state.redeliveries[topic] ?? 0}`,
       `mqtt_retained_skipped_total{topic=${JSON.stringify(topic)}} ${state.retainedSkipped[topic] ?? 0}`,
       `mqtt_source_qos_conflicts_total{topic=${JSON.stringify(topic)}} ${state.sourceQosConflicts[topic] ?? 0}`,
+      `mqtt_source_qos0_accepted_total{topic=${JSON.stringify(topic)}} ${state.sourceQos0Accepted[topic] ?? 0}`,
       `topic_last_message_age_seconds{topic=${JSON.stringify(topic)}} ${state.topicLastAt[topic] ? Math.max(0,(Date.now()-state.topicLastAt[topic])/1000) : -1}`);
     for (const [key,count] of Object.entries(state.invalid)) {
       const prefix = `${topic}:`; if (key.startsWith(prefix)) lines.push(`mqtt_invalid_total{topic=${JSON.stringify(topic)},reason=${JSON.stringify(key.slice(prefix.length))}} ${count}`);

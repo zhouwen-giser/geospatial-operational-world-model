@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:gowm:history:original-evidence-page:2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "sampleSemantics", "revisionId", "contentHash", "inputSetHash", "evidenceHash", "trackletInputSetHash", "timeSolutionSetHash", "evidenceCapturedAt", "evidenceSampleCount", "geometryNodeCount", "previewPointCount", "samples", "complete", "nextCursor"],
+  "properties": {
+    "contractVersion": {"const": "2.0"},
+    "sampleSemantics": {"const": "ORIGINAL_MEASUREMENT_V1"},
+    "revisionId": {"type": "string", "minLength": 1},
+    "contentHash": {"$ref": "#/definitions/hash"},
+    "inputSetHash": {"$ref": "#/definitions/hash"},
+    "evidenceHash": {"$ref": "#/definitions/hash"},
+    "trackletInputSetHash": {"$ref": "#/definitions/hash"},
+    "timeSolutionSetHash": {"$ref": "#/definitions/hash"},
+    "evidenceCapturedAt": {"type": "string"},
+    "evidenceSampleCount": {"type": "integer", "minimum": 0},
+    "geometryNodeCount": {"type": "integer", "minimum": 0},
+    "previewPointCount": {"const": 0},
+    "complete": {"type": "boolean"},
+    "nextCursor": {"type": ["object", "null"], "additionalProperties": false,
+      "required": ["revisionId", "evidenceHash", "after"],
+      "properties": {"revisionId": {"type": "string"}, "evidenceHash": {"$ref": "#/definitions/hash"}, "after": {"type": "integer", "minimum": 0}}},
+    "samples": {"type": "array", "items": {"type": "object",
+      "required": ["sampleId", "measurementId", "observationId", "timeSolutionId", "sourceTrackletVersionId", "sourceSegmentNo", "ordinalNo", "sequenceNo", "observedAt", "position", "crs", "sourceKey", "trackerSessionId", "receivedAt"],
+      "properties": {
+        "sampleId": {"type": "string"}, "measurementId": {"type": "string"},
+        "observationId": {"type": "string"}, "timeSolutionId": {"type": "string"},
+        "sourceTrackletVersionId": {"type": "string"}, "sourceSegmentNo": {"type": "integer"},
+        "ordinalNo": {"type": "integer"}, "sequenceNo": {"type": "integer"},
+        "observedAt": {"type": "string"}, "receivedAt": {"type": "string"},
+        "crs": {"const": "EPSG:4326"}, "sourceKey": {"type": "string"},
+        "trackerSessionId": {"type": ["string", "null"]},
+        "position": {"type": "object", "required": ["type", "coordinates"],
+          "properties": {"type": {"const": "Point"}, "coordinates": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"type": "number"}}}}
+      }
+    }}
+  },
+  "definitions": {"hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}}
+}

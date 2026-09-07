@@ -12,16 +12,19 @@ import {
 } from "./sampling.js";
 
 type Json = Record<string, unknown>;
+export const VEHICLE_SPEED_MAPPER_VERSION = "ugv-mqtt-canonical-v2";
 export interface MapperConfig {
   deviceId: string; dataScopeKey: string; sourceKey: string; producerPipelineKey: string;
   scenarioId: string; worldEpoch: string; trackerSessionKey: string; analysisSpaceKey: string;
   analysisSrid: number; arrivalUncertaintyMs: number; mapperVersion: string;
   samplingPolicy?: UgvSamplingPolicy;
   maxTargetsPerFrame?: number;
+  sourceQosPolicy?: "SPEED_ONLY_QOS0_V1" | "QOS1_REQUIRED_V1";
 }
 export interface MapperInput {
   messageId: string; topic: UgvAuthorityTopic; payloadSha256: string; payload: unknown;
   adapterReceivedAt: string; retained: boolean; cursor: Json; streamContext?: Json;
+  sourceQos?: number;
 }
 export interface MappingResult {
   observations: CanonicalObservationInput[];
@@ -75,6 +78,9 @@ function baseObservation(input: MapperInput,config: MapperConfig,ordinal: number
     producerPipelineKey: config.producerPipelineKey,rawReference: `ugv-inbox://${input.messageId}`,
     qualityFlags: timeQualityFlags,metadata: { mqttTopic: input.topic,payloadSha256: input.payloadSha256,
       mapperVersion: config.mapperVersion,scenarioId: config.scenarioId,worldEpoch: config.worldEpoch,
+      ...(input.sourceQos === undefined ? {} : { sourceQos: input.sourceQos,
+        sourceQosPolicy: config.sourceQosPolicy ?? "QOS1_REQUIRED_V1",
+        deliveryGuarantee: input.sourceQos === 0 ? "BEST_EFFORT_NO_PUBACK" : "ACK_AFTER_COMMIT" }),
       samplingPolicyVersion: policy.version,samplingPolicyHash: samplingPolicyHash(policy) },
     ...(statePatch ? { statePatch } : {}),timeSolution: { phenomenonTimeEstimate: estimate,
       phenomenonTimeWindow: { start,end },uncertaintySeconds: config.arrivalUncertaintyMs / 1000,
@@ -140,9 +146,14 @@ function mapSpeed(input: MapperInput,config: MapperConfig): MappingResult {
   const measurement = { measurementKey: "vehicle-speed",measurementStage: "NORMALIZED" as const,observedProperty: "SPEED",
     resultKind: "NUMERIC" as const,scalarValue: speedMps,valueUnit: "m/s",measurementModel: "SOURCE_KMH_TO_MPS",
     measurementModelVersion: "source-schema-lock",qualityFlags: ["SOURCE_EVENT_TIME_MISSING"],attributes: { rawValue: raw,rawUnit: "km/h" } };
-  const observation = baseObservation(input,config,0,{ type: "Device",id: `device:${config.deviceId}:motion` },
+  // Persisted v1 inboxes must still replay with their original identity.
+  const vehicleIdentity = config.mapperVersion === VEHICLE_SPEED_MAPPER_VERSION;
+  const observation = baseObservation(input,config,0,vehicleIdentity
+    ? { type: "UGV",id: `ugv:${config.deviceId}` }
+    : { type: "Device",id: `device:${config.deviceId}:motion` },
     { type: "Device",id: `device:${config.deviceId}:chassis` },"UGV_SPEED","ugv-speed-v1",[measurement],
-    { kinematics: { speedMps,speedSource: "UGV_SPEED_TOPIC" } });
+    { kinematics: { speedMps,speedSource: "UGV_SPEED_TOPIC" } },vehicleIdentity
+      ? { sourceLocalTargetId: config.deviceId,trackerSessionId: config.trackerSessionKey } : {});
   return { observations: [observation],events: [],cursor: { ...input.cursor,lastSeenAt: input.adapterReceivedAt,
     lastEmittedAt: input.adapterReceivedAt,lastEmittedSpeedMps: speedMps } };
 }

@@ -22,11 +22,11 @@ export const HISTORICAL_TRACE_SQL={
     ) AS queue_id`,
   intervalAsOf:`SELECT * FROM gowm_history_v1.task_execution_interval_revision_by_reference_as_of($1::text,$2::integer,$3::timestamptz)`,
   outcomeAsOf:`SELECT * FROM gowm_history_v1.historical_trajectory_outcome_as_of($1::text,$2::text,$3::text,$4::text,$5::timestamptz)`,
-  trajectoryAsOf:`SELECT candidate.*,
+  trajectoryAsOf:`SELECT candidate.*,numInstants(candidate.trajectory) AS geometry_node_count,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.requested_time) period),'[]'::jsonb) AS requested_periods,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.defined_time) period),'[]'::jsonb) AS defined_periods
     FROM gowm_history_v1.historical_trajectory_as_of($1::text,$2::text,$3::text,$4::text,$5::timestamptz,NULL::integer) candidate`,
-  trajectoryPinnedAsOf:`SELECT candidate.*,
+  trajectoryPinnedAsOf:`SELECT candidate.*,numInstants(candidate.trajectory) AS geometry_node_count,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.requested_time) period),'[]'::jsonb) AS requested_periods,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.defined_time) period),'[]'::jsonb) AS defined_periods
     FROM gowm_history_v1.historical_trajectory_revision_by_reference_as_of($1::text,$2::integer,$3::timestamptz) candidate`,
@@ -219,7 +219,8 @@ export class HistoricalTraceRepository {
       const fixedRows=segmentsResult.rows.length+gapsResult.rows.length+exclusionsResult.rows.length+trackletRows.length;
       if (fixedRows>this.maximumRows) throw new ProviderProtocolError("BUDGET_EXCEEDED","historical trajectory row budget exceeded before preview materialization");
       const requestedInline=Math.min(input.maximumInlinePoints??this.maximumRows,this.maximumRows-fixedRows);
-      const sampleIndexes=previewIndexes(sampleCount,requestedInline);
+      const geometryCount=trajectory.geometry_node_count===undefined?sampleCount:nonNegativeInteger(trajectory.geometry_node_count,"geometry_node_count");
+      const sampleIndexes=previewIndexes(geometryCount,requestedInline);
       const previewRows=sampleIndexes.length===0?[]:(await client.query<Record<string,unknown>>(
         HISTORICAL_TRACE_SQL.preview,[String(trajectory.reference_key),positiveInteger(trajectory.revision_no,"revision_no"),capturedAt,sampleIndexes]
       )).rows;

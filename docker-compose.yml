@@ -82,6 +82,7 @@ services:
     environment:
       <<: *app-environment
       HISTORICAL_WORKER_DB_PASSWORD: ${HISTORICAL_WORKER_DB_PASSWORD:?set a distinct HISTORICAL_WORKER_DB_PASSWORD in .env}
+      HISTORY_AUTO_DB_PASSWORD: ${HISTORY_AUTO_DB_PASSWORD:?set a distinct HISTORY_AUTO_DB_PASSWORD in .env}
     command: ["node", "dist/scripts/migrate.js"]
     depends_on:
       postgres:
@@ -144,6 +145,7 @@ services:
       UGV_MQTT_KEY_FILE: ${UGV_MQTT_KEY_CONTAINER_FILE:-}
       UGV_MQTT_SESSION_EXPIRY_SECONDS: ${UGV_MQTT_SESSION_EXPIRY_SECONDS:-86400}
       UGV_MQTT_KEEPALIVE_SECONDS: ${UGV_MQTT_KEEPALIVE_SECONDS:-30}
+      UGV_MQTT_SPEED_QOS0_COMPAT: ${UGV_MQTT_SPEED_QOS0_COMPAT:-false}
       UGV_MQTT_CONNECT_TIMEOUT_MS: ${UGV_MQTT_CONNECT_TIMEOUT_MS:-5000}
       UGV_MQTT_RECEIVE_MAXIMUM: ${UGV_MQTT_RECEIVE_MAXIMUM:-1}
       UGV_MQTT_FAULT_EXIT_AFTER_INBOX_COMMITS: ${UGV_MQTT_FAULT_EXIT_AFTER_INBOX_COMMITS:-}
@@ -220,6 +222,31 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    init: true
+
+  history-auto:
+    build: .
+    environment:
+      HISTORY_AUTO_DATABASE_URL: postgresql://gowm_history_scheduler_service:${HISTORY_AUTO_DB_PASSWORD:?set HISTORY_AUTO_DB_PASSWORD in .env}@postgres:5432/gowm
+      GOWM_HISTORY_AUTO_ENABLED: ${GOWM_HISTORY_AUTO_ENABLED:-true}
+      GOWM_HISTORY_AUTO_OWNER: ${GOWM_HISTORY_AUTO_OWNER:-gowm}
+      GOWM_HISTORY_AUTO_TAKEOVER: ${GOWM_HISTORY_AUTO_TAKEOVER:-false}
+      GOWM_HISTORY_AUTO_INTERVAL_SECONDS: ${GOWM_HISTORY_AUTO_INTERVAL_SECONDS:-60}
+      GOWM_HISTORY_AUTO_MAX_TASKS: ${GOWM_HISTORY_AUTO_MAX_TASKS:-16}
+      GOWM_HISTORY_AUTO_DATA_SCOPE_KEY: ${GOWM_HISTORY_AUTO_DATA_SCOPE_KEY:-default}
+      UGV_SOURCE_KEY: ${UGV_SOURCE_KEY:-ugv-airport-sim-mqtt}
+      UGV_DEVICE_ID: ${UGV_DEVICE_ID:-ugv}
+    command: ["node", "dist/services/history-auto/src/index.js"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "const h=JSON.parse(require('fs').readFileSync('/tmp/gowm-history-auto-health.json'));if(!h.ok||Date.now()-h.at>Math.max(180000,Number(process.env.GOWM_HISTORY_AUTO_INTERVAL_SECONDS)*3000))process.exit(1)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
     restart: unless-stopped
     security_opt: ["no-new-privileges:true"]
     init: true

@@ -14,11 +14,13 @@ export interface PendingMessage {
   adapterReceivedAt: string; retained: boolean; ingestSequence: number;
   cursor: Record<string,unknown>; streamContext: Record<string,unknown>;
   mapperConfig: MapperConfig; streamNamespace: string;
+  sourceQos?: number;
 }
 
 export class UgvIngestRepository {
   constructor(private readonly pool: pg.Pool,private readonly deviceId: string,private readonly maximumPayloadBytes: number,
-    private readonly maximumPendingInbox = 10_000,private readonly sourceSchemas?: SourceSchemaRegistry) {}
+    private readonly maximumPendingInbox = 10_000,private readonly sourceSchemas?: SourceSchemaRegistry,
+    private readonly speedQos0Compat = false) {}
 
   async startSession(clientId: string,brokerId: string,sessionPresent: boolean,sourceLock: SourceSchemaLock,
     codeVersion: string,mapperContext: MapperConfig): Promise<{ sessionId: string; sessionLost: boolean }> {
@@ -98,6 +100,10 @@ export class UgvIngestRepository {
         validationState = "NON_JSON"; validationErrors = [{ message: error instanceof Error ? error.message : String(error) }];
       }
     }
+    if (packet.qos === 0 && !(topic === "/ugv/speed" && this.speedQos0Compat)) {
+      validationState = "SOURCE_QOS_CONTRACT_CONFLICT";
+      validationErrors = [{ actualQos: 0, policy: "SPEED_ONLY_QOS0_V1" }];
+    }
     try {
       const accepted = await this.pool.query<{ accepted_message_id: string; was_redelivery: boolean; accepted_packet_generation: string }>(
         `SELECT * FROM ugv_ingest.accept_message($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12,$13,$14::jsonb,$15)`,
@@ -131,9 +137,9 @@ export class UgvIngestRepository {
       const result = await client.query<{
         message_id: string; topic: UgvAuthorityTopic; payload_sha256: string; decoded_payload: unknown;
         adapter_received_at: Date; retained_flag: boolean; ingest_sequence: string;
-        mapper_context: MapperConfig; mapper_context_hash: string;
+        mapper_context: MapperConfig; mapper_context_hash: string; qos: number;
       }>(`SELECT inbox.message_id,inbox.topic,inbox.payload_sha256,inbox.decoded_payload,inbox.adapter_received_at,
-                 inbox.retained_flag,inbox.ingest_sequence,session.mapper_context,session.mapper_context_hash
+                 inbox.retained_flag,inbox.ingest_sequence,inbox.qos,session.mapper_context,session.mapper_context_hash
           FROM ugv_ingest.inbox_message inbox JOIN ugv_ingest.mqtt_session session USING(session_id)
           WHERE session.client_id=$1 AND session.broker_id=$2 AND inbox.processing_state IN ('RECEIVED','VALIDATED')
             AND inbox.next_processing_at<=clock_timestamp()
@@ -159,6 +165,7 @@ export class UgvIngestRepository {
       return { messageId: row.message_id,topic: row.topic,payloadSha256: row.payload_sha256,payload: row.decoded_payload,
         adapterReceivedAt: row.adapter_received_at.toISOString(),retained: row.retained_flag,ingestSequence: Number(row.ingest_sequence),
         cursor,streamContext: shared?.authority_state ?? {},mapperConfig,
+        ...(mapperConfig.mapperVersion === "ugv-mqtt-canonical-v2" ? { sourceQos: row.qos } : {}),
         streamNamespace: row.mapper_context_hash };
     });
   }

@@ -11,6 +11,7 @@ export interface UgvIngestConfig {
   maximumPendingInbox: number; maxTargetsPerFrame: number; httpTimeoutMs: number;
   receiveMaximum: number; processConcurrency: number; deliveryConcurrency: number;
   faultExitAfterInboxCommits?: number;
+  speedQos0Compat: boolean;
   samplingPolicy: UgvSamplingPolicy;
 }
 
@@ -53,6 +54,8 @@ function serviceUrl(name: string,value: string,protocols: string[]): string {
 }
 
 export async function loadUgvIngestConfig(): Promise<UgvIngestConfig> {
+  const speedQos0 = process.env.UGV_MQTT_SPEED_QOS0_COMPAT ?? "false";
+  if (speedQos0 !== "true" && speedQos0 !== "false") throw new Error("UGV_MQTT_SPEED_QOS0_COMPAT must be true or false");
   const origin = process.env.UGV_ORIGIN_KIND ?? "SIMULATION";
   if (origin !== "SIMULATION") throw new Error("UGV_ORIGIN_KIND must be SIMULATION for this adapter");
   const analysisSrid = integer("UGV_ANALYSIS_SRID",32648);
@@ -86,6 +89,7 @@ export async function loadUgvIngestConfig(): Promise<UgvIngestConfig> {
     targetMinimumIntervalMs: integer("UGV_MQTT_TARGET_MIN_INTERVAL_MS",DEFAULT_UGV_SAMPLING_POLICY.targetMinimumIntervalMs)
   };
   return {
+    speedQos0Compat: speedQos0 === "true",
     databaseUrl: required("DATABASE_URL"),mqttUrl: serviceUrl("UGV_MQTT_URL",required("UGV_MQTT_URL"),["mqtt:","mqtts:","ws:","wss:"]),
     clientId,
     ...(process.env.UGV_MQTT_USERNAME ? { username: process.env.UGV_MQTT_USERNAME } : {}),
