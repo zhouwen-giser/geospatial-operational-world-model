@@ -169,6 +169,7 @@
     "validate:opendrive-final": "node --import tsx scripts/opendrive/cli.ts validate",
     "validate:deployment-env": "node scripts/validate-deployment-env.mjs",
     "validate:history-evidence": "node --import tsx validation/scripts/history-evidence-repair-e2e.ts",
+    "validate:history-evidence-ci": "node --import tsx validation/scripts/history-evidence-ci.ts",
     "validate:ugv-mqtt-contracts": "vitest run tests/unit/ugv-mqtt-contracts.test.ts tests/unit/ugv-mqtt-config.test.ts",
     "validate:ugv-mqtt-state-patch": "vitest run tests/unit/canonical-observation.test.ts",
     "validate:ugv-mqtt-position": "npm run validate:ugv-mqtt-state-patch && npm run validate:ugv-mqtt-db",

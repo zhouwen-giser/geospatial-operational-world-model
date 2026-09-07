@@ -89,13 +89,13 @@ await withMigratedV07Database("v071_upgrade", async (databaseUrl, evidence, runI
 
     const consistency = await assertConsistencyContract(pool, `upgrade${runId}`);
 
-    await runCurrentMigration(databaseUrl);
+    await runCurrentMigration(databaseUrl, 69);
     const after069 = await migrationState(pool);
     assertLedgerUpgradeTo069(after068, after069);
     const eventSetReadContract = await assertEventSetReadContract(pool, `upgrade${runId}`);
     const structures = await requiredStructureProbe(pool);
 
-    await runCurrentMigration(databaseUrl);
+    await runCurrentMigration(databaseUrl, 69);
     const replayed = await migrationState(pool);
     if (JSON.stringify(replayed) !== JSON.stringify(after069)) {
       throw new Error("v0.7.1 migration replay changed the 069 ledger");
@@ -137,7 +137,7 @@ process.stdout.write(`${JSON.stringify({
 
 async function runCurrentMigration(
   databaseUrl: string,
-  maximumMigrationNumber?: number
+  maximumMigrationNumber: number
 ): Promise<void> {
   const previousDatabaseUrl = process.env.DATABASE_URL;
   const previousStasPassword = process.env.STAS_DB_PASSWORD;
