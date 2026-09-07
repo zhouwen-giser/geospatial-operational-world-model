@@ -9,7 +9,7 @@ output_dir="${GOWM_DEPLOYMENT_OUTPUT_DIR:-$project_dir/output/deployment}"
 archive_path="$output_dir/${package_name}.tar.gz"
 checksum_path="${archive_path}.sha256"
 
-for command_name in node find sort sha256sum tar gzip rg; do
+for command_name in node find sort sha256sum tar gzip rg git; do
   command -v "$command_name" >/dev/null || { printf 'Missing command: %s\n' "$command_name" >&2; exit 1; }
 done
 
@@ -30,39 +30,11 @@ cleanup() { rm -rf -- "$staging_root"; }
 trap cleanup EXIT
 mkdir -p "$staging_dir" "$output_dir"
 
-tar \
-  --exclude='./.git' \
-  --exclude='./.env' \
-  --exclude='*/.env' \
-  --exclude='./node_modules' \
-  --exclude='*/node_modules' \
-  --exclude='./tests' \
-  --exclude='./test-data' \
-  --exclude='*/test' \
-  --exclude='*/tests' \
-  --exclude='*/fixture' \
-  --exclude='*/fixtures' \
-  --exclude='*/fixture.*' \
-  --exclude='*/fixtures.*' \
-  --exclude='*/example' \
-  --exclude='*/examples' \
-  --exclude='*/example.*' \
-  --exclude='*/examples.*' \
-  --exclude='*.test.ts' \
-  --exclude='vitest.config.*' \
-  --exclude='./GOWM_Grounding_Operational_Stable_v0.4_Codex_Goal/21_TEST_ACCEPTANCE.md' \
-  --exclude='./dist' \
-  --exclude='./coverage' \
-  --exclude='./reports' \
-  --exclude='*/reports' \
-  --exclude='./artifacts/opendrive-task-network-v0.1' \
-  --exclude='./output' \
-  --exclude='./.runtime' \
-  --exclude='./.intake' \
-  --exclude='./.docker-config' \
-  --exclude='*.log' \
-  --exclude='*.pid' \
-  -cf - -C "$project_dir" . | tar -xf - -C "$staging_dir"
+# Only tracked files may enter the package. The inventory also
+# rejects local/private paths even if they were accidentally staged.
+node "$project_dir/scripts/dev-deployment-inventory.mjs" "$project_dir" > "$staging_root/files.list"
+tar -cf - -C "$project_dir" --null --verbatim-files-from --no-recursion \
+  -T "$staging_root/files.list" | tar -xf - -C "$staging_dir"
 
 # Reports are intentionally excluded because they can contain local runtime
 # evidence. Copy only the versioned OpenDRIVE runtime handoff: its source lock
@@ -82,6 +54,7 @@ opendrive_runtime_files=(
 )
 for runtime_file in "${opendrive_runtime_files[@]}"; do
   runtime_path="$opendrive_runtime_dir/$runtime_file"
+  git -C "$project_dir" ls-files --error-unmatch -- "artifacts/opendrive-task-network-v0.1/$runtime_file" >/dev/null
   [[ -f "$runtime_path" && ! -L "$runtime_path" ]] || {
     printf 'Required OpenDRIVE runtime artifact is missing or unsafe: %s\n' "$runtime_path" >&2
     exit 1
