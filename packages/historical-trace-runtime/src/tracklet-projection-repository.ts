@@ -346,9 +346,16 @@ export class PostgresTrackletProjectionRepository implements TrackletProjectionR
       FROM public.pipeline_watermark_revision watermark
       WHERE watermark.datastream_key = ANY($1::text[])
         AND watermark.created_at <= $2::timestamptz
+        AND (watermark.time_basis='UPSTREAM_AUTHORITY_UTC' OR NOT EXISTS (
+          SELECT 1 FROM public.mobility_tracklet_input input
+          JOIN public.world_observation observation ON observation.observation_id=input.observation_id
+          JOIN public.observation_time_solution solution ON solution.time_solution_id=input.time_solution_id
+          WHERE input.tracklet_version_id=$3::uuid AND observation.datastream_key=watermark.datastream_key
+            AND solution.clock_model_id IS DISTINCT FROM watermark.clock_model_id
+        ))
       ORDER BY watermark.datastream_key, watermark.created_at,
                watermark.watermark_revision_id
-    `, [requiredDatastreamKeys, claim.finalizationAsOf]);
+    `, [requiredDatastreamKeys, claim.finalizationAsOf,claim.trackletVersionId]);
     const watermarkCandidates = watermarks.rows.map((item): WatermarkRevisionEvidence => {
       const closed = item.closed_through_event_time;
       return {

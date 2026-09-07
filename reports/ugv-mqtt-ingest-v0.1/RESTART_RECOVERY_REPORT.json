@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "scenarios": {
+    "adapterRestart": { "status": "PASS", "outboxRowsBefore": 37, "outboxRowsAfter": 37, "duplicateCanonicalRows": 0 },
+    "brokerRestart": { "status": "PASS", "persistentSessionResumed": true, "postRestartInbox": 1, "postRestartCanonical": 1 },
+    "databasePause": { "status": "PASS", "killedWhileDatabasePaused": true, "brokerDupObserved": true, "pubackAfterRecovery": true, "canonicalRows": 1 },
+    "observationApiOutage": { "status": "PASS", "durableOutboxPendingDuringOutage": true, "eventualHttpStatus": 202, "canonicalRows": 1 },
+    "projectionWorkerRestart": { "status": "PASS", "historicalFailures": 0, "secondRunChanges": 0 }
+  },
+  "scope": "disposable consumer harness; measured immutable-source deviations are retained as user-accepted known matters"
+}

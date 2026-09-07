@@ -59,6 +59,9 @@ jobs:
       - name: Candidate 001-to-069 and 067-to-069 database qualification
         run: npm run validate:v071-database-upgrade
 
+      - name: Candidate fresh and 069-to-075 history evidence qualification
+        run: npm run validate:history-evidence-ci
+
       - name: Candidate P1 Gateway scenario qualification
         run: npm run validate:v07-history-gateway
 
@@ -142,6 +145,9 @@ jobs:
           node --import tsx validation/scripts/gowm-v071-exact-head-evidence.mjs run
           database-fresh-report "fresh install 001 through 069 and upgrade 067 through 069"
           -- npm run validate:v071-database-upgrade
+
+      - name: Current fresh and 069-to-075 history evidence gates
+        run: npm run validate:history-evidence-ci
 
       - name: Bind upgrade evidence to the same database execution
         run: >-

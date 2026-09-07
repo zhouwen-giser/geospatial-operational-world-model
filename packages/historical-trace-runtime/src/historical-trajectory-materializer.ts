@@ -1053,6 +1053,12 @@ export class PostgresHistoricalTrajectoryInputLoader implements HistoricalTrajec
         }
       ];
 
+      for (const set of inputSets) {
+        for (const pin of pinsOfKind(snapshotPins,set.inputSetKind)) {
+          if (pin.contentHash !== set.itemSetDigest || pin.version !== set.itemSetDigest)
+            throw new HistoricalProjectionInputError(`${set.inputSetKind} differs from its frozen scheduler input set`);
+        }
+      }
       await connection.query("COMMIT"); open = false;
       return {
         kind: "READY", request, semanticRequestHash, interval: loadedInterval,
@@ -1260,6 +1266,7 @@ export class PostgresHistoricalTrajectoryMaterializer {
       };
     }
     const prepared = await prepareHistoricalTrajectory({
+      evidenceSamples: loaded.profile.profileKey === "trajectory-single-authoritative-v2" && loaded.profile.profileVersion === "2.0",
       dataScopeKey: request.dataScopeKey,
       interval: loaded.interval.interval,
       intervalRevisionId: loaded.interval.intervalRevisionId,
@@ -1299,7 +1306,7 @@ export class PostgresHistoricalTrajectoryMaterializer {
       queryPayload: { ...request.query },
       methodSnapshot: {
         algorithm: "gap-preserving-historical-trajectory",
-        algorithmVersion: "1.0",
+        algorithmVersion: loaded.profile.profileKey === "trajectory-single-authoritative-v2" ? "2.0" : "1.0",
         profileKey: loaded.profile.profileKey,
         profileVersion: loaded.profile.profileVersion,
         profileHash: loaded.profile.profileHash,

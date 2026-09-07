@@ -20,6 +20,7 @@ export interface AppConfig {
   trackletMaxTimeGapMs: number;
   trackletMaxDistanceGapM: number;
   trackletMaxRequiredSpeedMps: number;
+  positionTransformToleranceM: number;
 }
 
 function intEnv(name: string, fallback: number): number {
@@ -27,6 +28,14 @@ function intEnv(name: string, fallback: number): number {
   if (raw === undefined) return fallback;
   const value = Number.parseInt(raw, 10);
   if (!Number.isFinite(value)) throw new Error(`Invalid integer environment variable ${name}`);
+  return value;
+}
+
+function numberEnv(name: string, fallback: number): number {
+  const raw = process.env[name];
+  if (raw === undefined) return fallback;
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value < 0) throw new Error(`Invalid numeric environment variable ${name}`);
   return value;
 }
 
@@ -62,6 +71,7 @@ export function loadConfig(): AppConfig {
     analysisSpaceKey: process.env.ANALYSIS_SPACE_KEY ?? "default",
     trackletMaxTimeGapMs: intEnv("TRACKLET_MAX_TIME_GAP_MS", 10_000),
     trackletMaxDistanceGapM: intEnv("TRACKLET_MAX_DISTANCE_GAP_M", 250),
-    trackletMaxRequiredSpeedMps: intEnv("TRACKLET_MAX_REQUIRED_SPEED_MPS", 80)
+    trackletMaxRequiredSpeedMps: intEnv("TRACKLET_MAX_REQUIRED_SPEED_MPS", 80),
+    positionTransformToleranceM: numberEnv("POSITION_TRANSFORM_TOLERANCE_M", 0.05)
   };
 }

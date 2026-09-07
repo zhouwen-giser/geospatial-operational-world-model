@@ -36,7 +36,11 @@ set_env() {
 }
 
 compose() {
-  docker compose --env-file "$env_file" "${compose_files[@]}" "${compose_profiles[@]}" "$@"
+  local active_profiles=("${compose_profiles[@]}")
+  if [[ -f "$env_file" && "$(env_value UGV_MQTT_INGEST_ENABLED)" == "true" ]]; then
+    active_profiles+=(--profile ugv-mqtt)
+  fi
+  docker compose --env-file "$env_file" "${compose_files[@]}" "${active_profiles[@]}" "$@"
 }
 
 # Convert the published bind address into a URL-safe address that the host can
@@ -67,7 +71,7 @@ init_env() {
   fi
 
   local secret_vars=(
-    POSTGRES_PASSWORD STAS_DB_PASSWORD HISTORICAL_WORKER_DB_PASSWORD
+    POSTGRES_PASSWORD STAS_DB_PASSWORD HISTORICAL_WORKER_DB_PASSWORD HISTORY_AUTO_DB_PASSWORD
     GATEWAY_DB_PASSWORD GATEWAY_REGISTRY_DB_PASSWORD SPATIAL_DB_PASSWORD SITUATION_DB_PASSWORD
     REFERENCE_DB_PASSWORD CATALOG_DB_PASSWORD EVIDENCE_DB_PASSWORD OPERATIONAL_DB_PASSWORD
     HISTORICAL_DB_PASSWORD VALIDATION_DB_PASSWORD NETWORK_DB_PASSWORD ROUTE_DB_PASSWORD COVERAGE_DB_PASSWORD
@@ -201,6 +205,7 @@ doctor() {
         EVIDENCE_PROVIDER_PUBLISHED_PORT OPERATIONAL_PROVIDER_PUBLISHED_PORT VALIDATION_PROVIDER_PUBLISHED_PORT
         NETWORK_PROVIDER_PUBLISHED_PORT ROUTE_PROVIDER_PUBLISHED_PORT COVERAGE_PROVIDER_PUBLISHED_PORT
         STAS_PROVIDER_PUBLISHED_PORT HISTORICAL_PROVIDER_PUBLISHED_PORT SPATIAL_PROVIDER_PUBLISHED_PORT
+        UGV_MQTT_INGEST_PORT
       )
       local key port
       for key in "${port_vars[@]}"; do
@@ -233,6 +238,9 @@ smoke() {
     "$(env_value CRS_BRIDGE_PUBLISHED_PORT):/health/ready"
     "$(env_value GEOMETRY_BRIDGE_PUBLISHED_PORT):/health/ready"
   )
+  if [[ "$(env_value UGV_MQTT_INGEST_ENABLED)" == "true" ]]; then
+    checks+=("$(env_value UGV_MQTT_INGEST_PORT):/health/ready")
+  fi
   local check port path probe_address
   probe_address="$(host_probe_address)"
   for check in "${checks[@]}"; do

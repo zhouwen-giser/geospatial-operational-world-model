@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "implemented": { "deterministicIds": true, "chassisTransitions": true, "reconTransitions": true, "commandAckEvents": true, "mirrorSuppression": true },
+  "unitContractStatus": "PASS",
+  "consumerHarness": {
+    "status": "PASS",
+    "eventCounts": {
+      "CONTROL_COMPLETED_REPORTED": 2,
+      "EXECUTION_PAUSED_OBSERVED": 2,
+      "EXECUTION_RESUMED_OBSERVED": 2,
+      "EXECUTION_STARTED_OBSERVED": 2
+    },
+    "taskIntervalsProjected": 2,
+    "secondProjectionRunChanges": 0,
+    "sourceContractAuthority": "NOT_ASSERTED"
+  }
+}

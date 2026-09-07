@@ -1,8 +1,16 @@
 import { describe, expect, it } from "vitest";
+import { readdir } from "node:fs/promises";
 
 import { canonicalizeMigrationSql, selectMigrationFiles } from "../../scripts/migrate.js";
 
 describe("migration selection", () => {
+  it("keeps the frozen 069 gate bounded while production includes history migrations", async () => {
+    const files = await readdir("database/migrations");
+    const frozen = selectMigrationFiles(files, 69);
+    expect(frozen).toHaveLength(69);
+    expect(frozen.at(-1)).toBe("069_task_execution_event_set_read_contract.sql");
+    expect(selectMigrationFiles(files)).toContain("075_binding_snapshot_lookup.sql");
+  });
   const migrations = [
     "003_third.sql",
     "README.md",

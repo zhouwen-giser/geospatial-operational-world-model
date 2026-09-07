@@ -34,6 +34,8 @@ export interface RuntimeSourceGap extends HistoricalGap {
 }
 
 export interface TemporalSliceRequest {
+  evidenceSamples?: boolean;
+  requestedEnd?: string;
   dataScopeKey: string;
   sourceTrackletVersionId: string;
   sourceSegmentNo: number;
@@ -54,6 +56,7 @@ export interface TemporalTrajectorySlicer {
 }
 
 export interface HistoricalTrajectoryBuildInput {
+  evidenceSamples?: boolean;
   dataScopeKey: string;
   interval: ReconstructedTaskExecutionInterval;
   intervalRevisionId: string;
@@ -143,6 +146,8 @@ export async function prepareHistoricalTrajectory(
   const unavailableSlices: RuntimeSourceGap[] = [];
   for (const slice of plan.segments) {
     const value = await slicer.slice({
+      ...(input.evidenceSamples ? { evidenceSamples: true,
+        requestedEnd: domain.requestedPeriods[slice.requestedPeriodNo - 1]!.end } : {}),
       dataScopeKey: input.dataScopeKey,
       sourceTrackletVersionId: slice.sourceTrackletVersionId,
       sourceSegmentNo: slice.sourceSegmentNo,
@@ -159,8 +164,8 @@ export async function prepareHistoricalTrajectory(
       });
       continue;
     }
-    if (!Number.isSafeInteger(value.sampleCount) || value.sampleCount < 1) {
-      throw new HistoricalProjectionInputError("Materialized slice sampleCount must be a positive integer");
+    if (!Number.isSafeInteger(value.sampleCount) || value.sampleCount < (input.evidenceSamples ? 0 : 1)) {
+      throw new HistoricalProjectionInputError("Materialized slice sampleCount violates its profile semantics");
     }
     const materializedPeriod: TimePeriod = {
       start: isoTimestamp(value.startTime, "slice startTime"),
@@ -437,7 +442,10 @@ export class PostgresMobilityDbTrajectorySlicer implements TemporalTrajectorySli
             AND tracklet.data_scope_key = $3::text
         )
         SELECT sliced::text AS trajectory,
-               numInstants(sliced) AS sample_count,
+               ${request.evidenceSamples ? `(SELECT count(*) FROM public.mobility_tracklet_input input
+                 JOIN public.observation_time_solution solution ON solution.time_solution_id=input.time_solution_id
+                 WHERE input.tracklet_version_id=$1::uuid AND input.segment_no=$2::integer
+                   AND atTime(sliced,solution.phenomenon_time_estimate) IS NOT NULL)` : "numInstants(sliced)"} AS sample_count,
                startTimestamp(sliced) AS start_time,
                endTimestamp(sliced) AS end_time
         FROM source
@@ -446,14 +454,14 @@ export class PostgresMobilityDbTrajectorySlicer implements TemporalTrajectorySli
         request.sourceTrackletVersionId,
         request.sourceSegmentNo,
         request.dataScopeKey,
-        `[${request.period.start},${request.period.end})`
+        `[${request.period.start},${request.period.end}${request.evidenceSamples && request.requestedEnd && millis(request.period.end) < millis(request.requestedEnd) ? "]" : ")"}`
       ]);
       await connection.query("COMMIT");
       open = false;
       const row = result.rows[0];
       if (row === undefined) return undefined;
       const sampleCount = requiredInteger(row.sample_count, "slice sample_count");
-      if (sampleCount < 1) return undefined;
+      if (sampleCount < (request.evidenceSamples ? 0 : 1)) return undefined;
       return {
         trajectory: requiredString(row.trajectory, "slice trajectory"),
         sampleCount,
@@ -653,7 +661,7 @@ export class PostgresHistoricalTrajectoryRepository implements HistoricalTraject
           result_payload, method_snapshot, snapshot_hash, supersedes_analysis_id
         ) VALUES (
           $1, 'gowm.historical-trace', 'history.get-trajectory', '1.0',
-          'gap-preserving-historical-trajectory', '1.0', $2, $3::timestamptz,
+          'gap-preserving-historical-trajectory', $9, $2, $3::timestamptz,
           $4::jsonb, $5::jsonb, $6::jsonb, $7, $8::uuid
         ) RETURNING analysis_id
       `, [
@@ -669,7 +677,8 @@ export class PostgresHistoricalTrajectoryRepository implements HistoricalTraject
         }),
         JSON.stringify(registration.methodSnapshot),
         inputSetHash,
-        supersedesAnalysisId ?? null
+        supersedesAnalysisId ?? null,
+        registration.profileKey === "trajectory-single-authoritative-v2" ? "2.0" : "1.0"
       ]);
       const analysisId = requiredString(analysis.rows[0]?.analysis_id, "analysis_id");
 

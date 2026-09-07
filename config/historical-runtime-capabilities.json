@@ -1,0 +1,13 @@
+{
+  "manifestVersion": "1.0",
+  "historicalEvidenceRead": "gowm_history_v2.read_trajectory_samples/2.0",
+  "historicalEvidenceSchemaPath": "contracts/historical-evidence/v2-page.schema.json",
+  "historicalEvidenceSchemaFileSha256": "bc1e760919df4b5075ad0877ae9d49c3d5528c42f02cb73ab416ea4abc8dac30",
+  "sampleSemantics": "ORIGINAL_MEASUREMENT_V1",
+  "trajectoryProfile": "trajectory-single-authoritative-v2/2.0",
+  "unknownWatermarkBootstrap": "1.0",
+  "vehicleSpeedMapper": "ugv-mqtt-canonical-v2",
+  "speedOnlyQos0": "BEST_EFFORT_NO_PUBACK",
+  "historySchedulerOwner": "gowm",
+  "bindingSnapshotIndexMigration": 75
+}

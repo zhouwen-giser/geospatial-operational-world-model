@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "implemented": {
+    "protocolVersion": 5,
+    "persistentSession": true,
+    "ackAfterInboxCommit": true,
+    "packetLifecycle": "session+packetId+generation",
+    "payloadConflictDisconnectPath": true,
+    "deterministicOutbox": true
+  },
+  "consumerHarness": {
+    "status": "PASS",
+    "crashPoint": "after durable inbox commit and before PUBACK",
+    "recoveredInboxRows": 1,
+    "brokerRedeliveries": 1,
+    "pubackRecorded": true,
+    "outboxDelivered": 1,
+    "canonicalRows": 1,
+    "deadLetters": 0,
+    "marker": "PASS_CONSUMER_RELIABILITY_NOT_SOURCE_ACCEPTANCE"
+  },
+  "knownMatter": "The immutable source publishes /ugv/speed at QoS 0, so the crash/PUBACK proof cannot cover that stream; this measured limitation was explicitly accepted by the user on 2026-09-04."
+}
