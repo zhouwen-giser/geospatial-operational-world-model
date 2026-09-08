@@ -1,0 +1,506 @@
+{
+  "/{id}/eo/pose": {
+    "type": "object",
+    "description": "光电伺服姿态 5Hz (Float64MultiArray→json)。data=[yaw,pitch,zoom]；yaw 为相对车体角 -180~180°(0=车头/炮塔正前)，pitch 上正下负，zoom 变焦倍率",
+    "properties": {
+      "data": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 3,
+        "maxItems": 3
+      }
+    },
+    "additionalProperties": true,
+    "required": [
+      "data"
+    ]
+  },
+  "/{id}/detected_objects": {
+    "type": "object",
+    "description": "检测目标数组 约5Hz(启动区域侦察后才发；空数组=视野内无目标)",
+    "properties": {
+      "header": {
+        "type": "object"
+      },
+      "objects": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "header": {
+              "type": "object"
+            },
+            "object_type": {
+              "type": "string",
+              "description": "<type_id>:<role>"
+            },
+            "id": {
+              "type": "integer",
+              "description": "CARLA actor id"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "z": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "additionalProperties": true,
+    "required": [
+      "objects"
+    ]
+  },
+  "/{id}/target_detected": {
+    "type": "object",
+    "description": "侦察运行中检测提示 (String)",
+    "properties": {
+      "data": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": true
+  },
+  "/{id}/target/gnss": {
+    "type": "object",
+    "description": "锁定/首目标 GNSS (NavSatFix)",
+    "properties": {
+      "latitude": {
+        "type": "number"
+      },
+      "longitude": {
+        "type": "number"
+      },
+      "altitude": {
+        "type": "number"
+      }
+    },
+    "additionalProperties": true
+  },
+  "/{id}/target/base64": {
+    "type": "object",
+    "description": "带框+准星画面 JPEG base64 约10Hz (String)",
+    "properties": {
+      "data": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": true
+  },
+  "/{id}/area_recon/targets": {
+    "type": "object",
+    "description": "区域侦察目标 (String JSON)",
+    "properties": {
+      "targets": {
+        "type": "array",
+        "items": {
+          "$id": "MarTargetInfo",
+          "type": "object",
+          "description": "区域侦察目标（zh.md MarTargetInfo）",
+          "properties": {
+            "capture_time_us": {
+              "type": "integer"
+            },
+            "target_id": {
+              "type": "integer",
+              "description": "CARLA actor id"
+            },
+            "type": {
+              "type": "integer",
+              "description": "TargetTypeEnum"
+            },
+            "position": {
+              "type": "object",
+              "properties": {
+                "longitude": {
+                  "type": "number"
+                },
+                "latitude": {
+                  "type": "number"
+                },
+                "altitude": {
+                  "type": "number"
+                }
+              }
+            },
+            "velocity": {
+              "type": "object",
+              "properties": {
+                "vel_e": {
+                  "type": "number"
+                },
+                "vel_n": {
+                  "type": "number"
+                },
+                "vel_u": {
+                  "type": "number"
+                }
+              }
+            },
+            "distance": {
+              "type": "number",
+              "description": "米"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "threat": {
+              "type": "integer"
+            },
+            "damage": {
+              "type": "integer"
+            },
+            "iff": {
+              "type": "integer",
+              "description": "敌我识别"
+            },
+            "lock_time": {
+              "type": "integer"
+            },
+            "pixel_pos": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "theta": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number"
+                },
+                "h": {
+                  "type": "number"
+                }
+              }
+            },
+            "role_name": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "additionalProperties": true,
+    "required": [
+      "targets"
+    ]
+  },
+  "/{id}/area_recon/status": {
+    "type": "object",
+    "description": "侦察状态 20Hz (String JSON)。scan_mode=1 区域侦察 / 2 周扫侦察，两者均支持边走边侦察",
+    "properties": {
+      "status": {
+        "type": "integer",
+        "description": "MotionStatusEnum 1~13/99"
+      },
+      "status_label": {
+        "type": "string"
+      },
+      "scan_mode": {
+        "type": "integer",
+        "description": "1区域侦察/2周扫侦察"
+      },
+      "scan_mode_label": {
+        "type": "string"
+      },
+      "scan_pitch": {
+        "type": "number",
+        "description": "周扫俯仰角(度)"
+      },
+      "out_of_range": {
+        "type": "boolean",
+        "description": "区域暂时超出探测半径(边走边侦察过程态，非失败)"
+      },
+      "camera_fault": {
+        "type": "boolean",
+        "description": "光电机位不可信(零变换/远离载体)：覆盖率与目标停止累积，load_status 转 4 故障并发 equipment/0x0001 异常"
+      },
+      "scan_num": {
+        "type": "integer"
+      },
+      "progress": {
+        "type": "integer"
+      },
+      "coverage": {
+        "type": "integer"
+      },
+      "coverage_covered": {
+        "type": "integer"
+      },
+      "coverage_total": {
+        "type": "integer"
+      },
+      "coverage_incomplete": {
+        "type": "boolean"
+      },
+      "coverage_reason": {
+        "type": "string"
+      },
+      "eo_fov": {
+        "type": "number"
+      },
+      "work_mode": {
+        "type": "integer"
+      },
+      "recon_type": {
+        "type": "integer"
+      },
+      "load_status": {
+        "type": "integer"
+      },
+      "load_status_label": {
+        "type": "string"
+      },
+      "lock": {
+        "type": "object",
+        "description": "{stage,target_id,role_name,duration_sec}"
+      },
+      "attack_ready": {
+        "type": "boolean"
+      },
+      "last_cmd_ack": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "description": "{seq,ok,message}"
+      },
+      "region": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "description": "{type,points[[x,y],…]}"
+      }
+    },
+    "additionalProperties": true,
+    "required": [
+      "status",
+      "status_label"
+    ]
+  },
+  "/{id}/area_recon/exception": {
+    "type": "object",
+    "description": "区域侦察异常 触发式 (String JSON)。error_code 为载荷运行异常码(0x0001/0x0006/0x0010，独立于 MCP 拒绝码，见 错误码清单.md)",
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "motion",
+          "equipment",
+          "object_loss"
+        ]
+      },
+      "level": {
+        "type": "integer",
+        "description": "1致命/2一般"
+      },
+      "error_code": {
+        "type": "integer"
+      },
+      "time_us": {
+        "type": "integer"
+      },
+      "target_info": {
+        "type": "object"
+      }
+    },
+    "additionalProperties": true,
+    "required": [
+      "kind",
+      "level",
+      "error_code"
+    ]
+  },
+  "/{id}/area_recon/coverage": {
+    "type": "object",
+    "description": "覆盖 2Hz qos0 (String JSON)。scan_mode=1 发已扫栅格点 covered[[x,y],…]；scan_mode=2 周扫无地面区域，改发已扫方位扇区 sectors[[起,止]°,…](车体系角度)，covered 恒为空数组",
+    "properties": {
+      "run_id": {
+        "type": "integer"
+      },
+      "scan_mode": {
+        "type": "integer",
+        "description": "1区域侦察/2周扫侦察"
+      },
+      "cell_size": {
+        "type": "number"
+      },
+      "coverage": {
+        "type": "integer"
+      },
+      "covered_n": {
+        "type": "integer"
+      },
+      "total": {
+        "type": "integer"
+      },
+      "covered": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "sector_width": {
+        "type": "number",
+        "description": "周扫扇区宽度(度)"
+      },
+      "sectors_total": {
+        "type": "integer"
+      },
+      "sectors_covered": {
+        "type": "integer"
+      },
+      "sectors": {
+        "type": "array",
+        "description": "周扫已扫方位扇区 [[起,止], …] 车体系度",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "additionalProperties": true
+  },
+  "status/{id}": {
+    "type": "object",
+    "description": "综合实时状态 (源 /{id}/status，MQTT 主题重命名)。任务轨道 chassis_task/eo_task/weapon_task 各 {id,type,state(0..5),progress}；heading 罗盘航向正北=0",
+    "properties": {
+      "available": {
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": true
+  },
+  "/{id}/mission_state": {
+    "type": "object",
+    "description": "底盘任务状态 1Hz (MissionState)",
+    "properties": {
+      "entity_id": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer"
+      },
+      "type": {
+        "type": "integer"
+      },
+      "state": {
+        "type": "integer",
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "progress": {
+        "type": "integer"
+      }
+    },
+    "additionalProperties": true,
+    "required": [
+      "state"
+    ]
+  },
+  "/{id}/nav_state": {
+    "type": "object",
+    "description": "导航状态 1Hz (NavState)",
+    "properties": {
+      "entity_id": {
+        "type": "string"
+      },
+      "position_x": {
+        "type": "number"
+      },
+      "position_y": {
+        "type": "number"
+      },
+      "position_z": {
+        "type": "number"
+      },
+      "speed_kmh": {
+        "type": "number"
+      },
+      "battery_range_km": {
+        "type": "number"
+      }
+    },
+    "additionalProperties": true
+  },
+  "/{id}/gnss": {
+    "type": "object",
+    "description": "GNSS (NavSatFix)",
+    "properties": {
+      "latitude": {
+        "type": "number"
+      },
+      "longitude": {
+        "type": "number"
+      },
+      "altitude": {
+        "type": "number"
+      }
+    },
+    "additionalProperties": true
+  },
+  "/{id}/imu": {
+    "type": "object",
+    "description": "姿态 (PolarAngle)",
+    "properties": {
+      "yaw": {
+        "type": "number"
+      },
+      "pitch": {
+        "type": "number"
+      },
+      "roll": {
+        "type": "number"
+      }
+    },
+    "additionalProperties": true
+  },
+  "/{id}/battery_range_km": {
+    "type": "object",
+    "description": "剩余续航 km (Float32)",
+    "properties": {
+      "data": {
+        "type": "number"
+      }
+    },
+    "additionalProperties": true
+  },
+  "/{id}/speed": {
+    "type": "object",
+    "description": "车速 km/h (Float64)",
+    "properties": {
+      "data": {
+        "type": "number"
+      }
+    },
+    "additionalProperties": true
+  }
+}

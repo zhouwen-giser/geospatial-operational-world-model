@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "sourceCommit": "97bf8cd0b9ebbaa719f98dcc1b6936fc9ddc77a1",
+  "archive": "output/deployment/gowm-dev-server-0.7.1.tar.gz",
+  "sha256": "d0433bb17f4d8966b316251a9717dc1b0494a9a3bdfdee4a298cb12cc04d2b32",
+  "bytes": 2942495,
+  "verifiedImageSourceFiles": 544,
+  "compiledWorldEvidenceReferenceAndOperationalManifests": "PASS",
+  "nonRootMigrationReadability": "PASS",
+  "internalChecksumsPermissionsExclusionsAndRepackReproducibility": "PASS",
+  "previousArchivePreserved": true,
+  "onsiteDeploymentAndGDPSBusinessAcceptance": "NOT_RUN"
+}

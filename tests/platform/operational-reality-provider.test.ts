@@ -49,11 +49,11 @@ describe("operational reality provider",()=>{
   });
   it("separates the delegated scope digest from the versioned operational evidence digest",async()=>{
     const evidenceDigest=`sha256:${"a".repeat(64)}` as const;
-    const scopedPool={query:async()=>({rows:[{reference_key:"wrf_scope_opaque"}]})} as unknown as pg.Pool;
+    const scopedPool={query:async()=>{throw new Error("snapshot must not issue an unscoped query");}} as unknown as pg.Pool;
     const repository=new OperationalRealityProviderRepository(scopedPool,()=>new Date("2026-08-30T00:00:00Z"));
     const snapshot=await (repository as unknown as {
-      snapshot(scope:string,read:{worldVersion:number;scopeDigest:string}):Promise<DataSnapshotContext>;
-    }).snapshot("scope-a",{worldVersion:17,scopeDigest:evidenceDigest});
+      snapshot(scope:string,read:{worldVersion:number;scopeDigest:string;scopeReferenceKey:string}):Promise<DataSnapshotContext>;
+    }).snapshot("scope-a",{worldVersion:17,scopeDigest:evidenceDigest,scopeReferenceKey:"wrf_scope_opaque"});
 
     expect(snapshot.scopeDigest).toBe(sha256({dataScopeKey:"scope-a"}));
     expect(snapshot.resources).toEqual([expect.objectContaining({

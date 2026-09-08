@@ -13,7 +13,7 @@ import { ProviderProtocolError,sha256 } from "../../../../packages/platform/prov
 import { OperationalCorrelationRepository } from "../../../../packages/runtime/src/operational-correlation-repository.js";
 import { OperationalObservabilityRepository } from "../../../../packages/runtime/src/operational-observability-repository.js";
 import { OperationalPredicateRepository } from "../../../../packages/runtime/src/operational-predicate-repository.js";
-import { OperationalReadRepository } from "../../../../packages/runtime/src/operational-read-repository.js";
+import { OperationalReadRepository, type OperationalReadSnapshot } from "../../../../packages/runtime/src/operational-read-repository.js";
 import { TASK_IDENTITY_CATALOG_DESCRIPTOR, type OperationalRealityOperationId } from "./schemas.js";
 
 export interface OperationalProviderResult {
@@ -80,7 +80,7 @@ export class OperationalRealityProviderRepository {
       const from=query.timeRange?.from??new Date(Date.parse(to)-300_000).toISOString();
       const stored=await this.observability.assess({
         dataScopeKey,subjectReferenceKey:query.referenceKey,timeRange:{from,to},
-        expectedSources:await this.sources(dataScopeKey,query.referenceKey.id),freshnessSlaSeconds:300
+        expectedSources:await this.reads.sources(dataScopeKey,query.referenceKey.id),freshnessSlaSeconds:300
       });
       return this.result(dataScopeKey,stored.assessment,1,1);
     }
@@ -136,7 +136,16 @@ export class OperationalRealityProviderRepository {
   async readiness():Promise<{ready:boolean;reasons:string[]}> {
     try {
       await this.pool.query("SELECT * FROM gowm_operational_reality_v1.task_snapshot LIMIT 0");
+      await this.pool.query("SELECT * FROM gowm_operational_reality_v1.scope_identity LIMIT 0");
+      await this.pool.query("SELECT * FROM gowm_operational_reality_v1.world_source LIMIT 0");
+      await this.pool.query("SELECT * FROM gowm_operational_reality_v1.task_event LIMIT 0");
+      await this.pool.query("SELECT * FROM gowm_operational_reality_v1.snapshot_context()");
+      const scopePermission=await this.pool.query<{allowed:boolean}>(
+        "SELECT has_function_privilege(current_user,'gowm_operational_reality_v1.set_data_scope(text)','EXECUTE') AS allowed"
+      );
+      if (!scopePermission.rows[0]?.allowed) throw new Error("scope setter is not executable");
       await this.pool.query("SELECT * FROM gowm_history_v1.task_execution_interval_effective LIMIT 0");
+      await this.pool.query("SELECT * FROM gowm_history_v1.task_execution_phase LIMIT 0");
       await this.pool.query(
         "SELECT * FROM gowm_history_v1.task_execution_event_set_as_of('readiness-probe',clock_timestamp()) LIMIT 0"
       );
@@ -245,35 +254,18 @@ export class OperationalRealityProviderRepository {
     }
   }
 
-  private async sources(scope:string,reference:string):Promise<string[]> {
-    const result=await this.pool.query<{source_authority:string}>(
-      `SELECT DISTINCT event.source_authority FROM operational_task_event event
-       JOIN operational_task task ON task.operational_task_id=event.operational_task_id AND task.data_scope_key=event.data_scope_key
-       WHERE event.data_scope_key=$1 AND task.reference_key=$2 ORDER BY event.source_authority`,[scope,reference]
-    );
-    if (result.rows.length) return result.rows.map((row)=>row.source_authority);
-    const world=await this.pool.query<{source:string}>(
-      `SELECT state.source FROM world_reference_identity identity JOIN world_object_state state ON state.object_id=identity.internal_id
-       WHERE identity.data_scope_key=$1 AND identity.reference_key=$2 AND state.source IS NOT NULL`,[scope,reference]
-    );
-    return world.rows.map((row)=>row.source);
-  }
-
   private async result(scope:string,output:unknown,rows:number,candidates:number,status:"COMPLETED"|"NO_DATA"="COMPLETED"):Promise<OperationalProviderResult> {
     return {output,status,rows,candidates,warnings:[],dataSnapshot:await this.snapshot(scope,await this.reads.snapshot(scope))};
   }
 
-  private async snapshot(scope:string,read?:{worldVersion:number;scopeDigest:string}):Promise<DataSnapshotContext> {
-    const identity=await this.pool.query<{reference_key:string}>(
-      "SELECT reference_key FROM world_reference_identity WHERE data_scope_key=$1 AND entity_kind='DATA_SCOPE'",[scope]
-    );
-    const ref=identity.rows[0]?.reference_key;
+  private async snapshot(scope:string,read:OperationalReadSnapshot):Promise<DataSnapshotContext> {
+    const ref=read.scopeReferenceKey;
     if (!ref) throw new ProviderProtocolError("SCOPE_DENIED","data scope is unavailable");
     const capturedAt=this.now().toISOString();
     return {
       consistency:"CONSISTENT_AT_START",capturedAt,scopeDigest:sha256({dataScopeKey:scope}),resources:[{
-        referenceKey:{namespace:"gowm",kind:"DATA_SCOPE",id:ref,version:read===undefined?"1":String(read.worldVersion)},authority:"GOWM Foundation",
-        pinning:"AT_LEAST",digest:(read?.scopeDigest??sha256({dataScopeKey:scope,referenceKey:ref})) as `sha256:${string}`
+        referenceKey:{namespace:"gowm",kind:"DATA_SCOPE",id:ref,version:String(read.worldVersion)},authority:"GOWM Foundation",
+        pinning:"AT_LEAST",digest:read.scopeDigest as `sha256:${string}`
       }]
     };
   }

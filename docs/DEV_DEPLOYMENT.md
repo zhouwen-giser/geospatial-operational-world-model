@@ -98,9 +98,99 @@ H3 artifact, and excludes local worktrees, generated output, and private
 environment files at every depth. Tracked `.env*.example` templates are retained.
 Stage any new source files before packaging so they appear in the inventory.
 
+### Reproducible package command
+
+```bash
+npm run package:dev-deployment -- --force --verify-image
+```
+
+Run this from the repository root. It validates environment templates, packages
+the tracked runtime inventory, normalizes non-root read permissions (including
+the generated `SHA256SUMS`), checks exclusions and extracted checksums, validates
+shell entrypoints, and compares a deterministic repack byte for byte. With
+`--verify-image`, it also builds the extracted Docker context and checks migration
+readability as the image's non-root user without starting services or using a
+database. Docker access and dependency-download connectivity are required for
+this option; omit it for archive-only validation.
+
+Outputs are `output/deployment/gowm-dev-server-<version>.tar.gz` and `.tar.gz.sha256`.
+Set `GOWM_DEPLOYMENT_OUTPUT_DIR` to select another directory. Existing outputs are
+refused unless `--force` is given; replacement preserves the old archive and
+companion in a unique `previous-*` directory and occurs only after gates pass.
+The command does not commit, push, publish, or deploy. Dependency audit warnings
+are not remediated automatically. For a formal release, run from the reviewed
+clean commit; a build with tracked local edits is a local candidate, not a clean
+commit release. Reproducibility means the same source bytes and executable modes
+produce identical archive bytes; image dependency downloads are a separate gate.
+
+Image verification also compares every runtime COPY source file against SHA-256
+computed from the verified host context, and compares the actual compiled
+Operational Provider manifest with its image-declared manifest. Build success
+alone is insufficient. To check an already built image independently, run
+`node scripts/verify-deployment-image.mjs <image> <verified-extracted-package>`.
+Any mismatch blocks publication; do not bypass registry identity checks. A
+`docker build --no-cache` retry is not sufficient: a real counterexample retained
+stale source bytes even without layer reuse. The package command streams the full
+verified context (`tar -C <context> -cf - . | docker build --tag <image> -`) to avoid
+directory-delta source reuse. Use this path for normalized release archives and
+run the independent image check before deployment. The Dockerfile additionally
+refuses an Operational manifest/runtime mismatch.
+
+Reusable archive-only helper (Node with built-in modules, Docker and tar; no host
+`node_modules` required):
+
+```bash
+bash scripts/build-verified-image.sh <image-tag> <verified-package-directory>
+```
+
+It validates `SHA256SUMS`, streams only that inventory (not a generated `.env` or
+runtime directories), builds the normal Dockerfile, and verifies image bytes and
+runtime identity. It does not start containers other than an offline read-only
+verification process, migrate databases, tag remote releases or deploy services.
+Outer Compose coordinators should assign this verified image to GOWM runtime
+services and use `up --no-build`; do not follow this with an ordinary directory
+build that can replace it with stale COPY content. Other upstream images use
+their own independently verified build contexts.
+
 ## Security boundary
 
 The development override binds all ports to `0.0.0.0`. MQTT remains anonymous,
 and Foundation APIs do not gain a new authentication layer. Use host or network
 firewall rules to allow only the trusted LAN/VPN CIDRs. Do not expose this
 topology directly to the public internet.
+
+### Shared device business storage
+
+The deployment includes core migration 078, all hosted native SQL, device
+scope overlays, and the compiled storage CLI. In the production image use
+`node dist/scripts/business-storage/cli.js install --domain all` (with an
+explicit `GOWM_DATABASE_URL`) and `node dist/scripts/business-storage/cli.js verify`.
+`--help` requires no database. SDAR installation requires an administrator-managed
+`vector` extension; this packaging command does not install schemas or switch
+running consumers.
+
+The ordinary storage fixture/test harness remains excluded from the deployment
+archive. Run those commands from the source checkout against an isolated test
+DB. The runtime CLI loads that optional harness only for fixture/test commands,
+so excluding tests does not prevent production compilation.
+
+### UGV actor device prerequisite
+
+New MQTT sessions use mapper v3 and require device initialization before startup.
+Apply migration 079, run the production `device-cli.js init-default` and
+`verify-default` commands, and grant the ingest login `gowm_device_reader`.
+See [UGV device actor deployment](UGV_DEVICE_ACTOR.md) for the complete environment,
+service binding contract, read-only verification, and persistent-session cutover.
+The default initializer creates configuration only; it does not create test observations.
+
+### 默认设备及业务数据库账号
+
+新包执行 `scripts/dev-deploy.sh init` 后，设置实际 `UGV_MQTT_URL`，再执行 `up`。
+默认启用 UGV 采集，并自带来源锁定的协议文件。正式迁移完成后自动创建两个业务数据库
+账号，再登记设备主档/端点/7 条流、执行只读检查，成功后自动订阅设备 MQTT。
+既有 .env、范围、来源和世界对象会复用；初始化冲突会阻止采集启动。
+
+数据库账号固定为 `ugv_smpp_app` / `ugv_sdar_app`，随机密码及连接配置在安装目录的
+`.runtime/dev-deploy/business-connections.env`（0600），不写入分发包或日志。
+重复安装不旋转密码。仅初始化账号/共享 schema，不自动执行消费者原生表迁移；
+详见 [设备安装说明](UGV_DEVICE_ACTOR.md#安装时自动初始化2026-09-08)。

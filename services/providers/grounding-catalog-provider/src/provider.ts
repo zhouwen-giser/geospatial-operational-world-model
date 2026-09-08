@@ -45,8 +45,9 @@ export function groundingCatalogImplementationIdentity(mode: GroundingCatalogMod
     providerId,
     version: "1.0.0",
     readContract: readContractForMode(mode),
-    ...(mode === "reference" ? { resolutionPolicy: REFERENCE_RESOLUTION_POLICY_IDENTITY } : {}),
-    ...(mode === "evidence" ? { catalogFeatureMigrationDigest: GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256 } : {}),
+    ...(mode === "reference" ? { resolutionPolicy: REFERENCE_RESOLUTION_POLICY_IDENTITY, worldObjectCatalogProjection: "migration-077/current-state-pin-metadata-only-v1" } : {}),
+    ...(mode === "evidence" ? { catalogFeatureMigrationDigest: GROUNDING_CATALOG_FEATURE_MIGRATION_SHA256,
+      horizontalPositionProjection: "same-state-wgs84-lon-lat/1" } : {}),
     operations: operationIds.map((operationId) => ({
       operationId,
       inputSchemaHash: GROUNDING_CATALOG_OPERATION_SCHEMAS[operationId].inputSchemaHash,
@@ -185,6 +186,11 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
           schemaUri: "urn:gowm:v0.6.2:geojson-position",
           schemaHash: getContractSchemaHash("urn:gowm:v0.6.2:geojson-position"),
           valueKind: "ANY" as const, unitSemantics: "ANGULAR_DEGREES" as const
+        },{
+          name: "horizontalPositionCoordinates", path: "/facts/0/horizontalPositionCoordinates",
+          schemaUri: "urn:gowm:v0.7.1:horizontal-position-coordinates",
+          schemaHash: getContractSchemaHash("urn:gowm:v0.7.1:horizontal-position-coordinates"),
+          valueKind: "ANY" as const, unitSemantics: "ANGULAR_DEGREES" as const
         }] : [])
       ]
     }
@@ -197,11 +203,11 @@ function operation(operationId: GroundingCatalogOperationId, repository: Groundi
       engine: "PostgreSQL",
       engineVersion: "18",
       methodId: `${datasetOperation ? "gowm-catalog-v1" : evidenceOperation ? "gowm-evidence-v1" : "gowm-reference-v1"}/${operationId}`,
-      methodVersion: "1.0",
+      methodVersion: operationId === "world.get-current-state" ? "1.1" : datasetOperation || evidenceOperation ? "1.0" : "1.1",
       artifacts: [{
         kind: "DATABASE",
         name: datasetOperation ? "gowm_catalog_v1" : resultOperation ? "gowm_result_v1" : evidenceOperation ? "gowm_evidence_v1" : "gowm_reference_v1",
-        version: resultOperation ? "migration-022" : evidenceOperation ? "migration-023" : "migration-020"
+        version: resultOperation ? "migration-022" : evidenceOperation ? "migration-023" : datasetOperation ? "migration-020" : "migration-077"
       }, ...(operationId === "world.get-geometry" ? [{
         kind: "DATABASE" as const,
         name: "gowm_evidence_v1.current_geometry",

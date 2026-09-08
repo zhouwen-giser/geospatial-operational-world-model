@@ -129,6 +129,44 @@ services:
     security_opt: ["no-new-privileges:true"]
     init: true
 
+  business-accounts-init:
+    build: .
+    environment:
+      GOWM_DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:-gowm}@postgres:5432/gowm
+      SMPP_DB_PASSWORD: ${SMPP_DB_PASSWORD:?run scripts/dev-deploy.sh init first}
+      SDAR_DB_PASSWORD: ${SDAR_DB_PASSWORD:?run scripts/dev-deploy.sh init first}
+    command: ["node", "dist/scripts/business-storage/accounts.js"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+    security_opt: ["no-new-privileges:true"]
+
+  ugv-device-init:
+    build: .
+    profiles: ["ugv-mqtt"]
+    environment:
+      GOWM_DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:-gowm}@postgres:5432/gowm
+      UGV_MQTT_URL: ${UGV_MQTT_URL:-}
+      UGV_DEVICE_ID: ${UGV_DEVICE_ID:-ugv}
+      GOWM_DEVICE_ID: ${GOWM_DEVICE_ID:-}
+      UGV_DEVICE_NAME: ${UGV_DEVICE_NAME:-UGV}
+      UGV_DEVICE_NAMESPACE: ${UGV_DEVICE_NAMESPACE:-ugv}
+      UGV_MQTT_ENDPOINT_KEY: ${UGV_MQTT_ENDPOINT_KEY:-ugv-default}
+      UGV_MQTT_CLIENT_ID_PREFIX: ${UGV_MQTT_CLIENT_ID_PREFIX:-gowm-ugv-ingest}
+      UGV_MQTT_CREDENTIAL_REF: ${UGV_MQTT_CREDENTIAL_REF:-}
+      UGV_DATA_SCOPE_KEY: ${UGV_DATA_SCOPE_KEY:-airport-sim-ugv-01}
+      UGV_SOURCE_KEY: ${UGV_SOURCE_KEY:-ugv-airport-sim-mqtt}
+      UGV_PRODUCER_PIPELINE_KEY: ${UGV_PRODUCER_PIPELINE_KEY:-ugv-airport-sim-mqtt:canonical-v1}
+      UGV_ANALYSIS_SPACE_KEY: ${UGV_ANALYSIS_SPACE_KEY:-airport-utm48n}
+      UGV_ANALYSIS_SRID: ${UGV_ANALYSIS_SRID:-32648}
+    command: ["sh", "-ec", "node dist/scripts/business-storage/device-cli.js init-default && node dist/scripts/business-storage/device-cli.js verify-default"]
+    depends_on:
+      business-accounts-init:
+        condition: service_completed_successfully
+    restart: "no"
+    security_opt: ["no-new-privileges:true"]
+
   ugv-mqtt-ingest:
     build: .
     profiles: ["ugv-mqtt"]
@@ -157,6 +195,8 @@ services:
       UGV_MQTT_HTTP_TIMEOUT_MS: ${UGV_MQTT_HTTP_TIMEOUT_MS:-5000}
       UGV_EQUIPMENT_SCHEMA_DIR: /source-schema
       UGV_DEVICE_ID: ${UGV_DEVICE_ID:-ugv}
+      UGV_DEVICE_NAMESPACE: ${UGV_DEVICE_NAMESPACE:-ugv}
+      UGV_MQTT_ENDPOINT_KEY: ${UGV_MQTT_ENDPOINT_KEY:-ugv-default}
       UGV_DATA_SCOPE_KEY: ${UGV_DATA_SCOPE_KEY:-airport-sim-ugv-01}
       UGV_ORIGIN_KIND: ${UGV_ORIGIN_KIND:-SIMULATION}
       UGV_SOURCE_KEY: ${UGV_SOURCE_KEY:-ugv-airport-sim-mqtt}
@@ -187,7 +227,7 @@ services:
     ports:
       - "${API_BIND_ADDRESS:-127.0.0.1}:${UGV_MQTT_INGEST_PORT:-3010}:3010"
     depends_on:
-      migrate:
+      ugv-device-init:
         condition: service_completed_successfully
       observation-ingest:
         condition: service_healthy

@@ -1,0 +1,17 @@
+{
+ "contract":"gowm.device-shared-business-storage/v0.2",
+ "fixedSchemas":["ugv_smpp","ugv_sdar"],
+ "publicSchemas":["gowm_device","gowm_task","gowm_execution"],
+ "readSchema":"gowm_business_v1",
+ "identity":{"deviceId":"existing public.world_object.id; explicit at creation","bindingId":"immutable device_service_binding version","workerId":"lease owner only","mcpTask":"UUID provider_task.task_id","providerTask":"text ugv_execution.task_id, distinct field from MCP task","nodeRun":"remote_task_binding complete workflow instance/node/run identity"},
+ "migrationOwner":"GOWM installer; consumers verify-only",
+ "runtimeStatus":"SMPP_RUNTIME_ADAPTATION_NOT_PERFORMED; SDAR_RUNTIME_ADAPTATION_NOT_PERFORMED; LIVE_MQTT_SWITCHOVER_NOT_PERFORMED",
+ "retention":"task handle expiry is protocol state; do not run upstream purge/TTL deletion against hosted history",
+ "transaction":"Repository accepts PoolClient inside caller transaction; physical network calls stay outside transactions",
+ "targetOwnerKeys":{"TASK":["taskId"],"PLAN_NODE":["planId","nodeId"],"NODE_RUN":["bindingId","instanceId","nodeId","nodeRunId"],"MCP_TASK":["taskId"],"PROVIDER_DISPATCH":["taskId","stepId"]},
+ "normalization":"only explicit EPSG:4326 becomes normalized; unknown frame remains NATIVE_ONLY",
+ "missionIdentity":["device_id","mission_channel","authority_key","native_session_key","native_mission_id"],
+ "missingStages":["NO_REMOTE_TASK","PROVIDER_PENDING","MISSION_UNRESOLVED","LINKED","CONFLICTED"],
+ "noBusinessReplication":true,
+ "noInstanceSchemas":true
+}

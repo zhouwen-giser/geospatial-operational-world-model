@@ -1,0 +1,15 @@
+# Shared device business storage
+
+This is a GOWM-managed installation, not an upstream compatibility shim. The native SMPP Runtime/UGV and SDAR tables retain their full business columns. Device overlays require consumer Repository changes described in `docs/shared-business-storage-handoff/`.
+
+Run core `db:migrate` normally, then explicitly configure `GOWM_DATABASE_URL` and run `npm run business-storage:install -- --domain all`. Core 078 can also be applied by the installer after the existing core prerequisites. `--domain smpp` and `--domain sdar` install independently; the read model is installed once both native domains exist. Missing vector fails the SDAR preflight without rolling back the already installed SMPP domain. Extensions must already be administrator-managed in public; existing extensions are not relocated. Unsupported extension placement fails explicitly.
+
+`npm run business-storage:check` regenerates in comparison-only mode, checks hashes and parses/tests the DDL without a database. `business-storage:verify` compares actual columns, constraints, indexes, functions, triggers and views to expected-structure.json, plus the immutable native migration hashes. Expected structure is captured explicitly during package development, never auto-accepted by verify.
+
+`business-storage:fixture` / `business-storage:test:postgres` require an explicit isolated database whose name contains test and `GOWM_BUSINESS_SMOKE_ENABLE=true`. Missing configuration returns NOT_RUN with exit code 2. Behavior failures return exit code 1. No Docker requirement; any dedicated PostgreSQL with the project extensions works. The bootstrap-test.ts helper replays real core migrations only on that explicitly selected test database; never use a production URL.
+
+Sources are vendored once from the recorded read-only commits with raw/LF SHA-256 hashes. SDAR selection exactly follows apps/server/src/runtime.ts planPostV122MigrationFiles. generate.mjs uses PostgreSQL AST object namespaces, preserves public.vector objects, redirects identity sequences, removes dump session settings and transaction boundaries, and pins PL/pgSQL function search_path. DO blocks use the installer transaction's search_path. Native 014 duplicates use complete names. Historical tables dropped by upstream forward migrations remain recorded as historicalDroppedTables, not required final objects.
+
+The installer takes an advisory lock, refuses unregistered nonempty schemas, and commits each native migration together with its own family+filename+checksum history. It never drops unknown schemas or migrates existing runtime records. The expected-structure manifest is for a clean hosted installation. Explicit future upgrades require a new forward migration, not changing an applied checksum.
+
+The verified repository database baseline is PostgreSQL 18 (see database/Dockerfile); expected-structure.json is captured on that supported baseline. This task does not request an upgrade to a newer PostgreSQL major. The test helper `--without-vector` intentionally omits vector only for a separate dependency-negative test database; normal install still fails explicitly if it is absent.

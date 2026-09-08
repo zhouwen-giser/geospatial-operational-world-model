@@ -250,6 +250,7 @@ export const contractSchemaHashes: Readonly<Record<string, string>> = {
   "gowm-v0.7.1/delegation-token-claims.schema.json": "sha256:a80e51793f46a90b2f627937fce06bc31fa3489a87a509185b9813f82ede1c4a",
   "gowm-v0.7.1/exact-head-qualification-report.schema.json": "sha256:fa373e56ff7e6dd5fd2c6762afc0039d9e94c2f1ac4008bdd1c046e202c4b015",
   "gowm-v0.7.1/historical-trajectory-result.schema.json": "sha256:d51c07904cc18ec3a67c3bbaebf904f781d407378fc42e9e91debbfc04f1b02d",
+  "gowm-v0.7.1/horizontal-position-coordinates.schema.json": "sha256:47fab9352acb2f1845012758611940049393149275a34a60a980405baeb2f1f5",
   "gowm-v0.7.1/query-snapshot-adherence.schema.json": "sha256:3d43fbda0bd1c1f503abe2a6230087326a287337aa7814cf98a8d0ac81ccdbc0",
   "gowm-v0.7.1/query-snapshot-manifest.schema.json": "sha256:7a984eef06eec1ed19b21a6649644cc1b8a7e1d653c8b6f9b06490a8d316d185",
   "gowm-v0.7.1/query-snapshot-policy.schema.json": "sha256:84cb6abc57a9716eda532d20144342c30859a105fb9b8ddbef792b3f382dd61b",

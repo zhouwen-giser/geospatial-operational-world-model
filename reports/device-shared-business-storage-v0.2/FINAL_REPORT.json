@@ -1,0 +1,843 @@
+{
+  "taskId": "gowm-device-shared-business-storage-v0.2",
+  "decision": "DEV_READY",
+  "implementation": {
+    "targetRepositoryOnly": true,
+    "fixedSchemas": [
+      "ugv_smpp",
+      "ugv_sdar"
+    ],
+    "instanceScopedBusinessStores": false,
+    "deviceRootOwnershipImplemented": true,
+    "sourceRepositoryAppsModified": false,
+    "publicMigration": "078_device_shared_business_storage.sql",
+    "views": 11
+  },
+  "sources": {
+    "gowmBase": "f7fd19b75e026622fa1bf3a56241cd98ca59e478",
+    "originMain": "dd1b038fa0fa3e3893d7f4c7f815bfe9992b0838",
+    "localPredecessorCommits": 10,
+    "smpp": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+    "sdar": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+    "nativeMigrationCounts": {
+      "SMPP_RUNTIME": 27,
+      "UGV_PROVIDER": 5,
+      "SDAR_RUNTIME": 77
+    },
+    "migrationSourceWorktreesClean": true
+  },
+  "publicTables": [
+    "gowm_device.device",
+    "gowm_device.mqtt_endpoint",
+    "gowm_device.device_stream",
+    "gowm_device.device_service_binding",
+    "gowm_task.target_geometry",
+    "gowm_task.target_binding",
+    "gowm_execution.device_mission",
+    "gowm_execution.mission_identity",
+    "gowm_execution.execution_mission_link"
+  ],
+  "nativeDomains": {
+    "ugv_smpp": {
+      "install": "PASS",
+      "tablesIncludingHostedHistory": 35
+    },
+    "ugv_sdar": {
+      "install": "PASS",
+      "tablesIncludingHostedHistory": 222
+    }
+  },
+  "verification": {
+    "static": "PASS",
+    "postgres": "PASS",
+    "dualDevice": "PASS",
+    "forwardReverseLineage": "PASS",
+    "commands": [
+      {
+        "command": "npm run check",
+        "exitCode": 0,
+        "result": "PASS"
+      },
+      {
+        "command": "npm run build",
+        "exitCode": 0,
+        "result": "PASS"
+      },
+      {
+        "command": "npm test",
+        "exitCode": 0,
+        "result": "667 passed; 19 existing environment-dependent skipped"
+      },
+      {
+        "command": "npm run verify:sql",
+        "exitCode": 0,
+        "result": "PASS"
+      },
+      {
+        "command": "npm run business-storage:check",
+        "exitCode": 0,
+        "result": "109 native hashes + generator comparison + 6 static tests PASS"
+      },
+      {
+        "command": "npm run business-storage:install -- --help",
+        "exitCode": 0,
+        "result": "PASS without DB"
+      },
+      {
+        "command": "npm run business-storage:fixture -- --help",
+        "exitCode": 0,
+        "result": "PASS without DB"
+      },
+      {
+        "command": "npm run business-storage:install -- --domain smpp",
+        "exitCode": 0,
+        "result": "PASS in isolated new database"
+      },
+      {
+        "command": "npm run business-storage:install -- --domain sdar",
+        "exitCode": 0,
+        "result": "PASS in same isolated database"
+      },
+      {
+        "command": "npm run business-storage:fixture",
+        "exitCode": 0,
+        "result": "PASS actual double-device creation and idempotent rerun"
+      },
+      {
+        "command": "npm run business-storage:test:postgres",
+        "exitCode": 0,
+        "result": "42 PASS including T01-T36"
+      },
+      {
+        "command": "npm run business-storage:verify",
+        "exitCode": 0,
+        "result": "PASS actual columns/FK/index/functions/triggers/views and migration ledger"
+      },
+      {
+        "command": "npm run business-storage:handoff",
+        "exitCode": 0,
+        "result": "PASS; DDL/licenses/contracts/results copied"
+      },
+      {
+        "command": "business-storage:test:postgres with test env omitted",
+        "exitCode": 2,
+        "result": "NOT_RUN (expected)"
+      },
+      {
+        "command": "business-storage:install in separate database without vector",
+        "exitCode": 1,
+        "result": "DEPENDENCY_MISSING vector (expected); SMPP independently installed"
+      },
+      {
+        "command": "npx tsc -p tsconfig.json --noEmit",
+        "exitCode": 0,
+        "result": "PASS after final native writer/CLI changes"
+      }
+    ],
+    "postgresScenarios": [
+      {
+        "id": "T01",
+        "status": "PASS"
+      },
+      {
+        "id": "T02",
+        "status": "PASS"
+      },
+      {
+        "id": "T03",
+        "status": "PASS"
+      },
+      {
+        "id": "T04",
+        "status": "PASS"
+      },
+      {
+        "id": "T05",
+        "status": "PASS"
+      },
+      {
+        "id": "T06",
+        "status": "PASS"
+      },
+      {
+        "id": "T07",
+        "status": "PASS"
+      },
+      {
+        "id": "T08",
+        "status": "PASS"
+      },
+      {
+        "id": "T09",
+        "status": "PASS"
+      },
+      {
+        "id": "T10",
+        "status": "PASS"
+      },
+      {
+        "id": "T11",
+        "status": "PASS"
+      },
+      {
+        "id": "T12",
+        "status": "PASS"
+      },
+      {
+        "id": "T13",
+        "status": "PASS"
+      },
+      {
+        "id": "T14",
+        "status": "PASS"
+      },
+      {
+        "id": "T15",
+        "status": "PASS"
+      },
+      {
+        "id": "T16",
+        "status": "PASS"
+      },
+      {
+        "id": "T17",
+        "status": "PASS"
+      },
+      {
+        "id": "T18",
+        "status": "PASS"
+      },
+      {
+        "id": "T19",
+        "status": "PASS"
+      },
+      {
+        "id": "T20",
+        "status": "PASS"
+      },
+      {
+        "id": "T21",
+        "status": "PASS"
+      },
+      {
+        "id": "T22",
+        "status": "PASS"
+      },
+      {
+        "id": "T23",
+        "status": "PASS"
+      },
+      {
+        "id": "T24",
+        "status": "PASS"
+      },
+      {
+        "id": "T25",
+        "status": "PASS"
+      },
+      {
+        "id": "T26",
+        "status": "PASS"
+      },
+      {
+        "id": "T27",
+        "status": "PASS"
+      },
+      {
+        "id": "T28",
+        "status": "PASS"
+      },
+      {
+        "id": "T29",
+        "status": "PASS"
+      },
+      {
+        "id": "T30",
+        "status": "PASS"
+      },
+      {
+        "id": "T31",
+        "status": "PASS"
+      },
+      {
+        "id": "T32",
+        "status": "PASS"
+      },
+      {
+        "id": "T33",
+        "status": "PASS"
+      },
+      {
+        "id": "T34",
+        "status": "PASS"
+      },
+      {
+        "id": "T35",
+        "status": "PASS"
+      },
+      {
+        "id": "T02_DEVICE_STREAM_SCOPE",
+        "status": "PASS"
+      },
+      {
+        "id": "T04_BOUND_CONFIG_OVERLAP",
+        "status": "PASS"
+      },
+      {
+        "id": "T14_SDAR_ADMISSION_DEVICE_KEY",
+        "status": "PASS"
+      },
+      {
+        "id": "T27_RECEIPT_IDEMPOTENCY_CONFLICT",
+        "status": "PASS"
+      },
+      {
+        "id": "T28_CONTROL_NO_NEW_MISSION",
+        "status": "PASS"
+      },
+      {
+        "id": "T18_SDAR_REMOTE_POLL_SCOPE",
+        "status": "PASS"
+      },
+      {
+        "id": "T36",
+        "status": "PASS"
+      }
+    ],
+    "extensions": [
+      {
+        "extname": "vector",
+        "extversion": "0.8.6"
+      },
+      {
+        "extname": "postgis",
+        "extversion": "3.6.4"
+      }
+    ],
+    "testDatabase": "new isolated PostgreSQL 18 container; final database gowm_shared_storage_final_test; no production connection",
+    "fixtureSummary": {
+      "devices": 2,
+      "sdarTasks": 2,
+      "nodeRunsPerDevice": 3,
+      "dispatchesPerDevice": 6,
+      "linkedMissionsPerDevice": 1,
+      "sameLocalMissionId": "7",
+      "sameSnapshotRevision": "1",
+      "sameIdempotencyText": "same-key",
+      "bindingReplacement": "A current binding replaced; old Task/Execution retain original"
+    },
+    "forwardSummary": {
+      "deviceA_rows": 6,
+      "targets": 13,
+      "remoteNodeRuns": 3,
+      "linked": 1,
+      "unresolved": 5
+    },
+    "negativeEnvironmentChecks": {
+      "missingDatabase": "NOT_RUN exit 2",
+      "missingVector": "DEPENDENCY_MISSING exit 1"
+    }
+  },
+  "consumerReadiness": {
+    "smppRuntime": "NOT_ADAPTED",
+    "sdarRuntime": "NOT_ADAPTED",
+    "mqttIngest": "NOT_SWITCHED",
+    "historicalDataMigration": "NOT_PERFORMED"
+  },
+  "requiredAcceptance": [
+    {
+      "id": "A01",
+      "phase": "P0",
+      "requirement": "仅修改GOWM；记录实际来源和基线，不触碰消费者仓库。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A02",
+      "phase": "P1",
+      "requirement": "固定共享ugv_smpp/ugv_sdar，不创建每设备/每实例业务Schema或business_store。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A03",
+      "phase": "P1",
+      "requirement": "移除新公共合同中的store_id与数据库位置绑定；device_service_binding只描述逻辑服务。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A04",
+      "phase": "P2",
+      "requirement": "设备主档复用world_object.id，Scope一致，改名不改设备身份。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T01",
+        "T07"
+      ]
+    },
+    {
+      "id": "A05",
+      "phase": "P2",
+      "requirement": "MQTT入口复用既有source/datastream，配置解析能唯一确定设备，无全局ugv1默认。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T02",
+        "T03",
+        "T04",
+        "T02_DEVICE_STREAM_SCOPE",
+        "T04_BOUND_CONFIG_OVERLAP"
+      ]
+    },
+    {
+      "id": "A06",
+      "phase": "P2",
+      "requirement": "服务/resource有效绑定唯一，多设备可合法共享MCP逻辑server。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T05",
+        "T06"
+      ]
+    },
+    {
+      "id": "A07",
+      "phase": "P2",
+      "requirement": "更换绑定不改变历史任务与执行的device_id和原binding。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T07"
+      ]
+    },
+    {
+      "id": "A08",
+      "phase": "P3",
+      "requirement": "完整安装SMPP Runtime与UGV Provider依赖，不是缩略影子表。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T08",
+        "T10"
+      ]
+    },
+    {
+      "id": "A09",
+      "phase": "P3",
+      "requirement": "SDAR当前baseline与实际后续增量完整安装，不重复历史up.sql。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T08",
+        "T11"
+      ]
+    },
+    {
+      "id": "A10",
+      "phase": "P3",
+      "requirement": "public对象、函数、序列、默认值、扩展引用正确转换；不污染GOWM public。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T11",
+        "T32"
+      ]
+    },
+    {
+      "id": "A11",
+      "phase": "P3",
+      "requirement": "迁移按family+完整文件身份记账，合法同号迁移不丢失，重复安装幂等。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T09",
+        "T10"
+      ]
+    },
+    {
+      "id": "A12",
+      "phase": "P3",
+      "requirement": "只按业务域安装一次；新增第三台设备不新增Schema或迁移记录。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T09"
+      ]
+    },
+    {
+      "id": "A13",
+      "phase": "P4",
+      "requirement": "原生根记录明确device归属，非设备全局记录不被强绑ugv1。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T12",
+        "T14_SDAR_ADMISSION_DEVICE_KEY"
+      ]
+    },
+    {
+      "id": "A14",
+      "phase": "P4",
+      "requirement": "父子引用和Scope检查阻止跨设备关联。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T13",
+        "T24"
+      ]
+    },
+    {
+      "id": "A15",
+      "phase": "P4",
+      "requirement": "两设备相同幂等键独立；同设备重发幂等，改参数发生明确冲突。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T14",
+        "T15",
+        "T14_SDAR_ADMISSION_DEVICE_KEY"
+      ]
+    },
+    {
+      "id": "A16",
+      "phase": "P4",
+      "requirement": "两设备相同快照revision共存，最新状态查询按设备和来源范围。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T16"
+      ]
+    },
+    {
+      "id": "A17",
+      "phase": "P4",
+      "requirement": "设备游标和业务事件源序列独立，不因共享库串流。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T17"
+      ]
+    },
+    {
+      "id": "A18",
+      "phase": "P4",
+      "requirement": "领取和恢复查询明确device范围，不会处理未分配设备任务。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T18",
+        "T18_SDAR_REMOTE_POLL_SCOPE"
+      ]
+    },
+    {
+      "id": "A19",
+      "phase": "P4",
+      "requirement": "同一执行并发claim不重复领取；worker重启不更换业务身份。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T19"
+      ]
+    },
+    {
+      "id": "A20",
+      "phase": "P4",
+      "requirement": "Lease键区分资源范围和owner；相同资源互斥，不同设备不误锁。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T20"
+      ]
+    },
+    {
+      "id": "A21",
+      "phase": "P4",
+      "requirement": "保留事务回滚、版本更新、Admission与Dispatch语义。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T21"
+      ]
+    },
+    {
+      "id": "A22",
+      "phase": "P5",
+      "requirement": "目标原生坐标与坐标系保留，未知frame不伪装WGS84。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T22"
+      ]
+    },
+    {
+      "id": "A23",
+      "phase": "P5",
+      "requirement": "目标修订与已派发使用关系稳定，不存在owner/错误Scope写入失败。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T23",
+        "T24"
+      ]
+    },
+    {
+      "id": "A24",
+      "phase": "P5",
+      "requirement": "Workflow节点定义与Node Run/重试分开，目标和调用关系不只靠device猜测。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T25"
+      ]
+    },
+    {
+      "id": "A25",
+      "phase": "P5",
+      "requirement": "Mission身份含设备、通道和真实来源范围；裸ID复用不会串联。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T26"
+      ]
+    },
+    {
+      "id": "A26",
+      "phase": "P5",
+      "requirement": "明确回执幂等关联；PENDING/UNCERTAIN/CONFLICTED不伪造已关联Mission。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T27",
+        "T28",
+        "T27_RECEIPT_IDEMPOTENCY_CONFLICT"
+      ]
+    },
+    {
+      "id": "A27",
+      "phase": "P5",
+      "requirement": "CREATED/CONTROLLED/OBSERVED分开；取消恢复不误建新Mission。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T28_CONTROL_NO_NEW_MISSION"
+      ]
+    },
+    {
+      "id": "A28",
+      "phase": "P6",
+      "requirement": "Task到目标、Plan/NodeRun、MCP、Execution、Dispatch、Mission正向读取通过。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T29"
+      ]
+    },
+    {
+      "id": "A29",
+      "phase": "P6",
+      "requirement": "Mission反查所属任务通过，并保留链路缺失阶段和各层独立状态。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T30"
+      ]
+    },
+    {
+      "id": "A30",
+      "phase": "P6",
+      "requirement": "读取视图固定Schema直接JOIN，不使用周期导出/复制或动态store视图。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T29",
+        "T30",
+        "T32"
+      ]
+    },
+    {
+      "id": "A31",
+      "phase": "P6",
+      "requirement": "协议句柄过期标记不自动删除本次验证中的业务历史链。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T31"
+      ]
+    },
+    {
+      "id": "A32",
+      "phase": "P6",
+      "requirement": "真实PostgreSQL双设备测试通过；Mock/AST不能代替。",
+      "verification": "database",
+      "status": "PASS",
+      "evidence": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15",
+        "T16",
+        "T17",
+        "T18",
+        "T19",
+        "T20",
+        "T21",
+        "T22",
+        "T23",
+        "T24",
+        "T25",
+        "T26",
+        "T27",
+        "T28",
+        "T29",
+        "T30",
+        "T31",
+        "T32",
+        "T33",
+        "T34",
+        "T35",
+        "T02_DEVICE_STREAM_SCOPE",
+        "T04_BOUND_CONFIG_OVERLAP",
+        "T14_SDAR_ADMISSION_DEVICE_KEY",
+        "T27_RECEIPT_IDEMPOTENCY_CONFLICT",
+        "T28_CONTROL_NO_NEW_MISSION",
+        "T18_SDAR_REMOTE_POLL_SCOPE",
+        "T36"
+      ]
+    },
+    {
+      "id": "A33",
+      "phase": "P6",
+      "requirement": "缺DB/扩展如实NOT_RUN；不存在假安装、假数据或假PASS。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A34",
+      "phase": "P6",
+      "requirement": "GOWM原有check/build/test/verify:sql回归完成且新增功能未破坏旧路径。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A35",
+      "phase": "P7",
+      "requirement": "9表数据字典、完整源/键/转换/读取映射清单齐全。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A36",
+      "phase": "P7",
+      "requirement": "CLI install/verify/test/help和消费者交接命令实际可用。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A37",
+      "phase": "P7",
+      "requirement": "不改造设备控制、覆盖算法、WSGS/SACS接口或新增治理平台。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A38",
+      "phase": "P7",
+      "requirement": "SMPP、SDAR、MQTT三份适配清单列出代码接点，不声称只改连接串。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A39",
+      "phase": "P7",
+      "requirement": "报告准确区分代码、数据库、应用接线与旧数据迁移状态。",
+      "verification": "static",
+      "status": "PASS",
+      "evidence": [
+        "business-check.log",
+        "docs/shared-business-storage-handoff",
+        "source inventory / final report"
+      ]
+    },
+    {
+      "id": "A40",
+      "phase": "P7",
+      "requirement": "提交并尝试推送GOWM Draft PR；权限不足如实报告，不伪造链接或合并发布。",
+      "verification": "delivery",
+      "status": "PASS",
+      "evidence": [
+        "Draft PR #21",
+        "implementation 718a0b81f8dccde7bc111a0e781fc436f633c441",
+        "validation report f8a06a6540b55e7a6d0a4418c27d0544e27cc759"
+      ]
+    }
+  ],
+  "remainingIssues": [],
+  "delivery": {
+    "branch": "codex/gowm-device-shared-business-storage-v0.2",
+    "implementationCommit": "718a0b81f8dccde7bc111a0e781fc436f633c441",
+    "draftPr": "https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/21",
+    "status": "PUSHED_DRAFT_PR_CREATED",
+    "predecessorNotice": "branch builds on 10 pre-existing local-main commits beyond origin/main; those were not authored by this task",
+    "validationReportCommit": "f8a06a6540b55e7a6d0a4418c27d0544e27cc759",
+    "noMergeTagRelease": true
+  },
+  "finalMarker": "GOWM_DEVICE_SHARED_BUSINESS_STORAGE_DEV_READY"
+}

@@ -1,0 +1,13 @@
+{
+  "packageSha256": "1ad2edcc2cbe0859e4481401e8cbc82548d35aa89ab9b688cc30caf3c1147e05",
+  "packageBytes": 3748082,
+  "imageTag": "gowm-dev-package-check:1ad2edcc2cbe0859",
+  "focusedUnitTests": 35,
+  "realPostgresIntegrationTests": 14,
+  "typecheck": "PASS",
+  "resolvedComposeDependencies": "PASS",
+  "verifiedImageBuild": "PASS",
+  "archiveIntegrityAndSourceEquality": "PASS",
+  "installedSecretsInArchive": false,
+  "remoteDeploymentPerformed": false
+}

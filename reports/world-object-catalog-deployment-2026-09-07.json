@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "sourceCommit": "bc64bc3072473c8b0bb00517be63106222e37d8b",
+  "archive": "output/deployment/gowm-dev-server-0.7.1.tar.gz",
+  "sha256": "b28cde5a4a6c1f2abe91064410860708f44287317c12b40ea4551dffee4154ea",
+  "bytes": 2938616,
+  "image": "gowm-dev-package-check:b28cde5a4a6c1f2a",
+  "verifiedImageSourceFiles": 543,
+  "compiledReferenceManifest": "PASS",
+  "compiledOperationalManifest": "PASS",
+  "nonRootMigrationAndCompiledBackfillReadability": "PASS",
+  "compiledBackfillReadOnlyFingerprintCommand": "PASS; local isolated database only",
+  "internalChecksumsPermissionsExclusionsAndRepackReproducibility": "PASS",
+  "previousArchivePreserved": true,
+  "onsiteDeployment": "NOT_RUN",
+  "dependencyAuditNotice": "npm ci reported pre-existing moderate/high vulnerabilities; no broad dependency upgrade performed in this scoped repair"
+}

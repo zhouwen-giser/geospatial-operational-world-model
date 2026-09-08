@@ -5,7 +5,7 @@
     "providerId": "gowm.world-evidence",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317",
+    "implementationDigest": "sha256:a49a1999d9e2a6faccf2cbad8c6a2369663040187d42856e9bc8ea39a1285eae",
     "sourceRef": "urn:gowm:source:in-tree:grounding-catalog:1.0.0"
   },
   "endpoints": {
@@ -112,6 +112,14 @@
             "path": "/facts/0/position/coordinates",
             "schemaUri": "urn:gowm:v0.6.2:geojson-position",
             "schemaHash": "sha256:fdf18bce70f51c76375ac5b13ae88738ed72387ad511359946c800af42c2d812",
+            "valueKind": "ANY",
+            "unitSemantics": "ANGULAR_DEGREES"
+          },
+          {
+            "name": "horizontalPositionCoordinates",
+            "path": "/facts/0/horizontalPositionCoordinates",
+            "schemaUri": "urn:gowm:v0.7.1:horizontal-position-coordinates",
+            "schemaHash": "sha256:47fab9352acb2f1845012758611940049393149275a34a60a980405baeb2f1f5",
             "valueKind": "ANY",
             "unitSemantics": "ANGULAR_DEGREES"
           }

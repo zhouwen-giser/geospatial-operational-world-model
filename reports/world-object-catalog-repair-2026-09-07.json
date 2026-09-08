@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "scope": "local implementation and isolated database qualification; not onsite acceptance",
+  "migration": "077_world_object_catalog_projection.sql",
+  "referenceImplementationDigest": "sha256:dacf38933316a1cb1b61337c3aeb75fdf3712017ccdcd549577df574209ddfd2",
+  "database": {
+    "isolation": "dedicated local tmpfs PostgreSQL; random databases and non-superuser logins removed after each run",
+    "fresh": "PASS",
+    "upgradeFrom076": "PASS",
+    "priorMigrationChecksumsAndEvidenceUnchanged": "PASS",
+    "referenceGetCurrentAndOldReferenceStale": "PASS",
+    "scopeIsolationAndRetiredRejection": "PASS",
+    "defaultReadOnlyDryRunAndFingerprintGate": "PASS",
+    "concurrentFirstApplyOneSuccessOneStalePlan": "PASS",
+    "concurrentNoOpIdempotence": "PASS",
+    "legacyDescriptorAuthorityPreserved": "PASS",
+    "stateUpdates": 1000,
+    "catalogRowsBeforeAndAfterStateUpdates": {"descriptors": 1, "names": 1},
+    "catalogRowsAfterOneMetadataChange": {"descriptors": 2, "names": 2},
+    "metadataIdempotenceAndSearchRebuild": "PASS"
+  },
+  "relatedTests": {"passed": 43, "failed": 0},
+  "consumerContractFiles": 94,
+  "sqlAst": "PASS",
+  "npmCheck": "PASS",
+  "onsiteAcceptance": "NOT_RUN; GSAP coordinator owns deployment and real scoped Gateway acceptance",
+  "historicalKnownBlockedItems": "Unchanged; not promoted to PASS or used to waive core repair gates"
+}

@@ -1,8 +1,9 @@
+import { loadIngestDeviceContext } from "../../../packages/integrations/device-business-storage/src/context.js";
 import Fastify, { type FastifyInstance } from "fastify";
 import mqtt, { type IClientOptions, type MqttClient } from "mqtt";
 import pg from "pg";
 import { loadSourceSchemaLock, UGV_AUTHORITY_TOPICS, type UgvAuthorityTopic } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/contracts.js";
-import { mapUgvMessage, VEHICLE_SPEED_MAPPER_VERSION, type MapperConfig } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/mapper.js";
+import { mapUgvMessage, DEVICE_ACTOR_MAPPER_VERSION, type MapperConfig } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/mapper.js";
 import { SourceSchemaRegistry } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/source-schema-registry.js";
 import { loadUgvIngestConfig, type UgvIngestConfig } from "./config.js";
 import { UgvIngestRepository } from "./repository.js";
@@ -27,7 +28,24 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
   catch (error) { sourceLockError = safeError(error); }
   const pool = new pg.Pool({ connectionString: config.databaseUrl,
     max: Math.max(8,Math.min(64,config.processConcurrency+config.deliveryConcurrency)) });
-  await pool.query("SELECT 1");
+  let frozenMapper: MapperConfig;
+  const contextClient = await pool.connect();
+  try {
+    await contextClient.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
+    const deviceContext = await loadIngestDeviceContext(contextClient, {
+      scope: config.dataScopeKey, namespace: config.deviceNamespace, identifier: config.deviceId,
+      endpointKey: config.endpointKey, brokerUrl: config.mqttUrl, sourceKey: config.sourceKey,
+      pipelineKey: config.producerPipelineKey, topics: UGV_AUTHORITY_TOPICS
+    });
+    frozenMapper = { ...mapperConfig(config), deviceContext };
+    await contextClient.query("COMMIT");
+  } catch (error) {
+    await contextClient.query("ROLLBACK");
+    contextClient.release();
+    await pool.end();
+    throw error;
+  }
+  contextClient.release();
   const repository = new UgvIngestRepository(pool,config.deviceId,config.maxPayloadBytes,config.maximumPendingInbox,
     sourceLock ? new SourceSchemaRegistry(sourceLock) : undefined,config.speedQos0Compat);
   const state: RuntimeState = { connected: false,sessionPresent: false,subscriptions: {},sourceLockLoaded: Boolean(sourceLock),
@@ -109,7 +127,7 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
       }
     };
     client = mqtt.connect(config.mqttUrl,options);
-    wireClient(client,config,sourceLock,repository,state,pendingPubacks,
+    wireClient(client,config,frozenMapper,sourceLock,repository,state,pendingPubacks,
       beginSession,() => sessionGate.generation,setSession,clearSession,isCurrentConnection,waitForSession);
     client.connect();
   }
@@ -155,7 +173,7 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
   } };
 }
 
-function wireClient(client: MqttClient,config: UgvIngestConfig,sourceLock: Awaited<ReturnType<typeof loadSourceSchemaLock>>,
+function wireClient(client: MqttClient,config: UgvIngestConfig,frozenMapper: MapperConfig,sourceLock: Awaited<ReturnType<typeof loadSourceSchemaLock>>,
   repository: UgvIngestRepository,state: RuntimeState,pendingPubacks: Map<number,number[]>,beginSession: () => number,
   currentSessionGeneration: () => number,
   setSession: (generation: number,id: string) => boolean,clearSession: () => void,
@@ -172,7 +190,7 @@ function wireClient(client: MqttClient,config: UgvIngestConfig,sourceLock: Await
     const connectionGeneration = currentSessionGeneration();
     void (async () => {
       const session = await repository.startSession(config.clientId,new URL(config.mqttUrl).host,packet.sessionPresent,
-        sourceLock,config.codeVersion,mapperConfig(config));
+        sourceLock,config.codeVersion,frozenMapper);
       if (!setSession(connectionGeneration,session.sessionId)) {
         await repository.disconnect(session.sessionId,"mqtt_connection_closed_during_session_initialization");
         return;
@@ -256,7 +274,7 @@ async function processOne(repository: UgvIngestRepository,clientId: string,broke
       for (const observation of mapping.observations) increment(state.canonicalObservations,observation.observationType);
       for (const event of mapping.events) increment(state.operationalEvents,event.eventType);
     }
-    catch (error) { await repository.failMapping(pending.messageId,error); }
+    catch (error) { state.lastError = safeError(error); await repository.failMapping(pending.messageId,error); }
     state.workerHealthy = true;
   } catch (error) { state.workerHealthy = false; state.lastError = safeError(error); }
 }
@@ -297,7 +315,7 @@ function mapperConfig(config: UgvIngestConfig): MapperConfig {
     analysisSpaceKey: config.analysisSpaceKey,
     analysisSrid: config.analysisSrid,
     arrivalUncertaintyMs: config.arrivalUncertaintyMs,
-    mapperVersion: VEHICLE_SPEED_MAPPER_VERSION,
+    mapperVersion: DEVICE_ACTOR_MAPPER_VERSION,
     sourceQosPolicy: config.speedQos0Compat ? "SPEED_ONLY_QOS0_V1" : "QOS1_REQUIRED_V1",
     samplingPolicy: config.samplingPolicy,
     maxTargetsPerFrame: config.maxTargetsPerFrame

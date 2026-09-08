@@ -11,13 +11,13 @@
     {
       "providerId": "gowm.crs-normalization.bridge",
       "manifestPath": "contracts/manifests/providers/crs-provider.json",
-      "manifestHash": "sha256:bf6a411829c2a1326aefbdda166438ebde69768f3de7e68d32a4d67c540d88d9",
+      "manifestHash": "sha256:ff0e064486bb834b29d36fa14a29754716eebccc0c1c9f7e14e0d73520ae18d3",
       "operationCount": 6
     },
     {
       "providerId": "gowm.geometry.bridge",
       "manifestPath": "contracts/manifests/providers/geometry-provider.json",
-      "manifestHash": "sha256:9ab71a6700fa582ccd09880db525e7f57fe0b1973404efbb0688c757ca711c6c",
+      "manifestHash": "sha256:de73acf4338fbf47d56d512068872c7e9a5b0944287f4ed758109deb86d5b1ff",
       "operationCount": 19
     },
     {
@@ -47,7 +47,7 @@
     {
       "providerId": "gowm.reference-catalog",
       "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
-      "manifestHash": "sha256:cf41ac533a7e266fc5534baf7f32b123097d6364a49d4a83f19e08096e96ac29",
+      "manifestHash": "sha256:060aff54dbe54c940a9cff875b33d32520131d29097502222abc7139cea3dd26",
       "operationCount": 4
     },
     {
@@ -59,13 +59,13 @@
     {
       "providerId": "gowm.world-evidence",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
-      "manifestHash": "sha256:73da6d7e828aab047270db2a4da314ff6300a1fb0d6947876f45e98e1627d2f8",
+      "manifestHash": "sha256:4d061eac67b7ad6cc24ca3df578341727d1d8b4d5fe6d0870766039133726512",
       "operationCount": 8
     },
     {
       "providerId": "gowm.operational-reality",
       "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
-      "manifestHash": "sha256:04d1701c914691c5e9742cb7f3211bb0cdbeafc32a87551807196dcd28a94bd0",
+      "manifestHash": "sha256:4434d8ac7724ac672d5e8439c9adba2e99d857fde2f2d88b55ef78a1ae5e95e4",
       "operationCount": 9
     },
     {

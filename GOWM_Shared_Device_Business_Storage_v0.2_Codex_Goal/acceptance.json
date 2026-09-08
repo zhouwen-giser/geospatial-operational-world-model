@@ -1,0 +1,245 @@
+{
+  "metadataFormat": "local-goal-acceptance/1.0",
+  "items": [
+    {
+      "id": "A01",
+      "phase": "P0",
+      "requirement": "仅修改GOWM；记录实际来源和基线，不触碰消费者仓库。",
+      "verification": "static"
+    },
+    {
+      "id": "A02",
+      "phase": "P1",
+      "requirement": "固定共享ugv_smpp/ugv_sdar，不创建每设备/每实例业务Schema或business_store。",
+      "verification": "static"
+    },
+    {
+      "id": "A03",
+      "phase": "P1",
+      "requirement": "移除新公共合同中的store_id与数据库位置绑定；device_service_binding只描述逻辑服务。",
+      "verification": "static"
+    },
+    {
+      "id": "A04",
+      "phase": "P2",
+      "requirement": "设备主档复用world_object.id，Scope一致，改名不改设备身份。",
+      "verification": "database"
+    },
+    {
+      "id": "A05",
+      "phase": "P2",
+      "requirement": "MQTT入口复用既有source/datastream，配置解析能唯一确定设备，无全局ugv1默认。",
+      "verification": "database"
+    },
+    {
+      "id": "A06",
+      "phase": "P2",
+      "requirement": "服务/resource有效绑定唯一，多设备可合法共享MCP逻辑server。",
+      "verification": "database"
+    },
+    {
+      "id": "A07",
+      "phase": "P2",
+      "requirement": "更换绑定不改变历史任务与执行的device_id和原binding。",
+      "verification": "database"
+    },
+    {
+      "id": "A08",
+      "phase": "P3",
+      "requirement": "完整安装SMPP Runtime与UGV Provider依赖，不是缩略影子表。",
+      "verification": "database"
+    },
+    {
+      "id": "A09",
+      "phase": "P3",
+      "requirement": "SDAR当前baseline与实际后续增量完整安装，不重复历史up.sql。",
+      "verification": "database"
+    },
+    {
+      "id": "A10",
+      "phase": "P3",
+      "requirement": "public对象、函数、序列、默认值、扩展引用正确转换；不污染GOWM public。",
+      "verification": "database"
+    },
+    {
+      "id": "A11",
+      "phase": "P3",
+      "requirement": "迁移按family+完整文件身份记账，合法同号迁移不丢失，重复安装幂等。",
+      "verification": "database"
+    },
+    {
+      "id": "A12",
+      "phase": "P3",
+      "requirement": "只按业务域安装一次；新增第三台设备不新增Schema或迁移记录。",
+      "verification": "database"
+    },
+    {
+      "id": "A13",
+      "phase": "P4",
+      "requirement": "原生根记录明确device归属，非设备全局记录不被强绑ugv1。",
+      "verification": "database"
+    },
+    {
+      "id": "A14",
+      "phase": "P4",
+      "requirement": "父子引用和Scope检查阻止跨设备关联。",
+      "verification": "database"
+    },
+    {
+      "id": "A15",
+      "phase": "P4",
+      "requirement": "两设备相同幂等键独立；同设备重发幂等，改参数发生明确冲突。",
+      "verification": "database"
+    },
+    {
+      "id": "A16",
+      "phase": "P4",
+      "requirement": "两设备相同快照revision共存，最新状态查询按设备和来源范围。",
+      "verification": "database"
+    },
+    {
+      "id": "A17",
+      "phase": "P4",
+      "requirement": "设备游标和业务事件源序列独立，不因共享库串流。",
+      "verification": "database"
+    },
+    {
+      "id": "A18",
+      "phase": "P4",
+      "requirement": "领取和恢复查询明确device范围，不会处理未分配设备任务。",
+      "verification": "database"
+    },
+    {
+      "id": "A19",
+      "phase": "P4",
+      "requirement": "同一执行并发claim不重复领取；worker重启不更换业务身份。",
+      "verification": "database"
+    },
+    {
+      "id": "A20",
+      "phase": "P4",
+      "requirement": "Lease键区分资源范围和owner；相同资源互斥，不同设备不误锁。",
+      "verification": "database"
+    },
+    {
+      "id": "A21",
+      "phase": "P4",
+      "requirement": "保留事务回滚、版本更新、Admission与Dispatch语义。",
+      "verification": "database"
+    },
+    {
+      "id": "A22",
+      "phase": "P5",
+      "requirement": "目标原生坐标与坐标系保留，未知frame不伪装WGS84。",
+      "verification": "database"
+    },
+    {
+      "id": "A23",
+      "phase": "P5",
+      "requirement": "目标修订与已派发使用关系稳定，不存在owner/错误Scope写入失败。",
+      "verification": "database"
+    },
+    {
+      "id": "A24",
+      "phase": "P5",
+      "requirement": "Workflow节点定义与Node Run/重试分开，目标和调用关系不只靠device猜测。",
+      "verification": "database"
+    },
+    {
+      "id": "A25",
+      "phase": "P5",
+      "requirement": "Mission身份含设备、通道和真实来源范围；裸ID复用不会串联。",
+      "verification": "database"
+    },
+    {
+      "id": "A26",
+      "phase": "P5",
+      "requirement": "明确回执幂等关联；PENDING/UNCERTAIN/CONFLICTED不伪造已关联Mission。",
+      "verification": "database"
+    },
+    {
+      "id": "A27",
+      "phase": "P5",
+      "requirement": "CREATED/CONTROLLED/OBSERVED分开；取消恢复不误建新Mission。",
+      "verification": "database"
+    },
+    {
+      "id": "A28",
+      "phase": "P6",
+      "requirement": "Task到目标、Plan/NodeRun、MCP、Execution、Dispatch、Mission正向读取通过。",
+      "verification": "database"
+    },
+    {
+      "id": "A29",
+      "phase": "P6",
+      "requirement": "Mission反查所属任务通过，并保留链路缺失阶段和各层独立状态。",
+      "verification": "database"
+    },
+    {
+      "id": "A30",
+      "phase": "P6",
+      "requirement": "读取视图固定Schema直接JOIN，不使用周期导出/复制或动态store视图。",
+      "verification": "database"
+    },
+    {
+      "id": "A31",
+      "phase": "P6",
+      "requirement": "协议句柄过期标记不自动删除本次验证中的业务历史链。",
+      "verification": "database"
+    },
+    {
+      "id": "A32",
+      "phase": "P6",
+      "requirement": "真实PostgreSQL双设备测试通过；Mock/AST不能代替。",
+      "verification": "database"
+    },
+    {
+      "id": "A33",
+      "phase": "P6",
+      "requirement": "缺DB/扩展如实NOT_RUN；不存在假安装、假数据或假PASS。",
+      "verification": "static"
+    },
+    {
+      "id": "A34",
+      "phase": "P6",
+      "requirement": "GOWM原有check/build/test/verify:sql回归完成且新增功能未破坏旧路径。",
+      "verification": "static"
+    },
+    {
+      "id": "A35",
+      "phase": "P7",
+      "requirement": "9表数据字典、完整源/键/转换/读取映射清单齐全。",
+      "verification": "static"
+    },
+    {
+      "id": "A36",
+      "phase": "P7",
+      "requirement": "CLI install/verify/test/help和消费者交接命令实际可用。",
+      "verification": "static"
+    },
+    {
+      "id": "A37",
+      "phase": "P7",
+      "requirement": "不改造设备控制、覆盖算法、WSGS/SACS接口或新增治理平台。",
+      "verification": "static"
+    },
+    {
+      "id": "A38",
+      "phase": "P7",
+      "requirement": "SMPP、SDAR、MQTT三份适配清单列出代码接点，不声称只改连接串。",
+      "verification": "static"
+    },
+    {
+      "id": "A39",
+      "phase": "P7",
+      "requirement": "报告准确区分代码、数据库、应用接线与旧数据迁移状态。",
+      "verification": "static"
+    },
+    {
+      "id": "A40",
+      "phase": "P7",
+      "requirement": "提交并尝试推送GOWM Draft PR；权限不足如实报告，不伪造链接或合并发布。",
+      "verification": "delivery"
+    }
+  ]
+}

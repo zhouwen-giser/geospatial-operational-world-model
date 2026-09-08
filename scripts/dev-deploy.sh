@@ -71,7 +71,7 @@ init_env() {
   fi
 
   local secret_vars=(
-    POSTGRES_PASSWORD STAS_DB_PASSWORD HISTORICAL_WORKER_DB_PASSWORD HISTORY_AUTO_DB_PASSWORD
+    POSTGRES_PASSWORD SMPP_DB_PASSWORD SDAR_DB_PASSWORD STAS_DB_PASSWORD HISTORICAL_WORKER_DB_PASSWORD HISTORY_AUTO_DB_PASSWORD
     GATEWAY_DB_PASSWORD GATEWAY_REGISTRY_DB_PASSWORD SPATIAL_DB_PASSWORD SITUATION_DB_PASSWORD
     REFERENCE_DB_PASSWORD CATALOG_DB_PASSWORD EVIDENCE_DB_PASSWORD OPERATIONAL_DB_PASSWORD
     HISTORICAL_DB_PASSWORD VALIDATION_DB_PASSWORD NETWORK_DB_PASSWORD ROUTE_DB_PASSWORD COVERAGE_DB_PASSWORD
@@ -101,6 +101,17 @@ init_env() {
   set_env DEV_BIND_ADDRESS "${GOWM_DEV_BIND_ADDRESS:-$(env_value DEV_BIND_ADDRESS)}"
   [[ -n "$(env_value DEV_BIND_ADDRESS)" ]] || set_env DEV_BIND_ADDRESS "0.0.0.0"
   chmod 600 "$env_file"
+  mkdir -p "$runtime_dir"
+  chmod 700 "$runtime_dir"
+  {
+    printf 'SMPP_DB_USER=ugv_smpp_app\nSMPP_DB_PASSWORD=%s\nSMPP_DB_SCHEMA=ugv_smpp\n' "$(env_value SMPP_DB_PASSWORD)"
+    printf 'SDAR_DB_USER=ugv_sdar_app\nSDAR_DB_PASSWORD=%s\nSDAR_DB_SCHEMA=ugv_sdar\n' "$(env_value SDAR_DB_PASSWORD)"
+    printf 'SMPP_DATABASE_URL=postgresql://ugv_smpp_app:%s@postgres:5432/gowm\n' "$(env_value SMPP_DB_PASSWORD)"
+    printf 'SDAR_DATABASE_URL=postgresql://ugv_sdar_app:%s@postgres:5432/gowm\n' "$(env_value SDAR_DB_PASSWORD)"
+    printf 'GOWM_DB_NAME=gowm\nGOWM_DB_PORT=%s\nGOWM_DB_COMPOSE_HOST=postgres\n' "$(env_value POSTGRES_PORT)"
+  } > "$runtime_dir/business-connections.env"
+  chmod 600 "$runtime_dir/business-connections.env"
+  log "business database credentials saved privately at $runtime_dir/business-connections.env"
   log "environment ready at $env_file"
 }
 
@@ -222,6 +233,16 @@ doctor() {
   if [[ -f "$env_file" && -n "$(compose ps -q 2>/dev/null)" ]]; then
     smoke
   fi
+  if [[ -f "$env_file" && "$(env_value UGV_MQTT_INGEST_ENABLED)" == "true" ]]; then
+    local broker schema_dir
+    broker="$(env_value UGV_MQTT_URL)"
+    [[ -n "$broker" && "$broker" != *replace-with* ]] || fail "set UGV_MQTT_URL to the actual equipment broker before installation"
+    schema_dir="$(env_value UGV_EQUIPMENT_SCHEMA_DIR)"
+    [[ "$schema_dir" = /* ]] || schema_dir="$project_dir/$schema_dir"
+    for contract_file in mqtt_topics.json mcp_ugv.json error_codes.json; do
+      [[ -f "$schema_dir/$contract_file" ]] || fail "missing UGV source contract: $schema_dir/$contract_file"
+    done
+  fi
   log "preflight checks passed"
 }
 
@@ -260,7 +281,36 @@ up() {
   timeout="$(env_value DEV_HEALTH_TIMEOUT_SECONDS)"
   [[ "$timeout" =~ ^[0-9]+$ ]] || timeout=600
   log "building and starting the complete development platform"
-  compose up -d --build --wait --wait-timeout "$timeout"
+  if [[ -f "$project_dir/SHA256SUMS" && ! -e "$project_dir/.git" ]]; then
+    local verified_image runtime_image
+    verified_image="gowm-verified-runtime:$(sha256sum "$project_dir/SHA256SUMS" | cut -c1-16)"
+    bash "$project_dir/scripts/build-verified-image.sh" "$verified_image" "$project_dir"
+    # Preserve existing Compose naming and service configuration. Only replace
+    # the common GOWM Dockerfile's image tags; never rebuild them via local delta.
+    local runtime_images
+    runtime_images="$(compose config --format json | node --input-type=module -e '
+      import path from "node:path";
+      let input=""; for await(const chunk of process.stdin) input+=chunk;
+      const config=JSON.parse(input),root=path.resolve(process.argv[1]),images=new Set();
+      for(const [name,service] of Object.entries(config.services)) {
+        const build=service.build;
+        if(!build) continue;
+        const context=typeof build==="string"?build:build.context;
+        const dockerfile=typeof build==="string"?"Dockerfile":build.dockerfile??"Dockerfile";
+        if(path.resolve(context)===root && dockerfile==="Dockerfile") {
+          if(!service.image&&!config.name) throw new Error("Missing Compose image/project identity");
+          images.add(service.image??`${config.name}-${name}`);
+        }
+      }
+      if(!images.size) throw new Error("No GOWM runtime images resolved");
+      console.log([...images].join("\n"));
+    ' "$project_dir")"
+    while IFS= read -r runtime_image; do docker tag "$verified_image" "$runtime_image"; done <<< "$runtime_images"
+    compose build postgres
+    compose up -d --no-build --wait --wait-timeout "$timeout"
+  else
+    compose up -d --build --wait --wait-timeout "$timeout"
+  fi
   smoke
   log "deployment is ready; endpoints are documented in docs/DEV_DEPLOYMENT.md"
   log "Gateway token remains private in $env_file (GATEWAY_AUTH_SHARED_TOKEN)"
@@ -275,7 +325,7 @@ if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
   shift || true
   case "$command_name" in
     up) up ;;
-    init) init_env ;;
+    init|init-env) init_env ;;
     doctor) init_env; doctor ;;
     prepare-h3) init_env; prepare_h3 ;;
     prepare-artifacts) init_env; prepare_h3; prepare_crs_attestation ;;

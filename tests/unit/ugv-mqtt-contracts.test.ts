@@ -204,6 +204,26 @@ describe("UGV MQTT seven authority stream contracts",() => {
     const coordinates = ((region.wgs84Geometry as Record<string,unknown>).coordinates as number[][][])[0]!;
     expect(coordinates[0]).toEqual(coordinates.at(-1));
     expect(coordinates).toHaveLength(4);
+    const sourceCoordinates = region.sourceWorldCoordinates as number[][];
+    expect(sourceCoordinates[0]).toEqual(sourceCoordinates.at(-1));
+    expect(sourceCoordinates[0]).not.toBe(sourceCoordinates.at(-1));
+    expect(CanonicalObservationInputSchema.safeParse(result.observations[0]).success).toBe(true);
+  });
+
+  it.each(["ugv-mqtt-canonical-v1","ugv-mqtt-canonical-v2"])("admits open and closed recon regions through the canonical contract for %s",(mapperVersion) => {
+    for (const points of [
+      [[0,0],[111.32,0],[111.32,110.54]],
+      [[0,0],[111.32,0],[111.32,110.54],[0,0]]
+    ]) {
+      const result = mapUgvMessage({ ...base,topic: "/ugv/area_recon/status",payload: {
+        status: 4,region: { type: 5,points },last_cmd_ack: { seq: 1,ok: true }
+      } },{ ...config,mapperVersion });
+      expect(result.observations).toHaveLength(1);
+      const observation = CanonicalObservationInputSchema.parse(result.observations[0]);
+      expect(observation).toEqual(JSON.parse(JSON.stringify(observation)));
+      expect(result.events.map(event => OperationalEventIngestSchema.parse(event).eventType))
+        .toEqual(["EXECUTION_STARTED_OBSERVED","CONTROL_ACCEPTED_OBSERVED"]);
+    }
   });
 
   it("rejects a target frame over the configured fan-out limit as a whole",() => {

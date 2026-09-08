@@ -1,0 +1,267 @@
+{
+  "contractId": "gowm-device-shared-business-storage/0.2",
+  "status": "GOAL_SPECIFICATION_NOT_DEPLOYED",
+  "databasePolicy": "EXISTING_GOWM_DATABASE",
+  "sharedBusinessSchemas": [
+    "ugv_smpp",
+    "ugv_sdar"
+  ],
+  "publicSchemas": [
+    "gowm_device",
+    "gowm_task",
+    "gowm_execution"
+  ],
+  "readSchema": "gowm_business_v1",
+  "deviceOwnershipKey": "device_id",
+  "instanceControlsBusinessStorage": false,
+  "publicBusinessTableCount": 9,
+  "tables": [
+    {
+      "name": "gowm_device.device",
+      "purpose": "设备主档；复用world_object.id",
+      "primaryKey": "device_id",
+      "keyFields": [
+        "data_scope_key",
+        "identifier_namespace",
+        "device_identifier",
+        "device_name",
+        "device_type",
+        "enabled"
+      ]
+    },
+    {
+      "name": "gowm_device.mqtt_endpoint",
+      "purpose": "共享MQTT连接配置",
+      "primaryKey": "endpoint_id",
+      "keyFields": [
+        "endpoint_key",
+        "broker_url",
+        "client_id_prefix",
+        "credential_ref",
+        "connection_options",
+        "enabled"
+      ]
+    },
+    {
+      "name": "gowm_device.device_stream",
+      "purpose": "设备到MQTT数据流与canonical datastream的明确映射",
+      "primaryKey": "stream_id",
+      "keyFields": [
+        "data_scope_key",
+        "device_id",
+        "endpoint_id",
+        "stream_key",
+        "topic_filter",
+        "identity_mode",
+        "identity_rule",
+        "datastream_key",
+        "message_profile"
+      ]
+    },
+    {
+      "name": "gowm_device.device_service_binding",
+      "purpose": "设备到逻辑服务/Agent/Provider/Resource的历史绑定",
+      "primaryKey": "binding_id",
+      "keyFields": [
+        "data_scope_key",
+        "device_id",
+        "smpp_service_key",
+        "provider_id",
+        "resource_id",
+        "sdar_service_key",
+        "agent_profile_id",
+        "sdar_mcp_server_id",
+        "valid_from",
+        "valid_to"
+      ]
+    },
+    {
+      "name": "gowm_task.target_geometry",
+      "purpose": "任务目标的精确图形修订，不是设备当前位置",
+      "primaryKey": "target_id",
+      "keyFields": [
+        "target_group_id",
+        "revision",
+        "data_scope_key",
+        "source_domain",
+        "source_record_identity",
+        "native_geometry",
+        "native_crs",
+        "geometry_wgs84",
+        "normalization_state"
+      ]
+    },
+    {
+      "name": "gowm_task.target_binding",
+      "purpose": "Task/NodeRun/MCP/派发使用目标的明确关系",
+      "primaryKey": "target_binding_id",
+      "keyFields": [
+        "target_id",
+        "device_id",
+        "data_scope_key",
+        "owner_domain",
+        "owner_kind",
+        "owner_key",
+        "usage_role",
+        "target_purpose",
+        "argument_path"
+      ]
+    },
+    {
+      "name": "gowm_execution.device_mission",
+      "purpose": "设备Mission实例身份，不复制执行状态机",
+      "primaryKey": "mission_instance_id",
+      "keyFields": [
+        "device_id",
+        "data_scope_key",
+        "mission_channel",
+        "world_object_id",
+        "created_by"
+      ]
+    },
+    {
+      "name": "gowm_execution.mission_identity",
+      "purpose": "Mission来源别名；设备+来源范围内唯一",
+      "primaryKey": "identity_id",
+      "keyFields": [
+        "mission_instance_id",
+        "device_id",
+        "mission_channel",
+        "authority_key",
+        "identity_kind",
+        "native_session_key",
+        "native_mission_id",
+        "evidence_ref"
+      ]
+    },
+    {
+      "name": "gowm_execution.execution_mission_link",
+      "purpose": "MCP/Provider派发到Mission的明确关系",
+      "primaryKey": "link_id",
+      "keyFields": [
+        "device_id",
+        "data_scope_key",
+        "binding_id",
+        "mcp_task_id",
+        "provider_execution_id",
+        "provider_task_record_id",
+        "provider_dispatch_step_id",
+        "mission_instance_id",
+        "relation_kind",
+        "link_state",
+        "source_system_key",
+        "idempotency_key",
+        "source_evidence_ref"
+      ]
+    }
+  ],
+  "deprecatedArchitectureObjects": [
+    "gowm_device.business_store",
+    "gowm_device.device_runtime_binding"
+  ],
+  "forbiddenNewPublicStorageReferences": [
+    "smpp_store_id",
+    "provider_store_id",
+    "sdar_store_id",
+    "source_store_id"
+  ],
+  "migrationPolicy": {
+    "core": "APPEND_NEW_ONLY",
+    "nativeFamilies": [
+      "SMPP_RUNTIME",
+      "UGV_PROVIDER",
+      "SDAR_RUNTIME"
+    ],
+    "installationScope": "ONCE_PER_FIXED_BUSINESS_DOMAIN",
+    "identity": "family + full source filename",
+    "workerInstanceCreatesSchema": false,
+    "newDeviceCreatesSchema": false
+  },
+  "ownershipClasses": [
+    "DEVICE_ROOT",
+    "DEVICE_CHILD",
+    "DEVICE_CHANNEL",
+    "BUSINESS_GLOBAL",
+    "WORKER_EPHEMERAL"
+  ],
+  "requiredNativeRootChanges": [
+    {
+      "table": "ugv_smpp.provider_task",
+      "deviceOwnership": "EXPLICIT_REQUIRED_FOR_DEVICE_TASK",
+      "binding": "gowm_binding_id"
+    },
+    {
+      "table": "ugv_smpp.ugv_execution",
+      "deviceOwnership": "EXPLICIT_REQUIRED",
+      "binding": "gowm_binding_id"
+    },
+    {
+      "table": "ugv_sdar.agent_task",
+      "deviceOwnership": "EXPLICIT_REQUIRED_FOR_DEVICE_TASK_NULL_ONLY_NON_DEVICE",
+      "binding": "gowm_binding_id"
+    },
+    {
+      "table": "ugv_sdar.remote_task_binding",
+      "sourceNamespace": "smpp_service_key",
+      "oldStoreFieldForbidden": true
+    }
+  ],
+  "requiredScopeAudits": [
+    "idempotency",
+    "admission",
+    "snapshot",
+    "cursor",
+    "event_source",
+    "revision",
+    "claim",
+    "lease",
+    "outbox",
+    "inbox",
+    "recovery",
+    "retention"
+  ],
+  "readViews": [
+    "device_catalog",
+    "device_ingest_routes",
+    "device_service_bindings",
+    "sdar_tasks",
+    "workflow_steps",
+    "mcp_tasks",
+    "provider_executions",
+    "provider_dispatches",
+    "mission_links",
+    "task_target_geometries",
+    "task_execution_lineage"
+  ],
+  "missionIdentityUniqueFields": [
+    "device_id",
+    "mission_channel",
+    "authority_key",
+    "native_session_key",
+    "native_mission_id"
+  ],
+  "missionRelationKinds": [
+    "CREATED",
+    "CONTROLLED",
+    "OBSERVED"
+  ],
+  "missionLinkStates": [
+    "PENDING",
+    "LINKED",
+    "UNCERTAIN",
+    "CONFLICTED"
+  ],
+  "targetNormalizationStates": [
+    "NATIVE_ONLY",
+    "NORMALIZED",
+    "INVALID"
+  ],
+  "targetUsageRoles": [
+    "REQUESTED",
+    "PLANNED",
+    "DISPATCHED"
+  ],
+  "applicationCutoverIncluded": false,
+  "historicalDataMigrationIncluded": false,
+  "databaseVerificationRequiredForDevReady": true
+}

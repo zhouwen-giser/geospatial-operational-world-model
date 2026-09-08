@@ -5,7 +5,7 @@
     "providerId": "gowm.reference-catalog",
     "providerVersion": "1.0.0",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51",
+    "implementationDigest": "sha256:dacf38933316a1cb1b61337c3aeb75fdf3712017ccdcd549577df574209ddfd2",
     "sourceRef": "urn:gowm:source:in-tree:grounding-catalog:1.0.0"
   },
   "endpoints": {

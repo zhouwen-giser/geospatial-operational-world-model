@@ -170,6 +170,9 @@
     "validate:deployment-env": "node scripts/validate-deployment-env.mjs",
     "validate:history-evidence": "node --import tsx validation/scripts/history-evidence-repair-e2e.ts",
     "validate:history-evidence-ci": "node --import tsx validation/scripts/history-evidence-ci.ts",
+    "validate:operational-read-closure": "node --import tsx validation/scripts/operational-read-closure-ci.ts",
+    "validate:world-object-catalog": "node --import tsx validation/scripts/world-object-catalog-ci.ts",
+    "reference:catalog-backfill": "node --import tsx scripts/world-object-catalog-backfill.ts",
     "validate:ugv-mqtt-contracts": "vitest run tests/unit/ugv-mqtt-contracts.test.ts tests/unit/ugv-mqtt-config.test.ts",
     "validate:ugv-mqtt-state-patch": "vitest run tests/unit/canonical-observation.test.ts",
     "validate:ugv-mqtt-position": "npm run validate:ugv-mqtt-state-patch && npm run validate:ugv-mqtt-db",
@@ -184,7 +187,16 @@
     "validate:ugv-mqtt-performance-run": "node --import tsx validation/scripts/ugv-mqtt-performance-run.ts",
     "validate:ugv-mqtt-final": "node --import tsx validation/scripts/ugv-mqtt-final.ts",
     "dev-deploy": "bash scripts/dev-deploy.sh up",
-    "package:dev-deployment": "bash scripts/package-dev-deployment.sh"
+    "package:dev-deployment": "bash scripts/package-dev-deployment.sh",
+    "business-storage:check": "node scripts/business-storage/generate.mjs --check && node --import tsx scripts/business-storage/cli.ts check && vitest run tests/unit/device-business-storage.test.ts",
+    "business-storage:install": "node --import tsx scripts/business-storage/cli.ts install",
+    "business-storage:verify": "node --import tsx scripts/business-storage/cli.ts verify",
+    "business-storage:fixture": "node --import tsx scripts/business-storage/cli.ts fixture",
+    "business-storage:handoff": "node --import tsx scripts/business-storage/cli.ts handoff",
+    "business-storage:test:postgres": "node --import tsx scripts/business-storage/cli.ts test:postgres",
+    "device:init-default": "tsx scripts/business-storage/device-cli.ts init-default",
+    "device:verify-default": "tsx scripts/business-storage/device-cli.ts verify-default",
+    "validate:ugv-device-actor": "vitest run tests/unit/ugv-device-actor.test.ts tests/integration/ugv-device-actor.integration.test.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",

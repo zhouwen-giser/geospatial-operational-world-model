@@ -92,6 +92,7 @@ export class GroundingCatalogRepository {
       const schema = mode === "reference" ? "gowm_reference_v1" : mode === "dataset" ? "gowm_catalog_v1" : "gowm_evidence_v1";
       const view = mode === "reference" ? "current_descriptor" : mode === "dataset" ? "dataset" : "current_state";
       await client.query(`SELECT * FROM ${schema}.${view} LIMIT 0`);
+      if (mode === "reference") await client.query("SELECT effective_reference_version FROM gowm_reference_v1.current_descriptor LIMIT 0");
       if (mode === "evidence") {
         await client.query("SELECT * FROM gowm_evidence_v1.current_geometry LIMIT 0");
         await client.query("SELECT * FROM gowm_evidence_v1.current_feature_geometry LIMIT 0");
@@ -130,7 +131,7 @@ export class GroundingCatalogRepository {
             UNION ALL SELECT reference_key,data_snapshot_hash || ':' || compute_snapshot_hash FROM gowm_result_v1.derived_reference
             UNION ALL SELECT reference_key,member_count::text FROM gowm_result_v1.reference_set
           ) snapshot_rows ORDER BY reference_key,version_marker`)
-      : await client.query("SELECT COALESCE(max(descriptor_version),0)::text AS version, COALESCE(max(world_version),0) AS world_version FROM gowm_reference_v1.current_descriptor");
+      : await client.query("SELECT COALESCE(max(descriptor_version),0)::text || ':' || COALESCE(max(world_version),0)::text AS version, COALESCE(max(world_version),0) AS world_version FROM gowm_reference_v1.current_descriptor");
     const resourceResult = await client.query(`SELECT reference_key_value FROM ${schema}.scope_resource ORDER BY reference_key LIMIT 1`);
     const referenceKey = referenceKeyValue(resourceResult.rows[0]?.reference_key_value);
     const version = mode === "reference" ? requiredString(versionResult.rows[0]?.version, "snapshot.version") : sha256(versionResult.rows);
@@ -471,6 +472,7 @@ export class GroundingCatalogRepository {
           factKind: "CURRENT_PROJECTION",
           fields: isRecord(row.state) ? row.state : {},
           position: projectedPosition(row.state),
+          horizontalPositionCoordinates: projectedHorizontalPosition(row.state),
           objectType: requiredString(row.object_type, "object_type"),
           ...(optionalString(row.subtype) ? { subtype: optionalString(row.subtype) } : {}),
           properties: isRecord(row.properties) ? row.properties : {},
@@ -644,11 +646,12 @@ export function preferExactResolutionRows<T extends Row>(rows: readonly T[]): T[
 }
 
 function mapReferenceDescriptor(row: Row): Row {
-  const version: Row = { referenceVersion: String(row.descriptor_version) };
+  const referenceVersion = String(row.effective_reference_version ?? row.descriptor_version);
+  const version: Row = { referenceVersion };
   if (typeof row.object_version === "string") version.objectVersion = row.object_version;
   if (row.world_version !== null && row.world_version !== undefined) version.worldVersion = safeInteger(row.world_version, "world_version");
   const value: Row = {
-    referenceKey: { namespace: "gowm", kind: requiredString(row.entity_kind, "entity_kind"), id: requiredString(row.reference_key, "reference_key"), version: String(row.descriptor_version) },
+    referenceKey: { namespace: "gowm", kind: requiredString(row.entity_kind, "entity_kind"), id: requiredString(row.reference_key, "reference_key"), version: referenceVersion },
     referenceType: requiredString(row.reference_type, "reference_type"),
     displayName: requiredString(row.display_name, "display_name"),
     aliases: Array.isArray(row.aliases) ? row.aliases : [],
@@ -900,6 +903,11 @@ function requiredString(value: unknown, name: string): string {
   return value;
 }
 /** Packs already projected WGS84 coordinates; never estimates a missing position. */
+export function projectedHorizontalPosition(state: unknown): [number, number] | undefined {
+  const position = projectedPosition(state);
+  return position ? [position.coordinates[0]!, position.coordinates[1]!] : undefined;
+}
+
 export function projectedPosition(state: unknown): { type: "Point"; coordinates: number[] } | undefined {
   const value = isRecord(state) && isRecord(state.position) ? state.position : undefined;
   if (!value || typeof value.longitude !== "number" || typeof value.latitude !== "number" ||

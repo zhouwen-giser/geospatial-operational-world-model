@@ -2,6 +2,7 @@ import { lstat,readFile,realpath } from "node:fs/promises";
 import { DEFAULT_UGV_SAMPLING_POLICY, type UgvSamplingPolicy } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/sampling.js";
 
 export interface UgvIngestConfig {
+  deviceNamespace: string; endpointKey: string;
   databaseUrl: string; mqttUrl: string; clientId: string; username?: string; password?: Buffer;
   ca?: Buffer; cert?: Buffer; key?: Buffer; sessionExpirySeconds: number; keepaliveSeconds: number;
   connectTimeoutMs: number; maxPayloadBytes: number; deviceId: string; dataScopeKey: string;
@@ -89,6 +90,8 @@ export async function loadUgvIngestConfig(): Promise<UgvIngestConfig> {
     targetMinimumIntervalMs: integer("UGV_MQTT_TARGET_MIN_INTERVAL_MS",DEFAULT_UGV_SAMPLING_POLICY.targetMinimumIntervalMs)
   };
   return {
+    deviceNamespace: process.env.UGV_DEVICE_NAMESPACE ?? "ugv",
+    endpointKey: process.env.UGV_MQTT_ENDPOINT_KEY ?? "ugv-default",
     speedQos0Compat: speedQos0 === "true",
     databaseUrl: required("DATABASE_URL"),mqttUrl: serviceUrl("UGV_MQTT_URL",required("UGV_MQTT_URL"),["mqtt:","mqtts:","ws:","wss:"]),
     clientId,

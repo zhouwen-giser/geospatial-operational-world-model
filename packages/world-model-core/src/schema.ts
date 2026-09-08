@@ -60,7 +60,9 @@ const RESERVED_STATE_PATCH_KEYS = new Set(["position", "lastObservationType", "_
 
 function statePatchIssue(value: Record<string, unknown>): string | undefined {
   let nodes = 0;
-  const visited = new WeakSet<object>();
+  // Only ancestors on the current path form a cycle. Reusing a JSON object
+  // in sibling branches is valid and must still count toward the size limits.
+  const ancestors = new WeakSet<object>();
   const visit = (candidate: unknown, depth: number): string | undefined => {
     nodes += 1;
     if (nodes > STATE_PATCH_MAX_NODES) return "statePatch exceeds node limit";
@@ -68,8 +70,8 @@ function statePatchIssue(value: Record<string, unknown>): string | undefined {
     if (candidate === null || typeof candidate === "string" || typeof candidate === "boolean") return undefined;
     if (typeof candidate === "number") return Number.isFinite(candidate) ? undefined : "statePatch contains a non-finite number";
     if (typeof candidate !== "object") return "statePatch must contain only JSON values";
-    if (visited.has(candidate)) return "statePatch contains a cycle";
-    visited.add(candidate);
+    if (ancestors.has(candidate)) return "statePatch contains a cycle";
+    ancestors.add(candidate);
     if (Array.isArray(candidate)) {
       for (const item of candidate) {
         const issue = visit(item, depth + 1);
@@ -84,6 +86,7 @@ function statePatchIssue(value: Record<string, unknown>): string | undefined {
         if (issue) return issue;
       }
     }
+    ancestors.delete(candidate);
     return undefined;
   };
   const issue = visit(value, 1);

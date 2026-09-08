@@ -1,0 +1,102 @@
+{
+  "metadataFormat": "local-goal-task/1.0",
+  "formatNotice": "任务包本地元数据；不是Codex或OpenAI的官方任务配置接口。",
+  "taskId": "gowm-device-shared-business-storage-v0.2",
+  "title": "GOWM设备中心化共享业务存储",
+  "generatedAt": "2026-09-08",
+  "targetRepository": "https://github.com/zhouwen-giser/geospatial-operational-world-model",
+  "featureBranch": "codex/gowm-device-shared-business-storage-v0.2",
+  "observedSourceHeads": {
+    "geospatial-operational-world-model": "dd1b038fa0fa3e3893d7f4c7f815bfe9992b0838",
+    "sdar-mcp-provider-platform": "b974471dd62665721a5edcc63b7651d2f476160d",
+    "skill-driven-agent-runtime": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5"
+  },
+  "sourceHeadPolicy": "Fetch current accepted source at execution, record once; no exact-head release gate.",
+  "writeScope": [
+    "geospatial-operational-world-model"
+  ],
+  "readOnlyRepositories": [
+    "sdar-mcp-provider-platform",
+    "skill-driven-agent-runtime"
+  ],
+  "notAuthorizedToModify": [
+    "GDPS",
+    "world-semantic-grounding-service",
+    "single-agent-chat-server",
+    "gowm-spatiotemporal-analysis-providers"
+  ],
+  "phases": [
+    {
+      "id": "P0",
+      "name": "基线与真实源结构盘点"
+    },
+    {
+      "id": "P1",
+      "name": "共享存储与九张公共表合同收口"
+    },
+    {
+      "id": "P2",
+      "name": "设备主档、服务绑定与配置访问"
+    },
+    {
+      "id": "P3",
+      "name": "固定ugv_smpp/ugv_sdar原生依赖安装"
+    },
+    {
+      "id": "P4",
+      "name": "设备范围键、事务和共享访问overlay"
+    },
+    {
+      "id": "P5",
+      "name": "目标图形与Mission关联写入"
+    },
+    {
+      "id": "P6",
+      "name": "统一读取与双设备PostgreSQL验证"
+    },
+    {
+      "id": "P7",
+      "name": "后续分仓交接、报告与Draft PR"
+    }
+  ],
+  "requiredStaticCommands": [
+    "npm run check",
+    "npm run build",
+    "npm test",
+    "npm run verify:sql",
+    "npm run business-storage:check",
+    "npm run business-storage:install -- --help",
+    "npm run business-storage:fixture -- --help",
+    "npm run business-storage:handoff"
+  ],
+  "requiredDatabaseCommands": [
+    "npm run business-storage:test:postgres"
+  ],
+  "postgresMissingPolicy": "Continue source work. Report NOT_RUN; never substitute mocks for PostgreSQL DEV_READY.",
+  "finalMarkers": {
+    "databaseReady": "GOWM_DEVICE_SHARED_BUSINESS_STORAGE_DEV_READY",
+    "sourceOnly": "GOWM_DEVICE_SHARED_BUSINESS_STORAGE_SOURCE_READY",
+    "incomplete": "GOWM_DEVICE_SHARED_BUSINESS_STORAGE_INCOMPLETE"
+  },
+  "alwaysDisclose": [
+    "SMPP_RUNTIME_ADAPTATION_NOT_PERFORMED",
+    "SDAR_RUNTIME_ADAPTATION_NOT_PERFORMED",
+    "LIVE_MQTT_SWITCHOVER_NOT_PERFORMED"
+  ],
+  "publicBusinessTables": 9,
+  "acceptanceCount": 40,
+  "scenarioCount": 36,
+  "deliveryPolicy": "Commit GOWM only, push/create Draft PR when available; no merge/tag/release. Remote permission failure reported separately.",
+  "doNotDo": [
+    "per-device schemas",
+    "per-instance business databases",
+    "business shadow copies",
+    "CDC",
+    "data export pipelines",
+    "cross-repository runtime edits",
+    "live device control",
+    "old data migration",
+    "production cutover",
+    "RLS/HA/benchmark platform as prerequisites"
+  ]
+}

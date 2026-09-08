@@ -89,8 +89,8 @@
     {
       "providerId": "gowm.operational-reality",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:6f0d5550ec0db379b3b0829fadf2d4d16913962b1a6ed3b53d39d3739e8cdde2",
-      "manifestHash": "sha256:04d1701c914691c5e9742cb7f3211bb0cdbeafc32a87551807196dcd28a94bd0",
+      "implementationDigest": "sha256:837a3d868375540a571a8b41a51bcaed0f56d7e7a15b707c8046bf652209c78d",
+      "manifestHash": "sha256:4434d8ac7724ac672d5e8439c9adba2e99d857fde2f2d88b55ef78a1ae5e95e4",
       "manifestPath": "contracts/manifests/providers/operational-reality-provider.json",
       "endpoint": "http://operational-reality-provider:8094",
       "approvalId": "operational-reality-v1.0",
@@ -113,8 +113,8 @@
     {
       "providerId": "gowm.reference-catalog",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:880fcebf1fd7645bfb545f195e525f94f16c589533565de42f88c2b691a9ba51",
-      "manifestHash": "sha256:cf41ac533a7e266fc5534baf7f32b123097d6364a49d4a83f19e08096e96ac29",
+      "implementationDigest": "sha256:dacf38933316a1cb1b61337c3aeb75fdf3712017ccdcd549577df574209ddfd2",
+      "manifestHash": "sha256:060aff54dbe54c940a9cff875b33d32520131d29097502222abc7139cea3dd26",
       "manifestPath": "contracts/manifests/providers/reference-catalog-provider.json",
       "endpoint": "http://reference-catalog-provider:8090",
       "approvalId": "grounding-reference-catalog-v1.0",
@@ -185,8 +185,8 @@
     {
       "providerId": "gowm.world-evidence",
       "providerVersion": "1.0.0",
-      "implementationDigest": "sha256:55b5bfa88d61cd4a8d25298eb1f38e63d65c86007fde1fc7c4df4299bdbfd317",
-      "manifestHash": "sha256:73da6d7e828aab047270db2a4da314ff6300a1fb0d6947876f45e98e1627d2f8",
+      "implementationDigest": "sha256:a49a1999d9e2a6faccf2cbad8c6a2369663040187d42856e9bc8ea39a1285eae",
+      "manifestHash": "sha256:4d061eac67b7ad6cc24ca3df578341727d1d8b4d5fe6d0870766039133726512",
       "manifestPath": "contracts/manifests/providers/world-evidence-provider.json",
       "endpoint": "http://world-evidence-provider:8093",
       "approvalId": "grounding-world-evidence-v1.0",

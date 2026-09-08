@@ -1,3 +1,4 @@
+import { validateMapperDevice } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/mapper.js";
 import { createHash } from "node:crypto";
 import type pg from "pg";
 import { withTransaction } from "../../../packages/runtime/src/db.js";
@@ -25,13 +26,22 @@ export class UgvIngestRepository {
   async startSession(clientId: string,brokerId: string,sessionPresent: boolean,sourceLock: SourceSchemaLock,
     codeVersion: string,mapperContext: MapperConfig): Promise<{ sessionId: string; sessionLost: boolean }> {
     return withTransaction(this.pool,async (client) => {
-      const mapperContextJson = canonicalJson(mapperContext);
-      const mapperContextHash = createHash("sha256").update(mapperContextJson).digest("hex");
-      const previous = await client.query<{ session_id: string; session_epoch: string; source_schema_lock: SourceSchemaLock; mapper_context_hash: string }>(
-        `SELECT session_id,session_epoch,source_schema_lock,mapper_context_hash FROM ugv_ingest.mqtt_session
+      validateMapperDevice(mapperContext);
+      const previous = await client.query<{ session_id: string; session_epoch: string; source_schema_lock: SourceSchemaLock; mapper_context_hash: string; mapper_context: MapperConfig }>(
+        `SELECT session_id,session_epoch,source_schema_lock,mapper_context_hash,mapper_context FROM ugv_ingest.mqtt_session
           WHERE client_id=$1 AND broker_id=$2 ORDER BY session_epoch DESC LIMIT 1 FOR UPDATE`,
         [clientId,brokerId]
       );
+      const previousContext = previous.rows[0]?.mapper_context;
+      // Catalog versions can advance as telemetry arrives. A resumed session retains
+      // its original reference version, but every other context change is still rejected.
+      if (sessionPresent && previousContext?.mapperVersion === "ugv-mqtt-canonical-v3" && mapperContext.deviceContext &&
+          previousContext.deviceContext?.actorReferenceKey.id === mapperContext.deviceContext.actorReferenceKey.id) {
+        mapperContext = { ...mapperContext, deviceContext: { ...mapperContext.deviceContext,
+          actorReferenceKey: previousContext.deviceContext.actorReferenceKey } };
+      }
+      const mapperContextJson = canonicalJson(mapperContext);
+      const mapperContextHash = createHash("sha256").update(mapperContextJson).digest("hex");
       const priorEpoch = Number(previous.rows[0]?.session_epoch ?? 0);
       const sessionLost = priorEpoch > 0 && !sessionPresent;
       if (sessionPresent && previous.rows[0] && canonicalJson(previous.rows[0].source_schema_lock) !== canonicalJson(sourceLock)) {
@@ -165,7 +175,7 @@ export class UgvIngestRepository {
       return { messageId: row.message_id,topic: row.topic,payloadSha256: row.payload_sha256,payload: row.decoded_payload,
         adapterReceivedAt: row.adapter_received_at.toISOString(),retained: row.retained_flag,ingestSequence: Number(row.ingest_sequence),
         cursor,streamContext: shared?.authority_state ?? {},mapperConfig,
-        ...(mapperConfig.mapperVersion === "ugv-mqtt-canonical-v2" ? { sourceQos: row.qos } : {}),
+        ...(["ugv-mqtt-canonical-v2","ugv-mqtt-canonical-v3"].includes(mapperConfig.mapperVersion) ? { sourceQos: row.qos } : {}),
         streamNamespace: row.mapper_context_hash };
     });
   }
@@ -300,5 +310,6 @@ function validatedMapperConfig(value: unknown): MapperConfig {
   if (record.samplingPolicy !== undefined && (!record.samplingPolicy || typeof record.samplingPolicy !== "object" || Array.isArray(record.samplingPolicy))) {
     throw new Error("persisted mapper context has invalid samplingPolicy");
   }
+  validateMapperDevice(record as unknown as MapperConfig);
   return record as unknown as MapperConfig;
 }
