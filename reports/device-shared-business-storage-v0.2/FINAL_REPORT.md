@@ -58,4 +58,4 @@ PostgreSQL 18 隔离测试容器，PostGIS 3.6.4、pgvector 0.8.6。最终库为
 
 ## 交付
 
-功能分支 `codex/gowm-device-shared-business-storage-v0.2`，实现提交 `718a0b81f8dccde7bc111a0e781fc436f633c441`。推送 / Draft PR 信息将在交付记录中补齐。该分支包含基线已有的 10 个前置提交；本任务没有改写已有 main 或纳入现有未跟踪部署输出。未 merge、tag 或 release。
+功能分支 `codex/gowm-device-shared-business-storage-v0.2`，实现提交 `718a0b81f8dccde7bc111a0e781fc436f633c441`。已推送，并创建 [Draft PR #21](https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/21)。验证报告提交 `f8a06a6540b55e7a6d0a4418c27d0544e27cc759`；本交付记录作为后续文档提交。该分支包含基线已有的 10 个前置提交；本任务没有改写已有 main 或纳入现有未跟踪部署输出。未 merge、tag 或 release。

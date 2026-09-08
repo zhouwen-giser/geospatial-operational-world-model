@@ -821,11 +821,11 @@
       "phase": "P7",
       "requirement": "提交并尝试推送GOWM Draft PR；权限不足如实报告，不伪造链接或合并发布。",
       "verification": "delivery",
-      "status": "PENDING",
+      "status": "PASS",
       "evidence": [
-        "business-check.log",
-        "docs/shared-business-storage-handoff",
-        "source inventory / final report"
+        "Draft PR #21",
+        "implementation 718a0b81f8dccde7bc111a0e781fc436f633c441",
+        "validation report f8a06a6540b55e7a6d0a4418c27d0544e27cc759"
       ]
     }
   ],
@@ -833,9 +833,11 @@
   "delivery": {
     "branch": "codex/gowm-device-shared-business-storage-v0.2",
     "implementationCommit": "718a0b81f8dccde7bc111a0e781fc436f633c441",
-    "draftPr": null,
-    "status": "PENDING_PUSH",
-    "predecessorNotice": "branch builds on 10 pre-existing local-main commits beyond origin/main; those were not authored by this task"
+    "draftPr": "https://github.com/zhouwen-giser/geospatial-operational-world-model/pull/21",
+    "status": "PUSHED_DRAFT_PR_CREATED",
+    "predecessorNotice": "branch builds on 10 pre-existing local-main commits beyond origin/main; those were not authored by this task",
+    "validationReportCommit": "f8a06a6540b55e7a6d0a4418c27d0544e27cc759",
+    "noMergeTagRelease": true
   },
   "finalMarker": "GOWM_DEVICE_SHARED_BUSINESS_STORAGE_DEV_READY"
 }
