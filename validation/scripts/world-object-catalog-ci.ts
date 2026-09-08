@@ -19,6 +19,15 @@ try {
     const database=`gowm_world_catalog_ci_${suffix}`;
     const target=new URL(source); target.pathname=`/${database}`;
     const roles:string[]=[], pools:pg.Pool[]=[];
+    const connectionClosures:Promise<void>[]=[];
+    const openPool=(connectionString:string,max:number)=>{
+      const pool=new pg.Pool({connectionString,max});
+      pool.on("connect",client=>{
+        connectionClosures.push(new Promise<void>(resolve=>client.once("end",()=>resolve())));
+      });
+      pools.push(pool);
+      return pool;
+    };
     const directory=await mkdtemp("/dev/shm/gowm-world-catalog-");
     let created=false;
     const env={...process.env,DATABASE_URL:target.toString(),ANALYSIS_SRID:"32648",STAS_DB_PASSWORD:"catalog-isolated-stas"};
@@ -26,7 +35,7 @@ try {
       `import {migrate} from './scripts/migrate.ts'; await migrate({maximumMigrationNumber:${maximum}});`],{env,maxBuffer:4*1024*1024});
     try {
       await admin.query(`CREATE DATABASE "${database}"`); created=true;
-      const setup=new pg.Pool({connectionString:target.toString(),max:4}); pools.push(setup);
+      const setup=openPool(target.toString(),4);
       await migrate(baseline||77);
       const ledger=(await setup.query("SELECT version,checksum FROM schema_migration ORDER BY version")).rows;
       await setup.query("INSERT INTO data_scope(scope_key,operational_domain) VALUES ('catalog-a','TEST'),('catalog-b','TEST')");
@@ -51,7 +60,7 @@ try {
         await admin.query(`CREATE ROLE "${role}" LOGIN NOSUPERUSER NOBYPASSRLS PASSWORD '${password}'`); roles.push(role);
         await admin.query(`GRANT ${membership} TO "${role}"`);
         const url=new URL(target); url.username=role; url.password=password;
-        const pool=new pg.Pool({connectionString:url.toString(),max:2}); pools.push(pool);
+        const pool=openPool(url.toString(),2);
         return {url:url.toString(),pool};
       };
       const reader=await login("reader","gowm_reference_service");
@@ -148,7 +157,11 @@ try {
         concurrentIdempotence:"PASS",metadataAndSearchRebuild:"PASS",sampleUpdates:1000,catalogRowsBefore:beforeGrowth,catalogRowsAfterSamples:beforeGrowth,catalogRowsAfterMetadata:await counts()}));
     } finally {
       await Promise.all(pools.map(pool=>pool.end()));
-      if(created) await admin.query(`DROP DATABASE "${database}" WITH (FORCE)`);
+      // pg-pool can resolve end() before idle clients emit their final end event.
+      // Wait for socket closure before dropping the database; FORCE can otherwise
+      // send 57P01 to an idle client and trigger an unhandled pool error after PASS.
+      await Promise.all(connectionClosures);
+      if(created) await admin.query(`DROP DATABASE "${database}"`);
       for(const role of roles) await admin.query(`DROP ROLE "${role}"`);
       await rm(directory,{recursive:true,force:true});
     }
