@@ -182,3 +182,15 @@ Apply migration 079, run the production `device-cli.js init-default` and
 See [UGV device actor deployment](UGV_DEVICE_ACTOR.md) for the complete environment,
 service binding contract, read-only verification, and persistent-session cutover.
 The default initializer creates configuration only; it does not create test observations.
+
+### 默认设备及业务数据库账号
+
+新包执行 `scripts/dev-deploy.sh init` 后，设置实际 `UGV_MQTT_URL`，再执行 `up`。
+默认启用 UGV 采集，并自带来源锁定的协议文件。正式迁移完成后自动创建两个业务数据库
+账号，再登记设备主档/端点/7 条流、执行只读检查，成功后自动订阅设备 MQTT。
+既有 .env、范围、来源和世界对象会复用；初始化冲突会阻止采集启动。
+
+数据库账号固定为 `ugv_smpp_app` / `ugv_sdar_app`，随机密码及连接配置在安装目录的
+`.runtime/dev-deploy/business-connections.env`（0600），不写入分发包或日志。
+重复安装不旋转密码。仅初始化账号/共享 schema，不自动执行消费者原生表迁移；
+详见 [设备安装说明](UGV_DEVICE_ACTOR.md#安装时自动初始化2026-09-08)。

@@ -1,4 +1,5 @@
 import pg, { type PoolClient } from 'pg';
+import { initializeBusinessAccounts } from '../../scripts/business-storage/accounts.js';
 import { randomUUID } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -55,6 +56,47 @@ integration('UGV master actor integration on isolated PostgreSQL', () => {
     expect((await pool.query('SELECT count(*)::int n FROM gowm_device.device WHERE data_scope_key=$1',[key])).rows[0].n).toBe(1);
     expect(a.routes).toHaveLength(7);
     expect((await pool.query('SELECT count(*) FROM public.world_observation')).rows).toEqual(before);
+  });
+  it('reuses site TEST scope, source default space and existing world object without rewriting them', async () => {
+    await tx(async c=>{
+      const site={...input,scope:`${key}-site`,sourceKey:`${key}-site-source`,pipelineKey:`${key}-site-pipeline`,
+        identifier:`${key}-site`,endpointKey:`${key}-site-endpoint`,brokerUrl:'mqtt://site-broker/'};
+      await c.query("INSERT INTO data_scope(scope_key,operational_domain) VALUES($1,'TEST')",[site.scope]);
+      await c.query("INSERT INTO source_registry(source_key,data_scope_key,source_type,default_analysis_space_key) VALUES($1,$2,'MQTT','default')",[site.sourceKey,site.scope]);
+      const deviceId=`ugv:${site.identifier}`;
+      await c.query("INSERT INTO world_object(id,data_scope_key,object_type,properties) VALUES($1,$2,'UGV','{\"name\":\"Site UGV\"}')",[deviceId,site.scope]);
+      const snapshot=async()=>({
+        scope:(await c.query('SELECT * FROM data_scope WHERE scope_key=$1',[site.scope])).rows,
+        source:(await c.query('SELECT * FROM source_registry WHERE source_key=$1',[site.sourceKey])).rows,
+        world:(await c.query('SELECT * FROM world_object WHERE id=$1',[deviceId])).rows
+      });
+      const before=await snapshot();
+      const first=await initializeDefaultDevice(c,site),second=await initializeDefaultDevice(c,site);
+      expect(first).toEqual(second); expect(first.context.deviceId).toBe(deviceId);
+      expect(first.context.routes).toHaveLength(7);expect(await snapshot()).toEqual(before);
+      expect((await c.query('SELECT count(*)::int n FROM gowm_device.device WHERE data_scope_key=$1',[site.scope])).rows[0].n).toBe(1);
+    },true);
+  });
+  it('creates business logins with stable passwords and grants current and future domain tables', async () => {
+    const env={SMPP_DB_PASSWORD:randomUUID().replaceAll('-',''),SDAR_DB_PASSWORD:randomUUID().replaceAll('-','')};
+    // This suite is restricted to a disposable GOWM test database/server.
+    await initializeBusinessAccounts(url!,env);
+    const passwords=(await pool.query("SELECT rolname,rolpassword FROM pg_authid WHERE rolname IN ('ugv_smpp_app','ugv_sdar_app') ORDER BY rolname")).rows;
+    await initializeBusinessAccounts(url!,env);
+    expect((await pool.query("SELECT rolname,rolpassword FROM pg_authid WHERE rolname IN ('ugv_smpp_app','ugv_sdar_app') ORDER BY rolname")).rows).toEqual(passwords);
+    await expect(initializeBusinessAccounts(url!,{...env,SMPP_DB_PASSWORD:'different'.repeat(8)})).rejects.toThrow('BUSINESS_ACCOUNT_AUTH_FAILED');
+    for(const [role,schema,password] of [['ugv_smpp_app','ugv_smpp',env.SMPP_DB_PASSWORD],['ugv_sdar_app','ugv_sdar',env.SDAR_DB_PASSWORD]]){
+      await pool.query(`CREATE TABLE ${schema}.bootstrap_probe(id int)`);
+      const login=new URL(url!);login.username=role!;login.password=password!;
+      const c=new pg.Client({connectionString:login.href});await c.connect();
+      try {
+        expect((await c.query('SHOW search_path')).rows[0].search_path).toBe(`${schema}, public`);
+        await c.query('INSERT INTO bootstrap_probe VALUES(1)');
+        expect((await c.query('SELECT * FROM bootstrap_probe')).rows).toEqual([{id:1}]);
+        const other=schema==='ugv_smpp'?'ugv_sdar':'ugv_smpp';
+        expect((await c.query("SELECT has_schema_privilege(current_user,$1,'USAGE') allowed",[other])).rows[0].allowed).toBe(false);
+      } finally {await c.end();await pool.query(`DROP TABLE ${schema}.bootstrap_probe`);}
+    }
   });
   it('makes SMPP and later SDAR resolve the same sole master and preserves earlier binding history', async () => {
     const smpp=await tx(c=>resolveBusinessDeviceContext(c,business));

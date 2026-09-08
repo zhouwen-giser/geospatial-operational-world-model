@@ -33,10 +33,12 @@ export async function initializeDefaultDevice(c: PoolClient, i: DefaultDeviceInp
   const url = new URL(i.brokerUrl);
   if (!['mqtt:','mqtts:','ws:','wss:'].includes(url.protocol) || url.username || url.password) throw Error('MQTT_ENDPOINT_CONFIG_INVALID');
   await c.query('SELECT pg_advisory_xact_lock(718080)');
-  await ensure(c, 'data_scope', { scope_key: i.scope, operational_domain: 'SIMULATION' });
+  // Deployment defaults only fill missing rows; existing scope classification and
+  // source default analysis space are authoritative (the stream has an explicit space).
+  await ensure(c, 'data_scope', { scope_key: i.scope, operational_domain: 'SIMULATION' }, []);
   await ensure(c, 'analysis_space', { analysis_space_key: i.analysisSpaceKey, canonical_srid: i.analysisSrid,
     dimension_model: '3D', distance_model: 'PLANAR_METRE_V1', transform_pipeline_version: 'postgis-v1' }, ['canonical_srid']);
-  await ensure(c, 'source_registry', { source_key: i.sourceKey, data_scope_key: i.scope, source_type: 'MQTT', default_analysis_space_key: i.analysisSpaceKey }, ['data_scope_key','default_analysis_space_key']);
+  await ensure(c, 'source_registry', { source_key: i.sourceKey, data_scope_key: i.scope, source_type: 'MQTT', default_analysis_space_key: i.analysisSpaceKey }, ['data_scope_key']);
   await ensure(c, 'producer_pipeline', { pipeline_key: i.pipelineKey, source_key: i.sourceKey, pipeline_version: '1', output_kind: 'CANONICAL_OBSERVATION' }, ['source_key']);
   const matches = await c.query('SELECT * FROM gowm_device.device WHERE data_scope_key=$1 AND identifier_namespace=$2 AND device_identifier=$3', [i.scope,i.namespace,i.identifier]);
   const match = matches.rows[0];

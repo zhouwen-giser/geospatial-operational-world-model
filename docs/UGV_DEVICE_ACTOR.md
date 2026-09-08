@@ -96,3 +96,42 @@ v1/v2 持久消息继续按旧规则处理，已入库 actor 为空的历史事�
 `gowm_ugv_actor_test` 或 `gowm_ugv_actor_test_*` 隔离数据库，避免把跳过集成测试当作成功。
 测试覆盖重复初始化、现有对象复用、双设备、服务默认关联、只读角色、引用查询、
 不合法设备、会话冻结、重投幂等和旧事件不变。测试不连接运行中的 broker。
+
+## 安装时自动初始化（2026-09-08）
+
+新部署包默认启用 `UGV_MQTT_INGEST_ENABLED=true`，自带来源锁定的
+`config/ugv-source-schema`。先运行 `bash scripts/dev-deploy.sh init`，在生成的
+`.env` 中配置实际 `UGV_MQTT_URL`，再运行 `bash scripts/dev-deploy.sh up`。
+无需再手动执行设备初始化命令。部署入口会检查 broker 地址和来源文件，
+不能用占位地址启动；旧环境显式关闭采集的设置保持不变，需要启用时设为 true。
+
+Compose 自动顺序：
+
+1. `migrate` 应用正式迁移。
+2. `business-accounts-init` 创建/检查 `ugv_smpp_app`、`ugv_sdar_app` 数据库登录角色。
+3. `ugv-device-init` 依次执行 `init-default` 和 `verify-default`。
+4. 两条命令都成功后，`ugv-mqtt-ingest` 启动并订阅 7 个固定 MQTT 主题；就绪检查要求订阅成功。
+
+初始化复用已有主档、世界对象、范围、来源及 pipeline。已有范围的 TEST/SIMULATION
+分类和来源默认分析空间保持不变；只核对来源所属范围以及显式采集分析空间的 SRID。
+缺少主档时才登记主档；缺少世界对象时才创建。重复执行不新增设备、不改名、不覆盖
+禁用/冲突的端点和采集流。跨范围、身份、broker、绑定及 datastream 冲突使安装失败。
+使用 `GOWM_DEVICE_ID` 可明确选择既有世界对象；未设置时优先采用已匹配主档，首次默认
+世界对象 ID 为 `ugv:${UGV_DEVICE_ID}`。实际外部设备标识与主档 ID 仍分开处理。
+
+`init` 为两个数据库账号生成独立随机密码，保存于 `.env` 和
+`.runtime/dev-deploy/business-connections.env`（权限 0600，目录 0700）。文件包含账号、
+密码、固定 schema 和 Compose 网络连接 URL；外部分仓使用时把 `postgres:5432`
+替换为实际数据库主机及发布端口。重复安装保留密码，账号已有且密码不一致时明确失败，
+不会自动重置。直接用 Compose 前也必须先执行 `init`，或提供两个合法且不同的密码。
+
+账号仅获得各自固定 schema 的 DML、序列权限及设备配置读取角色，不创建实例库，
+不设置全局默认 device_id。缺失的共享 schema 会创建为空；账号初始化不等于
+SMPP/SDAR 原生表迁移已安装。原生业务表仍由既有 `business-storage/cli.js install`
+管理，SDAR 仍要求管理员提供 public.vector 扩展。未来由同一安装角色创建的表自动
+继承域内授权；若变更迁移管理员，安装完成后重新执行账号初始化以授权既有表。
+真实 service key 未配置时不会生成虚构业务服务绑定；消费者通过统一上下文解析入口
+持久化绑定并显式传入 device_id。
+
+本流程不清空数据、不回填旧事件、不重置 MQTT 持久会话。v2 → v3 的在用持久会话仍须
+按前文先排空旧 inbox/outbox 再切换；该一次性升级操作不能混入每次启动的初始化。

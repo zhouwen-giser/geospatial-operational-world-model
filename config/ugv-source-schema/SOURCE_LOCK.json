@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "gdps-ugv-source-schema/1.0",
+  "sourceRevision": "c10620572a7e1f0a881a8bd97198618bcf5d3d5a",
+  "sourceRepository": "isr-simulation",
+  "generationMethod": "source TOOLS AST extraction + FastMCP Tool.from_function; original function bodies never invoked",
+  "generatorVersions": {
+    "mcp": "1.26.0",
+    "pydantic": "2.11.7"
+  },
+  "exporterSha256": "80f415e843169edfdf9a73ff671ac02149bb7626d6c80f3d4af733e89eb999f1",
+  "sources": [
+    {
+      "path": "ros_ws/src/ros2_mcp_server/ros2_mcp_server/mcp_server/ugv_mcp_server.py",
+      "bytes": 113598,
+      "sha256": "ad4f2f34d6eb65adcf521c96984f2905292ff26cf96d38e7f37fa709edea923c"
+    },
+    {
+      "path": "ros_ws/src/ros2_mcp_server/ros2_mcp_server/mcp_server/schemas.py",
+      "bytes": 19315,
+      "sha256": "223fdeb7198c73dda44c2be55c6a1729ffbe52c43329dd9a5ce99b3cff7880f4"
+    },
+    {
+      "path": "ros_ws/src/ros2_mcp_server/ros2_mcp_server/mcp_server/error_codes.py",
+      "bytes": 9366,
+      "sha256": "f7e0c333361666dc242c493a4980fd0bed81c85f8e264d9b5f48387521e43f64"
+    },
+    {
+      "path": "ros_ws/script/export_mcp_schemas.py",
+      "bytes": 3122,
+      "sha256": "f022335caead969fa88c5a6db37c9da57a0f09901bce51f4389e679194abefce"
+    }
+  ],
+  "files": [
+    {
+      "name": "error_codes.json",
+      "bytes": 4272,
+      "sha256": "6fc492823759b204f54ebc465318191a143e951b66d04daa7c3f06343f3a781a"
+    },
+    {
+      "name": "mcp_ugv.json",
+      "bytes": 50331,
+      "sha256": "e2c7a26085fd48a706b79b9336b966526a4f5d589764a9853d77b281dd8bb1ed"
+    },
+    {
+      "name": "mqtt_topics.json",
+      "bytes": 11898,
+      "sha256": "cd3b68c8eb5506927cd2b5c80d6d8af1564944eb21997aa9642e67e6be631a95"
+    }
+  ],
+  "toolCount": 15,
+  "topicCount": 16,
+  "limitations": [
+    "Does not certify live broker QoS or actual topic availability",
+    "Source Python SDK version was not locked; export uses the recorded pinned versions"
+  ]
+}

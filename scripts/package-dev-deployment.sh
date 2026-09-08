@@ -28,6 +28,7 @@ if [[ -e "$archive_path" && "$force" != true ]]; then
 fi
 
 node "$project_dir/scripts/validate-deployment-env.mjs"
+node "$project_dir/scripts/verify-ugv-bootstrap-package.mjs" "$project_dir"
 if [[ ! -f "$project_dir/artifacts/h3-bindings.mjs" ]]; then
   H3_SOURCE_REPO="${H3_SOURCE_REPO:-$(cd "$project_dir/.." && pwd)/h3-spatial-toolkit}" \
     bash "$project_dir/scripts/dev-deploy.sh" prepare-h3
@@ -170,7 +171,7 @@ for entrypoint in scripts/dev-deploy.sh scripts/opendrive-task-network.sh; do
   [[ -x "$verified_dir/$entrypoint" ]]
   bash -n "$verified_dir/$entrypoint"
 done
-(cd "$verified_dir" && node scripts/validate-deployment-env.mjs && bash scripts/opendrive-task-network.sh --help >/dev/null)
+(cd "$verified_dir" && node scripts/validate-deployment-env.mjs && node scripts/verify-ugv-bootstrap-package.mjs && bash scripts/opendrive-task-network.sh --help >/dev/null)
 tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
   -cf - -C "$staging_root/verify" "$package_name" | gzip -n > "$staging_root/reproduced.tar.gz"
 cmp "$archive_path" "$staging_root/reproduced.tar.gz"
@@ -187,6 +188,7 @@ if [[ "$verify_image" == true ]]; then
     fs.accessSync("/app/dist/scripts/world-object-catalog-backfill.js", fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/business-storage/cli.js", fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/business-storage/device-cli.js", fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/business-storage/accounts.js", fs.constants.R_OK);
     fs.accessSync("/app/database/migrations/078_device_shared_business_storage.sql", fs.constants.R_OK);
     fs.accessSync("/app/database/migrations/079_device_context_reader.sql", fs.constants.R_OK);
     const hosted = JSON.parse(fs.readFileSync("/app/database/shared-business-storage/install-manifest.json", "utf8"));
@@ -198,6 +200,8 @@ if [[ "$verify_image" == true ]]; then
     dist/scripts/business-storage/cli.js install --help
   docker run --rm --network none --read-only --entrypoint node "$image_tag" \
     dist/scripts/business-storage/device-cli.js init-default --help
+  docker run --rm --network none --read-only --entrypoint node "$image_tag" \
+    dist/scripts/business-storage/accounts.js --help
 fi
 if [[ -e "$final_archive_path" ]]; then
   backup_dir="$(mktemp -d "$output_dir/previous-${package_name}.XXXXXX")"

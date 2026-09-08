@@ -1,0 +1,146 @@
+{
+  "mcp_error_codes": {
+    "0": {
+      "name": "OK",
+      "meaning": "成功"
+    },
+    "790": {
+      "name": "TASK_UNFINISHED",
+      "meaning": "有任务未完成（zz.md §5.2）"
+    },
+    "794": {
+      "name": "TASK_STATE_CMD_ILLEGAL",
+      "meaning": "指令与当前任务状态不匹配（含任务不存在、对未开始任务暂停等；zz.md §5.2）"
+    },
+    "800": {
+      "name": "HAVETASK_NOT_ACCEPT",
+      "meaning": "有任务在执行，拒绝新任务（zz.md §5.2）"
+    },
+    "801": {
+      "name": "TASKDATA_MISS_TASKPOINTS",
+      "meaning": "缺少任务点（zz.md §5.2）"
+    },
+    "802": {
+      "name": "TASKDATA_NOT_TARGET",
+      "meaning": "目标不存在（zz.md §5.2 语义扩展至打击/锁定目标）"
+    },
+    "810": {
+      "name": "PARAM_INVALID",
+      "meaning": "参数无效（格式/取值/区域校验失败）"
+    },
+    "811": {
+      "name": "PARAM_MISSING",
+      "meaning": "缺少必要参数"
+    },
+    "812": {
+      "name": "ACTION_UNKNOWN",
+      "meaning": "未知动作/指令/模式"
+    },
+    "820": {
+      "name": "CONFLICT_CHASSIS_BUSY",
+      "meaning": "【已废弃 2026-07-28，支持边走边侦察后不再产生】底盘机动执行中，禁止启动/恢复侦察"
+    },
+    "821": {
+      "name": "CONFLICT_RECON_ACTIVE",
+      "meaning": "【已废弃 2026-07-28】侦察进行中，禁止底盘机动"
+    },
+    "822": {
+      "name": "CONFLICT_LOCK_ACTIVE",
+      "meaning": "【已废弃 2026-07-28】目标锁定中，禁止底盘机动"
+    },
+    "823": {
+      "name": "CONFLICT_EO_BUSY",
+      "meaning": "光电手动指向/周扫进行中，禁止启动侦察"
+    },
+    "824": {
+      "name": "CONFLICT_RECON_EO",
+      "meaning": "侦察非空闲，禁止手动 EO"
+    },
+    "830": {
+      "name": "NOT_LOCKED",
+      "meaning": "未锁定目标，禁止打击确认"
+    },
+    "831": {
+      "name": "RECON_NOT_RUNNING",
+      "meaning": "侦察未启动/未运行"
+    },
+    "832": {
+      "name": "RESET_NOT_ALLOWED",
+      "meaning": "非结束态禁止复位"
+    },
+    "834": {
+      "name": "ROUTE_PLAN_FAILED",
+      "meaning": "道路网路径规划失败"
+    },
+    "840": {
+      "name": "PAYLOAD_UNAVAILABLE",
+      "meaning": "载荷离线/指令无应答"
+    },
+    "841": {
+      "name": "PAYLOAD_REJECTED",
+      "meaning": "载荷拒绝执行"
+    },
+    "842": {
+      "name": "DEVICE_FAULT",
+      "meaning": "设备异常（相机/伺服/服务不可用）"
+    },
+    "850": {
+      "name": "ANOMALY",
+      "meaning": "异常门控（未知异常类型）"
+    },
+    "851": {
+      "name": "ANOMALY_PATH_BLOCKED",
+      "meaning": "异常门控：道路阻断"
+    },
+    "852": {
+      "name": "ANOMALY_GNSS_LOST",
+      "meaning": "异常门控：GNSS丢失"
+    },
+    "853": {
+      "name": "ANOMALY_WEAPON_JAMMED",
+      "meaning": "异常门控：武器异常"
+    },
+    "854": {
+      "name": "ANOMALY_EO_NO_AIM",
+      "meaning": "异常门控：光电/云台异常"
+    },
+    "855": {
+      "name": "ANOMALY_POWER_DEPLETED",
+      "meaning": "异常门控：电量/油量耗尽"
+    },
+    "856": {
+      "name": "ANOMALY_NET_LOST",
+      "meaning": "异常门控：通信丢失"
+    },
+    "857": {
+      "name": "ANOMALY_SENSOR_BLIND",
+      "meaning": "异常门控：传感器致盲"
+    },
+    "858": {
+      "name": "ANOMALY_MOBILITY_DAMAGE",
+      "meaning": "异常门控：机动损伤"
+    },
+    "859": {
+      "name": "ANOMALY_NAV_STUCK",
+      "meaning": "异常门控：规划卡死"
+    },
+    "860": {
+      "name": "ATTACK_FAILED",
+      "meaning": "打击失败（未命中/裁判拒止，详见 result/event_type）"
+    },
+    "861": {
+      "name": "ATTACK_TIMEOUT",
+      "meaning": "打击超时（未收到裁判结果）"
+    },
+    "899": {
+      "name": "INTERNAL_ERROR",
+      "meaning": "未分类内部错误"
+    }
+  },
+  "mqtt_exception_codes": {
+    "0x0001": "equipment FATAL 相机/伺服缺失；motion FATAL 扫描规划失败",
+    "0x0006": "object_loss 锁定目标丢失",
+    "0x0010": "motion GENERAL 区域超出探测范围/覆盖不全"
+  },
+  "note": "MCP 拒绝/结果码与 MQTT 载荷运行异常码分属两个语义域，详见 doc/equipment/错误码清单.md"
+}
