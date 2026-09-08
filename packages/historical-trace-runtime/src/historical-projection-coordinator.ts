@@ -204,7 +204,8 @@ export class HistoricalProjectionCoordinator {
       historicalProjectionFailures: 0,
       staleFenceFailures: 0
     };
-    const claims = await trajectories.claim(options.workerId, options.batchSize, options.leaseSeconds);
+    // Materialization is serial: only acquire a lease when ready to execute.
+    const claims = await trajectories.claim(options.workerId, 1, options.leaseSeconds);
     result.historicalTrajectoryClaims = claims.length;
     for (const claim of claims) {
       try {

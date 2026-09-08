@@ -1,3 +1,4 @@
+import { guardedProjectionPool } from "./projection-execution.js";
 import {
   canonicalInputSetHash,
   canonicalSha256,
@@ -1248,6 +1249,7 @@ export class PostgresHistoricalTrajectoryMaterializer {
   private readonly outcomes: HistoricalTrajectoryOutcomeRepository;
 
   public constructor(pool: SqlPool, dependencies: PostgresHistoricalTrajectoryMaterializerDependencies = {}) {
+    pool = guardedProjectionPool(pool);
     this.loader = dependencies.loader ?? new PostgresHistoricalTrajectoryInputLoader(pool,dependencies.executionBounds);
     this.slicer = dependencies.slicer ?? new PostgresMobilityDbTrajectorySlicer(pool,dependencies.executionBounds);
     this.trajectories = dependencies.trajectories

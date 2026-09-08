@@ -103,7 +103,7 @@ describe("historical trajectory projection queue", () => {
       release: () => { calls.push("RELEASE"); }
     };
     const pool: SqlPool = {
-      query: async () => ({ rows: [] }),
+      query: async () => ({ rows: [{renewed:true}] as never[] }),
       connect: async () => {
         expect(preparedBeforeWriteTransaction).toBe(true);
         return connection;
@@ -149,8 +149,12 @@ describe("historical trajectory projection queue", () => {
     } satisfies HistoricalTrajectoryProjectionClaim;
     const second = { ...first, queueId: "00000000-0000-4000-8000-000000000002" };
     let failed = 0;
+    let claimIndex = 0;
     const trajectories: HistoricalTrajectoryProjectionRepository = {
-      claim: async () => [first, second],
+      claim: async (_worker, batchSize) => {
+        expect(batchSize).toBe(1);
+        return [claimIndex++ === 0 ? first : second];
+      },
       materializeAndComplete: async (claim) => {
         if (claim.queueId === second.queueId) throw new ProjectionFenceLostError();
         return {
@@ -168,14 +172,14 @@ describe("historical trajectory projection queue", () => {
       now: () => new Date(CAPTURED_AT)
     });
 
-    await expect(coordinator.materializeHistoricalTrajectories({
-      workerId: "worker-a", batchSize: 2, leaseSeconds: 30, retryDelayMs: 100
-    })).resolves.toEqual({
-      historicalTrajectoryClaims: 2,
-      historicalTrajectoriesMaterialized: 1,
-      historicalTrajectoryOutcomesRecorded: 0,
-      historicalProjectionFailures: 1,
-      staleFenceFailures: 1
+    const options={workerId:"worker-a",batchSize:2,leaseSeconds:30,retryDelayMs:100};
+    await expect(coordinator.materializeHistoricalTrajectories(options)).resolves.toEqual({
+      historicalTrajectoryClaims:1,historicalTrajectoriesMaterialized:1,
+      historicalTrajectoryOutcomesRecorded:0,historicalProjectionFailures:0,staleFenceFailures:0
+    });
+    await expect(coordinator.materializeHistoricalTrajectories(options)).resolves.toEqual({
+      historicalTrajectoryClaims:1,historicalTrajectoriesMaterialized:0,
+      historicalTrajectoryOutcomesRecorded:0,historicalProjectionFailures:1,staleFenceFailures:1
     });
     expect(failed).toBe(1);
   });

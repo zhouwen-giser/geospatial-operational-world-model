@@ -1,3 +1,4 @@
+import { guardedProjectionPool, withProjectionExecution } from "./projection-execution.js";
 import {
   canonicalSha256,
   historicalSemanticRequestHash
@@ -32,6 +33,7 @@ export interface HistoricalTrajectoryProjectionClaim {
   generation: number;
   state: "RUNNING";
   leaseUntil: string;
+  leaseSeconds?: number;
   dataScopeKey: string;
   capturedAt: string;
   query: HistoricalSemanticRequest;
@@ -174,7 +176,8 @@ export class PostgresHistoricalTrajectoryProjectionRepository
 implements HistoricalTrajectoryProjectionRepository {
   public constructor(
     private readonly pool: SqlPool,
-    private readonly bounds: SqlExecutionBounds = {}
+    private readonly bounds: SqlExecutionBounds = {},
+    private readonly execution: { leasePool?: SqlPool; signal?: AbortSignal } = {}
   ) {}
 
   public async claim(
@@ -182,12 +185,13 @@ implements HistoricalTrajectoryProjectionRepository {
     batchSize: number,
     leaseSeconds: number
   ): Promise<HistoricalTrajectoryProjectionClaim[]> {
+    this.execution.signal?.throwIfAborted();
     const claimed = await this.pool.query<QueueRow>(`
       SELECT * FROM gowm_history.claim_historical_trajectory_projection(
         $1::text, $2::integer, make_interval(secs => $3::double precision)
       )
     `, [workerId, batchSize, leaseSeconds]);
-    return claimed.rows.map((row) => mapClaim(row, workerId));
+    return claimed.rows.map((row) => ({ ...mapClaim(row, workerId), leaseSeconds }));
   }
 
   public async materializeAndComplete(
@@ -200,15 +204,66 @@ implements HistoricalTrajectoryProjectionRepository {
       query: claim.query,
       requestedSnapshot: claim.requestedSnapshot
     };
-    // Never hold a write connection while the loader/slicer use their own
-    // bounded read transactions. This also remains safe with a pool size of 1.
-    const prepared = await materializer.prepareForCommit(request);
-    return withProjectionTransaction(this.pool, async (connection) => {
-      await connection.query("SELECT gowm_history_v1.set_data_scope($1::text)", [claim.dataScopeKey]);
-      const result = await materializer.commitPreparedInTransaction(prepared, connection);
-      await complete(connection, claim, result);
-      return result;
-    }, this.bounds);
+    const controller = new AbortController();
+    const signal = this.execution.signal;
+    const leaseMs = (claim.leaseSeconds ?? 30) * 1000;
+    const leasePool = this.execution.leasePool ?? this.pool;
+    let deadline = 0;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let watchdog: ReturnType<typeof setTimeout> | undefined;
+    let inFlight: Promise<void> | undefined;
+    const lost = () => controller.abort(new ProjectionFenceLostError());
+    const cancelled = () => controller.abort(signal?.reason ?? new Error("Projection cancelled"));
+    signal?.addEventListener("abort", cancelled, { once: true });
+    if (signal?.aborted) cancelled();
+    const check = () => {
+      controller.signal.throwIfAborted();
+      if (performance.now() >= deadline) throw new ProjectionFenceLostError();
+    };
+    const renew = async () => {
+      controller.signal.throwIfAborted();
+      const started = performance.now();
+      const result = await leasePool.query<{renewed: unknown}>(`
+        SELECT gowm_history.renew_historical_trajectory_projection(
+          $1::uuid,$2::text,$3::bigint,make_interval(secs=>$4::double precision)
+        ) AS renewed`, [claim.queueId,claim.workerId,claim.generation,leaseMs/1000]);
+      if (stopped) return;
+      if (result.rows[0]?.renewed !== true) throw new ProjectionFenceLostError();
+      deadline = started + leaseMs;
+      check();
+      clearTimeout(watchdog);
+      watchdog = setTimeout(lost, Math.max(1, deadline-performance.now()));
+    };
+    const schedule = () => {
+      timer = setTimeout(() => {
+        inFlight = renew().catch(() => { if (!stopped) lost(); }).finally(() => {
+          if (!stopped && !controller.signal.aborted) schedule();
+        });
+      }, Math.max(10, Math.floor(leaseMs/3)));
+    };
+    try {
+      // Verify ownership before loading anything; an expired batch claim cannot
+      // be revived. Production uses an independent small pool for renewal.
+      await renew();
+      schedule();
+      return await withProjectionExecution(check, async () => {
+        const prepared = await materializer.prepareForCommit(request);
+        check();
+        return withProjectionTransaction(guardedProjectionPool(this.pool), async (connection) => {
+          await connection.query("SELECT gowm_history_v1.set_data_scope($1::text)", [claim.dataScopeKey]);
+          const result = await materializer.commitPreparedInTransaction(prepared, connection);
+          check();
+          await complete(connection, claim, result);
+          return result;
+        }, this.bounds);
+      });
+    } finally {
+      stopped = true;
+      clearTimeout(timer); clearTimeout(watchdog);
+      signal?.removeEventListener("abort", cancelled);
+      await inFlight;
+    }
   }
 
   public async fail(
