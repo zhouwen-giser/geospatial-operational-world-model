@@ -10,6 +10,7 @@ import type {
 import {
   HistoricalProjectionCoordinator,
   PostgresHistoricalTrajectoryMaterializer,
+  PostgresHistoricalTrajectoryOutcomeRepository,
   PostgresHistoricalTrajectoryProjectionRepository,
   PostgresTaskIntervalProjectionRepository,
   PostgresTrackletProjectionRepository,
@@ -104,8 +105,34 @@ async function runQueueWorkerE2e(
     const interval = await loadIntervalPin(adminPool, fixture);
     const query = historicalQuery(fixture, interval.referenceKey);
     const semanticRequestHash = historicalSemanticRequestHash(query);
+    const priorCapturedAt = await databaseNow(adminPool);
+    const pendingWriter = await workerPool.connect();
+    let priorOutcomeId: string;
+    try {
+      await pendingWriter.query("BEGIN");
+      await pendingWriter.query(HISTORICAL_TRACE_SQL.setScope, [fixture.dataScopeKey]);
+      const prior = await new PostgresHistoricalTrajectoryOutcomeRepository(workerPool).recordInTransaction(
+        pendingWriter, {dataScopeKey:fixture.dataScopeKey,capturedAt:priorCapturedAt,query},
+        semanticRequestHash,"PENDING","PROJECTION_PENDING"
+      );
+      priorOutcomeId = prior.outcomeId;
+      await pendingWriter.query("COMMIT");
+    } catch(error) { await pendingWriter.query("ROLLBACK"); throw error; }
+    finally { pendingWriter.release(); }
+    const priorOutcome = (await adminPool.query("SELECT to_jsonb(o) value FROM gowm_history.historical_trajectory_outcome o WHERE outcome_id=$1", [priorOutcomeId])).rows[0].value;
     const capturedAt = await databaseNow(adminPool);
     const effectiveSnapshot = snapshotManifest(`queue-${runId}`, capturedAt);
+    const exactReader = await providerPool.connect();
+    try {
+      await exactReader.query("BEGIN READ ONLY");
+      await exactReader.query(HISTORICAL_TRACE_SQL.setScope, [fixture.dataScopeKey]);
+      const args=[query.subjectReferenceKey.id,query.executionIntervalReferenceKey.id,query.phaseScope,semanticRequestHash,capturedAt];
+      assert.equal((await exactReader.query(HISTORICAL_TRACE_SQL.outcomeAsOf,[...args,Number(query.executionIntervalReferenceKey.version)])).rows.length,1);
+      assert.equal((await exactReader.query(HISTORICAL_TRACE_SQL.outcomeAsOf,[...args,Number(query.executionIntervalReferenceKey.version)+1])).rows.length,0,
+        "an earlier interval revision outcome must not qualify for another revision");
+      await exactReader.query("ROLLBACK");
+    } finally { exactReader.release(); }
+
     effectiveSnapshot.resources.push({
       resourceKind: "TASK_EXECUTION_INTERVAL", resourceId: `gowm:${interval.referenceKey.id}`,
       version: interval.referenceKey.version!, pinning: "PINNED", contentHash: interval.contentHash
@@ -160,6 +187,12 @@ async function runQueueWorkerE2e(
     ));
     assertProviderPending(replay);
 
+    await Promise.all(["concurrent-a", "concurrent-b"].map(async(nonce)=>{
+      assertProviderPending(await provider.runtime.execute(providerRequest(
+        provider,query,effectiveSnapshot,fixture.dataScopeKey,`${nonce}-${runId}`
+      )));
+    }));
+
     const queueRows = await adminPool.query<QueueRow>(
       `SELECT queue_id,state,generation,attempts,locked_by,last_error,
               trajectory_revision_id,outcome_id,captured_at,
@@ -178,7 +211,7 @@ async function runQueueWorkerE2e(
     assert.equal(iso(queue.captured_at), capturedAt);
     assert.deepEqual(
       await projectionEvidenceCounts(adminPool, fixture, semanticRequestHash),
-      { trajectories: 0, revisions: 0, outcomes: 0, analyses: 0 },
+      { trajectories: 0, revisions: 0, outcomes: 1, analyses: 1 },
       "Provider controlled enqueue must not compute or persist trajectory evidence"
     );
 
@@ -312,7 +345,7 @@ async function runQueueWorkerE2e(
     assert.equal(completed.outcome_id, null);
 
     const evidence = await projectionEvidenceCounts(adminPool, fixture, semanticRequestHash);
-    assert.deepEqual(evidence, { trajectories: 1, revisions: 1, outcomes: 0, analyses: 1 });
+    assert.deepEqual(evidence, { trajectories: 1, revisions: 1, outcomes: 1, analyses: 2 });
     const linked = await adminPool.query<{ linked: boolean }>(
       `SELECT EXISTS (
          SELECT 1
@@ -357,6 +390,9 @@ async function runQueueWorkerE2e(
       "the completed Provider read must not enqueue a duplicate request"
     );
 
+    assert.deepEqual((await adminPool.query("SELECT to_jsonb(o) value FROM gowm_history.historical_trajectory_outcome o WHERE outcome_id=$1", [priorOutcomeId])).rows[0].value,
+      priorOutcome, "reevaluation must not rewrite the old pending outcome");
+
     const zeroId = randomUUID().replaceAll("-", "");
     const zeroFixture = fixtureIdentity(zeroId);
     await seedFixtureFoundation(adminPool, zeroFixture);
@@ -399,6 +435,10 @@ async function runQueueWorkerE2e(
       versions,
       checks: {
         providerProjectionPending: true,
+        earlierPendingReevaluatedAtNewCapture: true,
+        exactIntervalOutcomeQualification: true,
+        oldPendingOutcomeUnchanged: true,
+        concurrentFrozenEnqueueDeduplicated: true,
         providerEnqueueIdempotent: true,
         providerQueueOnlyWrite: true,
         dedicatedServiceRole: true,
@@ -414,7 +454,7 @@ async function runQueueWorkerE2e(
         laterSameSemanticRequestCompleted: true
       },
       counts: {
-        providerEnqueueAttempts: 2,
+        providerEnqueueAttempts: 4,
         durableQueueRows: 1,
         workerClaims: workerResult.historicalTrajectoryClaims,
         committedTrajectoryRevisions: evidence.revisions,

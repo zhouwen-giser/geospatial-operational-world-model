@@ -33,7 +33,7 @@ describe("historical trace provider",()=>{
     const {pool,queries}=fakePool((sql)=>{
       if (sql.includes("task_execution_interval_revision_by_reference_as_of")) return [intervalRow()];
       if (sql.includes("historical_trajectory_outcome_as_of")) return [{
-        outcome_status:"AVAILABLE",reason_code:"TRAJECTORY_AVAILABLE",reason_codes:["TRAJECTORY_AVAILABLE"],projection_pending:false,
+        outcome_status:"PENDING",reason_code:"PROJECTION_PENDING",reason_codes:["PROJECTION_PENDING"],projection_pending:true,
         analysis_id:"00000000-0000-4000-8000-000000000050",content_hash:HASH,created_at:"2026-08-30T09:31:00.000Z"
       }];
       if (sql.includes("timestampN(")) return [
@@ -158,7 +158,29 @@ describe("historical trace provider",()=>{
     expect(queries.some((item)=>item.sql.includes("enqueue_historical_trajectory_projection"))).toBe(false);
   });
 
-  it("idempotently enqueues the exact effective snapshot when no revision or outcome exists",async()=>{
+  it("reassesses a newer interval revision and capture despite an older pending outcome",async()=>{
+    const changed={...input,executionIntervalReferenceKey:{...input.executionIntervalReferenceKey,version:"2"}};
+    const capturedAt="2026-08-30T11:00:00.000Z";
+    const effective:satisfiesManifest={querySnapshotId:"snapshot-new-revision",mode:"LATEST_AT_START",
+      consistency:"CONSISTENT_AT_START",capturedAt,resources:[],manifestHash:HASH};
+    const {pool,queries}=fakePool((sql)=>{
+      if(sql.includes("task_execution_interval_revision_by_reference_as_of"))return [{...intervalRow(),revision_no:2}];
+      if(sql.includes("historical_trajectory_outcome_as_of"))return [{outcome_status:"PENDING",
+        reason_code:"PROJECTION_PENDING",projection_pending:true,created_at:"2026-08-30T09:00:00.000Z"}];
+      if(sql.includes("enqueue_historical_trajectory_projection"))return [{queue_id:"00000000-0000-4000-8000-000000000099"}];
+      return [];
+    });
+    expect(historicalSemanticRequestHash(changed)).toBe(historicalSemanticRequestHash(input));
+    const result=await new HistoricalTraceRepository(pool).execute(changed,"scope-a",effective,5_000);
+    expect(result.status).toBe("PARTIAL");
+    const enqueue=queries.find(x=>x.sql.includes("enqueue_historical_trajectory_projection"));
+    expect(enqueue?.values?.[3]).toBe(2);
+    expect(enqueue?.values?.[7]).toBe(capturedAt);
+    expect(JSON.parse(String(enqueue?.values?.[8]))).toEqual(changed);
+    expect(JSON.parse(String(enqueue?.values?.[9]))).toEqual(effective);
+  });
+
+  it.each([undefined, {outcome_status:"PENDING",reason_code:"PROJECTION_PENDING",reason_codes:["PROJECTION_PENDING"],projection_pending:true,created_at:"2026-08-30T09:00:00.000Z"}])("enqueues the frozen request when an earlier outcome is pending (%j)",async(priorOutcome)=>{
     const effective:satisfiesManifest={
       querySnapshotId:"snapshot-history-enqueue",mode:"LATEST_AT_START",consistency:"CONSISTENT_AT_START",
       capturedAt:CAPTURED_AT,
@@ -169,6 +191,7 @@ describe("historical trace provider",()=>{
     };
     const {pool,queries}=fakePool((sql)=>{
       if (sql.includes("task_execution_interval_revision_by_reference_as_of")) return [intervalRow()];
+      if (sql.includes("historical_trajectory_outcome_as_of")) return priorOutcome?[priorOutcome]:[];
       if (sql.includes("enqueue_historical_trajectory_projection")) return [{queue_id:"00000000-0000-4000-8000-000000000099"}];
       return [];
     });

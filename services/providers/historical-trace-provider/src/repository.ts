@@ -21,11 +21,11 @@ export const HISTORICAL_TRACE_SQL={
       $8::timestamptz,$9::jsonb,$10::jsonb
     ) AS queue_id`,
   intervalAsOf:`SELECT * FROM gowm_history_v1.task_execution_interval_revision_by_reference_as_of($1::text,$2::integer,$3::timestamptz)`,
-  outcomeAsOf:`SELECT * FROM gowm_history_v1.historical_trajectory_outcome_as_of($1::text,$2::text,$3::text,$4::text,$5::timestamptz)`,
+  outcomeAsOf:`SELECT * FROM gowm_history_v1.historical_trajectory_outcome_as_of($1::text,$2::text,$3::text,$4::text,$5::timestamptz,$6::integer)`,
   trajectoryAsOf:`SELECT candidate.*,numInstants(candidate.trajectory) AS geometry_node_count,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.requested_time) period),'[]'::jsonb) AS requested_periods,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.defined_time) period),'[]'::jsonb) AS defined_periods
-    FROM gowm_history_v1.historical_trajectory_as_of($1::text,$2::text,$3::text,$4::text,$5::timestamptz,NULL::integer) candidate`,
+    FROM gowm_history_v1.historical_trajectory_as_of($1::text,$2::text,$3::text,$4::text,$5::timestamptz,NULL::integer,$6::integer) candidate`,
   trajectoryPinnedAsOf:`SELECT candidate.*,numInstants(candidate.trajectory) AS geometry_node_count,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.requested_time) period),'[]'::jsonb) AS requested_periods,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.defined_time) period),'[]'::jsonb) AS defined_periods
@@ -152,7 +152,7 @@ export class HistoricalTraceRepository {
       ]);
       const interval=intervalResult.rows[0];
       const outcomeResult=await client.query<OutcomeRow>(HISTORICAL_TRACE_SQL.outcomeAsOf,[
-        input.subjectReferenceKey.id,input.executionIntervalReferenceKey.id,input.phaseScope,semanticRequestHash,capturedAt
+        input.subjectReferenceKey.id,input.executionIntervalReferenceKey.id,input.phaseScope,semanticRequestHash,capturedAt,exactIntervalRevision
       ]);
       const outcome=outcomeResult.rows[0];
       if (!interval) {
@@ -163,7 +163,10 @@ export class HistoricalTraceRepository {
       const trajectory=await this.readTrajectory(client,input,effective,capturedAt,semanticRequestHash);
       if (!trajectory) {
         await client.query("COMMIT");transactionOpen=false;
-        if (outcome) {
+        // PENDING describes an earlier evaluation, not a permanent semantic
+        // result. Controlled enqueue keys the exact frozen capture/revision;
+        // replaying the same capture still reuses its immutable queue row.
+        if (outcome&&!isPendingOutcome(outcome)) {
           const absent=outcomeStatus(outcome);
           return emptyHistoricalResult(input,effective,dataScopeKey,capturedAt,semanticRequestHash,absent.status,absent.reasonCode,interval);
         }
@@ -307,7 +310,7 @@ export class HistoricalTraceRepository {
     if (matches.length>1) throw new ProviderProtocolError("SCHEMA_MISMATCH","multiple pinned trajectory revisions match the semantic request");
     if (matches[0]) return matches[0];
     const result=await client.query<TrajectoryRow>(HISTORICAL_TRACE_SQL.trajectoryAsOf,[
-      input.subjectReferenceKey.id,input.executionIntervalReferenceKey.id,input.phaseScope,semanticRequestHash,capturedAt
+      input.subjectReferenceKey.id,input.executionIntervalReferenceKey.id,input.phaseScope,semanticRequestHash,capturedAt,positiveInteger(input.executionIntervalReferenceKey.version,"interval revision")
     ]);
     return result.rows[0];
   }
@@ -342,6 +345,10 @@ function emptyHistoricalResult(
   },evidenceReferences:[],rows:0,candidates:0,warnings};
 }
 
+function isPendingOutcome(row:OutcomeRow):boolean {
+  return booleanValue(row.projection_pending,"projection_pending")||String(row.outcome_status)==="PENDING";
+}
+
 function outcomeStatus(row:OutcomeRow|undefined):{status:HistoricalTraceRepositoryResult["status"];reasonCode:string} {
   if (!row) return {status:"PARTIAL",reasonCode:"PROJECTION_PENDING"};
   if (booleanValue(row.projection_pending,"projection_pending")) return {status:"PARTIAL",reasonCode:"PROJECTION_PENDING"};
@@ -360,7 +367,7 @@ function trajectoryOutcome(
   if (nonNegativeInteger(trajectory.sample_count,"sample_count")===0) {
     return {status:"NO_DATA",reasonCode:"NO_TRAJECTORY_POINTS"};
   }
-  if (outcome) {
+  if (outcome&&!isPendingOutcome(outcome)) {
     const persisted=outcomeStatus(outcome);
     if (persisted.status==="NO_DATA") throw new ProviderProtocolError("SCHEMA_MISMATCH","persisted NO_DATA outcome conflicts with an available trajectory revision");
     if (persisted.status==="INDETERMINATE"||persisted.status==="PARTIAL") return persisted;

@@ -16,3 +16,11 @@
 6. 对冻结 capturedAt 后才生成的投影，新请求才可看见；`PROJECTION_PENDING`、`NO_DATA`、`PARTIAL` 均须如实报告。等待熔断恢复后再进行 WSGS 场景资格验证，不能激活未通过候选。
 
 验证入口：`validate:v07-history-queue-worker` 使用当前正式迁移和实际服务角色，覆盖带命名空间快照、未知命名空间/缺失引用拒绝、入队幂等、租约恢复与冻结快照不变；`validate:v07-history-gateway` 验证真实 HTTP Gateway→Provider、跨范围拒绝及旧快照重放。冻结迁移 067–079 不修改。
+
+## 后续 PENDING 重评修复（迁移 081）
+
+五个现场请求曾复用同一条早先的 PENDING，其中 CROSS 的原冻结输入已经 READY。Provider 现在对 PENDING 重新走精确冻结请求的受控入队；不同 capturedAt、快照哈希、区间修订产生不同请求，同一冻结请求仍由数据库唯一键去重。已落库的有效轨迹不再被旧 PENDING 覆盖。旧队列、旧 outcome 与 Gateway 作业不改写。
+
+081 增加按区间修订筛选的历史读取重载，先筛选精确修订再选择 as-of 最新行，避免区间更新后复用旧 outcome 或错读旧轨迹。原 SQL 函数签名及公开 Provider Schema 保持兼容。升级执行正式 migrate 到 081，再仅更新 historical-trace-provider；投影工作器运行代码未改变，无须替换其他服务。
+
+真实冻结时点等待与代码缺陷分开：TRACE/MAP/STOP/RANK 当时缺少所选 tracklet 的 finalization；这些旧快照不会通过等待后读入新证据而变成成功。新快照可以重新评估，但 READY、PROJECTION_PENDING、PARTIAL、NO_DATA 均不等同于高级分析通过。
