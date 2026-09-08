@@ -1,0 +1,477 @@
+{
+  "finishedAt": "2026-09-08T07:00:15.626059+00:00",
+  "host": "sz-gowm",
+  "packageSha256": "33a72b038d7d4e4f8589c4048534391457b1e47a047061253e95bb59f631cbf6",
+  "image": "sha256:c33cab88c4b1d5b74a49f9782e5b8e309f29466a2970ecd905d9c4835e712ea2",
+  "release": "/mnt/data/gowm-releases/33a72b038d7d4e4f",
+  "environmentSha256": "9fabcfa0a7ac19f278deba1d1b773108518a33d60d9f5834e7ba7d543b138ff9",
+  "environmentPreserved": true,
+  "updatedApplications": [
+    {
+      "service": "world-capability-gateway",
+      "id": "d3899fc0b473",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "world-mcp-server",
+      "id": "446b88755439",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "ugv-mqtt-ingest",
+      "id": "4a1872dcf6d1",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "reference-catalog-provider",
+      "id": "e8eb3d09dca0",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "geometry-provider-bridge",
+      "id": "cd49c2744336",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "operational-reality-provider",
+      "id": "30e1b07786da",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "dataset-catalog-provider",
+      "id": "1f0e72ab939c",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "road-coverage-provider",
+      "id": "ceec73da8109",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "world-evidence-provider",
+      "id": "9220bb428824",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "gowm-situation-provider",
+      "id": "ca288a11bfec",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "h3-interactive-provider",
+      "id": "d8cda011e9f0",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "historical-trace-provider",
+      "id": "03888ba3a979",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "network-provider",
+      "id": "7d81aca3e36c",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "route-planning-provider",
+      "id": "4b884b7ec408",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "crs-provider-bridge",
+      "id": "6b55561612a8",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "h3-analysis-provider",
+      "id": "406bf28d7e1f",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "spatial-provider-bridge",
+      "id": "609bcec0451e",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "stas-provider",
+      "id": "477b969b2c9a",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "world-platform-projection-worker",
+      "id": "0061376da533",
+      "health": "running",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "platform-validation-provider",
+      "id": "f774c0873a00",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "observation-ingest",
+      "id": "383e5ba491da",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "world-api",
+      "id": "137af550aa4c",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "projection-worker",
+      "id": "61a3f096bc00",
+      "health": "running",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "stas",
+      "id": "68767fa3090b",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    },
+    {
+      "service": "history-auto",
+      "id": "ff5cba80f9f3",
+      "health": "healthy",
+      "environmentPreserved": true,
+      "mountsPreserved": true
+    }
+  ],
+  "protectedContainers": [
+    {
+      "name": "gowm-analysis-dev-d2bf0ea98e-map-matching-provider-1",
+      "id": "944a92fae7be",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "gowm-analysis-dev-d2bf0ea98e-temporal-events-provider-1",
+      "id": "edfe69e41e6c",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "gowm-analysis-dev-d2bf0ea98e-metric-ranking-provider-1",
+      "id": "ba03e67c298f",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "gowm-analysis-dev-d2bf0ea98e-gdps-1",
+      "id": "566ca78501a0",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "gowm-analysis-dev-d2bf0ea98e-gdps-database-bootstrap-1",
+      "id": "d5c61aab3de6",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "exited",
+      "health": null
+    },
+    {
+      "name": "gowm-analysis-dev-d2bf0ea98e-postgres-1",
+      "id": "bd908be9fd6c",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "gowm-analysis-dev-d2bf0ea98e-crs-upstream-1",
+      "id": "5cb241590892",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "gowm-analysis-dev-d2bf0ea98e-geometry-upstream-1",
+      "id": "d259743f5fe4",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "wsgs-live-grounding-api-1",
+      "id": "a1772676e9e9",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "exited",
+      "health": "unhealthy"
+    },
+    {
+      "name": "wsgs-live-grounding-worker-1",
+      "id": "3e9b2c290a15",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "exited",
+      "health": "unhealthy"
+    },
+    {
+      "name": "wsgs-live-signed-gateway-1",
+      "id": "dbba515944b7",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": null
+    },
+    {
+      "name": "wsgs-live-wsgs-migrate-1",
+      "id": "5c6853e8772a",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "exited",
+      "health": null
+    },
+    {
+      "name": "wsgs-live-gateway-bootstrap-1",
+      "id": "7f268f51d786",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "exited",
+      "health": null
+    },
+    {
+      "name": "wsgs-live-gateway-db-1",
+      "id": "310b1c286286",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "wsgs-live-postgres-1",
+      "id": "e8a99b43bbb2",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "name": "gpustack-worker",
+      "id": "285c26044ac9",
+      "containerAndStartTimeUnchanged": true,
+      "configAndMountsUnchanged": true,
+      "state": "running",
+      "health": null
+    }
+  ],
+  "cleanup": {
+    "removedOldGowmContainers": [
+      "gowm-analysis-dev-d2bf0ea98e-world-capability-gateway-1",
+      "gowm-analysis-dev-d2bf0ea98e-world-mcp-server-1",
+      "gowm-analysis-dev-d2bf0ea98e-ugv-mqtt-ingest-1",
+      "gowm-analysis-dev-d2bf0ea98e-reference-catalog-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-geometry-provider-bridge-1",
+      "gowm-analysis-dev-d2bf0ea98e-operational-reality-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-dataset-catalog-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-road-coverage-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-world-evidence-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-gowm-situation-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-h3-interactive-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-historical-trace-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-network-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-route-planning-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-crs-provider-bridge-1",
+      "gowm-analysis-dev-d2bf0ea98e-h3-analysis-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-spatial-provider-bridge-1",
+      "gowm-analysis-dev-d2bf0ea98e-stas-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-world-platform-projection-worker-1",
+      "gowm-analysis-dev-d2bf0ea98e-platform-validation-provider-1",
+      "gowm-analysis-dev-d2bf0ea98e-world-platform-bootstrap-1",
+      "gowm-analysis-dev-d2bf0ea98e-observation-ingest-1",
+      "gowm-analysis-dev-d2bf0ea98e-world-api-1",
+      "gowm-analysis-dev-d2bf0ea98e-projection-worker-1",
+      "gowm-analysis-dev-d2bf0ea98e-stas-1",
+      "gowm-analysis-dev-d2bf0ea98e-history-auto-1",
+      "gowm-analysis-dev-d2bf0ea98e-migrate-1"
+    ],
+    "removedOldImage": "sha256:8620bf3b4a621a735f2ed095d60cd2945edb0aa7bac4ce707774319c9562da09",
+    "removedImageTags": [
+      "gowm-analysis-dev-d2bf0ea98e-history-auto:latest",
+      "gowm-analysis-dev-d2bf0ea98e-migrate:latest",
+      "gowm-analysis-dev-d2bf0ea98e-observation-ingest:latest",
+      "gowm-analysis-dev-d2bf0ea98e-projection-worker:latest",
+      "gowm-analysis-dev-d2bf0ea98e-stas:latest",
+      "gowm-analysis-dev-d2bf0ea98e-ugv-mqtt-ingest:latest",
+      "gowm-analysis-dev-d2bf0ea98e-world-api:latest",
+      "gowm-analysis-dev-d2bf0ea98e-world-mcp-server:latest",
+      "gowm-analysis-native:5065d615bf53ae1063bb8c845188946af27c97a81dbc4180f915b3dc62fd0df9",
+      "gowm-world-platform:0.7.1"
+    ],
+    "removedGowmExclusiveVolumes": [
+      "gowm-analysis-dev-d2bf0ea98e_gowm-mosquitto",
+      "1bb27fc9dfc397ad2dd5e0f0047b7c2ace911994b2744050a7ae6f3a0b7d9c2b"
+    ],
+    "newMqttVolume": "gowm-analysis-dev-d2bf0ea98e_gowm-mosquitto-33a72b038d7d4e4f",
+    "retainedSharedPostgresVolume": "gowm-analysis-dev-d2bf0ea98e_gowm-postgres"
+  },
+  "latestSession": {
+    "session_epoch": 2,
+    "mapper_version": "ugv-mqtt-canonical-v3",
+    "device_context": {
+      "routes": [
+        {
+          "enabled": true,
+          "device_id": "ugv:ugv",
+          "endpoint_id": "55931f3b-68db-4114-8899-7c28276eacdf",
+          "topic_filter": "status/ugv",
+          "identity_mode": "BOUND_DEVICE",
+          "identity_rule": {},
+          "datastream_key": "ugv-platform-status-v1"
+        },
+        {
+          "enabled": true,
+          "device_id": "ugv:ugv",
+          "endpoint_id": "55931f3b-68db-4114-8899-7c28276eacdf",
+          "topic_filter": "/ugv/area_recon/exception",
+          "identity_mode": "BOUND_DEVICE",
+          "identity_rule": {},
+          "datastream_key": "ugv-recon-exception-v1"
+        },
+        {
+          "enabled": true,
+          "device_id": "ugv:ugv",
+          "endpoint_id": "55931f3b-68db-4114-8899-7c28276eacdf",
+          "topic_filter": "/ugv/area_recon/status",
+          "identity_mode": "BOUND_DEVICE",
+          "identity_rule": {},
+          "datastream_key": "ugv-recon-status-v1"
+        },
+        {
+          "enabled": true,
+          "device_id": "ugv:ugv",
+          "endpoint_id": "55931f3b-68db-4114-8899-7c28276eacdf",
+          "topic_filter": "/ugv/area_recon/targets",
+          "identity_mode": "BOUND_DEVICE",
+          "identity_rule": {},
+          "datastream_key": "ugv-recon-target-v1"
+        },
+        {
+          "enabled": true,
+          "device_id": "ugv:ugv",
+          "endpoint_id": "55931f3b-68db-4114-8899-7c28276eacdf",
+          "topic_filter": "/ugv/gnss",
+          "identity_mode": "BOUND_DEVICE",
+          "identity_rule": {},
+          "datastream_key": "ugv-position-v1"
+        },
+        {
+          "enabled": true,
+          "device_id": "ugv:ugv",
+          "endpoint_id": "55931f3b-68db-4114-8899-7c28276eacdf",
+          "topic_filter": "/ugv/mission_state",
+          "identity_mode": "BOUND_DEVICE",
+          "identity_rule": {},
+          "datastream_key": "ugv-chassis-mission-v1"
+        },
+        {
+          "enabled": true,
+          "device_id": "ugv:ugv",
+          "endpoint_id": "55931f3b-68db-4114-8899-7c28276eacdf",
+          "topic_filter": "/ugv/speed",
+          "identity_mode": "BOUND_DEVICE",
+          "identity_rule": {},
+          "datastream_key": "ugv-speed-v1"
+        }
+      ],
+      "deviceId": "ugv:ugv",
+      "endpointId": "55931f3b-68db-4114-8899-7c28276eacdf",
+      "dataScopeKey": "default",
+      "deviceIdentifier": "ugv",
+      "actorReferenceKey": {
+        "id": "wrf_7b166a624f4447929d4bfcdf5fa5779f",
+        "kind": "WORLD_OBJECT",
+        "version": "18455",
+        "namespace": "gowm"
+      }
+    },
+    "subscription_acks": {
+      "/ugv/gnss": 1,
+      "/ugv/speed": 1,
+      "status/ugv": 1,
+      "/ugv/mission_state": 1,
+      "/ugv/area_recon/status": 1,
+      "/ugv/area_recon/targets": 1,
+      "/ugv/area_recon/exception": 1
+    }
+  },
+  "naturallyReceivedActorEvents": [
+    {
+      "event_id": "ugvevt_df35db4d1b48ff9a03dbe7248e84814733bb43ebc6db5f0447f2fb30da994178",
+      "event_type": "EXECUTION_STOPPED_OBSERVED",
+      "actor_reference_keys": [
+        {
+          "id": "wrf_7b166a624f4447929d4bfcdf5fa5779f",
+          "kind": "WORLD_OBJECT",
+          "version": "18455",
+          "namespace": "gowm"
+        }
+      ],
+      "delivery_state": "DELIVERED"
+    }
+  ],
+  "migrationHead": "079_device_context_reader.sql",
+  "deviceCount": 1,
+  "databaseBackupBytes": 119435841,
+  "testsRerun": false,
+  "knownIssue": "Existing /ugv/area_recon/status statePatch contains a cycle causes dead letters on v2 and v3; not modified during deployment.",
+  "sharedDatabaseRetained": "GDPS and GSAP actively share postgres container and volume; neither reset nor recreated."
+}

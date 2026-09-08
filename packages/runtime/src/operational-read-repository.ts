@@ -59,7 +59,8 @@ export class OperationalReadRepository {
       if (options.actorReferenceKeys?.length) {
         add(`EXISTS (
           SELECT 1 FROM jsonb_array_elements(?::jsonb) requested
-          JOIN jsonb_array_elements(actor_reference_keys) observed ON requested=observed
+          JOIN jsonb_array_elements(actor_reference_keys) observed
+            ON requested->>'namespace'=observed->>'namespace' AND requested->>'kind'=observed->>'kind' AND requested->>'id'=observed->>'id'
         )`,JSON.stringify(options.actorReferenceKeys));
       }
       const limit = Math.min(Math.max(options.limit ?? 100,1),1_000);

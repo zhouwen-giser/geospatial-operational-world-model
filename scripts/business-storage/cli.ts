@@ -14,6 +14,11 @@ else if (command === 'check') {
                 throw Error(`CHECKSUM_DRIFT ${path}`);
         }
     }
+    const coreManifest = JSON.parse(await readFile('database/shared-business-storage/install-manifest.json', 'utf8'));
+    for (const entry of [coreManifest.core, ...coreManifest.coreAdditions ?? []]) {
+        if (checksum(await readFile(`database/migrations/${entry.file}`, 'utf8')) !== entry.sha256)
+            throw Error(`CORE_CHECKSUM_DRIFT ${entry.file}`);
+    }
     const sql = await readFile('database/migrations/078_device_shared_business_storage.sql', 'utf8');
     if ((sql.match(/CREATE TABLE gowm_/g) ?? []).length !== 9)
         throw Error('NINE_PUBLIC_TABLES_REQUIRED');
@@ -26,7 +31,8 @@ else if (command === 'handoff') {
         await cp(`database/shared-business-storage/${name}`, `${dir}/${name}`);
     await cp('database/shared-business-storage/transforms/namespace-transform-map.json', `${dir}/namespace-transform-map.json`);
     await mkdir(`${dir}/ddl`, {recursive:true});
-    await cp('database/migrations/078_device_shared_business_storage.sql',`${dir}/ddl/078_device_shared_business_storage.sql`);
+    for (const file of ['078_device_shared_business_storage.sql','079_device_context_reader.sql'])
+        await cp(`database/migrations/${file}`,`${dir}/ddl/${file}`);
     await cp('database/shared-business-storage/generated',`${dir}/ddl/generated`,{recursive:true});
     await cp('database/shared-business-storage/overlays',`${dir}/ddl/overlays`,{recursive:true});
     await cp('database/shared-business-storage/THIRD_PARTY_NOTICES.md',`${dir}/THIRD_PARTY_NOTICES.md`);

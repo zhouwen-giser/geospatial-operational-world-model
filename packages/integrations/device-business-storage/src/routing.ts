@@ -4,9 +4,9 @@ export interface DeviceRoute {
     topic_filter: string;
     identity_mode: 'BOUND_DEVICE' | 'TOPIC' | 'PAYLOAD';
     identity_rule: {
-        segment?: number;
-        path?: string[];
-        equals?: string;
+        segment?: number | undefined;
+        path?: string[] | undefined;
+        equals?: string | undefined;
     };
     enabled: boolean;
 }

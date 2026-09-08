@@ -1,3 +1,4 @@
+import { readdir } from 'node:fs/promises';
 import pg, { type Pool, type PoolClient } from 'pg';
 import { randomUUID } from 'node:crypto';
 import assert from 'node:assert/strict';
@@ -189,7 +190,7 @@ export async function postgresTests(pool: Pool) {
     await test('T30', async () => { const r = await repo.getMissionLineage(a.deviceId, a.missionId); assert.equal(r[0].sdar_task_id, a.taskId); assert.equal((await repo.getMissionLineage(b.deviceId, a.missionId)).length, 0); });
     await test('T31', async () => { await sandbox(async (c) => { await c.query(`UPDATE ugv_smpp.provider_task SET handle_expires_at=clock_timestamp()-interval '1 day' WHERE task_id=$1`, [a.mcpIds[0]]); const r = await c.query(`SELECT * FROM gowm_business_v1.task_execution_lineage WHERE device_id=$1 AND sdar_task_id=$2 AND mission_instance_id=$3`, [a.deviceId, a.taskId, a.missionId]); assert.equal(r.rowCount, 1); }); });
     await test('T32', async () => { await sandbox(async (c) => { await c.query('SET LOCAL search_path=ugv_sdar,public'); assert.equal((await c.query(`SELECT 'agent_task'::regclass::oid= 'ugv_sdar.agent_task'::regclass::oid v`)).rows[0].v, true); await c.query('SET LOCAL search_path=ugv_smpp,public'); assert.equal((await c.query(`SELECT 'provider_task'::regclass::oid='ugv_smpp.provider_task'::regclass::oid v`)).rows[0].v, true); }); await eq(`SELECT count(*)::int v FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('runtime_bootstrap_probe_id_seq','skill_execution_event_sequence_number_seq')`, [], 0); });
-    await test('T33', async () => { await eq(`SELECT count(*)::int v FROM public.schema_migration WHERE version ~ '^0[0-7][0-9]_'`, [], 78); });
+    await test('T33', async () => { const expected = (await readdir('database/migrations')).filter(f => /^\d{3}_.*\.sql$/.test(f)).sort(); assert.deepEqual((await pool.query('SELECT version FROM public.schema_migration ORDER BY version')).rows.map(r => r.version), expected); });
     await test('T34', async () => { await eq(`SELECT count(*)::int v FROM information_schema.columns WHERE table_schema IN ('gowm_device','gowm_task','gowm_execution') AND column_name IN ('smpp_store_id','sdar_store_id','provider_store_id')`, [], 0); });
     await test('T35', async () => { await eq(`SELECT count(*)::int v FROM pg_extension WHERE extname IN ('postgis','vector')`, [], 2); });
     await test('T02_DEVICE_STREAM_SCOPE', async () => { await assert.rejects(() => sandbox(async (c) => { const ep = await prepareRoutes(c); await repo.registerDeviceStream(c, { ...routes[0]!, endpoint_id: ep.endpoint_id, data_scope_key: 'wrong-scope', stream_key: 'bad', message_profile: 'test', datastream_key: prefix + '-stream' }); }), /STREAM_DEVICE_SCOPE_MISMATCH/); });

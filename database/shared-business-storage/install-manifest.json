@@ -1815,5 +1815,11 @@
       "path": "overlays/read-model.sql",
       "sha256": "57ecb4fd1883e5adac488a0a5938d0ffac810f19d91e26ae193c08706cd76a7f"
     }
+  ],
+  "coreAdditions": [
+    {
+      "file": "079_device_context_reader.sql",
+      "sha256": "a8b81bd3e401bf3eae876d50e97d925949a62c748124559339368e468bb47615"
+    }
   ]
 }

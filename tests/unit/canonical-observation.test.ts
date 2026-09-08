@@ -163,6 +163,35 @@ describe("GOWM+ canonical observation v1.2",() => {
     expect(changed.payloadHash).not.toBe(bundle.payloadHash);
   });
 
+  it("accepts shared objects and coordinates without mistaking them for cycles",() => {
+    const point = [12,34];
+    const shared = { points: [point,[56,78],point] };
+    const candidate = { ...canonicalInput(),statePatch: { first: shared,second: shared } };
+    const parsed = CanonicalObservationInputSchema.parse(candidate);
+    expect(parsed).toEqual(CanonicalObservationInputSchema.parse(JSON.parse(JSON.stringify(candidate))));
+  });
+
+  it("rejects real cycles through arrays and indirect object references",() => {
+    const items: unknown[] = [];
+    items.push(items);
+    const parent: Record<string,unknown> = {};
+    parent.child = { parent };
+    for (const value of [items,parent]) {
+      const parsed = CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: { value } });
+      expect(parsed.success).toBe(false);
+      if (!parsed.success) expect(parsed.error.issues).toContainEqual(expect.objectContaining({ message: "statePatch contains a cycle" }));
+    }
+  });
+
+  it("counts shared subtrees on each visit so aliases cannot bypass node limits",() => {
+    const shared = Array.from({ length: 100 },() => 1);
+    const parsed = CanonicalObservationInputSchema.safeParse({
+      ...canonicalInput(),statePatch: { values: Array.from({ length: 50 },() => shared) }
+    });
+    expect(parsed.success).toBe(false);
+    if (!parsed.success) expect(parsed.error.issues).toContainEqual(expect.objectContaining({ message: "statePatch exceeds node limit" }));
+  });
+
   it("rejects reserved, dangerous, oversized and deeply nested state patches",() => {
     expect(CanonicalObservationInputSchema.safeParse({ ...canonicalInput(),statePatch: { position: {} } }).success).toBe(false);
     expect(CanonicalObservationInputSchema.safeParse({

@@ -173,3 +173,12 @@ The ordinary storage fixture/test harness remains excluded from the deployment
 archive. Run those commands from the source checkout against an isolated test
 DB. The runtime CLI loads that optional harness only for fixture/test commands,
 so excluding tests does not prevent production compilation.
+
+### UGV actor device prerequisite
+
+New MQTT sessions use mapper v3 and require device initialization before startup.
+Apply migration 079, run the production `device-cli.js init-default` and
+`verify-default` commands, and grant the ingest login `gowm_device_reader`.
+See [UGV device actor deployment](UGV_DEVICE_ACTOR.md) for the complete environment,
+service binding contract, read-only verification, and persistent-session cutover.
+The default initializer creates configuration only; it does not create test observations.

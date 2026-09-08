@@ -34,31 +34,7 @@ export class BusinessStorage {
         clientPrefix: string;
         credentialRef?: string;
     }) { return (await c.query(`INSERT INTO gowm_device.mqtt_endpoint(endpoint_key,broker_url,client_id_prefix,credential_ref) VALUES($1,$2,$3,$4) ON CONFLICT(endpoint_key) DO UPDATE SET broker_url=excluded.broker_url,client_id_prefix=excluded.client_id_prefix,credential_ref=excluded.credential_ref,updated_at=now() RETURNING *`, [input.key, input.url, input.clientPrefix, input.credentialRef ?? null])).rows[0]; }
-    async registerDeviceStream(c: PoolClient, input: DeviceRoute & {
-        data_scope_key: string;
-        stream_key: string;
-        message_profile: string;
-        datastream_key: string;
-    }) {
-        required(input.device_id);
-        validateTopicFilter(input.topic_filter);
-        const owner = await c.query('SELECT 1 FROM gowm_device.device d JOIN public.datastream s ON s.data_scope_key=d.data_scope_key WHERE d.device_id=$1 AND d.data_scope_key=$2 AND s.datastream_key=$3', [input.device_id, input.data_scope_key, input.datastream_key]);
-        if (!owner.rowCount)
-            throw Error('STREAM_DEVICE_SCOPE_MISMATCH');
-        if (input.identity_mode === 'TOPIC' && (!Number.isInteger(input.identity_rule.segment) || input.identity_rule.segment! < 0))
-            throw Error('INVALID_TOPIC_RULE');
-        if (input.identity_mode === 'PAYLOAD' && (!input.identity_rule.path?.length || input.identity_rule.path.some(p => ['__proto__', 'constructor', 'prototype'].includes(p))))
-            throw Error('INVALID_PAYLOAD_RULE');
-        if (input.identity_mode !== 'BOUND_DEVICE' && !input.identity_rule.equals)
-            throw Error('IDENTITY_EQUALS_REQUIRED');
-        await c.query('SELECT pg_advisory_xact_lock(718080)');
-        if (input.identity_mode === 'BOUND_DEVICE' && input.enabled) {
-            const existing = await c.query<DeviceRoute>(`SELECT * FROM gowm_device.device_stream WHERE endpoint_id=$1 AND enabled AND identity_mode='BOUND_DEVICE' AND device_id<>$2`, [input.endpoint_id, input.device_id]);
-            if (existing.rows.some(r => filtersOverlap(r.topic_filter, input.topic_filter)))
-                throw Error('AMBIGUOUS_BOUND_ROUTE');
-        }
-        return (await c.query(`INSERT INTO gowm_device.device_stream(data_scope_key,device_id,endpoint_id,stream_key,topic_filter,identity_mode,identity_rule,message_profile,datastream_key,enabled) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(device_id,endpoint_id,stream_key) DO UPDATE SET topic_filter=excluded.topic_filter,identity_mode=excluded.identity_mode,identity_rule=excluded.identity_rule,enabled=excluded.enabled RETURNING *`, [input.data_scope_key, input.device_id, input.endpoint_id, input.stream_key, input.topic_filter, input.identity_mode, input.identity_rule, input.message_profile, input.datastream_key, input.enabled])).rows[0];
-    }
+    registerDeviceStream = registerDeviceStream;
     async replaceDeviceServiceBinding(c: PoolClient, i: {
         deviceId: string;
         scope: string;
@@ -226,3 +202,29 @@ export class BusinessStorage {
         throw Error('MCP_TASK_DEVICE_SERVICE_MISMATCH'); const r = await c.query(`UPDATE ugv_sdar.remote_task_binding SET canonical_mcp_task_id=$3 WHERE device_id=$1 AND binding_id=$2 AND smpp_service_key=$4 AND (canonical_mcp_task_id IS NULL OR canonical_mcp_task_id=$3) RETURNING *`, [deviceId, bindingId, mcpTaskId, service]); if (!r.rowCount)
         throw Error('REMOTE_IDENTITY_CONFLICT'); return r.rows[0]; }
 }
+
+export async function registerDeviceStream(c: PoolClient, input: DeviceRoute & {
+        data_scope_key: string;
+        stream_key: string;
+        message_profile: string;
+        datastream_key: string;
+    }) {
+        required(input.device_id);
+        validateTopicFilter(input.topic_filter);
+        const owner = await c.query('SELECT 1 FROM gowm_device.device d JOIN public.datastream s ON s.data_scope_key=d.data_scope_key WHERE d.device_id=$1 AND d.data_scope_key=$2 AND s.datastream_key=$3', [input.device_id, input.data_scope_key, input.datastream_key]);
+        if (!owner.rowCount)
+            throw Error('STREAM_DEVICE_SCOPE_MISMATCH');
+        if (input.identity_mode === 'TOPIC' && (!Number.isInteger(input.identity_rule.segment) || input.identity_rule.segment! < 0))
+            throw Error('INVALID_TOPIC_RULE');
+        if (input.identity_mode === 'PAYLOAD' && (!input.identity_rule.path?.length || input.identity_rule.path.some(p => ['__proto__', 'constructor', 'prototype'].includes(p))))
+            throw Error('INVALID_PAYLOAD_RULE');
+        if (input.identity_mode !== 'BOUND_DEVICE' && !input.identity_rule.equals)
+            throw Error('IDENTITY_EQUALS_REQUIRED');
+        await c.query('SELECT pg_advisory_xact_lock(718080)');
+        if (input.identity_mode === 'BOUND_DEVICE' && input.enabled) {
+            const existing = await c.query<DeviceRoute>(`SELECT * FROM gowm_device.device_stream WHERE endpoint_id=$1 AND enabled AND identity_mode='BOUND_DEVICE' AND device_id<>$2`, [input.endpoint_id, input.device_id]);
+            if (existing.rows.some(r => filtersOverlap(r.topic_filter, input.topic_filter)))
+                throw Error('AMBIGUOUS_BOUND_ROUTE');
+        }
+        return (await c.query(`INSERT INTO gowm_device.device_stream(data_scope_key,device_id,endpoint_id,stream_key,topic_filter,identity_mode,identity_rule,message_profile,datastream_key,enabled) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(device_id,endpoint_id,stream_key) DO UPDATE SET topic_filter=excluded.topic_filter,identity_mode=excluded.identity_mode,identity_rule=excluded.identity_rule,enabled=excluded.enabled RETURNING *`, [input.data_scope_key, input.device_id, input.endpoint_id, input.stream_key, input.topic_filter, input.identity_mode, input.identity_rule, input.message_profile, input.datastream_key, input.enabled])).rows[0];
+    }

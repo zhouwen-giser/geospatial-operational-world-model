@@ -17,3 +17,10 @@ getTaskLineage 分别返回 lineage、targets、steps。workflow_node_event 没�
 初始 Admission 另需适配 initial_task_admission：新 admission_id 为内部主键，设备幂等索引为(device_id,sdar_service_key,idempotency_key)，非设备请求保留单独局部唯一键。不能只改 Runtime 幂等而遗漏这个接纳路径。完整双设备 capability binding/attempt/admission 插入已纳入 T14_SDAR_ADMISSION_DEVICE_KEY。
 
 订阅事件流按 device_id+smpp_service_key+provider_id 管理 current 与 generation，子 inbox/continuity 沿 subscription_id 原生 FK 继承范围。原生无 Task FK 的 external_task_projection、runtime_task_configuration_binding、临时 Skill 和 evidence 来源记录现显式保存 device_id；同事务验证已有 Task 的设备，不删除原来允许保留历史/异步来源的能力。GOWM 没有新建证据导出器。
+
+## 默认主档接入补充
+
+消费端首次接入应调用 GOWM `resolveBusinessDeviceContext`，传当前 data scope 和真实服务/资源标识。
+唯一启用设备只作为首次无绑定时的默认选择；结果持久化为服务绑定，之后显式携带主档 deviceId。
+SDAR 可补充尚未配置的服务字段，旧绑定仍保留；多设备、跨范围和冲突不得自动选择。
+详见 [设备 actor 与业务上下文接口](../UGV_DEVICE_ACTOR.md)。本仓不自动改动消费端仓库或切换服务。

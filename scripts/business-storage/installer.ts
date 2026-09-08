@@ -23,23 +23,24 @@ export async function install(c: PoolClient, domain: 'all' | 'smpp' | 'sdar' = '
         const prerequisite = await c.query("SELECT 1 FROM public.schema_migration WHERE version='077_world_object_catalog_projection.sql'");
         if (!prerequisite.rowCount)
             throw Error('GOWM_CORE_REQUIRED: apply through 077_world_object_catalog_projection.sql');
-        const coreFile = '078_device_shared_business_storage.sql';
-        const core = await readFile(`database/migrations/${coreFile}`, 'utf8');
-        const applied = await c.query('SELECT checksum FROM public.schema_migration WHERE version=$1', [coreFile]);
-        if (applied.rowCount) {
-            if (applied.rows[0].checksum !== checksum(core))
-                throw Error('CORE_CHECKSUM_DRIFT');
-        }
-        else {
-            await c.query('BEGIN');
-            try {
-                await c.query(core.replace(/^BEGIN;|^COMMIT;/gm, ''));
-                await c.query('INSERT INTO public.schema_migration(version,checksum) VALUES($1,$2)', [coreFile, checksum(core)]);
-                await c.query('COMMIT');
+        for (const coreFile of ['078_device_shared_business_storage.sql','079_device_context_reader.sql']) {
+            const core = await readFile(`database/migrations/${coreFile}`, 'utf8');
+            const applied = await c.query('SELECT checksum FROM public.schema_migration WHERE version=$1', [coreFile]);
+            if (applied.rowCount) {
+                if (applied.rows[0].checksum !== checksum(core))
+                    throw Error('CORE_CHECKSUM_DRIFT');
             }
-            catch (e) {
-                await c.query('ROLLBACK');
-                throw e;
+            else {
+                await c.query('BEGIN');
+                try {
+                    await c.query(core.replace(/^BEGIN;|^COMMIT;/gm, ''));
+                    await c.query('INSERT INTO public.schema_migration(version,checksum) VALUES($1,$2)', [coreFile, checksum(core)]);
+                    await c.query('COMMIT');
+                }
+                catch (e) {
+                    await c.query('ROLLBACK');
+                    throw e;
+                }
             }
         }
         for (const schema of domain === 'all' ? ['ugv_smpp', 'ugv_sdar'] : [domain === 'smpp' ? 'ugv_smpp' : 'ugv_sdar']) {
@@ -105,6 +106,11 @@ async function apply(c: PoolClient, schema: string, family: string, file: string
 export async function verify(c: PoolClient) {
     const entries = await manifest();
     const missing: string[] = [];
+    for (const coreFile of ['078_device_shared_business_storage.sql','079_device_context_reader.sql']) {
+        const row = await c.query('SELECT checksum FROM public.schema_migration WHERE version=$1', [coreFile]);
+        if (row.rows[0]?.checksum !== checksum(await readFile(`database/migrations/${coreFile}`, 'utf8')))
+            missing.push(coreFile);
+    }
     for (const e of entries) {
         const r = await c.query(`SELECT checksum FROM ${e.schema}.gowm_install_history WHERE family=$1 AND file=$2`, [e.family, e.file]);
         if (r.rows[0]?.checksum !== e.generatedSha256)
