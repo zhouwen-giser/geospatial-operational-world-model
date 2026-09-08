@@ -65,8 +65,9 @@ export async function withMigratedV07Database<T>(
       await database.end();
     }
   } finally {
+    // Let connections finish disconnecting; FORCE can race pg-pool.end() and emit 57P01.
     if (created) {
-      await admin.query(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+      await admin.query(`DROP DATABASE IF EXISTS "${databaseName}"`);
     }
     await admin.end();
   }
@@ -74,8 +75,12 @@ export async function withMigratedV07Database<T>(
 
 export async function withMigratedV071Database<T>(
   label: string,
-  action: (databaseUrl: string, evidence: V07DatabaseEvidence, runId: string) => Promise<T>
+  action: (databaseUrl: string, evidence: V07DatabaseEvidence, runId: string) => Promise<T>,
+  options: { currentSchema?: boolean } = {}
 ): Promise<T> {
+  // Frozen migration gates retain 069; current Provider scenarios need their
+  // actual read contracts (including the Operational Provider closure in 076).
+  const head = options.currentSchema ? (await migrationFiles()).at(-1)! : V071_MIGRATION_HEAD;
   const reusedUrl = process.env.GOWM_V071_REUSE_DATABASE_URL;
   if (reusedUrl !== undefined && reusedUrl.length > 0) {
     const runId = randomUUID().replaceAll("-", "").slice(0, 20);
@@ -83,7 +88,7 @@ export async function withMigratedV071Database<T>(
     try {
       return await action(
         reusedUrl,
-        await inspectMigratedDatabase(database, V071_MIGRATION_HEAD),
+        await inspectMigratedDatabase(database, head),
         runId
       );
     } finally {
@@ -108,15 +113,16 @@ export async function withMigratedV071Database<T>(
     created = true;
     const database = new pg.Pool({ connectionString: targetUrl.toString(), max: 1 });
     try {
-      const files = migrationsThrough(await migrationFiles(), V071_MIGRATION_HEAD);
-      const evidence = await applyMigrations(database, files, V071_MIGRATION_HEAD);
+      const files = migrationsThrough(await migrationFiles(), head);
+      const evidence = await applyMigrations(database, files, head);
       return await action(targetUrl.toString(), evidence, runId);
     } finally {
       await database.end();
     }
   } finally {
+    // Let connections finish disconnecting; FORCE can race pg-pool.end() and emit 57P01.
     if (created) {
-      await admin.query(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+      await admin.query(`DROP DATABASE IF EXISTS "${databaseName}"`);
     }
     await admin.end();
   }
@@ -241,7 +247,8 @@ export async function withUpgradedV07Database<T>(
       await database.end();
     }
   } finally {
-    if (created) await admin.query(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+    // A leaked connection should fail cleanup, not be killed underneath a pool.
+    if (created) await admin.query(`DROP DATABASE IF EXISTS "${databaseName}"`);
     await admin.end();
   }
 }

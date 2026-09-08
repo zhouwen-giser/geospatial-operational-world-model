@@ -139,7 +139,7 @@ interface GatewayQualificationProvider {
 
 await withMigratedV071Database("history_gateway", async (databaseUrl, versions, runId) => {
   await runGatewayHistoricalE2e(databaseUrl, versions, runId);
-});
+}, { currentSchema: true });
 
 async function runGatewayHistoricalE2e(
   databaseUrl: string,
