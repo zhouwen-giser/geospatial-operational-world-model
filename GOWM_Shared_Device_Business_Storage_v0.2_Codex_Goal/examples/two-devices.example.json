@@ -1,0 +1,52 @@
+{
+  "exampleOnly": true,
+  "doNotLoadIntoLiveDatabase": true,
+  "note": "示意记录，不是原生表可直接执行的Fixture；Codex需按真实源结构生成测试数据。",
+  "dataScope": "TEST_SHARED_STORAGE",
+  "schemas": [
+    "ugv_smpp",
+    "ugv_sdar"
+  ],
+  "devices": [
+    {
+      "worldObjectId": "fixture-device-A",
+      "deviceId": "fixture-device-A",
+      "deviceIdentifier": "ugv1",
+      "name": "测试车A",
+      "resourceId": "vehicle:ugv1"
+    },
+    {
+      "worldObjectId": "fixture-device-B",
+      "deviceId": "fixture-device-B",
+      "deviceIdentifier": "ugv2",
+      "name": "测试车B",
+      "resourceId": "vehicle:ugv2"
+    }
+  ],
+  "logicalServices": {
+    "sdar": "sdar-campus",
+    "smpp": "smpp-campus",
+    "provider": "ugv-provider"
+  },
+  "deliberatelyRepeatedSourceValues": {
+    "nativeMissionId": "12",
+    "nativeSessionKey": "fixture-sim-run-1",
+    "snapshotRevision": "1",
+    "idempotencyText": "fixture-request-1"
+  },
+  "expected": "Repeated source values on different deviceId remain distinct; no extra schema/migration per device.",
+  "workerExample": [
+    {
+      "workerId": "worker-A",
+      "allowedDeviceIds": [
+        "fixture-device-A"
+      ]
+    },
+    {
+      "workerId": "worker-B",
+      "allowedDeviceIds": [
+        "fixture-device-B"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "metadataFormat": "local-goal-scenarios/1.0",
+  "fixtureType": "SHARED_TABLE_TWO_DEVICES",
+  "scenarios": [
+    {
+      "id": "T01",
+      "requirement": "既有world_object设备登记，不产生平行设备ID。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T02",
+      "requirement": "跨scope device/datastream绑定被拒绝。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T03",
+      "requirement": "同broker不同设备topic/payload正确解析；unknown不归ugv1。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T04",
+      "requirement": "wildcard重叠路由能报告AMBIGUOUS。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T05",
+      "requirement": "同service/resource错误绑定两设备被拒绝。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T06",
+      "requirement": "一个MCP逻辑server可服务两设备，不被错误unique约束。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T07",
+      "requirement": "替换绑定后旧Task/目标/执行归属不漂移。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T08",
+      "requirement": "两个domain从空结构安装；应用对象不污染public。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T09",
+      "requirement": "重复安装不新增Schema/迁移记录；第三台设备不触发DDL。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T10",
+      "requirement": "SMPP Runtime/UGV两个family完整，合法重复014不丢失。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T11",
+      "requirement": "SDAR baseline+增量正确；函数/序列/FK/vector引用可执行。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T12",
+      "requirement": "两设备同业务表写入，根记录归属明确。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T13",
+      "requirement": "A设备子记录不能指向B设备Task/Execution。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T14",
+      "requirement": "两设备同idempotency key文本独立，同设备重发返回同记录。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T15",
+      "requirement": "同一幂等身份不同参数冲突且不额外派发记录。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T16",
+      "requirement": "两设备同snapshot revision可共存；最新读取只返回指定设备。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T17",
+      "requirement": "两设备cursor/stream sequence独立推进。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T18",
+      "requirement": "Worker A仅领取A设备任务；不处理B任务。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T19",
+      "requirement": "两Worker竞争同一设备同一Task只能一个领取；重启owner变但业务ID不变。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T20",
+      "requirement": "Lease同一资源互斥，不同设备同类型资源互不误锁。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T21",
+      "requirement": "原生Task创建+设备/目标使用关系事务失败后全部回滚。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T22",
+      "requirement": "Point/Line/Polygon合法标准化；未知frame保留NATIVE_ONLY。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T23",
+      "requirement": "修改目标产生新修订；旧Plan/Dispatch仍指向旧目标。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T24",
+      "requirement": "不存在owner、错device、错scope的target binding写入失败。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T25",
+      "requirement": "一Task多个Node Run/MCP Task链路保留，不因重复nodeId合并。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T26",
+      "requirement": "两设备相同native mission_id不同实例；同设备不同session复用也不同。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T27",
+      "requirement": "重复Mission回执幂等；来源冲突不按时间猜合并。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T28",
+      "requirement": "PENDING/UNCERTAIN保留无Mission；cancel/control不自动新建Mission。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T29",
+      "requirement": "Task→目标→Plan/NodeRun→MCP→Execution→Dispatch→Mission正向回读。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T30",
+      "requirement": "Mission→Task反向回读，并返回缺失/冲突阶段。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T31",
+      "requirement": "Task句柄过期后历史链仍可查；不启动旧purge行为。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T32",
+      "requirement": "相同数据库前缀未限定名不会误落public；安装与应用search_path分别验证。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T33",
+      "requirement": "原有GOWM设备/历史/观测/契约检查不被新增模块破坏。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T34",
+      "requirement": "禁止生成实例Schema/storeId/虚假ReferenceKey的静态回归。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T35",
+      "requirement": "缺少vector或DB时输出真实NOT_RUN/依赖失败，不伪造SDAR已安装。",
+      "defaultStatus": "NOT_RUN"
+    },
+    {
+      "id": "T36",
+      "requirement": "源台账、九表字典、变换清单、固定域读写合同及三份消费者交接齐全。",
+      "defaultStatus": "NOT_RUN"
+    }
+  ]
+}

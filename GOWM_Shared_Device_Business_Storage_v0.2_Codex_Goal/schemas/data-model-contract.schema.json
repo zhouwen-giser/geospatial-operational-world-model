@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:local:goal:gowm-device-shared-storage-spec:0.2",
+  "title": "任务包的数据模型清单格式；不是已发布的数据库运行合同",
+  "type": "object",
+  "required": [
+    "contractId",
+    "status",
+    "sharedBusinessSchemas",
+    "publicBusinessTableCount",
+    "tables",
+    "deviceOwnershipKey",
+    "instanceControlsBusinessStorage",
+    "applicationCutoverIncluded"
+  ],
+  "properties": {
+    "contractId": {
+      "const": "gowm-device-shared-business-storage/0.2"
+    },
+    "status": {
+      "const": "GOAL_SPECIFICATION_NOT_DEPLOYED"
+    },
+    "sharedBusinessSchemas": {
+      "const": [
+        "ugv_smpp",
+        "ugv_sdar"
+      ]
+    },
+    "publicBusinessTableCount": {
+      "const": 9
+    },
+    "deviceOwnershipKey": {
+      "const": "device_id"
+    },
+    "instanceControlsBusinessStorage": {
+      "const": false
+    },
+    "applicationCutoverIncluded": {
+      "const": false
+    },
+    "tables": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "purpose",
+          "primaryKey",
+          "keyFields"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "gowm_device.device",
+              "gowm_device.mqtt_endpoint",
+              "gowm_device.device_stream",
+              "gowm_device.device_service_binding",
+              "gowm_task.target_geometry",
+              "gowm_task.target_binding",
+              "gowm_execution.device_mission",
+              "gowm_execution.mission_identity",
+              "gowm_execution.execution_mission_link"
+            ]
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "primaryKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "keyFields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

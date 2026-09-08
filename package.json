@@ -187,7 +187,13 @@
     "validate:ugv-mqtt-performance-run": "node --import tsx validation/scripts/ugv-mqtt-performance-run.ts",
     "validate:ugv-mqtt-final": "node --import tsx validation/scripts/ugv-mqtt-final.ts",
     "dev-deploy": "bash scripts/dev-deploy.sh up",
-    "package:dev-deployment": "bash scripts/package-dev-deployment.sh"
+    "package:dev-deployment": "bash scripts/package-dev-deployment.sh",
+    "business-storage:check": "node scripts/business-storage/generate.mjs --check && node --import tsx scripts/business-storage/cli.ts check && vitest run tests/unit/device-business-storage.test.ts",
+    "business-storage:install": "node --import tsx scripts/business-storage/cli.ts install",
+    "business-storage:verify": "node --import tsx scripts/business-storage/cli.ts verify",
+    "business-storage:fixture": "node --import tsx scripts/business-storage/cli.ts fixture",
+    "business-storage:handoff": "node --import tsx scripts/business-storage/cli.ts handoff",
+    "business-storage:test:postgres": "node --import tsx scripts/business-storage/cli.ts test:postgres"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",

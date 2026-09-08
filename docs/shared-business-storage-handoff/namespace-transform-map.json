@@ -1,0 +1,1181 @@
+{
+  "applicationObjects": [
+    "adapter_business_event_inbox",
+    "adapter_business_event_source_state",
+    "admission_intent",
+    "agent_task",
+    "artifact_activation_record",
+    "artifact_active_pointer",
+    "artifact_approval",
+    "artifact_counterexample",
+    "artifact_execution",
+    "artifact_feedback",
+    "artifact_lineage",
+    "artifact_management_read_audit",
+    "artifact_match_log",
+    "artifact_promotion_assessment",
+    "artifact_promotion_package",
+    "artifact_promotion_policy",
+    "artifact_replay_case",
+    "artifact_replay_case_result",
+    "artifact_replay_tenant_deletion",
+    "artifact_revalidation_trigger",
+    "artifact_rollback_record",
+    "artifact_shadow_result",
+    "artifact_shadow_run",
+    "artifact_validation_failure",
+    "artifact_validation_run",
+    "business_event_continuity",
+    "business_event_inbox",
+    "business_event_subscription",
+    "candidate_fingerprint",
+    "candidate_generation_run",
+    "candidate_model_invocation",
+    "candidate_static_validation",
+    "capability_admission_receipt",
+    "capability_experience_evidence",
+    "capability_gap_candidate",
+    "capability_pattern_definition",
+    "capability_pattern_evidence",
+    "capability_readiness_command_receipt",
+    "capability_readiness_snapshot",
+    "case_runtime_adaptation",
+    "case_runtime_match",
+    "cognitive_management_action",
+    "cognitive_runtime_configuration",
+    "cognitive_runtime_consumer_cursor",
+    "cognitive_runtime_outbox",
+    "compilation_run",
+    "compiled_artifact",
+    "completed_effect",
+    "conversation_context",
+    "development_isolated_demo_append_only",
+    "development_isolated_demo_audit",
+    "enforce_agent_task_revision_authority",
+    "enforce_remote_task_input_context_authority",
+    "enforce_runtime_skill_import_command_transition",
+    "episode_evidence_manifest",
+    "evaluation_influence",
+    "event_impact_assessment",
+    "event_incident",
+    "event_relation_projection",
+    "evidence_coverage_reconcile_target",
+    "evidence_dead_letter",
+    "evidence_delivery_origin_immutable",
+    "evidence_delivery_start_sequence",
+    "evidence_expected_record",
+    "evidence_export_ack",
+    "evidence_export_batch",
+    "evidence_export_configuration",
+    "evidence_export_delivery_origin",
+    "evidence_export_observation_sequence",
+    "evidence_export_state",
+    "evidence_outbox",
+    "evidence_projection_issue",
+    "evidence_quality_issue",
+    "evidence_recovery_run",
+    "evidence_source_checkpoint",
+    "evolution_experience",
+    "evolution_policy",
+    "evolution_trigger",
+    "experience_dead_letter",
+    "experience_extraction",
+    "experience_job",
+    "experience_observation",
+    "experience_observation_fact",
+    "experience_reflection",
+    "experience_trace",
+    "experience_trace_source",
+    "experience_usage_record",
+    "external_task_projection",
+    "fast_gateway_decision",
+    "fast_gateway_feedback",
+    "fast_gateway_request",
+    "finalize_task_temporary_skills",
+    "fused_pattern",
+    "generalized_pattern",
+    "generic_task_understanding",
+    "generic_task_understanding_dimension",
+    "goal",
+    "goal_cancellation",
+    "goal_contract_candidate",
+    "goal_experience_episode",
+    "goal_experience_episode_source",
+    "goal_input_inference",
+    "goal_patch",
+    "goal_transition",
+    "governed_control_confirmation",
+    "idempotency_record",
+    "implicit_feedback",
+    "initial_task_admission",
+    "interactive_goal_session",
+    "interactive_goal_turn",
+    "interactive_planning_session",
+    "interactive_planning_turn",
+    "knowledge_candidate_lineage",
+    "knowledge_delta_record",
+    "knowledge_promotion_evaluation",
+    "knowledge_relation",
+    "knowledge_status_transition",
+    "mcp_dependency_warning",
+    "mcp_invocation",
+    "mcp_management_operation",
+    "mcp_protocol_snapshot",
+    "mcp_server",
+    "mcp_tool",
+    "memory_item",
+    "memory_retention_policy",
+    "memory_status_transition",
+    "model_cascade_run",
+    "model_cascade_step",
+    "model_invocation",
+    "model_provider",
+    "model_route_decision",
+    "operation_snapshot",
+    "outbox_event",
+    "outcome_decision",
+    "pattern_candidate",
+    "pattern_candidate_support",
+    "planning_correction_fact",
+    "planning_heuristic",
+    "planning_heuristic_evidence",
+    "planning_interaction_episode",
+    "prevent_capability_readiness_mutation",
+    "prevent_initial_task_admission_mutation",
+    "prevent_runtime_agent_card_content_mutation",
+    "prevent_runtime_agent_card_exposure_snapshot_mutation",
+    "prevent_task_capability_binding_mutation",
+    "processed_result",
+    "progress_observation",
+    "promotion_provenance_report",
+    "prompt",
+    "prompt_version",
+    "protect_active_remote_task_tool_catalog",
+    "protect_governed_control_confirmation",
+    "protect_runtime_task_model_route_binding",
+    "protect_task_capability_attempt_content",
+    "provider_business_event",
+    "provider_business_event_continuity_record",
+    "provider_business_event_generation_source",
+    "provider_business_event_relation",
+    "provider_business_event_relation_projection",
+    "provider_business_event_relation_projection_item",
+    "provider_business_event_runtime_state",
+    "provider_business_event_stream_generation",
+    "provider_ops_delivery",
+    "provider_task",
+    "provider_task_resource_binding",
+    "provider_task_visibility_tombstone",
+    "public_capability_card_snapshot",
+    "recovery_decision",
+    "reject_evidence_export_ledger_mutation",
+    "reject_runtime_skill_governance_command_mutation",
+    "reject_temporary_skill_after_terminal",
+    "reject_ugv_diagnostic_identity_mutation",
+    "reject_ugv_diagnostic_receipt_mutation",
+    "remote_task_admission_intent",
+    "remote_task_binding",
+    "remote_task_cancel_attempt",
+    "remote_task_cancel_request",
+    "remote_task_consumer_sync_immutable",
+    "remote_task_control_event",
+    "remote_task_input_attempt",
+    "remote_task_input_link",
+    "remote_task_observation",
+    "remote_task_protocol_attempt",
+    "remote_task_provider_execution_link",
+    "remote_task_reconciliation_attempt",
+    "replay_dataset_case",
+    "replay_dataset_manifest",
+    "runtime_agent_card_command_receipt",
+    "runtime_agent_card_exposure_snapshot",
+    "runtime_agent_card_revision",
+    "runtime_bootstrap_probe",
+    "runtime_bootstrap_probe_id_seq",
+    "runtime_candidate_decision",
+    "runtime_capability_limitation",
+    "runtime_capability_summary",
+    "runtime_capability_summary_item",
+    "runtime_configuration_ack_outbox",
+    "runtime_configuration_snapshot",
+    "runtime_event",
+    "runtime_lease",
+    "runtime_model_provider_catalog",
+    "runtime_model_route_snapshot",
+    "runtime_skill_governance_command",
+    "runtime_skill_import_command",
+    "runtime_skill_version_governance",
+    "runtime_task_command_effect",
+    "runtime_task_configuration_binding",
+    "runtime_task_model_route_binding",
+    "runtime_telemetry_export_configuration",
+    "runtime_telemetry_export_outbox",
+    "runtime_telemetry_export_state",
+    "runtime_terminal_outcome",
+    "schema_migration",
+    "sdar_assign_artifact_outbox_sequence",
+    "sdar_assign_node_event_outbox_sequence",
+    "sdar_enforce_compiled_artifact_immutability",
+    "sdar_guard_replay_dataset_manifest_mutation",
+    "sdar_guard_terminal_artifact_validation_run_mutation",
+    "sdar_invalidate_replay_datasets_for_case",
+    "sdar_jsonb_depth",
+    "sdar_reject_artifact_lineage_mutation",
+    "sdar_reject_artifact_management_read_audit_mutation",
+    "sdar_reject_artifact_replay_content_mutation",
+    "sdar_reject_experience_compilation_mutation",
+    "sdar_reject_runtime_configuration_binding_mutation",
+    "skill",
+    "skill_attempt",
+    "skill_call_workflow",
+    "skill_draft",
+    "skill_embedding",
+    "skill_evolution_correction_experience",
+    "skill_execution_contract",
+    "skill_execution_event",
+    "skill_execution_event_sequence_number_seq",
+    "skill_execution_record",
+    "skill_execution_reference",
+    "skill_formalization_candidate",
+    "skill_goal",
+    "skill_goal_dependency",
+    "skill_input_resolution",
+    "skill_outcome_specification",
+    "skill_package_import_audit",
+    "skill_performance_metrics",
+    "skill_quality_observation",
+    "skill_quality_warning",
+    "skill_relation",
+    "skill_replacement_plan",
+    "skill_selection_record",
+    "skill_version",
+    "smpp_dispatch_uncertainty",
+    "smpp_reconciliation_audit",
+    "stage_model_route",
+    "task_availability_snapshot",
+    "task_capability_binding",
+    "task_capability_execution_attempt",
+    "task_command",
+    "task_execution_attempt",
+    "task_execution_readiness",
+    "task_goal_contract",
+    "task_input_request",
+    "task_input_response",
+    "task_input_response_inbox",
+    "task_observation",
+    "task_quality_report",
+    "task_type_definition",
+    "task_type_evidence",
+    "task_wait_policy",
+    "temporary_skill",
+    "temporary_skill_experience",
+    "ugv_business_event_source_log",
+    "ugv_business_event_source_state",
+    "ugv_device_tool_call",
+    "ugv_diagnostic_fence_seq",
+    "ugv_diagnostic_lease",
+    "ugv_diagnostic_receipt",
+    "ugv_execution",
+    "ugv_execution_command_ack",
+    "ugv_mutation_journal",
+    "ugv_state_snapshot",
+    "user_goal_contract",
+    "user_goal_plan",
+    "user_goal_plan_candidate",
+    "workflow_child_call",
+    "workflow_continuation_attempt",
+    "workflow_continuation_snapshot",
+    "workflow_continuation_wait_binding",
+    "workflow_control",
+    "workflow_control_round",
+    "workflow_instance",
+    "workflow_node_event",
+    "workflow_plan",
+    "workflow_plan_attempt",
+    "workflow_template",
+    "workflow_template_occurrence",
+    "workflow_template_use"
+  ],
+  "entries": [
+    {
+      "file": "001_operation_snapshot.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "002_task_lifecycle.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "003_idempotency.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "004_durable_timing.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "005_task_controls.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "006_recovery_hardening.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "007_durable_command_dispatch.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "008_start_window_and_schedule_retry.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "009_observation_revision_and_outbox_keys.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "010_adapter_execution_identity.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "011_task_handle_retention.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "012_idempotency_claim_lease.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "013_single_claimed_command.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "014_observation_pagination.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "014_start_confirmation_watchdog.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "015_recovery_backoff.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "016_command_claim_lease_consistency.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "017_provider_ops_audit_delivery.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "018_runtime_trace_context.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "019_runtime_revision.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "020_frozen_protocol_mrtr.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "021_frozen_reservation_ref.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "022_mrtr_response_inbox.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "023_business_events_profile_v1.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "024_accepted_task_substate.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "025_smpp_dispatch_uncertainty.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "026_smpp_reconciliation_audit.sql",
+      "family": "SMPP_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "024_ugv_provider.sql",
+      "family": "UGV_PROVIDER",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "026_ugv_single_active_fire.sql",
+      "family": "UGV_PROVIDER",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "027_mutation_journal.sql",
+      "family": "UGV_PROVIDER",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "028_smpp_diagnostic_leases.sql",
+      "family": "UGV_PROVIDER",
+      "transforms": [
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "029_smpp_diagnostic_exact_argument_selector.sql",
+      "family": "UGV_PROVIDER",
+      "transforms": [
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0001_sdar_v1_2_2_baseline.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "remove dump/session SET statement_timeout; installer uses SET LOCAL",
+        "remove dump/session SET lock_timeout; installer uses SET LOCAL",
+        "remove dump/session SET idle_in_transaction_session_timeout; installer uses SET LOCAL",
+        "remove dump/session SET transaction_timeout; installer uses SET LOCAL",
+        "remove dump/session SET client_encoding; installer uses SET LOCAL",
+        "remove dump/session SET standard_conforming_strings; installer uses SET LOCAL",
+        "remove dump search_path reset",
+        "remove dump/session SET check_function_bodies; installer uses SET LOCAL",
+        "remove dump/session SET xmloption; installer uses SET LOCAL",
+        "remove dump/session SET client_min_messages; installer uses SET LOCAL",
+        "remove dump/session SET row_security; installer uses SET LOCAL",
+        "extension preflight owned by installer; preserve existing extension namespace",
+        "remove dump/session SET default_tablespace; installer uses SET LOCAL",
+        "remove dump/session SET default_table_access_method; installer uses SET LOCAL",
+        "remove dump/session SET search_path; installer uses SET LOCAL",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0108_v123_cognitive_skeleton.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0109_v123_capability_summary.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0110_v123_capability_card.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0111_v123_task_understanding.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0112_v123_interactive_goal.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0113_v123_interactive_planning.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0114_v123_planning_corrections.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0115_v123_experience_episode.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0116_v123_experience_observation.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0117_v123_experience_reflection.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0118_v123_task_type_induction.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0119_v123_capability_pattern_induction.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0120_v123_knowledge_promotion.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0121_v123_knowledge_usage.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0122_v123_experience_enriched_planning.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0123_v123_cognitive_management_audit.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0124_v123_replay_shadow_evidence.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0125_v13_artifact_authority.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0126_v13_experience_compilation.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0127_v13_artifact_candidate_generation.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0128_v13_candidate_generation_runtime.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0129_v13_artifact_replay_validation.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0130_v13_artifact_shadow_governance.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0131_v13_artifact_retrieval_audit.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0132_v13_fast_gateway.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0133_v13_case_model_runtime.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0134_v13_artifact_management_projection.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0135_v14_runtime_configuration_lkg.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0136_v14_model_control_governance.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0137_v14_capability_readiness.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0138_v14_runtime_agent_card.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0139_v14_task_capability_binding.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0140_v14_skill_version_governance.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0141_v14_skill_import_idempotency.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0142_v14_telemetry_export.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0143_v14_node_event_projection.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0144_v14_canonical_evidence.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0145_v14_artifact_match_exact_version.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0146_v14_evidence_export_observation_ledger.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0147_v14_evidence_coverage_authority.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0148_v14_evidence_operations_recovery.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0149_v14_deterministic_capability_execution_action.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0150_v14_cognitive_management_action_lease_recovery.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0151_v14_capability_attempt_evidence_lineage.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0152_v14_mcp_execution_semantics_authority_repair.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0153_v14_initial_model_prompts.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0154_v14_initial_model_prompt_pointer_repair.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0155_v14_model_operation_routes.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0156_v14_runtime_task_control_actions.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0157_v14_governed_control_confirmation.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0158_v14_governed_control_dispatch_consumption.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0159_v14_remote_task_admission_recovery.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0160_v14_remote_task_authority_snapshot.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0161_v14_remote_task_cancellation_authority.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0162_v14_agent_task_revision_authority.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0163_v14_initial_model_prompt_seed_repair.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0164_v14_governed_control_catalog_lineage.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0165_v14_remote_task_catalog_lineage.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0166_v14_failed_remote_continuation_quarantine.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0167_v14_task_capability_initial_plan_binding.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0168_v14_failed_terminal_callback_quarantine.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0169_v14_postfix_terminal_callback_quarantine.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0170_v14_terminal_guard_callback_quarantine.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0171_v14_claimed_terminal_guard_quarantine.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0172_v14_initial_task_admission.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0173_remote_task_accepted_substate.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0174_v14_evidence_delivery_origin.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0175_v14_mcp_task_consumer_sync.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0176_v14_control_authority_kind.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0177_v14_control_authority_kind_default.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0178_v14_development_isolated_demo.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0179_v14_workflow_scoped_continuation.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0180_v14_workflow_child_call.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0181_v14_temporary_skill_terminal.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0182_v14_configured_task_type.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "file": "0183_v14_capability_admission_receipt.up.sql",
+      "family": "SDAR_RUNTIME",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    }
+  ]
+}

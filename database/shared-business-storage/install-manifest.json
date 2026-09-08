@@ -1,0 +1,1819 @@
+{
+  "version": 1,
+  "core": {
+    "file": "078_device_shared_business_storage.sql",
+    "sha256": "efcc7a866c9777394dc5cd9f256d8a786385881c25e513a3310efb71454f88bc"
+  },
+  "entries": [
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "001_operation_snapshot.sql",
+      "sourcePath": "migrations/runtime/001_operation_snapshot.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "fb130bdd77c67e9bcfc37e609a82d4fe67fba17e9058ce709ecb3bfe75a47c28",
+      "sha256": "fb130bdd77c67e9bcfc37e609a82d4fe67fba17e9058ce709ecb3bfe75a47c28",
+      "path": "upstream/SMPP_RUNTIME/001_operation_snapshot.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/001_operation_snapshot.sql",
+      "generatedSha256": "e072e7404f9e5cce70e29473c998fa144ffd2ec069ac1c88b1b60acbfdfe9ea3",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "002_task_lifecycle.sql",
+      "sourcePath": "migrations/runtime/002_task_lifecycle.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "656c286e7b9c9d3a7bc45de56589738b3e15c6f9237065889f2815d194832e78",
+      "sha256": "656c286e7b9c9d3a7bc45de56589738b3e15c6f9237065889f2815d194832e78",
+      "path": "upstream/SMPP_RUNTIME/002_task_lifecycle.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/002_task_lifecycle.sql",
+      "generatedSha256": "c5ef4e3f56ba6d40cd7af304235afcc6c7dfb9b6579e8fe047994e37eea483c5",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "003_idempotency.sql",
+      "sourcePath": "migrations/runtime/003_idempotency.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "91ef8d20caea9fd321fa8aec0eaab17dd2e741732d7181f36d2256f6b663d5ad",
+      "sha256": "91ef8d20caea9fd321fa8aec0eaab17dd2e741732d7181f36d2256f6b663d5ad",
+      "path": "upstream/SMPP_RUNTIME/003_idempotency.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/003_idempotency.sql",
+      "generatedSha256": "b69cb4500a91c5966d44b5cf932dd1ca8bfacedcada7c2b295a8a603a14d5d86",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "004_durable_timing.sql",
+      "sourcePath": "migrations/runtime/004_durable_timing.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "dd5fc0cd4cbfde7c695d6cfe8bef3001076e39a744bb22ab8a251764843782c4",
+      "sha256": "dd5fc0cd4cbfde7c695d6cfe8bef3001076e39a744bb22ab8a251764843782c4",
+      "path": "upstream/SMPP_RUNTIME/004_durable_timing.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/004_durable_timing.sql",
+      "generatedSha256": "bb0f47818f1d1e1360773ce3253526411b0b805d1359583e7cb0449c8a575bce",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "005_task_controls.sql",
+      "sourcePath": "migrations/runtime/005_task_controls.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "4566c30477428c20e375b200ffa3b144ca88617af122e28e5039173b77389516",
+      "sha256": "4566c30477428c20e375b200ffa3b144ca88617af122e28e5039173b77389516",
+      "path": "upstream/SMPP_RUNTIME/005_task_controls.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/005_task_controls.sql",
+      "generatedSha256": "aa23d46fe7799d7ae8b9519b0659f4530e16a443a964ed71977eabbeaad0c1ea",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "006_recovery_hardening.sql",
+      "sourcePath": "migrations/runtime/006_recovery_hardening.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "9c613b678a99742201c512cfcb0f42b091ff860bfd0bf73f3cc79a2a58370f47",
+      "sha256": "9c613b678a99742201c512cfcb0f42b091ff860bfd0bf73f3cc79a2a58370f47",
+      "path": "upstream/SMPP_RUNTIME/006_recovery_hardening.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/006_recovery_hardening.sql",
+      "generatedSha256": "bbc8941cb6aecdf1c3878a627a365b9101fa668950a4040d6540913269a2edf0",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "007_durable_command_dispatch.sql",
+      "sourcePath": "migrations/runtime/007_durable_command_dispatch.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "d07aa4904c511d7360458520ca3a3ffddb63edef0ec842934260e9d91398267a",
+      "sha256": "d07aa4904c511d7360458520ca3a3ffddb63edef0ec842934260e9d91398267a",
+      "path": "upstream/SMPP_RUNTIME/007_durable_command_dispatch.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/007_durable_command_dispatch.sql",
+      "generatedSha256": "ab72a19494f1a93ba7c215e5495d5a590a469a32b0248a6d732fc6bd8ba98256",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "008_start_window_and_schedule_retry.sql",
+      "sourcePath": "migrations/runtime/008_start_window_and_schedule_retry.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "050f2a50f30b35fc7f302657ae798f7034a71f52aa31d53b315a0801db361c75",
+      "sha256": "050f2a50f30b35fc7f302657ae798f7034a71f52aa31d53b315a0801db361c75",
+      "path": "upstream/SMPP_RUNTIME/008_start_window_and_schedule_retry.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/008_start_window_and_schedule_retry.sql",
+      "generatedSha256": "5f9cf03127d757531cb2f2cdec20f3d05591be1de12d21e53b7bd4e128db4e98",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "009_observation_revision_and_outbox_keys.sql",
+      "sourcePath": "migrations/runtime/009_observation_revision_and_outbox_keys.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "bc63f39b8cc702d4e5b877001b0ca40193fe296d6f07ae38d89a8bc7506101a9",
+      "sha256": "bc63f39b8cc702d4e5b877001b0ca40193fe296d6f07ae38d89a8bc7506101a9",
+      "path": "upstream/SMPP_RUNTIME/009_observation_revision_and_outbox_keys.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/009_observation_revision_and_outbox_keys.sql",
+      "generatedSha256": "547657afa381bb922e6c3f51450bd47ed596a6d356090b558368b750d213bf8b",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "010_adapter_execution_identity.sql",
+      "sourcePath": "migrations/runtime/010_adapter_execution_identity.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "be8e0bb022c0d062e64a14194c29d18014a03c087b2dd58731d35e2c56d92bda",
+      "sha256": "be8e0bb022c0d062e64a14194c29d18014a03c087b2dd58731d35e2c56d92bda",
+      "path": "upstream/SMPP_RUNTIME/010_adapter_execution_identity.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/010_adapter_execution_identity.sql",
+      "generatedSha256": "5038df26dd54fd12c6af76af8e03dea3faed764aa2e442ea23cef8228b571873",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "011_task_handle_retention.sql",
+      "sourcePath": "migrations/runtime/011_task_handle_retention.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "cf268f6db9b838479b18701f9155823bd1e93b848ddf689190484315ae7d1da5",
+      "sha256": "cf268f6db9b838479b18701f9155823bd1e93b848ddf689190484315ae7d1da5",
+      "path": "upstream/SMPP_RUNTIME/011_task_handle_retention.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/011_task_handle_retention.sql",
+      "generatedSha256": "d594b28caffe0559127bb335d44023c0e7cd372c752a2c7359438a530b486b8d",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "012_idempotency_claim_lease.sql",
+      "sourcePath": "migrations/runtime/012_idempotency_claim_lease.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "bddb59a95bfe349ee69ee449309563850725d9a246d5dc0f9d30ae8d12c53c2e",
+      "sha256": "bddb59a95bfe349ee69ee449309563850725d9a246d5dc0f9d30ae8d12c53c2e",
+      "path": "upstream/SMPP_RUNTIME/012_idempotency_claim_lease.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/012_idempotency_claim_lease.sql",
+      "generatedSha256": "31b4618015c7d62253a3056090a15eb235330392c3be4788f03084d7572680fc",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "013_single_claimed_command.sql",
+      "sourcePath": "migrations/runtime/013_single_claimed_command.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "0462556befd931f932dba3ec71b4587592d61febebfac3eaa0b06a5c0f0c65fc",
+      "sha256": "0462556befd931f932dba3ec71b4587592d61febebfac3eaa0b06a5c0f0c65fc",
+      "path": "upstream/SMPP_RUNTIME/013_single_claimed_command.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/013_single_claimed_command.sql",
+      "generatedSha256": "31fe5dceff0a6787a24d019734933ff3f77c69e1afa64e65bc30e9caef12ed2d",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "014_observation_pagination.sql",
+      "sourcePath": "migrations/runtime/014_observation_pagination.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "df7d010260a9bf51e78ba7d260927e7f46731191cab9a6f18d7e9b8bfc0cdfef",
+      "sha256": "df7d010260a9bf51e78ba7d260927e7f46731191cab9a6f18d7e9b8bfc0cdfef",
+      "path": "upstream/SMPP_RUNTIME/014_observation_pagination.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/014_observation_pagination.sql",
+      "generatedSha256": "20382831aff618844ed0be13c8cdc9212569d17de4e53138199d2787a67151b4",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "014_start_confirmation_watchdog.sql",
+      "sourcePath": "migrations/runtime/014_start_confirmation_watchdog.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "11fd1be2cd88a05f812e8ce0ecb861401d085f8af00538af0da73bf9046bb245",
+      "sha256": "11fd1be2cd88a05f812e8ce0ecb861401d085f8af00538af0da73bf9046bb245",
+      "path": "upstream/SMPP_RUNTIME/014_start_confirmation_watchdog.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/014_start_confirmation_watchdog.sql",
+      "generatedSha256": "8834ea465b26adb348d1fe94e9ed7e6b1ac5054fffd6690ee0c6164e015f6a6a",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "015_recovery_backoff.sql",
+      "sourcePath": "migrations/runtime/015_recovery_backoff.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "9e9bcddd5150730f56c29b0bb4fbd33d689f4a411cf67af6f19da18309e56fda",
+      "sha256": "9e9bcddd5150730f56c29b0bb4fbd33d689f4a411cf67af6f19da18309e56fda",
+      "path": "upstream/SMPP_RUNTIME/015_recovery_backoff.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/015_recovery_backoff.sql",
+      "generatedSha256": "539d07ef95a69e162248d2b987f437c7c623fd189a57acdf8245cd304d200531",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "016_command_claim_lease_consistency.sql",
+      "sourcePath": "migrations/runtime/016_command_claim_lease_consistency.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "f7ce61648299c3fa81e42fe9eaa6833d0e98db3ebcee0e11045eda6ceeacbcbf",
+      "sha256": "f7ce61648299c3fa81e42fe9eaa6833d0e98db3ebcee0e11045eda6ceeacbcbf",
+      "path": "upstream/SMPP_RUNTIME/016_command_claim_lease_consistency.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/016_command_claim_lease_consistency.sql",
+      "generatedSha256": "c55bb9d77a343131bef36f33a302a2df15f3b656b08af3658827f1cd631a5c04",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "017_provider_ops_audit_delivery.sql",
+      "sourcePath": "migrations/runtime/017_provider_ops_audit_delivery.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "c19afbc927ceac63c7aa43169f576caba8179132907310629a0e340980423596",
+      "sha256": "c19afbc927ceac63c7aa43169f576caba8179132907310629a0e340980423596",
+      "path": "upstream/SMPP_RUNTIME/017_provider_ops_audit_delivery.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/017_provider_ops_audit_delivery.sql",
+      "generatedSha256": "17906985de47cfcfb1864d3be9ef8bdf4e38c5a5ba7af2a1d05c69987557730f",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "018_runtime_trace_context.sql",
+      "sourcePath": "migrations/runtime/018_runtime_trace_context.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "1c03f35743425f94139bd9d7aa6c68bb39cb27d5c15f3b5d89aacbb53513667a",
+      "sha256": "1c03f35743425f94139bd9d7aa6c68bb39cb27d5c15f3b5d89aacbb53513667a",
+      "path": "upstream/SMPP_RUNTIME/018_runtime_trace_context.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/018_runtime_trace_context.sql",
+      "generatedSha256": "6b1a086de1bcccffb1e52826bd11c46208ee2c296fff4d30dea91eaf0fd97efc",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "019_runtime_revision.sql",
+      "sourcePath": "migrations/runtime/019_runtime_revision.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "8bbce4951ec7c1730de712292a3832fa0438db1742e647c5fba8869bccfc23b1",
+      "sha256": "8bbce4951ec7c1730de712292a3832fa0438db1742e647c5fba8869bccfc23b1",
+      "path": "upstream/SMPP_RUNTIME/019_runtime_revision.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/019_runtime_revision.sql",
+      "generatedSha256": "f7c98339c82067c8fb43e6a0f8d68729544e6f08d47cf3a045e96556432484b7",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "020_frozen_protocol_mrtr.sql",
+      "sourcePath": "migrations/runtime/020_frozen_protocol_mrtr.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "3ebd512a04266ed1ca84f484670ef4156b2485e80fad93e0808bf38a64562eee",
+      "sha256": "3ebd512a04266ed1ca84f484670ef4156b2485e80fad93e0808bf38a64562eee",
+      "path": "upstream/SMPP_RUNTIME/020_frozen_protocol_mrtr.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/020_frozen_protocol_mrtr.sql",
+      "generatedSha256": "8b942bbb776395d94d0006b151996d5defa5882f337c794f5fa5d674e8f64bce",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "021_frozen_reservation_ref.sql",
+      "sourcePath": "migrations/runtime/021_frozen_reservation_ref.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "bda96734808eee2f73b4da4d44ae7b8292b32bda0706eeb90728087e5764f0f0",
+      "sha256": "bda96734808eee2f73b4da4d44ae7b8292b32bda0706eeb90728087e5764f0f0",
+      "path": "upstream/SMPP_RUNTIME/021_frozen_reservation_ref.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/021_frozen_reservation_ref.sql",
+      "generatedSha256": "7290b4017317b9fbe4ad69ef25e79f9ac3af9aa38e910c376c88a9c4623fc10b",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "022_mrtr_response_inbox.sql",
+      "sourcePath": "migrations/runtime/022_mrtr_response_inbox.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "16d6da827dbe2c02ac7585b25e3370b47d55cbdb46f8f2ed5c77b271bf0e4343",
+      "sha256": "16d6da827dbe2c02ac7585b25e3370b47d55cbdb46f8f2ed5c77b271bf0e4343",
+      "path": "upstream/SMPP_RUNTIME/022_mrtr_response_inbox.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/022_mrtr_response_inbox.sql",
+      "generatedSha256": "1a2531a461838629cc9758be4b167d518daa5d118ff96ee1cae4a05e483791ba",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "023_business_events_profile_v1.sql",
+      "sourcePath": "migrations/runtime/023_business_events_profile_v1.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "b978e71aacbfcfe6b3d948758e9c32e209180fbb3d283370cdaf41551463bead",
+      "sha256": "b978e71aacbfcfe6b3d948758e9c32e209180fbb3d283370cdaf41551463bead",
+      "path": "upstream/SMPP_RUNTIME/023_business_events_profile_v1.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/023_business_events_profile_v1.sql",
+      "generatedSha256": "bf548b0cf650670d49fe2fbfc80c2fa18db03b14f72f89011029faccdbcd387f",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "024_accepted_task_substate.sql",
+      "sourcePath": "migrations/runtime/024_accepted_task_substate.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "25a0432bd8cdd04cbe4a56762827fd219857c0ca24c260c7911857c75aa78287",
+      "sha256": "25a0432bd8cdd04cbe4a56762827fd219857c0ca24c260c7911857c75aa78287",
+      "path": "upstream/SMPP_RUNTIME/024_accepted_task_substate.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/024_accepted_task_substate.sql",
+      "generatedSha256": "7ceebaa9e14490d5b83f97bca5e8cbbfd1ab90aa9d1409b5f9b984b51a8d4de1",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "025_smpp_dispatch_uncertainty.sql",
+      "sourcePath": "migrations/runtime/025_smpp_dispatch_uncertainty.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "fc52fb5eff0e05d57b9b134d142ea2e313aca2a49f5ba44e0798809e6083188a",
+      "sha256": "fc52fb5eff0e05d57b9b134d142ea2e313aca2a49f5ba44e0798809e6083188a",
+      "path": "upstream/SMPP_RUNTIME/025_smpp_dispatch_uncertainty.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/025_smpp_dispatch_uncertainty.sql",
+      "generatedSha256": "76f329c248688050d840d3602ebc6320d4d8bdb90bd5d1afdf3d721cb12102cd",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SMPP_RUNTIME",
+      "schema": "ugv_smpp",
+      "file": "026_smpp_reconciliation_audit.sql",
+      "sourcePath": "migrations/runtime/026_smpp_reconciliation_audit.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "2daad14ff8ae4102d71e0912ea86c3747cebf8b43ac70662fad9358f6f7dfb0f",
+      "sha256": "2daad14ff8ae4102d71e0912ea86c3747cebf8b43ac70662fad9358f6f7dfb0f",
+      "path": "upstream/SMPP_RUNTIME/026_smpp_reconciliation_audit.sql",
+      "generatedPath": "generated/ugv_smpp/SMPP_RUNTIME/026_smpp_reconciliation_audit.sql",
+      "generatedSha256": "f75be8f0f8a9253abf2e9426aecb57a9b40a7e97e1c1f49e161fda413560cc91",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "UGV_PROVIDER",
+      "schema": "ugv_smpp",
+      "file": "024_ugv_provider.sql",
+      "sourcePath": "migrations/providers/ugv/024_ugv_provider.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "05d6e1ec15187fbc96d96db8a6ee3d8d7edc33ff1840c2dc91fd7f104be805a2",
+      "sha256": "05d6e1ec15187fbc96d96db8a6ee3d8d7edc33ff1840c2dc91fd7f104be805a2",
+      "path": "upstream/UGV_PROVIDER/024_ugv_provider.sql",
+      "generatedPath": "generated/ugv_smpp/UGV_PROVIDER/024_ugv_provider.sql",
+      "generatedSha256": "441b85bea149ce67ebdb9c4660bbe6870b770fabf76fadc5da175f3942dd91c5",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "UGV_PROVIDER",
+      "schema": "ugv_smpp",
+      "file": "026_ugv_single_active_fire.sql",
+      "sourcePath": "migrations/providers/ugv/026_ugv_single_active_fire.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "cf6c8510803c6bf9c62e79d83de6c113bc0a27b945c99532d07537965d0b3079",
+      "sha256": "cf6c8510803c6bf9c62e79d83de6c113bc0a27b945c99532d07537965d0b3079",
+      "path": "upstream/UGV_PROVIDER/026_ugv_single_active_fire.sql",
+      "generatedPath": "generated/ugv_smpp/UGV_PROVIDER/026_ugv_single_active_fire.sql",
+      "generatedSha256": "9d78bc853141950144681d5dfd898789bfdaaf69c52c3f3b0bb9d4149f9e770f",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "UGV_PROVIDER",
+      "schema": "ugv_smpp",
+      "file": "027_mutation_journal.sql",
+      "sourcePath": "migrations/providers/ugv/027_mutation_journal.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "26b642cb142c13fbe6562e99d57e95423892829001d35be0783210a72ae443d5",
+      "sha256": "26b642cb142c13fbe6562e99d57e95423892829001d35be0783210a72ae443d5",
+      "path": "upstream/UGV_PROVIDER/027_mutation_journal.sql",
+      "generatedPath": "generated/ugv_smpp/UGV_PROVIDER/027_mutation_journal.sql",
+      "generatedSha256": "7a6cbed04084b71ea68e5f825f8f7d432e6672e3797700268233e682461b6c8f",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "UGV_PROVIDER",
+      "schema": "ugv_smpp",
+      "file": "028_smpp_diagnostic_leases.sql",
+      "sourcePath": "migrations/providers/ugv/028_smpp_diagnostic_leases.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "995c7c01773c97c4ba09330415d85988e1879bd80ad14203d5d9d95b99664b6a",
+      "sha256": "995c7c01773c97c4ba09330415d85988e1879bd80ad14203d5d9d95b99664b6a",
+      "path": "upstream/UGV_PROVIDER/028_smpp_diagnostic_leases.sql",
+      "generatedPath": "generated/ugv_smpp/UGV_PROVIDER/028_smpp_diagnostic_leases.sql",
+      "generatedSha256": "d8ed2bcff0d9c4cb32aa9b4d2aef41ceac1b7a2e1d73bfe3c4aa38afe3c5a87c",
+      "transforms": [
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "UGV_PROVIDER",
+      "schema": "ugv_smpp",
+      "file": "029_smpp_diagnostic_exact_argument_selector.sql",
+      "sourcePath": "migrations/providers/ugv/029_smpp_diagnostic_exact_argument_selector.sql",
+      "commit": "30ca575dc9c3907089a53e1fdccd69c95c2cbdc8",
+      "rawSha256": "713c738a55258954a5807a3f477335ee1e460d22b0ef49a6467ab22097876499",
+      "sha256": "713c738a55258954a5807a3f477335ee1e460d22b0ef49a6467ab22097876499",
+      "path": "upstream/UGV_PROVIDER/029_smpp_diagnostic_exact_argument_selector.sql",
+      "generatedPath": "generated/ugv_smpp/UGV_PROVIDER/029_smpp_diagnostic_exact_argument_selector.sql",
+      "generatedSha256": "906e4b6a0631907da9a5581cc80445cd8bd4224b9275117738db146f3166d755",
+      "transforms": [
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0001_sdar_v1_2_2_baseline.sql",
+      "sourcePath": "infra/postgres/baseline/0001_sdar_v1_2_2_baseline.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "b61980356fdea6cf79dcada4d857a6eccf8d5620b5f10ae18cebcf547535757b",
+      "sha256": "b61980356fdea6cf79dcada4d857a6eccf8d5620b5f10ae18cebcf547535757b",
+      "path": "upstream/SDAR_RUNTIME/0001_sdar_v1_2_2_baseline.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0001_sdar_v1_2_2_baseline.sql",
+      "generatedSha256": "ee68cc6dc6122feb386871246c06d110bd4316910ada709dcfa4da283b9ac1c7",
+      "transforms": [
+        "remove dump/session SET statement_timeout; installer uses SET LOCAL",
+        "remove dump/session SET lock_timeout; installer uses SET LOCAL",
+        "remove dump/session SET idle_in_transaction_session_timeout; installer uses SET LOCAL",
+        "remove dump/session SET transaction_timeout; installer uses SET LOCAL",
+        "remove dump/session SET client_encoding; installer uses SET LOCAL",
+        "remove dump/session SET standard_conforming_strings; installer uses SET LOCAL",
+        "remove dump search_path reset",
+        "remove dump/session SET check_function_bodies; installer uses SET LOCAL",
+        "remove dump/session SET xmloption; installer uses SET LOCAL",
+        "remove dump/session SET client_min_messages; installer uses SET LOCAL",
+        "remove dump/session SET row_security; installer uses SET LOCAL",
+        "extension preflight owned by installer; preserve existing extension namespace",
+        "remove dump/session SET default_tablespace; installer uses SET LOCAL",
+        "remove dump/session SET default_table_access_method; installer uses SET LOCAL",
+        "remove dump/session SET search_path; installer uses SET LOCAL",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0108_v123_cognitive_skeleton.up.sql",
+      "sourcePath": "infra/postgres/migrations/0108_v123_cognitive_skeleton.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "39f60b1666fffd2d0ffb9f12fdc4ad7caf0b6433b17987a69a1b508d3bbc18f6",
+      "sha256": "39f60b1666fffd2d0ffb9f12fdc4ad7caf0b6433b17987a69a1b508d3bbc18f6",
+      "path": "upstream/SDAR_RUNTIME/0108_v123_cognitive_skeleton.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0108_v123_cognitive_skeleton.up.sql",
+      "generatedSha256": "f2c4eac257c7fb04f5c042d4234952923fd2deb6fb7b2de1f32d930296f1fdef",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0109_v123_capability_summary.up.sql",
+      "sourcePath": "infra/postgres/migrations/0109_v123_capability_summary.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "25d3b8d70432a24664e8a43a888793280472f320799203eb0264669512afd0f8",
+      "sha256": "25d3b8d70432a24664e8a43a888793280472f320799203eb0264669512afd0f8",
+      "path": "upstream/SDAR_RUNTIME/0109_v123_capability_summary.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0109_v123_capability_summary.up.sql",
+      "generatedSha256": "9e5f15e3b777088dd5de1957da85d01d33f3a4829123f07968636a1ebe89e332",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0110_v123_capability_card.up.sql",
+      "sourcePath": "infra/postgres/migrations/0110_v123_capability_card.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "3f7d50ae0084319c6ee023d98685c7f9af518078139ae1ae19813ea42b76b69c",
+      "sha256": "3f7d50ae0084319c6ee023d98685c7f9af518078139ae1ae19813ea42b76b69c",
+      "path": "upstream/SDAR_RUNTIME/0110_v123_capability_card.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0110_v123_capability_card.up.sql",
+      "generatedSha256": "f8a084840b01b08a2b7e03f32f75fb226b1e90e681dfeb17829a6cb85dff0031",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0111_v123_task_understanding.up.sql",
+      "sourcePath": "infra/postgres/migrations/0111_v123_task_understanding.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "ef0159870809d22cc7a43ece0fc43285ddb7de5b8d055e7ae5726d063d8770b9",
+      "sha256": "ef0159870809d22cc7a43ece0fc43285ddb7de5b8d055e7ae5726d063d8770b9",
+      "path": "upstream/SDAR_RUNTIME/0111_v123_task_understanding.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0111_v123_task_understanding.up.sql",
+      "generatedSha256": "6cb1e43cf3a307d874401aacf14fd0352421f68c3a95315eca4f1b2667c4b935",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0112_v123_interactive_goal.up.sql",
+      "sourcePath": "infra/postgres/migrations/0112_v123_interactive_goal.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "bd17b165dca0ce4ee900727e8a96072b6a6478f714b3056e8c8feeed0b509a02",
+      "sha256": "bd17b165dca0ce4ee900727e8a96072b6a6478f714b3056e8c8feeed0b509a02",
+      "path": "upstream/SDAR_RUNTIME/0112_v123_interactive_goal.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0112_v123_interactive_goal.up.sql",
+      "generatedSha256": "907590c3f10bb0f43dec591cc14757e697a0c11d041527c5088c234a3c190476",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0113_v123_interactive_planning.up.sql",
+      "sourcePath": "infra/postgres/migrations/0113_v123_interactive_planning.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "a2a8c43b98841b90bb7b153ddebba72fabf1d595f636f84946fb59df97d07c55",
+      "sha256": "a2a8c43b98841b90bb7b153ddebba72fabf1d595f636f84946fb59df97d07c55",
+      "path": "upstream/SDAR_RUNTIME/0113_v123_interactive_planning.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0113_v123_interactive_planning.up.sql",
+      "generatedSha256": "8f0fc225f323f6b6a588081e9e5475bc4e8ab324fcf8ca8965adfdc1fe6f6477",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0114_v123_planning_corrections.up.sql",
+      "sourcePath": "infra/postgres/migrations/0114_v123_planning_corrections.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "400d6f370713a2e526f93d4ec8778939df90590307bef2863e4db584945aa98d",
+      "sha256": "400d6f370713a2e526f93d4ec8778939df90590307bef2863e4db584945aa98d",
+      "path": "upstream/SDAR_RUNTIME/0114_v123_planning_corrections.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0114_v123_planning_corrections.up.sql",
+      "generatedSha256": "beaa2ae88952348650c849814f7fd7a6fe2597748f00e4f2ab356a1afdc9293a",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0115_v123_experience_episode.up.sql",
+      "sourcePath": "infra/postgres/migrations/0115_v123_experience_episode.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "5ceb47d045177e8623e0b6ac15dc2bf8c9bdb4073e0458f28f18bcfa5d224820",
+      "sha256": "5ceb47d045177e8623e0b6ac15dc2bf8c9bdb4073e0458f28f18bcfa5d224820",
+      "path": "upstream/SDAR_RUNTIME/0115_v123_experience_episode.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0115_v123_experience_episode.up.sql",
+      "generatedSha256": "6ec5ccfb8d6e9aa7075448a19527d59c361e4d29a8e9469f371c6cff303fc8d8",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0116_v123_experience_observation.up.sql",
+      "sourcePath": "infra/postgres/migrations/0116_v123_experience_observation.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "70ec8d6d287a12cdf624f333774cbab6266a53cdc67a18b7560fd01d3d18aaa3",
+      "sha256": "70ec8d6d287a12cdf624f333774cbab6266a53cdc67a18b7560fd01d3d18aaa3",
+      "path": "upstream/SDAR_RUNTIME/0116_v123_experience_observation.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0116_v123_experience_observation.up.sql",
+      "generatedSha256": "5440b1db9b51cacbb9a40c1dca520c6b006750af4a8f803eb060f31d4faccbfa",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0117_v123_experience_reflection.up.sql",
+      "sourcePath": "infra/postgres/migrations/0117_v123_experience_reflection.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "d9c3f79c416fd6e499d19cea1523966c6ed029f192d4c9b3e3fbac8d44e12655",
+      "sha256": "d9c3f79c416fd6e499d19cea1523966c6ed029f192d4c9b3e3fbac8d44e12655",
+      "path": "upstream/SDAR_RUNTIME/0117_v123_experience_reflection.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0117_v123_experience_reflection.up.sql",
+      "generatedSha256": "eeac8c3bf9a2dce92261e1f9970bd03f1b6637bda01cfeb8c1e702997a6864df",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0118_v123_task_type_induction.up.sql",
+      "sourcePath": "infra/postgres/migrations/0118_v123_task_type_induction.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "8c119ae4ce08bf3a403c6101e5b5182c4a555b2b938732af7984d03a893c7eec",
+      "sha256": "8c119ae4ce08bf3a403c6101e5b5182c4a555b2b938732af7984d03a893c7eec",
+      "path": "upstream/SDAR_RUNTIME/0118_v123_task_type_induction.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0118_v123_task_type_induction.up.sql",
+      "generatedSha256": "f388b8063ea69875e74bbe54a9f1be55fe9ef645d9748fdffc98a09f2f2ada3d",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0119_v123_capability_pattern_induction.up.sql",
+      "sourcePath": "infra/postgres/migrations/0119_v123_capability_pattern_induction.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "44bbcdbafa662b5ea43a220177f01214f877f829700a79de7728ee8910d4a08b",
+      "sha256": "44bbcdbafa662b5ea43a220177f01214f877f829700a79de7728ee8910d4a08b",
+      "path": "upstream/SDAR_RUNTIME/0119_v123_capability_pattern_induction.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0119_v123_capability_pattern_induction.up.sql",
+      "generatedSha256": "3e143cd04d39763cc8c7624a568a1080cc2296bdd4669be72a0349b1c98b7f05",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0120_v123_knowledge_promotion.up.sql",
+      "sourcePath": "infra/postgres/migrations/0120_v123_knowledge_promotion.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "e571dfe013c3c8aca4c8725377e7e598f55001741e20bcb1b0fbd554d78b7a51",
+      "sha256": "e571dfe013c3c8aca4c8725377e7e598f55001741e20bcb1b0fbd554d78b7a51",
+      "path": "upstream/SDAR_RUNTIME/0120_v123_knowledge_promotion.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0120_v123_knowledge_promotion.up.sql",
+      "generatedSha256": "0aa5af69d5e3cace0b11a0ccf678d9bd8605f3798966430c3a3162bd54b68643",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0121_v123_knowledge_usage.up.sql",
+      "sourcePath": "infra/postgres/migrations/0121_v123_knowledge_usage.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "a95729f756bc969c22b6d48ae0e3b482e8d4b685d0a702ef32802c21f618e55c",
+      "sha256": "a95729f756bc969c22b6d48ae0e3b482e8d4b685d0a702ef32802c21f618e55c",
+      "path": "upstream/SDAR_RUNTIME/0121_v123_knowledge_usage.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0121_v123_knowledge_usage.up.sql",
+      "generatedSha256": "066a085833d107e69da12c53b3387e2d0988e30977a06ab50f186059d7463a00",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0122_v123_experience_enriched_planning.up.sql",
+      "sourcePath": "infra/postgres/migrations/0122_v123_experience_enriched_planning.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "1be7a4d93b955543e65cd15f03a7daf59cd1ae4c6a4199466bfb9be669e610a3",
+      "sha256": "1be7a4d93b955543e65cd15f03a7daf59cd1ae4c6a4199466bfb9be669e610a3",
+      "path": "upstream/SDAR_RUNTIME/0122_v123_experience_enriched_planning.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0122_v123_experience_enriched_planning.up.sql",
+      "generatedSha256": "bf190d20a4ca02d0f70d590af236ea556d11ee26feb06dcb644389b6c5dc1873",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0123_v123_cognitive_management_audit.up.sql",
+      "sourcePath": "infra/postgres/migrations/0123_v123_cognitive_management_audit.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "ba0be21b13515a498a2a38127ca0a8e3face8d26ac764bb7b6314b0ba174651f",
+      "sha256": "ba0be21b13515a498a2a38127ca0a8e3face8d26ac764bb7b6314b0ba174651f",
+      "path": "upstream/SDAR_RUNTIME/0123_v123_cognitive_management_audit.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0123_v123_cognitive_management_audit.up.sql",
+      "generatedSha256": "e20aed2d7dc451ca73cc2a0137b31c44fefad2b6b65997fadac9b3cef5f0ad65",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0124_v123_replay_shadow_evidence.up.sql",
+      "sourcePath": "infra/postgres/migrations/0124_v123_replay_shadow_evidence.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "550f6f510c54b1fc297c4565440c627f627ba0dfb8462f8ed4d2fc39f05642a2",
+      "sha256": "550f6f510c54b1fc297c4565440c627f627ba0dfb8462f8ed4d2fc39f05642a2",
+      "path": "upstream/SDAR_RUNTIME/0124_v123_replay_shadow_evidence.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0124_v123_replay_shadow_evidence.up.sql",
+      "generatedSha256": "56f920b1c76dc2f7a17864788d7822b06fd978db1efbf1d8b26f848b477d8fa7",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0125_v13_artifact_authority.up.sql",
+      "sourcePath": "infra/postgres/migrations/0125_v13_artifact_authority.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "50cb5041aca0be044010fe69c360fbbe3f6664e61fecf0c68b452ebf94b834f0",
+      "sha256": "50cb5041aca0be044010fe69c360fbbe3f6664e61fecf0c68b452ebf94b834f0",
+      "path": "upstream/SDAR_RUNTIME/0125_v13_artifact_authority.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0125_v13_artifact_authority.up.sql",
+      "generatedSha256": "be4adead9cfbfffa2d192484af2e7b7d6c50c6a5d3200435bfe72c4f49551d2e",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0126_v13_experience_compilation.up.sql",
+      "sourcePath": "infra/postgres/migrations/0126_v13_experience_compilation.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "e9745ae06fa6478511b28f39567ef3ec9b596a4df47b254303c50b068fe27bcf",
+      "sha256": "e9745ae06fa6478511b28f39567ef3ec9b596a4df47b254303c50b068fe27bcf",
+      "path": "upstream/SDAR_RUNTIME/0126_v13_experience_compilation.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0126_v13_experience_compilation.up.sql",
+      "generatedSha256": "a861a87a6fa9e3f9bb81b616e463eba3fe247c3e1110d179b67a6e0283958239",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0127_v13_artifact_candidate_generation.up.sql",
+      "sourcePath": "infra/postgres/migrations/0127_v13_artifact_candidate_generation.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "421fc69129a7042e26eca0fbb76058028c4c737af6524a6a0473a671e15e360a",
+      "sha256": "421fc69129a7042e26eca0fbb76058028c4c737af6524a6a0473a671e15e360a",
+      "path": "upstream/SDAR_RUNTIME/0127_v13_artifact_candidate_generation.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0127_v13_artifact_candidate_generation.up.sql",
+      "generatedSha256": "72a04fa29e6be9146a5937a20d885534f7cc4e043895efbeeb506cc23a4c9a22",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0128_v13_candidate_generation_runtime.up.sql",
+      "sourcePath": "infra/postgres/migrations/0128_v13_candidate_generation_runtime.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "dddf4c43d0ba766785d782def8ecbac0e4ba1dd81e73857be5e87cf76a6650be",
+      "sha256": "dddf4c43d0ba766785d782def8ecbac0e4ba1dd81e73857be5e87cf76a6650be",
+      "path": "upstream/SDAR_RUNTIME/0128_v13_candidate_generation_runtime.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0128_v13_candidate_generation_runtime.up.sql",
+      "generatedSha256": "3f0afa552f307b3ced579bcf5f91f0924f6da8d04f08c212ed5444394fc12cda",
+      "transforms": [
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0129_v13_artifact_replay_validation.up.sql",
+      "sourcePath": "infra/postgres/migrations/0129_v13_artifact_replay_validation.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "ef8add2fd264db9e18d81286690bc0629a4c32bc360e1c36705ab741813f8672",
+      "sha256": "ef8add2fd264db9e18d81286690bc0629a4c32bc360e1c36705ab741813f8672",
+      "path": "upstream/SDAR_RUNTIME/0129_v13_artifact_replay_validation.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0129_v13_artifact_replay_validation.up.sql",
+      "generatedSha256": "988207ee80cb0ca26bca0093d6d424fd097dc8546f071f2d6c114837f02c61dc",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0130_v13_artifact_shadow_governance.up.sql",
+      "sourcePath": "infra/postgres/migrations/0130_v13_artifact_shadow_governance.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "d84d353e19a4961c61934d8c276265350d6d250c31beab54356b6b672b29d5b2",
+      "sha256": "d84d353e19a4961c61934d8c276265350d6d250c31beab54356b6b672b29d5b2",
+      "path": "upstream/SDAR_RUNTIME/0130_v13_artifact_shadow_governance.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0130_v13_artifact_shadow_governance.up.sql",
+      "generatedSha256": "090ae67ca06546fc3aa88cd20e4f77d17378111d4290929a705b46b43563d628",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0131_v13_artifact_retrieval_audit.up.sql",
+      "sourcePath": "infra/postgres/migrations/0131_v13_artifact_retrieval_audit.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "16923d7899c5f7722c73f312cea6008c0e4bfd8463e8a99489264c490ab96031",
+      "sha256": "16923d7899c5f7722c73f312cea6008c0e4bfd8463e8a99489264c490ab96031",
+      "path": "upstream/SDAR_RUNTIME/0131_v13_artifact_retrieval_audit.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0131_v13_artifact_retrieval_audit.up.sql",
+      "generatedSha256": "1d2c504783dfe78b157660f25d7b4bd86ed32c8915096c0dfeebe36d513a6796",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0132_v13_fast_gateway.up.sql",
+      "sourcePath": "infra/postgres/migrations/0132_v13_fast_gateway.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "14656b722bd5178db24df6c4e517e41214e5b2192e16ba2fa628587ce6ab32d8",
+      "sha256": "14656b722bd5178db24df6c4e517e41214e5b2192e16ba2fa628587ce6ab32d8",
+      "path": "upstream/SDAR_RUNTIME/0132_v13_fast_gateway.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0132_v13_fast_gateway.up.sql",
+      "generatedSha256": "9348ed528e8c0965b18bb4bca7f599bee91dd70e9c8190270e447ea722f47e66",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0133_v13_case_model_runtime.up.sql",
+      "sourcePath": "infra/postgres/migrations/0133_v13_case_model_runtime.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "9719368d9dcb66786ca7504cf73ca7f48f43c664db6b3d2be69db6d07d40e7ec",
+      "sha256": "9719368d9dcb66786ca7504cf73ca7f48f43c664db6b3d2be69db6d07d40e7ec",
+      "path": "upstream/SDAR_RUNTIME/0133_v13_case_model_runtime.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0133_v13_case_model_runtime.up.sql",
+      "generatedSha256": "668481559734e14374446733b5a54da6388fc195bcff05be246ff4f8d0cd6b66",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0134_v13_artifact_management_projection.up.sql",
+      "sourcePath": "infra/postgres/migrations/0134_v13_artifact_management_projection.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "2581263fccd401d0f1e27d33b1f7d4c64e05f8c556c4125fd1315e36a9d7fd16",
+      "sha256": "2581263fccd401d0f1e27d33b1f7d4c64e05f8c556c4125fd1315e36a9d7fd16",
+      "path": "upstream/SDAR_RUNTIME/0134_v13_artifact_management_projection.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0134_v13_artifact_management_projection.up.sql",
+      "generatedSha256": "6acd63cd8e665cf462d58e4d852a3b8281d89801e5603ac343955221e54316a6",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0135_v14_runtime_configuration_lkg.up.sql",
+      "sourcePath": "infra/postgres/migrations/0135_v14_runtime_configuration_lkg.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "3b20aa79e1662de60c7b6ded4fe6f16a6d45c4ec765a80ca613fd4e73c102f84",
+      "sha256": "3b20aa79e1662de60c7b6ded4fe6f16a6d45c4ec765a80ca613fd4e73c102f84",
+      "path": "upstream/SDAR_RUNTIME/0135_v14_runtime_configuration_lkg.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0135_v14_runtime_configuration_lkg.up.sql",
+      "generatedSha256": "474e86e844ee0b1f8983eebac81268ea24746bf4526e5540e43728ca56199e55",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0136_v14_model_control_governance.up.sql",
+      "sourcePath": "infra/postgres/migrations/0136_v14_model_control_governance.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "7bf07dcd554956a49fcef8c898c9e3792746450e2d595e0061b6ec52228cf27f",
+      "sha256": "7bf07dcd554956a49fcef8c898c9e3792746450e2d595e0061b6ec52228cf27f",
+      "path": "upstream/SDAR_RUNTIME/0136_v14_model_control_governance.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0136_v14_model_control_governance.up.sql",
+      "generatedSha256": "85913a937f7c2b6f638e5fc2eda50c17b3bf77a80b01621dba0377eac54f9803",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0137_v14_capability_readiness.up.sql",
+      "sourcePath": "infra/postgres/migrations/0137_v14_capability_readiness.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "6d69c45bb5dcfed155a6103f31be1d534b516a39335b9077a1de87a5b121e8c6",
+      "sha256": "6d69c45bb5dcfed155a6103f31be1d534b516a39335b9077a1de87a5b121e8c6",
+      "path": "upstream/SDAR_RUNTIME/0137_v14_capability_readiness.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0137_v14_capability_readiness.up.sql",
+      "generatedSha256": "ff72efc787092f540df37dca5c72c5f4c564817eff7ad50f406c5e94aeb9ebf6",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0138_v14_runtime_agent_card.up.sql",
+      "sourcePath": "infra/postgres/migrations/0138_v14_runtime_agent_card.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "953af24e41dfd1b65b97c73bdbcab434677f44e1a77a30ebafc735593eecec0c",
+      "sha256": "953af24e41dfd1b65b97c73bdbcab434677f44e1a77a30ebafc735593eecec0c",
+      "path": "upstream/SDAR_RUNTIME/0138_v14_runtime_agent_card.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0138_v14_runtime_agent_card.up.sql",
+      "generatedSha256": "30a4ca23577d43e33c496018f4eaaa3c7bb608143a0aa8bf72fec1b4d4700ac9",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0139_v14_task_capability_binding.up.sql",
+      "sourcePath": "infra/postgres/migrations/0139_v14_task_capability_binding.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "d1368d7044dbc3522033893b7f184006ac55121a2958f054c4e1eec85d54cbf7",
+      "sha256": "d1368d7044dbc3522033893b7f184006ac55121a2958f054c4e1eec85d54cbf7",
+      "path": "upstream/SDAR_RUNTIME/0139_v14_task_capability_binding.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0139_v14_task_capability_binding.up.sql",
+      "generatedSha256": "e377f887827429579b39bea15636679f76563d619a29597b5cbb06c1e2722fa4",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0140_v14_skill_version_governance.up.sql",
+      "sourcePath": "infra/postgres/migrations/0140_v14_skill_version_governance.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "2e23d0cda9de61d3bbcac4e6aa5488ca7c66b0bc71fe2d7605fb11a705be9aaa",
+      "sha256": "2e23d0cda9de61d3bbcac4e6aa5488ca7c66b0bc71fe2d7605fb11a705be9aaa",
+      "path": "upstream/SDAR_RUNTIME/0140_v14_skill_version_governance.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0140_v14_skill_version_governance.up.sql",
+      "generatedSha256": "1bf12fa6c70a395fdf14ae57ec33ddf299167c4ac25c3a6681c03047061a5ce4",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0141_v14_skill_import_idempotency.up.sql",
+      "sourcePath": "infra/postgres/migrations/0141_v14_skill_import_idempotency.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "b249f770ebeb015985520ad5249c5fb43759839bb915411819b160a9b242132a",
+      "sha256": "b249f770ebeb015985520ad5249c5fb43759839bb915411819b160a9b242132a",
+      "path": "upstream/SDAR_RUNTIME/0141_v14_skill_import_idempotency.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0141_v14_skill_import_idempotency.up.sql",
+      "generatedSha256": "b1bcf3bc1d4b50fcc2e825deb52928406f43e3e97d250044cc53f0a2cd572f3b",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0142_v14_telemetry_export.up.sql",
+      "sourcePath": "infra/postgres/migrations/0142_v14_telemetry_export.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "37e945ac16c7340212b2c904659122aac15a7bacac36d4a3e79db43873124985",
+      "sha256": "37e945ac16c7340212b2c904659122aac15a7bacac36d4a3e79db43873124985",
+      "path": "upstream/SDAR_RUNTIME/0142_v14_telemetry_export.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0142_v14_telemetry_export.up.sql",
+      "generatedSha256": "4b62b9c39cfde3c7b751a78997825dd8bd7779f3e36f9a0df6175c87714ccc4a",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0143_v14_node_event_projection.up.sql",
+      "sourcePath": "infra/postgres/migrations/0143_v14_node_event_projection.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "d365fa192bf02b09626986e5bcfa675323df74f5906b62e759d73189479eb053",
+      "sha256": "d365fa192bf02b09626986e5bcfa675323df74f5906b62e759d73189479eb053",
+      "path": "upstream/SDAR_RUNTIME/0143_v14_node_event_projection.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0143_v14_node_event_projection.up.sql",
+      "generatedSha256": "0e022d3c5a27617ed5dc6f56eb7d67831f25b8de96253b238d7962edda2b28dd",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0144_v14_canonical_evidence.up.sql",
+      "sourcePath": "infra/postgres/migrations/0144_v14_canonical_evidence.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "e392350bb10f3ce7036b054b13cc99a38ad07028b4caf46d74031cdaefd59148",
+      "sha256": "e392350bb10f3ce7036b054b13cc99a38ad07028b4caf46d74031cdaefd59148",
+      "path": "upstream/SDAR_RUNTIME/0144_v14_canonical_evidence.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0144_v14_canonical_evidence.up.sql",
+      "generatedSha256": "1d5a42b92df65bdc24c90f4aa9cc68ae1fc864f224ea0d08203c0350764bdce0",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0145_v14_artifact_match_exact_version.up.sql",
+      "sourcePath": "infra/postgres/migrations/0145_v14_artifact_match_exact_version.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "0a2479f28d821d1377ce8d7cff2c088349b4d81f2e09bd8cf5f887f9dcd8b533",
+      "sha256": "0a2479f28d821d1377ce8d7cff2c088349b4d81f2e09bd8cf5f887f9dcd8b533",
+      "path": "upstream/SDAR_RUNTIME/0145_v14_artifact_match_exact_version.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0145_v14_artifact_match_exact_version.up.sql",
+      "generatedSha256": "32c76d7d4ac62684f8f8396503924f3786eb871b37eb4d494194c8914db5326c",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0146_v14_evidence_export_observation_ledger.up.sql",
+      "sourcePath": "infra/postgres/migrations/0146_v14_evidence_export_observation_ledger.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "3cf32c81936caca44ec007ebe25c89cf55cbb7f25469046d9df389e3d790626e",
+      "sha256": "3cf32c81936caca44ec007ebe25c89cf55cbb7f25469046d9df389e3d790626e",
+      "path": "upstream/SDAR_RUNTIME/0146_v14_evidence_export_observation_ledger.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0146_v14_evidence_export_observation_ledger.up.sql",
+      "generatedSha256": "55fee1b16b440e40d13d462584192d4737ee21ebff677bd80dec1687e45bbad7",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0147_v14_evidence_coverage_authority.up.sql",
+      "sourcePath": "infra/postgres/migrations/0147_v14_evidence_coverage_authority.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "a68543b8e6825938f6455b691eb738afafb874f5223749b2dd036213a076aa5c",
+      "sha256": "a68543b8e6825938f6455b691eb738afafb874f5223749b2dd036213a076aa5c",
+      "path": "upstream/SDAR_RUNTIME/0147_v14_evidence_coverage_authority.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0147_v14_evidence_coverage_authority.up.sql",
+      "generatedSha256": "c23d3b95ee147a6c8e332c685f27ddbcea14d6bc7cdac73da1b9c2ebec5669f5",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0148_v14_evidence_operations_recovery.up.sql",
+      "sourcePath": "infra/postgres/migrations/0148_v14_evidence_operations_recovery.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "153bbea71c4184b0fdee0f1dfa8037dc51559675c137e48e63aa6b2cf5f6ae93",
+      "sha256": "153bbea71c4184b0fdee0f1dfa8037dc51559675c137e48e63aa6b2cf5f6ae93",
+      "path": "upstream/SDAR_RUNTIME/0148_v14_evidence_operations_recovery.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0148_v14_evidence_operations_recovery.up.sql",
+      "generatedSha256": "ec8c6a159d3bb417cd67600e67d85a02d641e3fa6d9d5d0bb8df24b2eae103e7",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0149_v14_deterministic_capability_execution_action.up.sql",
+      "sourcePath": "infra/postgres/migrations/0149_v14_deterministic_capability_execution_action.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "c6ee18a7c4a574c179e9a69d063bff446465e15381bc848262a8b56bff42d4c0",
+      "sha256": "c6ee18a7c4a574c179e9a69d063bff446465e15381bc848262a8b56bff42d4c0",
+      "path": "upstream/SDAR_RUNTIME/0149_v14_deterministic_capability_execution_action.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0149_v14_deterministic_capability_execution_action.up.sql",
+      "generatedSha256": "9a87e3f3d001f2482f6540984159d43d965e2daee283e841e660aaffa8d1675c",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0150_v14_cognitive_management_action_lease_recovery.up.sql",
+      "sourcePath": "infra/postgres/migrations/0150_v14_cognitive_management_action_lease_recovery.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "0042b630e9354549034ec835839d3d755b7ade523d484ca4bf4747b424223770",
+      "sha256": "0042b630e9354549034ec835839d3d755b7ade523d484ca4bf4747b424223770",
+      "path": "upstream/SDAR_RUNTIME/0150_v14_cognitive_management_action_lease_recovery.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0150_v14_cognitive_management_action_lease_recovery.up.sql",
+      "generatedSha256": "97c7750502ce138240bdeb0dfbf0e070dd048935c30b57e887bfa9b0e398c97d",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0151_v14_capability_attempt_evidence_lineage.up.sql",
+      "sourcePath": "infra/postgres/migrations/0151_v14_capability_attempt_evidence_lineage.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "d32e7b88ba3ed7a4c1daeb3b66a2777cc2aaeadafd8dbb4839c8b5f289d29e1c",
+      "sha256": "d32e7b88ba3ed7a4c1daeb3b66a2777cc2aaeadafd8dbb4839c8b5f289d29e1c",
+      "path": "upstream/SDAR_RUNTIME/0151_v14_capability_attempt_evidence_lineage.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0151_v14_capability_attempt_evidence_lineage.up.sql",
+      "generatedSha256": "6b2c974639bfa56988f188e62b21a35f1cc5326a37eb70d72e8dba784a735db3",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0152_v14_mcp_execution_semantics_authority_repair.up.sql",
+      "sourcePath": "infra/postgres/migrations/0152_v14_mcp_execution_semantics_authority_repair.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "32e300aca3629b1d5e32ff36c8c8ac3c65faf384cd71d1f201e4124ce729ddfe",
+      "sha256": "32e300aca3629b1d5e32ff36c8c8ac3c65faf384cd71d1f201e4124ce729ddfe",
+      "path": "upstream/SDAR_RUNTIME/0152_v14_mcp_execution_semantics_authority_repair.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0152_v14_mcp_execution_semantics_authority_repair.up.sql",
+      "generatedSha256": "b3514d0e2b3ecddd53412d0991105853f7dfa4fbf8ecfdb17485c2dda5ef1e44",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0153_v14_initial_model_prompts.up.sql",
+      "sourcePath": "infra/postgres/migrations/0153_v14_initial_model_prompts.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "96042b748916d19690f93677c669201a1fe4c397b1e64a9dcf16723ab79645fa",
+      "sha256": "96042b748916d19690f93677c669201a1fe4c397b1e64a9dcf16723ab79645fa",
+      "path": "upstream/SDAR_RUNTIME/0153_v14_initial_model_prompts.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0153_v14_initial_model_prompts.up.sql",
+      "generatedSha256": "3ce918d939890923b291f3c63105e12bcfe6cb9c257fbc71ac98cf21249f3653",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0154_v14_initial_model_prompt_pointer_repair.up.sql",
+      "sourcePath": "infra/postgres/migrations/0154_v14_initial_model_prompt_pointer_repair.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "d16e5cee048418bdc5946e1c393e04aca209d23a28fcdc16edd6cce2dbf97255",
+      "sha256": "d16e5cee048418bdc5946e1c393e04aca209d23a28fcdc16edd6cce2dbf97255",
+      "path": "upstream/SDAR_RUNTIME/0154_v14_initial_model_prompt_pointer_repair.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0154_v14_initial_model_prompt_pointer_repair.up.sql",
+      "generatedSha256": "c9fac930b8178f88ebc9a4c22458fdc604432d2be5111d9e1815cbb29b57a10b",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0155_v14_model_operation_routes.up.sql",
+      "sourcePath": "infra/postgres/migrations/0155_v14_model_operation_routes.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "6575056f911f0a90bb94e65ece0acb0527d71d71310e7b12e9bd5323663779dc",
+      "sha256": "6575056f911f0a90bb94e65ece0acb0527d71d71310e7b12e9bd5323663779dc",
+      "path": "upstream/SDAR_RUNTIME/0155_v14_model_operation_routes.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0155_v14_model_operation_routes.up.sql",
+      "generatedSha256": "0b1d8acfcddc288ec4607c440710265a7c547f2f57dbf3e8ee85280577e95d53",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0156_v14_runtime_task_control_actions.up.sql",
+      "sourcePath": "infra/postgres/migrations/0156_v14_runtime_task_control_actions.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "5e8847680e93ca257b134e80bf20ca5c6857bde5f8cbf7b37d17beafd8a45700",
+      "sha256": "5e8847680e93ca257b134e80bf20ca5c6857bde5f8cbf7b37d17beafd8a45700",
+      "path": "upstream/SDAR_RUNTIME/0156_v14_runtime_task_control_actions.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0156_v14_runtime_task_control_actions.up.sql",
+      "generatedSha256": "a932198065ddd71b66d230ac513dbcdfd1269c80ef488ad9420397e35ef67da3",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0157_v14_governed_control_confirmation.up.sql",
+      "sourcePath": "infra/postgres/migrations/0157_v14_governed_control_confirmation.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "22b88f9aea1e3950bf85709ae00fbb821829b55d208508ac9211998fdd691cb2",
+      "sha256": "22b88f9aea1e3950bf85709ae00fbb821829b55d208508ac9211998fdd691cb2",
+      "path": "upstream/SDAR_RUNTIME/0157_v14_governed_control_confirmation.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0157_v14_governed_control_confirmation.up.sql",
+      "generatedSha256": "6941ff1915b89cdca481af47546fbab815e1d0b54046bf74e7014167d3f55750",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0158_v14_governed_control_dispatch_consumption.up.sql",
+      "sourcePath": "infra/postgres/migrations/0158_v14_governed_control_dispatch_consumption.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "efa979df4688291d02e588543df2299d1ce6b04aa02920ed3d13599561d0acac",
+      "sha256": "efa979df4688291d02e588543df2299d1ce6b04aa02920ed3d13599561d0acac",
+      "path": "upstream/SDAR_RUNTIME/0158_v14_governed_control_dispatch_consumption.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0158_v14_governed_control_dispatch_consumption.up.sql",
+      "generatedSha256": "31b732220b24fcbc9361d5ed8bf28613c69dc1d348a64c56b4090e84241ca91b",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0159_v14_remote_task_admission_recovery.up.sql",
+      "sourcePath": "infra/postgres/migrations/0159_v14_remote_task_admission_recovery.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "cfbf8c8d1c5efc56b904f70d69a28d7580200108ebd7af580a9b61d51d116265",
+      "sha256": "cfbf8c8d1c5efc56b904f70d69a28d7580200108ebd7af580a9b61d51d116265",
+      "path": "upstream/SDAR_RUNTIME/0159_v14_remote_task_admission_recovery.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0159_v14_remote_task_admission_recovery.up.sql",
+      "generatedSha256": "75bda01e1935347eccbb66f5ca43c8ecff2c9aca1ebfb34ab95c635302a0be73",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0160_v14_remote_task_authority_snapshot.up.sql",
+      "sourcePath": "infra/postgres/migrations/0160_v14_remote_task_authority_snapshot.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "781ded978b84d7de78abe2e656ebd4e401e96fb37b3705d7d6eceaf376d89aae",
+      "sha256": "781ded978b84d7de78abe2e656ebd4e401e96fb37b3705d7d6eceaf376d89aae",
+      "path": "upstream/SDAR_RUNTIME/0160_v14_remote_task_authority_snapshot.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0160_v14_remote_task_authority_snapshot.up.sql",
+      "generatedSha256": "9797d5cb13f97c982db6b1ec18626594109c29eb33d86da82baecba8427f23af",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0161_v14_remote_task_cancellation_authority.up.sql",
+      "sourcePath": "infra/postgres/migrations/0161_v14_remote_task_cancellation_authority.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "374db492fe1b7da8dafc62f250383ca9676d494311cf8521fea186acd1cd370f",
+      "sha256": "374db492fe1b7da8dafc62f250383ca9676d494311cf8521fea186acd1cd370f",
+      "path": "upstream/SDAR_RUNTIME/0161_v14_remote_task_cancellation_authority.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0161_v14_remote_task_cancellation_authority.up.sql",
+      "generatedSha256": "417a56d1b3909fa36d2d90eb195c35e5affb826b72b111b3f11ada3dc78a3edb",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0162_v14_agent_task_revision_authority.up.sql",
+      "sourcePath": "infra/postgres/migrations/0162_v14_agent_task_revision_authority.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "7deb27c298220d91a144685d0dbfe9c091fbe2cd36b1fe1b995fe1261f3b87d0",
+      "sha256": "7deb27c298220d91a144685d0dbfe9c091fbe2cd36b1fe1b995fe1261f3b87d0",
+      "path": "upstream/SDAR_RUNTIME/0162_v14_agent_task_revision_authority.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0162_v14_agent_task_revision_authority.up.sql",
+      "generatedSha256": "dd60403b8abde4fe02a037061602d461b0b8009b44a3fd1b4087613738155b57",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0163_v14_initial_model_prompt_seed_repair.up.sql",
+      "sourcePath": "infra/postgres/migrations/0163_v14_initial_model_prompt_seed_repair.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "a6f9b32770b10990f63be8e4e79c20c3fccce0c4322f5354827b00576669a088",
+      "sha256": "a6f9b32770b10990f63be8e4e79c20c3fccce0c4322f5354827b00576669a088",
+      "path": "upstream/SDAR_RUNTIME/0163_v14_initial_model_prompt_seed_repair.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0163_v14_initial_model_prompt_seed_repair.up.sql",
+      "generatedSha256": "47a146379fb0730208f4c580b617e59db5dd10bf090cec0bf3b97fe3088b4c07",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0164_v14_governed_control_catalog_lineage.up.sql",
+      "sourcePath": "infra/postgres/migrations/0164_v14_governed_control_catalog_lineage.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "d8e2f11e3b79b4b749cae4dd451e09288a7c2c505c467a749d525c1742be8f0d",
+      "sha256": "d8e2f11e3b79b4b749cae4dd451e09288a7c2c505c467a749d525c1742be8f0d",
+      "path": "upstream/SDAR_RUNTIME/0164_v14_governed_control_catalog_lineage.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0164_v14_governed_control_catalog_lineage.up.sql",
+      "generatedSha256": "126ceda417eef24b51d612c0172ca8ed7de07356dce1f953136161ef73da7463",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0165_v14_remote_task_catalog_lineage.up.sql",
+      "sourcePath": "infra/postgres/migrations/0165_v14_remote_task_catalog_lineage.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "6c3a2022bd49e58d8805294dfe92caa00aba960df5736dbacb0f979027e2dfe7",
+      "sha256": "6c3a2022bd49e58d8805294dfe92caa00aba960df5736dbacb0f979027e2dfe7",
+      "path": "upstream/SDAR_RUNTIME/0165_v14_remote_task_catalog_lineage.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0165_v14_remote_task_catalog_lineage.up.sql",
+      "generatedSha256": "4afcd381404ff6190bb1b8a2a77fd078576ce0c25cf49b74c2d867ed17f2973e",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0166_v14_failed_remote_continuation_quarantine.up.sql",
+      "sourcePath": "infra/postgres/migrations/0166_v14_failed_remote_continuation_quarantine.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "c5790fa3b4d341e03a5f18d72605e5764f06a59dc14578b678378be565be81bd",
+      "sha256": "c5790fa3b4d341e03a5f18d72605e5764f06a59dc14578b678378be565be81bd",
+      "path": "upstream/SDAR_RUNTIME/0166_v14_failed_remote_continuation_quarantine.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0166_v14_failed_remote_continuation_quarantine.up.sql",
+      "generatedSha256": "cb33ad15f3d73d235954fe10fc65f18ad7dd904f14c6953cec750ffed50d414f",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0167_v14_task_capability_initial_plan_binding.up.sql",
+      "sourcePath": "infra/postgres/migrations/0167_v14_task_capability_initial_plan_binding.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "b5e500f8763453f56ef0ddc7f8daeed370b02fa4db2a7046abaed4272bf2c3a9",
+      "sha256": "b5e500f8763453f56ef0ddc7f8daeed370b02fa4db2a7046abaed4272bf2c3a9",
+      "path": "upstream/SDAR_RUNTIME/0167_v14_task_capability_initial_plan_binding.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0167_v14_task_capability_initial_plan_binding.up.sql",
+      "generatedSha256": "4648de9911579914e0573e0f6d78fedd85fdecaa06c57cec35f1b9d8676760de",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0168_v14_failed_terminal_callback_quarantine.up.sql",
+      "sourcePath": "infra/postgres/migrations/0168_v14_failed_terminal_callback_quarantine.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "ffa8428a1a04978bdd954fbba412c8377d71c6c1d0d949ba13bbac14ffa36315",
+      "sha256": "ffa8428a1a04978bdd954fbba412c8377d71c6c1d0d949ba13bbac14ffa36315",
+      "path": "upstream/SDAR_RUNTIME/0168_v14_failed_terminal_callback_quarantine.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0168_v14_failed_terminal_callback_quarantine.up.sql",
+      "generatedSha256": "13d3a6654b303b8ca3880a879717d7983212b45ccb1a29a337bafac772586c64",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0169_v14_postfix_terminal_callback_quarantine.up.sql",
+      "sourcePath": "infra/postgres/migrations/0169_v14_postfix_terminal_callback_quarantine.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "0440d1bdb1bc6be3784b26b0beaedc7514f038a8c7b0dafa2e9801af947bd2b2",
+      "sha256": "0440d1bdb1bc6be3784b26b0beaedc7514f038a8c7b0dafa2e9801af947bd2b2",
+      "path": "upstream/SDAR_RUNTIME/0169_v14_postfix_terminal_callback_quarantine.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0169_v14_postfix_terminal_callback_quarantine.up.sql",
+      "generatedSha256": "614b0753a4e37e2925242048da4e14a524a944c8affdf8b1a1d40db9daec0e6d",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0170_v14_terminal_guard_callback_quarantine.up.sql",
+      "sourcePath": "infra/postgres/migrations/0170_v14_terminal_guard_callback_quarantine.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "9e3c7211d524778228c5fc2d311516d7813b989bf9bc4f0e75a20349695cb72e",
+      "sha256": "9e3c7211d524778228c5fc2d311516d7813b989bf9bc4f0e75a20349695cb72e",
+      "path": "upstream/SDAR_RUNTIME/0170_v14_terminal_guard_callback_quarantine.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0170_v14_terminal_guard_callback_quarantine.up.sql",
+      "generatedSha256": "863a8815c86f22438d71c13a24f0875dcf86661d42608214200b3b291f1ddd17",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0171_v14_claimed_terminal_guard_quarantine.up.sql",
+      "sourcePath": "infra/postgres/migrations/0171_v14_claimed_terminal_guard_quarantine.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "7ae93d578dff176024b7cbe746736bf71029acd72666d3fc9a3e67b64090ceba",
+      "sha256": "7ae93d578dff176024b7cbe746736bf71029acd72666d3fc9a3e67b64090ceba",
+      "path": "upstream/SDAR_RUNTIME/0171_v14_claimed_terminal_guard_quarantine.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0171_v14_claimed_terminal_guard_quarantine.up.sql",
+      "generatedSha256": "c8f72d9cda6157a6429ed00970f38b81c514e81771f1acbdd5da3786c8bb8430",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0172_v14_initial_task_admission.up.sql",
+      "sourcePath": "infra/postgres/migrations/0172_v14_initial_task_admission.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "83de8269dc2efd70ad831eb9ad0c61ffbb93dfb6a562736f67fe2b5e9c9c88ce",
+      "sha256": "83de8269dc2efd70ad831eb9ad0c61ffbb93dfb6a562736f67fe2b5e9c9c88ce",
+      "path": "upstream/SDAR_RUNTIME/0172_v14_initial_task_admission.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0172_v14_initial_task_admission.up.sql",
+      "generatedSha256": "a1aee006b336cb9922d5b23cd0e7b8e1b3c379e67575fd13727d11801fe4d2cb",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0173_remote_task_accepted_substate.up.sql",
+      "sourcePath": "infra/postgres/migrations/0173_remote_task_accepted_substate.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "16bf69a669c876ba6c1f5fc80ee5b8d741da706486950674b0b9a6d538b717d5",
+      "sha256": "16bf69a669c876ba6c1f5fc80ee5b8d741da706486950674b0b9a6d538b717d5",
+      "path": "upstream/SDAR_RUNTIME/0173_remote_task_accepted_substate.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0173_remote_task_accepted_substate.up.sql",
+      "generatedSha256": "ea332d99ae33ccca77a7af72d6b2094bc53b3652411157f2ab2c24559da9447a",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0174_v14_evidence_delivery_origin.up.sql",
+      "sourcePath": "infra/postgres/migrations/0174_v14_evidence_delivery_origin.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "24769cbf3921d4e352a1978a4320f2e8e0d0a750f29394aa634f2257b2ed0ef6",
+      "sha256": "24769cbf3921d4e352a1978a4320f2e8e0d0a750f29394aa634f2257b2ed0ef6",
+      "path": "upstream/SDAR_RUNTIME/0174_v14_evidence_delivery_origin.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0174_v14_evidence_delivery_origin.up.sql",
+      "generatedSha256": "dde0f5552c1a1e04d46a729dfd82b51cfd204bdced949b4754278fbd088d9b75",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0175_v14_mcp_task_consumer_sync.up.sql",
+      "sourcePath": "infra/postgres/migrations/0175_v14_mcp_task_consumer_sync.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "84c65d107cf042d4165e79a838bf6b268e4445c899c5a58193609724774828af",
+      "sha256": "84c65d107cf042d4165e79a838bf6b268e4445c899c5a58193609724774828af",
+      "path": "upstream/SDAR_RUNTIME/0175_v14_mcp_task_consumer_sync.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0175_v14_mcp_task_consumer_sync.up.sql",
+      "generatedSha256": "a2510a8bd44525128af7bcdbf750edd816ac454e80536e6618b2512769a72953",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0176_v14_control_authority_kind.up.sql",
+      "sourcePath": "infra/postgres/migrations/0176_v14_control_authority_kind.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "7ebcfe2921468efea766a4e97dea249ebf5e6d942e4cdecf326d6eecca6e1863",
+      "sha256": "7ebcfe2921468efea766a4e97dea249ebf5e6d942e4cdecf326d6eecca6e1863",
+      "path": "upstream/SDAR_RUNTIME/0176_v14_control_authority_kind.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0176_v14_control_authority_kind.up.sql",
+      "generatedSha256": "c5f83da17ec21a759cbd6ebd8ee38e45b9b12081d658f9a959705e3d8202ccee",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0177_v14_control_authority_kind_default.up.sql",
+      "sourcePath": "infra/postgres/migrations/0177_v14_control_authority_kind_default.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "4cad5cb502b608a18305ee696fd6b42ec905035cded4ba6ed993d6e13bd1bb6a",
+      "sha256": "4cad5cb502b608a18305ee696fd6b42ec905035cded4ba6ed993d6e13bd1bb6a",
+      "path": "upstream/SDAR_RUNTIME/0177_v14_control_authority_kind_default.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0177_v14_control_authority_kind_default.up.sql",
+      "generatedSha256": "8806e28da2db96a425e5a3d9848b9e8596cd2e1bca1e81bd457e875d8797e507",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0178_v14_development_isolated_demo.up.sql",
+      "sourcePath": "infra/postgres/migrations/0178_v14_development_isolated_demo.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "e34f2e9c5ffd5e953d9a64ca70cea5ef6cb31fad5b30fca708bdee72efe6d4f8",
+      "sha256": "e34f2e9c5ffd5e953d9a64ca70cea5ef6cb31fad5b30fca708bdee72efe6d4f8",
+      "path": "upstream/SDAR_RUNTIME/0178_v14_development_isolated_demo.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0178_v14_development_isolated_demo.up.sql",
+      "generatedSha256": "fcb4e335b710105e5bdae39d722bd3292eeedfdd5104d671ccfbb0377d0b549d",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0179_v14_workflow_scoped_continuation.up.sql",
+      "sourcePath": "infra/postgres/migrations/0179_v14_workflow_scoped_continuation.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "a1c239a28ef58b1c56c066a1bf91410bab1fb872cb6177fdc5bb6ac11a6c0853",
+      "sha256": "a1c239a28ef58b1c56c066a1bf91410bab1fb872cb6177fdc5bb6ac11a6c0853",
+      "path": "upstream/SDAR_RUNTIME/0179_v14_workflow_scoped_continuation.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0179_v14_workflow_scoped_continuation.up.sql",
+      "generatedSha256": "6fa5010e492a98ebe9a40a1b69e56e1549a7c612ef8a8c441f97490ee5dfb157",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0180_v14_workflow_child_call.up.sql",
+      "sourcePath": "infra/postgres/migrations/0180_v14_workflow_child_call.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "838afa06d37824247c31f2f55329be441f534bf7581be2ae7f6f84602baa412e",
+      "sha256": "838afa06d37824247c31f2f55329be441f534bf7581be2ae7f6f84602baa412e",
+      "path": "upstream/SDAR_RUNTIME/0180_v14_workflow_child_call.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0180_v14_workflow_child_call.up.sql",
+      "generatedSha256": "92c738373295cb550284577271c09162126a7a09b18b6a57b5e0774aa2f10f99",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0181_v14_temporary_skill_terminal.up.sql",
+      "sourcePath": "infra/postgres/migrations/0181_v14_temporary_skill_terminal.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "7867ef7f9f1ec56df9081e3e1c81a1fcdec324cda725f813fa7ccaba20c22db8",
+      "sha256": "7867ef7f9f1ec56df9081e3e1c81a1fcdec324cda725f813fa7ccaba20c22db8",
+      "path": "upstream/SDAR_RUNTIME/0181_v14_temporary_skill_terminal.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0181_v14_temporary_skill_terminal.up.sql",
+      "generatedSha256": "c9abca0fb67f34fd5c1b090f6cbd34f4300140cf534a9a731715084d99672a4f",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "function search_path pinned for unqualified PL/pgSQL references",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0182_v14_configured_task_type.up.sql",
+      "sourcePath": "infra/postgres/migrations/0182_v14_configured_task_type.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "ec9c40e31ff3781ecd111f7eeb089839d66da76f5e8f42f828b6218020483d82",
+      "sha256": "ec9c40e31ff3781ecd111f7eeb089839d66da76f5e8f42f828b6218020483d82",
+      "path": "upstream/SDAR_RUNTIME/0182_v14_configured_task_type.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0182_v14_configured_task_type.up.sql",
+      "generatedSha256": "e4eaf0cc1a404d2443f792adb361284fa9e142a269a5ba1f6276639d51e2454e",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    },
+    {
+      "family": "SDAR_RUNTIME",
+      "schema": "ugv_sdar",
+      "file": "0183_v14_capability_admission_receipt.up.sql",
+      "sourcePath": "infra/postgres/migrations/0183_v14_capability_admission_receipt.up.sql",
+      "commit": "cb50da8ec8d160a673852be8bcdfc3bb094f5ce5",
+      "rawSha256": "cb7775a55cf9002b3bb3317b9d88e47d2c8982bf994abeeb5c171fe1f949f35b",
+      "sha256": "cb7775a55cf9002b3bb3317b9d88e47d2c8982bf994abeeb5c171fe1f949f35b",
+      "path": "upstream/SDAR_RUNTIME/0183_v14_capability_admission_receipt.up.sql",
+      "generatedPath": "generated/ugv_sdar/SDAR_RUNTIME/0183_v14_capability_admission_receipt.up.sql",
+      "generatedSha256": "cca48496974552a273710d42ed9bc2dcca29a1bb1d825278033863016ccaafb9",
+      "transforms": [
+        "transaction boundary owned by installer",
+        "AST application object namespace mapping; extension objects remain public"
+      ]
+    }
+  ],
+  "overlays": [
+    {
+      "schema": "ugv_smpp",
+      "family": "GOWM_OVERLAY",
+      "file": "device_scope_v1.sql",
+      "path": "overlays/ugv_smpp.sql",
+      "sha256": "ec8e5b53bd0d4c5cb0f747c10fb4646807310d78eaf7a25c194f4b037e44812a"
+    },
+    {
+      "schema": "ugv_smpp",
+      "family": "GOWM_OVERLAY",
+      "file": "scope_hardening_v1.sql",
+      "path": "overlays/smpp-hardening.sql",
+      "sha256": "957e5693aae31946b353edcdbc0759c8dd9237487630b3299d3d281b964dca1e"
+    },
+    {
+      "schema": "ugv_smpp",
+      "family": "GOWM_OVERLAY",
+      "file": "additional_scope_v1.sql",
+      "path": "overlays/smpp-additional.sql",
+      "sha256": "f283857149d30c8feda408b6f001f54b9138a03f6b802f6bc4e8b85b5c22c4f6"
+    },
+    {
+      "schema": "ugv_sdar",
+      "family": "GOWM_OVERLAY",
+      "file": "device_scope_v1.sql",
+      "path": "overlays/ugv_sdar.sql",
+      "sha256": "cd0468c421de6cf6b0a069d788f7b4937f74bac0d0a3729e85d1213f425294c5"
+    },
+    {
+      "schema": "ugv_sdar",
+      "family": "GOWM_OVERLAY",
+      "file": "scope_hardening_v1.sql",
+      "path": "overlays/sdar-hardening.sql",
+      "sha256": "1ad3150232a29f5cf04f5623f011afa64454dcd849571d6dbdb5b3de8e4212e5"
+    },
+    {
+      "schema": "ugv_sdar",
+      "family": "GOWM_OVERLAY",
+      "file": "additional_scope_v1.sql",
+      "path": "overlays/sdar-additional.sql",
+      "sha256": "1b294e844f03bda8ae1c37e16e1994ff66760a9744e60dc14111abd9e4685920"
+    },
+    {
+      "schema": "ugv_sdar",
+      "family": "GOWM_OVERLAY",
+      "file": "derived_ownership_v1.sql",
+      "path": "overlays/sdar-derived-ownership.sql",
+      "sha256": "bb590ee330a0af44b87fe93d8150a000039598837b77aa2e524ceca00e2036cd"
+    },
+    {
+      "schema": "ugv_smpp",
+      "family": "GOWM_READ_MODEL",
+      "file": "read_model_v1.sql",
+      "path": "overlays/read-model.sql",
+      "sha256": "57ecb4fd1883e5adac488a0a5938d0ffac810f19d91e26ae193c08706cd76a7f"
+    }
+  ]
+}
