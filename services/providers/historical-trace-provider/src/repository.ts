@@ -357,6 +357,9 @@ function outcomeStatus(row:OutcomeRow|undefined):{status:HistoricalTraceReposito
 function trajectoryOutcome(
   trajectory:TrajectoryRow,interval:IntervalRow,gapCount:number,outcome:OutcomeRow|undefined
 ):{status:HistoricalTraceRepositoryResult["status"];reasonCode:string} {
+  if (nonNegativeInteger(trajectory.sample_count,"sample_count")===0) {
+    return {status:"NO_DATA",reasonCode:"NO_TRAJECTORY_POINTS"};
+  }
   if (outcome) {
     const persisted=outcomeStatus(outcome);
     if (persisted.status==="NO_DATA") throw new ProviderProtocolError("SCHEMA_MISMATCH","persisted NO_DATA outcome conflicts with an available trajectory revision");

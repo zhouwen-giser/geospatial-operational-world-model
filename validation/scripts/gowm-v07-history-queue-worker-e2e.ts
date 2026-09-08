@@ -25,10 +25,10 @@ import {
 } from "../../services/projection-worker/src/worker.js";
 import { createHistoricalTraceProvider } from "../../services/providers/historical-trace-provider/src/provider.js";
 import {
-  historicalSemanticRequestHash
+  historicalSemanticRequestHash, HISTORICAL_TRACE_SQL
 } from "../../services/providers/historical-trace-provider/src/repository.js";
 import {
-  withMigratedV07Database,
+  withMigratedV071Database,
   type V07DatabaseEvidence
 } from "./gowm-v07-postgres-harness.js";
 
@@ -67,9 +67,9 @@ interface QueueRow extends Record<string, unknown> {
 
 const RETAINED_RESTART_ERROR = "retained worker restart diagnostic";
 
-await withMigratedV07Database("history_queue_worker", async (databaseUrl, versions, runId) => {
+await withMigratedV071Database("history_queue_worker", async (databaseUrl, versions, runId) => {
   await runQueueWorkerE2e(databaseUrl, versions, runId);
-});
+}, { currentSchema: true });
 
 async function runQueueWorkerE2e(
   databaseUrl: string,
@@ -106,7 +106,40 @@ async function runQueueWorkerE2e(
     const semanticRequestHash = historicalSemanticRequestHash(query);
     const capturedAt = await databaseNow(adminPool);
     const effectiveSnapshot = snapshotManifest(`queue-${runId}`, capturedAt);
+    effectiveSnapshot.resources.push({
+      resourceKind: "TASK_EXECUTION_INTERVAL", resourceId: `gowm:${interval.referenceKey.id}`,
+      version: interval.referenceKey.version!, pinning: "PINNED", contentHash: interval.contentHash
+    });
+    const taskProfile = (await adminPool.query(
+      "SELECT content_hash FROM gowm_history.method_profile WHERE profile_key='task-interval-observed-v1' AND profile_version='1.0'"
+    )).rows[0];
+    effectiveSnapshot.resources.push({
+      resourceKind: "HISTORY_METHOD_PROFILE", resourceId: "gowm:task-interval-observed-v1",
+      version: "1.0", pinning: "PINNED", contentHash: taskProfile.content_hash
+    });
+    const { manifestHash: _oldHash, ...frozen } = effectiveSnapshot;
+    effectiveSnapshot.manifestHash = sha256(frozen);
     const provider = createHistoricalTraceProvider({ pool: providerPool });
+
+    // Exercise the SECURITY DEFINER boundary with the actual runtime role.
+    for (const resourceId of [`foreign:${interval.referenceKey.id}`, "gowm:wrf_missing"]) {
+      const bad = structuredClone(effectiveSnapshot);
+      bad.resources[0]!.resourceId = resourceId;
+      const { manifestHash: _hash, ...body } = bad;
+      bad.manifestHash = sha256(body);
+      const client = await providerPool.connect();
+      try {
+        await client.query("BEGIN");
+        await client.query(HISTORICAL_TRACE_SQL.setScope, [fixture.dataScopeKey]);
+        await assert.rejects(client.query(HISTORICAL_TRACE_SQL.enqueueProjection, [
+          fixture.dataScopeKey, query.subjectReferenceKey.id, query.executionIntervalReferenceKey.id,
+          Number(query.executionIntervalReferenceKey.version), query.phaseScope, semanticRequestHash,
+          bad.manifestHash, capturedAt, JSON.stringify(query), JSON.stringify(bad)
+        ]), (error: unknown) => (error as {code?: string}).code === "23503");
+      } finally {
+        await client.query("ROLLBACK"); client.release();
+      }
+    }
 
     const first = await provider.runtime.execute(providerRequest(
       provider,
@@ -324,6 +357,42 @@ async function runQueueWorkerE2e(
       "the completed Provider read must not enqueue a duplicate request"
     );
 
+    const zeroId = randomUUID().replaceAll("-", "");
+    const zeroFixture = fixtureIdentity(zeroId);
+    await seedFixtureFoundation(adminPool, zeroFixture);
+    await seedTaskEvents(adminPool, zeroFixture, true);
+    await seedPositions(adminPool, zeroFixture);
+    await seedCompleteWatermark(adminPool, zeroFixture);
+    await projectFixture(adminPool, workerPool, zeroFixture, zeroId);
+    const zeroInterval = await loadIntervalPin(adminPool, zeroFixture);
+    const zeroQuery = historicalQuery(zeroFixture, zeroInterval.referenceKey);
+    zeroQuery.sourceSelectionProfileReferenceKey = {
+      namespace: "gowm.history", kind: "HISTORY_METHOD_PROFILE",
+      id: "trajectory-single-authoritative-v2", version: "2.0"
+    };
+    const zeroMaterializer = new PostgresHistoricalTrajectoryMaterializer(workerPool);
+    const zeroPrepared = await zeroMaterializer.prepareForCommit({
+      dataScopeKey: zeroFixture.dataScopeKey, capturedAt: await databaseNow(adminPool), query: zeroQuery
+    });
+    const zeroClient = await workerPool.connect();
+    try {
+      await zeroClient.query("BEGIN");
+      await zeroClient.query(HISTORICAL_TRACE_SQL.setScope, [zeroFixture.dataScopeKey]);
+      await zeroMaterializer.commitPreparedInTransaction(zeroPrepared, zeroClient);
+      await zeroClient.query("COMMIT");
+    } catch (error) {
+      await zeroClient.query("ROLLBACK"); throw error;
+    } finally { zeroClient.release(); }
+    const zeroRows = await adminPool.query(`
+      SELECT revision.sample_count FROM gowm_history.historical_trajectory trajectory
+      JOIN gowm_history.historical_trajectory_revision revision USING (historical_trajectory_id)
+      WHERE trajectory.data_scope_key=$1`, [zeroFixture.dataScopeKey]);
+    assert.equal(zeroRows.rows.length, 1, "interpolated trajectory must commit without a constraint retry loop");
+    assert.equal(zeroRows.rows[0].sample_count, 0);
+    const zeroRead = await provider.runtime.execute(providerRequest(provider, zeroQuery,
+      snapshotManifest(`zero-${runId}`, await databaseNow(adminPool)), zeroFixture.dataScopeKey, `zero-${runId}`));
+    assert.equal(zeroRead.status, "NO_DATA", "zero original measurements must not count as positive success");
+
     process.stdout.write(`${JSON.stringify({
       status: "PASS",
       gate: "GOWM_V07_HISTORY_QUEUE_WORKER",
@@ -424,11 +493,11 @@ async function seedFixtureFoundation(pool: pg.Pool, fixture: FixtureIdentity): P
   fixture.subjectReferenceKey = requiredString(subject.rows[0]?.reference_key, "subject reference key");
 }
 
-async function seedTaskEvents(pool: pg.Pool, fixture: FixtureIdentity): Promise<void> {
+async function seedTaskEvents(pool: pg.Pool, fixture: FixtureIdentity, interpolatedOnly = false): Promise<void> {
   const repository = new OperationalEventRepository(pool);
   const events = [
-    ["EXECUTION_STARTED_OBSERVED", "2026-08-30T00:00:00.000Z"],
-    ["EXECUTION_STOPPED_OBSERVED", "2026-08-30T00:00:10.000Z"]
+    ["EXECUTION_STARTED_OBSERVED", interpolatedOnly ? "2026-08-30T00:00:01.000Z" : "2026-08-30T00:00:00.000Z"],
+    ["EXECUTION_STOPPED_OBSERVED", interpolatedOnly ? "2026-08-30T00:00:02.000Z" : "2026-08-30T00:00:10.000Z"]
   ] as const;
   for (const [eventType, eventTime] of events) {
     const eventId = `${eventType.toLowerCase()}-${fixture.operationalTaskId}`;

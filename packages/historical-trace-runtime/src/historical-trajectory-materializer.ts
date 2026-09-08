@@ -258,7 +258,24 @@ function validateRequestedSnapshot(
       );
     }
   }
-  return snapshot.resources;
+  // Decode only lookup copies, after validating the original manifest hash.
+  // Queue persistence and provenance retain the exact Gateway snapshot.
+  return snapshot.resources.map((pin) => {
+    const namespaces: Record<string, readonly string[]> = {
+      TASK_EXECUTION_INTERVAL: ["gowm"],
+      TRACKLET_VERSION: ["gowm.mobility"],
+      TRACKLET_FINALIZATION: ["gowm.history"],
+      HISTORY_METHOD_PROFILE: ["gowm", "gowm.history"],
+      ANALYSIS_SPACE: ["gowm"]
+    };
+    const allowed = namespaces[pin.resourceKind];
+    if (!allowed || !pin.resourceId.includes(":")) return pin;
+    const namespace = allowed.find((candidate) => pin.resourceId.startsWith(`${candidate}:`));
+    if (!namespace || pin.resourceId.length === namespace.length + 1) {
+      throw new HistoricalProjectionInputError(`${pin.resourceKind} requestedSnapshot namespace is invalid`);
+    }
+    return { ...pin, resourceId: pin.resourceId.slice(namespace.length + 1) };
+  });
 }
 
 function pinsOfKind(
@@ -533,14 +550,20 @@ export class PostgresHistoricalTrajectoryInputLoader implements HistoricalTrajec
         createdAt: isoTimestamp(profileRow.created_at, "profile created_at")
       };
       const profilePins = pinsOfKind(snapshotPins, "HISTORY_METHOD_PROFILE");
-      if (profilePins.length > 1) {
-        throw new HistoricalProjectionInputError("requestedSnapshot has multiple history method profile pins");
-      }
+      // Upstream task-interval profiles and trajectory-selection profiles may
+      // coexist in the shared snapshot. Validate each immutable profile itself.
       for (const pin of profilePins) {
+        const pinnedProfiles = await connection.query<Record<string, unknown>>(`
+          SELECT profile_key, profile_version, content_hash
+          FROM gowm_history.method_profile
+          WHERE profile_key = $1 AND profile_version = $2 AND created_at <= $3::timestamptz
+        `, [pin.resourceId, pin.version, capturedAt]);
+        const pinned = pinnedProfiles.rows[0];
+        if (!pinned) throw new HistoricalProjectionInputError("history method profile pin is unavailable at capturedAt");
         assertPin(pin, {
-          resourceId: profile.profileKey,
-          version: profile.profileVersion,
-          contentHash: profile.profileHash
+          resourceId: requiredString(pinned.profile_key, "pinned profile key"),
+          version: requiredString(pinned.profile_version, "pinned profile version"),
+          contentHash: digest(pinned.content_hash, "pinned profile hash")
         }, "history method profile");
       }
 
