@@ -68,7 +68,14 @@ else if (['install', 'verify', 'fixture', 'test:postgres'].includes(command)) {
                 c.release();
             }
             if (test) {
-                const { fixture, postgresTests } = await import('./fixture.js');
+                // The deployment inventory deliberately excludes fixture.ts. Keep the
+                // optional test harness outside the production compilation graph.
+                const harnessUrl = new URL('./fixture.js', import.meta.url).href;
+                const { fixture, postgresTests } = await import(harnessUrl).catch((error: unknown) => {
+                    if ((error as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND')
+                        throw new Error('TEST_HARNESS_NOT_PACKAGED: run fixture/test:postgres from the GOWM source checkout');
+                    throw error;
+                });
                 if (command === 'fixture')
                     console.log(JSON.stringify(await fixture(pool)));
                 else {

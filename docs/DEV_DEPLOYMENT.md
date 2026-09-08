@@ -158,3 +158,18 @@ The development override binds all ports to `0.0.0.0`. MQTT remains anonymous,
 and Foundation APIs do not gain a new authentication layer. Use host or network
 firewall rules to allow only the trusted LAN/VPN CIDRs. Do not expose this
 topology directly to the public internet.
+
+### Shared device business storage
+
+The deployment includes core migration 078, all hosted native SQL, device
+scope overlays, and the compiled storage CLI. In the production image use
+`node dist/scripts/business-storage/cli.js install --domain all` (with an
+explicit `GOWM_DATABASE_URL`) and `node dist/scripts/business-storage/cli.js verify`.
+`--help` requires no database. SDAR installation requires an administrator-managed
+`vector` extension; this packaging command does not install schemas or switch
+running consumers.
+
+The ordinary storage fixture/test harness remains excluded from the deployment
+archive. Run those commands from the source checkout against an isolated test
+DB. The runtime CLI loads that optional harness only for fixture/test commands,
+so excluding tests does not prevent production compilation.

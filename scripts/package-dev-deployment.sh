@@ -185,8 +185,15 @@ if [[ "$verify_image" == true ]]; then
     for (const file of migrations) fs.accessSync("/app/database/migrations/" + file, fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/migrate.js", fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/world-object-catalog-backfill.js", fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/business-storage/cli.js", fs.constants.R_OK);
+    fs.accessSync("/app/database/migrations/078_device_shared_business_storage.sql", fs.constants.R_OK);
+    const hosted = JSON.parse(fs.readFileSync("/app/database/shared-business-storage/install-manifest.json", "utf8"));
+    for (const entry of hosted.entries) fs.accessSync("/app/database/shared-business-storage/" + entry.generatedPath, fs.constants.R_OK);
+    for (const entry of hosted.overlays) fs.accessSync("/app/database/shared-business-storage/" + entry.path, fs.constants.R_OK);
     console.log("PASS: non-root runtime can read migrations");
   '
+  docker run --rm --network none --read-only --entrypoint node "$image_tag" \
+    dist/scripts/business-storage/cli.js install --help
 fi
 if [[ -e "$final_archive_path" ]]; then
   backup_dir="$(mktemp -d "$output_dir/previous-${package_name}.XXXXXX")"
