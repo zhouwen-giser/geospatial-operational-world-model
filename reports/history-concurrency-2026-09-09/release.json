@@ -1,0 +1,7 @@
+{
+  "releaseDirectory": "/mnt/data/gowm-history-releases/7fb576e9b975b6b7",
+  "packageSha256": "7fb576e9b975b6b712380d27e62c35a9273bcd4a2ab8c2c5cf74504752e6bc11",
+  "imageTag": "gowm-dev-package-check:7fb576e9b975b6b7",
+  "imageId": "sha256:a691228b8288606aae3318467ce722d358d3f2198675c45af422079b5580425a",
+  "performanceGatePassed": true
+}

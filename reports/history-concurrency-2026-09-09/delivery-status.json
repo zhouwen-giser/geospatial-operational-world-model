@@ -1,0 +1,33 @@
+{
+  "implementation": "DELIVERED",
+  "deployment": "PASS",
+  "performance": "PASS",
+  "businessAcceptance": "PASS",
+  "repositoryBoundary": "GOWM only",
+  "historyConcurrencyPerContainer": 1,
+  "gowmObserved": {
+    "status": "PARTIAL",
+    "reason": "TRAJECTORY_GAP",
+    "finalization": "PROVISIONAL",
+    "samples": 9806,
+    "gaps": 1,
+    "elapsedMs": 1406
+  },
+  "wsgsObserved": {
+    "status": "PARTIAL",
+    "findingCount": 1,
+    "gapKinds": [],
+    "publicReferenceProducts": 4
+  },
+  "businessSubmissions": 2,
+  "exhaustedRequestsUnchanged": 195,
+  "businessAcceptanceGate": "TASK_ONLY_HISTORICAL_TRACE_SUBJECT_REFERENCE",
+  "resultStatus": "PARTIAL",
+  "resolvedBlocker": "WSGS_PUBLIC_WORLD_OBJECT_PRODUCT_MISSING",
+  "finalAuthorizedRunSubmissions": 1,
+  "finalAcceptanceFinishedAt": "2026-09-09T12:43:30.350Z",
+  "finalAcceptanceEvidence": "wsgs-subject-fix-acceptance/semantic-acceptance.json",
+  "groundingIdHash": "sha256:49870c823bb25fbab500cbb5871f862ee760dd569bfe2d662618da62a0f7807c",
+  "resultHash": "sha256:e4c127fbba3ed52da40d953a806a6ab4210530ea1c61a8fbf1295c8c75d20fea",
+  "wsgsFixPackageSha256": "5a14773927a4c6ea077e686bb52f622430eb1944336f1804d3ccbedb563ee5e8"
+}

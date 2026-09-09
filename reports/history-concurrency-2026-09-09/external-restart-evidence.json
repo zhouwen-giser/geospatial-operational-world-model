@@ -1,0 +1,13 @@
+{
+  "container": "sdar-benchmark-projector-1",
+  "firstError": "2026-09-09T11:15:17.640308780Z",
+  "lastError": "2026-09-09T11:54:31.292424826Z",
+  "created": "2026-09-09T11:15:13.696470158Z",
+  "restartCount": 47,
+  "beforeFirstGowmMigrationErrors": 38,
+  "afterGowmUpdateErrors": 6,
+  "matchingBeforeAfterErrorFingerprints": [
+    "6dc10ffc3236b21b2eb782392ff74187b810af8c2b046bef48c05d1874c3c72a"
+  ],
+  "containerIdAndImageUnchanged": true
+}

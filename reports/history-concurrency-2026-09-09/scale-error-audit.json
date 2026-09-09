@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "sqlErrors": 0,
+  "stageErrors": 0,
+  "leaseLost": 0,
+  "requestAttempts": {
+    "1": 120
+  },
+  "materializedRequests": 88
+}

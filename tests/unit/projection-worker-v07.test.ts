@@ -18,6 +18,43 @@ const workerOptions = {
 } as const;
 
 describe("ProjectionWorker v0.7 historical ordering", () => {
+  it("consumes frozen requests while a live tracklet rebuild is blocked", async () => {
+    const order: string[] = [];
+    const components = projectionComponents(order, {observationIds: [], events: [], operationalProjected: 0});
+    const historical = historicalStages(order, {
+      intervals: {taskIntervalsClaimed: 0, taskIntervalsProjected: 0, taskIntervalsSuperseded: 0, historicalProjectionFailures: 0, staleFenceFailures: 0},
+      tracklets: {trackletsClaimed: 0, trackletsRebuilt: 0, historicalProjectionFailures: 0, staleFenceFailures: 0},
+      finalizations: {finalizationsClaimed: 0, trackletsFinalized: 0, historicalProjectionFailures: 0, staleFenceFailures: 0},
+      trajectories: {historicalTrajectoryClaims: 1, historicalTrajectoriesMaterialized: 1, historicalTrajectoryOutcomesRecorded: 0, historicalProjectionFailures: 0, staleFenceFailures: 0}
+    });
+    let release!: () => void;
+    let entered!: () => void;
+    const blocked = new Promise<void>((resolve) => { release = resolve; });
+    const started = new Promise<void>((resolve) => { entered = resolve; });
+    const rebuild = historical.rebuildTracklets;
+    historical.rebuildTracklets = async (options) => {
+      entered();
+      await blocked;
+      return rebuild(options);
+    };
+    const worker = new ProjectionWorker(pool, { ...workerOptions, historical, components });
+    const live = worker.tick("LIVE");
+    await started;
+    try {
+      await worker.tick("HISTORY");
+      await worker.tick("HISTORY");
+      expect(historical.materializeHistoricalTrajectories).toHaveBeenCalledTimes(2);
+      expect(historical.projectTaskIntervals).toHaveBeenCalledTimes(1);
+      expect(components.observations.claimBatch).toHaveBeenCalledTimes(1);
+      expect(components.events.unpublished).not.toHaveBeenCalled();
+    } finally {
+      release();
+      await live;
+    }
+    expect(historical.materializeHistoricalTrajectories).toHaveBeenCalledTimes(2);
+    expect(components.events.unpublished).toHaveBeenCalledTimes(1);
+  });
+
   it("runs observations, operational projection and all historical stages before relay", async () => {
     const order: string[] = [];
     const event = { eventId: "event-1" } as WorldEvent;

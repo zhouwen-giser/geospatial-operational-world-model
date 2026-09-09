@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "gate": "HISTORY_PREFETCH",
+  "samples": 21631,
+  "executionMs": 335.007,
+  "legacyParity": true,
+  "frozenBoundary": true,
+  "crossScope": true,
+  "emptySelection": true
+}

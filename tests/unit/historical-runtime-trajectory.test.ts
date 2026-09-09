@@ -241,7 +241,7 @@ describe("historical trajectory runtime", () => {
     expect(result).toMatchObject({ trajectory: "Sequence-slice", sampleCount: 2 });
     expect(calls.map((call) => call.sql)).toEqual([
       "BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY",
-      "SELECT set_config('statement_timeout',$1::text,true), set_config('lock_timeout',$2::text,true)",
+      "SELECT set_config('statement_timeout',$1::text,true), set_config('lock_timeout',$2::text,true), set_config('max_parallel_workers_per_gather','0',true)",
       "SELECT gowm_history_v1.set_data_scope($1::text)",
       expect.stringContaining("atTime(segment.trajectory, $4::tstzspan)"),
       "COMMIT",

@@ -150,12 +150,17 @@ export class HistoricalProjectionCoordinator {
     );
     result.trackletsClaimed = trackletClaims.length;
     for (const claim of trackletClaims) {
+      const startedAt=performance.now();
       try {
-        await this.dependencies.tracklets.rebuildAndComplete(claim);
+        const rebuild = () => this.dependencies.tracklets.rebuildAndComplete(claim);
+        if (this.dependencies.tracklets.withLease) await this.dependencies.tracklets.withLease(claim,"projection",rebuild);
+        else await rebuild();
         result.trackletsRebuilt += 1;
+        console.log(JSON.stringify({event:"tracklet_rebuilt",queueId:claim.queueId,generation:claim.generation,elapsedMs:Math.round(performance.now()-startedAt)}));
       } catch (error) {
         result.historicalProjectionFailures += 1;
         if (isFenceFailure(error)) result.staleFenceFailures += 1;
+        console.error(JSON.stringify({event:"tracklet_rebuild_failed",queueId:claim.queueId,generation:claim.generation,elapsedMs:Math.round(performance.now()-startedAt),sqlState:(error as {code?:string}).code??null,reason:projectionFailureReason(error)}));
         await this.dependencies.tracklets.failTracklet(claim, error, this.retryAt(options)).catch(() => false);
       }
     }
@@ -175,13 +180,20 @@ export class HistoricalProjectionCoordinator {
     );
     result.finalizationsClaimed = finalizationClaims.length;
     for (const claim of finalizationClaims) {
+      const startedAt=performance.now();
       try {
-        const evidence = await this.dependencies.tracklets.loadFinalization(claim);
-        await this.dependencies.tracklets.finalizeAndComplete(evidence);
+        const finalize = async () => {
+          const evidence = await this.dependencies.tracklets.loadFinalization(claim);
+          await this.dependencies.tracklets.finalizeAndComplete(evidence);
+        };
+        if (this.dependencies.tracklets.withLease) await this.dependencies.tracklets.withLease(claim,"finalization",finalize);
+        else await finalize();
         result.trackletsFinalized += 1;
+        console.log(JSON.stringify({event:"tracklet_finalized",queueId:claim.queueId,generation:claim.generation,elapsedMs:Math.round(performance.now()-startedAt)}));
       } catch (error) {
         result.historicalProjectionFailures += 1;
         if (isFenceFailure(error)) result.staleFenceFailures += 1;
+        console.error(JSON.stringify({event:"tracklet_finalization_failed",queueId:claim.queueId,generation:claim.generation,elapsedMs:Math.round(performance.now()-startedAt),sqlState:(error as {code?:string}).code??null,reason:projectionFailureReason(error)}));
         await this.dependencies.tracklets.failFinalization(claim, error, this.retryAt(options)).catch(() => false);
       }
     }
@@ -204,17 +216,23 @@ export class HistoricalProjectionCoordinator {
       historicalProjectionFailures: 0,
       staleFenceFailures: 0
     };
-    // Materialization is serial: only acquire a lease when ready to execute.
+    // Each historical execution slot acquires only the request it can execute now.
     const claims = await trajectories.claim(options.workerId, 1, options.leaseSeconds);
     result.historicalTrajectoryClaims = claims.length;
     for (const claim of claims) {
+      const startedAt=Date.now();
       try {
         const committed = await trajectories.materializeAndComplete(claim, materializer);
         if (committed.status === "MATERIALIZED") result.historicalTrajectoriesMaterialized += 1;
         else result.historicalTrajectoryOutcomesRecorded += 1;
+        console.log(JSON.stringify({event:"historical_request_completed",queueId:claim.queueId,generation:claim.generation,
+          attempts:claim.attempts??null,queueWaitMs:claim.queueWaitMs??null,elapsedMs:Date.now()-startedAt,
+          status:committed.status,reused:committed.status==="MATERIALIZED"?committed.reused:false}));
       } catch (error) {
         result.historicalProjectionFailures += 1;
         if (isFenceFailure(error)) result.staleFenceFailures += 1;
+        console.error(JSON.stringify({stage:"historical-trajectory-projection",queueId:claim.queueId,
+          attempts:claim.attempts??null,elapsedMs:Date.now()-startedAt,sqlState:(error as {code?:string}).code??null,reason:projectionFailureReason(error)}));
         await trajectories.fail(claim, error, this.retryAt(options)).catch(() => false);
       }
     }
@@ -256,4 +274,22 @@ export class HistoricalProjectionCoordinator {
         + trajectories.staleFenceFailures
     };
   }
+}
+
+/** Stable diagnostic categories only; never emit arbitrary exception messages. */
+export function projectionFailureReason(error:unknown):string {
+  if(isFenceFailure(error)) return "LEASE_OR_GENERATION_LOST";
+  const known = [
+    "request evaluation result identity mismatch", "request source or rule configuration mismatch",
+    "request evaluation snapshot mismatch", "request evaluation input hash mismatch",
+    "request input is newer than frozen capture", "request explicit resource pin mismatch",
+    "request watermark pin mismatch", "request trajectory pin mismatch",
+    "request completion proof mismatch", "request evaluation scope mismatch",
+    "request completion scope mismatch", "upstream method profile pin mismatch",
+    "uncommitted request evaluation"
+  ];
+  const message=error instanceof Error?error.message:"";
+  if(known.includes(message)) return message.toUpperCase().replaceAll(" ","_");
+  const code=(error as {code?:unknown}|null)?.code;
+  return typeof code==="string"&&/^[0-9A-Z]{5}$/.test(code)?`SQLSTATE_${code}`:"PROJECTION_EXECUTION_FAILED";
 }

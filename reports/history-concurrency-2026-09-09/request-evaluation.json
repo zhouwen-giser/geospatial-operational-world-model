@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "gate": "GOWM_V07_HISTORY_QUEUE_WORKER",
+  "versions": {
+    "migrationCount": 86,
+    "migrationHead": "086_historical_request_evaluation.sql",
+    "postgresVersion": "18.6 (Debian 18.6-1.pgdg13+2)",
+    "postgisVersion": "3.6.4",
+    "mobilityDbVersion": "MobilityDB 1.3.0"
+  },
+  "checks": {
+    "requestEvaluationReuseAndFrozenRead": true,
+    "proofScopeGenerationContentAndAtomicCommit": true,
+    "providerProjectionPending": true,
+    "earlierPendingReevaluatedAtNewCapture": true,
+    "exactIntervalOutcomeQualification": true,
+    "oldPendingOutcomeUnchanged": true,
+    "concurrentFrozenEnqueueDeduplicated": true,
+    "providerEnqueueIdempotent": true,
+    "providerQueueOnlyWrite": true,
+    "dedicatedServiceRole": true,
+    "dedicatedWorkerRole": true,
+    "frozenQueryAndSnapshotClaimed": true,
+    "expiredLeaseReclaimed": true,
+    "lastErrorRetainedAcrossReclaim": true,
+    "oldGenerationFenceRejected": true,
+    "oldGenerationStoppedBeforePreparation": true,
+    "staleRevisionOutcomeAndAnalysisRolledBack": true,
+    "revisionAndCompletionCasAtomic": true,
+    "exactlyOneTrajectoryRevision": true,
+    "laterSameSemanticRequestCompleted": true
+  },
+  "counts": {
+    "providerEnqueueAttempts": 4,
+    "durableQueueRows": 1,
+    "workerClaims": 1,
+    "committedTrajectoryRevisions": 1,
+    "committedOutcomes": 1
+  },
+  "sharedRuntimeMutated": false
+}

@@ -1,3 +1,4 @@
+import { RESET_ACK_TOPIC } from "./reset-ack.js";
 import { loadIngestDeviceContext } from "../../../packages/integrations/device-business-storage/src/context.js";
 import Fastify, { type FastifyInstance } from "fastify";
 import mqtt, { type IClientOptions, type MqttClient } from "mqtt";
@@ -99,7 +100,7 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
       ...(config.username ? { username: config.username } : {}),...(config.password ? { password: config.password } : {}),
       ...(config.ca ? { ca: config.ca } : {}),...(config.cert ? { cert: config.cert } : {}),...(config.key ? { key: config.key } : {}),
       customHandleAcks: (topic,payload,packet,done) => {
-        if (!isTopic(topic)) return done(135);
+        if (!isTopic(topic) && topic !== RESET_ACK_TOPIC) return done(135);
         const receivedAt = new Date().toISOString();
         void waitForSession().then((activeSessionId) => {
           if (!activeSessionId) throw new Error("MQTT connection closed before durable session initialization");
@@ -145,16 +146,30 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
     void Promise.all(Array.from({ length: config.deliveryConcurrency },() =>
       deliverOne(repository,config,state))).finally(() => { delivering = false; });
   },50);
-  processTimer.unref(); deliveryTimer.unref();
+  let resetting = false; let resetRetryAt = 0;
+  const resetTimer = setInterval(() => {
+    if (resetting || Date.now()<resetRetryAt) return;
+    resetting = true;
+    void repository.processResetAck(config.clientId,new URL(config.mqttUrl).host,config.dataScopeKey)
+      .catch(error => {
+        resetRetryAt=Date.now()+60_000;state.lastError=safeError(error);
+        console.error(JSON.stringify({stage:"reset-watermark",sqlState:(error as {code?:string}).code??null}));
+      })
+      .finally(() => { resetting = false; });
+  },1000);
+  resetTimer.unref(); processTimer.unref(); deliveryTimer.unref();
 
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? "info" } });
   app.get("/health/live",async () => ({ status: "ok",service: "ugv-mqtt-ingest" }));
   app.get("/health/ready",async (_request,reply) => {
     const dbWritable = await writable(pool);
-    const subscriptionsReady = UGV_AUTHORITY_TOPICS.every((topic) => state.subscriptions[topic] === 1);
+    const resetContractReady = await pool.query(`SELECT coalesce(has_function_privilege(current_user,
+      to_regprocedure('gowm_history.process_reset_ack(text,text)'),'EXECUTE'),false) ready`)
+      .then(result => result.rows[0]?.ready === true).catch(() => false);
+    const subscriptionsReady = [...UGV_AUTHORITY_TOPICS,RESET_ACK_TOPIC].every((topic) => state.subscriptions[topic] === 1);
     const sourceContractValid = Object.values(state.sourceQosConflicts).every((count) => count === 0);
-    const ready = dbWritable && state.connected && subscriptionsReady && state.sourceLockLoaded && state.workerHealthy && sourceContractValid;
-    return reply.code(ready ? 200 : 503).send({ ready,dbWritable,mqttConnected: state.connected,subscriptionsReady,
+    const ready = dbWritable && resetContractReady && state.connected && subscriptionsReady && state.sourceLockLoaded && state.workerHealthy && sourceContractValid;
+    return reply.code(ready ? 200 : 503).send({ ready,dbWritable,resetContractReady,mqttConnected: state.connected,subscriptionsReady,
       sourceLockLoaded: state.sourceLockLoaded,outboxWorkerHealthy: state.workerHealthy,sourceContractValid,recoverableApiDegradation: !state.lastApiSuccessAt });
   });
   app.get("/v1/ingest/status",async () => ({ ...await repository.status(),mqttConnected: state.connected,
@@ -166,7 +181,7 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
     lastApiSuccessAt: state.lastApiSuccessAt,lastError: state.lastError ?? null }));
   app.get("/metrics",async (_request,reply) => reply.type("text/plain; version=0.0.4").send(metrics(state,await repository.status())));
   return { app,close: async () => {
-    clearInterval(processTimer); clearInterval(deliveryTimer);
+    clearInterval(resetTimer); clearInterval(processTimer); clearInterval(deliveryTimer);
     if (sessionId) await repository.disconnect(sessionId,"graceful_shutdown").catch(() => undefined);
     if (client) await new Promise<void>((resolve,reject) => client.end(false,{},(error) => error ? reject(error) : resolve()));
     await pool.end(); await app.close();
@@ -207,7 +222,7 @@ function wireClient(client: MqttClient,config: UgvIngestConfig,frozenMapper: Map
     void (async () => {
       const activeSessionId = await waitForSession();
       if (!activeSessionId || !isCurrentConnection(connectionGeneration)) return;
-      const requests = Object.fromEntries(UGV_AUTHORITY_TOPICS.map((topic) => [topic,{ qos: 1 as const }]));
+      const requests = Object.fromEntries([...UGV_AUTHORITY_TOPICS,RESET_ACK_TOPIC].map((topic) => [topic,{ qos: 1 as const }]));
       const grants = await client.subscribeAsync(requests);
       if (!isCurrentConnection(connectionGeneration)) return;
       state.subscriptions = Object.fromEntries(grants.map((grant) => [grant.topic,grant.qos]));

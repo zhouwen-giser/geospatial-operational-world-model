@@ -206,7 +206,7 @@ describe("historical projection runtime coordinator", () => {
 
     expect(calls).toEqual([
       "BEGIN",
-      "SELECT set_config('statement_timeout',$1::text,true), set_config('lock_timeout',$2::text,true)",
+      "SELECT set_config('statement_timeout',$1::text,true), set_config('lock_timeout',$2::text,true), set_config('max_parallel_workers_per_gather','0',true)",
       "INSERT REVISION AND UPDATE HEAD",
       "ROLLBACK",
       "RELEASE"

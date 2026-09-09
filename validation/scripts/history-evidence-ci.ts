@@ -51,6 +51,10 @@ try {
       const result = await run(process.execPath, ["--import", "tsx", "validation/scripts/history-evidence-repair-e2e.ts"],
         { env, maxBuffer: 4 * 1024 * 1024 });
       process.stdout.write(result.stdout);
+      for (const script of ["reset-watermark-e2e.ts",...(baseline===0?["history-slicer-performance.ts"]:[])]) {
+        const checked=await run(process.execPath,["--import","tsx",`validation/scripts/${script}`],{env,maxBuffer:4*1024*1024});
+        process.stdout.write(checked.stdout);
+      }
       process.stdout.write(`${JSON.stringify({status: "PASS", gate: "HISTORY_EVIDENCE_CURRENT_DATABASE",
         baseline, migrationCount: current.length, migrationHead: head, predecessorStable: true, replayStable: true})}\n`);
     } finally {

@@ -1,0 +1,26 @@
+{
+  "implementation": "DELIVERED",
+  "deployment": "PASS",
+  "performance": "PASS",
+  "businessAcceptance": "INCOMPLETE",
+  "repositoryBoundary": "GOWM only",
+  "historyConcurrencyPerContainer": 1,
+  "reason": "WSGS_PUBLIC_WORLD_OBJECT_PRODUCT_MISSING",
+  "gowmObserved": {
+    "status": "PARTIAL",
+    "reason": "TRAJECTORY_GAP",
+    "finalization": "PROVISIONAL",
+    "samples": 9806,
+    "gaps": 1,
+    "elapsedMs": 1478
+  },
+  "wsgsObserved": {
+    "status": "PARTIAL",
+    "findingCount": 0,
+    "gapKinds": [
+      "REFERENCE_MISSING"
+    ]
+  },
+  "businessSubmissions": 1,
+  "exhaustedRequestsUnchanged": 195
+}

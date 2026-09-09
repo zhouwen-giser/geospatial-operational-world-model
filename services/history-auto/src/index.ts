@@ -7,6 +7,9 @@ import { PostgresHistoricalTrajectoryInputLoader } from "../../../packages/histo
 import type { HistoricalSemanticRequest } from "../../../packages/historical-trace-model/src/index.js";
 import type { SqlPool } from "../../../packages/historical-trace-runtime/src/database.js";
 
+export function queueStillRetryable(state: string, attempts: number): boolean {
+  return state === "QUEUED" || state === "RUNNING" || (state === "FAILED" && attempts < 10);
+}
 export function retryDelay(failures: number): number { return Math.min(900,60*2**Math.min(4,Math.max(0,failures-1))); }
 export function loadAutoConfig(env: NodeJS.ProcessEnv = process.env) {
   const boolean=(key:string,fallback:string)=>{const v=env[key]??fallback;if(!["true","false"].includes(v))throw Error(`${key} must be true or false`);return v==="true";};
@@ -45,7 +48,7 @@ export async function tick(pool:pg.Pool,config:Config) {
       SELECT i.reference_key interval_ref,r.revision_no,identity.reference_key subject_ref,
         descriptor.object_version subject_version,t.tracker_session_key,
         i.reference_key||':'||identity.reference_key||':'||t.tracker_session_key candidate_key,
-        c.input_signature,c.queue_id,c.failures,q.state queue_state,o.outcome_status
+        c.input_signature,c.queue_id,c.failures,c.last_outcome,q.attempts,q.state queue_state,o.outcome_status
       FROM gowm_history.task_execution_interval i
       JOIN gowm_history.task_execution_interval_head h USING(interval_id)
       JOIN gowm_history.task_execution_interval_revision r ON r.interval_revision_id=h.current_revision_id
@@ -78,13 +81,23 @@ export async function tick(pool:pg.Pool,config:Config) {
     const loader=new PostgresHistoricalTrajectoryInputLoader(pool as unknown as SqlPool);
     let queued=0,pending=0,completed=0,failed=0;
     for(const row of rows) {
-      if(["QUEUED","RUNNING"].includes(row.queue_state)) {pending++;continue;}
+      if(queueStillRetryable(row.queue_state,Number(row.attempts))) {pending++;continue;}
+      if(row.queue_state==="FAILED" && row.last_outcome!=="QUEUE_EXHAUSTED") {
+        await client.query("BEGIN");
+        await client.query("SELECT gowm_history_v1.set_data_scope($1)",[config.scope]);
+        await client.query(`UPDATE gowm_history.auto_checkpoint SET failures=failures+1,
+          last_outcome='QUEUE_EXHAUSTED',checked_at=clock_timestamp(),
+          next_attempt_at=clock_timestamp()+$3*interval '1 second'
+          WHERE data_scope_key=$1 AND candidate_key=$2`,
+          [config.scope,row.candidate_key,retryDelay(Number(row.failures??0)+1)]);
+        await client.query("COMMIT"); failed++;continue;
+      }
       const query:HistoricalSemanticRequest={
         subjectReferenceKey:{namespace:"gowm",kind:"WORLD_OBJECT",id:row.subject_ref,version:String(row.subject_version)},
         executionIntervalReferenceKey:{namespace:"gowm",kind:"TASK_EXECUTION_INTERVAL",id:row.interval_ref,version:String(row.revision_no)},
         phaseScope:"ACTIVE_PHASES_ONLY",sourceSelection:{mode:"EXPLICIT_SOURCE",sourceKey:config.source,trackerSessionKey:row.tracker_session_key},
         sourceSelectionProfileReferenceKey:{namespace:"gowm.history",kind:"HISTORY_METHOD_PROFILE",id:"trajectory-single-authoritative-v2",version:"2.0"}};
-      let outcome="FAILED",signature:string|null=null,queueId=row.queue_id??null,failures=Number(row.failures??0),transactionOpen=false;
+      let outcome="FAILED",signature:string|null=row.input_signature??null,queueId=row.queue_id??null,failures=row.queue_state==="COMPLETED"&&row.outcome_status!=="PENDING"?0:Number(row.failures??0),transactionOpen=false;
       try {
         const loaded=await loader.load({dataScopeKey:config.scope,capturedAt,query});
         if(loaded.kind!=="READY") {outcome=loaded.reasonCode;pending++;failures++;}
@@ -95,7 +108,8 @@ export async function tick(pool:pg.Pool,config:Config) {
             version:x.itemSetDigest,contentHash:x.itemSetDigest,pinning:"PINNED" as const})));
           const sets=loaded.inputSets.map(x=>({kind:x.inputSetKind,count:x.itemCount,hash:x.itemSetDigest}));
           signature=canonicalSha256({query,resources,sets});
-          if(signature===row.input_signature&&row.queue_state==="COMPLETED"&&row.outcome_status!=="PENDING") {outcome="UNCHANGED";completed++;failures=0;}
+          if(signature===row.input_signature&&row.queue_state==="FAILED") {outcome="QUEUE_EXHAUSTED";failed++;}
+          else if(signature===row.input_signature&&row.queue_state==="COMPLETED"&&row.outcome_status!=="PENDING") {outcome="UNCHANGED";completed++;failures=0;}
           else {
             const snapshotBase={querySnapshotId:`history-auto-${signature.slice(7)}`,mode:"LATEST_AT_START",consistency:"CONSISTENT_AT_START",capturedAt,resources};
             const snapshot={...snapshotBase,manifestHash:canonicalSha256(snapshotBase)};
@@ -103,10 +117,11 @@ export async function tick(pool:pg.Pool,config:Config) {
             await client.query("SELECT gowm_history_v1.set_data_scope($1)",[config.scope]);
             queueId=(await client.query(`SELECT gowm_history.enqueue_historical_trajectory_projection($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10::jsonb) id`,
               [config.scope,row.subject_ref,row.interval_ref,row.revision_no,query.phaseScope,loaded.semanticRequestHash,snapshot.manifestHash,capturedAt,JSON.stringify(query),JSON.stringify(snapshot)])).rows[0].id;
-            queued++;outcome="QUEUED";failures=0;
+            queued++;outcome="QUEUED";
           }
         }
-      } catch(error) {await client.query("ROLLBACK");transactionOpen=false;queueId=row.queue_id??null;signature=null;failures++;failed++;outcome="RESOLUTION_FAILED";}
+      } catch(error) {console.error(JSON.stringify({stage:"history-auto-resolve",queueId:row.queue_id??null,
+        attempts:Number(row.attempts??0),sqlState:(error as {code?:string}).code??null}));await client.query("ROLLBACK");transactionOpen=false;queueId=row.queue_id??null;signature=row.input_signature??null;failures++;failed++;outcome="RESOLUTION_FAILED";}
       if(!transactionOpen)await client.query("BEGIN");await client.query("SELECT gowm_history_v1.set_data_scope($1)",[config.scope]);
       await client.query(`INSERT INTO gowm_history.auto_checkpoint(data_scope_key,candidate_key,input_signature,queue_id,failures,last_outcome,next_attempt_at)
         VALUES($1,$2,$3,$4,$5,$6,clock_timestamp()+$7*interval '1 second')

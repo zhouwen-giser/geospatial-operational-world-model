@@ -22,6 +22,11 @@ export const HISTORICAL_TRACE_SQL={
     ) AS queue_id`,
   intervalAsOf:`SELECT * FROM gowm_history_v1.task_execution_interval_revision_by_reference_as_of($1::text,$2::integer,$3::timestamptz)`,
   outcomeAsOf:`SELECT * FROM gowm_history_v1.historical_trajectory_outcome_as_of($1::text,$2::text,$3::text,$4::text,$5::timestamptz,$6::integer)`,
+  trajectoryEvaluated:`SELECT candidate.*,proof.evaluation_id,proof.evaluated_at,true AS request_evaluated,numInstants(candidate.trajectory) AS geometry_node_count,
+      COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.requested_time) period),'[]'::jsonb) AS requested_periods,
+      COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.defined_time) period),'[]'::jsonb) AS defined_periods
+    FROM gowm_history_v1.evaluated_historical_trajectory($1::jsonb,$2::jsonb) candidate
+    JOIN gowm_history_v1.historical_request_evaluation_identity($1::jsonb,$2::jsonb) proof ON proof.analysis_id=candidate.analysis_id`,
   trajectoryAsOf:`SELECT candidate.*,numInstants(candidate.trajectory) AS geometry_node_count,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.requested_time) period),'[]'::jsonb) AS requested_periods,
       COALESCE((SELECT jsonb_agg(jsonb_build_object('start',lower(period),'end',upper(period),'bounds','[)') ORDER BY lower(period)) FROM unnest(candidate.defined_time) period),'[]'::jsonb) AS defined_periods
@@ -49,6 +54,23 @@ export const HISTORICAL_TRACE_SQL={
       ORDER BY pins.revision_no DESC,pins.finalization_revision_id
       LIMIT 1
     ) matched ON true
+    ORDER BY requested.ordinality`,
+  previewEvaluated:`WITH selected AS (
+      SELECT candidate.trajectory,candidate.requested_time
+      FROM gowm_history_v1.evaluated_historical_trajectory($1::jsonb,$2::jsonb) candidate
+    ), requested AS (
+      SELECT sample_index,ordinality FROM unnest($3::integer[]) WITH ORDINALITY sample(sample_index,ordinality)
+    )
+    SELECT requested.ordinality,sample.observed_at,
+      ST_AsGeoJSON(ST_Transform(valueN(selected.trajectory,requested.sample_index),4326))::jsonb AS position
+    FROM selected
+    CROSS JOIN requested
+    CROSS JOIN LATERAL (
+      SELECT timestampN(selected.trajectory,requested.sample_index) AS observed_at
+    ) sample
+    WHERE sample.observed_at IS NOT NULL
+      AND selected.requested_time @> sample.observed_at
+      AND valueN(selected.trajectory,requested.sample_index) IS NOT NULL
     ORDER BY requested.ordinality`,
   preview:`WITH selected AS (
       SELECT candidate.trajectory,candidate.requested_time
@@ -225,7 +247,9 @@ export class HistoricalTraceRepository {
       const geometryCount=trajectory.geometry_node_count===undefined?sampleCount:nonNegativeInteger(trajectory.geometry_node_count,"geometry_node_count");
       const sampleIndexes=previewIndexes(geometryCount,requestedInline);
       const previewRows=sampleIndexes.length===0?[]:(await client.query<Record<string,unknown>>(
-        HISTORICAL_TRACE_SQL.preview,[String(trajectory.reference_key),positiveInteger(trajectory.revision_no,"revision_no"),capturedAt,sampleIndexes]
+        trajectory.request_evaluated===true?HISTORICAL_TRACE_SQL.previewEvaluated:HISTORICAL_TRACE_SQL.preview,
+        trajectory.request_evaluated===true?[JSON.stringify(input),JSON.stringify(effective),sampleIndexes]
+          :[String(trajectory.reference_key),positiveInteger(trajectory.revision_no,"revision_no"),capturedAt,sampleIndexes]
       )).rows;
       await client.query("COMMIT");transactionOpen=false;
 
@@ -280,6 +304,8 @@ export class HistoricalTraceRepository {
     try {
       await this.pool.query("SELECT * FROM gowm_history_v1.historical_trajectory_effective LIMIT 0");
       await this.pool.query("SELECT * FROM gowm_history_v1.historical_trajectory_outcome LIMIT 0");
+      await this.pool.query("SELECT * FROM gowm_history_v1.evaluated_historical_trajectory(NULL::jsonb,NULL::jsonb) LIMIT 0");
+      await this.pool.query("SELECT * FROM gowm_history_v1.historical_request_evaluation_identity(NULL::jsonb,NULL::jsonb) LIMIT 0");
       return {ready:true,reasons:[]};
     } catch { return {ready:false,reasons:["gowm_history_v1 historical trace read contract is unavailable"]}; }
   }
@@ -288,6 +314,8 @@ export class HistoricalTraceRepository {
     client:pg.PoolClient,input:GowmV07HistoricalTrajectoryQuery,effective:GowmV07QuerySnapshotManifest,
     capturedAt:string,semanticRequestHash:`sha256:${string}`
   ):Promise<TrajectoryRow|undefined> {
+    const evaluated=await client.query<TrajectoryRow>(HISTORICAL_TRACE_SQL.trajectoryEvaluated,[JSON.stringify(input),JSON.stringify(effective)]);
+    if(evaluated.rows[0]) return evaluated.rows[0];
     const pins=effective.resources.filter((resource)=>resource.resourceKind==="HISTORICAL_TRAJECTORY");
     if (pins.length>16) throw new ProviderProtocolError("BUDGET_EXCEEDED","too many historical trajectory pins were supplied");
     const matches:TrajectoryRow[]=[];
@@ -514,7 +542,7 @@ function trajectoryEvidence(
     evidenceId:`analysis:${String(trajectory.analysis_id)}`,authority:"gowm_history_v1",evidenceType:"ANALYSIS_RECORD",
     referenceKey:{namespace:"gowm",kind:"DERIVED_REFERENCE",id:String(trajectory.analysis_id),version:String(trajectory.revision_no)},
     schemaUri:HISTORICAL_TRACE_SCHEMAS.outputSchemaUri,schemaHash:HISTORICAL_TRACE_SCHEMAS.outputSchemaHash,
-    observedAt:validTimestamp(trajectory.created_at,"trajectory created_at"),worldVersion
+    observedAt:validTimestamp(trajectory.evaluated_at??trajectory.created_at,"analysis evaluation time"),worldVersion
   },{
     evidenceId:`interval:${String(interval.interval_revision_id)}`,authority:"gowm_history_v1",evidenceType:"CURRENT_PROJECTION_SOURCE",
     referenceKey:{...input.executionIntervalReferenceKey},schemaUri:"urn:gowm:sql:gowm_history_v1:task-execution-interval-revision:1.0",

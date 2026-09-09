@@ -310,7 +310,21 @@ async function runQueueWorkerE2e(
       retryDelayMs: 0,
       components: idleWorkerComponents()
     });
-    const workerResult = await worker.tick();
+    // A frozen request remains consumable while the live tracklet stage waits.
+    let releaseLive!: () => void;
+    let enteredLive!: () => void;
+    const liveBlocked = new Promise<void>((resolve) => { releaseLive = resolve; });
+    const liveEntered = new Promise<void>((resolve) => { enteredLive = resolve; });
+    const originalRebuild = coordinator.rebuildTracklets.bind(coordinator);
+    coordinator.rebuildTracklets = async (options) => {
+      enteredLive();
+      await liveBlocked;
+      return originalRebuild(options);
+    };
+    const liveTick = worker.tick("LIVE");
+    await liveEntered;
+    const workerResult = await worker.tick("HISTORY").finally(() => releaseLive());
+    await liveTick;
     await worker.close();
     const trajectoryFailure = (await adminPool.query<{ state: string; last_error: string | null }>(`
       SELECT state,last_error
@@ -346,7 +360,7 @@ async function runQueueWorkerE2e(
     assert.equal(completed.outcome_id, null);
 
     const evidence = await projectionEvidenceCounts(adminPool, fixture, semanticRequestHash);
-    assert.deepEqual(evidence, { trajectories: 1, revisions: 1, outcomes: 1, analyses: 2 });
+    assert.deepEqual(evidence, { trajectories: 1, revisions: 1, outcomes: 1, analyses: 3 });
     const linked = await adminPool.query<{ linked: boolean }>(
       `SELECT EXISTS (
          SELECT 1
@@ -362,6 +376,10 @@ async function runQueueWorkerE2e(
       [oldClaim.queueId, trajectoryRevisionId, semanticRequestHash]
     );
     assert.equal(linked.rows[0]?.linked, true, "queue completion must point at the committed revision");
+
+    const frozenResponse=await provider.runtime.execute(providerRequest(provider,query,effectiveSnapshot,fixture.dataScopeKey,`frozen-completed-${runId}`));
+    assert.ok(providerValue(frozenResponse).trajectoryReferenceKey,"exact frozen request must read its later evaluation");
+    assert.ok((providerValue(frozenResponse).preview as unknown[]).length>0,"evaluated trajectory preview must use the same proof");
 
     const laterSnapshot = snapshotManifest(`completed-${runId}`, await databaseNow(adminPool));
     const completedResponse = await provider.runtime.execute(providerRequest(
@@ -390,6 +408,57 @@ async function runQueueWorkerE2e(
       1,
       "the completed Provider read must not enqueue a duplicate request"
     );
+
+    const immutableBefore=(await adminPool.query("SELECT to_jsonb(r) value FROM gowm_history.historical_trajectory_revision r WHERE trajectory_revision_id=$1",[trajectoryRevisionId])).rows[0].value;
+    const reuseSnapshot=snapshotManifest(`reuse-${runId}`,await databaseNow(adminPool));
+    const enqueue=await providerPool.connect();
+    try {
+      await enqueue.query("BEGIN");await enqueue.query(HISTORICAL_TRACE_SQL.setScope,[fixture.dataScopeKey]);
+      await enqueue.query(HISTORICAL_TRACE_SQL.enqueueProjection,[fixture.dataScopeKey,query.subjectReferenceKey.id,query.executionIntervalReferenceKey.id,
+        Number(query.executionIntervalReferenceKey.version),query.phaseScope,semanticRequestHash,reuseSnapshot.manifestHash,reuseSnapshot.capturedAt,
+        JSON.stringify(query),JSON.stringify(reuseSnapshot)]);
+      await enqueue.query("COMMIT");
+    } finally {enqueue.release();}
+    const reuseClaim=(await projections.claim(`reuse-worker-${runId}`,1,60))[0]!;
+    const reuseMaterializer=new PostgresHistoricalTrajectoryMaterializer(workerPool);
+    const preparedReuse=await reuseMaterializer.prepareForCommit({dataScopeKey:fixture.dataScopeKey,capturedAt:reuseSnapshot.capturedAt,query,requestedSnapshot:reuseSnapshot});
+    assert.equal(preparedReuse.kind,"REVISION");
+    if(preparedReuse.kind!=="REVISION")throw Error("expected revision");
+    const proofArgs=[reuseClaim.queueId,reuseClaim.workerId,reuseClaim.generation,trajectoryRevisionId,immutableBefore.content_hash,
+      JSON.stringify(preparedReuse.registration.resourceInputs.map(({createdAt,...v})=>v)),
+      JSON.stringify(preparedReuse.registration.inputSets.map(({createdAt,...v})=>v))];
+    const proofWriter=await workerPool.connect();
+    try {
+      for(const invalid of ["generation","content","scope","inputs","forged","uncompleted"]){
+        await proofWriter.query("BEGIN");await proofWriter.query(HISTORICAL_TRACE_SQL.setScope,[invalid==="scope"?"default":fixture.dataScopeKey]);
+        const args=[...proofArgs];if(invalid==="generation")args[2]=reuseClaim.generation+1;if(invalid==="content")args[4]=`sha256:${"0".repeat(64)}`;
+        if(invalid==="inputs") args[5]="[]";
+        if(invalid==="forged") {
+          await assert.rejects(proofWriter.query("SELECT gowm_history.complete_evaluated_historical_request($1,$2,$3,$4)",[reuseClaim.queueId,reuseClaim.workerId,reuseClaim.generation,randomUUID()]));
+        } else if(invalid==="uncompleted") {
+          await proofWriter.query("SELECT gowm_history.evaluate_historical_request($1,$2,$3,$4,$5,$6,$7)",args);
+          await assert.rejects(proofWriter.query("COMMIT"),/uncommitted request evaluation/);
+        } else await assert.rejects(proofWriter.query("SELECT gowm_history.evaluate_historical_request($1,$2,$3,$4,$5,$6,$7)",args));
+        await proofWriter.query("ROLLBACK");
+      }
+    }finally{proofWriter.release();}
+    const reuseResult=await projections.materializeAndComplete(reuseClaim,reuseMaterializer);
+    assert.equal(reuseResult.status,"MATERIALIZED");
+    if(reuseResult.status==="MATERIALIZED")assert.equal(reuseResult.trajectoryRevisionId,trajectoryRevisionId);
+    assert.deepEqual((await adminPool.query("SELECT to_jsonb(r) value FROM gowm_history.historical_trajectory_revision r WHERE trajectory_revision_id=$1",[trajectoryRevisionId])).rows[0].value,immutableBefore);
+    const isolatedRead=await providerPool.connect();
+    try{
+      await isolatedRead.query("BEGIN READ ONLY");await isolatedRead.query(HISTORICAL_TRACE_SQL.setScope,[fixture.dataScopeKey]);
+      const wrongInterval=structuredClone(query);wrongInterval.executionIntervalReferenceKey.version=String(Number(query.executionIntervalReferenceKey.version)+1);
+      const otherSnapshot=structuredClone(reuseSnapshot);otherSnapshot.querySnapshotId+="-different";
+      for(const [q,s] of [[wrongInterval,reuseSnapshot],[query,otherSnapshot]])
+        assert.equal((await isolatedRead.query("SELECT * FROM gowm_history_v1.evaluated_historical_trajectory($1,$2)",[JSON.stringify(q),JSON.stringify(s)])).rows.length,0);
+      await isolatedRead.query("ROLLBACK");
+    }finally{isolatedRead.release();}
+    const evaluation=(await adminPool.query("SELECT e.reused,a.analysis_as_of FROM gowm_history.historical_request_evaluation e JOIN public.analysis_record a USING(analysis_id) WHERE queue_id=$1",[reuseClaim.queueId])).rows[0];
+    assert.equal(evaluation.reused,true);assert.equal(iso(evaluation.analysis_as_of),reuseSnapshot.capturedAt);
+    const reuseRead=await provider.runtime.execute(providerRequest(provider,query,reuseSnapshot,fixture.dataScopeKey,`reuse-read-${runId}`));
+    assert.ok(providerValue(reuseRead).trajectoryReferenceKey);
 
     assert.deepEqual((await adminPool.query("SELECT to_jsonb(o) value FROM gowm_history.historical_trajectory_outcome o WHERE outcome_id=$1", [priorOutcomeId])).rows[0].value,
       priorOutcome, "reevaluation must not rewrite the old pending outcome");
@@ -437,6 +506,8 @@ async function runQueueWorkerE2e(
       gate: "GOWM_V07_HISTORY_QUEUE_WORKER",
       versions,
       checks: {
+        requestEvaluationReuseAndFrozenRead:true,
+        proofScopeGenerationContentAndAtomicCommit:true,
         providerProjectionPending: true,
         earlierPendingReevaluatedAtNewCapture: true,
         exactIntervalOutcomeQualification: true,
@@ -494,7 +565,7 @@ async function verifyLeaseLifecycle(databaseUrl:string, admin:pg.Pool, provider:
     const prepare=materializer.prepareForCommit.bind(materializer);
     materializer.prepareForCommit=async(request)=>{
       // One occupied work connection for several entire lease durations.
-      await work.query("SELECT pg_sleep(1.1)");
+      await work.query("SELECT pg_sleep(3.2)");
       const rows=await admin.query("SELECT queue_id,state FROM gowm_history.historical_trajectory_projection_queue WHERE queue_id=ANY($1::uuid[])",[[firstId,waitingId]]);
       if(rows.rows.find(x=>x.queue_id===firstId)?.state==="RUNNING") {
         assert.equal(rows.rows.find(x=>x.queue_id===waitingId)?.state,"QUEUED","waiting work must not hold a lease");
@@ -504,7 +575,7 @@ async function verifyLeaseLifecycle(databaseUrl:string, admin:pg.Pool, provider:
     const coordinator=new HistoricalProjectionCoordinator({intervals:new PostgresTaskIntervalProjectionRepository(work),
       tracklets:new PostgresTrackletProjectionRepository(work),trajectories:repository,materializer});
     for(let i=0;i<2;i++) {
-      const result=await coordinator.materializeHistoricalTrajectories({workerId:`lease-${runId}`,batchSize:20,leaseSeconds:0.3});
+      const result=await coordinator.materializeHistoricalTrajectories({workerId:`lease-${runId}`,batchSize:20,leaseSeconds:1});
       assert.equal(result.historicalTrajectoryClaims,1);
       assert.equal(result.historicalTrajectoriesMaterialized,1,JSON.stringify(result));
       assert.equal(result.historicalProjectionFailures,0);
@@ -521,16 +592,16 @@ async function verifyLeaseLifecycle(databaseUrl:string, admin:pg.Pool, provider:
       return await leases.query(text,values as unknown[]) as never;
     }};
     const oldRepository=new PostgresHistoricalTrajectoryProjectionRepository(work,{}, {leasePool:failingPool});
-    const old=(await oldRepository.claim(`old-${runId}`,1,0.2))[0]!;
+    const old=(await oldRepository.claim(`old-${runId}`,1,1))[0]!;
     assert.equal(old.queueId,lostId);
     const slow=new PostgresHistoricalTrajectoryMaterializer(work);
     const original=slow.prepareForCommit.bind(slow);
     let commitCalled=false;
-    slow.prepareForCommit=async(request)=>{await work.query("SELECT pg_sleep(0.8)");return original(request);};
+    slow.prepareForCommit=async(request)=>{await work.query("SELECT pg_sleep(2.8)");return original(request);};
     slow.commitPreparedInTransaction=async()=>{commitCalled=true;throw new Error("old execution must never commit");};
     const failed=assert.rejects(oldRepository.materializeAndComplete(old,slow),ProjectionFenceLostError);
-    await admin.query("SELECT pg_sleep(0.35)");
-    const replacement=(await repository.claim(`replacement-${runId}`,1,1))[0]!;
+    await admin.query("SELECT pg_sleep(1.35)");
+    const replacement=(await repository.claim(`replacement-${runId}`,1,3))[0]!;
     assert.equal(replacement.queueId,lostId);assert(replacement.generation>old.generation);
     await failed;assert.equal(commitCalled,false);
     assert.equal((await leases.query("SELECT gowm_history.renew_historical_trajectory_projection($1,$2,$3,interval '1 second') renewed",[old.queueId,old.workerId,old.generation])).rows[0].renewed,false);
@@ -540,7 +611,7 @@ async function verifyLeaseLifecycle(databaseUrl:string, admin:pg.Pool, provider:
     const cancelId=await enqueue("lease-cancel");
     const controller=new AbortController();
     const cancellable=new PostgresHistoricalTrajectoryProjectionRepository(work,{}, {leasePool:leases,signal:controller.signal});
-    const cancelled=(await cancellable.claim(`cancel-${runId}`,1,0.5))[0]!;assert.equal(cancelled.queueId,cancelId);
+    const cancelled=(await cancellable.claim(`cancel-${runId}`,1,2))[0]!;assert.equal(cancelled.queueId,cancelId);
     const cancelledRun=assert.rejects(cancellable.materializeAndComplete(cancelled,slow),/controlled cancellation/);
     setTimeout(()=>controller.abort(new Error("controlled cancellation")),50);
     await cancelledRun;assert.equal(commitCalled,false);
@@ -806,6 +877,7 @@ async function projectFixture(
     intervals: new PostgresTaskIntervalProjectionRepository(workerPool),
     tracklets: new PostgresTrackletProjectionRepository(workerPool)
   });
+  await new Promise((resolve)=>setTimeout(resolve,1100));
   const result = await coordinator.tick({
     workerId: `history-fixture-${runId}`,
     batchSize: 100,

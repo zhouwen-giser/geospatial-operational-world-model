@@ -1,0 +1,618 @@
+{
+  "status": "PASS",
+  "gate": "HISTORY_CONCURRENCY_SCALE",
+  "pointsPerDevice": 20000,
+  "timeSolutions": 150000,
+  "unrelatedInputs": 20000000,
+  "durationSeconds": 600,
+  "fixtureCounts": {
+    "time_solutions": "153258",
+    "unrelated_inputs": "20000000"
+  },
+  "samples": 1200,
+  "realtimeP95Ms": 3490,
+  "claimP95Ms": 69.944,
+  "sliceMs": 207.39484899999934,
+  "queues": [
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": false
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "materialized": true
+    }
+  ]
+}

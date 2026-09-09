@@ -1,0 +1,8 @@
+
+> geospatial-operational-world-model@0.7.1 build
+> tsc -p tsconfig.json && npm --prefix services/stas run build
+
+
+> mobilitydb-stas-service@0.1.0 build
+> tsc -p tsconfig.json
+

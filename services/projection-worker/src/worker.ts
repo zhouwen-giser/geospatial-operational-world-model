@@ -126,11 +126,15 @@ export class ProjectionWorker {
     this.bus = options.components?.bus ?? new WorldEventBus();
   }
 
-  async tick(): Promise<WorkerTickResult> {
+  async tick(lane: "ALL" | "LIVE" | "CORE" | "TRACKLET" | "FINALIZATION" | "HISTORY" = "ALL"): Promise<WorkerTickResult> {
+    // ALL preserves the one-shot stage order. Long-running LIVE and HISTORY
+    // lanes progress independently: HISTORY reads only frozen persisted inputs.
     // Task package order: observations -> operational snapshots -> task
     // intervals -> dirty tracklets -> finalization -> requested historical
     // trajectories -> event relay.
-    const ids = await this.observations.claimBatch(this.stageOptions.workerId, this.batchSize);
+    const stageOptions = lane === "ALL" || lane === "LIVE" ? this.stageOptions : {...this.stageOptions,batchSize:1};
+    const core = ["ALL","LIVE","CORE"].includes(lane);
+    const ids = !core ? [] : await this.observations.claimBatch(this.stageOptions.workerId, this.batchSize);
     let projected = 0;
     let failed = 0;
     for (const id of ids) {
@@ -144,28 +148,36 @@ export class ProjectionWorker {
       }
     }
 
-    const operationalProjected = await this.operational.projectPending(this.batchSize);
-    const intervals = await this.historicalStage(
+    const operationalProjected = !core ? 0 : await this.operational.projectPending(this.batchSize);
+    const intervals: HistoricalStageExecution<TaskIntervalProjectionStageResult> = !core
+      ? { status: "SUCCEEDED", result: { taskIntervalsClaimed: 0, taskIntervalsProjected: 0, taskIntervalsSuperseded: 0, historicalProjectionFailures: 0, staleFenceFailures: 0 } }
+      : await this.historicalStage(
       "TASK_INTERVALS",
-      () => this.historical.projectTaskIntervals(this.stageOptions),
+      () => this.historical.projectTaskIntervals(stageOptions),
       validateTaskIntervalResult
     );
-    const tracklets = await this.historicalStage(
+    const tracklets: HistoricalStageExecution<TrackletRebuildStageResult> = !["ALL","LIVE","TRACKLET"].includes(lane)
+      ? { status: "SUCCEEDED", result: { trackletsClaimed: 0, trackletsRebuilt: 0, historicalProjectionFailures: 0, staleFenceFailures: 0 } }
+      : await this.historicalStage(
       "TRACKLET_REBUILD",
-      () => this.historical.rebuildTracklets(this.stageOptions),
+      () => this.historical.rebuildTracklets(stageOptions),
       validateTrackletRebuildResult
     );
-    const finalizations = await this.historicalStage(
+    const finalizations: HistoricalStageExecution<TrackletFinalizationStageResult> = !["ALL","LIVE","FINALIZATION"].includes(lane)
+      ? { status: "SUCCEEDED", result: { finalizationsClaimed: 0, trackletsFinalized: 0, historicalProjectionFailures: 0, staleFenceFailures: 0 } }
+      : await this.historicalStage(
       "TRACKLET_FINALIZATION",
-      () => this.historical.finalizeTracklets(this.stageOptions),
+      () => this.historical.finalizeTracklets(stageOptions),
       validateTrackletFinalizationResult
     );
-    const trajectories = await this.historicalStage(
+    const trajectories: HistoricalStageExecution<HistoricalTrajectoryProjectionStageResult> = !["ALL","HISTORY"].includes(lane)
+      ? { status: "SUCCEEDED", result: { historicalTrajectoryClaims: 0, historicalTrajectoriesMaterialized: 0, historicalTrajectoryOutcomesRecorded: 0, historicalProjectionFailures: 0, staleFenceFailures: 0 } }
+      : await this.historicalStage(
       "HISTORICAL_TRAJECTORIES",
-      () => this.historical.materializeHistoricalTrajectories(this.stageOptions),
+      () => this.historical.materializeHistoricalTrajectories(stageOptions),
       validateHistoricalTrajectoryResult
     );
-    const eventsPublished = await this.relayEvents();
+    const eventsPublished = !core ? 0 : await this.relayEvents();
     const executions = [intervals, tracklets, finalizations, trajectories] as const;
     const failedHistoricalStages: HistoricalStageFailure[] = executions.flatMap((execution, index) => {
       if (execution.status !== "STAGE_FAILED") return [];
@@ -233,8 +245,12 @@ export class ProjectionWorker {
     validate: (result: T) => void
   ): Promise<HistoricalStageExecution<T>> {
     let result: T;
+    const startedAt = performance.now();
     try {
       result = await action();
+      if (performance.now() - startedAt >= 1_000) {
+        process.stdout.write(`${JSON.stringify({event: "historical_stage_timing", stage, elapsedMs: Math.round(performance.now() - startedAt)})}\n`);
+      }
     } catch (error) {
       const failureKind = classifyHistoricalStageFailure(error);
       process.stderr.write(`historical projection stage failed: ${stage} (${failureKind})\n`);

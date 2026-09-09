@@ -39,6 +39,7 @@ try {
  for(let i=0;i<197;i++)await ingest('/ugv/gnss',{longitude:106.81485,latitude:29.7195,altitude:500},base+Math.round(i*786189/196));
  await ingest('/ugv/speed',{data:0},base+600000);
  }
+ await new Promise(resolve=>setTimeout(resolve,1100));
  for(let i=0;i<4;i++){const result=await worker.tick();console.log(JSON.stringify({stage:'projection',...result}));}
  assert.equal((await pool.query("SELECT count(*)::int n FROM pipeline_watermark_revision WHERE completeness_state='UNKNOWN' AND closed_through_event_time IS NULL")).rows[0].n,1);
  const version=(await pool.query('SELECT sample_count,numInstants(trajectory) nodes FROM mobility_tracklet_version ORDER BY version_no DESC LIMIT 1')).rows[0];

@@ -10,16 +10,25 @@ import {
 } from "../../../packages/historical-trace-runtime/src/index.js";
 import type { HistoricalProjectionStages } from "./worker.js";
 
-export function createPostgresHistoricalProjectionStages(pool: pg.Pool, execution: {leasePool?: pg.Pool; signal?: AbortSignal} = {}): HistoricalProjectionStages {
+export function createPostgresHistoricalProjectionStages(pool: pg.Pool, execution: {leasePool?: pg.Pool; requestPool?: pg.Pool; trackletPool?:pg.Pool; finalizationPool?:pg.Pool; signal?: AbortSignal} = {}): HistoricalProjectionStages {
   const historicalPool = postgresSqlPool(pool);
+  const requestPool = execution.requestPool ? postgresSqlPool(execution.requestPool) : historicalPool;
+  const leases={...(execution.leasePool?{leasePool:postgresSqlPool(execution.leasePool)}:{}),...(execution.signal?{signal:execution.signal}:{})};
+  const tracklets=new PostgresTrackletProjectionRepository(execution.trackletPool?postgresSqlPool(execution.trackletPool):historicalPool,leases);
+  const finalizations=new PostgresTrackletProjectionRepository(execution.finalizationPool?postgresSqlPool(execution.finalizationPool):historicalPool,leases);
   return new HistoricalProjectionCoordinator({
     intervals: new PostgresTaskIntervalProjectionRepository(historicalPool),
-    tracklets: new PostgresTrackletProjectionRepository(historicalPool),
-    trajectories: new PostgresHistoricalTrajectoryProjectionRepository(historicalPool, {}, {
+    tracklets: {
+      claimTracklets:tracklets.claimTracklets.bind(tracklets),rebuildAndComplete:tracklets.rebuildAndComplete.bind(tracklets),failTracklet:tracklets.failTracklet.bind(tracklets),
+      claimFinalizations:finalizations.claimFinalizations.bind(finalizations),loadFinalization:finalizations.loadFinalization.bind(finalizations),
+      finalizeAndComplete:finalizations.finalizeAndComplete.bind(finalizations),failFinalization:finalizations.failFinalization.bind(finalizations),
+      withLease:(claim,kind,action)=>(kind==="projection"?tracklets:finalizations).withLease(claim,kind,action)
+    },
+    trajectories: new PostgresHistoricalTrajectoryProjectionRepository(requestPool, {}, {
       ...(execution.leasePool ? {leasePool:postgresSqlPool(execution.leasePool)} : {}),
       ...(execution.signal ? {signal:execution.signal} : {})
     }),
-    materializer: new PostgresHistoricalTrajectoryMaterializer(historicalPool)
+    materializer: new PostgresHistoricalTrajectoryMaterializer(requestPool)
   });
 }
 

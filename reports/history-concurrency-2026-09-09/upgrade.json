@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "gate": "HISTORY_ADDITIVE_UPGRADE",
+  "baseline": 84,
+  "head": 86,
+  "replay": true,
+  "oldLedgerAndVersionUnchanged": true,
+  "allRolePasswordsUnchanged": true
+}

@@ -1,3 +1,5 @@
+import { withRenewedProjectionLease } from "./projection-lease.js";
+import { guardedProjectionPool } from "./projection-execution.js";
 import { canonicalSha256 } from "../../historical-trace-core/src/index.js";
 import type { Sha256Digest } from "../../historical-trace-model/src/index.js";
 import {
@@ -18,6 +20,7 @@ interface LeaseIdentity {
   workerId: string;
   generation: number;
   leaseUntil: string;
+  leaseSeconds?: number;
 }
 
 export interface TrackletProjectionClaim extends LeaseIdentity {
@@ -74,6 +77,7 @@ export interface TrackletFinalizationDecision {
 }
 
 export interface TrackletProjectionRepository {
+  withLease?<T>(claim: LeaseIdentity, kind: "projection" | "finalization", action: () => Promise<T>): Promise<T>;
   claimTracklets(workerId: string, batchSize: number, leaseSeconds: number): Promise<TrackletProjectionClaim[]>;
   rebuildAndComplete(claim: TrackletProjectionClaim): Promise<string>;
   failTracklet(claim: TrackletProjectionClaim, error: unknown, retryAt: string): Promise<boolean>;
@@ -241,7 +245,15 @@ async function booleanCas(
 }
 
 export class PostgresTrackletProjectionRepository implements TrackletProjectionRepository {
-  public constructor(private readonly pool: SqlPool) {}
+  private readonly leasePool: SqlPool;
+  public constructor(private readonly pool: SqlPool, private readonly execution: {leasePool?:SqlPool;signal?:AbortSignal} = {}) {
+    this.leasePool=execution.leasePool ?? pool;
+    this.pool=guardedProjectionPool(pool);
+  }
+  public withLease<T>(claim:LeaseIdentity,kind:"projection"|"finalization",action:()=>Promise<T>):Promise<T> {
+    return withRenewedProjectionLease(claim,{leasePool:this.leasePool,...(this.execution.signal?{signal:this.execution.signal}:{})},
+      kind==="projection"?"renew_tracklet_projection":"renew_tracklet_finalization",action);
+  }
 
   public async claimTracklets(workerId: string, batchSize: number, leaseSeconds: number): Promise<TrackletProjectionClaim[]> {
     const result = await this.pool.query<TrackletQueueRow>(`
@@ -249,7 +261,7 @@ export class PostgresTrackletProjectionRepository implements TrackletProjectionR
         $1::text, $2::integer, make_interval(secs => $3::double precision)
       )
     `, [workerId, batchSize, leaseSeconds]);
-    return result.rows.map((row) => trackletClaim(row, workerId));
+    return result.rows.map((row) => ({...trackletClaim(row, workerId),leaseSeconds}));
   }
 
   public async rebuildAndComplete(claim: TrackletProjectionClaim): Promise<string> {
@@ -287,7 +299,7 @@ export class PostgresTrackletProjectionRepository implements TrackletProjectionR
         $1::text, $2::integer, make_interval(secs => $3::double precision)
       )
     `, [workerId, batchSize, leaseSeconds]);
-    return result.rows.map((row) => finalizationClaim(row, workerId));
+    return result.rows.map((row) => ({...finalizationClaim(row, workerId),leaseSeconds}));
   }
 
   public async loadFinalization(claim: TrackletFinalizationClaim): Promise<TrackletFinalizationEvidence> {

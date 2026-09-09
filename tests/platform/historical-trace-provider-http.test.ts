@@ -78,7 +78,7 @@ describe("historical trace Provider HTTP/bootstrap", () => {
         operationCount: 1,
         reasons: []
       });
-      expect(directQuery).toHaveBeenCalledTimes(2);
+      expect(directQuery).toHaveBeenCalledTimes(4);
 
       const denied = await app.inject({
         method: "POST",
@@ -135,6 +135,19 @@ describe("historical trace Provider HTTP/bootstrap", () => {
     } finally {
       await app.close();
     }
+  });
+
+  it("stays unready until the request evaluation read contract is installed", async () => {
+    const pool = {
+      query: vi.fn(async (sql: string) => {
+        if (sql.includes("evaluated_historical_trajectory")) throw new Error("function does not exist");
+        return { rows: [] };
+      })
+    } as unknown as pg.Pool;
+    const provider = createHistoricalTraceProvider({ pool });
+    expect(await provider.repository.readiness()).toEqual({
+      ready: false, reasons: ["gowm_history_v1 historical trace read contract is unavailable"]
+    });
   });
 
   it("reports database unavailability without leaking the underlying failure", async () => {

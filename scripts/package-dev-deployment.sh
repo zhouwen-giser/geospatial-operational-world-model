@@ -81,6 +81,8 @@ if rg -n '(postgres(?:ql)?://[^[:space:]@/]+:[^[:space:]@/]+@|Bearer[[:space:]]+
   exit 1
 fi
 
+node "$staging_dir/scripts/history-release-manifest.mjs" "$staging_dir" --write
+
 # The packaging process uses umask 077 so temporary/private files are never
 # exposed while staging. Normalize the distributable tree before archiving:
 # Docker build contexts must remain traversable by non-root runtime users.
@@ -171,7 +173,7 @@ for entrypoint in scripts/dev-deploy.sh scripts/opendrive-task-network.sh; do
   [[ -x "$verified_dir/$entrypoint" ]]
   bash -n "$verified_dir/$entrypoint"
 done
-(cd "$verified_dir" && node scripts/validate-deployment-env.mjs && node scripts/verify-ugv-bootstrap-package.mjs && bash scripts/opendrive-task-network.sh --help >/dev/null)
+(cd "$verified_dir" && node scripts/validate-deployment-env.mjs && node scripts/verify-ugv-bootstrap-package.mjs && node scripts/history-release-manifest.mjs && bash scripts/opendrive-task-network.sh --help >/dev/null)
 tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
   -cf - -C "$staging_root/verify" "$package_name" | gzip -n > "$staging_root/reproduced.tar.gz"
 cmp "$archive_path" "$staging_root/reproduced.tar.gz"
@@ -181,6 +183,14 @@ if [[ "$verify_image" == true ]]; then
   docker run --rm --network none --read-only --entrypoint node "$image_tag" -e '
     const fs = require("node:fs");
     if (process.getuid() === 0) throw new Error("Runtime must be non-root");
+    const crypto = require("node:crypto");
+    const release = JSON.parse(fs.readFileSync("/app/scripts/history-release-manifest.json", "utf8"));
+    for (const entry of release.migrations) {
+      const hash = crypto.createHash("sha256").update(fs.readFileSync("/app/" + entry.path)).digest("hex");
+      if (hash !== entry.sha256) throw new Error("Migration image mismatch: " + entry.path);
+    }
+    for (const entry of release.runtime) fs.accessSync("/app/" + entry.compiled, fs.constants.R_OK);
+    console.log("PASS: history release migration hashes and compiled runtime modules");
     const migrations = fs.readdirSync("/app/database/migrations");
     if (!migrations.length) throw new Error("Missing migrations");
     for (const file of migrations) fs.accessSync("/app/database/migrations/" + file, fs.constants.R_OK);
@@ -191,6 +201,10 @@ if [[ "$verify_image" == true ]]; then
     fs.accessSync("/app/dist/scripts/business-storage/accounts.js", fs.constants.R_OK);
     fs.accessSync("/app/database/migrations/078_device_shared_business_storage.sql", fs.constants.R_OK);
     fs.accessSync("/app/database/migrations/079_device_context_reader.sql", fs.constants.R_OK);
+    fs.accessSync("/app/database/migrations/085_tracklet_dispatch_and_execution.sql", fs.constants.R_OK);
+    fs.accessSync("/app/database/migrations/086_historical_request_evaluation.sql", fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/history-hot-migrate.js", fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/history-diagnose.js", fs.constants.R_OK);
     const hosted = JSON.parse(fs.readFileSync("/app/database/shared-business-storage/install-manifest.json", "utf8"));
     for (const entry of hosted.entries) fs.accessSync("/app/database/shared-business-storage/" + entry.generatedPath, fs.constants.R_OK);
     for (const entry of hosted.overlays) fs.accessSync("/app/database/shared-business-storage/" + entry.path, fs.constants.R_OK);

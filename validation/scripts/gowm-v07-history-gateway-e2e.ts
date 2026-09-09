@@ -1557,6 +1557,7 @@ async function projectOperationalAndHistory(pool: pg.Pool, fixture: FixtureIdent
     intervals: new PostgresTaskIntervalProjectionRepository(pool),
     tracklets: new PostgresTrackletProjectionRepository(pool)
   });
+  await new Promise(resolve=>setTimeout(resolve,1100));
   const result = await coordinator.tick({ workerId, batchSize: 100, leaseSeconds: 60, retryDelayMs: 0 });
   assert.equal(result.historicalProjectionFailures, 0, JSON.stringify(result));
 }

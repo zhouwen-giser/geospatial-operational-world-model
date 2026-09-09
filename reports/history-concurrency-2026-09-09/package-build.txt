@@ -1,0 +1,126 @@
+Deployment environment template covers 216 Compose variables and audits 180 runtime variables.
+PASS: automatic device bootstrap, business account entrypoints and locked source contracts
+Deployment environment template covers 216 Compose variables and audits 180 runtime variables.
+PASS: automatic device bootstrap, business account entrypoints and locked source contracts
+#0 building with "default" instance using docker driver
+
+#1 [internal] load remote build context
+#1 DONE 0.3s
+
+#1 [internal] load remote build context
+#1 DONE 0.3s
+
+#2 copy /context /
+#2 DONE 0.4s
+
+#3 [internal] load metadata for docker.io/library/node:22-bookworm-slim@sha256:d649c27dae7ba0137b3cef5dd75baa422c08dc3d9e3fc0c23dfb172dc3cc6436
+#3 DONE 3.3s
+
+#4 [build  1/15] FROM docker.io/library/node:22-bookworm-slim@sha256:d649c27dae7ba0137b3cef5dd75baa422c08dc3d9e3fc0c23dfb172dc3cc6436
+#4 resolve docker.io/library/node:22-bookworm-slim@sha256:d649c27dae7ba0137b3cef5dd75baa422c08dc3d9e3fc0c23dfb172dc3cc6436 0.1s done
+#4 DONE 0.1s
+
+#5 [build  6/15] RUN npm --prefix services/stas ci --ignore-scripts
+#5 CACHED
+
+#6 [build  2/15] WORKDIR /app
+#6 CACHED
+
+#7 [build  3/15] COPY package.json package-lock.json* ./
+#7 CACHED
+
+#8 [build  4/15] RUN npm ci --ignore-scripts
+#8 CACHED
+
+#9 [build  5/15] COPY services/stas/package.json services/stas/package-lock.json services/stas/
+#9 CACHED
+
+#10 [build  7/15] COPY tsconfig.json tsconfig.runtime.json ./
+#10 CACHED
+
+#11 [build  8/15] COPY packages ./packages
+#11 DONE 1.0s
+
+#12 [build  9/15] COPY services ./services
+#12 DONE 0.4s
+
+#13 [build 10/15] COPY simulator ./simulator
+#13 DONE 0.2s
+
+#14 [build 11/15] COPY scripts ./scripts
+#14 DONE 0.2s
+
+#15 [build 12/15] COPY validation ./validation
+#15 DONE 0.2s
+
+#16 [build 13/15] COPY contracts ./contracts
+#16 DONE 0.2s
+
+#17 [build 14/15] COPY config ./config
+#17 DONE 0.2s
+
+#18 [build 15/15] RUN npm run build:runtime
+#18 0.757 
+#18 0.757 > geospatial-operational-world-model@0.7.1 build:runtime
+#18 0.757 > tsc -p tsconfig.runtime.json && npm --prefix services/stas run build
+#18 0.757 
+#18 13.12 
+#18 13.12 > mobilitydb-stas-service@0.1.0 build
+#18 13.12 > tsc -p tsconfig.json
+#18 13.12 
+#18 DONE 16.8s
+
+#19 [runtime  4/13] RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+#19 CACHED
+
+#20 [runtime  5/13] COPY services/stas/package.json services/stas/package-lock.json services/stas/
+#20 CACHED
+
+#21 [runtime  6/13] RUN npm --prefix services/stas ci --omit=dev --ignore-scripts && npm cache clean --force
+#21 CACHED
+
+#22 [runtime  7/13] COPY --from=build --chown=node:node /app/dist ./dist
+#22 DONE 0.4s
+
+#23 [runtime  8/13] COPY --from=build --chown=node:node /app/services/stas/dist ./services/stas/dist
+#23 DONE 0.2s
+
+#24 [runtime  9/13] COPY --chown=node:node database ./database
+#24 DONE 0.4s
+
+#25 [runtime 10/13] COPY --chown=node:node config ./config
+#25 DONE 0.4s
+
+#26 [runtime 11/13] COPY --chown=node:node contracts ./contracts
+#26 DONE 0.6s
+
+#27 [runtime 12/13] COPY --chown=node:node scripts ./scripts
+#27 DONE 0.4s
+
+#28 [runtime 13/13] RUN node --input-type=module -e 'import fs from "node:fs"; import {createOperationalRealityProvider} from "./dist/services/providers/operational-reality-provider/src/provider.js"; const actual=createOperationalRealityProvider({pool:{}}).runtime.manifest; const declared=JSON.parse(fs.readFileSync("contracts/manifests/providers/operational-reality-provider.json","utf8")); if(JSON.stringify(actual)!==JSON.stringify(declared)) throw new Error("Operational Provider manifest/runtime mismatch");'
+#28 DONE 0.8s
+
+#29 exporting to image
+#29 exporting layers
+#29 exporting layers 1.1s done
+#29 exporting manifest sha256:5d1eb9142e54be19ade35b15876ebd41fcb7aa225821824aac1ea04dbd1150f6 0.1s done
+#29 exporting config sha256:e4725e8420043242a2c9d2df53328f4f2ab5db6713b8ed5229494377107bd961 0.0s done
+#29 exporting attestation manifest sha256:b6f6409f685c3656943885003ede8b910a3331a44bb855fe2da9163d5b6916c9 0.1s done
+#29 exporting manifest list sha256:a691228b8288606aae3318467ce722d358d3f2198675c45af422079b5580425a
+#29 exporting manifest list sha256:a691228b8288606aae3318467ce722d358d3f2198675c45af422079b5580425a 0.1s done
+#29 naming to docker.io/library/gowm-dev-package-check:7fb576e9b975b6b7 done
+#29 unpacking to docker.io/library/gowm-dev-package-check:7fb576e9b975b6b7
+#29 unpacking to docker.io/library/gowm-dev-package-check:7fb576e9b975b6b7 0.7s done
+#29 DONE 2.2s
+{"status":"PASS","gate":"IMAGE_SOURCE_AND_RUNTIME_IDENTITY","files":806,"implementationDigest":"sha256:837a3d868375540a571a8b41a51bcaed0f56d7e7a15b707c8046bf652209c78d","referenceImplementationDigest":"sha256:dacf38933316a1cb1b61337c3aeb75fdf3712017ccdcd549577df574209ddfd2","evidenceImplementationDigest":"sha256:a49a1999d9e2a6faccf2cbad8c6a2369663040187d42856e9bc8ea39a1285eae"}
+PASS: non-root runtime can read migrations
+GOWM shared business storage: check | install [--domain all|smpp|sdar] | verify | fixture | test:postgres | handoff
+Install requires explicit GOWM_DATABASE_URL. Tests/fixture require GOWM_BUSINESS_TEST_DATABASE_URL and GOWM_BUSINESS_SMOKE_ENABLE=true; only isolated databases with test in the name. Help/check/handoff do not connect to a database.
+GOWM device: init-default | verify-default
+Requires explicit GOWM_DATABASE_URL and UGV_MQTT_URL. Reuses UGV_DEVICE_ID (external identifier), UGV_DATA_SCOPE_KEY, UGV_SOURCE_KEY and UGV_PRODUCER_PIPELINE_KEY. Optional complete service binding: SMPP_SERVICE_KEY, UGV_PROVIDER_ID, UGV_RESOURCE_ID, SDAR_SERVICE_KEY, SDAR_MCP_SERVER_ID, SDAR_AGENT_PROFILE_ID. No MQTT connection or consumer switch.
+Initialize ugv_smpp_app and ugv_sdar_app in the existing GOWM database. Requires GOWM_DATABASE_URL, SMPP_DB_PASSWORD, SDAR_DB_PASSWORD. No native consumer migrations or password rotation.
+Previous package preserved: /home/zhouwen/web-download/geospatial-operational-world-model/output/deployment/previous-gowm-dev-server-0.7.1.hzL1a3
+gowm-dev-server-0.7.1.tar.gz: 成功
+PASS: archive checksums, permissions, exclusions, entrypoints and reproducibility
+/home/zhouwen/web-download/geospatial-operational-world-model/output/deployment/gowm-dev-server-0.7.1.tar.gz
+/home/zhouwen/web-download/geospatial-operational-world-model/output/deployment/gowm-dev-server-0.7.1.tar.gz.sha256

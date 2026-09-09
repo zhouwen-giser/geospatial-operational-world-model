@@ -1,3 +1,4 @@
+import { RESET_ACK_TOPIC, decodeResetAck } from "./reset-ack.js";
 import { validateMapperDevice } from "../../../packages/integrations/ugv-mqtt-ingest-core/src/mapper.js";
 import { createHash } from "node:crypto";
 import type pg from "pg";
@@ -94,18 +95,21 @@ export class UgvIngestRepository {
     await this.pool.query(`UPDATE ugv_ingest.mqtt_session SET disconnected_at=clock_timestamp(),disconnect_reason=$2 WHERE session_id=$1`,[sessionId,reason.slice(0,512)]);
   }
 
-  async accept(sessionId: string,topic: UgvAuthorityTopic,payload: Buffer,packet: { messageId?: number; qos: number; dup?: boolean; retain?: boolean },receivedAt: string): Promise<AcceptedMessage> {
+  async accept(sessionId: string,topic: UgvAuthorityTopic | typeof RESET_ACK_TOPIC,payload: Buffer,packet: { messageId?: number; qos: number; dup?: boolean; retain?: boolean },receivedAt: string): Promise<AcceptedMessage> {
     const hash = createHash("sha256").update(payload).digest("hex");
     let decoded: unknown; let validationState = "VALID"; let validationErrors: unknown[] = [];
     if (payload.byteLength > this.maximumPayloadBytes) {
       validationState = "PAYLOAD_TOO_LARGE"; validationErrors = [{ maximumBytes: this.maximumPayloadBytes,actualBytes: payload.byteLength }];
     } else {
       try {
+        if (topic === RESET_ACK_TOPIC) decoded = decodeResetAck(payload);
+        else {
         decoded = decodePayload(topic,payload);
         const validation = this.sourceSchemas?.validate(topic,decoded);
         if (!validation) throw new Error("source schema registry is not loaded");
         if (!validation.success) { validationState = "SCHEMA_INVALID"; validationErrors = validation.errors; }
         else decoded = validation.data;
+        }
       } catch (error) {
         validationState = "NON_JSON"; validationErrors = [{ message: error instanceof Error ? error.message : String(error) }];
       }
@@ -133,6 +137,15 @@ export class UgvIngestRepository {
     }
   }
 
+  async processResetAck(clientId: string, brokerId: string, scope: string): Promise<void> {
+    await withTransaction(this.pool,async client => {
+      await client.query("SET LOCAL statement_timeout='30s'");
+      await client.query("SET LOCAL lock_timeout='5s'");
+      await client.query("SELECT gowm_history_v1.set_data_scope($1)",[scope]);
+      await client.query("SELECT gowm_history.process_reset_ack($1,$2)",[clientId,brokerId]);
+    });
+  }
+
   async markPuback(sessionId: string,packetId: number,generation: number): Promise<void> {
     const result = await this.pool.query(
       `UPDATE ugv_ingest.packet_slot SET puback_sent_at=clock_timestamp()
@@ -152,7 +165,7 @@ export class UgvIngestRepository {
                  inbox.retained_flag,inbox.ingest_sequence,inbox.qos,session.mapper_context,session.mapper_context_hash
           FROM ugv_ingest.inbox_message inbox JOIN ugv_ingest.mqtt_session session USING(session_id)
           WHERE session.client_id=$1 AND session.broker_id=$2 AND inbox.processing_state IN ('RECEIVED','VALIDATED')
-            AND inbox.next_processing_at<=clock_timestamp()
+            AND inbox.topic<>'/sim/reset_ack' AND inbox.next_processing_at<=clock_timestamp()
           ORDER BY inbox.ingest_sequence LIMIT 1 FOR UPDATE OF inbox SKIP LOCKED`,[clientId,brokerId]);
       const row = result.rows[0]; if (!row) return undefined;
       const mapperConfig = validatedMapperConfig(row.mapper_context);

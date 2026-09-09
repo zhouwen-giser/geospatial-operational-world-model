@@ -432,7 +432,7 @@ export class PostgresMobilityDbTrajectorySlicer implements TemporalTrajectorySli
       await configureLocalExecutionBounds(connection,this.bounds);
       await connection.query("SELECT gowm_history_v1.set_data_scope($1::text)", [request.dataScopeKey]);
       const result = await connection.query<Record<string, unknown>>(`
-        WITH source AS (
+        WITH source AS MATERIALIZED (
           SELECT atTime(segment.trajectory, $4::tstzspan) AS sliced
           FROM public.mobility_tracklet_segment segment
           JOIN public.mobility_tracklet_version version USING (tracklet_version_id)
@@ -440,15 +440,23 @@ export class PostgresMobilityDbTrajectorySlicer implements TemporalTrajectorySli
           WHERE segment.tracklet_version_id = $1::uuid
             AND segment.segment_no = $2::integer
             AND tracklet.data_scope_key = $3::text
+        ), slice_domain AS MATERIALIZED (
+          SELECT sliced,getTime(sliced) AS valid_time FROM source WHERE sliced IS NOT NULL
+        ), evidence AS MATERIALIZED (
+          SELECT time_solution_id FROM public.mobility_tracklet_input
+          WHERE tracklet_version_id=$1::uuid AND segment_no=$2::integer
         )
         SELECT sliced::text AS trajectory,
-               ${request.evidenceSamples ? `(SELECT count(*) FROM public.mobility_tracklet_input input
-                 JOIN public.observation_time_solution solution ON solution.time_solution_id=input.time_solution_id
-                 WHERE input.tracklet_version_id=$1::uuid AND input.segment_no=$2::integer
-                   AND atTime(sliced,solution.phenomenon_time_estimate) IS NOT NULL)` : "numInstants(sliced)"} AS sample_count,
+               ${request.evidenceSamples ? `(SELECT count(*) FROM evidence input
+                 CROSS JOIN LATERAL (
+                   SELECT phenomenon_time_estimate FROM public.observation_time_solution
+                   WHERE time_solution_id=input.time_solution_id OFFSET 0
+                 ) solution
+                 WHERE solution.phenomenon_time_estimate <@ $4::tstzspan
+                   AND solution.phenomenon_time_estimate <@ valid_time)` : "numInstants(sliced)"} AS sample_count,
                startTimestamp(sliced) AS start_time,
                endTimestamp(sliced) AS end_time
-        FROM source
+        FROM slice_domain
         WHERE sliced IS NOT NULL
       `, [
         request.sourceTrackletVersionId,

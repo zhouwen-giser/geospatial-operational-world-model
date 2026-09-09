@@ -95,7 +95,8 @@ describe("historical trajectory projection queue", () => {
     const connection: SqlConnection = {
       query: async <Row extends Record<string, unknown>>(sql: string): Promise<SqlQueryResult<Row>> => {
         calls.push(sql);
-        if (sql.includes("complete_historical_trajectory_projection")) {
+        if (sql.includes("evaluate_historical_request")) return {rows:[{evaluation_id:"00000000-0000-4000-8000-000000000012"} as unknown as Row]};
+        if (sql.includes("complete_evaluated_historical_request")) {
           return { rows: [{ completed: false } as unknown as Row] };
         }
         return { rows: [] };
@@ -112,7 +113,7 @@ describe("historical trajectory projection queue", () => {
     const materializer = {
       prepareForCommit: async () => {
         preparedBeforeWriteTransaction = true;
-        return { kind: "REVISION" } as never;
+        return { kind: "REVISION", registration: {resourceInputs:[],inputSets:[]} } as never;
       },
       commitPreparedInTransaction: async (_prepared: unknown, tx: SqlConnection) => {
         await tx.query("INSERT TENTATIVE HISTORICAL REVISION");
@@ -135,7 +136,7 @@ describe("historical trajectory projection queue", () => {
     await expect(new PostgresHistoricalTrajectoryProjectionRepository(pool)
       .materializeAndComplete(claim, materializer)).rejects.toBeInstanceOf(ProjectionFenceLostError);
     expect(calls).toContain("INSERT TENTATIVE HISTORICAL REVISION");
-    expect(calls.some((sql) => sql.includes("complete_historical_trajectory_projection"))).toBe(true);
+    expect(calls.some((sql) => sql.includes("complete_evaluated_historical_request"))).toBe(true);
     expect(calls).toContain("ROLLBACK");
     expect(calls).not.toContain("COMMIT");
   });

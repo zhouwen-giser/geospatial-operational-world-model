@@ -893,20 +893,28 @@ export class PostgresHistoricalTrajectoryInputLoader implements HistoricalTrajec
       });
 
       const trackletInputRows = await connection.query<Record<string, unknown>>(`
+        WITH requested_inputs AS MATERIALIZED (
+          SELECT * FROM public.mobility_tracklet_input
+          WHERE tracklet_version_id = ANY($1::uuid[])
+        )
         SELECT input.tracklet_version_id, input.measurement_id,
                input.observation_id, input.time_solution_id,
                input.segment_no, input.ordinal_no,
                measurement.command_fingerprint, measurement.created_at AS measurement_created_at,
                solution.phenomenon_time_estimate, solution.solution_method,
                solution.created_at AS solution_created_at
-        FROM public.mobility_tracklet_input input
+        FROM requested_inputs input
         JOIN public.mobility_tracklet_version version USING (tracklet_version_id)
         JOIN public.mobility_tracklet tracklet USING (tracklet_id)
-        JOIN public.measurement measurement USING (measurement_id)
-        JOIN public.observation_time_solution solution
-          ON solution.time_solution_id = input.time_solution_id
-        WHERE input.tracklet_version_id = ANY($1::uuid[])
-          AND tracklet.data_scope_key = $2
+        JOIN LATERAL (
+          SELECT command_fingerprint, created_at FROM public.measurement
+          WHERE measurement_id = input.measurement_id OFFSET 0
+        ) measurement ON true
+        JOIN LATERAL (
+          SELECT phenomenon_time_estimate, solution_method, created_at FROM public.observation_time_solution
+          WHERE time_solution_id = input.time_solution_id OFFSET 0
+        ) solution ON true
+        WHERE tracklet.data_scope_key = $2
           AND measurement.created_at <= $3::timestamptz
           AND solution.created_at <= $3::timestamptz
         ORDER BY input.tracklet_version_id, input.segment_no, input.ordinal_no,

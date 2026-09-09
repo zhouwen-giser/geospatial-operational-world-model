@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "protectedContainersUnchanged": 69,
+  "protectedContainersNotRecreated": 70,
+  "preExistingRestartLoops": [
+    "/sdar-benchmark-projector-1"
+  ],
+  "targets": [
+    "projection-worker",
+    "world-platform-projection-worker",
+    "historical-trace-provider"
+  ],
+  "bindingsAndCredentialsUnchanged": true,
+  "previouslyExhaustedRequestsUnchanged": 195,
+  "historyConcurrency": "1"
+}

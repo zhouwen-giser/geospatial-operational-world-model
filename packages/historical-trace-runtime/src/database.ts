@@ -57,7 +57,7 @@ export async function configureLocalExecutionBounds(
     throw new HistoricalProjectionInputError("lockTimeoutMs cannot exceed statementTimeoutMs");
   }
   await connection.query(
-    "SELECT set_config('statement_timeout',$1::text,true), set_config('lock_timeout',$2::text,true)",
+    "SELECT set_config('statement_timeout',$1::text,true), set_config('lock_timeout',$2::text,true), set_config('max_parallel_workers_per_gather','0',true)",
     [`${statementTimeoutMs}ms`, `${lockTimeoutMs}ms`]
   );
 }

@@ -1,0 +1,103 @@
+{
+  "scope": "default",
+  "tracklet_identities": "4",
+  "tracklet_versions": "4044",
+  "historical_trajectories": "26",
+  "states": [
+    {
+      "finalization_state": "PROVISIONAL",
+      "count": "4044"
+    }
+  ],
+  "queues": [
+    {
+      "state": "RUNNING",
+      "attempts": 1,
+      "has_error": false,
+      "count": "1"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 2,
+      "has_error": false,
+      "count": "10"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 7,
+      "has_error": false,
+      "count": "6"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 4,
+      "has_error": false,
+      "count": "8"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 1,
+      "has_error": false,
+      "count": "1046"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 3,
+      "has_error": false,
+      "count": "7"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 6,
+      "has_error": false,
+      "count": "5"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 8,
+      "has_error": false,
+      "count": "4"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 5,
+      "has_error": false,
+      "count": "7"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 10,
+      "has_error": false,
+      "count": "1"
+    },
+    {
+      "state": "COMPLETED",
+      "attempts": 9,
+      "has_error": false,
+      "count": "4"
+    },
+    {
+      "state": "FAILED",
+      "attempts": 10,
+      "has_error": true,
+      "count": "195"
+    }
+  ],
+  "resets": [],
+  "active": [
+    {
+      "lane": "HISTORY",
+      "active_count": "1"
+    },
+    {
+      "lane": "TRACKLET",
+      "active_count": "1"
+    }
+  ],
+  "evaluated": {
+    "evaluations": "51",
+    "reused": "4",
+    "claim_wait_p95_ms": 224439.238,
+    "compute_p95_ms": 3572.2200000000003
+  }
+}

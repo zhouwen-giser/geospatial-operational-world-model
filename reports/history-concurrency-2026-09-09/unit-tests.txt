@@ -1,0 +1,9 @@
+
+ RUN  v4.1.10 /home/zhouwen/web-download/geospatial-operational-world-model
+
+
+ Test Files  10 passed (10)
+      Tests  55 passed (55)
+   Start at  18:08:25
+   Duration  1.94s (transform 7.97s, setup 0ms, import 11.00s, tests 392ms, environment 2ms)
+

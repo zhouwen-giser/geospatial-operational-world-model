@@ -1,0 +1,86 @@
+[
+  {
+    "status": "PASS",
+    "evidence": "LOCAL_SYNTHETIC_REAL_PG_NOT_REMOTE_REPLAY",
+    "samples": 197,
+    "geometryNodes": 2,
+    "sourceLineage": true,
+    "unknownBootstrap": true,
+    "autoMaterialization": true,
+    "dedicatedSchedulerRole": true,
+    "legacyRevisionRecovery": true,
+    "lateDataIsolation": true,
+    "scopedReader": true,
+    "invalidCursorRejected": true,
+    "history": {
+      "reference_key": "wrf_d0fd3673753b4d4caab6e151459eb640",
+      "revision_no": 1,
+      "content_hash": "sha256:8d10ccf6a36f129c334422f704d3044893f86f73012b1ed8dc94816bc174d9f1",
+      "finalization_state": "PROVISIONAL",
+      "sample_count": 197
+    },
+    "evidenceHash": "sha256:854180f2a6b7348e87e14852810e6113d90132b7a23eb58592997cc83b17d587"
+  },
+  {
+    "status": "PASS",
+    "gate": "RESET_ACK_REAL_POSTGRES",
+    "watermarks": 3
+  },
+  {
+    "status": "PASS",
+    "gate": "LONG_TRACKLET_SLICER",
+    "points": 15000,
+    "timeSolutions": 70000,
+    "elapsedMs": 203.56843600000138,
+    "version": "b017ba6d-1542-4f47-8fc6-5b2aaebbcfde",
+    "zeroOriginalSamples": true,
+    "exclusiveBoundary": true,
+    "inclusiveInternalBoundary": true,
+    "scopeIsolation": true
+  },
+  {
+    "status": "PASS",
+    "gate": "HISTORY_EVIDENCE_CURRENT_DATABASE",
+    "baseline": 0,
+    "migrationCount": 86,
+    "migrationHead": "086_historical_request_evaluation.sql",
+    "predecessorStable": true,
+    "replayStable": true
+  },
+  {
+    "status": "PASS",
+    "evidence": "LOCAL_SYNTHETIC_REAL_PG_NOT_REMOTE_REPLAY",
+    "samples": 197,
+    "geometryNodes": 2,
+    "sourceLineage": true,
+    "unknownBootstrap": true,
+    "autoMaterialization": true,
+    "dedicatedSchedulerRole": true,
+    "legacyRevisionRecovery": true,
+    "lateDataIsolation": true,
+    "scopedReader": true,
+    "invalidCursorRejected": true,
+    "history": {
+      "reference_key": "wrf_8101f31bfcd649e7825393e600f06255",
+      "revision_no": 1,
+      "content_hash": "sha256:78832ce3f580179be9c152525a9a324ef0878e9278feb94f47b4fcc89299d131",
+      "finalization_state": "PROVISIONAL",
+      "sample_count": 197
+    },
+    "evidenceHash": "sha256:540fbcefd17b352ff39554ebd88f1ced6872a522db117599cd708053a5c2f137"
+  },
+  {
+    "status": "PASS",
+    "gate": "RESET_ACK_REAL_POSTGRES",
+    "watermarks": 3
+  },
+  {
+    "status": "PASS",
+    "gate": "HISTORY_EVIDENCE_CURRENT_DATABASE",
+    "baseline": 69,
+    "migrationCount": 86,
+    "migrationHead": "086_historical_request_evaluation.sql",
+    "predecessorStable": true,
+    "replayStable": true
+  }
+]

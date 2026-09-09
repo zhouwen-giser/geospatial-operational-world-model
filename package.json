@@ -196,7 +196,11 @@
     "business-storage:test:postgres": "node --import tsx scripts/business-storage/cli.ts test:postgres",
     "device:init-default": "tsx scripts/business-storage/device-cli.ts init-default",
     "device:verify-default": "tsx scripts/business-storage/device-cli.ts verify-default",
-    "validate:ugv-device-actor": "vitest run tests/unit/ugv-device-actor.test.ts tests/integration/ugv-device-actor.integration.test.ts"
+    "validate:ugv-device-actor": "vitest run tests/unit/ugv-device-actor.test.ts tests/integration/ugv-device-actor.integration.test.ts",
+    "validate:history-dispatch": "node --import tsx validation/scripts/history-dispatch-e2e.ts",
+    "validate:history-upgrade": "node --import tsx validation/scripts/history-concurrency-upgrade.ts",
+    "validate:history-concurrency-scale": "node --import tsx validation/scripts/history-concurrency-scale.ts",
+    "history:hot-migrate": "node --import tsx scripts/history-hot-migrate.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",

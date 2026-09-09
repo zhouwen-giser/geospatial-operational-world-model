@@ -1,0 +1,32 @@
+{
+  "gate": "TASK_ONLY_HISTORICAL_TRACE_SUBJECT_REFERENCE",
+  "status": "PASS",
+  "checks": {
+    "singleBusinessSubmission": true,
+    "requestDeadline120Seconds": true,
+    "normalSacsCompletion": true,
+    "temporaryDatabaseCleaned": true,
+    "checkpointIntegrity": true,
+    "schemaValid": true,
+    "resultHashValid": true,
+    "oneHistoricalTrace": true,
+    "subjectValidated": true,
+    "subjectLeaseValidAtResponse": true,
+    "findingLeaseValidAtResponse": true,
+    "subjectAndEvidenceLinked": true,
+    "noBlockingGap": true,
+    "noUnresolvedMentions": true,
+    "realCompletenessRetained": true,
+    "historicalSubjectIdentityPreserved": true
+  },
+  "groundingIdHash": "sha256:49870c823bb25fbab500cbb5871f862ee760dd569bfe2d662618da62a0f7807c",
+  "resultHash": "sha256:e4c127fbba3ed52da40d953a806a6ab4210530ea1c61a8fbf1295c8c75d20fea",
+  "responseStatus": "PARTIAL",
+  "sourceHarnessStatusPreserved": "INCOMPLETE",
+  "nonClaims": [
+    "ALL_ADVANCED_ANALYSIS",
+    "FREE_TIME_WINDOW",
+    "SEALED_COMPLETE_TRAJECTORY",
+    "DEVICE_EXECUTION"
+  ]
+}
