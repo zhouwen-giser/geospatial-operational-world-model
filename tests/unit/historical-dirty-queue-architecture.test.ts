@@ -86,11 +86,13 @@ describe("historical tracklet dirty-queue architecture", () => {
 
   it("binds historical stages to the dedicated controlled worker login", () => {
     expect(projectionWorkerEntrypoint).toContain("HISTORICAL_WORKER_DATABASE_URL");
-    expect(projectionWorkerEntrypoint).toContain(
-      "createPostgresHistoricalProjectionStages(historicalPool)"
+    // Check the controlled first argument while allowing lifecycle options
+    // such as the independent renewal pool and shutdown signal.
+    expect(projectionWorkerEntrypoint).toMatch(
+      /createPostgresHistoricalProjectionStages\(\s*historicalPool\s*[,)]/u
     );
-    expect(projectionWorkerEntrypoint).not.toContain(
-      "createPostgresHistoricalProjectionStages(pool)"
+    expect(projectionWorkerEntrypoint).not.toMatch(
+      /createPostgresHistoricalProjectionStages\(\s*pool\s*[,)]/u
     );
     expect(worldPlatformCompose).toContain(
       "postgresql://gowm_history_worker_service:${HISTORICAL_WORKER_DB_PASSWORD"

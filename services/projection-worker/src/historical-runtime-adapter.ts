@@ -10,12 +10,15 @@ import {
 } from "../../../packages/historical-trace-runtime/src/index.js";
 import type { HistoricalProjectionStages } from "./worker.js";
 
-export function createPostgresHistoricalProjectionStages(pool: pg.Pool): HistoricalProjectionStages {
+export function createPostgresHistoricalProjectionStages(pool: pg.Pool, execution: {leasePool?: pg.Pool; signal?: AbortSignal} = {}): HistoricalProjectionStages {
   const historicalPool = postgresSqlPool(pool);
   return new HistoricalProjectionCoordinator({
     intervals: new PostgresTaskIntervalProjectionRepository(historicalPool),
     tracklets: new PostgresTrackletProjectionRepository(historicalPool),
-    trajectories: new PostgresHistoricalTrajectoryProjectionRepository(historicalPool),
+    trajectories: new PostgresHistoricalTrajectoryProjectionRepository(historicalPool, {}, {
+      ...(execution.leasePool ? {leasePool:postgresSqlPool(execution.leasePool)} : {}),
+      ...(execution.signal ? {signal:execution.signal} : {})
+    }),
     materializer: new PostgresHistoricalTrajectoryMaterializer(historicalPool)
   });
 }

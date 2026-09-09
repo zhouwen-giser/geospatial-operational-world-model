@@ -59,7 +59,7 @@ jobs:
       - name: Candidate 001-to-069 and 067-to-069 database qualification
         run: npm run validate:v071-database-upgrade
 
-      - name: Candidate fresh and 069-to-075 history evidence qualification
+      - name: Candidate fresh and 069-to-current history evidence qualification
         run: npm run validate:history-evidence-ci
 
       - name: Operational Provider least-privilege fresh and upgrade gate

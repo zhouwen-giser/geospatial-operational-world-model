@@ -10,10 +10,12 @@ import type {
 import {
   HistoricalProjectionCoordinator,
   PostgresHistoricalTrajectoryMaterializer,
+  PostgresHistoricalTrajectoryOutcomeRepository,
   PostgresHistoricalTrajectoryProjectionRepository,
   PostgresTaskIntervalProjectionRepository,
   PostgresTrackletProjectionRepository,
   ProjectionFenceLostError,
+  type SqlPool,
   type HistoricalTrajectoryMaterializationRequest
 } from "../../packages/historical-trace-runtime/src/index.js";
 import { sha256 } from "../../packages/platform/provider-sdk/src/index.js";
@@ -25,10 +27,10 @@ import {
 } from "../../services/projection-worker/src/worker.js";
 import { createHistoricalTraceProvider } from "../../services/providers/historical-trace-provider/src/provider.js";
 import {
-  historicalSemanticRequestHash
+  historicalSemanticRequestHash, HISTORICAL_TRACE_SQL
 } from "../../services/providers/historical-trace-provider/src/repository.js";
 import {
-  withMigratedV07Database,
+  withMigratedV071Database,
   type V07DatabaseEvidence
 } from "./gowm-v07-postgres-harness.js";
 
@@ -67,9 +69,9 @@ interface QueueRow extends Record<string, unknown> {
 
 const RETAINED_RESTART_ERROR = "retained worker restart diagnostic";
 
-await withMigratedV07Database("history_queue_worker", async (databaseUrl, versions, runId) => {
+await withMigratedV071Database("history_queue_worker", async (databaseUrl, versions, runId) => {
   await runQueueWorkerE2e(databaseUrl, versions, runId);
-});
+}, { currentSchema: true });
 
 async function runQueueWorkerE2e(
   databaseUrl: string,
@@ -104,9 +106,68 @@ async function runQueueWorkerE2e(
     const interval = await loadIntervalPin(adminPool, fixture);
     const query = historicalQuery(fixture, interval.referenceKey);
     const semanticRequestHash = historicalSemanticRequestHash(query);
+    const priorCapturedAt = await databaseNow(adminPool);
+    const pendingWriter = await workerPool.connect();
+    let priorOutcomeId: string;
+    try {
+      await pendingWriter.query("BEGIN");
+      await pendingWriter.query(HISTORICAL_TRACE_SQL.setScope, [fixture.dataScopeKey]);
+      const prior = await new PostgresHistoricalTrajectoryOutcomeRepository(workerPool).recordInTransaction(
+        pendingWriter, {dataScopeKey:fixture.dataScopeKey,capturedAt:priorCapturedAt,query},
+        semanticRequestHash,"PENDING","PROJECTION_PENDING"
+      );
+      priorOutcomeId = prior.outcomeId;
+      await pendingWriter.query("COMMIT");
+    } catch(error) { await pendingWriter.query("ROLLBACK"); throw error; }
+    finally { pendingWriter.release(); }
+    const priorOutcome = (await adminPool.query("SELECT to_jsonb(o) value FROM gowm_history.historical_trajectory_outcome o WHERE outcome_id=$1", [priorOutcomeId])).rows[0].value;
     const capturedAt = await databaseNow(adminPool);
     const effectiveSnapshot = snapshotManifest(`queue-${runId}`, capturedAt);
+    const exactReader = await providerPool.connect();
+    try {
+      await exactReader.query("BEGIN READ ONLY");
+      await exactReader.query(HISTORICAL_TRACE_SQL.setScope, [fixture.dataScopeKey]);
+      const args=[query.subjectReferenceKey.id,query.executionIntervalReferenceKey.id,query.phaseScope,semanticRequestHash,capturedAt];
+      assert.equal((await exactReader.query(HISTORICAL_TRACE_SQL.outcomeAsOf,[...args,Number(query.executionIntervalReferenceKey.version)])).rows.length,1);
+      assert.equal((await exactReader.query(HISTORICAL_TRACE_SQL.outcomeAsOf,[...args,Number(query.executionIntervalReferenceKey.version)+1])).rows.length,0,
+        "an earlier interval revision outcome must not qualify for another revision");
+      await exactReader.query("ROLLBACK");
+    } finally { exactReader.release(); }
+
+    effectiveSnapshot.resources.push({
+      resourceKind: "TASK_EXECUTION_INTERVAL", resourceId: `gowm:${interval.referenceKey.id}`,
+      version: interval.referenceKey.version!, pinning: "PINNED", contentHash: interval.contentHash
+    });
+    const taskProfile = (await adminPool.query(
+      "SELECT content_hash FROM gowm_history.method_profile WHERE profile_key='task-interval-observed-v1' AND profile_version='1.0'"
+    )).rows[0];
+    effectiveSnapshot.resources.push({
+      resourceKind: "HISTORY_METHOD_PROFILE", resourceId: "gowm:task-interval-observed-v1",
+      version: "1.0", pinning: "PINNED", contentHash: taskProfile.content_hash
+    });
+    const { manifestHash: _oldHash, ...frozen } = effectiveSnapshot;
+    effectiveSnapshot.manifestHash = sha256(frozen);
     const provider = createHistoricalTraceProvider({ pool: providerPool });
+
+    // Exercise the SECURITY DEFINER boundary with the actual runtime role.
+    for (const resourceId of [`foreign:${interval.referenceKey.id}`, "gowm:wrf_missing"]) {
+      const bad = structuredClone(effectiveSnapshot);
+      bad.resources[0]!.resourceId = resourceId;
+      const { manifestHash: _hash, ...body } = bad;
+      bad.manifestHash = sha256(body);
+      const client = await providerPool.connect();
+      try {
+        await client.query("BEGIN");
+        await client.query(HISTORICAL_TRACE_SQL.setScope, [fixture.dataScopeKey]);
+        await assert.rejects(client.query(HISTORICAL_TRACE_SQL.enqueueProjection, [
+          fixture.dataScopeKey, query.subjectReferenceKey.id, query.executionIntervalReferenceKey.id,
+          Number(query.executionIntervalReferenceKey.version), query.phaseScope, semanticRequestHash,
+          bad.manifestHash, capturedAt, JSON.stringify(query), JSON.stringify(bad)
+        ]), (error: unknown) => (error as {code?: string}).code === "23503");
+      } finally {
+        await client.query("ROLLBACK"); client.release();
+      }
+    }
 
     const first = await provider.runtime.execute(providerRequest(
       provider,
@@ -127,6 +188,12 @@ async function runQueueWorkerE2e(
     ));
     assertProviderPending(replay);
 
+    await Promise.all(["concurrent-a", "concurrent-b"].map(async(nonce)=>{
+      assertProviderPending(await provider.runtime.execute(providerRequest(
+        provider,query,effectiveSnapshot,fixture.dataScopeKey,`${nonce}-${runId}`
+      )));
+    }));
+
     const queueRows = await adminPool.query<QueueRow>(
       `SELECT queue_id,state,generation,attempts,locked_by,last_error,
               trajectory_revision_id,outcome_id,captured_at,
@@ -145,7 +212,7 @@ async function runQueueWorkerE2e(
     assert.equal(iso(queue.captured_at), capturedAt);
     assert.deepEqual(
       await projectionEvidenceCounts(adminPool, fixture, semanticRequestHash),
-      { trajectories: 0, revisions: 0, outcomes: 0, analyses: 0 },
+      { trajectories: 0, revisions: 0, outcomes: 1, analyses: 1 },
       "Provider controlled enqueue must not compute or persist trajectory evidence"
     );
 
@@ -218,7 +285,7 @@ async function runQueueWorkerE2e(
         staleError instanceof ProjectionFenceLostError,
         `old generation must lose its completion fence; observed ${staleErrorDescription}`
       );
-      assert.equal(stalePreparedRevision, true);
+      assert.equal(stalePreparedRevision, false, "lost ownership must stop before preparing another revision");
       const after = await projectionEvidenceCounts(adminPool, fixture, semanticRequestHash);
       assert.deepEqual(
         after,
@@ -279,7 +346,7 @@ async function runQueueWorkerE2e(
     assert.equal(completed.outcome_id, null);
 
     const evidence = await projectionEvidenceCounts(adminPool, fixture, semanticRequestHash);
-    assert.deepEqual(evidence, { trajectories: 1, revisions: 1, outcomes: 0, analyses: 1 });
+    assert.deepEqual(evidence, { trajectories: 1, revisions: 1, outcomes: 1, analyses: 2 });
     const linked = await adminPool.query<{ linked: boolean }>(
       `SELECT EXISTS (
          SELECT 1
@@ -324,12 +391,57 @@ async function runQueueWorkerE2e(
       "the completed Provider read must not enqueue a duplicate request"
     );
 
+    assert.deepEqual((await adminPool.query("SELECT to_jsonb(o) value FROM gowm_history.historical_trajectory_outcome o WHERE outcome_id=$1", [priorOutcomeId])).rows[0].value,
+      priorOutcome, "reevaluation must not rewrite the old pending outcome");
+
+    const zeroId = randomUUID().replaceAll("-", "");
+    const zeroFixture = fixtureIdentity(zeroId);
+    await seedFixtureFoundation(adminPool, zeroFixture);
+    await seedTaskEvents(adminPool, zeroFixture, true);
+    await seedPositions(adminPool, zeroFixture);
+    await seedCompleteWatermark(adminPool, zeroFixture);
+    await projectFixture(adminPool, workerPool, zeroFixture, zeroId);
+    const zeroInterval = await loadIntervalPin(adminPool, zeroFixture);
+    const zeroQuery = historicalQuery(zeroFixture, zeroInterval.referenceKey);
+    zeroQuery.sourceSelectionProfileReferenceKey = {
+      namespace: "gowm.history", kind: "HISTORY_METHOD_PROFILE",
+      id: "trajectory-single-authoritative-v2", version: "2.0"
+    };
+    const zeroMaterializer = new PostgresHistoricalTrajectoryMaterializer(workerPool);
+    const zeroPrepared = await zeroMaterializer.prepareForCommit({
+      dataScopeKey: zeroFixture.dataScopeKey, capturedAt: await databaseNow(adminPool), query: zeroQuery
+    });
+    const zeroClient = await workerPool.connect();
+    try {
+      await zeroClient.query("BEGIN");
+      await zeroClient.query(HISTORICAL_TRACE_SQL.setScope, [zeroFixture.dataScopeKey]);
+      await zeroMaterializer.commitPreparedInTransaction(zeroPrepared, zeroClient);
+      await zeroClient.query("COMMIT");
+    } catch (error) {
+      await zeroClient.query("ROLLBACK"); throw error;
+    } finally { zeroClient.release(); }
+    const zeroRows = await adminPool.query(`
+      SELECT revision.sample_count FROM gowm_history.historical_trajectory trajectory
+      JOIN gowm_history.historical_trajectory_revision revision USING (historical_trajectory_id)
+      WHERE trajectory.data_scope_key=$1`, [zeroFixture.dataScopeKey]);
+    assert.equal(zeroRows.rows.length, 1, "interpolated trajectory must commit without a constraint retry loop");
+    assert.equal(zeroRows.rows[0].sample_count, 0);
+    const zeroRead = await provider.runtime.execute(providerRequest(provider, zeroQuery,
+      snapshotManifest(`zero-${runId}`, await databaseNow(adminPool)), zeroFixture.dataScopeKey, `zero-${runId}`));
+    assert.equal(zeroRead.status, "NO_DATA", "zero original measurements must not count as positive success");
+
+    await verifyLeaseLifecycle(databaseUrl, adminPool, providerPool, zeroFixture, zeroInterval, runId);
+
     process.stdout.write(`${JSON.stringify({
       status: "PASS",
       gate: "GOWM_V07_HISTORY_QUEUE_WORKER",
       versions,
       checks: {
         providerProjectionPending: true,
+        earlierPendingReevaluatedAtNewCapture: true,
+        exactIntervalOutcomeQualification: true,
+        oldPendingOutcomeUnchanged: true,
+        concurrentFrozenEnqueueDeduplicated: true,
         providerEnqueueIdempotent: true,
         providerQueueOnlyWrite: true,
         dedicatedServiceRole: true,
@@ -338,14 +450,14 @@ async function runQueueWorkerE2e(
         expiredLeaseReclaimed: true,
         lastErrorRetainedAcrossReclaim: lastErrorRetainedOnReclaim,
         oldGenerationFenceRejected: true,
-        oldGenerationPreparedRealRevision: stalePreparedRevision,
+        oldGenerationStoppedBeforePreparation: !stalePreparedRevision,
         staleRevisionOutcomeAndAnalysisRolledBack: staleFenceRolledBack,
         revisionAndCompletionCasAtomic: true,
         exactlyOneTrajectoryRevision: evidence.revisions === 1,
         laterSameSemanticRequestCompleted: true
       },
       counts: {
-        providerEnqueueAttempts: 2,
+        providerEnqueueAttempts: 4,
         durableQueueRows: 1,
         workerClaims: workerResult.historicalTrajectoryClaims,
         committedTrajectoryRevisions: evidence.revisions,
@@ -356,6 +468,87 @@ async function runQueueWorkerE2e(
   } finally {
     await Promise.allSettled([providerPool.end(), workerPool.end(), adminPool.end()]);
   }
+}
+
+async function verifyLeaseLifecycle(databaseUrl:string, admin:pg.Pool, provider:pg.Pool,
+  fixture:FixtureIdentity, interval:IntervalPin, runId:string):Promise<void> {
+  const work=new pg.Pool({connectionString:databaseUrl,max:1,options:"-c role=gowm_history_worker_service"});
+  const leases=new pg.Pool({connectionString:databaseUrl,max:1,options:"-c role=gowm_history_worker_service"});
+  const query=historicalQuery(fixture,interval.referenceKey);
+  const hash=historicalSemanticRequestHash(query);
+  async function enqueue(label:string):Promise<string> {
+    const captured=await databaseNow(admin),snapshot=snapshotManifest(`${label}-${runId}`,captured);
+    const client=await provider.connect();
+    try {
+      await client.query("BEGIN");await client.query(HISTORICAL_TRACE_SQL.setScope,[fixture.dataScopeKey]);
+      const result=await client.query(HISTORICAL_TRACE_SQL.enqueueProjection,[fixture.dataScopeKey,query.subjectReferenceKey.id,
+        query.executionIntervalReferenceKey.id,Number(query.executionIntervalReferenceKey.version),query.phaseScope,
+        hash,snapshot.manifestHash,captured,JSON.stringify(query),JSON.stringify(snapshot)]);
+      await client.query("COMMIT");return result.rows[0].queue_id as string;
+    } finally {await client.query("ROLLBACK");client.release();}
+  }
+  try {
+    const firstId=await enqueue("lease-long"),waitingId=await enqueue("lease-waiting");
+    const repository=new PostgresHistoricalTrajectoryProjectionRepository(work,{}, {leasePool:leases});
+    const materializer=new PostgresHistoricalTrajectoryMaterializer(work);
+    const prepare=materializer.prepareForCommit.bind(materializer);
+    materializer.prepareForCommit=async(request)=>{
+      // One occupied work connection for several entire lease durations.
+      await work.query("SELECT pg_sleep(1.1)");
+      const rows=await admin.query("SELECT queue_id,state FROM gowm_history.historical_trajectory_projection_queue WHERE queue_id=ANY($1::uuid[])",[[firstId,waitingId]]);
+      if(rows.rows.find(x=>x.queue_id===firstId)?.state==="RUNNING") {
+        assert.equal(rows.rows.find(x=>x.queue_id===waitingId)?.state,"QUEUED","waiting work must not hold a lease");
+      }
+      return prepare(request);
+    };
+    const coordinator=new HistoricalProjectionCoordinator({intervals:new PostgresTaskIntervalProjectionRepository(work),
+      tracklets:new PostgresTrackletProjectionRepository(work),trajectories:repository,materializer});
+    for(let i=0;i<2;i++) {
+      const result=await coordinator.materializeHistoricalTrajectories({workerId:`lease-${runId}`,batchSize:20,leaseSeconds:0.3});
+      assert.equal(result.historicalTrajectoryClaims,1);
+      assert.equal(result.historicalTrajectoriesMaterialized,1,JSON.stringify(result));
+      assert.equal(result.historicalProjectionFailures,0);
+    }
+    const completed=await admin.query("SELECT state,attempts FROM gowm_history.historical_trajectory_projection_queue WHERE queue_id=ANY($1::uuid[])",[[firstId,waitingId]]);
+    assert(completed.rows.every(x=>x.state==="COMPLETED"&&x.attempts===1),"renewal must survive long SQL without reclaiming either task");
+
+    // Lose the renewal connection during an active SQL, then let a different
+    // worker reclaim the expired fence while the old execution is still alive.
+    const lostId=await enqueue("lease-lost");
+    let renewals=0;
+    const failingPool:SqlPool={connect:()=>leases.connect(),query:async(text,values)=>{
+      if(++renewals>1) throw new Error("controlled lease connection failure");
+      return await leases.query(text,values as unknown[]) as never;
+    }};
+    const oldRepository=new PostgresHistoricalTrajectoryProjectionRepository(work,{}, {leasePool:failingPool});
+    const old=(await oldRepository.claim(`old-${runId}`,1,0.2))[0]!;
+    assert.equal(old.queueId,lostId);
+    const slow=new PostgresHistoricalTrajectoryMaterializer(work);
+    const original=slow.prepareForCommit.bind(slow);
+    let commitCalled=false;
+    slow.prepareForCommit=async(request)=>{await work.query("SELECT pg_sleep(0.8)");return original(request);};
+    slow.commitPreparedInTransaction=async()=>{commitCalled=true;throw new Error("old execution must never commit");};
+    const failed=assert.rejects(oldRepository.materializeAndComplete(old,slow),ProjectionFenceLostError);
+    await admin.query("SELECT pg_sleep(0.35)");
+    const replacement=(await repository.claim(`replacement-${runId}`,1,1))[0]!;
+    assert.equal(replacement.queueId,lostId);assert(replacement.generation>old.generation);
+    await failed;assert.equal(commitCalled,false);
+    assert.equal((await leases.query("SELECT gowm_history.renew_historical_trajectory_projection($1,$2,$3,interval '1 second') renewed",[old.queueId,old.workerId,old.generation])).rows[0].renewed,false);
+    assert.equal(await oldRepository.fail(old,new Error("late old failure"),new Date().toISOString()),false);
+    await repository.fail(replacement,new Error("controlled ownership test complete"),new Date(Date.now()+86400000).toISOString());
+
+    const cancelId=await enqueue("lease-cancel");
+    const controller=new AbortController();
+    const cancellable=new PostgresHistoricalTrajectoryProjectionRepository(work,{}, {leasePool:leases,signal:controller.signal});
+    const cancelled=(await cancellable.claim(`cancel-${runId}`,1,0.5))[0]!;assert.equal(cancelled.queueId,cancelId);
+    const cancelledRun=assert.rejects(cancellable.materializeAndComplete(cancelled,slow),/controlled cancellation/);
+    setTimeout(()=>controller.abort(new Error("controlled cancellation")),50);
+    await cancelledRun;assert.equal(commitCalled,false);
+    const state=(await admin.query("SELECT state,trajectory_revision_id,outcome_id FROM gowm_history.historical_trajectory_projection_queue WHERE queue_id=$1",[cancelId])).rows[0];
+    assert.equal(state.trajectory_revision_id,null);assert.equal(state.outcome_id,null);
+    process.stdout.write(JSON.stringify({gate:"HISTORY_LEASE_LIFECYCLE",status:"PASS",longSqlWithOneWorkConnection:true,
+      waitingTasksNotLeased:true,renewalFailureStopsOldExecutor:true,concurrentReclaimFenced:true,cancellationStopsCommit:true})+"\n");
+  } finally {await work.end();await leases.end();}
 }
 
 function fixtureIdentity(runId: string): FixtureIdentity {
@@ -424,11 +617,11 @@ async function seedFixtureFoundation(pool: pg.Pool, fixture: FixtureIdentity): P
   fixture.subjectReferenceKey = requiredString(subject.rows[0]?.reference_key, "subject reference key");
 }
 
-async function seedTaskEvents(pool: pg.Pool, fixture: FixtureIdentity): Promise<void> {
+async function seedTaskEvents(pool: pg.Pool, fixture: FixtureIdentity, interpolatedOnly = false): Promise<void> {
   const repository = new OperationalEventRepository(pool);
   const events = [
-    ["EXECUTION_STARTED_OBSERVED", "2026-08-30T00:00:00.000Z"],
-    ["EXECUTION_STOPPED_OBSERVED", "2026-08-30T00:00:10.000Z"]
+    ["EXECUTION_STARTED_OBSERVED", interpolatedOnly ? "2026-08-30T00:00:01.000Z" : "2026-08-30T00:00:00.000Z"],
+    ["EXECUTION_STOPPED_OBSERVED", interpolatedOnly ? "2026-08-30T00:00:02.000Z" : "2026-08-30T00:00:10.000Z"]
   ] as const;
   for (const [eventType, eventTime] of events) {
     const eventId = `${eventType.toLowerCase()}-${fixture.operationalTaskId}`;

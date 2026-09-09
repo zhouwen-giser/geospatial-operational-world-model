@@ -19,11 +19,15 @@ const historicalPool = new pg.Pool({
   connectionTimeoutMillis: 5_000
 });
 historicalPool.on("error", () => process.stderr.write("historical projection pool error\n"));
+const shutdownController = new AbortController();
+const leasePool = new pg.Pool({connectionString:historicalConnectionString,
+  application_name:"gowm-historical-lease-renewal",max:1,
+  connectionTimeoutMillis:1000,statement_timeout:1000,query_timeout:1500});
+leasePool.on("error", () => process.stderr.write("historical lease pool error\n"));
 const worker = new ProjectionWorker(pool, {
-  historical: createPostgresHistoricalProjectionStages(historicalPool)
+  historical: createPostgresHistoricalProjectionStages(historicalPool, {leasePool,signal:shutdownController.signal})
 });
 let running = true;
-const shutdownController = new AbortController();
 const backoff = new WorkerLoopBackoff(loadWorkerBackoffConfig());
 
 const shutdown = () => {
@@ -80,5 +84,6 @@ main()
   .finally(async () => {
     await worker.close();
     await historicalPool.end();
+    await leasePool.end();
     await closeDatabasePool();
   });

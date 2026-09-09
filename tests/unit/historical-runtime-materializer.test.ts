@@ -302,19 +302,19 @@ describe("Postgres historical trajectory on-demand materializer", () => {
     const wrongFinalizationHash = canonicalSha256({ finalization: "wrong" });
     const pinnedRequest = requestWithPins([
       {
-        resourceKind: "TASK_EXECUTION_INTERVAL", resourceId: "wrf_interval", version: "1",
+        resourceKind: "TASK_EXECUTION_INTERVAL", resourceId: "gowm:wrf_interval", version: "1",
         pinning: "PINNED", contentHash: canonicalSha256({ interval: 1 }), worldVersion: 10
       },
       {
-        resourceKind: "HISTORY_METHOD_PROFILE", resourceId: "trajectory-single-authoritative-v1",
+        resourceKind: "HISTORY_METHOD_PROFILE", resourceId: "gowm.history:trajectory-single-authoritative-v1",
         version: "1.0", pinning: "PINNED", contentHash: HASH
       },
       {
-        resourceKind: "TRACKLET_VERSION", resourceId: trackletId, version: "1",
+        resourceKind: "TRACKLET_VERSION", resourceId: `gowm.mobility:${trackletId}`, version: "1",
         pinning: "PINNED", contentHash: HASH
       },
       {
-        resourceKind: "TRACKLET_FINALIZATION", resourceId: finalizationId, version: "1",
+        resourceKind: "TRACKLET_FINALIZATION", resourceId: `gowm.history:${finalizationId}`, version: "1",
         pinning: "PINNED", contentHash: wrongFinalizationHash
       }
     ]);
