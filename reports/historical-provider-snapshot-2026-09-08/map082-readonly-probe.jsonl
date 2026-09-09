@@ -1,0 +1,1 @@
+{"jobId":"query_job_7334a7c7de174bbcbc63bc85e1f8df23","capturedAt":"2026-09-08T11:33:15.717Z","kind":"OUTCOME","reasonCode":"PROJECTION_PENDING","diagnostics":[{"stage":"finalization-as-of","selectedIds":["15cc6d32-e8dd-454b-929e-565b61d2705b"],"missing":["15cc6d32-e8dd-454b-929e-565b61d2705b"],"available":[]}]}

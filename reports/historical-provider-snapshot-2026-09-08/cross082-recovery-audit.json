@@ -1,0 +1,316 @@
+{
+  "reason": "082 fenced renewal and replacement of both old GOWM workers; explicitly authorized single recovery",
+  "additionalAttemptBudget": 1,
+  "original": {
+    "queue_id": "e1aa68ce-a9a5-4075-8299-63639d598ed0",
+    "data_scope_key": "default",
+    "subject_reference_key": "wrf_9905ca9544ac4b25926ead291d636934",
+    "interval_reference_key": "wrf_21582ddb620047f8b20be85b72ecb71b",
+    "interval_revision_no": 3,
+    "phase_scope": "EXECUTION_ENVELOPE",
+    "semantic_request_hash": "sha256:39342f5ec446066791e8aecaf876bc81f9d9c4c8787c0ceca844029dba1b592f",
+    "snapshot_hash": "sha256:c3c9fd8670fa90e0c10f77a4a8b7234fdecfb9f522336e2d66922c6a7fab8cff",
+    "captured_at": "2026-09-08T10:33:39.485+00:00",
+    "query_payload": {
+      "phaseScope": "EXECUTION_ENVELOPE",
+      "sourceSelection": {
+        "mode": "ONLY_CANDIDATE"
+      },
+      "maximumInlinePoints": 0,
+      "subjectReferenceKey": {
+        "id": "wrf_9905ca9544ac4b25926ead291d636934",
+        "kind": "WORLD_OBJECT",
+        "version": "35511",
+        "namespace": "gowm"
+      },
+      "executionIntervalReferenceKey": {
+        "id": "wrf_21582ddb620047f8b20be85b72ecb71b",
+        "kind": "TASK_EXECUTION_INTERVAL",
+        "version": "3",
+        "namespace": "gowm"
+      },
+      "sourceSelectionProfileReferenceKey": {
+        "id": "trajectory-single-authoritative-v1",
+        "kind": "HISTORY_METHOD_PROFILE",
+        "version": "1.0",
+        "namespace": "gowm.history"
+      }
+    },
+    "requested_snapshot": {
+      "mode": "LATEST_AT_START",
+      "resources": [
+        {
+          "pinning": "PINNED",
+          "version": "1.0",
+          "resourceId": "gowm:task-interval-observed-v1",
+          "contentHash": "sha256:9d440daac7e266a26494eefbf08e0c92778228165dafd918bf7e1dfb03c55f7b",
+          "resourceKind": "HISTORY_METHOD_PROFILE"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "1",
+          "resourceId": "gowm:wrf_a7b65a87df244ce19c9e173190a7b490",
+          "contentHash": "sha256:3db17716dbdc7936d0bb5a84ce5bd2d93a0e9c5a832fb92c4f825b5bb5ce1ce6",
+          "resourceKind": "OPERATIONAL_TASK"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "2026-09-08T10:33:39.485Z",
+          "resourceId": "gowm:history-search-39342f5ec446066791e8aecaf876bc81f9d9c4c8787c0ceca844029dba1b592f",
+          "contentHash": "sha256:720ee689a00da86ebc9b957a79ca2104c14ed9faf4cc6be7f1c2f20e56214739",
+          "resourceKind": "QUERY_RESULT"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceId": "gowm:event-set-a414b2f92c3fb90b8303d4ffd6457961f5a1ebd2b336107fc71ee656675ea9ee",
+          "contentHash": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceKind": "TASK_EXECUTION_EVENT_SET",
+          "worldVersion": 35470
+        },
+        {
+          "pinning": "PINNED",
+          "version": "3",
+          "resourceId": "gowm:wrf_21582ddb620047f8b20be85b72ecb71b",
+          "contentHash": "sha256:1915bcd4ac7255b3429c724d56d13391d1f713996034951c1b75700ab64c9aad",
+          "resourceKind": "TASK_EXECUTION_INTERVAL",
+          "worldVersion": 35491
+        },
+        {
+          "pinning": "PINNED",
+          "version": "3",
+          "resourceId": "gowm.history:interval-input-89b02e30da9d26d643756970e84047b34e09b55d14d62841ff66bb8a6477e04a",
+          "contentHash": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceKind": "TASK_EXECUTION_INTERVAL_INPUT_SET",
+          "worldVersion": 35491
+        }
+      ],
+      "capturedAt": "2026-09-08T10:33:39.485Z",
+      "consistency": "CONSISTENT_AT_START",
+      "manifestHash": "sha256:c3c9fd8670fa90e0c10f77a4a8b7234fdecfb9f522336e2d66922c6a7fab8cff",
+      "querySnapshotId": "snapshot_8c10b0915fe01a3373e0547f4acd2ca5"
+    },
+    "request_hash": "sha256:a0a20327fe7ed8150113faa77c70406e1bea2a455acd7162e36678227a167922",
+    "state": "FAILED",
+    "generation": 10,
+    "available_at": "2026-09-08T11:01:47.901+00:00",
+    "locked_at": null,
+    "lease_until": null,
+    "locked_by": null,
+    "attempts": 10,
+    "trajectory_revision_id": null,
+    "outcome_id": null,
+    "processed_at": null,
+    "last_error": "task interval requestedSnapshot pin identifies another resource",
+    "created_at": "2026-09-08T10:51:36.164254+00:00"
+  },
+  "startedAt": "2026-09-08T11:14:35.001515+00:00",
+  "restored": {
+    "queue_id": "e1aa68ce-a9a5-4075-8299-63639d598ed0",
+    "data_scope_key": "default",
+    "subject_reference_key": "wrf_9905ca9544ac4b25926ead291d636934",
+    "interval_reference_key": "wrf_21582ddb620047f8b20be85b72ecb71b",
+    "interval_revision_no": 3,
+    "phase_scope": "EXECUTION_ENVELOPE",
+    "semantic_request_hash": "sha256:39342f5ec446066791e8aecaf876bc81f9d9c4c8787c0ceca844029dba1b592f",
+    "snapshot_hash": "sha256:c3c9fd8670fa90e0c10f77a4a8b7234fdecfb9f522336e2d66922c6a7fab8cff",
+    "captured_at": "2026-09-08T10:33:39.485+00:00",
+    "query_payload": {
+      "phaseScope": "EXECUTION_ENVELOPE",
+      "sourceSelection": {
+        "mode": "ONLY_CANDIDATE"
+      },
+      "maximumInlinePoints": 0,
+      "subjectReferenceKey": {
+        "id": "wrf_9905ca9544ac4b25926ead291d636934",
+        "kind": "WORLD_OBJECT",
+        "version": "35511",
+        "namespace": "gowm"
+      },
+      "executionIntervalReferenceKey": {
+        "id": "wrf_21582ddb620047f8b20be85b72ecb71b",
+        "kind": "TASK_EXECUTION_INTERVAL",
+        "version": "3",
+        "namespace": "gowm"
+      },
+      "sourceSelectionProfileReferenceKey": {
+        "id": "trajectory-single-authoritative-v1",
+        "kind": "HISTORY_METHOD_PROFILE",
+        "version": "1.0",
+        "namespace": "gowm.history"
+      }
+    },
+    "requested_snapshot": {
+      "mode": "LATEST_AT_START",
+      "resources": [
+        {
+          "pinning": "PINNED",
+          "version": "1.0",
+          "resourceId": "gowm:task-interval-observed-v1",
+          "contentHash": "sha256:9d440daac7e266a26494eefbf08e0c92778228165dafd918bf7e1dfb03c55f7b",
+          "resourceKind": "HISTORY_METHOD_PROFILE"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "1",
+          "resourceId": "gowm:wrf_a7b65a87df244ce19c9e173190a7b490",
+          "contentHash": "sha256:3db17716dbdc7936d0bb5a84ce5bd2d93a0e9c5a832fb92c4f825b5bb5ce1ce6",
+          "resourceKind": "OPERATIONAL_TASK"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "2026-09-08T10:33:39.485Z",
+          "resourceId": "gowm:history-search-39342f5ec446066791e8aecaf876bc81f9d9c4c8787c0ceca844029dba1b592f",
+          "contentHash": "sha256:720ee689a00da86ebc9b957a79ca2104c14ed9faf4cc6be7f1c2f20e56214739",
+          "resourceKind": "QUERY_RESULT"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceId": "gowm:event-set-a414b2f92c3fb90b8303d4ffd6457961f5a1ebd2b336107fc71ee656675ea9ee",
+          "contentHash": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceKind": "TASK_EXECUTION_EVENT_SET",
+          "worldVersion": 35470
+        },
+        {
+          "pinning": "PINNED",
+          "version": "3",
+          "resourceId": "gowm:wrf_21582ddb620047f8b20be85b72ecb71b",
+          "contentHash": "sha256:1915bcd4ac7255b3429c724d56d13391d1f713996034951c1b75700ab64c9aad",
+          "resourceKind": "TASK_EXECUTION_INTERVAL",
+          "worldVersion": 35491
+        },
+        {
+          "pinning": "PINNED",
+          "version": "3",
+          "resourceId": "gowm.history:interval-input-89b02e30da9d26d643756970e84047b34e09b55d14d62841ff66bb8a6477e04a",
+          "contentHash": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceKind": "TASK_EXECUTION_INTERVAL_INPUT_SET",
+          "worldVersion": 35491
+        }
+      ],
+      "capturedAt": "2026-09-08T10:33:39.485Z",
+      "consistency": "CONSISTENT_AT_START",
+      "manifestHash": "sha256:c3c9fd8670fa90e0c10f77a4a8b7234fdecfb9f522336e2d66922c6a7fab8cff",
+      "querySnapshotId": "snapshot_8c10b0915fe01a3373e0547f4acd2ca5"
+    },
+    "request_hash": "sha256:a0a20327fe7ed8150113faa77c70406e1bea2a455acd7162e36678227a167922",
+    "state": "QUEUED",
+    "generation": 11,
+    "available_at": "2026-09-08T11:14:35.110267+00:00",
+    "locked_at": null,
+    "lease_until": null,
+    "locked_by": null,
+    "attempts": 9,
+    "trajectory_revision_id": null,
+    "outcome_id": null,
+    "processed_at": null,
+    "last_error": "task interval requestedSnapshot pin identifies another resource",
+    "created_at": "2026-09-08T10:51:36.164254+00:00"
+  },
+  "frozenSha256": "2aafdd9e35d3d79e81106d814822eac12a031adbe8e2d30d9e5cd764403b2230",
+  "terminal": {
+    "queue_id": "e1aa68ce-a9a5-4075-8299-63639d598ed0",
+    "data_scope_key": "default",
+    "subject_reference_key": "wrf_9905ca9544ac4b25926ead291d636934",
+    "interval_reference_key": "wrf_21582ddb620047f8b20be85b72ecb71b",
+    "interval_revision_no": 3,
+    "phase_scope": "EXECUTION_ENVELOPE",
+    "semantic_request_hash": "sha256:39342f5ec446066791e8aecaf876bc81f9d9c4c8787c0ceca844029dba1b592f",
+    "snapshot_hash": "sha256:c3c9fd8670fa90e0c10f77a4a8b7234fdecfb9f522336e2d66922c6a7fab8cff",
+    "captured_at": "2026-09-08T10:33:39.485+00:00",
+    "query_payload": {
+      "phaseScope": "EXECUTION_ENVELOPE",
+      "sourceSelection": {
+        "mode": "ONLY_CANDIDATE"
+      },
+      "maximumInlinePoints": 0,
+      "subjectReferenceKey": {
+        "id": "wrf_9905ca9544ac4b25926ead291d636934",
+        "kind": "WORLD_OBJECT",
+        "version": "35511",
+        "namespace": "gowm"
+      },
+      "executionIntervalReferenceKey": {
+        "id": "wrf_21582ddb620047f8b20be85b72ecb71b",
+        "kind": "TASK_EXECUTION_INTERVAL",
+        "version": "3",
+        "namespace": "gowm"
+      },
+      "sourceSelectionProfileReferenceKey": {
+        "id": "trajectory-single-authoritative-v1",
+        "kind": "HISTORY_METHOD_PROFILE",
+        "version": "1.0",
+        "namespace": "gowm.history"
+      }
+    },
+    "requested_snapshot": {
+      "mode": "LATEST_AT_START",
+      "resources": [
+        {
+          "pinning": "PINNED",
+          "version": "1.0",
+          "resourceId": "gowm:task-interval-observed-v1",
+          "contentHash": "sha256:9d440daac7e266a26494eefbf08e0c92778228165dafd918bf7e1dfb03c55f7b",
+          "resourceKind": "HISTORY_METHOD_PROFILE"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "1",
+          "resourceId": "gowm:wrf_a7b65a87df244ce19c9e173190a7b490",
+          "contentHash": "sha256:3db17716dbdc7936d0bb5a84ce5bd2d93a0e9c5a832fb92c4f825b5bb5ce1ce6",
+          "resourceKind": "OPERATIONAL_TASK"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "2026-09-08T10:33:39.485Z",
+          "resourceId": "gowm:history-search-39342f5ec446066791e8aecaf876bc81f9d9c4c8787c0ceca844029dba1b592f",
+          "contentHash": "sha256:720ee689a00da86ebc9b957a79ca2104c14ed9faf4cc6be7f1c2f20e56214739",
+          "resourceKind": "QUERY_RESULT"
+        },
+        {
+          "pinning": "PINNED",
+          "version": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceId": "gowm:event-set-a414b2f92c3fb90b8303d4ffd6457961f5a1ebd2b336107fc71ee656675ea9ee",
+          "contentHash": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceKind": "TASK_EXECUTION_EVENT_SET",
+          "worldVersion": 35470
+        },
+        {
+          "pinning": "PINNED",
+          "version": "3",
+          "resourceId": "gowm:wrf_21582ddb620047f8b20be85b72ecb71b",
+          "contentHash": "sha256:1915bcd4ac7255b3429c724d56d13391d1f713996034951c1b75700ab64c9aad",
+          "resourceKind": "TASK_EXECUTION_INTERVAL",
+          "worldVersion": 35491
+        },
+        {
+          "pinning": "PINNED",
+          "version": "3",
+          "resourceId": "gowm.history:interval-input-89b02e30da9d26d643756970e84047b34e09b55d14d62841ff66bb8a6477e04a",
+          "contentHash": "sha256:f86b9a3de914dc0e2cb6dcdabd2d0fbae1d10d05a61a7f2b4f1b852e205f7ceb",
+          "resourceKind": "TASK_EXECUTION_INTERVAL_INPUT_SET",
+          "worldVersion": 35491
+        }
+      ],
+      "capturedAt": "2026-09-08T10:33:39.485Z",
+      "consistency": "CONSISTENT_AT_START",
+      "manifestHash": "sha256:c3c9fd8670fa90e0c10f77a4a8b7234fdecfb9f522336e2d66922c6a7fab8cff",
+      "querySnapshotId": "snapshot_8c10b0915fe01a3373e0547f4acd2ca5"
+    },
+    "request_hash": "sha256:a0a20327fe7ed8150113faa77c70406e1bea2a455acd7162e36678227a167922",
+    "state": "COMPLETED",
+    "generation": 12,
+    "available_at": "2026-09-08T11:14:35.110267+00:00",
+    "locked_at": null,
+    "lease_until": null,
+    "locked_by": null,
+    "attempts": 10,
+    "trajectory_revision_id": "25ac74bd-cca9-45eb-af9f-3a857954a36f",
+    "outcome_id": null,
+    "processed_at": "2026-09-08T11:18:46.5417+00:00",
+    "last_error": null,
+    "created_at": "2026-09-08T10:51:36.164254+00:00"
+  },
+  "terminalFrozenSha256": "2aafdd9e35d3d79e81106d814822eac12a031adbe8e2d30d9e5cd764403b2230"
+}
