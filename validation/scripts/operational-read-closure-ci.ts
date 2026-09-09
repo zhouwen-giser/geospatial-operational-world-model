@@ -24,6 +24,14 @@ try {
     const password = randomUUID();
     let created = false, roleCreated = false;
     let setup: pg.Pool | undefined, reader: pg.Pool | undefined;
+    const connectionClosures: Promise<void>[] = [];
+    const openPool = (connectionString: string, max: number) => {
+      const pool = new pg.Pool({connectionString, max});
+      pool.on("connect", client => {
+        connectionClosures.push(new Promise<void>(resolve => client.once("end", () => resolve())));
+      });
+      return pool;
+    };
     const migrate = async (maximum: number) => run(process.execPath,
       ["--import", "tsx", "--input-type=module", "-e",
         `import {migrate} from './scripts/migrate.ts'; await migrate({maximumMigrationNumber:${maximum}});`],
@@ -31,7 +39,7 @@ try {
         STAS_DB_PASSWORD: "closure-disposable-stas"}, maxBuffer: 4 * 1024 * 1024});
     try {
       await admin.query(`CREATE DATABASE "${database}"`); created = true;
-      setup = new pg.Pool({connectionString: target.toString(), max: 2});
+      setup = openPool(target.toString(), 2);
       await migrate(baseline || 76);
       const beforeLedger = (await setup.query("SELECT version,checksum FROM schema_migration ORDER BY version")).rows;
       for (const scope of ["closure-a", "closure-b"]) {
@@ -54,7 +62,7 @@ try {
       roleCreated = true;
       await admin.query(`GRANT gowm_operational_service TO "${role}"`);
       const login = new URL(target); login.username = role; login.password = password;
-      reader = new pg.Pool({connectionString: login.toString(), max: 1});
+      reader = openPool(login.toString(), 1);
       const provider = createOperationalRealityProvider({pool: reader});
       const app = buildOperationalRealityApp(provider, "ClosureTestTransportToken_2026_IsolatedOnly");
       try {
@@ -112,7 +120,10 @@ try {
       } finally { await app.close(); }
     } finally {
       await reader?.end(); await setup?.end();
-      if (created) await admin.query(`DROP DATABASE "${database}" WITH (FORCE)`);
+      // Pool.end() may resolve before idle clients emit their final end event.
+      // Wait for those connections before DROP; FORCE can send them 57P01 after PASS.
+      await Promise.all(connectionClosures);
+      if (created) await admin.query(`DROP DATABASE "${database}"`);
       if (roleCreated) await admin.query(`DROP ROLE "${role}"`);
     }
   }
