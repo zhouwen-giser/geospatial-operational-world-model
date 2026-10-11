@@ -91,11 +91,12 @@ const overlays=[];
 for(const schema of ['ugv_smpp','ugv_sdar']){
  const short=schema==='ugv_smpp'?'smpp':'sdar';
  const steps=[['device_scope_v1.sql',schema+'.sql'],['scope_hardening_v1.sql',short+'-hardening.sql'],['additional_scope_v1.sql',short+'-additional.sql']];
- if(schema==='ugv_sdar')steps.push(['derived_ownership_v1.sql','sdar-derived-ownership.sql']);
+ if(schema==='ugv_sdar')steps.push(['derived_ownership_v1.sql','sdar-derived-ownership.sql'],['terminal_link_ownership_v1.sql','sdar-terminal-link-ownership.sql']);
  for(const [file,path]of steps)overlays.push({schema,family:'GOWM_OVERLAY',file,path:'overlays/'+path,sha256:hash(await readFile(`${root}/overlays/${path}`,'utf8'))});
 }
 overlays.push({schema:'ugv_smpp',family:'GOWM_READ_MODEL',file:'read_model_v1.sql',path:'overlays/read-model.sql',sha256:hash(await readFile(`${root}/overlays/read-model.sql`,'utf8'))});
 const core={file:'078_device_shared_business_storage.sql',sha256:hash(await readFile('database/migrations/078_device_shared_business_storage.sql','utf8'))};
-await put(`${root}/install-manifest.json`, JSON.stringify({ version: 1,core, entries: manifest,overlays }, null, 2) + '\n');
+const coreAdditions = [{ file: '079_device_context_reader.sql', sha256: hash(await readFile('database/migrations/079_device_context_reader.sql', 'utf8')) }];
+await put(`${root}/install-manifest.json`, JSON.stringify({ version: 1,core, entries: manifest,overlays,coreAdditions }, null, 2) + '\n');
 await put(`${root}/source-inventory.json`, JSON.stringify({ tables: inventory.filter(t => !dropped.some(d => d.schema === t.schema && d.table === t.table)), historicalDroppedTables: dropped }, null, 2) + '\n');
 await put(`${root}/transforms/namespace-transform-map.json`, JSON.stringify({ applicationObjects: [...objects].sort(), entries: manifest.map(({ file, family, transforms }) => ({ file, family, transforms })) }, null, 2) + '\n');

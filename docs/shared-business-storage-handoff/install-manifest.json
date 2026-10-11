@@ -1809,6 +1809,13 @@
       "sha256": "bb590ee330a0af44b87fe93d8150a000039598837b77aa2e524ceca00e2036cd"
     },
     {
+      "schema": "ugv_sdar",
+      "family": "GOWM_OVERLAY",
+      "file": "terminal_link_ownership_v1.sql",
+      "path": "overlays/sdar-terminal-link-ownership.sql",
+      "sha256": "7ff257a3b878cb9f431994abd5f8b597959279cb5f0ac4bb72b61311903322f6"
+    },
+    {
       "schema": "ugv_smpp",
       "family": "GOWM_READ_MODEL",
       "file": "read_model_v1.sql",

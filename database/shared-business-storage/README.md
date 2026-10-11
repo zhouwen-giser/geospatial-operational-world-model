@@ -13,3 +13,9 @@ Sources are vendored once from the recorded read-only commits with raw/LF SHA-25
 The installer takes an advisory lock, refuses unregistered nonempty schemas, and commits each native migration together with its own family+filename+checksum history. It never drops unknown schemas or migrates existing runtime records. The expected-structure manifest is for a clean hosted installation. Explicit future upgrades require a new forward migration, not changing an applied checksum.
 
 The verified repository database baseline is PostgreSQL 18 (see database/Dockerfile); expected-structure.json is captured on that supported baseline. This task does not request an upgrade to a newer PostgreSQL major. The test helper `--without-vector` intentionally omits vector only for a separate dependency-negative test database; normal install still fails explicitly if it is absent.
+
+## SDAR terminal/link ownership forward repair (2026-10-11)
+
+`terminal_link_ownership_v1.sql` follows derived ownership without changing earlier checksums. Terminal Temporary Skill experiences inherit the expired Skill device within the Task transaction. Auxiliary provider execution links derive device/service from their existing remote binding, validate server/handle/operation identity, preserve immutable rows and scope raw-handle uniqueness by device/service. Existing links are backfilled under the install transaction's exclusive table lock; foreign keys and prior identities remain intact.
+
+Rollback: a failed install rolls back this overlay and its history entry together. After successful application, do not remove this migration or restore global uniqueness over potentially shared handles; restore a complete pre-upgrade database backup only during an explicitly authorized maintenance window. No field migration was run for this repair.
