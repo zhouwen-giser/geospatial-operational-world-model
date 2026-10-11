@@ -1,3 +1,7 @@
+# SDAR shared-storage repair (2026-10-11, in progress)
+
+Local owner forward migration implemented for terminal Temporary Skill ownership and device-scoped auxiliary Provider links. Populated predecessor upgrade and repeat install passed in owned loopback PostgreSQL; 43 owner PostgreSQL scenarios, 6 SQL/routing checks and TypeScript pass; current consumer regressions and final validation remain pending. No deployment.
+
 # Project status
 
 Last updated: 2026-08-31

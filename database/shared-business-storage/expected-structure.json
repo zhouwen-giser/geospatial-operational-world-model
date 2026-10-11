@@ -16058,6 +16058,22 @@
     },
     {
       "schema": "ugv_sdar",
+      "name": "remote_task_provider_execution_link",
+      "column": "device_id",
+      "type": "text",
+      "required": false,
+      "default_sql": null
+    },
+    {
+      "schema": "ugv_sdar",
+      "name": "remote_task_provider_execution_link",
+      "column": "smpp_service_key",
+      "type": "text",
+      "required": false,
+      "default_sql": null
+    },
+    {
+      "schema": "ugv_sdar",
       "name": "remote_task_reconciliation_attempt",
       "column": "attempt_id",
       "type": "text",
@@ -42925,12 +42941,6 @@
     {
       "schema": "ugv_sdar",
       "name": "remote_task_provider_execution_link",
-      "conname": "remote_task_provider_executio_runtime_server_id_remote_task_key",
-      "definition": "UNIQUE (runtime_server_id, remote_task_id)"
-    },
-    {
-      "schema": "ugv_sdar",
-      "name": "remote_task_provider_execution_link",
       "conname": "remote_task_provider_execution_l_logical_invocation_id_not_null",
       "definition": "NOT NULL logical_invocation_id"
     },
@@ -42979,6 +42989,12 @@
     {
       "schema": "ugv_sdar",
       "name": "remote_task_provider_execution_link",
+      "conname": "remote_task_provider_execution_link_check4",
+      "definition": "CHECK (((device_id IS NULL) OR (smpp_service_key IS NOT NULL)))"
+    },
+    {
+      "schema": "ugv_sdar",
+      "name": "remote_task_provider_execution_link",
       "conname": "remote_task_provider_execution_link_content_hash_check",
       "definition": "CHECK ((content_hash ~ '^sha256:[a-f0-9]{64}$'::text))"
     },
@@ -42987,6 +43003,18 @@
       "name": "remote_task_provider_execution_link",
       "conname": "remote_task_provider_execution_link_content_hash_not_null",
       "definition": "NOT NULL content_hash"
+    },
+    {
+      "schema": "ugv_sdar",
+      "name": "remote_task_provider_execution_link",
+      "conname": "remote_task_provider_execution_link_device_id_binding_id_fkey",
+      "definition": "FOREIGN KEY (device_id, binding_id) REFERENCES ugv_sdar.remote_task_binding(device_id, binding_id)"
+    },
+    {
+      "schema": "ugv_sdar",
+      "name": "remote_task_provider_execution_link",
+      "conname": "remote_task_provider_execution_link_device_id_fkey",
+      "definition": "FOREIGN KEY (device_id) REFERENCES gowm_device.device(device_id)"
     },
     {
       "schema": "ugv_sdar",
@@ -57405,8 +57433,14 @@
     {
       "schema": "ugv_sdar",
       "name": "remote_task_provider_execution_link",
-      "indexname": "remote_task_provider_executio_runtime_server_id_remote_task_key",
-      "indexdef": "CREATE UNIQUE INDEX remote_task_provider_executio_runtime_server_id_remote_task_key ON ugv_sdar.remote_task_provider_execution_link USING btree (runtime_server_id, remote_task_id)"
+      "indexname": "remote_provider_link_device_identity",
+      "indexdef": "CREATE UNIQUE INDEX remote_provider_link_device_identity ON ugv_sdar.remote_task_provider_execution_link USING btree (device_id, smpp_service_key, runtime_server_id, remote_task_id) WHERE (device_id IS NOT NULL)"
+    },
+    {
+      "schema": "ugv_sdar",
+      "name": "remote_task_provider_execution_link",
+      "indexname": "remote_provider_link_nondevice_identity",
+      "indexdef": "CREATE UNIQUE INDEX remote_provider_link_nondevice_identity ON ugv_sdar.remote_task_provider_execution_link USING btree (runtime_server_id, remote_task_id) WHERE (device_id IS NULL)"
     },
     {
       "schema": "ugv_sdar",
@@ -59326,6 +59360,12 @@
   "functions": [
     {
       "schema": "gowm_device",
+      "name": "derive_remote_provider_link_owner",
+      "args": "",
+      "definition": "CREATE OR REPLACE FUNCTION gowm_device.derive_remote_provider_link_owner()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'ugv_sdar', 'public', 'pg_catalog'\nAS $function$\nDECLARE owner ugv_sdar.remote_task_binding;\nBEGIN\n  SELECT * INTO owner FROM ugv_sdar.remote_task_binding WHERE binding_id=NEW.binding_id FOR KEY SHARE;\n  IF NOT FOUND THEN RAISE EXCEPTION 'REMOTE_PROVIDER_LINK_BINDING_REQUIRED'; END IF;\n  IF NEW.runtime_server_id IS DISTINCT FROM owner.server_id\n    OR NEW.remote_task_id IS DISTINCT FROM owner.remote_task_id\n    OR NEW.operation_name IS DISTINCT FROM owner.operation_name\n    OR (NEW.device_id IS NOT NULL AND NEW.device_id IS DISTINCT FROM owner.device_id)\n    OR (NEW.smpp_service_key IS NOT NULL AND NEW.smpp_service_key IS DISTINCT FROM owner.smpp_service_key)\n    THEN RAISE EXCEPTION 'REMOTE_PROVIDER_LINK_BINDING_MISMATCH'; END IF;\n  NEW.device_id := owner.device_id;\n  NEW.smpp_service_key := owner.smpp_service_key;\n  RETURN NEW;\nEND $function$\n"
+    },
+    {
+      "schema": "gowm_device",
       "name": "reject_business_ownership_mutation",
       "args": "",
       "definition": "CREATE OR REPLACE FUNCTION gowm_device.reject_business_ownership_mutation()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n IF (to_jsonb(NEW)->'device_id') IS DISTINCT FROM (to_jsonb(OLD)->'device_id') OR\n (to_jsonb(NEW)->'gowm_binding_id') IS DISTINCT FROM (to_jsonb(OLD)->'gowm_binding_id') OR\n (to_jsonb(NEW)->'smpp_service_key') IS DISTINCT FROM (to_jsonb(OLD)->'smpp_service_key') OR\n (to_jsonb(NEW)->'sdar_service_key') IS DISTINCT FROM (to_jsonb(OLD)->'sdar_service_key')\n THEN RAISE EXCEPTION 'BUSINESS_OWNERSHIP_IMMUTABLE'; END IF; RETURN NEW;\nEND $function$\n"
@@ -59418,7 +59458,7 @@
       "schema": "ugv_sdar",
       "name": "finalize_task_temporary_skills",
       "args": "",
-      "definition": "CREATE OR REPLACE FUNCTION ugv_sdar.finalize_task_temporary_skills()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'ugv_sdar', 'public', 'pg_catalog'\nAS $function$\nBEGIN\n  IF NEW.phase NOT IN ('completed','failed','canceled','invalidated','capability_gap') THEN RETURN NEW; END IF;\n  WITH expired AS (\n    UPDATE temporary_skill SET status='expired',expired_at=NEW.updated_at\n    WHERE task_id=NEW.task_id AND status='active' RETURNING *\n  )\n  INSERT INTO temporary_skill_experience(experience_id,temporary_skill_id,task_id,context_id,\n    capability_fingerprint,successful,outcome_summary,created_at)\n  SELECT 'temporary-terminal:'||length(NEW.task_id)::text||':'||NEW.task_id||':'||temporary_skill_id,\n    temporary_skill_id,task_id,context_id,capability_fingerprint,\n    COALESCE(NEW.phase='completed' AND NEW.temporary_skill_id=temporary_skill_id AND NEW.error_code IS NULL\n      AND (NEW.output_text IS NOT NULL OR NEW.output_structured IS NOT NULL),false),\n    NEW.phase||': '||NEW.phase_message,NEW.updated_at\n  FROM expired ON CONFLICT(temporary_skill_id) DO NOTHING;\n  RETURN NEW;\nEND $function$\n"
+      "definition": "CREATE OR REPLACE FUNCTION ugv_sdar.finalize_task_temporary_skills()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'ugv_sdar', 'public', 'pg_catalog'\nAS $function$\nBEGIN\n  IF NEW.phase NOT IN ('completed','failed','canceled','invalidated','capability_gap') THEN RETURN NEW; END IF;\n  WITH expired AS (\n    UPDATE temporary_skill SET status='expired',expired_at=NEW.updated_at\n    WHERE task_id=NEW.task_id AND status='active' RETURNING *\n  )\n  INSERT INTO temporary_skill_experience(experience_id,temporary_skill_id,task_id,context_id,\n    capability_fingerprint,successful,outcome_summary,created_at,device_id)\n  SELECT 'temporary-terminal:'||length(NEW.task_id)::text||':'||NEW.task_id||':'||temporary_skill_id,\n    temporary_skill_id,task_id,context_id,capability_fingerprint,\n    COALESCE(NEW.phase='completed' AND NEW.temporary_skill_id=temporary_skill_id AND NEW.error_code IS NULL\n      AND (NEW.output_text IS NOT NULL OR NEW.output_structured IS NOT NULL),false),\n    NEW.phase||': '||NEW.phase_message,NEW.updated_at,device_id\n  FROM expired ON CONFLICT(temporary_skill_id) DO NOTHING;\n  RETURN NEW;\nEND $function$\n"
     },
     {
       "schema": "ugv_sdar",
@@ -59934,6 +59974,12 @@
       "name": "remote_task_input_link",
       "tgname": "remote_task_input_context_authority_trigger",
       "definition": "CREATE TRIGGER remote_task_input_context_authority_trigger BEFORE INSERT OR UPDATE ON ugv_sdar.remote_task_input_link FOR EACH ROW EXECUTE FUNCTION ugv_sdar.enforce_remote_task_input_context_authority()"
+    },
+    {
+      "schema": "ugv_sdar",
+      "name": "remote_task_provider_execution_link",
+      "tgname": "gowm_remote_provider_link_owner",
+      "definition": "CREATE TRIGGER gowm_remote_provider_link_owner BEFORE INSERT ON ugv_sdar.remote_task_provider_execution_link FOR EACH ROW EXECUTE FUNCTION gowm_device.derive_remote_provider_link_owner()"
     },
     {
       "schema": "ugv_sdar",

@@ -219,5 +219,22 @@ export async function postgresTests(pool: Pool) {
     await test('T18_SDAR_REMOTE_POLL_SCOPE', async () => { await sandbox(async (c) => { await c.query('UPDATE ugv_sdar.remote_task_binding SET next_poll_at=clock_timestamp() WHERE device_id=ANY($1)', [[a.deviceId, b.deviceId]]); const claimed = await repo.claimRemoteTasks(c, [a.deviceId], 'fixture-poller'); assert.equal(claimed.length, 1); assert.equal(claimed[0].device_id, a.deviceId); assert.equal((await c.query('SELECT count(*)::int n FROM ugv_sdar.remote_task_binding WHERE device_id=$1 AND poll_claim_token IS NOT NULL', [b.deviceId])).rows[0].n, 0); }); });
     await test('T36', async () => { const { access } = await import('node:fs/promises'); for (const f of ['storage-contract.json', 'data-dictionary.md', 'device-scope-key-inventory.json', 'namespace-transform-map.json', 'read-model-mapping.json', 'repository-adaptation-matrix.md', 'smpp-handoff.md', 'sdar-handoff.md', 'mqtt-ingest-handoff.md'])
         await access('docs/shared-business-storage-handoff/' + f); });
+    await test('T37_TEMPORARY_TERMINAL_DEVICE_PROVENANCE', async () => {
+        for (const device of data) for (const phase of ['completed','failed','canceled','invalidated','capability_gap']) {
+            await sandbox(async (c) => {
+                const id = device.taskId + '-temporary-' + phase;
+                await c.query(`INSERT INTO ugv_sdar.temporary_skill(temporary_skill_id,task_id,context_id,name,description,tools_json,input_schema_json,output_schema_json,capability_fingerprint,status,created_at,device_id)
+                  VALUES($1,$2,$3,'fixture','fixture','[]','{}','{}','terminal-test','active',now(),$4)`,[id,device.taskId,device.deviceId+'-context',device.deviceId]);
+                await c.query(`UPDATE ugv_sdar.agent_task SET phase=$2,temporary_skill_id=$3,output_text=$4,updated_at=clock_timestamp() WHERE task_id=$1`,[device.taskId,phase,id,phase==='completed'?'fixture output':null]);
+                await c.query('UPDATE ugv_sdar.agent_task SET phase=phase WHERE task_id=$1',[device.taskId]);
+                const experiences=(await c.query('SELECT device_id,successful FROM ugv_sdar.temporary_skill_experience WHERE temporary_skill_id=$1',[id])).rows;
+                assert.deepEqual(experiences,[{device_id:device.deviceId,successful:phase==='completed'}]);
+                assert.equal((await c.query('SELECT status FROM ugv_sdar.temporary_skill WHERE temporary_skill_id=$1',[id])).rows[0].status,'expired');
+            });
+            // The complete terminal/experience transaction above was rolled back.
+            assert.equal((await pool.query('SELECT phase FROM ugv_sdar.agent_task WHERE task_id=$1',[device.taskId])).rows[0].phase,'executing');
+            assert.equal((await pool.query("SELECT count(*)::int n FROM ugv_sdar.temporary_skill_experience WHERE capability_fingerprint='terminal-test'")).rows[0].n,0);
+        }
+    });
     return { status: results.every(r => r.status === 'PASS') ? 'PASS' : 'FAIL', database: 'isolated test database (credentials omitted)', scenarios: results, fixture: data, lineage: await repo.getTaskLineage(a.deviceId, a.taskId), extensions: (await pool.query("SELECT extname,extversion FROM pg_extension WHERE extname IN ('postgis','vector')")).rows };
 }

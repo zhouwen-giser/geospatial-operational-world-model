@@ -1,0 +1,31 @@
+{
+  "baseCommit": "506315b5a60e5f5fe405f020f61cec24be0be47d",
+  "files": [
+    {
+      "path": "database/shared-business-storage/overlays/sdar-terminal-link-ownership.sql",
+      "sha256": "7ff257a3b878cb9f431994abd5f8b597959279cb5f0ac4bb72b61311903322f6"
+    },
+    {
+      "path": "database/shared-business-storage/install-manifest.json",
+      "sha256": "00951d9f3d0acdfb472c356e8d2c59437239d0cf8e4116fdb431ffd8c0461e50"
+    },
+    {
+      "path": "database/shared-business-storage/expected-structure.json",
+      "sha256": "cc08a7abaeba39763b7436ae3b6d9597598acf55530e4731d75491a1c0b5ebae"
+    },
+    {
+      "path": "scripts/business-storage/generate.mjs",
+      "sha256": "a19c8409828ed3ff4cc5eb5017e9483af00d6c70ef4e658b8c3e493d9e345c9a"
+    },
+    {
+      "path": "scripts/business-storage/installer.ts",
+      "sha256": "adf3ecf2380635a49a8caf484b6d02d0494b223f141c6af753f228eafb091934"
+    },
+    {
+      "path": "scripts/business-storage/fixture.ts",
+      "sha256": "18d9ede04051ad908c48c868493efa135300a97a07d62d23c85df1fbaca2441a"
+    }
+  ],
+  "scope": "owned loopback PostgreSQL with synthetic native records",
+  "site": "NOT_RUN"
+}

@@ -1,3 +1,8 @@
+# Unreleased shared-storage repair
+
+- Add forward SDAR terminal/link ownership overlay; preserve prior installed migration hashes and opaque provider handles.
+- Preserve core 079 when regenerating the install manifest.
+
 # Changelog
 
 ## 0.7.1 - 2026-08-31

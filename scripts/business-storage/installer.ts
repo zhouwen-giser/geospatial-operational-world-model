@@ -72,8 +72,10 @@ export async function install(c: PoolClient, domain: 'all' | 'smpp' | 'sdar' = '
             await apply(c, schema, 'GOWM_OVERLAY', 'device_scope_v1.sql', await readFile(`${root}/overlays/${schema}.sql`, 'utf8'));
             await apply(c, schema, 'GOWM_OVERLAY', 'scope_hardening_v1.sql', await readFile(`${root}/overlays/${schema === 'ugv_smpp' ? 'smpp' : 'sdar'}-hardening.sql`, 'utf8'));
             await apply(c, schema, 'GOWM_OVERLAY', 'additional_scope_v1.sql', await readFile(`${root}/overlays/${schema === 'ugv_smpp' ? 'smpp' : 'sdar'}-additional.sql`, 'utf8'));
-            if (schema === 'ugv_sdar')
+            if (schema === 'ugv_sdar') {
                 await apply(c, schema, 'GOWM_OVERLAY', 'derived_ownership_v1.sql', await readFile(`${root}/overlays/sdar-derived-ownership.sql`, 'utf8'));
+                await apply(c, schema, 'GOWM_OVERLAY', 'terminal_link_ownership_v1.sql', await readFile(`${root}/overlays/sdar-terminal-link-ownership.sql`, 'utf8'));
+            }
         }
         const ready = await c.query("SELECT to_regclass('ugv_smpp.ugv_execution') smpp,to_regclass('ugv_sdar.agent_task') sdar");
         if (ready.rows[0].smpp && ready.rows[0].sdar)
