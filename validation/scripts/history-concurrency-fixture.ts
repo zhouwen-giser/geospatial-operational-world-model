@@ -193,7 +193,7 @@ export async function seedPositions(pool: pg.Pool, fixture: FixtureIdentity): Pr
 export async function insertPosition(
   pool: pg.Pool,
   fixture: FixtureIdentity,
-  point: { ordinal: number; phenomenonTime: string; x: number }
+  point: { ordinal: number; phenomenonTime: string; x: number; manualCutBefore?: boolean; subjectType?: string }
 ): Promise<void> {
   const observationId = `history-queue-position-${point.ordinal}-${fixture.targetKey}`;
   const measurementId = randomUUID();
@@ -211,7 +211,7 @@ export async function insertPosition(
          producer_pipeline_key,upstream_received_time,raw_reference,payload_hash,
          entity_binding_status
        ) VALUES (
-         $1,'VALIDATION_SENSOR',$2,'VEHICLE',$3,'position',
+         $1,'VALIDATION_SENSOR',$2,$13,$3,'position',
          ST_SetSRID(ST_MakePoint(116.4,39.9),4326),'{}',1,$4,$5,$2,
          $6,'{}',$7,$1,1,'SIMULATION',$3,$8,$9,$10,$5,$11,$12,'DECLARED'
        )`,
@@ -227,7 +227,7 @@ export async function insertPosition(
         fixture.datastreamKey,
         fixture.pipelineKey,
         `inline://history-queue-worker/${point.ordinal}`,
-        sha256({ observationId, point })
+        sha256({ observationId, point }),point.subjectType??'VEHICLE'
       ]
     );
     await client.query(
@@ -256,7 +256,7 @@ export async function insertPosition(
        ) VALUES (
          $1,$2,$3,$4,'position','NORMALIZED','position','POSITION',
          ST_SetSRID(ST_MakePoint(116.4,39.9),4326),
-         'GOWM_V07_HISTORY_QUEUE_WORKER_E2E','0.7.0',1,1,$5,false,$6
+         'GOWM_V07_HISTORY_QUEUE_WORKER_E2E','0.7.0',1,1,$5,$7,$6
        )`,
       [
         measurementId,
@@ -264,7 +264,7 @@ export async function insertPosition(
         timeSolutionId,
         fixture.processingRunId,
         `${fixture.trackerSessionKey}:continuous`,
-        sha256({ observationId, measurementId, point })
+        sha256({ observationId, measurementId, point }),point.manualCutBefore??false
       ]
     );
     await client.query(

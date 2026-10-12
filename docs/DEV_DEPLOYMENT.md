@@ -87,10 +87,13 @@ npm run validate:deployment-env
 ./scripts/dev-deploy.sh doctor
 ```
 
-For an application update, unpack the new package in a separate directory,
-copy the private `.env` only after reviewing template changes, point Compose at
-the existing approved volumes/project name, and run `up`. Migrations are
-forward-only; take and test a backup before upgrading retained data.
+For an established 086+ installation, unpack the new package separately and
+retain the approved private environment, project, volumes and dependencies.
+Use `functional-repair-upgrade.js --check` / apply for 086→089, then
+`capability-completion-upgrade.js --check` / `--projection-workers-stopped`
+for 089→093. Recreate only affected GOWM services; do not use whole-project
+`up` for a hot update. See [the current retained upgrade procedure](CAPABILITY_COMPLETION_2026_10.md).
+Migrations are forward-only; take and test a backup before upgrading retained data.
 
 Rebuilding the deployment archive with `npm run package:dev-deployment`
 requires a Git checkout. It packages only tracked files, including the verified
@@ -161,13 +164,15 @@ topology directly to the public internet.
 
 ### Shared device business storage
 
-The deployment includes core migration 078, all hosted native SQL, device
-scope overlays, and the compiled storage CLI. In the production image use
+The deployment includes migrations through 093, hosted native SQL, scope
+overlays and the v2 controlled business API. New installations automatically
+install native schemas before managed accounts. For an explicit admin install use
 `node dist/scripts/business-storage/cli.js install --domain all` (with an
 explicit `GOWM_DATABASE_URL`) and `node dist/scripts/business-storage/cli.js verify`.
-`--help` requires no database. SDAR installation requires an administrator-managed
-`vector` extension; this packaging command does not install schemas or switch
-running consumers.
+`verify --domain smpp|sdar` checks a selected installed domain. `--help` needs no
+database. The database image supplies pinned pgvector 0.8.6; only the fresh
+initializer creates the extension. Packaging does not contact a database or
+switch consumers.
 
 The ordinary storage fixture/test harness remains excluded from the deployment
 archive. Run those commands from the source checkout against an isolated test
@@ -176,21 +181,28 @@ so excluding tests does not prevent production compilation.
 
 ### UGV actor device prerequisite
 
-New MQTT sessions use mapper v3 and require device initialization before startup.
+New MQTT sessions use mapper v3 by default, or v4 with an explicitly registered
+and activated runtime profile. Both require device initialization before startup.
 Apply migration 079, run the production `device-cli.js init-default` and
 `verify-default` commands, and grant the ingest login `gowm_device_reader`.
 See [UGV device actor deployment](UGV_DEVICE_ACTOR.md) for the complete environment,
 service binding contract, read-only verification, and persistent-session cutover.
 The default initializer creates configuration only; it does not create test observations.
+Source clock calibration, physical origin/CRS opt-in and controlled session
+cutover are described in [the capability guide](CAPABILITY_COMPLETION_2026_10.md).
+Optional authenticated HTTPS/MQTT and logical recovery are described in
+[the operations guide](PRODUCTION_OPERATIONS.md); the dev overlay does not enable them.
 
 ### 默认设备及业务数据库账号
 
 新包执行 `scripts/dev-deploy.sh init` 后，设置实际 `UGV_MQTT_URL`，再执行 `up`。
 默认启用 UGV 采集，并自带来源锁定的协议文件。正式迁移完成后自动创建两个业务数据库
-账号，再登记设备主档/端点/7 条流、执行只读检查，成功后自动订阅设备 MQTT。
+正式原生表和两个账号，再登记设备主档/端点/7 条流、服务绑定及登录授权，
+执行主档检查及两个实际业务账号的只读检查，成功后自动订阅设备 MQTT。
 既有 .env、范围、来源和世界对象会复用；初始化冲突会阻止采集启动。
 
 数据库账号固定为 `ugv_smpp_app` / `ugv_sdar_app`，随机密码及连接配置在安装目录的
 `.runtime/dev-deploy/business-connections.env`（0600），不写入分发包或日志。
-重复安装不旋转密码。仅初始化账号/共享 schema，不自动执行消费者原生表迁移；
-详见 [设备安装说明](UGV_DEVICE_ACTOR.md#安装时自动初始化2026-09-08)。
+重复安装不旋转密码。默认 `storage` 模式安装正式 native 表；`ingest` 显式跳过，
+`ready` 要求完整服务绑定。缺服务配置为 `NOT_CONFIGURED`，不代表业务就绪。
+详见 [本轮安装、权限及升级合同](FUNCTIONAL_REPAIR_2026_10.md)。

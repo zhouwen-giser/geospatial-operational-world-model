@@ -58,6 +58,8 @@
     "h3.index.points@1.0",
     "h3.neighborhood.disk@1.0",
     "history.get-trajectory@1.0",
+    "history.open-trajectory-artifact@1.0",
+    "history.read-trajectory-artifact@1.0",
     "layer.find-features@1.0",
     "layer.get@1.0",
     "layer.list@1.0",
@@ -128,6 +130,6 @@
   ],
   "conflicts": [],
   "insufficient": [],
-  "determinismHash": "sha256:fc1aa380c53c6affc65d7887e76a60c376646c1e0176a8e82c364d92ea1ad032",
+  "determinismHash": "sha256:76d49ccf6f1cc47f185143f98f3da1275c3a78c9cb3aa0997e1b850761bcfebf",
   "status": "PASS"
 }

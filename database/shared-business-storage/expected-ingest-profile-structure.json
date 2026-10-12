@@ -1,0 +1,247 @@
+{
+  "columns": [
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "column": "data_scope_key",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "column": "device_id",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "column": "profile_id",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "column": "profile_version",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "column": "activated_at",
+      "type": "timestamp with time zone",
+      "required": true,
+      "default_sql": "clock_timestamp()"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "column": "data_scope_key",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "column": "device_id",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "column": "profile_id",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "column": "profile_version",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "column": "profile",
+      "type": "jsonb",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "column": "content_hash",
+      "type": "text",
+      "required": true,
+      "default_sql": null
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "column": "created_at",
+      "type": "timestamp with time zone",
+      "required": true,
+      "default_sql": "clock_timestamp()"
+    }
+  ],
+  "constraints": [
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "conname": "ingest_profile_activation_activated_at_not_null",
+      "definition": "NOT NULL activated_at"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "conname": "ingest_profile_activation_data_scope_key_device_id_profile_fkey",
+      "definition": "FOREIGN KEY (data_scope_key, device_id, profile_id, profile_version) REFERENCES gowm_device.ingest_runtime_profile(data_scope_key, device_id, profile_id, profile_version)"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "conname": "ingest_profile_activation_data_scope_key_not_null",
+      "definition": "NOT NULL data_scope_key"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "conname": "ingest_profile_activation_device_id_not_null",
+      "definition": "NOT NULL device_id"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "conname": "ingest_profile_activation_pkey",
+      "definition": "PRIMARY KEY (data_scope_key, device_id)"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "conname": "ingest_profile_activation_profile_id_not_null",
+      "definition": "NOT NULL profile_id"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "conname": "ingest_profile_activation_profile_version_not_null",
+      "definition": "NOT NULL profile_version"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_check",
+      "definition": "CHECK ((((profile ->> 'profileId'::text) = profile_id) AND ((profile ->> 'version'::text) = profile_version) AND ((profile ->> 'dataScopeKey'::text) = data_scope_key) AND ((profile ->> 'deviceId'::text) = device_id)))"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_content_hash_check",
+      "definition": "CHECK ((content_hash ~ '^[0-9a-f]{64}$'::text))"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_content_hash_not_null",
+      "definition": "NOT NULL content_hash"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_created_at_not_null",
+      "definition": "NOT NULL created_at"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_data_scope_key_device_id_fkey",
+      "definition": "FOREIGN KEY (data_scope_key, device_id) REFERENCES gowm_device.device(data_scope_key, device_id)"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_data_scope_key_not_null",
+      "definition": "NOT NULL data_scope_key"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_device_id_not_null",
+      "definition": "NOT NULL device_id"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_pkey",
+      "definition": "PRIMARY KEY (data_scope_key, device_id, profile_id, profile_version)"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_profile_check",
+      "definition": "CHECK ((jsonb_typeof(profile) = 'object'::text))"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_profile_id_not_null",
+      "definition": "NOT NULL profile_id"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_profile_not_null",
+      "definition": "NOT NULL profile"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "conname": "ingest_runtime_profile_profile_version_not_null",
+      "definition": "NOT NULL profile_version"
+    }
+  ],
+  "indexes": [
+    {
+      "schema": "gowm_device",
+      "name": "ingest_profile_activation",
+      "indexname": "ingest_profile_activation_pkey",
+      "indexdef": "CREATE UNIQUE INDEX ingest_profile_activation_pkey ON gowm_device.ingest_profile_activation USING btree (data_scope_key, device_id)"
+    },
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "indexname": "ingest_runtime_profile_pkey",
+      "indexdef": "CREATE UNIQUE INDEX ingest_runtime_profile_pkey ON gowm_device.ingest_runtime_profile USING btree (data_scope_key, device_id, profile_id, profile_version)"
+    }
+  ],
+  "functions": [
+    {
+      "schema": "gowm_device",
+      "name": "protect_ingest_profile",
+      "args": "",
+      "definition": "CREATE OR REPLACE FUNCTION gowm_device.protect_ingest_profile()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'pg_catalog'\nAS $function$\n BEGIN RAISE EXCEPTION 'INGEST_RUNTIME_PROFILE_IMMUTABLE' USING ERRCODE='55000'; END $function$\n"
+    }
+  ],
+  "views": [],
+  "triggers": [
+    {
+      "schema": "gowm_device",
+      "name": "ingest_runtime_profile",
+      "tgname": "protect_ingest_profile",
+      "definition": "CREATE TRIGGER protect_ingest_profile BEFORE DELETE OR UPDATE ON gowm_device.ingest_runtime_profile FOR EACH ROW EXECUTE FUNCTION gowm_device.protect_ingest_profile()"
+    }
+  ]
+}

@@ -70,6 +70,8 @@ init_env() {
     chmod 600 "$env_file"
   fi
 
+  node "$project_dir/scripts/validate-bootstrap-config.mjs" "$env_file"
+
   local secret_vars=(
     POSTGRES_PASSWORD SMPP_DB_PASSWORD SDAR_DB_PASSWORD STAS_DB_PASSWORD HISTORICAL_WORKER_DB_PASSWORD HISTORY_AUTO_DB_PASSWORD
     GATEWAY_DB_PASSWORD GATEWAY_REGISTRY_DB_PASSWORD SPATIAL_DB_PASSWORD SITUATION_DB_PASSWORD

@@ -90,34 +90,9 @@ export async function resolveBusinessDeviceContext(c: PoolClient, input: Busines
   if (![input.scope,input.smppServiceKey,input.providerId,input.resourceId].every(x => typeof x === 'string' && x.trim()) ||
       Boolean(input.sdarServiceKey) !== Boolean(input.sdarMcpServerId) ||
       (input.deviceId !== undefined && !input.deviceId.trim())) throw Error('BUSINESS_DEVICE_CONFIG_INVALID');
-  if (mode === 'admit') await c.query('SELECT pg_advisory_xact_lock(718078)');
-  const found = await c.query(`SELECT * FROM gowm_device.device_service_binding WHERE data_scope_key=$1 AND valid_to IS NULL
-    AND smpp_service_key=$2 AND provider_id=$3 AND resource_id=$4`, [input.scope,input.smppServiceKey,input.providerId,input.resourceId]);
-  if ((found.rowCount ?? 0) > 1) throw Error('BUSINESS_BINDING_AMBIGUOUS');
-  const prior = found.rows[0];
-  if (prior && input.deviceId && prior.device_id !== input.deviceId) throw Error('BUSINESS_BINDING_CONFLICT');
-  const id = input.deviceId ?? prior?.device_id;
-  const identity = await resolveDeviceIdentity(c, { scope: input.scope, ...(id ? { deviceId: id } : {}) });
-  const current = (await c.query(`SELECT * FROM gowm_device.device_service_binding WHERE device_id=$1 AND valid_to IS NULL ${mode === 'admit' ? 'FOR UPDATE' : ''}`, [identity.deviceId])).rows[0];
-  const desired = { smpp_service_key: input.smppServiceKey, provider_id: input.providerId, resource_id: input.resourceId,
-    sdar_service_key: input.sdarServiceKey ?? null, sdar_mcp_server_id: input.sdarMcpServerId ?? null, agent_profile_id: input.agentProfileId ?? null };
-  let validFrom: string | null = null;
-  if (current) {
-    for (const key of ['smpp_service_key','provider_id','resource_id'] as const)
-      if (current[key] !== desired[key]) throw Error('BUSINESS_BINDING_CONFLICT');
-    for (const key of ['sdar_service_key','sdar_mcp_server_id','agent_profile_id'] as const)
-      if (desired[key] !== null && current[key] !== null && current[key] !== desired[key]) throw Error('BUSINESS_BINDING_CONFLICT');
-    const enrich = ['sdar_service_key','sdar_mcp_server_id','agent_profile_id'] as const;
-    if (!enrich.some(key => desired[key] !== null && current[key] === null))
-      return { ...identity, bindingId: String(current.binding_id), smppServiceKey: String(current.smpp_service_key) };
-    if (mode === 'verify') throw Error('BUSINESS_BINDING_INCOMPLETE');
-    // A later SDAR admission may fill previously absent values. Preserve the old
-    // binding for existing tasks; never rewrite or replace an established value.
-    for (const key of enrich) desired[key] ??= current[key];
-    validFrom = (await c.query("UPDATE gowm_device.device_service_binding SET valid_to=GREATEST(clock_timestamp(),valid_from+interval '1 microsecond') WHERE binding_id=$1 RETURNING valid_to::text AS valid_to", [current.binding_id])).rows[0].valid_to;
-  }
-  if (mode === 'verify') throw Error('BUSINESS_BINDING_UNAVAILABLE');
-  const inserted = await c.query(`INSERT INTO gowm_device.device_service_binding(data_scope_key,device_id,smpp_service_key,provider_id,resource_id,sdar_service_key,sdar_mcp_server_id,agent_profile_id,valid_from)
-    VALUES($1,$2,$3,$4,$5,$6,$7,$8,COALESCE($9::timestamptz,clock_timestamp())) RETURNING binding_id`, [input.scope,identity.deviceId,...Object.values(desired),validFrom]);
-  return { ...identity, bindingId: String(inserted.rows[0].binding_id), smppServiceKey: input.smppServiceKey };
+  const result = await c.query('SELECT gowm_business_api.resolve_device($1::jsonb,$2::boolean) AS context', [JSON.stringify(input),mode === 'admit']);
+  const value = result.rows[0]?.context;
+  return { ...DeviceIdentitySchema.parse({ deviceId:value?.deviceId,deviceIdentifier:value?.deviceIdentifier,
+    dataScopeKey:value?.dataScopeKey,actorReferenceKey:value?.actorReferenceKey }),
+    bindingId:z.string().uuid().parse(value?.bindingId),smppServiceKey:z.string().min(1).parse(value?.smppServiceKey) };
 }

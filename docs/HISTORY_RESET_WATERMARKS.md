@@ -38,3 +38,20 @@
 历史请求仍一次只领取一条，两个工作器通过现有 SKIP LOCKED、租约续期及 generation CAS 协作。独立调度不放宽 capturedAt、范围、快照或输入版本约束，不修改旧结果，不把 PENDING/PROVISIONAL 转成 COMPLETE。每条 SQL 仍受 30 秒上限约束；慢 SQL 本身可能失败，需要按日志单独定位，不能将独立调度视为所有历史请求均可成功的保证。
 
 阶段超过 1 秒会输出 `historical_stage_timing`（阶段与耗时）；历史请求每次领取处理后输出 `historical_request_tick`（成功、结果与失败计数），不输出消息或连接信息。现场只需更新两个 projection-worker，保留其他容器、账号、配置及迁移。部署包必须包含已执行的正式 084 迁移及其原校验和；本次调度修复不新增迁移。
+
+## 2026-10 追加修复交接
+
+核心迁移头现为 089，旧 001–086 与已发布 native/overlay SQL 字节不变。
+新安装默认自动安装正式 `ugv_smpp` / `ugv_sdar` 表和两个独立数据库账号，
+完成主档、七条流及实际账号只读验证后启动采集。缺服务配置为 `NOT_CONFIGURED`，
+`ready` 模式要求完整 SMPP/SDAR 服务身份。
+
+业务接纳和共享关联改用基于 `SESSION_USER` 的受控函数，部署授权由管理员维护；
+运行账号显式携带解析后的 deviceId，`createTarget` 也必须提供 deviceId。
+SDAR canonical MCP 身份校验及 `resolveRemoteTask` 使用新 API，不能用直接读 SMPP 表绕过权限。
+已有范围、密码和绑定不自动改写。其他仓库仍需独立适配，不把本地 fixture 当业务验收。
+
+保留库只执行 `functional-repair-upgrade.js --check` / apply；不运行账号、设备初始化，
+不删除卷、不恢复耗尽请求、不变更关联服务。CORE/TRACKLET/FINALIZATION/HISTORY 和
+30 秒 SQL 预算、真实 gap/PROVISIONAL 以及允许少量丢包与迟到的重置策略保持。
+完整配置、SSE 游标、轨迹状态和回退约束见 [本轮交接](FUNCTIONAL_REPAIR_2026_10.md)。

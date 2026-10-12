@@ -9,6 +9,8 @@ import type { MapperConfig, MappingResult } from "../../../packages/integrations
 import { CanonicalObservationInputSchema } from "../../../packages/world-model-core/src/schema.js";
 import { OperationalEventIngestSchema } from "../../../packages/operational-model/src/events.js";
 import { canonicalJson } from "../../../packages/observation-model/src/canonical.js";
+import {loadActiveRuntimeProfile} from '../../../packages/integrations/device-business-storage/src/ingest-profile.js';
+import {runtimeProfileHash,PROFILED_MAPPER_VERSION} from '../../../packages/integrations/ugv-mqtt-ingest-core/src/runtime-profile.js';
 
 export interface AcceptedMessage { messageId: string; redelivery: boolean; validationState: string; packetGeneration?: number; }
 export interface PendingMessage {
@@ -28,15 +30,17 @@ export class UgvIngestRepository {
     codeVersion: string,mapperContext: MapperConfig): Promise<{ sessionId: string; sessionLost: boolean }> {
     return withTransaction(this.pool,async (client) => {
       validateMapperDevice(mapperContext);
-      const previous = await client.query<{ session_id: string; session_epoch: string; source_schema_lock: SourceSchemaLock; mapper_context_hash: string; mapper_context: MapperConfig }>(
-        `SELECT session_id,session_epoch,source_schema_lock,mapper_context_hash,mapper_context FROM ugv_ingest.mqtt_session
+      await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,92012))',[mapperContext.dataScopeKey]);
+      const previous = await client.query<{ session_id: string; session_epoch: string; source_schema_lock: SourceSchemaLock; mapper_context_hash: string; mapper_context: MapperConfig;closed_at:unknown }>(
+        `SELECT session_id,session_epoch,source_schema_lock,mapper_context_hash,mapper_context,closed_at FROM ugv_ingest.mqtt_session
           WHERE client_id=$1 AND broker_id=$2 ORDER BY session_epoch DESC LIMIT 1 FOR UPDATE`,
         [clientId,brokerId]
       );
       const previousContext = previous.rows[0]?.mapper_context;
+      if(sessionPresent&&previous.rows[0]?.closed_at)throw Error('CLOSED_SESSION_REQUIRES_NEW_BROKER_SESSION');
       // Catalog versions can advance as telemetry arrives. A resumed session retains
       // its original reference version, but every other context change is still rejected.
-      if (sessionPresent && previousContext?.mapperVersion === "ugv-mqtt-canonical-v3" && mapperContext.deviceContext &&
+      if (sessionPresent && previousContext && ["ugv-mqtt-canonical-v3","ugv-mqtt-canonical-v4"].includes(previousContext.mapperVersion) && mapperContext.deviceContext &&
           previousContext.deviceContext?.actorReferenceKey.id === mapperContext.deviceContext.actorReferenceKey.id) {
         mapperContext = { ...mapperContext, deviceContext: { ...mapperContext.deviceContext,
           actorReferenceKey: previousContext.deviceContext.actorReferenceKey } };
@@ -54,6 +58,14 @@ export class UgvIngestRepository {
         throw Object.assign(new Error("mapper context changed while the persistent MQTT session is active"),{
           code: "MAPPER_CONTEXT_CHANGED_WITH_ACTIVE_SESSION"
         });
+      }
+      // Serialize activation and new-session admission. A process that loaded a
+      // profile before activation cannot establish a session using stale routes.
+      if((!sessionPresent||!previous.rows[0])&&mapperContext.deviceContext){
+        const active=await loadActiveRuntimeProfile(client,mapperContext.dataScopeKey,mapperContext.deviceContext.deviceId);
+        if(active){if(mapperContext.mapperVersion!==PROFILED_MAPPER_VERSION||!mapperContext.runtimeProfile||
+          runtimeProfileHash(active)!==runtimeProfileHash(mapperContext.runtimeProfile))throw Error('INGEST_PROFILE_CHANGED_BEFORE_SESSION');}
+        else if(mapperContext.mapperVersion===PROFILED_MAPPER_VERSION)throw Error('INGEST_PROFILE_ACTIVATION_REQUIRED');
       }
       const incompatiblePending = await client.query<{ count: string }>(
         `SELECT count(*)::text AS count FROM ugv_ingest.inbox_message inbox
@@ -188,7 +200,7 @@ export class UgvIngestRepository {
       return { messageId: row.message_id,topic: row.topic,payloadSha256: row.payload_sha256,payload: row.decoded_payload,
         adapterReceivedAt: row.adapter_received_at.toISOString(),retained: row.retained_flag,ingestSequence: Number(row.ingest_sequence),
         cursor,streamContext: shared?.authority_state ?? {},mapperConfig,
-        ...(["ugv-mqtt-canonical-v2","ugv-mqtt-canonical-v3"].includes(mapperConfig.mapperVersion) ? { sourceQos: row.qos } : {}),
+        ...(["ugv-mqtt-canonical-v2","ugv-mqtt-canonical-v3","ugv-mqtt-canonical-v4"].includes(mapperConfig.mapperVersion) ? { sourceQos: row.qos } : {}),
         streamNamespace: row.mapper_context_hash };
     });
   }

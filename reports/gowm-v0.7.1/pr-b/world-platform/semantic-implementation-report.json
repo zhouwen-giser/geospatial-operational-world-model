@@ -118,7 +118,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ffed7ad2f163de68667ac9c76a1599bdda2e054b2258070fd1657092a9efc63b"
+    "operationEvidenceDigest": "sha256:23e9e049c815c5d3d1b3c5d07e0c7776c1cf3fd589c4bc3206e6d7562b7ffe2c"
   },
   "crs.normalize.feature-collection@1.0": {
     "contractHash": "sha256:4932de634336586ca9bafc1d5f1260d758119fb35f0bc2a7c8241ab053382288",
@@ -309,7 +309,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:4819174bf25904b733b3937a61bf2f79cc1089008dc2fb27d92b9fe6aa62c21f"
+    "operationEvidenceDigest": "sha256:862e84db881cef1cbca029c3d9502f9107b7ee52b10d2f458b6a75f0c7ff87ad"
   },
   "crs.normalize.feature@1.0": {
     "contractHash": "sha256:af5f61d8567c1605d7572b31a862bc6cd9e7cde630d9f36195bc12c413aa9027",
@@ -494,7 +494,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3d76f680ffb7f0692cdad766fc134716cc8900256a7285eb107f0ecd6d167d85"
+    "operationEvidenceDigest": "sha256:48cf0050893ceb645fbc28c86601e2a04a13e87dc5fff8508953343d88c93515"
   },
   "crs.normalize.geometry@1.0": {
     "contractHash": "sha256:bc78a7095fd8b20bd4949a3049beae0678c888f0012c6bf8dc0f0ffa672c84a3",
@@ -695,7 +695,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:91fa7e827fcd4ab8e948dc1a4242f35ab6937a0777707bdfb141fa7d1aa3bb76"
+    "operationEvidenceDigest": "sha256:e1359cc8a74319d252d7585e3a0a22563533383996af67961e36d786ec42ae5d"
   },
   "crs.normalize.point@1.0": {
     "contractHash": "sha256:d4ebf90684fc63ae65c21d78c39bcd1a4b374fdbd3783763e6b85b8a7311213b",
@@ -841,7 +841,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:77a3df4caaf59c863a4636c42a3b5dc2b1368d3017207f16c588a7f1519aeb52"
+    "operationEvidenceDigest": "sha256:b0fa4fec685c007d0f808c5894fde55db687d843aef66a11347e906c777dd959"
   },
   "crs.normalize.points@1.0": {
     "contractHash": "sha256:3f2b418d9664427b3649f2d270cce3b27dbd2c0cb40e4acb7d0ab84839e25c30",
@@ -987,7 +987,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:8084a594e80e94118201c05f56e6619eed3578241a61d42e7bfe81963d746348"
+    "operationEvidenceDigest": "sha256:6389bb90e015ce6518b80af564789616f1a3192b484f29cb95517bf3ab142c90"
   },
   "catalog.describe-schema@1.0": {
     "contractHash": "sha256:551a86fc32a524e187bc2e91846fd1f75ae0060681758cb76d284a7d66ee078d",
@@ -1201,8 +1201,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -1214,6 +1216,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -1343,6 +1346,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -1392,7 +1396,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2c8c1f9e1cc34d3be05320ebaac811a4391c0f89dea812f53a90e8ff5ece29f8"
+    "operationEvidenceDigest": "sha256:e6059c9ed64bff3ddaea0df729f11ef71673e7d5abef29cda86ea8d4a2be56ce"
   },
   "catalog.get-capabilities@1.0": {
     "contractHash": "sha256:990762eb68a231e5f2b956a6d792325ed439b02e296c5a1b5b87708cda22c90b",
@@ -1606,8 +1610,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -1619,6 +1625,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -1748,6 +1755,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -1797,7 +1805,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2c8c1f9e1cc34d3be05320ebaac811a4391c0f89dea812f53a90e8ff5ece29f8"
+    "operationEvidenceDigest": "sha256:e6059c9ed64bff3ddaea0df729f11ef71673e7d5abef29cda86ea8d4a2be56ce"
   },
   "catalog.get-lineage@1.0": {
     "contractHash": "sha256:e36e037c0a041708bbfa08148ca27493ec4792dbd172da92ddf0ee246c6ad55f",
@@ -2011,8 +2019,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -2024,6 +2034,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -2153,6 +2164,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -2202,7 +2214,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2c8c1f9e1cc34d3be05320ebaac811a4391c0f89dea812f53a90e8ff5ece29f8"
+    "operationEvidenceDigest": "sha256:e6059c9ed64bff3ddaea0df729f11ef71673e7d5abef29cda86ea8d4a2be56ce"
   },
   "catalog.get-quality@1.0": {
     "contractHash": "sha256:9919cd1407aa4e6ebffa6a5d9581d7ff71d8ea8b6e07fd8dd5822e6c39d81a20",
@@ -2416,8 +2428,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -2429,6 +2443,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -2558,6 +2573,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -2607,7 +2623,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2c8c1f9e1cc34d3be05320ebaac811a4391c0f89dea812f53a90e8ff5ece29f8"
+    "operationEvidenceDigest": "sha256:e6059c9ed64bff3ddaea0df729f11ef71673e7d5abef29cda86ea8d4a2be56ce"
   },
   "catalog.get@1.0": {
     "contractHash": "sha256:eeabc67d48d2e987e0348403acff783e7e81d6a4ab65241bef4eefb194099864",
@@ -2866,8 +2882,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -2879,6 +2897,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -3008,6 +3027,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -3057,7 +3077,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3105e4b7c7abacfaf0159cbaf4ee7927fdf9932ea1842b055c75fa38fff30764"
+    "operationEvidenceDigest": "sha256:48272fa94e179f646fafe372a5147f5a41af524d832b478b4717fc8d78a5d434"
   },
   "catalog.list-versions@1.0": {
     "contractHash": "sha256:7283c07908ccd9a9868e5ab432228aa567e8dbc1728238fc6991afe9127513f1",
@@ -3271,8 +3291,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -3284,6 +3306,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -3413,6 +3436,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -3462,7 +3486,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2c8c1f9e1cc34d3be05320ebaac811a4391c0f89dea812f53a90e8ff5ece29f8"
+    "operationEvidenceDigest": "sha256:e6059c9ed64bff3ddaea0df729f11ef71673e7d5abef29cda86ea8d4a2be56ce"
   },
   "catalog.search@1.0": {
     "contractHash": "sha256:1baad329d82fb656cdddf3b2ce758ac99b9189d214a01338618eb5a9e67e085c",
@@ -3720,8 +3744,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -3733,6 +3759,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -3862,6 +3889,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -3911,7 +3939,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:03a024fbaba04c9d69e5efd8fde19613eef0b21b84956b49f976bc8f15374349"
+    "operationEvidenceDigest": "sha256:32db3c035a1d65b45cd421758fb2248e8bd308813de45c52105612e02349fb91"
   },
   "dataset.get@1.0": {
     "contractHash": "sha256:18166d957dc2981313952bec43a4a446fc63dba1b645dec4042882933b76bb30",
@@ -4153,8 +4181,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -4166,6 +4196,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -4295,6 +4326,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -4344,7 +4376,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:cf6f7ed409f2ad6edec767a4669a7578a71c2687939d59169dd93b607f09a9cc"
+    "operationEvidenceDigest": "sha256:19227001cddab65fe1edd6150805d31dd04dd15a7a5c47d854c429a2fa567c44"
   },
   "dataset.list@1.0": {
     "contractHash": "sha256:977241d53f836c5d019e34b7810ba5d2ebc6e5c4eb056a6ab180afca7dea1f17",
@@ -4548,8 +4580,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -4561,6 +4595,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -4690,6 +4725,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -4739,7 +4775,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3b63b8629ec2c0f809ee35b5770de17e4d79ad6367727c5b2fe52a6880aaf1d4"
+    "operationEvidenceDigest": "sha256:eb09675cb0471c7daf57cfa8fb4f772d47795533bdbbcc9dfa5dab7e13ae3f64"
   },
   "feature.get@1.0": {
     "contractHash": "sha256:4f210a6a29984d1b7d42596ebcb3d496950f01960152ab1664e681b14e425dc8",
@@ -4994,8 +5030,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -5007,6 +5045,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -5136,6 +5175,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -5185,7 +5225,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ed3c4b89e4d3009b2dd9118c11b5cda7b36b8a151c293b0f0045301157ccf5be"
+    "operationEvidenceDigest": "sha256:b4576716b9f2371aa7871d037b7de9dffe3e6279a1255da5c6493bf234bb2d3a"
   },
   "layer.find-features@1.0": {
     "contractHash": "sha256:eab88620e32b0d04d346c924ff35942769c792c041da3e153ae059c91661d0e1",
@@ -5389,8 +5429,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -5402,6 +5444,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -5531,6 +5574,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -5580,7 +5624,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3b63b8629ec2c0f809ee35b5770de17e4d79ad6367727c5b2fe52a6880aaf1d4"
+    "operationEvidenceDigest": "sha256:eb09675cb0471c7daf57cfa8fb4f772d47795533bdbbcc9dfa5dab7e13ae3f64"
   },
   "layer.get@1.0": {
     "contractHash": "sha256:076e495ebc35362eb6899ca83ef317b3027a733a285bd9c44fb53d4454f20c62",
@@ -5825,8 +5869,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -5838,6 +5884,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -5967,6 +6014,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -6016,7 +6064,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:4e43b1263ff36e6972e921c4275b8f5aa26a7ff7ec8d375dba78551537065c7c"
+    "operationEvidenceDigest": "sha256:bc6d5f8c9783fa29b401390f0c5c08b41e3ed9bbde0893ed8e6c0f3125084d0d"
   },
   "layer.list@1.0": {
     "contractHash": "sha256:5a14ed8b138090812b3f159a3fc4d387cbbb81c0746b7acf677d8d3bd8d8dfe8",
@@ -6220,8 +6268,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -6233,6 +6283,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -6362,6 +6413,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -6411,7 +6463,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3b63b8629ec2c0f809ee35b5770de17e4d79ad6367727c5b2fe52a6880aaf1d4"
+    "operationEvidenceDigest": "sha256:eb09675cb0471c7daf57cfa8fb4f772d47795533bdbbcc9dfa5dab7e13ae3f64"
   },
   "geometry.bounding-box@1.0": {
     "contractHash": "sha256:35ae176a29a8eae3240934f71e0b0ca106f3027378f44f44a44d01631e3334a1",
@@ -6618,7 +6670,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:9927c1c4f3e739fa5a65c4dcc981b56dd6c81cb8a8c1434b4157414b5a37b4e2"
+    "operationEvidenceDigest": "sha256:bf3fa7f9ea6259fef819ae4892b9d4562bb3fbca4dacb112e0ce6bb5b5073bfa"
   },
   "geometry.buffer@1.0": {
     "contractHash": "sha256:2e5a2d51224bff2cfbba5e1d327d47a0d1a146f11463de5dead9cf2368a14b07",
@@ -6833,7 +6885,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:f3fe2a0bed90887501e73f695322b4d9ab31d17b09b5c54f3ec8c8533b9a5010"
+    "operationEvidenceDigest": "sha256:fbb38d2bbd71f2e77c0b22956810a9123f292e8649f845c09e8250aeaee1c9a4"
   },
   "geometry.centroid@1.0": {
     "contractHash": "sha256:5fc763a6221b8c4771328c2c2e0b8c0bb2c43fdf622a499de6d98cb4f4a27d24",
@@ -7040,7 +7092,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c35250657f5bd79e05917374bf984d9779950f4a4905fa0847ef3827a4fbd63d"
+    "operationEvidenceDigest": "sha256:c429dc747d426a2c4d4b63d0b9424674169c4ac45dfd891de5399de1f9c54c0c"
   },
   "geometry.closest-point@1.0": {
     "contractHash": "sha256:bad71d58189851661cf1ca25ca64521a49b939f9bf1bbdd97b263cdd22a3229b",
@@ -7262,7 +7314,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3723e315aa0baa2bfe7472315799a2fdc176d0da24b8a7a18de5a6b72aca07c0"
+    "operationEvidenceDigest": "sha256:2f2046ae9c71e273bdcd3ea1dbe46b8fac53f22033d43e7f0421e43552d191f3"
   },
   "geometry.convex-hull@1.0": {
     "contractHash": "sha256:0ba85fde5defa4c3d4007c8ce7c5958905bd853fe63e2a7b30692e17d3d07ca1",
@@ -7469,7 +7521,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3b2bc693312e6aa1c9e7f420d5ba7755f9bcdf550523b4fb4a0b26f495fdc474"
+    "operationEvidenceDigest": "sha256:9f870d587967c559ff441aca4813533726f08fe2ad7b6724b7b74dfd10fd05f3"
   },
   "geometry.difference@1.0": {
     "contractHash": "sha256:9fa4833822ac437191419b3694637498596f6dc1b2e8fc6766686c9d271f6ee6",
@@ -7691,7 +7743,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:199dc5300ce3e870d00faf5ff09395c631e709614fc047ed5f3f5ade94988936"
+    "operationEvidenceDigest": "sha256:15e9c2e4cc21c936320c6911c290f634d1a0f8ad705cd25b342896f685a65825"
   },
   "geometry.force-2d@1.0": {
     "contractHash": "sha256:5386e8851f721bf515c4b368e4d926a081652bec6001eaf6fb68a3b46e6d3fc7",
@@ -7898,7 +7950,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:0fcdc9375ba936268a3eb2847d878d196b19caffa4f5f51293edc4f49a4f0db8"
+    "operationEvidenceDigest": "sha256:2f36fec66385191562644fa380cd86bc5dc0a107c63aad8680add34efa10216e"
   },
   "geometry.geometry-hash@1.0": {
     "contractHash": "sha256:c020a0c3c9151ff0ecd13b09dc35992e1fafa7cd1ae0929d0979bacaba146d46",
@@ -8058,7 +8110,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:50447d419b4aab5fe72a5f47fd3d35d3611b25e7cc3ee92bb66a4323f903eea2"
+    "operationEvidenceDigest": "sha256:2e576252be06e0b3d1ab2caea9651dbef2ac3d38a043307b1f68d286d2ea9d97"
   },
   "geometry.intersection@1.0": {
     "contractHash": "sha256:4cad6e3ae8042fa77323fbc36938399c5da5cd3acd96799816c6da835ef8e414",
@@ -8280,7 +8332,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c0d3367e9ab93f6eac2130898c7204d7977fa5d9a1d5bafd1f97be2f075de002"
+    "operationEvidenceDigest": "sha256:4efd74c5c03149dba837e35121e0e5d08758a841720df7d8f9087c2058b76aff"
   },
   "geometry.make-valid@1.0": {
     "contractHash": "sha256:a06cb257f8f2da6aa2e3eec36eb9c2f939c5acb14f4ff9dfd49feac1066b8de4",
@@ -8487,7 +8539,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:5d2f8ab306a7d0e60a1b90c14505ebd12c90159d98683c833155487d3d94d66f"
+    "operationEvidenceDigest": "sha256:c013c23a3eb3f5f36802879c3c2d1aa7fa099736f0bc1f736de0a23637864831"
   },
   "geometry.normalize@1.0": {
     "contractHash": "sha256:2237d1ed0a3d34e1b7e654d63d292e066289d0d6490bf95111afcaf6f0fc1359",
@@ -8694,7 +8746,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:31b872fe72cf2b1cfff6ef163124161fe540a9c97050cd193419f38cf1c1894a"
+    "operationEvidenceDigest": "sha256:c02eb09fa85b89f9d0e12f62dc8efe6749f546ad36590086aebb0c1e30d1f0c3"
   },
   "geometry.predicate@1.0": {
     "contractHash": "sha256:b831259808e98203de03764452abcc9c1f20f88eed7750060e75915df89f0b66",
@@ -8865,7 +8917,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a873b3b578e980053af1c18a1974ca22a1024f080ae96d7648a8e4e8e0c47e9c"
+    "operationEvidenceDigest": "sha256:352abe7e76163c3e805b89686bc194b65b551624a73756ede87ba1b487ada6bb"
   },
   "geometry.remove-repeated-points@1.0": {
     "contractHash": "sha256:7a6c0b59071ec486b2e918059bdb158e03d791e60e073725b41195ab2021f7e5",
@@ -9074,7 +9126,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:5a66d43a0d877cac0972b7191d676eda0d15c3a0c4836f711cebefe3e4f22044"
+    "operationEvidenceDigest": "sha256:5d6452d0509f540aeda1433d73873998cd034815c936d66cb5a3a1cccefbaf98"
   },
   "geometry.shortest-line@1.0": {
     "contractHash": "sha256:c138b89013b3b93a9ff4f48251bf254e7548c80a1b6f78b6447eec09ffc6df71",
@@ -9296,7 +9348,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c995d553bc0f48dc16f91b684cd385690d6b4c78c1358fa43c62ecf974fcdcba"
+    "operationEvidenceDigest": "sha256:b65f8970aa0270425be4dc1113f41cdd583d5138f63f72f0b6b774fca49c609d"
   },
   "geometry.simplify-preserve-topology@1.0": {
     "contractHash": "sha256:dfb8e2b12fee80114d9179e1c3f900d681205d04becf5c1c6650b126de5b45f8",
@@ -9505,7 +9557,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a2130659df4f6f8476c600123ff3ea516ccccc261c4ba04b0f8cc2044f9b49e9"
+    "operationEvidenceDigest": "sha256:3f51346ebf99f39e055e51bf77eee9babf22777665cb4fdb0ae41d45f9c6ddbf"
   },
   "geometry.simplify@1.0": {
     "contractHash": "sha256:d2fcd04c12b4c67ca22350ec79081658a82c1ce0df66374dcc5c399d1943ba68",
@@ -9714,7 +9766,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:dddbd329d1c261f403547d4ee5ef2e6edcdc869b9c4428e4d9723372d0cfca4b"
+    "operationEvidenceDigest": "sha256:4047e41ae20c2969595fdc622b4487bee4bd43701970f714617e9835378c13ed"
   },
   "geometry.symmetric-difference@1.0": {
     "contractHash": "sha256:0e88e7e75f7c4a7476b3ea34953ca5387c3bab950924fb1c56fee3377b11891a",
@@ -9936,7 +9988,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:75628af9d9062ed35168088c6ee1612d192c70fc4ded9b987d787456530027c2"
+    "operationEvidenceDigest": "sha256:c8110f0f6480a97bb0905b0926819725844b7bd8828533639e7b60014b52fb68"
   },
   "geometry.union@1.0": {
     "contractHash": "sha256:df8b2f933d80f8395943b18770aa101f17653d75327dde37f0e1b29484738630",
@@ -10158,7 +10210,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:e9389c8c44ed9bd46ce58a8fac1c4d675ad06f7008b29b26e606f25203508271"
+    "operationEvidenceDigest": "sha256:3d40e9a3b5957cbcb89a3c3841c6ffbd790350c1f2f7386f29e0cf3602c16416"
   },
   "geometry.validate@1.0": {
     "contractHash": "sha256:5d25b76daf5933c62cb92c8dc0fe5c865f6f62161ba0f18f6558141c3bb33eb2",
@@ -10320,7 +10372,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:748025efaaa2cc83e5f88f7d5a1e810150679ea595070e59bfba56fb433db6cc"
+    "operationEvidenceDigest": "sha256:9da130019467cae78e5fdf48b6b299e0bf223f48ebe4ce09d8fd73d58e1fa4df"
   },
   "h3.analytics.aggregate@1.0": {
     "contractHash": "sha256:94076207d8ffb8a9943d4158c9f1e91e551a54499bf3cbe9894765bb95072440",
@@ -12664,6 +12716,7 @@
       {
         "path": "services/providers/historical-trace-provider/src/provider.ts",
         "symbols": [
+          "artifacts",
           "createHistoricalTraceOperation",
           "createHistoricalTraceProvider",
           "descriptor",
@@ -12671,6 +12724,7 @@
           "handle",
           "manifest",
           "operation",
+          "operations",
           "policy",
           "repository",
           "result",
@@ -12678,9 +12732,11 @@
         ],
         "calls": [
           "context.deadline.remainingMs",
+          "createHistoricalArtifactOperations",
           "createHistoricalTraceOperation",
           "createProviderRuntime",
           "declaredSemanticProfile",
+          "operations.map",
           "repository.execute",
           "sha256"
         ],
@@ -12693,6 +12749,7 @@
           "HISTORICAL_TRACE_SQL",
           "HistoricalTraceRepository",
           "absent",
+          "artifact",
           "booleanValue",
           "boundedInteger",
           "candidate",
@@ -12706,6 +12763,7 @@
           "emptyHistoricalResult",
           "enumValue",
           "error",
+          "evaluated",
           "evidence",
           "exactIntervalRevision",
           "exclusions",
@@ -12718,6 +12776,7 @@
           "fixedRows",
           "gaps",
           "gapsResult",
+          "geometryCount",
           "index",
           "indexes",
           "input",
@@ -12725,6 +12784,7 @@
           "inputsResult",
           "interval",
           "intervalResult",
+          "isPendingOutcome",
           "jsonRecord",
           "mapExclusion",
           "mapGap",
@@ -12805,6 +12865,7 @@
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+)\"?\\s*[\\])]$/.exec",
           "/^sha256:[0-9a-f]{64}$/.test",
           "Array.isArray",
+          "Error",
           "JSON.parse",
           "JSON.stringify",
           "Math.floor",
@@ -12838,6 +12899,7 @@
           "indexes.add",
           "inputs.find",
           "inputs.map",
+          "isPendingOutcome",
           "jsonRecord",
           "matches.push",
           "nonNegativeInteger",
@@ -12891,7 +12953,582 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:93365705a9af6c9cdc6c500ce5bb0c4fd993b5876667b146b0dc0c361bfaad3e"
+    "operationEvidenceDigest": "sha256:60682dcb63c670db952438a805f6fce584b72269771f5fb8b39388467a48f69a"
+  },
+  "history.open-trajectory-artifact@1.0": {
+    "contractHash": "sha256:d1854488d0a1cdca7cddd08798e2dc1477fe4efb4e05c05d02249b401bc8dc75",
+    "inputShape": {
+      "paths": [
+        "/request",
+        "/request/analysisSpaceReferenceKey",
+        "/request/analysisSpaceReferenceKey/id",
+        "/request/analysisSpaceReferenceKey/kind",
+        "/request/analysisSpaceReferenceKey/namespace",
+        "/request/analysisSpaceReferenceKey/version",
+        "/request/executionIntervalReferenceKey",
+        "/request/executionIntervalReferenceKey/id",
+        "/request/executionIntervalReferenceKey/kind",
+        "/request/executionIntervalReferenceKey/namespace",
+        "/request/executionIntervalReferenceKey/version",
+        "/request/maximumInlinePoints",
+        "/request/phaseScope",
+        "/request/sourceSelection",
+        "/request/sourceSelection/mode",
+        "/request/sourceSelection/sourceKey",
+        "/request/sourceSelection/trackerSessionKey",
+        "/request/sourceSelectionProfileReferenceKey",
+        "/request/sourceSelectionProfileReferenceKey/id",
+        "/request/sourceSelectionProfileReferenceKey/kind",
+        "/request/sourceSelectionProfileReferenceKey/namespace",
+        "/request/sourceSelectionProfileReferenceKey/version",
+        "/request/subjectReferenceKey",
+        "/request/subjectReferenceKey/id",
+        "/request/subjectReferenceKey/kind",
+        "/request/subjectReferenceKey/namespace",
+        "/request/subjectReferenceKey/version",
+        "/trajectoryReferenceKey",
+        "/trajectoryReferenceKey/id",
+        "/trajectoryReferenceKey/kind",
+        "/trajectoryReferenceKey/namespace",
+        "/trajectoryReferenceKey/version"
+      ],
+      "referenceKinds": [
+        "HISTORICAL_TRAJECTORY",
+        "HISTORY_METHOD_PROFILE",
+        "TASK_EXECUTION_INTERVAL"
+      ],
+      "referencePaths": [
+        "/request/analysisSpaceReferenceKey",
+        "/request/executionIntervalReferenceKey",
+        "/request/sourceSelectionProfileReferenceKey",
+        "/request/subjectReferenceKey",
+        "/trajectoryReferenceKey"
+      ],
+      "geometryTypes": {},
+      "statusPaths": {},
+      "sourceUris": [
+        "urn:gowm:v0.7.1:trajectory-artifact-open-query",
+        "urn:gowm:v0.7:historical-trajectory-query"
+      ]
+    },
+    "outputShape": {
+      "paths": [
+        "/artifactReference",
+        "/artifactReference/artifactId",
+        "/artifactReference/digest",
+        "/artifactReference/fullRequestHash",
+        "/artifactReference/mediaType",
+        "/artifactReference/snapshotManifestHash",
+        "/byteLength",
+        "/expiresAt",
+        "/manifest",
+        "/manifest/analysisId",
+        "/manifest/coordinateEncoding",
+        "/manifest/definedPeriods",
+        "/manifest/definedPeriods/*/bounds",
+        "/manifest/definedPeriods/*/end",
+        "/manifest/definedPeriods/*/start",
+        "/manifest/encoding",
+        "/manifest/evaluationId",
+        "/manifest/evidenceSampleCount",
+        "/manifest/excludedPeriods",
+        "/manifest/excludedPeriods/*/range",
+        "/manifest/excludedPeriods/*/range/bounds",
+        "/manifest/excludedPeriods/*/range/end",
+        "/manifest/excludedPeriods/*/range/start",
+        "/manifest/excludedPeriods/*/reason",
+        "/manifest/finalizationState",
+        "/manifest/frozenRequest",
+        "/manifest/frozenRequest/analysisSpaceReferenceKey",
+        "/manifest/frozenRequest/analysisSpaceReferenceKey/id",
+        "/manifest/frozenRequest/analysisSpaceReferenceKey/kind",
+        "/manifest/frozenRequest/analysisSpaceReferenceKey/namespace",
+        "/manifest/frozenRequest/analysisSpaceReferenceKey/version",
+        "/manifest/frozenRequest/executionIntervalReferenceKey",
+        "/manifest/frozenRequest/executionIntervalReferenceKey/id",
+        "/manifest/frozenRequest/executionIntervalReferenceKey/kind",
+        "/manifest/frozenRequest/executionIntervalReferenceKey/namespace",
+        "/manifest/frozenRequest/executionIntervalReferenceKey/version",
+        "/manifest/frozenRequest/maximumInlinePoints",
+        "/manifest/frozenRequest/phaseScope",
+        "/manifest/frozenRequest/sourceSelection",
+        "/manifest/frozenRequest/sourceSelection/mode",
+        "/manifest/frozenRequest/sourceSelection/sourceKey",
+        "/manifest/frozenRequest/sourceSelection/trackerSessionKey",
+        "/manifest/frozenRequest/sourceSelectionProfileReferenceKey",
+        "/manifest/frozenRequest/sourceSelectionProfileReferenceKey/id",
+        "/manifest/frozenRequest/sourceSelectionProfileReferenceKey/kind",
+        "/manifest/frozenRequest/sourceSelectionProfileReferenceKey/namespace",
+        "/manifest/frozenRequest/sourceSelectionProfileReferenceKey/version",
+        "/manifest/frozenRequest/subjectReferenceKey",
+        "/manifest/frozenRequest/subjectReferenceKey/id",
+        "/manifest/frozenRequest/subjectReferenceKey/kind",
+        "/manifest/frozenRequest/subjectReferenceKey/namespace",
+        "/manifest/frozenRequest/subjectReferenceKey/version",
+        "/manifest/frozenSnapshot",
+        "/manifest/frozenSnapshot/capturedAt",
+        "/manifest/frozenSnapshot/consistency",
+        "/manifest/frozenSnapshot/manifestHash",
+        "/manifest/frozenSnapshot/minimumWorldVersion",
+        "/manifest/frozenSnapshot/mode",
+        "/manifest/frozenSnapshot/querySnapshotId",
+        "/manifest/frozenSnapshot/resources",
+        "/manifest/frozenSnapshot/resources/*/contentHash",
+        "/manifest/frozenSnapshot/resources/*/pinning",
+        "/manifest/frozenSnapshot/resources/*/resourceId",
+        "/manifest/frozenSnapshot/resources/*/resourceKind",
+        "/manifest/frozenSnapshot/resources/*/version",
+        "/manifest/frozenSnapshot/resources/*/worldVersion",
+        "/manifest/fullRequestHash",
+        "/manifest/gaps",
+        "/manifest/gaps/*/gapNo",
+        "/manifest/gaps/*/kind",
+        "/manifest/gaps/*/range",
+        "/manifest/gaps/*/range/bounds",
+        "/manifest/gaps/*/range/end",
+        "/manifest/gaps/*/range/start",
+        "/manifest/gaps/*/reasonCodes",
+        "/manifest/geometryNodeCount",
+        "/manifest/inputSetHash",
+        "/manifest/pageSize",
+        "/manifest/prefixComplete",
+        "/manifest/requestedPeriods",
+        "/manifest/requestedPeriods/*/bounds",
+        "/manifest/requestedPeriods/*/end",
+        "/manifest/requestedPeriods/*/start",
+        "/manifest/schemaVersion",
+        "/manifest/segments",
+        "/manifest/segments/*/end",
+        "/manifest/segments/*/evidenceSampleCount",
+        "/manifest/segments/*/geometryNodeCount",
+        "/manifest/segments/*/interpolation",
+        "/manifest/segments/*/lowerInclusive",
+        "/manifest/segments/*/segmentNo",
+        "/manifest/segments/*/sourceSegmentNo",
+        "/manifest/segments/*/sourceTrackletVersionId",
+        "/manifest/segments/*/start",
+        "/manifest/segments/*/upperInclusive",
+        "/manifest/snapshotManifestHash",
+        "/manifest/suffixComplete",
+        "/manifest/temporalCoverageRatio",
+        "/manifest/trajectoryContentHash",
+        "/manifest/trajectoryReferenceKey",
+        "/manifest/trajectoryReferenceKey/id",
+        "/manifest/trajectoryReferenceKey/kind",
+        "/manifest/trajectoryReferenceKey/namespace",
+        "/manifest/trajectoryReferenceKey/version",
+        "/manifest/type",
+        "/manifest/worldVersion",
+        "/pageCount",
+        "/reasonCode",
+        "/schemaVersion",
+        "/status",
+        "/trajectoryReferenceKey",
+        "/trajectoryReferenceKey/id",
+        "/trajectoryReferenceKey/kind",
+        "/trajectoryReferenceKey/namespace",
+        "/trajectoryReferenceKey/version"
+      ],
+      "referenceKinds": [
+        "HISTORICAL_TRAJECTORY",
+        "HISTORY_METHOD_PROFILE",
+        "TASK_EXECUTION_INTERVAL"
+      ],
+      "referencePaths": [
+        "/manifest/frozenRequest/analysisSpaceReferenceKey",
+        "/manifest/frozenRequest/executionIntervalReferenceKey",
+        "/manifest/frozenRequest/sourceSelectionProfileReferenceKey",
+        "/manifest/frozenRequest/subjectReferenceKey",
+        "/manifest/trajectoryReferenceKey",
+        "/trajectoryReferenceKey"
+      ],
+      "geometryTypes": {},
+      "statusPaths": {
+        "/status": [
+          "INDETERMINATE",
+          "NO_DATA",
+          "PROJECTION_PENDING",
+          "READY"
+        ]
+      },
+      "sourceUris": [
+        "urn:gowm:v0.7.1:query-snapshot-manifest",
+        "urn:gowm:v0.7.1:trajectory-artifact-manifest",
+        "urn:gowm:v0.7.1:trajectory-artifact-open-result",
+        "urn:gowm:v0.7.1:trajectory-artifact-reference",
+        "urn:gowm:v0.7:historical-trajectory-query"
+      ]
+    },
+    "evidence": {
+      "referenceInput": true,
+      "referenceOutput": true,
+      "outputFeatures": [
+        "artifactReference",
+        "artifactId",
+        "digest",
+        "fullRequestHash",
+        "mediaType",
+        "snapshotManifestHash",
+        "byteLength",
+        "expiresAt",
+        "manifest",
+        "analysisId",
+        "coordinateEncoding",
+        "definedPeriods",
+        "bounds",
+        "end",
+        "start",
+        "encoding",
+        "evaluationId",
+        "evidenceSampleCount",
+        "excludedPeriods",
+        "range",
+        "bounds",
+        "end",
+        "start",
+        "reason",
+        "finalizationState",
+        "frozenRequest",
+        "analysisSpaceReferenceKey",
+        "id",
+        "kind",
+        "namespace",
+        "version",
+        "executionIntervalReferenceKey",
+        "id",
+        "kind",
+        "namespace",
+        "version",
+        "maximumInlinePoints",
+        "phaseScope",
+        "sourceSelection",
+        "mode",
+        "sourceKey",
+        "trackerSessionKey",
+        "sourceSelectionProfileReferenceKey",
+        "id",
+        "kind",
+        "namespace",
+        "version",
+        "subjectReferenceKey",
+        "id",
+        "kind",
+        "namespace",
+        "version",
+        "frozenSnapshot",
+        "capturedAt",
+        "consistency",
+        "manifestHash",
+        "minimumWorldVersion",
+        "mode",
+        "querySnapshotId",
+        "resources",
+        "contentHash",
+        "pinning",
+        "resourceId",
+        "resourceKind",
+        "version",
+        "worldVersion",
+        "fullRequestHash",
+        "gaps",
+        "gapNo",
+        "kind",
+        "range",
+        "bounds",
+        "end",
+        "start",
+        "reasonCodes",
+        "geometryNodeCount",
+        "inputSetHash",
+        "pageSize",
+        "prefixComplete",
+        "requestedPeriods",
+        "bounds",
+        "end",
+        "start",
+        "schemaVersion",
+        "segments",
+        "end",
+        "evidenceSampleCount",
+        "geometryNodeCount",
+        "interpolation",
+        "lowerInclusive",
+        "segmentNo",
+        "sourceSegmentNo",
+        "sourceTrackletVersionId",
+        "start",
+        "upperInclusive",
+        "snapshotManifestHash",
+        "suffixComplete",
+        "temporalCoverageRatio",
+        "trajectoryContentHash",
+        "trajectoryReferenceKey",
+        "id",
+        "kind",
+        "namespace",
+        "version",
+        "type",
+        "worldVersion",
+        "pageCount",
+        "reasonCode",
+        "schemaVersion",
+        "status",
+        "trajectoryReferenceKey",
+        "id",
+        "kind",
+        "namespace",
+        "version"
+      ],
+      "domainStatuses": [
+        "INDETERMINATE",
+        "NO_DATA",
+        "PROJECTION_PENDING",
+        "READY"
+      ],
+      "exactSpatial": false,
+      "candidateOnly": false,
+      "distanceUnit": false,
+      "distanceModel": false,
+      "implementation": true,
+      "blackBox": false,
+      "verificationPorts": false
+    },
+    "inspections": [
+      {
+        "path": "services/providers/historical-trace-provider/src/artifact-repository.ts",
+        "symbols": [
+          "HistoricalArtifactRepository",
+          "artifactReference",
+          "base",
+          "c",
+          "code",
+          "common",
+          "dataSnapshot",
+          "error",
+          "manifest",
+          "open",
+          "page",
+          "record",
+          "ref",
+          "result",
+          "row",
+          "started",
+          "transaction"
+        ],
+        "calls": [
+          "(error as Error).message.startsWith",
+          "Error",
+          "JSON.stringify",
+          "Math.floor",
+          "Math.max",
+          "Math.min",
+          "Number",
+          "Number.isInteger",
+          "String",
+          "String(record.content).split",
+          "body",
+          "c.query",
+          "c.query('ROLLBACK').catch",
+          "c.release",
+          "historicalSemanticRequestHash",
+          "manifest.inputSetHash.slice",
+          "performance.now",
+          "scope.trim",
+          "sha256",
+          "this.history.execute",
+          "this.pool.connect",
+          "this.transaction"
+        ],
+        "siblingImports": [],
+        "diagnostics": 0
+      },
+      {
+        "path": "services/providers/historical-trace-provider/src/artifact-operations.ts",
+        "symbols": [
+          "createHistoricalArtifactOperations",
+          "descriptor",
+          "effective",
+          "handle",
+          "inputSchemaHash",
+          "inputSchemaUri",
+          "operationId",
+          "outputSchemaHash",
+          "outputSchemaUri",
+          "result",
+          "scope"
+        ],
+        "calls": [
+          "['open','read'].map",
+          "context.deadline.remainingMs",
+          "declaredSemanticProfile",
+          "getContractSchema",
+          "getContractSchemaHash",
+          "repository.open",
+          "repository.page",
+          "sha256"
+        ],
+        "siblingImports": [],
+        "diagnostics": 0
+      }
+    ],
+    "operationEvidenceDigest": "sha256:62f234e70699a250dd674ac2928341e7a024b26b24960a86fa2ae062d2fe218d"
+  },
+  "history.read-trajectory-artifact@1.0": {
+    "contractHash": "sha256:26e1824673e204b308d1f01367ab504fe4777b0c289ecb094948838012fb35e6",
+    "inputShape": {
+      "paths": [
+        "/artifactReference",
+        "/artifactReference/artifactId",
+        "/artifactReference/digest",
+        "/artifactReference/fullRequestHash",
+        "/artifactReference/mediaType",
+        "/artifactReference/snapshotManifestHash",
+        "/pageNo"
+      ],
+      "referenceKinds": [],
+      "referencePaths": [],
+      "geometryTypes": {},
+      "statusPaths": {},
+      "sourceUris": [
+        "urn:gowm:v0.7.1:trajectory-artifact-page-query",
+        "urn:gowm:v0.7.1:trajectory-artifact-reference"
+      ]
+    },
+    "outputShape": {
+      "paths": [
+        "/artifactReference",
+        "/artifactReference/artifactId",
+        "/artifactReference/digest",
+        "/artifactReference/fullRequestHash",
+        "/artifactReference/mediaType",
+        "/artifactReference/snapshotManifestHash",
+        "/content",
+        "/nextPage",
+        "/pageDigest",
+        "/pageNo",
+        "/schemaVersion",
+        "/status"
+      ],
+      "referenceKinds": [],
+      "referencePaths": [],
+      "geometryTypes": {},
+      "statusPaths": {
+        "/status": [
+          "READY"
+        ]
+      },
+      "sourceUris": [
+        "urn:gowm:v0.7.1:trajectory-artifact-page-result",
+        "urn:gowm:v0.7.1:trajectory-artifact-reference"
+      ]
+    },
+    "evidence": {
+      "referenceInput": false,
+      "referenceOutput": false,
+      "outputFeatures": [
+        "artifactReference",
+        "artifactId",
+        "digest",
+        "fullRequestHash",
+        "mediaType",
+        "snapshotManifestHash",
+        "content",
+        "nextPage",
+        "pageDigest",
+        "pageNo",
+        "schemaVersion",
+        "status"
+      ],
+      "domainStatuses": [
+        "READY"
+      ],
+      "exactSpatial": false,
+      "candidateOnly": false,
+      "distanceUnit": false,
+      "distanceModel": false,
+      "implementation": true,
+      "blackBox": false,
+      "verificationPorts": false
+    },
+    "inspections": [
+      {
+        "path": "services/providers/historical-trace-provider/src/artifact-repository.ts",
+        "symbols": [
+          "HistoricalArtifactRepository",
+          "artifactReference",
+          "base",
+          "c",
+          "code",
+          "common",
+          "dataSnapshot",
+          "error",
+          "manifest",
+          "open",
+          "page",
+          "record",
+          "ref",
+          "result",
+          "row",
+          "started",
+          "transaction"
+        ],
+        "calls": [
+          "(error as Error).message.startsWith",
+          "Error",
+          "JSON.stringify",
+          "Math.floor",
+          "Math.max",
+          "Math.min",
+          "Number",
+          "Number.isInteger",
+          "String",
+          "String(record.content).split",
+          "body",
+          "c.query",
+          "c.query('ROLLBACK').catch",
+          "c.release",
+          "historicalSemanticRequestHash",
+          "manifest.inputSetHash.slice",
+          "performance.now",
+          "scope.trim",
+          "sha256",
+          "this.history.execute",
+          "this.pool.connect",
+          "this.transaction"
+        ],
+        "siblingImports": [],
+        "diagnostics": 0
+      },
+      {
+        "path": "services/providers/historical-trace-provider/src/artifact-operations.ts",
+        "symbols": [
+          "createHistoricalArtifactOperations",
+          "descriptor",
+          "effective",
+          "handle",
+          "inputSchemaHash",
+          "inputSchemaUri",
+          "operationId",
+          "outputSchemaHash",
+          "outputSchemaUri",
+          "result",
+          "scope"
+        ],
+        "calls": [
+          "['open','read'].map",
+          "context.deadline.remainingMs",
+          "declaredSemanticProfile",
+          "getContractSchema",
+          "getContractSchemaHash",
+          "repository.open",
+          "repository.page",
+          "sha256"
+        ],
+        "siblingImports": [],
+        "diagnostics": 0
+      }
+    ],
+    "operationEvidenceDigest": "sha256:ecf0846a5e42362933e9ce1a918e73a40d439ebb1be80773f8fa5d36881eea57"
   },
   "network.connectivity.inspect@1.0": {
     "contractHash": "sha256:4744e3c7cdd0fff6f415674e341b023fe287060157bf351524161ab7f84da9e7",
@@ -13114,7 +13751,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ac79ec4632e9b1b62cdf31d52ab6f8a17d3bcfc8a0eabbdbe714393451a9ccd7"
+    "operationEvidenceDigest": "sha256:3c1c630a72e59e2d64ad4f2ebf6c314067a92166ffd98e3de109fcd5650e09c7"
   },
   "network.graph.diagnose@1.0": {
     "contractHash": "sha256:39e8091224c27be878ed6582792f35c4034082026566760f6dcfaf7fdef683eb",
@@ -13337,7 +13974,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ac79ec4632e9b1b62cdf31d52ab6f8a17d3bcfc8a0eabbdbe714393451a9ccd7"
+    "operationEvidenceDigest": "sha256:3c1c630a72e59e2d64ad4f2ebf6c314067a92166ffd98e3de109fcd5650e09c7"
   },
   "network.graph.get@1.0": {
     "contractHash": "sha256:76e8a07360bc0bbc5f87797a5beaee5bc385b77b2cbdcc25cd6ecfb724ca5c51",
@@ -13534,7 +14171,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:26fcdfed656b2797358ae9e413693f7c515867070e290af578dcb2beff621963"
+    "operationEvidenceDigest": "sha256:b775fdea93497a52ddebd0cb53ad9d0b8bfd98b40f6b04520b6b1c6ce27ca7fa"
   },
   "network.graph.list@1.0": {
     "contractHash": "sha256:04be6b9de072fc7661f7af72f9b618a4a2eff2d76501c18d5095fb449be44277",
@@ -13757,7 +14394,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ac79ec4632e9b1b62cdf31d52ab6f8a17d3bcfc8a0eabbdbe714393451a9ccd7"
+    "operationEvidenceDigest": "sha256:3c1c630a72e59e2d64ad4f2ebf6c314067a92166ffd98e3de109fcd5650e09c7"
   },
   "network.path.cost-matrix@1.0": {
     "contractHash": "sha256:57027479118f98f4a3533bfc87f8aef8dc9683f88a686065877edf2a99de70aa",
@@ -13915,7 +14552,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:b073a930c5eac101791fc5d110fced0d77a9a529dedee294118f5e73c3c92f31"
+    "operationEvidenceDigest": "sha256:39f3b5646fdda7cee1c246fe6d350593d631db9d06885bc4767f1f5030108d87"
   },
   "network.path.expand@1.0": {
     "contractHash": "sha256:4a165130da65bfcdce2014bdbbcbe2e14d5253ff9089b07e29e0dac360706f62",
@@ -14152,7 +14789,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:1cf33e9e417bdd473dc50d073b9cad2687f5c8092b90900fa4ddb858210c4131"
+    "operationEvidenceDigest": "sha256:9e263a195ec5e0ebd7e6fd9c9b56e05a84c494832cb84acb9e49cfd8aaf2ad9d"
   },
   "network.path.shortest@1.0": {
     "contractHash": "sha256:16ba48a9a550536a447c9f65c7de2258f5b1a38859903cf3de61a6f053d20b8e",
@@ -14382,7 +15019,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:93a2a935e9a44711b5b3cb7519463e2b3fd8e4c680fc50e52680dd109dfa9f5e"
+    "operationEvidenceDigest": "sha256:67c8eb17fd8d5fe78bc8dcc44a19a24a50bb49f9ba2e5b8e695e830478d04328"
   },
   "network.path.verify@1.0": {
     "contractHash": "sha256:2e0d444384d5943995f29435df9e91f595cf90f19c2fcf8a8b68a7a10d38a62c",
@@ -14556,7 +15193,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:9e16c33f7fe679ed7928f74f28a168d0653c7c662d80665d2340d4f643e4c4d2"
+    "operationEvidenceDigest": "sha256:0ea57a36c8a843da347d59145065bc1724808f8f95e8b91dacfbba089ace0626"
   },
   "network.reachability@1.0": {
     "contractHash": "sha256:cc8636dd109585d754fdcd89ca1259a1a8450019c68459c5900e8b0f6b4d132a",
@@ -14779,7 +15416,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ac79ec4632e9b1b62cdf31d52ab6f8a17d3bcfc8a0eabbdbe714393451a9ccd7"
+    "operationEvidenceDigest": "sha256:3c1c630a72e59e2d64ad4f2ebf6c314067a92166ffd98e3de109fcd5650e09c7"
   },
   "network.snap.point@1.0": {
     "contractHash": "sha256:e51345964f7ef31f64cd239e2f836dd81e6d7fe7fb216e6c0ca0e3e12f513e67",
@@ -14985,7 +15622,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:4d50a89a65b98b39fccbc9f3af488b3c51dee45cadce78694e144c13b38d834b"
+    "operationEvidenceDigest": "sha256:cdcc5eaa6ffb8c8cc75e04c9b6311e40bb0458c8a647a5a79b3b2eb803f6eb6e"
   },
   "network.snap.points@1.0": {
     "contractHash": "sha256:c95b34b6d25d13661c6c0a07ca560c3a7724718972b2bbb97fa45fb4271579d1",
@@ -15191,7 +15828,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:4d50a89a65b98b39fccbc9f3af488b3c51dee45cadce78694e144c13b38d834b"
+    "operationEvidenceDigest": "sha256:cdcc5eaa6ffb8c8cc75e04c9b6311e40bb0458c8a647a5a79b3b2eb803f6eb6e"
   },
   "correlation.resolve@1.0": {
     "contractHash": "sha256:8ebcdb1fcd1d96af7ccf8dcb577e9462d01947a69d688ecd3c58efd764ad6c44",
@@ -15384,7 +16021,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -15430,9 +16066,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -15445,8 +16081,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -15507,7 +16142,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -15524,22 +16158,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c0a52b6378c24c9228b3eb453b4c02d0928e5e88cd70a19fed701c7a96ce794a"
+    "operationEvidenceDigest": "sha256:fe624b859b3c6f858aa09c8915d0ac19c97b5d28623ce552e41c1223e4e1ba8b"
   },
   "observability.evaluate@1.0": {
     "contractHash": "sha256:0d6488d304bf604e37c47fc98ae802c223c8b259ff575ca6d26ea3f15fcb0a60",
@@ -15726,7 +16359,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -15772,9 +16404,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -15787,8 +16419,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -15849,7 +16480,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -15866,22 +16496,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:84269553f2b9de0b485fc9c920089eddd348d4c5d9695b2257a9d051281953d0"
+    "operationEvidenceDigest": "sha256:d521458f073e298c4222a8fd2be73b9bc110ed432b7823caa297dd8297026fe2"
   },
   "operational-task.find-by-correlation@1.0": {
     "contractHash": "sha256:0a1820266d741f2036db88f795685955924a864da22bbcaac44445b9ed829e0f",
@@ -16143,7 +16772,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -16189,9 +16817,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -16204,8 +16832,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -16266,7 +16893,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -16283,22 +16909,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:873547dd4c5fe70ec6dff951522f8f457a89c030dad9980345d8083548452cb8"
+    "operationEvidenceDigest": "sha256:307a278b974bc5e1601a1d88a88681862dbfd1f42ee9ed7a8535129ae61b8fbc"
   },
   "operational-task.find@1.0": {
     "contractHash": "sha256:9641199575bf464cb0495752b127f6b9e454ede27120af3b788bb5e90ddb6e60",
@@ -16560,7 +17185,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -16606,9 +17230,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -16621,8 +17245,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -16683,7 +17306,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -16700,22 +17322,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:873547dd4c5fe70ec6dff951522f8f457a89c030dad9980345d8083548452cb8"
+    "operationEvidenceDigest": "sha256:307a278b974bc5e1601a1d88a88681862dbfd1f42ee9ed7a8535129ae61b8fbc"
   },
   "operational-task.get-execution-intervals@1.0": {
     "contractHash": "sha256:4a2c57b9d6698d7ebf0ec4649e7b4f4853f1138763ae1a6b2e0c1011e111fce0",
@@ -16917,7 +17538,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -16963,9 +17583,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -16978,8 +17598,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -17040,7 +17659,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -17057,22 +17675,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:d102a6a30cf92cfd9a7e0c4ded95830392a809c9ce2079a2e99e0cc0664cfb2a"
+    "operationEvidenceDigest": "sha256:f166d1e04e590d594487542c1396cffc1f17018217ecbeb2d6f823f3a8f14ab2"
   },
   "operational-task.get-timeline@1.0": {
     "contractHash": "sha256:95f38b14e69f4d702b6a5c2eb9ef9214f9e229fb8adeb1b4bba3e2b6b8e4d71b",
@@ -17338,7 +17955,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -17384,9 +18000,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -17399,8 +18015,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -17461,7 +18076,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -17478,22 +18092,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ef545568bd2fc15d5b1564e5e1a62f6e669d249bd6e141bf23a8ee250419f2c9"
+    "operationEvidenceDigest": "sha256:a905044e1c1896874051ec322623966812631fdf9603366782b79f418d14aa60"
   },
   "operational-task.get@1.0": {
     "contractHash": "sha256:f19a5be5989abd7431361bad69270822a1a77188e15ab2c3f47c19350f82dbe2",
@@ -17710,7 +18323,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -17756,9 +18368,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -17771,8 +18383,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -17833,7 +18444,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -17850,22 +18460,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:5fdbd1ae8aeaab72937a5aca247d1b5fd7095700e55d0abad5d7e1aafa13193c"
+    "operationEvidenceDigest": "sha256:2c89db6c67b6ea052733da0af6b87d8d1eeec7aeb6890f042be6e8e327a6fea1"
   },
   "predicate.evaluate@1.0": {
     "contractHash": "sha256:597b775e85c893c467ecae1e188710094601e2c31ad7e70763a141b0d398c987",
@@ -18067,7 +18676,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -18113,9 +18721,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -18128,8 +18736,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -18190,7 +18797,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -18207,22 +18813,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:a7548de74bec8fe71ebe31242413cfd0c7d828896a8e720cfd023650e263d07a"
+    "operationEvidenceDigest": "sha256:3550fc25721c73d9ad230f6d8fbbdde90d10701f1609e90b1af823bb6146e970"
   },
   "world-event.find-by-correlation@1.0": {
     "contractHash": "sha256:d1aa49ed0cee149d5b5e0dfecc3cdc56d8865316d875877d5b291126422c08a6",
@@ -18488,7 +19093,6 @@
           "found",
           "from",
           "hint",
-          "identity",
           "intervalKey",
           "intervalOutcome",
           "intervalReferenceKey",
@@ -18534,9 +19138,9 @@
           "revisionId",
           "revisionIds",
           "row",
+          "scopePermission",
           "selected",
           "snapshot",
-          "sources",
           "stored",
           "stringArray",
           "text",
@@ -18549,8 +19153,7 @@
           "upper",
           "validCapturedAt",
           "value",
-          "values",
-          "world"
+          "values"
         ],
         "calls": [
           "/^[[(]\\s*\"?([^,\\\"]+)\"?\\s*,\\s*\"?([^\\]\")]+|)\"?\\s*[\\])]$/.exec",
@@ -18611,7 +19214,6 @@
           "publicDerivationKind",
           "requiredDigest",
           "resources.push",
-          "result.rows.map",
           "selected.map",
           "sha256",
           "sha256({\n          intervalReferenceKey:intervalKey,\n          profileKey:String(row.profile_key),\n          profileVersion:String(row.profile_version)\n        }).slice",
@@ -18628,22 +19230,21 @@
           "this.predicates.evaluate",
           "this.reads.find",
           "this.reads.snapshot",
+          "this.reads.sources",
           "this.reads.timeline",
           "this.result",
           "this.snapshot",
-          "this.sources",
           "unitNumber",
           "validCapturedAt",
           "value.trim",
           "value.trim().startsWith",
-          "values.push",
-          "world.rows.map"
+          "values.push"
         ],
         "siblingImports": [],
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:ef545568bd2fc15d5b1564e5e1a62f6e669d249bd6e141bf23a8ee250419f2c9"
+    "operationEvidenceDigest": "sha256:a905044e1c1896874051ec322623966812631fdf9603366782b79f418d14aa60"
   },
   "reference.validate@1.0": {
     "contractHash": "sha256:c26f268b9c745cd9d8d570aae40ab5ce1ff045e3afd5dc88c3a5fd53f8e00e0d",
@@ -19451,8 +20052,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -19464,6 +20067,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -19593,6 +20197,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -19642,7 +20247,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:abee40d571c4de7620a3cabbe6313029280cda486b6075552bd1a4b8ade549e8"
+    "operationEvidenceDigest": "sha256:a500d24fe70bae4f1e674b22291efe3ae2bbdfa7da6ec0ba24de068318580d41"
   },
   "reference.get@1.0": {
     "contractHash": "sha256:1bd953038be68d94d2b2d45308eba7ea38a618ddf7eec986a418817ed965a29d",
@@ -19910,8 +20515,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -19923,6 +20530,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -20052,6 +20660,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -20101,7 +20710,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c36e1f571de05b1f895b139d02a7869bc9722a1545c5b72eebbdc20ff276fcfb"
+    "operationEvidenceDigest": "sha256:5ac36db5bd86fd5a7902cda5de2f7bd2ab62ed291d06da075f4eb16b16c19a3d"
   },
   "reference.resolve@1.0": {
     "contractHash": "sha256:755741b8a57d612ac3a7db8b52f639e3bf0730c9ec02a7a76407da9295f09649",
@@ -20409,8 +21018,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -20422,6 +21033,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -20551,6 +21163,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -20600,7 +21213,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2440c69009808809d921fc8a7dc0e6a075485742514e393c497319c281a0ccb5"
+    "operationEvidenceDigest": "sha256:6ab0d7e321f050a4baf7a2313c66ba20381d0156d40f05d86e086b91df0a7948"
   },
   "reference.search@1.0": {
     "contractHash": "sha256:b09f69d011d1e4a63023e92554791f25f6f2a83820ce5baab7bc7b559707e818",
@@ -20908,8 +21521,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -20921,6 +21536,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -21050,6 +21666,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -21099,7 +21716,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:2440c69009808809d921fc8a7dc0e6a075485742514e393c497319c281a0ccb5"
+    "operationEvidenceDigest": "sha256:6ab0d7e321f050a4baf7a2313c66ba20381d0156d40f05d86e086b91df0a7948"
   },
   "coverage.road.expand-geojson@1.0": {
     "contractHash": "sha256:6d174071389ec0d1f269a1114f9e6f86b0f8e668bfcbb8bd94c2da1522cd3d00",
@@ -21756,7 +22373,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:60cb6948ffdbe48e86407ec929dbb0cf2b6d0a3408359c922b8347ebf71f9418"
+    "operationEvidenceDigest": "sha256:9e2fce9e282f149c3c8360a855982d1ad507081c4824560c8ca2f349f627ea37"
   },
   "coverage.road.select-obligations@1.0": {
     "contractHash": "sha256:b074fe3685e85fde182a3d1cd02cd30c06f07043296eabb9dfcec705531f09f0",
@@ -22950,7 +23567,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:fbb1856e0c8b88f8da734c3f88a684b40cb1bc5c14320210477a437b93509ffe"
+    "operationEvidenceDigest": "sha256:b3fc4907e475cd5ec19abd6e5e8a8a706a54709286f0916bc39c1360de51c224"
   },
   "route.plan@1.0": {
     "contractHash": "sha256:faf2ca8fa09f9b1b042b7a9e57d96f762c998845103e71f6580a524a1bb03964",
@@ -23288,7 +23905,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:fbb1856e0c8b88f8da734c3f88a684b40cb1bc5c14320210477a437b93509ffe"
+    "operationEvidenceDigest": "sha256:b3fc4907e475cd5ec19abd6e5e8a8a706a54709286f0916bc39c1360de51c224"
   },
   "route.validate@1.0": {
     "contractHash": "sha256:4d839c010171bf25df3f421fec330f4a669f9b5196ef26b5ff3671efc22384bc",
@@ -23508,7 +24125,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:40642cdc30ff4d2e086d4c4d162579c5ab3b3909e76255ca17a530a63b5beec0"
+    "operationEvidenceDigest": "sha256:a31e7d2333e543db0ef9fa914928619676d0faa3cd85d4f33987b40b8edd0b8b"
   },
   "route.verify@1.0": {
     "contractHash": "sha256:d208aa174e97263e8b3c4243d929a4f614481d55e14a120d11c699d8066cc0c8",
@@ -23717,7 +24334,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:c36cda0462ed85ae0aae762ea16840c602e590b9dc6d44f64beb70ed2012288c"
+    "operationEvidenceDigest": "sha256:61c4ee4e6e5dc4544df0e84e791da55aa95597f603cbc585fcc61969dfeaa4e0"
   },
   "gowm.situation.h3.get-area@1.0": {
     "contractHash": "sha256:c5a60c4b5d7c80eb8556114ec862e461144dc96c5a3d53658ae6db00fda93ade",
@@ -23929,7 +24546,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:3e36c0785643ea337e83d149593e0ccfa000475503c528492d93ab83d3a4bcef"
+    "operationEvidenceDigest": "sha256:129fadac8b9a4588c4bece08e22379f970226eb0e854417dda56d1d67aa352ed"
   },
   "gowm.situation.h3.get-cell@1.0": {
     "contractHash": "sha256:1fa23500abfb0f752e47e67a7d55f004036348e11131e0a0f74189e7502db9d3",
@@ -24126,7 +24743,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:8f8d5559b818b48ffd068b8b90183433d44d503d0093f32fea276323d43a9486"
+    "operationEvidenceDigest": "sha256:a86041386fa941cd17420abf9e8b7600f6f742317e822747cb34da95eb0d17ba"
   },
   "gowm.situation.h3.get-coverage-gaps@1.0": {
     "contractHash": "sha256:dcf8db9af8b1452e6830378bb0504b8c05317a57475041fb3d3d4744a6b03fd0",
@@ -24312,7 +24929,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:926a406324999a1fd4dcd0ea86062a610ba83bdc9478d7a799adcba185a138a7"
+    "operationEvidenceDigest": "sha256:869f0fa14f475b80efb21760290be28ed9f5148c8835ac6c4eede6f3a042b1f6"
   },
   "gowm.situation.h3.get-hotspots@1.0": {
     "contractHash": "sha256:8be482e37426530d18dea09c774f259e3fe7691e15a594b8e683a8cba20219cb",
@@ -24499,7 +25116,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:623fbd214d13afd1af18d6071734e5685c2c3bf285c010a74578b50186c8a315"
+    "operationEvidenceDigest": "sha256:0086e91a1153eb973ec51e1814bd4b27f19890935fba691c1ffbeb75518e27b9"
   },
   "spatial.aggregate@1.0": {
     "contractHash": "sha256:8464b38df8745a703371deaaeabbacb9a5c193525ef619e982834fb1c6f4e6b7",
@@ -37153,8 +37770,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -37166,6 +37785,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -37295,6 +37915,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -37344,7 +37965,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:cfd9b9ab2971b0cb20713c6ed52a6282b7cb641bf291df81b3aa401980dbea6d"
+    "operationEvidenceDigest": "sha256:9b3652a6a126774522830c8ec1503747f2bd902f3dd896485aafc4478be8d085"
   },
   "result.get@1.0": {
     "contractHash": "sha256:15f3ef9359c2a54d4345a6ece663f7b7f0effdb8b2643887f04a7678311cc4d5",
@@ -37601,8 +38222,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -37614,6 +38237,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -37743,6 +38367,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -37792,10 +38417,10 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:5259abc38cbc6503f226c71173eaf9c6c86c01f39ea19993cf1ab5b8e3d3b43a"
+    "operationEvidenceDigest": "sha256:1ef2500d47ef71361a617c39861357eb767b5d01b55b7f4a4ceffe109805fa2a"
   },
   "world.get-current-state@1.0": {
-    "contractHash": "sha256:2f5e78d177a71349b61d9f326da83233b88c2643e00e13ec81d18a6a89b1f472",
+    "contractHash": "sha256:9c3f6dadef2c8da3db8fa88af07cf581d8f383fe6fe30f337b1d6a1144332efe",
     "inputShape": {
       "paths": [
         "/cursor",
@@ -38032,8 +38657,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -38045,6 +38672,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -38174,6 +38802,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -38223,7 +38852,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:22dd30df0ec7ee45cc5fc66a0b3a1bfb683194e5b2b270f345140489566daec5"
+    "operationEvidenceDigest": "sha256:f9c66433a9d4207de71a1fa5e5539fe35f1bfd65eec1b06b2f2affcf14ee252c"
   },
   "world.get-event-timeline@1.0": {
     "contractHash": "sha256:b002b2be6efef4d084385d52c149163f5862954252d7573a45505e17bb70ad9c",
@@ -38427,8 +39056,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -38440,6 +39071,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -38569,6 +39201,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -38618,7 +39251,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:73d346877ee23529298403b10a1c675b5254f4caddbe185fdf87a166464ad30d"
+    "operationEvidenceDigest": "sha256:d561bdb80fab8269a313c32865f6b636ed16950e2fc82f27702dbb2f2569565a"
   },
   "world.get-geometry@1.0": {
     "contractHash": "sha256:a72ab5a6cbd33303cff21364a23c940cddec513e137df0163e7b85f6c863d718",
@@ -38858,8 +39491,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -38871,6 +39506,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -39000,6 +39636,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -39049,7 +39686,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:af41e93b01bf7f08d1b32463a15a479f7fe343f4870fc5480ab47bd67c82e54a"
+    "operationEvidenceDigest": "sha256:9da2e378aa494779addbd59815267b40880e23af1a4e3955d710c4841c42df15"
   },
   "world.get-observations@1.0": {
     "contractHash": "sha256:9f4b5c84594e110d2faa409104616677845ed1c86396a4b4c902b8942849e13f",
@@ -39253,8 +39890,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -39266,6 +39905,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -39395,6 +40035,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -39444,7 +40085,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:73d346877ee23529298403b10a1c675b5254f4caddbe185fdf87a166464ad30d"
+    "operationEvidenceDigest": "sha256:d561bdb80fab8269a313c32865f6b636ed16950e2fc82f27702dbb2f2569565a"
   },
   "world.get-provenance@1.0": {
     "contractHash": "sha256:da495973a4244e5ac97bb61586987faf6df331ed2a5921f31ea4d18875456136",
@@ -39684,8 +40325,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -39697,6 +40340,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -39826,6 +40470,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -39875,7 +40520,7 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:22dd30df0ec7ee45cc5fc66a0b3a1bfb683194e5b2b270f345140489566daec5"
+    "operationEvidenceDigest": "sha256:f9c66433a9d4207de71a1fa5e5539fe35f1bfd65eec1b06b2f2affcf14ee252c"
   },
   "world.get-state-history@1.0": {
     "contractHash": "sha256:164e16a8b2388a7ac0c42a5f698b605eb5a6afd0b550d437e8f4a8715be42105",
@@ -40079,8 +40724,10 @@
           "optionalString",
           "output",
           "parsed",
+          "position",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "quality",
           "qualityRank",
@@ -40092,6 +40739,7 @@
           "referenceKey",
           "referenceKeyValue",
           "referenceOperation",
+          "referenceVersion",
           "references",
           "requested",
           "requiredString",
@@ -40221,6 +40869,7 @@
           "parsed.toISOString",
           "positive",
           "preferExactResolutionRows",
+          "projectedHorizontalPosition",
           "projectedPosition",
           "qualityRank",
           "query.rows.at",
@@ -40270,6 +40919,6 @@
         "diagnostics": 0
       }
     ],
-    "operationEvidenceDigest": "sha256:73d346877ee23529298403b10a1c675b5254f4caddbe185fdf87a166464ad30d"
+    "operationEvidenceDigest": "sha256:d561bdb80fab8269a313c32865f6b636ed16950e2fc82f27702dbb2f2569565a"
   }
 }

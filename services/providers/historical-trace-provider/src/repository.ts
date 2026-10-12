@@ -306,6 +306,8 @@ export class HistoricalTraceRepository {
       await this.pool.query("SELECT * FROM gowm_history_v1.historical_trajectory_outcome LIMIT 0");
       await this.pool.query("SELECT * FROM gowm_history_v1.evaluated_historical_trajectory(NULL::jsonb,NULL::jsonb) LIMIT 0");
       await this.pool.query("SELECT * FROM gowm_history_v1.historical_request_evaluation_identity(NULL::jsonb,NULL::jsonb) LIMIT 0");
+      const artifact=await this.pool.query("SELECT has_function_privilege(current_user,'gowm_history_artifact.open(jsonb,jsonb,text,integer,integer)','EXECUTE') AND has_function_privilege(current_user,'gowm_history_artifact.read_page(jsonb,integer,jsonb)','EXECUTE') AS allowed");
+      if(artifact.rows[0]?.allowed!==true)throw Error('artifact read contract permission missing');
       return {ready:true,reasons:[]};
     } catch { return {ready:false,reasons:["gowm_history_v1 historical trace read contract is unavailable"]}; }
   }

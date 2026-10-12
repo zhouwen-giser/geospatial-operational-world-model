@@ -65,8 +65,8 @@
     {
       "providerId": "gowm.historical-trace",
       "providerVersion": "0.7.1",
-      "implementationDigest": "sha256:fc90394e1747956eab5eaa33774e425bb6845f9c77f97735749b2b1f87b1a2fe",
-      "manifestHash": "sha256:a3b5978749d4120ac9c84c246f857ca76c2882b2d970daab1db03edc5e9c0634",
+      "implementationDigest": "sha256:a211fe288837ee8337c2fad7091b833ba1e064284ac0f3d74c547270e5972eff",
+      "manifestHash": "sha256:e81190cdc1b45c59cb1454d1b4d91810dcee94cf283b71c9cabad873c68b77fe",
       "manifestPath": "contracts/manifests/providers/historical-trace-provider.json",
       "endpoint": "http://historical-trace-provider:8100",
       "approvalId": "historical-trace-v0.7",

@@ -15,9 +15,7 @@ export class RepositorySituationReadPort implements GowmSituationReadPort {
 
   async getCells(dataScopeKey: string, indexes: string[]): Promise<SituationCell[]> {
     this.assertAcceptedScope(dataScopeKey);
-    await this.assertSingleScopeDeployment();
-    const result = await this.situation.getCells(indexes);
-    await this.assertSingleScopeDeployment();
+    const result = await this.situation.getCells(indexes,dataScopeKey);
     return result;
   }
 
@@ -27,7 +25,6 @@ export class RepositorySituationReadPort implements GowmSituationReadPort {
     maximumReferences: number
   ): Promise<PlatformCommonDefinitionsReferenceKey[]> {
     this.assertAcceptedScope(dataScopeKey);
-    await this.assertSingleScopeDeployment();
     const result = await this.pool.query<{ reference_key: unknown }>(
       `SELECT candidate.reference_key
        FROM (
@@ -57,37 +54,32 @@ export class RepositorySituationReadPort implements GowmSituationReadPort {
        LIMIT $3`,
       [dataScopeKey, indexes, maximumReferences]
     );
-    await this.assertSingleScopeDeployment();
     return result.rows.map((row) => referenceKey(row.reference_key));
   }
 
   async areaCells(dataScopeKey: string, area: Geometry, resolution: number): Promise<SituationCell[]> {
     this.assertAcceptedScope(dataScopeKey);
-    await this.assertSingleScopeDeployment();
-    const result = await this.situation.areaCells(area, resolution);
-    await this.assertSingleScopeDeployment();
+    const result = await this.situation.areaCells(area, resolution,dataScopeKey);
     return result;
   }
 
   async ranked(dataScopeKey: string, options: SituationRankedRequest): Promise<SituationCell[]> {
     this.assertAcceptedScope(dataScopeKey);
-    await this.assertSingleScopeDeployment();
-    const result = await this.situation.ranked(options);
-    await this.assertSingleScopeDeployment();
+    const result = await this.situation.ranked(options,dataScopeKey);
     return result;
   }
 
   async worldVersion(dataScopeKey: string): Promise<number> {
     this.assertAcceptedScope(dataScopeKey);
-    await this.assertSingleScopeDeployment();
     const result = await this.world.worldVersion();
-    await this.assertSingleScopeDeployment();
     return result;
   }
 
   async readiness(): Promise<{ ready: boolean; reasons: string[] }> {
     try {
-      await this.assertSingleScopeDeployment();
+      const contract=await this.pool.query("SELECT to_regclass('gowm_situation.cell_scored') IS NOT NULL AS installed,EXISTS(SELECT 1 FROM data_scope WHERE scope_key=$1) AS scope",[this.acceptedDataScope]);
+      if(!contract.rows[0]?.installed||!contract.rows[0]?.scope)return {ready:false,reasons:['scoped Situation projection or accepted scope is unavailable']};
+      await this.pool.query('SELECT * FROM gowm_situation.cell_scored LIMIT 0');
       const health = await this.world.health();
       return health.database ? { ready: true, reasons: [] } : { ready: false, reasons: ["world database is unavailable"] };
     } catch (error) {
@@ -101,18 +93,7 @@ export class RepositorySituationReadPort implements GowmSituationReadPort {
     }
   }
 
-  private async assertSingleScopeDeployment(): Promise<void> {
-    const result = await this.pool.query<{ scope_count: string | number; accepted_count: string | number }>(
-      `SELECT count(*)::text AS scope_count,
-              count(*) FILTER (WHERE scope_key = $1)::text AS accepted_count
-       FROM data_scope`,
-      [this.acceptedDataScope]
-    );
-    const row = result.rows[0];
-    if (Number(row?.scope_count) !== 1 || Number(row?.accepted_count) !== 1) {
-      throw new Error("GOWM Situation provider requires a verifiable single-scope deployment");
-    }
-  }
+
 }
 
 function referenceKey(value: unknown): PlatformCommonDefinitionsReferenceKey {

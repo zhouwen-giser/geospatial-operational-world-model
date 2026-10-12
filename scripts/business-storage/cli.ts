@@ -64,8 +64,11 @@ else if (['install', 'verify', 'fixture', 'test:postgres'].includes(command)) {
                     await install(c, d);
                     console.log('INSTALL PASS');
                 }
-                else if (command === 'verify')
-                    console.log(JSON.stringify(await verify(c)));
+                else if (command === 'verify') {
+                    const domain=args.includes('--domain')?args[args.indexOf('--domain')+1]:'all';
+                    if(domain!=='all'&&domain!=='smpp'&&domain!=='sdar')throw Error('DOMAIN_INVALID');
+                    console.log(JSON.stringify(await verify(c,domain)));
+                }
                 else {
                     await install(c);
                 }

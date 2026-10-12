@@ -5,7 +5,7 @@
     "providerId": "gowm.historical-trace",
     "providerVersion": "0.7.1",
     "owner": "gowm-platform",
-    "implementationDigest": "sha256:fc90394e1747956eab5eaa33774e425bb6845f9c77f97735749b2b1f87b1a2fe",
+    "implementationDigest": "sha256:a211fe288837ee8337c2fad7091b833ba1e064284ac0f3d74c547270e5972eff",
     "sourceRef": "urn:gowm:source:in-tree:historical-trace:0.7.1"
   },
   "endpoints": {
@@ -107,6 +107,182 @@
             "name": "result",
             "schemaUri": "urn:gowm:v0.7.1:historical-trajectory-result",
             "schemaHash": "sha256:d51c07904cc18ec3a67c3bbaebf904f781d407378fc42e9e91debbfc04f1b02d",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "history.open-trajectory-artifact",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.1",
+        "domain": "ANALYSIS",
+        "acceptedReferenceKinds": [
+          "WORLD_OBJECT",
+          "SPATIAL_OBJECT",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "DERIVED_REFERENCE",
+          "TASK_EXECUTION_INTERVAL",
+          "HISTORY_METHOD_PROFILE",
+          "HISTORICAL_TRAJECTORY"
+        ],
+        "producedReferenceKinds": [
+          "HISTORICAL_TRAJECTORY",
+          "HISTORY_INPUT_SET"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "HISTORICAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "READY": "COMPLETED",
+            "PROJECTION_PENDING": "INDETERMINATE",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        },
+        "notes": [
+          "Artifact availability describes retrieval, not evidence completeness.",
+          "The full frozen request, snapshot, evaluation, immutable revision, gap and segment metadata remain explicit.",
+          "Read replay revalidates scope, byte digest and server-clock expiry."
+        ]
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.7.1:trajectory-artifact-open-query",
+      "inputSchemaHash": "sha256:71215c062045fff2c991a0a4883bdc9e98351bc8c410263724940be8fe8611d5",
+      "outputSchemaUri": "urn:gowm:v0.7.1:trajectory-artifact-open-result",
+      "outputSchemaHash": "sha256:30b8407c5533b3b3a21e0e7d9faaa5e1742e61c9a4efcd63e4e9fee620f1ef2e",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 30000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "HIGH"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 8388608,
+        "maximumRows": 1000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED",
+        "resourceResolution": "DISCOVER_RESOURCES"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.7.1:trajectory-artifact-open-query",
+            "schemaHash": "sha256:71215c062045fff2c991a0a4883bdc9e98351bc8c410263724940be8fe8611d5",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.7.1:trajectory-artifact-open-result",
+            "schemaHash": "sha256:30b8407c5533b3b3a21e0e7d9faaa5e1742e61c9a4efcd63e4e9fee620f1ef2e",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ]
+      }
+    },
+    {
+      "operationId": "history.read-trajectory-artifact",
+      "operationVersion": "1.0",
+      "semanticProfile": {
+        "profileVersion": "1.1",
+        "domain": "ANALYSIS",
+        "acceptedReferenceKinds": [
+          "HISTORICAL_TRAJECTORY"
+        ],
+        "producedReferenceKinds": [
+          "HISTORICAL_TRAJECTORY",
+          "HISTORY_INPUT_SET"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "HISTORICAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "READY": "COMPLETED"
+          }
+        },
+        "notes": [
+          "Artifact availability describes retrieval, not evidence completeness.",
+          "The full frozen request, snapshot, evaluation, immutable revision, gap and segment metadata remain explicit.",
+          "Read replay revalidates scope, byte digest and server-clock expiry."
+        ]
+      },
+      "semanticRole": "DOMAIN_ANALYSIS",
+      "dataBinding": "WORLD_SNAPSHOT_BOUND",
+      "resultSemantics": "DERIVED_ANALYSIS",
+      "executionBindings": [
+        "SYNC_HTTP",
+        "VERSIONED_SQL_CONTRACT"
+      ],
+      "criticalPathPolicy": "REMOTE_ONLY",
+      "maturity": "PREVIEW",
+      "inputSchemaUri": "urn:gowm:v0.7.1:trajectory-artifact-page-query",
+      "inputSchemaHash": "sha256:db41d83dc11098ad683273a6796696b22e10c69037ab62ee54371c525bc928a4",
+      "outputSchemaUri": "urn:gowm:v0.7.1:trajectory-artifact-page-result",
+      "outputSchemaHash": "sha256:6dc688246f2b4741a101543e8fe371135157ee43c70ffc80bf3456a41868ddb1",
+      "scopePolicy": "DATA_SCOPE_REQUIRED",
+      "execution": {
+        "mode": "SYNC",
+        "defaultTimeoutMs": 5000,
+        "maximumTimeoutMs": 30000,
+        "costClass": "MEDIUM"
+      },
+      "limits": {
+        "maximumInputBytes": 1048576,
+        "maximumOutputBytes": 8388608,
+        "maximumRows": 1000,
+        "maximumCandidates": 5000
+      },
+      "snapshotPolicy": {
+        "dataSnapshot": "REQUIRED",
+        "computeSnapshot": "REQUIRED",
+        "resourceResolution": "DISCOVER_RESOURCES"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "request",
+            "schemaUri": "urn:gowm:v0.7.1:trajectory-artifact-page-query",
+            "schemaHash": "sha256:db41d83dc11098ad683273a6796696b22e10c69037ab62ee54371c525bc928a4",
+            "valueKind": "ANY",
+            "unitSemantics": "UNSPECIFIED"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "schemaUri": "urn:gowm:v0.7.1:trajectory-artifact-page-result",
+            "schemaHash": "sha256:6dc688246f2b4741a101543e8fe371135157ee43c70ffc80bf3456a41868ddb1",
             "valueKind": "ANY",
             "unitSemantics": "UNSPECIFIED"
           }

@@ -1,0 +1,20 @@
+user gowm_bus
+topic readwrite gowm/#
+user ugv_ingest
+topic read /ugv/gnss
+topic read /ugv/speed
+topic read status/ugv
+topic read /ugv/mission_state
+topic read /ugv/area_recon/status
+topic read /ugv/area_recon/targets
+topic read /ugv/area_recon/exception
+topic read /sim/reset_ack
+user ugv_source
+topic write /ugv/gnss
+topic write /ugv/speed
+topic write status/ugv
+topic write /ugv/mission_state
+topic write /ugv/area_recon/status
+topic write /ugv/area_recon/targets
+topic write /ugv/area_recon/exception
+topic write /sim/reset_ack

@@ -50,7 +50,7 @@
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/compatibility-migration.test.ts",
-      "sha256": "62f03ef8f4e3502a6a3ac71beb6b5ca3fb4df99bb4bb1f0770b5ef7268d2f362"
+      "sha256": "d433623ad23f56ab8e8d8b9f188efab7b9c1a59094b33b090acf841250b36c9f"
     }
   ],
   "status": "PROVEN",

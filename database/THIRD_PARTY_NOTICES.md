@@ -13,3 +13,7 @@ The GOWM database image is an aggregation of independently licensed components.
 The complete pgRouting GPL-2.0 text is installed at `/usr/share/doc/gowm-pgrouting/LICENSE`. The source archive remains available from `https://github.com/pgRouting/pgrouting/releases/tag/v4.0.1`; the database Dockerfile is the complete build recipe used for the installed binary.
 
 Distribution of a built image requires preservation of these notices, the included SPDX SBOM, all upstream notices inherited from the base image, and satisfaction of the corresponding-source obligations of every GPL component.
+
+## pgvector 0.8.6
+
+Official source: https://github.com/pgvector/pgvector/tree/v0.8.6. PostgreSQL License; see `licenses/pgvector-LICENSE.txt`. Source archive SHA-256: `10bf9938906e5d643bbc4a7eea104b6f57ba4898e5b76b20e60484ea1d5a7f8f`. Built against the pinned PostgreSQL 18 foundation for new installations.

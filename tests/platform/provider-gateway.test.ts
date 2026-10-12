@@ -519,7 +519,7 @@ describe("controlled World Platform registry build", () => {
   it("combines discovered canonical fragments deterministically with 16 providers and no collision", async () => {
     const { entries, policy } = await sources();
     const built = assembleWorldPlatformRegistry(entries, policy);
-    expect(built.report).toMatchObject({ providerCount: 16, operationCount: 124, missingRequiredProviders: [], operationCollisions: [], status: "PASS" });
+    expect(built.report).toMatchObject({ providerCount: 16, operationCount: 126, missingRequiredProviders: [], operationCollisions: [], status: "PASS" });
     expect(assembleWorldPlatformRegistry([...entries].reverse(), policy)).toEqual(built);
     expect(built.registryDocument.registryProfile).toBe("world-platform");
   });

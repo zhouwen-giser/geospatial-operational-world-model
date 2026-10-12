@@ -1,0 +1,134 @@
+{
+  "status": "PASS",
+  "migrationHead": "093",
+  "results": [
+    {
+      "baseline": 0,
+      "status": "PASS",
+      "artifact": {
+        "status": "PASS",
+        "checks": [
+          "real_worker_evaluation_and_bounded_preview",
+          "public_protocol_full_bytes_pages_digest_gaps",
+          "open_idempotence",
+          "scope_identity_page_and_snapshot_pin_rejection",
+          "reuse_with_new_evaluation_expiry_and_old_hash_preservation",
+          "minimal_privileges",
+          "real_gateway_http_pinned_preview_open_pending_replay_and_all_pages"
+        ],
+        "nodeCount": 605,
+        "pageCount": 4,
+        "bytes": 122908,
+        "gateway": {
+          "status": "PASS",
+          "transport": "REAL_GATEWAY_AND_PROVIDER_HTTP",
+          "gatewayCoordinationStore": "IN_MEMORY_TEST_ONLY",
+          "facts": "REAL_POSTGRES",
+          "pages": 4,
+          "bytes": 125764,
+          "frozenPins": 11
+        },
+        "businessAcceptance": "NOT_RUN",
+        "remoteDeployment": "NOT_RUN"
+      },
+      "situation": {
+        "status": "PASS",
+        "checks": [
+          "same_cell_two_scopes_independent_counts",
+          "projection_redelivery_idempotence",
+          "scope_required_transaction_reset_and_minimal_privileges",
+          "multi_scope_provider_ready_ranking_area_candidates_and_authorization",
+          "scoped_current_type_delete_restore_and_move_counters_preserve_evidence"
+        ],
+        "remoteDeployment": "NOT_RUN"
+      },
+      "profile": {
+        "status": "PASS",
+        "checks": [
+          "immutable_profile_register_replay_conflict_activate",
+          "reader_permissions_and_active_session_freeze",
+          "real_schema_inbox_mapping_outbox_and_delayed_source_clock",
+          "reset_complete_uses_calibrated_observation_boundary",
+          "explicit_close_new_session_disabled_stream_and_legacy_replay"
+        ],
+        "sourceCalibrationEvidence": "TEST_FIXTURE_ONLY",
+        "physicalDeviceAcceptance": "NOT_RUN",
+        "remoteDeployment": "NOT_RUN"
+      },
+      "operations": {
+        "status": "PASS",
+        "kind": "ISOLATED_LOGICAL_RESTORE_VERIFIED",
+        "sha256": "1a05d497e991f31fcdcd46ebbc501c5c2e8888617df7a46ef414cac704400e3c",
+        "tables": 10,
+        "checks": [
+          "consistent_exported_snapshot_backup",
+          "explicit_scope_readonly_diagnosis",
+          "same_database_nonempty_and_corruption_refused",
+          "matching_engine_isolated_restore",
+          "counts_sample_hashes_owner_and_acl_preserved",
+          "repeat_restore_refused"
+        ],
+        "productionReadiness": "NOT_GRANTED",
+        "pitrQualified": false,
+        "haQualified": false,
+        "remoteDeployment": "NOT_RUN"
+      }
+    },
+    {
+      "baseline": 89,
+      "status": "PASS",
+      "artifact": {
+        "status": "PASS",
+        "checks": [
+          "real_worker_evaluation_and_bounded_preview",
+          "public_protocol_full_bytes_pages_digest_gaps",
+          "open_idempotence",
+          "scope_identity_page_and_snapshot_pin_rejection",
+          "reuse_with_new_evaluation_expiry_and_old_hash_preservation",
+          "minimal_privileges",
+          "real_gateway_http_pinned_preview_open_pending_replay_and_all_pages"
+        ],
+        "nodeCount": 605,
+        "pageCount": 4,
+        "bytes": 122908,
+        "gateway": {
+          "status": "PASS",
+          "transport": "REAL_GATEWAY_AND_PROVIDER_HTTP",
+          "gatewayCoordinationStore": "IN_MEMORY_TEST_ONLY",
+          "facts": "REAL_POSTGRES",
+          "pages": 4,
+          "bytes": 125764,
+          "frozenPins": 11
+        },
+        "businessAcceptance": "NOT_RUN",
+        "remoteDeployment": "NOT_RUN"
+      },
+      "situation": {
+        "status": "PASS",
+        "checks": [
+          "same_cell_two_scopes_independent_counts",
+          "projection_redelivery_idempotence",
+          "scope_required_transaction_reset_and_minimal_privileges",
+          "multi_scope_provider_ready_ranking_area_candidates_and_authorization",
+          "scoped_current_type_delete_restore_and_move_counters_preserve_evidence"
+        ],
+        "remoteDeployment": "NOT_RUN"
+      },
+      "profile": {
+        "status": "PASS",
+        "checks": [
+          "immutable_profile_register_replay_conflict_activate",
+          "reader_permissions_and_active_session_freeze",
+          "real_schema_inbox_mapping_outbox_and_delayed_source_clock",
+          "reset_complete_uses_calibrated_observation_boundary",
+          "explicit_close_new_session_disabled_stream_and_legacy_replay"
+        ],
+        "sourceCalibrationEvidence": "TEST_FIXTURE_ONLY",
+        "physicalDeviceAcceptance": "NOT_RUN",
+        "remoteDeployment": "NOT_RUN"
+      }
+    }
+  ],
+  "externalBusinessAcceptance": "NOT_RUN",
+  "remoteDeployment": "NOT_RUN"
+}

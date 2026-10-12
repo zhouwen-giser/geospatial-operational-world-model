@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7.1:trajectory-artifact-page-result",
+  "title": "GowmTrajectoryArtifactPageResultV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "status",
+    "artifactReference",
+    "pageNo",
+    "pageDigest",
+    "content",
+    "nextPage"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "status": {
+      "const": "READY"
+    },
+    "artifactReference": {
+      "$ref": "trajectory-artifact-reference.schema.json"
+    },
+    "pageNo": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 999
+    },
+    "pageDigest": {
+      "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4194304
+    },
+    "nextPage": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

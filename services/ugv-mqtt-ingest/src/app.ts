@@ -1,5 +1,10 @@
 import { RESET_ACK_TOPIC } from "./reset-ack.js";
-import { loadIngestDeviceContext } from "../../../packages/integrations/device-business-storage/src/context.js";
+import {timingSafeEqual} from 'node:crypto';
+import { loadIngestDeviceContext,resolveDeviceIdentity } from "../../../packages/integrations/device-business-storage/src/context.js";
+import {loadActiveRuntimeProfile} from '../../../packages/integrations/device-business-storage/src/ingest-profile.js';
+import {PROFILED_MAPPER_VERSION} from '../../../packages/integrations/ugv-mqtt-ingest-core/src/runtime-profile.js';
+import {canonicalJson} from '../../../packages/observation-model/src/canonical.js';
+import {sha256} from '../../../packages/integrations/ugv-mqtt-ingest-core/src/contracts.js';
 import Fastify, { type FastifyInstance } from "fastify";
 import mqtt, { type IClientOptions, type MqttClient } from "mqtt";
 import pg from "pg";
@@ -33,12 +38,35 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
   const contextClient = await pool.connect();
   try {
     await contextClient.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
+    const identity=await resolveDeviceIdentity(contextClient,{scope:config.dataScopeKey,namespace:config.deviceNamespace,identifier:config.deviceId});
+    const runtimeProfile=await loadActiveRuntimeProfile(contextClient,config.dataScopeKey,identity.deviceId);
+    if(config.runtimeProfileRequired&&!runtimeProfile)throw Error("INGEST_RUNTIME_PROFILE_REQUIRED");
+    if(runtimeProfile){
+      if((config.runtimeProfileRequired||runtimeProfile.originKind!=="SIMULATION"||runtimeProfile.analysisSrid!==32648)&&
+       (!config.runtimeProfileRequired||config.originKind!==runtimeProfile.originKind||config.analysisSrid!==runtimeProfile.analysisSrid||config.analysisSpaceKey!==runtimeProfile.analysisSpaceKey))
+       throw Error("INGEST_PROFILE_EXPLICIT_CONFIGURATION_REQUIRED");
+      if(runtimeProfile.sourceKey!==config.sourceKey||runtimeProfile.endpointKey!==config.endpointKey||
+       runtimeProfile.worldEpoch!==config.worldEpoch||runtimeProfile.trackerSessionKey!==config.trackerSessionKey)
+       throw Error('INGEST_PROFILE_ENVIRONMENT_CONFLICT');
+      if(!sourceLock)throw Error('INGEST_PROFILE_SOURCE_LOCK_REQUIRED');
+      const {sourceDirectory:_,...contract}=sourceLock;
+      if(runtimeProfile.sourceSchemaLockSha256!==sha256(canonicalJson(contract)))throw Error('INGEST_PROFILE_SOURCE_SCHEMA_CONFLICT');
+      if(runtimeProfile.routes.some(r=>r.enabled&&r.qos===0)&&!config.speedQos0Compat)throw Error('INGEST_PROFILE_QOS0_OPT_IN_REQUIRED');
+    }
     const deviceContext = await loadIngestDeviceContext(contextClient, {
       scope: config.dataScopeKey, namespace: config.deviceNamespace, identifier: config.deviceId,
       endpointKey: config.endpointKey, brokerUrl: config.mqttUrl, sourceKey: config.sourceKey,
-      pipelineKey: config.producerPipelineKey, topics: UGV_AUTHORITY_TOPICS
+      pipelineKey: config.producerPipelineKey, topics: runtimeProfile?runtimeProfile.routes.filter(r=>r.enabled).map(r=>r.topic):UGV_AUTHORITY_TOPICS
     });
-    frozenMapper = { ...mapperConfig(config), deviceContext };
+    if(runtimeProfile)for(const route of runtimeProfile.routes.filter(r=>r.enabled)){
+      const streams=await contextClient.query(`SELECT s.qos,s.message_profile,s.mapper_config FROM gowm_device.device_stream s
+       WHERE s.device_id=$1 AND s.endpoint_id=$2 AND s.topic_filter=$3 AND s.enabled`,[identity.deviceId,deviceContext.endpointId,route.topic]);
+      if(streams.rowCount!==1||Number(streams.rows[0].qos)!==route.qos||streams.rows[0].message_profile!==route.messageProfile||
+       streams.rows[0].mapper_config.runtimeProfileId!==runtimeProfile.profileId||streams.rows[0].mapper_config.runtimeProfileVersion!==runtimeProfile.version)
+       throw Error('INGEST_PROFILE_STREAM_CONFIG_CONFLICT');
+    }
+    frozenMapper = { ...mapperConfig(config), deviceContext,...(runtimeProfile?{runtimeProfile,mapperVersion:PROFILED_MAPPER_VERSION,
+      analysisSpaceKey:runtimeProfile.analysisSpaceKey,analysisSrid:runtimeProfile.analysisSrid}:{}) };
     await contextClient.query("COMMIT");
   } catch (error) {
     await contextClient.query("ROLLBACK");
@@ -100,11 +128,11 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
       ...(config.username ? { username: config.username } : {}),...(config.password ? { password: config.password } : {}),
       ...(config.ca ? { ca: config.ca } : {}),...(config.cert ? { cert: config.cert } : {}),...(config.key ? { key: config.key } : {}),
       customHandleAcks: (topic,payload,packet,done) => {
-        if (!isTopic(topic) && topic !== RESET_ACK_TOPIC) return done(135);
+        if (!(topic in subscriptionPlan(frozenMapper))) return done(135);
         const receivedAt = new Date().toISOString();
         void waitForSession().then((activeSessionId) => {
           if (!activeSessionId) throw new Error("MQTT connection closed before durable session initialization");
-          return repository.accept(activeSessionId,topic,payload,packet,receivedAt);
+          return repository.accept(activeSessionId,topic as UgvAuthorityTopic|typeof RESET_ACK_TOPIC,payload,packet,receivedAt);
         }).then((accepted) => {
           increment(state.messages,topic); if (accepted.redelivery) increment(state.redeliveries,topic);
           if (accepted.validationState !== "VALID") increment(state.invalid,`${topic}:${accepted.validationState}`);
@@ -160,13 +188,22 @@ export async function buildUgvMqttIngestApp(): Promise<{ app: FastifyInstance; c
   resetTimer.unref(); processTimer.unref(); deliveryTimer.unref();
 
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? "info" } });
+  app.post('/v1/ingest:quiesce',async(request,reply)=>{
+    const supplied=Buffer.from(String(request.headers.authorization??''));
+    const expected=Buffer.from('Bearer '+(config.adminToken?.toString('utf8').trim()??''));
+    if(!config.adminToken||supplied.length!==expected.length||!timingSafeEqual(supplied,expected))return reply.code(403).send({error:'INGEST_ADMIN_AUTH_REQUIRED'});
+    const closingSessionId=sessionId;
+    if(client)await new Promise<void>((resolve,reject)=>client!.end(false,{},error=>error?reject(error):resolve()));
+    if(closingSessionId)await repository.disconnect(closingSessionId,'explicit_profile_quiesce');
+    return {status:'QUIESCED',...await repository.status(),inboxOutboxDrainContinues:true,sessionClosureRequired:true,newBrokerSessionRequired:true};
+  });
   app.get("/health/live",async () => ({ status: "ok",service: "ugv-mqtt-ingest" }));
   app.get("/health/ready",async (_request,reply) => {
     const dbWritable = await writable(pool);
     const resetContractReady = await pool.query(`SELECT coalesce(has_function_privilege(current_user,
       to_regprocedure('gowm_history.process_reset_ack(text,text)'),'EXECUTE'),false) ready`)
       .then(result => result.rows[0]?.ready === true).catch(() => false);
-    const subscriptionsReady = [...UGV_AUTHORITY_TOPICS,RESET_ACK_TOPIC].every((topic) => state.subscriptions[topic] === 1);
+    const subscriptionsReady = Object.entries(subscriptionPlan(frozenMapper)).every(([topic,qos]) => state.subscriptions[topic] === qos);
     const sourceContractValid = Object.values(state.sourceQosConflicts).every((count) => count === 0);
     const ready = dbWritable && resetContractReady && state.connected && subscriptionsReady && state.sourceLockLoaded && state.workerHealthy && sourceContractValid;
     return reply.code(ready ? 200 : 503).send({ ready,dbWritable,resetContractReady,mqttConnected: state.connected,subscriptionsReady,
@@ -222,7 +259,7 @@ function wireClient(client: MqttClient,config: UgvIngestConfig,frozenMapper: Map
     void (async () => {
       const activeSessionId = await waitForSession();
       if (!activeSessionId || !isCurrentConnection(connectionGeneration)) return;
-      const requests = Object.fromEntries([...UGV_AUTHORITY_TOPICS,RESET_ACK_TOPIC].map((topic) => [topic,{ qos: 1 as const }]));
+      const requests = Object.fromEntries(Object.entries(subscriptionPlan(frozenMapper)).map(([topic,qos])=>[topic,{qos}]));
       const grants = await client.subscribeAsync(requests);
       if (!isCurrentConnection(connectionGeneration)) return;
       state.subscriptions = Object.fromEntries(grants.map((grant) => [grant.topic,grant.qos]));
@@ -248,6 +285,7 @@ function wireClient(client: MqttClient,config: UgvIngestConfig,frozenMapper: Map
     });
   });
   client.on("message",(topic,payload,packet) => {
+    if(!(topic in subscriptionPlan(frozenMapper)))return;
     // MQTT.js only invokes customHandleAcks for QoS 1/2. A QoS 0 publish is
     // still durably audited, but cannot satisfy ACK-after-commit and is exposed
     // as a source-contract conflict in status/evidence.
@@ -337,6 +375,9 @@ function mapperConfig(config: UgvIngestConfig): MapperConfig {
   };
 }
 function isTopic(value: string): value is UgvAuthorityTopic { return (UGV_AUTHORITY_TOPICS as readonly string[]).includes(value); }
+export function subscriptionPlan(mapper:Pick<MapperConfig,'runtimeProfile'>):Record<string,0|1>{
+ return {...Object.fromEntries(mapper.runtimeProfile?mapper.runtimeProfile.routes.filter(r=>r.enabled).map(r=>[r.topic,r.qos]):UGV_AUTHORITY_TOPICS.map(t=>[t,1])),[RESET_ACK_TOPIC]:1};
+}
 function increment(record: Record<string,number>,key: string): void { record[key] = (record[key] ?? 0) + 1; }
 function safeError(error: unknown): string { return (error instanceof Error ? error.message : String(error)).slice(0,2048); }
 async function writable(pool: pg.Pool): Promise<boolean> { try { await pool.query("SELECT 1"); return true; } catch { return false; } }

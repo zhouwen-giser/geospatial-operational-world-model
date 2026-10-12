@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import { mkdtemp,readFile,writeFile,rm,mkdir } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join,resolve } from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+const run=promisify(execFile),dir=await mkdtemp(join(tmpdir(),'gowm-compose-functional-'));
+try {
+  const file=join(dir,'.env'),runtime=join(dir,'runtime');
+  const identities={SMPP_SERVICE_KEY:'compose-smpp',UGV_PROVIDER_ID:'compose-provider',UGV_RESOURCE_ID:'compose-resource',SDAR_SERVICE_KEY:'compose-sdar',SDAR_MCP_SERVER_ID:'compose-mcp',SDAR_AGENT_PROFILE_ID:'compose-profile'};
+  let source=(await readFile('.env.example','utf8')).replace('UGV_MQTT_URL=mqtt://replace-with-source-broker:1883','UGV_MQTT_URL=mqtt://compose-test-broker:1883');
+  for(const [k,v]of Object.entries(identities))source=source.replace(new RegExp('^'+k+'=.*$','m'),k+'='+v);
+  await writeFile(file,source);
+  await run('bash',['-c','source "$1"; runtime_dir="$2"; init_env','test',resolve('scripts/dev-deploy.sh'),runtime],{env:{...process.env,GOWM_DEV_ENV_FILE:file}});
+  const first=await readFile(file,'utf8');
+  const rendered=JSON.parse((await run('docker',['compose','--env-file',file,'--profile','foundation-admin','--profile','world-platform','--profile','ugv-mqtt','-f','docker-compose.yml','-f','docker-compose.world-platform.yml','-f','docker-compose.dev.yml','config','--format','json'],{maxBuffer:4*1024*1024})).stdout);
+  const init=rendered.services['ugv-device-init'],ingest=rendered.services['ugv-mqtt-ingest'];
+  assert.equal(init.environment.UGV_DATA_SCOPE_KEY,'default');assert.equal(ingest.environment.UGV_DATA_SCOPE_KEY,'default');
+  for(const [k,v]of Object.entries(identities))assert.equal(init.environment[k],v);
+  assert.ok(init.command.join(' ').includes('runtime-verify.js'));
+  assert.equal(init.depends_on['business-accounts-init'].condition,'service_completed_successfully');
+  assert.equal(rendered.services['business-accounts-init'].depends_on['business-storage-init'].condition,'service_completed_successfully');
+  assert.equal(ingest.depends_on['ugv-device-init'].condition,'service_completed_successfully');
+  assert.equal(rendered.services['world-api'].environment.GOWM_DATA_SCOPE,'default');
+  const reset=await readFile('services/ugv-mqtt-ingest/src/reset-ack.ts','utf8');
+  assert.ok(reset.includes('RESET_ACK_ACCEPTED_COMPLETE_V1'));
+  const ingestApp=await readFile('services/ugv-mqtt-ingest/src/app.ts','utf8');
+  assert.ok(ingestApp.includes('subscriptionPlan(frozenMapper)')&&ingestApp.includes('[RESET_ACK_TOPIC]:1'));
+  await run('bash',['-c','source "$1"; runtime_dir="$2"; init_env','test',resolve('scripts/dev-deploy.sh'),runtime],{env:{...process.env,GOWM_DEV_ENV_FILE:file}});
+  assert.equal(await readFile(file,'utf8'),first);
+  const report={status:'PASS',gate:'EFFECTIVE_COMPOSE_DEFAULT_BOOTSTRAP',scope:'default',serviceFields:6,privateCredentialsPreserved:true,resetPolicyPreserved:true};
+  await mkdir('reports/functional-repair-2026-10-12',{recursive:true});await writeFile('reports/functional-repair-2026-10-12/compose.json',JSON.stringify(report,null,2)+'\n');
+  console.log(JSON.stringify(report));
+}finally{await rm(dir,{recursive:true,force:true});}

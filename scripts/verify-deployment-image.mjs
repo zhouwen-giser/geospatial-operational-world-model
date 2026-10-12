@@ -7,6 +7,7 @@ const [image, context] = process.argv.slice(2);
 if (!image || !context) throw new Error("Usage: node scripts/verify-deployment-image.mjs <image> <verified-build-context>");
 const root = resolve(context);
 const files = {};
+const release=JSON.parse(readFileSync(join(root,'scripts/history-release-manifest.json'),'utf8'));
 function add(path) {
   files[path] = createHash("sha256").update(readFileSync(join(root, path))).digest("hex");
 }
@@ -27,13 +28,20 @@ const check = `
   import crypto from 'node:crypto';
   let input=''; for await (const chunk of process.stdin) input+=chunk;
   const expected=JSON.parse(input), mismatches=[];
-  for (const [path, hash] of Object.entries(expected)) {
+  for (const [path, hash] of Object.entries(expected.files)) {
     try {
       const actual=crypto.createHash('sha256').update(fs.readFileSync('/app/'+path)).digest('hex');
       if (actual!==hash) mismatches.push(path);
     } catch { mismatches.push(path); }
   }
   if (mismatches.length) throw new Error('Image source-byte mismatch: '+mismatches.join(', '));
+  const identity=JSON.parse(fs.readFileSync('/app/dist/runtime-build-identity.json','utf8'));
+  if(identity.migrationHead!==expected.release.migrationHead||identity.modules.length!==expected.release.runtime.length)throw Error('Compiled identity release mismatch');
+  for(const entry of expected.release.runtime){
+    const module=identity.modules.find(m=>m.source===entry.source);
+    if(!module||module.sourceSha256!==entry.sha256||module.compiled!==entry.compiled||crypto.createHash('sha256').update(fs.readFileSync('/app/'+entry.compiled)).digest('hex')!==module.compiledSha256)
+      throw Error('Compiled source identity mismatch: '+entry.source);
+  }
   const {createOperationalRealityProvider}=await import('/app/dist/services/providers/operational-reality-provider/src/provider.js');
   const actual=createOperationalRealityProvider({pool:{}}).runtime.manifest;
   const declared=JSON.parse(fs.readFileSync('/app/contracts/manifests/providers/operational-reality-provider.json','utf8'));
@@ -45,12 +53,16 @@ const check = `
   const evidence=createGroundingCatalogProvider({mode:'evidence',pool:{},cursorSecret:'image-identity-verification-only'}).runtime.manifest;
   const evidenceDeclared=JSON.parse(fs.readFileSync('/app/contracts/manifests/providers/world-evidence-provider.json','utf8'));
   if (JSON.stringify(evidence)!==JSON.stringify(evidenceDeclared)) throw new Error('World evidence manifest/runtime mismatch');
+  const {createHistoricalTraceProvider}=await import('/app/dist/services/providers/historical-trace-provider/src/provider.js');
+  const historical=createHistoricalTraceProvider({pool:{}}).runtime.manifest;
+  const historicalDeclared=JSON.parse(fs.readFileSync('/app/contracts/manifests/providers/historical-trace-provider.json','utf8'));
+  if(JSON.stringify(historical)!==JSON.stringify(historicalDeclared))throw Error('Historical Artifact manifest/runtime mismatch');
   if (process.getuid()===0) throw new Error('Runtime must be non-root');
-  console.log(JSON.stringify({status:'PASS',gate:'IMAGE_SOURCE_AND_RUNTIME_IDENTITY',files:Object.keys(expected).length,
+  console.log(JSON.stringify({status:'PASS',gate:'IMAGE_SOURCE_AND_RUNTIME_IDENTITY',files:Object.keys(expected.files).length,compiledModules:identity.modules.length,
     implementationDigest:actual.provider.implementationDigest,referenceImplementationDigest:reference.provider.implementationDigest,
-    evidenceImplementationDigest:evidence.provider.implementationDigest}));
+    evidenceImplementationDigest:evidence.provider.implementationDigest,historicalImplementationDigest:historical.provider.implementationDigest}));
 `;
 process.stdout.write(execFileSync("docker", ["run", "--rm", "--network", "none", "--read-only", "-i",
   "--entrypoint", "node", image, "--input-type=module", "-e", check], {
-  input: JSON.stringify(files), encoding: "utf8", maxBuffer: 4 * 1024 * 1024
+  input: JSON.stringify({files,release}), encoding: "utf8", maxBuffer: 4 * 1024 * 1024
 }));

@@ -6,40 +6,44 @@ import {
 } from "../../../../packages/platform/provider-sdk/src/index.js";
 import profiles from "./semantic-profiles.historical.json" with { type:"json" };
 import { HistoricalTraceRepository } from "./repository.js";
+import { HistoricalArtifactRepository } from './artifact-repository.js';
+import { createHistoricalArtifactOperations } from './artifact-operations.js';
 import { HISTORICAL_TRACE_OPERATION_ID,HISTORICAL_TRACE_SCHEMAS } from "./schemas.js";
 
 export interface HistoricalTraceProvider {
-  runtime:ProviderRuntime;repository:HistoricalTraceRepository;
+  runtime:ProviderRuntime;repository:HistoricalTraceRepository;artifacts:HistoricalArtifactRepository;
 }
 
 export function createHistoricalTraceProvider(options:{
-  pool:pg.Pool;now?:()=>Date;receiptId?:()=>string;
+  pool:pg.Pool;now?:()=>Date;receiptId?:()=>string;artifactTtlSeconds?:number;
 }):HistoricalTraceProvider {
   const repository=new HistoricalTraceRepository(options.pool);
   const operation=createHistoricalTraceOperation(repository);
+  const artifacts=new HistoricalArtifactRepository(options.pool,repository,options.artifactTtlSeconds);
+  const operations=[operation,...createHistoricalArtifactOperations(artifacts)];
   const manifest:CapabilityProviderManifest={
     providerProtocolVersion:"1.0",manifestSchemaVersion:"1.1",
     provider:{
       providerId:"gowm.historical-trace",providerVersion:"0.7.1",owner:"gowm-platform",
       implementationDigest:sha256({
         providerId:"gowm.historical-trace",providerVersion:"0.7.1",readContract:"gowm_history_v1",
-        capability:operation.descriptor,policy:"historical-trace-read-and-controlled-enqueue-v1.1"
+        capabilities:operations.map(o=>o.descriptor),policy:"historical-trace-and-immutable-artifact-v1"
       }),sourceRef:"urn:gowm:source:in-tree:historical-trace:0.7.1"
     },
     endpoints:{
       manifest:"/v1/manifest",liveness:"/health/live",readiness:"/health/ready",
       execute:"/v1/operations/{operationId}:execute",job:"/v1/jobs/{jobId}"
-    },capabilities:[operation.descriptor]
+    },capabilities:operations.map(o=>o.descriptor)
   };
   const policy={
     version:"gowm-historical-trace-policy/1.0",scopeBeforeRead:true,asOfEffectiveSnapshot:true,
     providerToProviderCalls:false,naturalLanguageParsing:false,multiSourceFusion:false,
-    projectionWrites:"CONTROLLED_QUEUE_ONLY"
+    projectionWrites:"CONTROLLED_QUEUE_AND_ARTIFACT_REGISTRY_ONLY"
   };
   return {
-    repository,
+    repository,artifacts,
     runtime:createProviderRuntime({
-      manifest,operations:[operation],policyVersion:policy.version,policyDigest:sha256(policy),
+      manifest,operations,policyVersion:policy.version,policyDigest:sha256(policy),
       ...(options.now?{now:options.now}:{}),...(options.receiptId?{receiptId:options.receiptId}:{})
     })
   };

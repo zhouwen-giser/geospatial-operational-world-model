@@ -23,7 +23,7 @@ describe("historical trace provider",()=>{
       .toBe("sha256:d51c07904cc18ec3a67c3bbaebf904f781d407378fc42e9e91debbfc04f1b02d");
   });
 
-  it("registers only the PREVIEW operation and returns a pinned, bounded, gap-preserving revision",async()=>{
+  it("preserves the PREVIEW operation alongside separate Artifact operations and returns a pinned, bounded, gap-preserving revision",async()=>{
     const semanticHash=historicalSemanticRequestHash(input);
     const effective:satisfiesManifest={
       querySnapshotId:"snapshot-history-pinned",mode:"PINNED",consistency:"PINNED",capturedAt:CAPTURED_AT,
@@ -56,7 +56,7 @@ describe("historical trace provider",()=>{
 
     const provider=createHistoricalTraceProvider({pool});
     expect(provider.runtime.manifest.provider).toMatchObject({providerId:"gowm.historical-trace",providerVersion:"0.7.1"});
-    expect(provider.runtime.manifest.capabilities).toHaveLength(1);
+    expect(provider.runtime.manifest.capabilities).toHaveLength(3);
     expect(provider.runtime.manifest.capabilities[0]).toMatchObject({
       operationId:"history.get-trajectory",semanticRole:"DOMAIN_ANALYSIS",dataBinding:"WORLD_SNAPSHOT_BOUND",
       resultSemantics:"DERIVED_ANALYSIS",executionBindings:["SYNC_HTTP","VERSIONED_SQL_CONTRACT"],

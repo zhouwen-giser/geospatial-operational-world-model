@@ -62,9 +62,9 @@ describe("historical trace Provider HTTP/bootstrap", () => {
       expect(manifest.statusCode).toBe(200);
       expect(manifest.json()).toMatchObject({
         provider: { providerId: "gowm.historical-trace", providerVersion: "0.7.1" },
-        capabilities: [{ operationId: "history.get-trajectory" }]
+        capabilities: [{ operationId: "history.get-trajectory" },{operationId:"history.open-trajectory-artifact"},{operationId:"history.read-trajectory-artifact"}]
       });
-      expect(manifest.json().capabilities).toHaveLength(1);
+      expect(manifest.json().capabilities).toHaveLength(3);
 
       const live = await app.inject({ method: "GET", url: "/health/live" });
       expect(live.statusCode).toBe(200);
@@ -75,10 +75,10 @@ describe("historical trace Provider HTTP/bootstrap", () => {
       expect(ready.json()).toMatchObject({
         ready: true,
         providerId: "gowm.historical-trace",
-        operationCount: 1,
+        operationCount: 3,
         reasons: []
       });
-      expect(directQuery).toHaveBeenCalledTimes(4);
+      expect(directQuery).toHaveBeenCalledTimes(5);
 
       const denied = await app.inject({
         method: "POST",
@@ -259,7 +259,7 @@ function fakePool(): {
     release() {}
   } as unknown as pg.PoolClient;
   const connect = vi.fn(async () => client);
-  const directQuery = vi.fn(async () => ({ rows: [], rowCount: 0 }));
+  const directQuery = vi.fn(async (sql:string) => ({ rows: sql.includes("has_function_privilege")?[{allowed:true}]:[], rowCount: sql.includes("has_function_privilege")?1:0 }));
   return {
     pool: { connect, query: directQuery } as unknown as pg.Pool,
     connect,

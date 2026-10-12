@@ -95,7 +95,9 @@ for(const schema of ['ugv_smpp','ugv_sdar']){
  for(const [file,path]of steps)overlays.push({schema,family:'GOWM_OVERLAY',file,path:'overlays/'+path,sha256:hash(await readFile(`${root}/overlays/${path}`,'utf8'))});
 }
 overlays.push({schema:'ugv_smpp',family:'GOWM_READ_MODEL',file:'read_model_v1.sql',path:'overlays/read-model.sql',sha256:hash(await readFile(`${root}/overlays/read-model.sql`,'utf8'))});
+overlays.push({schema:'ugv_smpp',family:'GOWM_API',file:'business_api_v2.sql',path:'overlays/business-api-v2.sql',sha256:hash(await readFile(`${root}/overlays/business-api-v2.sql`,'utf8'))});
+const coreAdditions=await Promise.all(['079_device_context_reader.sql','087_business_runtime_authority.sql'].map(async file=>({file,sha256:hash(await readFile('database/migrations/'+file,'utf8'))})));
 const core={file:'078_device_shared_business_storage.sql',sha256:hash(await readFile('database/migrations/078_device_shared_business_storage.sql','utf8'))};
-await put(`${root}/install-manifest.json`, JSON.stringify({ version: 1,core, entries: manifest,overlays }, null, 2) + '\n');
+await put(`${root}/install-manifest.json`, JSON.stringify({ version: 1,core, coreAdditions, entries: manifest,overlays }, null, 2) + '\n');
 await put(`${root}/source-inventory.json`, JSON.stringify({ tables: inventory.filter(t => !dropped.some(d => d.schema === t.schema && d.table === t.table)), historicalDroppedTables: dropped }, null, 2) + '\n');
 await put(`${root}/transforms/namespace-transform-map.json`, JSON.stringify({ applicationObjects: [...objects].sort(), entries: manifest.map(({ file, family, transforms }) => ({ file, family, transforms })) }, null, 2) + '\n');

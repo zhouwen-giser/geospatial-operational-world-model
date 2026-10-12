@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { connectAsync, type MqttClient } from "mqtt";
 import type { ObservationEnvelope, WorldEvent } from "../../world-model-core/src/types.js";
 import { loadConfig } from "../../world-model-core/src/config.js";
+import {mqttSecurity} from './mqtt-security.js';
 
 const EVENT_TOPIC_FILTER = "gowm/event/#";
 type EventHandler = (event: WorldEvent) => void | Promise<void>;
@@ -39,6 +40,7 @@ export class WorldEventBus {
     }
     const config = loadConfig();
     const client = await connectAsync(config.mqttUrl, {
+      ...await mqttSecurity(config.mqttUrl),
       protocolVersion: 5,
       clean: true,
       clientId: `${safeTopicSegment(process.env.SERVICE_NAME ?? "gowm")}-${process.pid}-${randomUUID().slice(0, 8)}`,

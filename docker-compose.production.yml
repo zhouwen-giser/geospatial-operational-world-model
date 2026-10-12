@@ -1,0 +1,151 @@
+# Opt-in; apply after base + world-platform, without the dev overlay.
+# Does not initialize accounts, devices, passwords or service bindings.
+services:
+  postgres:
+    ports: !reset []
+    networks: !override [default]
+  mqtt:
+    image: eclipse-mosquitto:2.1.2-alpine@sha256:38c0da4f2ef84284d47b3b3eeea1cb3bdeabe81ee10caf0cd5c5ff61ee3ea408
+    networks: !override [default, world-edge]
+    ports: !override
+      - "${TLS_BIND_ADDRESS:-127.0.0.1}:${MQTT_TLS_PORT:-8883}:8883"
+    volumes:
+      - ./infrastructure/production/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./infrastructure/production/mosquitto.acl:/mosquitto/config/gowm.acl:ro
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/mqtt-passwords:/run/gowm-ops/mqtt-passwords:ro
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/server-cert.pem:/run/gowm-ops/server-cert.pem:ro
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/server-key.pem:/run/gowm-ops/server-key.pem:ro
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/ca.pem:/run/gowm-ops/ca.pem:ro
+    healthcheck:
+      test: [CMD, nc, -z, 127.0.0.1, "1883"]
+  world-api:
+    ports: !reset []
+    networks: !override [default]
+    environment:
+      MQTT_USERNAME: gowm_bus
+      MQTT_PASSWORD_FILE: /run/gowm-ops/bus-password
+    volumes:
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/bus-password:/run/gowm-ops/bus-password:ro
+  observation-ingest:
+    ports: !reset []
+    networks: !override [default]
+    environment:
+      MQTT_USERNAME: gowm_bus
+      MQTT_PASSWORD_FILE: /run/gowm-ops/bus-password
+    volumes:
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/bus-password:/run/gowm-ops/bus-password:ro
+  stas:
+    ports: !reset []
+    networks: !override [default]
+  world-mcp-server:
+    ports: !reset []
+    networks: !override [default]
+  crs-upstream:
+    ports: !reset []
+    networks: !override [default]
+  geometry-upstream:
+    ports: !reset []
+    networks: !override [default]
+  crs-provider-bridge:
+    ports: !reset []
+    networks: !override [default]
+  geometry-provider-bridge:
+    ports: !reset []
+    networks: !override [default]
+  h3-interactive-provider:
+    ports: !reset []
+    networks: !override [default]
+  h3-analysis-provider:
+    ports: !reset []
+    networks: !override [default]
+  reference-catalog-provider:
+    ports: !reset []
+    networks: !override [default]
+  dataset-catalog-provider:
+    ports: !reset []
+    networks: !override [default]
+  gowm-situation-provider:
+    ports: !reset []
+    networks: !override [default]
+  world-evidence-provider:
+    ports: !reset []
+    networks: !override [default]
+  operational-reality-provider:
+    ports: !reset []
+    networks: !override [default]
+  platform-validation-provider:
+    ports: !reset []
+    networks: !override [default]
+  network-provider:
+    ports: !reset []
+    networks: !override [default]
+  route-planning-provider:
+    ports: !reset []
+    networks: !override [default]
+  road-coverage-provider:
+    ports: !reset []
+    networks: !override [default]
+  stas-provider:
+    ports: !reset []
+    networks: !override [default]
+  historical-trace-provider:
+    ports: !reset []
+    networks: !override [default]
+  spatial-provider-bridge:
+    ports: !reset []
+    networks: !override [default]
+  world-capability-gateway:
+    ports: !reset []
+    networks: !override [default]
+  ugv-mqtt-ingest:
+    ports: !reset []
+    networks: !override [default, ugv-source-egress]
+    volumes:
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/ugv:/run/ugv-secrets:ro
+  projection-worker:
+    environment:
+      MQTT_USERNAME: gowm_bus
+      MQTT_PASSWORD_FILE: /run/gowm-ops/bus-password
+    volumes:
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/bus-password:/run/gowm-ops/bus-password:ro
+  world-platform-projection-worker:
+    environment:
+      MQTT_USERNAME: gowm_bus
+      MQTT_PASSWORD_FILE: /run/gowm-ops/bus-password
+    volumes:
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/bus-password:/run/gowm-ops/bus-password:ro
+  tls-edge:
+    image: gowm-world-platform:0.7.1
+    build: .
+    profiles: [world-platform]
+    networks: [default, world-edge]
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    command: [node, dist/services/tls-edge/src/server.js]
+    environment:
+      TLS_CERT_FILE: /run/gowm-ops/server-cert.pem
+      TLS_KEY_FILE: /run/gowm-ops/server-key.pem
+      TLS_CLIENT_CA_FILE: ${TLS_CLIENT_CA_CONTAINER_FILE:-}
+      TLS_GATEWAY_URL: http://world-capability-gateway:8090
+    volumes:
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/server-cert.pem:/run/gowm-ops/server-cert.pem:ro
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/server-key.pem:/run/gowm-ops/server-key.pem:ro
+      - ${GOWM_OPS_SECRET_DIR:?set an absolute existing secret directory}/ca.pem:/run/gowm-ops/ca.pem:ro
+    ports:
+      - "${TLS_BIND_ADDRESS:-127.0.0.1}:${TLS_GATEWAY_PORT:-8443}:8443"
+    depends_on:
+      world-capability-gateway:
+        condition: service_started
+    healthcheck:
+      test: [CMD, node, -e, "require('node:net').connect(8443,'127.0.0.1').on('connect',function(){this.end();process.exit(0)}).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+networks:
+  # Separate outbound route for the approved existing device broker. No host
+  # ports are published; restrict broker destinations with the host firewall.
+  ugv-source-egress:
+    internal: false

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0",
+  "contractId": "gowm-historical-trajectory-artifact-v1",
+  "maturity": "PREVIEW",
+  "formalQualification": "NOT_GRANTED",
+  "providerId": "gowm.historical-trace",
+  "providerVersion": "0.7.1",
+  "providerManifestHash": "sha256:e81190cdc1b45c59cb1454d1b4d91810dcee94cf283b71c9cabad873c68b77fe",
+  "operations": [
+    {
+      "operationId": "history.open-trajectory-artifact",
+      "operationVersion": "1.0",
+      "inputSchemaUri": "urn:gowm:v0.7.1:trajectory-artifact-open-query",
+      "inputSchemaHash": "sha256:71215c062045fff2c991a0a4883bdc9e98351bc8c410263724940be8fe8611d5",
+      "outputSchemaUri": "urn:gowm:v0.7.1:trajectory-artifact-open-result",
+      "outputSchemaHash": "sha256:30b8407c5533b3b3a21e0e7d9faaa5e1742e61c9a4efcd63e4e9fee620f1ef2e",
+      "semanticProfileHash": "sha256:c8b5572808fb3015d64ef2a3bd22c429f6c836027c556b321d3bb77da851ade8"
+    },
+    {
+      "operationId": "history.read-trajectory-artifact",
+      "operationVersion": "1.0",
+      "inputSchemaUri": "urn:gowm:v0.7.1:trajectory-artifact-page-query",
+      "inputSchemaHash": "sha256:db41d83dc11098ad683273a6796696b22e10c69037ab62ee54371c525bc928a4",
+      "outputSchemaUri": "urn:gowm:v0.7.1:trajectory-artifact-page-result",
+      "outputSchemaHash": "sha256:6dc688246f2b4741a101543e8fe371135157ee43c70ffc80bf3456a41868ddb1",
+      "semanticProfileHash": "sha256:90429abd27eb0235e370f086821a78878c374b434863df099177396627f9d2f1"
+    }
+  ],
+  "format": {
+    "mediaType": "application/x-ndjson",
+    "encoding": "PG_JSONB_NDJSON_V1",
+    "coordinates": "POSTGIS_GEOJSON_15_V1",
+    "time": "UTC_MICROSECONDS",
+    "pageOrder": "MANIFEST_THEN_SEGMENT_ORDINAL_THEN_NODE_ORDINAL",
+    "pageSize": 256,
+    "maximumGeometryNodes": 250000,
+    "maximumBytes": 67108864
+  },
+  "binding": {
+    "fullRequest": "EXACT_FULL_REQUEST_HASH",
+    "snapshot": "FROZEN_MANIFEST_AND_RESOURCE_PINS",
+    "trajectory": "EXACT_IMMUTABLE_REVISION",
+    "scope": "AUTHORIZED_DATA_SCOPE",
+    "lifetime": "SERVER_TTL_NOT_RENEWED_BY_REPLAY",
+    "pageIntegrity": "SHA256_OF_UTF8_CONTENT",
+    "artifactIntegrity": "SHA256_OF_CONCATENATED_UTF8_PAGES"
+  },
+  "completeness": "ARTIFACT_AVAILABILITY_DOES_NOT_PROVE_EVIDENCE_COMPLETENESS",
+  "migration": {
+    "path": "database/migrations/090_historical_trajectory_artifact.sql",
+    "sha256": "36d6d5b3c85965ccee72b52159105f7c4880469f4e4ed7b932d5e98d32b2c925"
+  },
+  "explicitNonClaims": [
+    "MAP_MATCHING",
+    "TEMPORAL_SPATIAL_EVENTS",
+    "HISTORICAL_SIGNAL_RANKING",
+    "SITE_BUSINESS_ACCEPTANCE",
+    "PITR_OR_HA"
+  ]
+}

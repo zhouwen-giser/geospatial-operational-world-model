@@ -97,7 +97,7 @@ export function createProviderRuntime(options: ProviderRuntimeOptions): Provider
           providerVersion: provider.providerVersion,
           ...(provider.implementationDigest === undefined ? {} : { implementationDigest: provider.implementationDigest })
         }, options.policyVersion, options.policyDigest, receiptId(), now(), performance.now() - started, limits);
-      });
+      }, !operation.recheckOnReplay);
     } catch (error) {
       throw mapProviderError(error);
     }

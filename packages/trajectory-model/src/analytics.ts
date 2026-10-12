@@ -44,3 +44,14 @@ export function detectRouteDeviation(points: TrajectoryPoint[], route: LineStrin
     .map((point) => ({ timestamp: point.timestamp, distanceM: pointToLineDistanceM(point.geometry, route) }))
     .filter((result) => result.distanceM > toleranceM);
 }
+
+/** Callers supply segments from the authoritative immutable tracklet version. */
+export function distanceBySegmentsM(segments: TrajectoryPoint[][]): number {
+  return segments.reduce((total,points)=>total+distanceTraveledM(points),0);
+}
+export function stopsBySegments(segments: TrajectoryPoint[][],radiusM=10,minimumDurationMs=30_000): StopWindow[] {
+  return segments.flatMap(points=>detectStops(points,radiusM,minimumDurationMs));
+}
+export function deviationBySegments(segments: TrajectoryPoint[][],route:LineStringGeometry,toleranceM=50) {
+  return segments.flatMap(points=>detectRouteDeviation(points,route,toleranceM));
+}

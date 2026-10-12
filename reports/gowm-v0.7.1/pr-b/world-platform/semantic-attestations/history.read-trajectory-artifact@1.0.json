@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0",
+  "providerId": "gowm.historical-trace",
+  "operationId": "history.read-trajectory-artifact",
+  "operationVersion": "1.0",
+  "semanticProfileHash": "sha256:90429abd27eb0235e370f086821a78878c374b434863df099177396627f9d2f1",
+  "rulesApplied": [
+    "S001",
+    "S002",
+    "S003",
+    "S004",
+    "S005",
+    "S006",
+    "S007",
+    "S008",
+    "S009",
+    "S010",
+    "S011",
+    "S012",
+    "S013",
+    "S014"
+  ],
+  "evidence": [
+    {
+      "kind": "DESCRIPTOR",
+      "path": "contracts/manifests/providers/historical-trace-provider.json",
+      "sha256": "ffeb8bd39d6fb405574c160e9bd9294737231db0a9f3d4a8f3e9bebedcea9119"
+    },
+    {
+      "kind": "PORTS",
+      "path": "contracts/manifests/providers/historical-trace-provider.json",
+      "sha256": "ffeb8bd39d6fb405574c160e9bd9294737231db0a9f3d4a8f3e9bebedcea9119"
+    },
+    {
+      "kind": "INPUT_SCHEMA",
+      "path": "contracts/gowm-v0.7.1/trajectory-artifact-page-query.schema.json",
+      "sha256": "a6eecb9fe89f1c120ff31271fdf3b5922e6b6879078e3f4f989e3d77199b0541"
+    },
+    {
+      "kind": "OUTPUT_SCHEMA",
+      "path": "contracts/gowm-v0.7.1/trajectory-artifact-page-result.schema.json",
+      "sha256": "71271f04ae1adcb42ce0dde0a8442b3320230eace500617a46da7fee7a2a7a41"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/historical-trace-provider/src/artifact-repository.ts",
+      "sha256": "50b3da5ab49997283762dc9a546aeebb97928c4b9571f389eb143550de0cd887",
+      "symbol": "HistoricalArtifactRepository"
+    },
+    {
+      "kind": "TYPESCRIPT_IMPLEMENTATION",
+      "path": "services/providers/historical-trace-provider/src/artifact-operations.ts",
+      "sha256": "ae4d6bf70b82813f09bf65305688cc488ae686a7998b8950217f462a814af9c8",
+      "symbol": "createHistoricalArtifactOperations"
+    },
+    {
+      "kind": "UNIT_TEST",
+      "path": "tests/platform/historical-artifact.test.ts",
+      "sha256": "16047938e17d86fc5ee3fe89cf865155cb7bc81e4c4cc9f0a67cf0109ff0e37c"
+    },
+    {
+      "kind": "SQL_IMPLEMENTATION",
+      "path": "database/migrations/090_historical_trajectory_artifact.sql",
+      "sha256": "36d6d5b3c85965ccee72b52159105f7c4880469f4e4ed7b932d5e98d32b2c925"
+    }
+  ],
+  "status": "PROVEN",
+  "notes": [
+    "Opens or reads bounded immutable trajectory bytes through the scoped Provider protocol. Does not create trajectory facts, fuse sources or infer completeness."
+  ]
+}

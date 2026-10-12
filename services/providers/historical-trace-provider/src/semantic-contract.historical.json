@@ -64,6 +64,110 @@
         "tests/platform/historical-trace-provider.test.ts"
       ],
       "rationale": "The preview provider performs scoped, head-free reads of immutable trajectory revisions and their persisted lineage. It returns a bounded preview, gaps, completeness and trajectoryReferenceKey, but deliberately does not claim that the complete trajectory is retrievable as an Artifact. A missing result can cause only a bounded, scope-checked enqueue of the exact effective snapshot; source selection and trajectory construction remain worker projection-owned."
+    },
+    "history.open-trajectory-artifact@1.0": {
+      "profile": {
+        "profileVersion": "1.1",
+        "domain": "ANALYSIS",
+        "acceptedReferenceKinds": [
+          "WORLD_OBJECT",
+          "SPATIAL_OBJECT",
+          "LAYER_FEATURE",
+          "OPERATIONAL_TASK",
+          "DERIVED_REFERENCE",
+          "TASK_EXECUTION_INTERVAL",
+          "HISTORY_METHOD_PROFILE",
+          "HISTORICAL_TRAJECTORY"
+        ],
+        "producedReferenceKinds": [
+          "HISTORICAL_TRAJECTORY",
+          "HISTORY_INPUT_SET"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "HISTORICAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "READY": "COMPLETED",
+            "PROJECTION_PENDING": "INDETERMINATE",
+            "NO_DATA": "NO_DATA",
+            "INDETERMINATE": "INDETERMINATE"
+          }
+        },
+        "notes": [
+          "Artifact availability describes retrieval, not evidence completeness.",
+          "The full frozen request, snapshot, evaluation, immutable revision, gap and segment metadata remain explicit.",
+          "Read replay revalidates scope, byte digest and server-clock expiry."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/historical-trace-provider/src/artifact-repository.ts",
+          "symbol": "HistoricalArtifactRepository"
+        },
+        {
+          "path": "services/providers/historical-trace-provider/src/artifact-operations.ts",
+          "symbol": "createHistoricalArtifactOperations"
+        }
+      ],
+      "tests": [
+        "tests/platform/historical-artifact.test.ts"
+      ],
+      "referenceAuthorities": [
+        "database/migrations/090_historical_trajectory_artifact.sql"
+      ],
+      "rationale": "Opens or reads bounded immutable trajectory bytes through the scoped Provider protocol. Does not create trajectory facts, fuse sources or infer completeness."
+    },
+    "history.read-trajectory-artifact@1.0": {
+      "profile": {
+        "profileVersion": "1.1",
+        "domain": "ANALYSIS",
+        "acceptedReferenceKinds": [
+          "HISTORICAL_TRAJECTORY"
+        ],
+        "producedReferenceKinds": [
+          "HISTORICAL_TRAJECTORY",
+          "HISTORY_INPUT_SET"
+        ],
+        "relationSemantics": [],
+        "spatialSemantics": "NONE",
+        "timeSemantics": "HISTORICAL",
+        "resultNature": "DERIVED",
+        "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+        "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+        "domainStatus": {
+          "path": "/status",
+          "mapping": {
+            "READY": "COMPLETED"
+          }
+        },
+        "notes": [
+          "Artifact availability describes retrieval, not evidence completeness.",
+          "The full frozen request, snapshot, evaluation, immutable revision, gap and segment metadata remain explicit.",
+          "Read replay revalidates scope, byte digest and server-clock expiry."
+        ]
+      },
+      "implementation": [
+        {
+          "path": "services/providers/historical-trace-provider/src/artifact-repository.ts",
+          "symbol": "HistoricalArtifactRepository"
+        },
+        {
+          "path": "services/providers/historical-trace-provider/src/artifact-operations.ts",
+          "symbol": "createHistoricalArtifactOperations"
+        }
+      ],
+      "tests": [
+        "tests/platform/historical-artifact.test.ts"
+      ],
+      "referenceAuthorities": [
+        "database/migrations/090_historical_trajectory_artifact.sql"
+      ],
+      "rationale": "Opens or reads bounded immutable trajectory bytes through the scoped Provider protocol. Does not create trajectory facts, fuse sources or infer completeness."
     }
   }
 }

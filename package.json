@@ -19,9 +19,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && npm --prefix services/stas run build",
     "build:runtime": "tsc -p tsconfig.runtime.json && npm --prefix services/stas run build",
-    "check": "npm run verify:contracts && npm run verify:version-consistency && npm run verify:migration-freeze && npm run verify:hash-ordering && npm run validate:grounding-provider-contracts && npm run validate:world-platform-manifests && npm run validate:semantic-static && npm run validate:spatial-architecture && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "check": "npm run verify:contracts && npm run verify:version-consistency && npm run verify:migration-freeze && npm run verify:hash-ordering && npm run validate:grounding-provider-contracts && npm run validate:world-platform-manifests && npm run verify:artifact-consumer-lock && npm run validate:semantic-static && npm run validate:spatial-architecture && tsc -p tsconfig.json --noEmit && npm --prefix services/stas run typecheck",
+    "verify:artifact-consumer-lock": "node --import tsx scripts/artifact-consumer-lock.ts",
     "verify:version-consistency": "node scripts/verify-v071-version-consistency.mjs",
-    "verify:migration-freeze": "node scripts/verify-v071-migration-freeze.mjs",
+    "verify:migration-freeze": "node scripts/verify-v071-migration-freeze.mjs && node scripts/verify-functional-repair-freeze.mjs && node scripts/verify-capability-completion-freeze.mjs",
     "verify:hash-ordering": "node scripts/verify-hash-critical-ordering.mjs",
     "validate:v071-canonical-order": "node --import tsx validation/scripts/gowm-v071-canonical-order-matrix.ts",
     "validate:v071-database-upgrade": "node --import tsx validation/scripts/gowm-v071-database-upgrade-e2e.ts",
@@ -200,7 +201,14 @@
     "validate:history-dispatch": "node --import tsx validation/scripts/history-dispatch-e2e.ts",
     "validate:history-upgrade": "node --import tsx validation/scripts/history-concurrency-upgrade.ts",
     "validate:history-concurrency-scale": "node --import tsx validation/scripts/history-concurrency-scale.ts",
-    "history:hot-migrate": "node --import tsx scripts/history-hot-migrate.ts"
+    "history:hot-migrate": "node --import tsx scripts/history-hot-migrate.ts",
+    "validate:functional-repair": "node validation/scripts/functional-bootstrap-compose.mjs && node --import tsx validation/scripts/functional-repair-ci.ts",
+    "functional:upgrade": "node --import tsx scripts/functional-repair-upgrade.ts",
+    "capabilities:upgrade": "node --import tsx scripts/capability-completion-upgrade.ts",
+    "ingest:profile": "node --import tsx scripts/ingest-profile.ts",
+    "validate:capability-completion": "node --import tsx validation/scripts/capability-completion-ci.ts",
+    "operations": "node --import tsx scripts/operations.ts",
+    "production:check": "node --import tsx scripts/production-check.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",

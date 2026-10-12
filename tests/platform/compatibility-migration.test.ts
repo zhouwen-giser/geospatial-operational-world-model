@@ -180,16 +180,12 @@ describe("P14 GOWM Situation Gateway capability", () => {
     expect(candidateCall?.values).toEqual(["default", [h3Index], 10]);
 
     const multiScope = new RepositorySituationReadPort(
-      {} as never,
-      {} as never,
-      { query: async () => ({ rows: [{ scope_count: "2", accepted_count: "1" }] }) } as never,
+      {} as never,{health:async()=>({database:true})} as never,
+      {query:async(text:string)=>({rows:text.includes('to_regclass')?[{installed:true,scope:true}]:[{reference_key:reference}]})} as never,
       "default"
     );
-    await expect(multiScope.candidateReferences("default", [h3Index], 10)).rejects.toThrow("single-scope deployment");
-    await expect(multiScope.readiness()).resolves.toEqual({
-      ready: false,
-      reasons: ["GOWM Situation provider requires a verifiable single-scope deployment"]
-    });
+    await expect(multiScope.candidateReferences("default",[h3Index],10)).resolves.toEqual([reference]);
+    await expect(multiScope.readiness()).resolves.toEqual({ready:true,reasons:[]});
   });
 });
 

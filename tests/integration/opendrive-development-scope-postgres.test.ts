@@ -46,7 +46,7 @@ describe.skipIf(!adminUrl).sequential("OpenDRIVE development database baseline-s
     process.env.STAS_DB_PASSWORD = "opendrive_stas_regression_123";
     process.env.HISTORICAL_WORKER_DB_PASSWORD = "opendrive_history_regression_123";
     try {
-      await migrate({ maximumMigrationNumber: 69 });
+      await migrate({ maximumMigrationNumber: 93 });
     } finally {
       if (previous === undefined) delete process.env.DATABASE_URL;
       else process.env.DATABASE_URL = previous;

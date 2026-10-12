@@ -4,6 +4,7 @@ import { ProviderProtocolError } from "./errors.js";
 interface Entry<T> {
   payloadHash: string;
   result: Promise<T>;
+  settled: boolean;
 }
 
 /** Process-local helper for provider replay. Gateway durability is PostgreSQL-backed. */
@@ -16,23 +17,25 @@ export class IdempotencyCache<T> {
     this.#maximumEntries = maximumEntries;
   }
 
-  execute(key: string, payload: unknown, action: () => Promise<T>): Promise<T> {
+  execute(key: string, payload: unknown, action: () => Promise<T>, reuseCompleted = true): Promise<T> {
     const payloadHash = sha256(payload);
     const existing = this.#entries.get(key);
     if (existing) {
       if (existing.payloadHash !== payloadHash) {
         throw new ProviderProtocolError("IDEMPOTENCY_CONFLICT", "idempotency key was already used with different input");
       }
-      return existing.result;
+      if (reuseCompleted || !existing.settled) return existing.result;
     }
-    if (this.#entries.size >= this.#maximumEntries) {
+    if (!existing && this.#entries.size >= this.#maximumEntries) {
       throw new ProviderProtocolError("OVERLOADED", "provider idempotency cache is full", { retryable: true });
     }
-    const result = action().catch((error) => {
-      this.#entries.delete(key);
+    const entry: Entry<T> = {payloadHash,settled:false,result:Promise.resolve(undefined as T)};
+    const result = Promise.resolve().then(action).catch((error) => {
+      if (this.#entries.get(key) === entry) this.#entries.delete(key);
       throw error;
-    });
-    this.#entries.set(key, { payloadHash, result });
+    }).finally(() => {entry.settled=true;});
+    entry.result=result;
+    this.#entries.set(key, entry);
     return result;
   }
 

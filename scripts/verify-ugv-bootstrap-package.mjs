@@ -9,13 +9,24 @@ for(const name of ['mqtt_topics.json','mcp_ugv.json','error_codes.json']) {
  const bytes=await readFile(resolve(root,'config/ugv-source-schema',name));
  if(!entry||bytes.length!==entry.bytes||createHash('sha256').update(bytes).digest('hex')!==entry.sha256)throw Error('UGV source lock mismatch: '+name);
 }
+for(const name of ['087_business_runtime_authority.sql','088_compatibility_trajectory_read.sql','089_event_delivery_cursor.sql'])await read('database/migrations/'+name);
+for(const name of ['090_historical_trajectory_artifact.sql','091_scoped_situation_projection.sql','092_ingest_runtime_profiles.sql','093_calibrated_reset_watermarks.sql'])await read('database/migrations/'+name);
+for(const path of ['scripts/capability-completion-upgrade.ts','scripts/ingest-profile.ts','scripts/operations.ts','scripts/production-check.ts',
+ 'database/shared-business-storage/expected-ingest-profile-structure.json','database/shared-business-storage/expected-reset-clock-structure.json','contracts/consumers/historical-trajectory-artifact-v1.json',
+ 'docker-compose.production.yml','infrastructure/production/mosquitto.conf','infrastructure/production/mosquitto.acl',
+ 'services/tls-edge/src/server.ts','docs/CAPABILITY_COMPLETION_2026_10.md','docs/PRODUCTION_OPERATIONS.md','docs/CAPABILITY_INTEGRATION_HANDOFF.md'])await read(path);
+for(const name of ['bootstrap.ts','authority.ts','runtime-verify.ts'])await read('scripts/business-storage/'+name);
+await read('scripts/functional-repair-upgrade.ts');
+await read('database/shared-business-storage/overlays/business-api-v2.sql');
 for(const path of ['scripts/business-storage/accounts.ts','scripts/business-storage/device-cli.ts','packages/integrations/device-business-storage/src/bootstrap.ts'])await read(path);
 await read('database/migrations/083_reset_ack_watermarks.sql');
 await read('services/ugv-mqtt-ingest/src/reset-ack.ts');
 await read('scripts/history-diagnose.ts');
 const resetApp=await read('services/ugv-mqtt-ingest/src/app.ts');
-if(!resetApp.includes('processResetAck')||!resetApp.includes('[...UGV_AUTHORITY_TOPICS,RESET_ACK_TOPIC]'))throw Error('Reset watermark processing/subscription missing');
+if(!resetApp.includes('processResetAck')||!resetApp.includes('subscriptionPlan(frozenMapper)')||!resetApp.includes('[RESET_ACK_TOPIC]:1'))throw Error('Reset watermark processing/subscription missing');
 const compose=await read('docker-compose.yml');
+for(const marker of ['business-storage-init:','dist/scripts/business-storage/bootstrap.js','dist/scripts/business-storage/runtime-verify.js'])
+ if(!compose.includes(marker))throw Error('Missing native/bootstrap readiness gate: '+marker);
 for(const marker of ['business-accounts-init:','ugv-device-init:','dist/scripts/business-storage/accounts.js','device-cli.js init-default && node dist/scripts/business-storage/device-cli.js verify-default'])
  if(!compose.includes(marker))throw Error('Missing automatic bootstrap: '+marker);
 const ingest=compose.split('  ugv-mqtt-ingest:')[1]?.split('\n  world-api:')[0];

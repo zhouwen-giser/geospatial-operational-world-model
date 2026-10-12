@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "migrationHead": "093",
+  "evidence": "LOCAL_REAL_POSTGRES_NOT_ONSITE_OR_EXTERNAL_ACCEPTANCE",
+  "results": [
+    {
+      "baseline": 0,
+      "status": "PASS",
+      "retainedRowsAndPasswordsStable": "NOT_APPLICABLE",
+      "cases": [
+        "native-install-replay-and-vector",
+        "default-raw-scope-device-seven-streams-idempotent",
+        "managed-logins-passwords-preserved",
+        "actual-logins-first-admit-concurrent-and-readonly",
+        "login-authorization-and-role-switch-not-guc",
+        "default-legal-observation-and-master-actor",
+        "canonical-gaps-distance-stops-and-truncation",
+        "rest-and-mcp-use-the-same-versioned-gap-contract",
+        "late-revision-preserves-old-input-and-session-ambiguity",
+        "two-device-native-target-mission-lineage-real-logins",
+        "second-device-default-ambiguity-and-explicit-binding-priority",
+        "sse-over-ten-thousand-same-version-pages",
+        "late-commit-and-concurrent-relays-rollback",
+        "sse-pump-reconnect-scope-filter-and-backpressure",
+        "http-sse-cursor-validation-and-real-disconnect"
+      ],
+      "nativeSdkRegressionCases": 42,
+      "gate": "REAL_POSTGRES_FIXTURE_NOT_EXTERNAL_ACCEPTANCE"
+    },
+    {
+      "baseline": 86,
+      "status": "PASS",
+      "retainedRowsAndPasswordsStable": true,
+      "cases": [
+        "native-install-replay-and-vector",
+        "default-raw-scope-device-seven-streams-idempotent",
+        "managed-logins-passwords-preserved",
+        "actual-logins-first-admit-concurrent-and-readonly",
+        "login-authorization-and-role-switch-not-guc",
+        "default-legal-observation-and-master-actor",
+        "canonical-gaps-distance-stops-and-truncation",
+        "rest-and-mcp-use-the-same-versioned-gap-contract",
+        "late-revision-preserves-old-input-and-session-ambiguity",
+        "two-device-native-target-mission-lineage-real-logins",
+        "second-device-default-ambiguity-and-explicit-binding-priority",
+        "sse-over-ten-thousand-same-version-pages",
+        "late-commit-and-concurrent-relays-rollback",
+        "sse-pump-reconnect-scope-filter-and-backpressure",
+        "http-sse-cursor-validation-and-real-disconnect"
+      ],
+      "nativeSdkRegressionCases": 42,
+      "gate": "REAL_POSTGRES_FIXTURE_NOT_EXTERNAL_ACCEPTANCE"
+    }
+  ]
+}

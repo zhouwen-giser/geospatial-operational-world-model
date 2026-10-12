@@ -10,6 +10,7 @@
     "./openapi": "./bundle/openapi/world-gateway-v0.6.3.yaml",
     "./schemas/*": "./bundle/schemas/*",
     "./types": "./bundle/types/contracts.ts",
-    "./wsgs-lock": "./bundle/locks/wsgs-southbound-operation-lock-v2.json"
+    "./wsgs-lock": "./bundle/locks/wsgs-southbound-operation-lock-v2.json",
+    "./trajectory-artifact-lock": "./bundle/locks/historical-trajectory-artifact-v1.json"
   }
 }

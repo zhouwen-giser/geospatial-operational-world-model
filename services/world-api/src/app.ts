@@ -1,6 +1,6 @@
-import Fastify, { type FastifyInstance } from "fastify";
-import { compareUnicodeCodePoints } from "../../../packages/platform/contract-runtime/src/index.js";
-import type { Geometry, LineStringGeometry, PointGeometry, WorldEvent } from "../../../packages/world-model-core/src/types.js";
+import { eventMatches,pumpEventStream } from "./event-stream.js";
+import Fastify, { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
+import type { Geometry, LineStringGeometry, PointGeometry } from "../../../packages/world-model-core/src/types.js";
 import {
   AreaQuerySchema,
   DistanceQuerySchema,
@@ -16,7 +16,7 @@ import {
 } from "../../../packages/world-model-core/src/schema.js";
 import { h3Resolution } from "../../../packages/h3-situation/src/h3.js";
 import { validateGeometry } from "../../../packages/spatial-engine/src/geometry.js";
-import { distanceTraveledM, detectRouteDeviation, detectStops } from "../../../packages/trajectory-model/src/analytics.js";
+import { distanceBySegmentsM, deviationBySegments, stopsBySegments } from "../../../packages/trajectory-model/src/analytics.js";
 import { databasePool } from "../../../packages/runtime/src/db.js";
 import { WorldRepository } from "../../../packages/runtime/src/world-repository.js";
 import { SpatialRepository } from "../../../packages/runtime/src/spatial-repository.js";
@@ -37,11 +37,24 @@ export function buildWorldApi(): FastifyInstance {
   const pool = databasePool();
   const world = new WorldRepository(pool);
   const spatial = new SpatialRepository(pool);
-  const situation = new SituationRepository(pool);
+  const situation = new SituationRepository(pool,process.env.GOWM_DATA_SCOPE??process.env.GATEWAY_DATA_SCOPE_CLAIM??"default");
   const observations = new ObservationRepository(pool);
   const events = new EventRepository(pool);
   const trajectories = new TrajectoryRepository(pool);
   const bus = new WorldEventBus();
+  const acceptedScope=process.env.GOWM_DATA_SCOPE??process.env.GATEWAY_DATA_SCOPE_CLAIM??'default';
+  const requestScope=(request:FastifyRequest) => {
+    const requested=request.headers['x-gowm-data-scope'];
+    if (requested!==undefined && requested!==acceptedScope) throw Object.assign(new Error('DATA_SCOPE_NOT_ACCEPTED'),{statusCode:403});
+    return acceptedScope;
+  };
+  const trackHeaders=(reply:FastifyReply,track:Awaited<ReturnType<TrajectoryRepository['continuousTrack']>>) => {
+    reply.header('X-GOWM-Trajectory-Status',String(track.status));
+    reply.header('X-GOWM-Trajectory-Truncated',String(track.truncated));
+    reply.header('X-GOWM-Trajectory-Gap-Count',String(track.gaps.length));
+    if(track.identity) reply.header('X-GOWM-Tracklet-Version',String(track.identity.trackletVersionId));
+    if(track.status==='PENDING') throw Object.assign(new Error('TRAJECTORY_PROJECTION_PENDING'),{statusCode:503});
+  };
   const version = () => world.worldVersion();
   const compatibility = createWorldApiCompatibilityRuntime((evidence) => {
     app.log.info({ compatibilityParity: evidence }, "World API compatibility parity observation");
@@ -295,55 +308,42 @@ export function buildWorldApi(): FastifyInstance {
     });
   });
 
-  app.get("/events/stream", async (request, reply) => {
-    const parsed = EventSubscriptionFilterSchema.safeParse(request.query);
-    if (!parsed.success) return reply.code(422).send({ error: "invalid_filter", issues: parsed.error.issues });
-    const filter = parsed.data;
-    const seen = new Set<string>();
-    const buffered = new Map<string, WorldEvent>();
-    let replayingBacklog = true;
-    const send = (event: WorldEvent) => {
-      if (seen.has(event.eventId)) return;
-      seen.add(event.eventId);
-      reply.raw.write(`id: ${event.eventId}\nevent: ${event.eventType}\ndata: ${JSON.stringify(event)}\n\n`);
-    };
-    const eventFilter = {
-      ...(filter.objectType ? { objectType: filter.objectType } : {}),
-      ...(filter.eventType ? { eventType: filter.eventType } : {}),
-      ...(filter.areaId ? { areaId: filter.areaId } : {}),
-      ...(filter.sinceWorldVersion !== undefined ? { sinceWorldVersion: filter.sinceWorldVersion } : {})
-    };
-    const subscription = await bus.subscribeEvents((event) => {
-      if (!matchesEvent(event, eventFilter)) return;
-      if (replayingBacklog) buffered.set(event.eventId, event);
-      else send(event);
-    });
+  const streams=new Set<AbortController>();
+  app.addHook('preClose',async()=>{for(const stream of streams) stream.abort();});
+  app.get('/events/stream',async(request,reply)=>{
+    const parsed=EventSubscriptionFilterSchema.safeParse(request.query);
+    if(!parsed.success) return reply.code(422).send({error:'invalid_filter',issues:parsed.error.issues});
+    const scope=requestScope(request),last=request.headers['last-event-id'];
+    const filter={...parsed.data};
+    let after='0';
+    if(last!==undefined) {
+      if(typeof last!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(last))
+        return reply.code(400).send({error:'invalid_event_cursor'});
+      // A standard delivery cursor takes precedence over the legacy version threshold.
+      delete filter.sinceWorldVersion;
+      const cursor=await events.feedCursor(scope,last);
+      if(!cursor||!eventMatches(cursor.event,filter)) return reply.code(410).send({error:'event_cursor_unavailable'});
+      after=cursor.position;
+    }
+    const controller=new AbortController();streams.add(controller);
+    const closed=()=>controller.abort();reply.raw.once('close',closed);
     reply.hijack();
-    reply.raw.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive"
-    });
-    const initial = await events.list({ ...eventFilter, limit: 10_000 });
-    initial.forEach(send);
-    replayingBacklog = false;
-    [...buffered.values()]
-      .sort((left, right) => left.worldVersion - right.worldVersion || compareUnicodeCodePoints(left.timestamp, right.timestamp))
-      .forEach(send);
-    buffered.clear();
-    const heartbeat = setInterval(() => reply.raw.write(": heartbeat\n\n"), 15_000);
-    request.raw.on("close", () => { clearInterval(heartbeat); subscription.unsubscribe(); });
+    reply.raw.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache',Connection:'keep-alive','X-Accel-Buffering':'no'});
+    reply.raw.flushHeaders();
+    try {await pumpEventStream(events,reply.raw,{scope,after,filter,signal:controller.signal});}
+    catch(error) {if(!controller.signal.aborted) app.log.warn({code:(error as {code?:string}).code??'EVENT_STREAM_INTERRUPTED'},'event stream interrupted; reconnect with Last-Event-ID');}
+    finally {streams.delete(controller);reply.raw.off('close',closed);controller.abort();reply.raw.end();}
   });
 
   app.get("/trajectory/:entityId/current", async (request, reply) => {
-    const point = await trajectories.currentPosition((request.params as { entityId: string }).entityId);
+    const point = await trajectories.currentPosition((request.params as { entityId: string }).entityId,requestScope(request));
     return point ? point : reply.code(404).send({ error: "position_not_found" });
   });
 
   app.get("/trajectory/:entityId/mobility", async (request, reply) => {
     const entityId = (request.params as { entityId: string }).entityId;
     const source = (request.query as { source?: string }).source;
-    const trajectory = await trajectories.mobilityTrajectory(entityId,source);
+    const trajectory = await trajectories.mobilityTrajectory(entityId,source,requestScope(request));
     return trajectory
       ? {
           representation: "MOBILITYDB_TGEOMPOINT_SEQUENCESET",
@@ -356,37 +356,43 @@ export function buildWorldApi(): FastifyInstance {
   app.get("/trajectory/:entityId/track", async (request, reply) => {
     const parsed = TrackQuerySchema.safeParse(request.query);
     if (!parsed.success) return reply.code(422).send({ error: "invalid_track_query", issues: parsed.error.issues });
-    const points = await trajectories.track((request.params as { entityId: string }).entityId, {
-      ...(parsed.data.from ? { from: parsed.data.from } : {}),
-      ...(parsed.data.to ? { to: parsed.data.to } : {}),
-      limit: parsed.data.limit
-    });
-    return {
-      representation: "OBSERVED_MEASUREMENT_COMPATIBILITY_VIEW",
-      summary: { pointCount: points.length, distanceTraveledM: distanceTraveledM(points) },
-      points
-    };
+    const track=await trajectories.continuousTrack((request.params as {entityId:string}).entityId,parsed.data,requestScope(request));
+    trackHeaders(reply,track);
+    const {segments,...facts}=track;
+    return {representation:'OBSERVED_MEASUREMENT_COMPATIBILITY_VIEW',...facts,
+      summary:{pointCount:track.points.length,distanceTraveledM:distanceBySegmentsM(segments),
+        distanceMeaning:'OBSERVED_CONTINUOUS_SEGMENTS_ONLY',truncated:track.truncated,gapCount:track.gaps.length}};
   });
 
-  app.get("/trajectory/:entityId/recent", async (request) => {
-    const query = request.query as { durationMs?: string; limit?: string };
-    return trajectories.recentTrack((request.params as { entityId: string }).entityId, Number(query.durationMs ?? 300_000), Number(query.limit ?? 10_000));
+  app.get('/trajectory/:entityId/recent',async (request,reply)=>{
+    const query=request.query as {durationMs?:string;limit?:string;source?:string;trackerSessionKey?:string};
+    const duration=Number(query.durationMs??300_000);
+    if (!Number.isFinite(duration)||duration<=0) return reply.code(422).send({error:'invalid_duration'});
+    const parsed=TrackQuerySchema.safeParse({...query,from:new Date(Date.now()-duration).toISOString()});
+    if(!parsed.success) return reply.code(422).send({error:'invalid_track_query'});
+    const track=await trajectories.continuousTrack((request.params as {entityId:string}).entityId,parsed.data,requestScope(request));
+    trackHeaders(reply,track);return track.points;
   });
 
-  app.get("/trajectory/:entityId/stops", async (request) => {
-    const query = request.query as { from?: string; to?: string; radiusM?: string; minimumDurationMs?: string };
-    const points = await trajectories.track((request.params as { entityId: string }).entityId, { ...query, limit: 100_000 });
-    return detectStops(points, Number(query.radiusM ?? 10), Number(query.minimumDurationMs ?? 30_000));
+  app.get('/trajectory/:entityId/stops',async(request,reply)=>{
+    const query=request.query as {radiusM?:string;minimumDurationMs?:string};
+    const parsed=TrackQuerySchema.safeParse({...query,limit:100_000});
+    const radius=Number(query.radiusM??10),duration=Number(query.minimumDurationMs??30_000);
+    if(!parsed.success||!Number.isFinite(radius)||radius<=0||!Number.isFinite(duration)||duration<=0)
+      return reply.code(422).send({error:'invalid_stop_query'});
+    const track=await trajectories.continuousTrack((request.params as {entityId:string}).entityId,parsed.data,requestScope(request));
+    trackHeaders(reply,track);return stopsBySegments(track.segments,radius,duration);
   });
 
-  app.post("/trajectory/:entityId/route-deviation", async (request, reply) => {
-    const body = request.body as { route?: unknown; toleranceM?: number; from?: string; to?: string };
-    const parsed = GeometrySchema.safeParse(body.route);
-    if (!parsed.success || parsed.data.type !== "LineString") return reply.code(422).send({ error: "line_route_required" });
-    const geometryIssues = validateGeometry(parsed.data as Geometry);
-    if (geometryIssues.length) return reply.code(422).send({ error: "invalid_geometry", issues: geometryIssues });
-    const points = await trajectories.track((request.params as { entityId: string }).entityId, { ...(body.from ? { from: body.from } : {}), ...(body.to ? { to: body.to } : {}), limit: 100_000 });
-    return detectRouteDeviation(points, parsed.data as LineStringGeometry, body.toleranceM ?? 50);
+  app.post('/trajectory/:entityId/route-deviation',async(request,reply)=>{
+    const body=request.body as {route?:unknown;toleranceM?:number;from?:string;to?:string};
+    const parsed=GeometrySchema.safeParse(body.route),query=TrackQuerySchema.safeParse({...body,limit:100_000});
+    if(!parsed.success||parsed.data.type!=='LineString') return reply.code(422).send({error:'line_route_required'});
+    const issues=validateGeometry(parsed.data as Geometry);
+    if(issues.length||!query.success||!Number.isFinite(body.toleranceM??50)||(body.toleranceM??50)<=0)
+      return reply.code(422).send({error:'invalid_deviation_query'});
+    const track=await trajectories.continuousTrack((request.params as {entityId:string}).entityId,query.data,requestScope(request));
+    trackHeaders(reply,track);return deviationBySegments(track.segments,parsed.data as LineStringGeometry,body.toleranceM??50);
   });
 
   app.addHook("onClose", async () => bus.drain());
@@ -408,12 +414,4 @@ function sumSituation(cells: Awaited<ReturnType<SituationRepository["areaCells"]
     totals.observations = (totals.observations ?? 0) + cell.metrics.observationCount;
     return totals;
   }, {});
-}
-
-function matchesEvent(event: WorldEvent, filter: { objectType?: string; eventType?: string; areaId?: string; sinceWorldVersion?: number }): boolean {
-  if (filter.objectType && event.subject.type !== filter.objectType) return false;
-  if (filter.eventType && event.eventType !== filter.eventType) return false;
-  if (filter.areaId && event.payload.areaId !== filter.areaId) return false;
-  if (filter.sinceWorldVersion !== undefined && event.worldVersion <= filter.sinceWorldVersion) return false;
-  return true;
 }

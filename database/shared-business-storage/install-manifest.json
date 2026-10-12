@@ -4,6 +4,16 @@
     "file": "078_device_shared_business_storage.sql",
     "sha256": "efcc7a866c9777394dc5cd9f256d8a786385881c25e513a3310efb71454f88bc"
   },
+  "coreAdditions": [
+    {
+      "file": "079_device_context_reader.sql",
+      "sha256": "a8b81bd3e401bf3eae876d50e97d925949a62c748124559339368e468bb47615"
+    },
+    {
+      "file": "087_business_runtime_authority.sql",
+      "sha256": "9b00bbfc4556f79e18a3f7c7db6e7f3e3c38834f6d63993432e519cbaa7cf346"
+    }
+  ],
   "entries": [
     {
       "family": "SMPP_RUNTIME",
@@ -1814,12 +1824,13 @@
       "file": "read_model_v1.sql",
       "path": "overlays/read-model.sql",
       "sha256": "57ecb4fd1883e5adac488a0a5938d0ffac810f19d91e26ae193c08706cd76a7f"
-    }
-  ],
-  "coreAdditions": [
+    },
     {
-      "file": "079_device_context_reader.sql",
-      "sha256": "a8b81bd3e401bf3eae876d50e97d925949a62c748124559339368e468bb47615"
+      "schema": "ugv_smpp",
+      "family": "GOWM_API",
+      "file": "business_api_v2.sql",
+      "path": "overlays/business-api-v2.sql",
+      "sha256": "218219064733445aca34c94353c2cea6cf450007d5d66bd663ff534ab853c65e"
     }
   ]
 }

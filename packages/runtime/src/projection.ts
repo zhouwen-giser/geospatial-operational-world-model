@@ -70,18 +70,6 @@ interface EvidenceProjectionRef {
   uncertainty: Record<string, unknown>;
 }
 
-const TYPE_COUNTER: Record<string, "agent_count" | "vehicle_count" | "sensor_count" | "incident_count"> = {
-  Agent: "agent_count",
-  Vehicle: "vehicle_count",
-  UGV: "vehicle_count",
-  UAV: "vehicle_count",
-  Device: "sensor_count",
-  Sensor: "sensor_count",
-  Camera: "sensor_count",
-  Incident: "incident_count",
-  Alert: "incident_count"
-};
-
 export class ProjectionProcessor {
   private readonly config = loadConfig();
   private readonly h3AdapterFactory: H3AdapterFactory;
@@ -220,7 +208,7 @@ export class ProjectionProcessor {
       }
 
       if (point && h3) {
-        await this.incrementObservationSituation(client, projectionObservation, h3, version);
+        await this.incrementObservationSituation(client, projectionObservation, h3, version, String(observationRow.data_scope_key));
       }
 
       const events: WorldEvent[] = [];
@@ -255,8 +243,7 @@ export class ProjectionProcessor {
         }));
 
         if (point && h3) {
-          await this.moveObjectSituation(client, projectionObservation.subject.type, currentRow, h3, version);
-          events.push(...await this.updateGeofences(client, projectionObservation, point, version));
+          events.push(...await this.updateGeofences(client, projectionObservation, point, version, String(observationRow.data_scope_key)));
         }
       }
 
@@ -480,73 +467,36 @@ export class ProjectionProcessor {
     client: pg.PoolClient,
     observation: ObservationEnvelope,
     h3: H3Projection,
-    version: number
+    version: number,
+    dataScopeKey: string
   ): Promise<void> {
     for (const [resolution, index] of h3Entries(h3)) {
       await client.query(
-        `INSERT INTO situation_cell (h3_index, resolution, observation_count, last_observed_at, world_version)
-         VALUES ($1, $2, 1, $3, $4)
-         ON CONFLICT (h3_index, resolution) DO UPDATE SET
-           observation_count = situation_cell.observation_count + 1,
-           last_observed_at = GREATEST(situation_cell.last_observed_at, EXCLUDED.last_observed_at),
-           world_version = GREATEST(situation_cell.world_version, EXCLUDED.world_version),
+        `INSERT INTO gowm_situation.cell (data_scope_key, h3_index, resolution, observation_count, last_observed_at, world_version)
+         VALUES ($5, $1, $2, 1, $3, $4)
+         ON CONFLICT (data_scope_key, h3_index, resolution) DO UPDATE SET
+           observation_count = gowm_situation.cell.observation_count + 1,
+           last_observed_at = GREATEST(gowm_situation.cell.last_observed_at, EXCLUDED.last_observed_at),
+           world_version = GREATEST(gowm_situation.cell.world_version, EXCLUDED.world_version),
            updated_at = clock_timestamp()`,
-        [index, resolution, observation.observedAt, version]
+        [index, resolution, observation.observedAt, version, dataScopeKey]
       );
       await client.query(
-        `INSERT INTO situation_cell_observer (
-           h3_index, resolution, observer_id, first_observed_at, last_observed_at
-         ) VALUES ($1, $2, $3, $4, $4)
-         ON CONFLICT (h3_index, resolution, observer_id) DO UPDATE SET
-           last_observed_at = GREATEST(situation_cell_observer.last_observed_at, EXCLUDED.last_observed_at),
-           observation_count = situation_cell_observer.observation_count + 1`,
-        [index, resolution, observation.observer.id, observation.observedAt]
+        `INSERT INTO gowm_situation.observer (
+           data_scope_key, h3_index, resolution, observer_id, first_observed_at, last_observed_at
+         ) VALUES ($5, $1, $2, $3, $4, $4)
+         ON CONFLICT (data_scope_key, h3_index, resolution, observer_id) DO UPDATE SET
+           first_observed_at = LEAST(gowm_situation.observer.first_observed_at, EXCLUDED.first_observed_at),
+           last_observed_at = GREATEST(gowm_situation.observer.last_observed_at, EXCLUDED.last_observed_at),
+           observation_count = gowm_situation.observer.observation_count + 1`,
+        [index, resolution, observation.observer.id, observation.observedAt, dataScopeKey]
       );
       await client.query(
-        `UPDATE situation_cell SET unique_observer_count = (
-           SELECT count(*) FROM situation_cell_observer
-           WHERE h3_index = $1 AND resolution = $2
-         ) WHERE h3_index = $1 AND resolution = $2`,
-        [index, resolution]
-      );
-    }
-  }
-
-  private async moveObjectSituation(
-    client: pg.PoolClient,
-    objectType: string,
-    current: CurrentRow | undefined,
-    next: H3Projection,
-    version: number
-  ): Promise<void> {
-    const counter = TYPE_COUNTER[objectType];
-    if (!counter) return;
-    const previous: H3Projection = {
-      ...(current?.h3_r7 ? { r7: current.h3_r7 } : {}),
-      ...(current?.h3_r8 ? { r8: current.h3_r8 } : {}),
-      ...(current?.h3_r9 ? { r9: current.h3_r9 } : {}),
-      ...(current?.h3_r10 ? { r10: current.h3_r10 } : {})
-    };
-    const previousByResolution = new Map(h3Entries(previous));
-    for (const [resolution, index] of h3Entries(next)) {
-      const oldIndex = previousByResolution.get(resolution);
-      if (oldIndex === index) continue;
-      if (oldIndex) {
-        await client.query(
-          `UPDATE situation_cell SET ${counter} = GREATEST(0, ${counter} - 1),
-             world_version = GREATEST(world_version, $3), updated_at = clock_timestamp()
-           WHERE h3_index = $1 AND resolution = $2`,
-          [oldIndex, resolution, version]
-        );
-      }
-      await client.query(
-        `INSERT INTO situation_cell (h3_index, resolution, ${counter}, world_version)
-         VALUES ($1, $2, 1, $3)
-         ON CONFLICT (h3_index, resolution) DO UPDATE SET
-           ${counter} = situation_cell.${counter} + 1,
-           world_version = GREATEST(situation_cell.world_version, EXCLUDED.world_version),
-           updated_at = clock_timestamp()`,
-        [index, resolution, version]
+        `UPDATE gowm_situation.cell SET unique_observer_count = (
+           SELECT count(*) FROM gowm_situation.observer
+           WHERE h3_index = $1 AND resolution = $2 AND data_scope_key = $3
+         ) WHERE h3_index = $1 AND resolution = $2 AND data_scope_key = $3`,
+        [index, resolution, dataScopeKey]
       );
     }
   }
@@ -555,19 +505,20 @@ export class ProjectionProcessor {
     client: pg.PoolClient,
     observation: ObservationEnvelope,
     point: PointGeometry,
-    version: number
+    version: number,
+    dataScopeKey: string
   ): Promise<WorldEvent[]> {
     const [lon, lat] = point.coordinates;
     const containedResult = await client.query<{ id: string }>(
       `SELECT o.id FROM world_object o JOIN world_object_geometry g ON g.object_id = o.id
        WHERE o.object_type = ANY(ARRAY['Zone','AOI','Geofence']::text[])
-         AND o.deleted_at IS NULL
+         AND o.deleted_at IS NULL AND o.data_scope_key = $3
          AND ST_Covers(g.geometry, ST_SetSRID(ST_MakePoint($1, $2), 4326))`,
-      [lon, lat]
+      [lon, lat, dataScopeKey]
     );
     const existingResult = await client.query<{ area_id: string }>(
-      "SELECT area_id FROM object_area_membership WHERE object_id = $1 FOR UPDATE",
-      [observation.subject.id]
+      "SELECT m.area_id FROM object_area_membership m JOIN world_object a ON a.id=m.area_id WHERE m.object_id = $1 AND a.data_scope_key=$2 FOR UPDATE OF m",
+      [observation.subject.id,dataScopeKey]
     );
     const contained = new Set(containedResult.rows.map((row) => row.id));
     const existing = new Set(existingResult.rows.map((row) => row.area_id));

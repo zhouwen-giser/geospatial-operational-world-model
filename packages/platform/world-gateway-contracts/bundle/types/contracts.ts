@@ -3634,6 +3634,110 @@ export type GowmV071TaskExecutionIntervalResultTimeRange = {
   start: string;
 };
 
+export type GowmTrajectoryArtifactManifestV1 = {
+  analysisId: string;
+  coordinateEncoding: "POSTGIS_GEOJSON_15_V1";
+  definedPeriods: Array<{
+  bounds: "[]" | "[)" | "(]" | "()";
+  end: string;
+  start: string;
+}>;
+  encoding: "PG_JSONB_NDJSON_V1";
+  evaluationId: string;
+  evidenceSampleCount: number;
+  excludedPeriods: Array<{
+  range: {
+  bounds: "[]" | "[)" | "(]" | "()";
+  end: string;
+  start: string;
+};
+  reason: "EXCLUDED_PAUSED_PHASE";
+}>;
+  finalizationState: "PROVISIONAL" | "SEALED" | "CONFLICTED";
+  frozenRequest: GowmV07HistoricalTrajectoryQuery;
+  frozenSnapshot: GowmV071QuerySnapshotManifest;
+  fullRequestHash: PlatformCommonDefinitionsSha256Digest;
+  gaps: Array<{
+  gapNo: number;
+  kind: "UNKNOWN_INPUT_GAP" | "SOURCE_COVERAGE_GAP" | "TRACKLET_BOUNDARY_GAP";
+  range: {
+  bounds: "[]" | "[)" | "(]" | "()";
+  end: string;
+  start: string;
+};
+  reasonCodes: Array<string>;
+}>;
+  geometryNodeCount: number;
+  inputSetHash: PlatformCommonDefinitionsSha256Digest;
+  pageSize: 256;
+  prefixComplete: boolean;
+  requestedPeriods: Array<{
+  bounds: "[]" | "[)" | "(]" | "()";
+  end: string;
+  start: string;
+}>;
+  schemaVersion: "1.0";
+  segments: Array<{
+  end: string;
+  evidenceSampleCount: number;
+  geometryNodeCount: number;
+  interpolation: "Linear" | "Step" | "Discrete";
+  lowerInclusive: boolean;
+  segmentNo: number;
+  sourceSegmentNo: number;
+  sourceTrackletVersionId: string;
+  start: string;
+  upperInclusive: boolean;
+}>;
+  snapshotManifestHash: PlatformCommonDefinitionsSha256Digest;
+  suffixComplete: boolean;
+  temporalCoverageRatio: number;
+  trajectoryContentHash: PlatformCommonDefinitionsSha256Digest;
+  trajectoryReferenceKey: GowmV071HistoricalTrajectoryResultTrajectoryReferenceKey;
+  type: "manifest";
+  worldVersion: number;
+};
+
+export type GowmTrajectoryArtifactOpenQueryV1 = {
+  request: GowmV07HistoricalTrajectoryQuery;
+  trajectoryReferenceKey: GowmV071HistoricalTrajectoryResultTrajectoryReferenceKey;
+};
+
+export type GowmTrajectoryArtifactOpenResultV1 = ({
+  artifactReference?: GowmTrajectoryArtifactReferenceV1;
+  byteLength?: number;
+  expiresAt?: string;
+  manifest?: GowmTrajectoryArtifactManifestV1;
+  pageCount?: number;
+  reasonCode: string;
+  schemaVersion: "1.0";
+  status: "READY" | "PROJECTION_PENDING" | "NO_DATA" | "INDETERMINATE";
+  trajectoryReferenceKey: GowmV071HistoricalTrajectoryResultTrajectoryReferenceKey;
+}) & ((Record<string, unknown>));
+
+export type GowmTrajectoryArtifactPageQueryV1 = {
+  artifactReference: GowmTrajectoryArtifactReferenceV1;
+  pageNo: number;
+};
+
+export type GowmTrajectoryArtifactPageResultV1 = {
+  artifactReference: GowmTrajectoryArtifactReferenceV1;
+  content: string;
+  nextPage: (number) | (null);
+  pageDigest: PlatformCommonDefinitionsSha256Digest;
+  pageNo: number;
+  schemaVersion: "1.0";
+  status: "READY";
+};
+
+export type GowmTrajectoryArtifactReferenceV1 = {
+  artifactId: string;
+  digest: PlatformCommonDefinitionsSha256Digest;
+  fullRequestHash: PlatformCommonDefinitionsSha256Digest;
+  mediaType: "application/x-ndjson";
+  snapshotManifestHash: PlatformCommonDefinitionsSha256Digest;
+};
+
 export type GowmV071WorldQueryResult = WorldQueryResult;
 
 export type GowmV071WsgsHistoricalConsumerLock = {

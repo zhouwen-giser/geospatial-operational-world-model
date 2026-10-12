@@ -109,9 +109,13 @@ export function createWorldMcpServer(): McpServer {
 
   server.registerTool("get_object_track", {
     title: "Get object trajectory",
-    description: "Return ordered historical positions and distance traveled for an object.",
+    description: "Return versioned observed positions, explicit gaps and distance only within continuous segments.",
     inputSchema: {
       objectId: z.string().min(1),
+      source:z.string().min(1).optional(),
+      trackerSessionKey:z.string().min(1).optional(),
+      analysisSpaceKey:z.string().min(1).optional(),
+      profileKey:z.string().min(1).optional(),
       from: z.string().optional(),
       to: z.string().optional(),
       limit: z.number().int().positive().max(100_000).default(10_000)
@@ -123,21 +127,14 @@ export function createWorldMcpServer(): McpServer {
       .map(([key, value]) => [key, String(value)] as [string, string]));
     return safeResult(async () => {
       const started = performance.now();
-      const [track, state] = await Promise.all([
-        requestJson(`${config.worldApiUrl}/trajectory/${encodeURIComponent(objectId)}/track?${search}`),
-        requestJson(`${config.worldApiUrl}/world/objects/${encodeURIComponent(objectId)}`)
-      ]) as [Record<string, unknown>, Record<string, unknown>];
+      const track=await requestJson(`${config.worldApiUrl}/trajectory/${encodeURIComponent(objectId)}/track?${search}`) as Record<string,unknown>;
       return {
-        summary: track.summary ?? {},
-        facts: { points: track.points ?? [] },
-        context: {
-          worldVersion: Number(state.version ?? 0),
-          dataFreshnessMs: typeof state.freshnessMs === "number" ? state.freshnessMs : null,
-          queryTimeMs: roundMs(performance.now() - started),
-          confidence: state.confidence,
-          provenance: state.provenance ? [state.provenance] : []
-        }
+        summary:track.summary??{},
+        facts:{points:track.points??[],gaps:track.gaps??[],status:track.status,identity:track.identity,truncated:track.truncated},
+        context:{dataScopeKey:track.dataScopeKey,trajectoryIdentity:track.identity,
+          queryTimeMs:roundMs(performance.now()-started),provenance:track.identity?[track.identity]:[]}
       };
+
     });
   });
 

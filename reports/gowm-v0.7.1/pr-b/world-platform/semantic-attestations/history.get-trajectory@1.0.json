@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/historical-trace-provider.json",
-      "sha256": "d572017f23d621d90d4187e8ba159915afddb13e6d39d20dcc1e31329753f94a"
+      "sha256": "ffeb8bd39d6fb405574c160e9bd9294737231db0a9f3d4a8f3e9bebedcea9119"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/historical-trace-provider.json",
-      "sha256": "d572017f23d621d90d4187e8ba159915afddb13e6d39d20dcc1e31329753f94a"
+      "sha256": "ffeb8bd39d6fb405574c160e9bd9294737231db0a9f3d4a8f3e9bebedcea9119"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,23 +44,23 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/historical-trace-provider/src/provider.ts",
-      "sha256": "08bf2bb364accc0397023af8721785f32c7a2042f37dcf1188c8fe3196a026a3",
+      "sha256": "16d59fd382c16a9e9f08a778e84fcfb094dbd5d5d16e9f44ffdef5eeed8e45a7",
       "symbol": "createHistoricalTraceProvider"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/historical-trace-provider/src/repository.ts",
-      "sha256": "05953f2364bdb446e192f3367b0c365087295753553a2e1492a295404e108fb0"
+      "sha256": "6836866f3b769122fd6b451b1544b7dd0e7b625e3082ef8b917ffd4b436defb1"
     },
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/historical-trace-provider.test.ts",
-      "sha256": "2d6ed58b3d5471836659e7128e108a8c2d8ae1274663eaaa40fc432d0518a6b6"
+      "sha256": "031569a6b613dd4cdbb9e4c554a73611e04c43d139c2fe5c43b25a78f4fa5020"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/historical-trace-provider/src/repository.ts",
-      "sha256": "05953f2364bdb446e192f3367b0c365087295753553a2e1492a295404e108fb0",
+      "sha256": "6836866f3b769122fd6b451b1544b7dd0e7b625e3082ef8b917ffd4b436defb1",
       "symbol": "HistoricalTraceRepository"
     }
   ],

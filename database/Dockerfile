@@ -67,3 +67,23 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) -exec sed -i
 COPY database/licenses/pgRouting-GPL-2.0.txt /usr/share/doc/gowm-pgrouting/LICENSE
 COPY database/THIRD_PARTY_NOTICES.md /usr/share/doc/gowm-pgrouting/THIRD_PARTY_NOTICES.md
 COPY database/sbom/gowm-db.spdx.json /usr/share/doc/gowm-pgrouting/gowm-db.spdx.json
+
+# Shared SDAR native storage requires the official pgvector extension in public.
+# This image is for new installations; retained upgrades never recreate PostgreSQL.
+ARG PGVECTOR_VERSION=0.8.6
+ARG PGVECTOR_SOURCE_SHA256=10bf9938906e5d643bbc4a7eea104b6f57ba4898e5b76b20e60484ea1d5a7f8f
+ADD --checksum=sha256:10bf9938906e5d643bbc4a7eea104b6f57ba4898e5b76b20e60484ea1d5a7f8f \
+    https://codeload.github.com/pgvector/pgvector/tar.gz/refs/tags/v0.8.6 /tmp/pgvector.tar.gz
+RUN apt-get -o Acquire::Retries=5 update \
+    && apt-get -o Acquire::Retries=5 install -y --no-install-recommends make gcc postgresql-server-dev-18 \
+    && echo "${PGVECTOR_SOURCE_SHA256}  /tmp/pgvector.tar.gz" | sha256sum --check --strict \
+    && tar -xzf /tmp/pgvector.tar.gz -C /tmp \
+    && make -C "/tmp/pgvector-${PGVECTOR_VERSION}" OPTFLAGS='' \
+    && make -C "/tmp/pgvector-${PGVECTOR_VERSION}" install \
+    && grep -qx "default_version = '${PGVECTOR_VERSION}'" /usr/share/postgresql/18/extension/vector.control \
+    && apt-mark manual postgresql-18 \
+    && apt-get purge -y --auto-remove make gcc postgresql-server-dev-18 \
+    && rm -rf /tmp/pgvector.tar.gz "/tmp/pgvector-${PGVECTOR_VERSION}" /var/lib/apt/lists/*
+COPY database/licenses/pgvector-LICENSE.txt /usr/share/doc/gowm-pgvector/LICENSE
+LABEL org.gowm.pgvector.version="0.8.6" \
+      org.gowm.pgvector.source-sha256="10bf9938906e5d643bbc4a7eea104b6f57ba4898e5b76b20e60484ea1d5a7f8f"

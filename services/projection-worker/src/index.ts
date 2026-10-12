@@ -1,5 +1,6 @@
 import { projectionConcurrency } from "./concurrency.js";
 import pg from "pg";
+import { EventRepository } from "../../../packages/runtime/src/event-repository.js";
 import { loadConfig } from "../../../packages/world-model-core/src/config.js";
 import { closeDatabasePool, databasePool } from "../../../packages/runtime/src/db.js";
 import { createPostgresHistoricalProjectionStages } from "./historical-runtime-adapter.js";
@@ -58,6 +59,7 @@ async function main(): Promise<void> {
   process.stdout.write("projection-worker ready\n");
   console.log(JSON.stringify({event:"projection_concurrency",...concurrency}));
   const lanes = await Promise.allSettled([
+    relayEventFeed(),
     runLane("CORE",0),
     ...Array.from({length:concurrency.tracklet},(_,slot)=>runLane("TRACKLET",slot)),
     ...Array.from({length:concurrency.finalization},(_,slot)=>runLane("FINALIZATION",slot)),
@@ -65,6 +67,23 @@ async function main(): Promise<void> {
   ]);
   const failed = lanes.find((result) => result.status === "rejected");
   if (failed?.status === "rejected") throw failed.reason;
+}
+
+async function relayEventFeed():Promise<void> {
+  const feedPool=new pg.Pool({connectionString:config.databaseUrl,max:1,application_name:'gowm-event-feed-relay',
+    connectionTimeoutMillis:2000,statement_timeout:5000,query_timeout:6000});
+  feedPool.on('error',()=>process.stderr.write('event feed pool error\n'));
+  const feed=new EventRepository(feedPool);
+  let failures=0;
+  try {
+    while(running) {
+      try {await feed.appendFeed();failures=0;}
+      catch(error) {failures++;process.stderr.write(JSON.stringify({event:'event_feed_append_failed',sqlstate:(error as {code?:string}).code??null})+'\n');}
+      await new Promise<void>(resolve=>{const timer=setTimeout(done,Math.min(5000,250*2**Math.min(failures,4)));
+        function done(){clearTimeout(timer);shutdownController.signal.removeEventListener('abort',done);resolve();}
+        shutdownController.signal.addEventListener('abort',done,{once:true});if(!running)done();});
+    }
+  } finally {await feedPool.end();}
 }
 
 async function runLane(lane: "CORE" | "TRACKLET" | "FINALIZATION" | "HISTORY", slot:number): Promise<void> {

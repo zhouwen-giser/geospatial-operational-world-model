@@ -1,0 +1,100 @@
+{
+  "status": "LOCAL_CAPABILITY_CANDIDATE_VERIFIED",
+  "recordedAt": "2026-10-12T03:08:43.151008+00:00",
+  "source": {
+    "head": "506315b5a60e5f5fe405f020f61cec24be0be47d",
+    "state": "WORKING_TREE_CANDIDATE_NOT_EXACT_HEAD_QUALIFICATION",
+    "repository": "geospatial-operational-world-model",
+    "otherRepositoriesModified": false
+  },
+  "release": {
+    "migrationHead": "093",
+    "migrationCount": 93,
+    "compiledSourceModules": 68,
+    "providers": 16,
+    "operations": 126,
+    "stable": 31,
+    "preview": 93,
+    "experimental": 2,
+    "old001Through089AndLegacyContractsFrozen": true
+  },
+  "checks": {
+    "rootStaticAndTypes": "PASS",
+    "relatedRegression": {
+      "files": 14,
+      "tests": 80,
+      "status": "PASS"
+    },
+    "followupSubscriptionAndBootstrap": {
+      "files": 2,
+      "tests": 5,
+      "overlapsEarlierSuite": true,
+      "status": "PASS"
+    },
+    "sqlAst": "PASS",
+    "fresh093AndRetained089Upgrade": "PASS",
+    "realGatewayProviderHttp": {
+      "status": "PASS",
+      "transport": "REAL_GATEWAY_AND_PROVIDER_HTTP",
+      "gatewayCoordinationStore": "IN_MEMORY_TEST_ONLY",
+      "facts": "REAL_POSTGRES",
+      "pages": 4,
+      "bytes": 125764,
+      "frozenPins": 11
+    },
+    "legacyFreshAnd086Upgrade": {
+      "status": "PASS",
+      "casesPerBaseline": 15,
+      "nativeSdkCasesPerBaseline": 42,
+      "retainedRowsBindingsPasswordsStable": true
+    },
+    "tlsAndMqttAcl": "PASS",
+    "effectiveProductionCompose": "PASS",
+    "defaultBootstrapCompose": "PASS",
+    "logicalRecovery": "ISOLATED_LOGICAL_RESTORE_VERIFIED",
+    "consumerBundleReproducibility": "PASS",
+    "packageReproducibility": "PASS",
+    "imageSourceIdentity": {
+      "status": "PASS",
+      "gate": "IMAGE_SOURCE_AND_RUNTIME_IDENTITY",
+      "files": 841,
+      "compiledModules": 68,
+      "implementationDigest": "sha256:837a3d868375540a571a8b41a51bcaed0f56d7e7a15b707c8046bf652209c78d",
+      "referenceImplementationDigest": "sha256:dacf38933316a1cb1b61337c3aeb75fdf3712017ccdcd549577df574209ddfd2",
+      "evidenceImplementationDigest": "sha256:a49a1999d9e2a6faccf2cbad8c6a2369663040187d42856e9bc8ea39a1285eae",
+      "historicalImplementationDigest": "sha256:a211fe288837ee8337c2fad7091b833ba1e064284ac0f3d74c547270e5972eff"
+    }
+  },
+  "package": {
+    "path": "output/deployment/gowm-dev-server-0.7.1.tar.gz",
+    "sha256": "1f5dd4002c6d480148b0b86e04c6899b1f3caf53b097d424cc2a37758529d8c6",
+    "bytes": 3964103,
+    "checksumPath": "output/deployment/gowm-dev-server-0.7.1.tar.gz.sha256",
+    "imageTag": "gowm-dev-package-check:1f5dd4002c6d4801",
+    "imageId": "sha256:286d30af6531e5b979f397fe6a43ca8eca77f6bc624680ad8684cf35f8c4d0e0",
+    "runtimeUser": "node",
+    "previousPackagePreserved": true,
+    "originalPreservedSHA256": "2b152714bc59eb5daa7c6ccd7b52c7f0a4211fc67f60bbfa58a22116722a876e",
+    "runtimeSourceIdentity": "INDEPENDENT_VERIFIED_EXTRACTED_CONTEXT"
+  },
+  "boundaries": {
+    "sourceCalibrationEvidence": "TEST_FIXTURE_ONLY",
+    "physicalDeviceAcceptance": "NOT_RUN",
+    "crossRepositoryBusinessAcceptance": "NOT_RUN",
+    "remoteDeployment": "NOT_RUN",
+    "formalExactHeadQualification": "NOT_GRANTED",
+    "walPitr": "NOT_IMPLEMENTED",
+    "ha": "NOT_IMPLEMENTED",
+    "rpoRtoAndLongTermCapacity": "NOT_QUALIFIED",
+    "arbitraryVendorAdapters": "NOT_IMPLEMENTED",
+    "simulationUiResetAck": "ADJACENT_REPOSITORY_CHANGE_REQUIRED",
+    "controlledSmppSdarRuntimeWrites": "ADJACENT_REPOSITORY_CHANGE_REQUIRED",
+    "dependencyAuditRemediation": "NOT_RUN_EXISTING_INSTALL_WARNINGS_RETAINED_IN_BUILD_LOG"
+  },
+  "cleanup": {
+    "ownedPostgresContainerAndAnonymousVolume": "REMOVED",
+    "ownedMqttTestContainers": "REMOVED_BY_TEST",
+    "verificationImagesAndPreviousPackages": "RETAINED",
+    "onsiteOrSharedResourcesModified": false
+  }
+}

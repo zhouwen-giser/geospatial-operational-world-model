@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "evidence": "LOCAL_AND_PACKAGE_VERIFIED_NOT_ONSITE_OR_FORMALLY_QUALIFIED",
+  "baselineCommit": "506315b5a60e5f5fe405f020f61cec24be0be47d",
+  "sourceState": "WORKING_TREE_WITH_UNCOMMITTED_REPAIR",
+  "migrationHead": "089",
+  "package": {
+    "path": "/home/zhouwen/web-download/geospatial-operational-world-model/output/deployment/gowm-dev-server-0.7.1.tar.gz",
+    "sha256": "2b152714bc59eb5daa7c6ccd7b52c7f0a4211fc67f60bbfa58a22116722a876e",
+    "bytes": 3886637,
+    "reproducible": true,
+    "entrypointsVerified": true,
+    "previousBaselinePath": "/home/zhouwen/web-download/geospatial-operational-world-model/output/deployment/previous-gowm-dev-server-0.7.1.0yU6li/gowm-dev-server-0.7.1.tar.gz",
+    "previousBaselineSha256": "62fd9970d399039df7c7c138e8534f73c294e33836f629f64e56da3a4a91eb81"
+  },
+  "images": {
+    "applicationTag": "gowm-dev-package-check:2b152714bc59eb5d",
+    "applicationImageId": "sha256:066bdeefe4bb02153deaa505e47242721acfe2f785b88c679816ac80818c920c",
+    "databaseTag": "gowm-functional-repair-db:20261012",
+    "databaseImageId": "sha256:a16bd8440cf9f64d545895e46c35d605a81f68e2244e96bacad06f5d61f08af5",
+    "sourceBytesVerified": 821,
+    "compiledModulesVerified": 45,
+    "pgvectorBinarySameAsTestedImage": true,
+    "pgvectorBinarySha256": "daec48ba7f2301198f79497274b8ca3286c6da3b4898df9bfae04c903510be33"
+  },
+  "checks": {
+    "staticAndTypes": "PASS",
+    "relatedUnitCases": 45,
+    "databaseImageUnitCases": 4,
+    "freshDatabaseCases": 15,
+    "retained086UpgradeCases": 15,
+    "nativeSdkCasesPerDatabase": 42,
+    "unknownNonemptySchemaRejectedOnFreshInstall": true,
+    "effectiveCompose": "PASS",
+    "frozenCoreMigrations": 86,
+    "frozenNativeSqlFiles": 226,
+    "originalRowsAndPasswordHashesPreservedOnUpgrade": true,
+    "taskOwnedDatabasesCleanedUp": true
+  },
+  "boundaries": {
+    "onsiteDeployment": "NOT_RUN",
+    "remoteExactHeadCi": "NOT_RUN",
+    "crossRepositoryBusinessAcceptance": "NOT_RUN",
+    "unrelatedHistoricalPerformanceRerun": "NOT_RUN_UNCHANGED_SQL",
+    "deferredMilestones": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6"
+    ]
+  }
+}

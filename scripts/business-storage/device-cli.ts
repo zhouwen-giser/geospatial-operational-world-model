@@ -1,4 +1,5 @@
 import pg from 'pg';
+import { authorizeBusinessServices } from './authority.js';
 import { initializeDefaultDevice, loadIngestDeviceContext, resolveBusinessDeviceContext, UGV_STREAMS, type DefaultDeviceInput } from '../../packages/integrations/device-business-storage/src/index.js';
 
 const command = process.argv[2] ?? 'help';
@@ -10,8 +11,10 @@ if (command === 'help' || process.argv.includes('--help')) {
   const required = (key: string) => { const value = env[key]?.trim(); if (!value) throw Error(`${key} is required`); return value; };
   const optional = (key: string) => env[key]?.trim() || undefined;
   const businessKeys = ['SMPP_SERVICE_KEY','UGV_PROVIDER_ID','UGV_RESOURCE_ID','SDAR_SERVICE_KEY','SDAR_MCP_SERVER_ID','SDAR_AGENT_PROFILE_ID'];
+  if (optional('GOWM_BUSINESS_INSTALL_MODE')==='ready' && businessKeys.slice(0,5).some(k=>!optional(k))) throw Error('BUSINESS_DEVICE_CONFIG_INCOMPLETE');
+  if (optional('SDAR_AGENT_PROFILE_ID') && !optional('SDAR_SERVICE_KEY')) throw Error('SDAR_SERVICE_KEY required with SDAR_AGENT_PROFILE_ID');
   const input: DefaultDeviceInput = {
-    scope:env.UGV_DATA_SCOPE_KEY ?? 'airport-sim-ugv-01', namespace:env.UGV_DEVICE_NAMESPACE ?? 'ugv',
+    scope:env.UGV_DATA_SCOPE_KEY ?? 'default', namespace:env.UGV_DEVICE_NAMESPACE ?? 'ugv',
     identifier:env.UGV_DEVICE_ID ?? 'ugv',deviceName:env.UGV_DEVICE_NAME ?? 'UGV',
     ...(optional('GOWM_DEVICE_ID') ? { deviceId:required('GOWM_DEVICE_ID') } : {}),
     sourceKey:env.UGV_SOURCE_KEY ?? 'ugv-airport-sim-mqtt',pipelineKey:env.UGV_PRODUCER_PIPELINE_KEY ?? 'ugv-airport-sim-mqtt:canonical-v1',
@@ -34,8 +37,14 @@ if (command === 'help' || process.argv.includes('--help')) {
         deviceId:(await loadIngestDeviceContext(c,{...input,topics:Object.keys(UGV_STREAMS)})).deviceId }, 'verify') } : {}),
       bindings:(await c.query('SELECT binding_id,smpp_service_key,sdar_service_key FROM gowm_device.device_service_binding WHERE data_scope_key=$1 AND device_id=(SELECT device_id FROM gowm_device.device WHERE data_scope_key=$1 AND identifier_namespace=$2 AND device_identifier=$3) AND valid_to IS NULL', [input.scope,input.namespace,input.identifier])).rows
     };
+    if (command==='init-default' && input.business) await authorizeBusinessServices(c,{...input.business,scope:input.scope},[result.context.deviceId]);
+    if (env.GATEWAY_DATA_SCOPE_CLAIM) {
+      if (input.scope!==env.GATEWAY_DATA_SCOPE_CLAIM) throw Error('GATEWAY_DEVICE_SCOPE_CONFLICT');
+      const projection=(await c.query("SELECT to_regclass('gowm_situation.cell_scored') IS NOT NULL ready")).rows[0];
+      if (!projection?.ready) throw Error('SCOPED_SITUATION_MIGRATION_REQUIRED');
+    }
     await c.query('COMMIT');
-    console.log(JSON.stringify({ status:'PASS',...result }));
+    console.log(JSON.stringify({ status:'PASS',bindingStatus:input.business?'CONFIGURED':'NOT_CONFIGURED',...result }));
   } catch (error) { await c.query('ROLLBACK'); throw error; }
   finally { c.release(); await pool.end(); }
 }

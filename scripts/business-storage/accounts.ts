@@ -42,7 +42,7 @@ export async function initializeBusinessAccounts(databaseUrl: string, env: NodeJ
       }
       await admin.query(`CREATE SCHEMA IF NOT EXISTS ${a.schema}`);
       await admin.query(`GRANT USAGE ON SCHEMA ${a.schema},public TO ${a.role}`);
-      await admin.query(`GRANT gowm_device_reader TO ${a.role}`);
+      await admin.query(`GRANT gowm_device_reader,gowm_business_client TO ${a.role}`);
       await admin.query(`GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA ${a.schema} TO ${a.role}`);
       await admin.query(`GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA ${a.schema} TO ${a.role}`);
       await admin.query(`ALTER DEFAULT PRIVILEGES IN SCHEMA ${a.schema} GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO ${a.role}`);

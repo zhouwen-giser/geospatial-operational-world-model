@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": [
+    "immutable_profile_register_replay_conflict_activate",
+    "reader_permissions_and_active_session_freeze",
+    "real_schema_inbox_mapping_outbox_and_delayed_source_clock",
+    "reset_complete_uses_calibrated_observation_boundary",
+    "explicit_close_new_session_disabled_stream_and_legacy_replay"
+  ],
+  "sourceCalibrationEvidence": "TEST_FIXTURE_ONLY",
+  "physicalDeviceAcceptance": "NOT_RUN",
+  "remoteDeployment": "NOT_RUN"
+}

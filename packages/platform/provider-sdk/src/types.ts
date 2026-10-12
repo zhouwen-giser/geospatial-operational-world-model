@@ -65,6 +65,8 @@ export interface ProviderOperation<Input = unknown, Output = unknown> {
   /** Frozen source-byte hash when a contract manifest locks the schema artifact rather than canonical JSON. */
   outputSchemaLockHash?: `sha256:${string}`;
   method: ProviderMethod;
+  /** Keep payload conflict detection/single-flight, but recheck expiring resources on completed replay. */
+  recheckOnReplay?: boolean;
   handle(input: Input, context: ProviderHandlerContext): Promise<ProviderOperationResult<Output>>;
 }
 

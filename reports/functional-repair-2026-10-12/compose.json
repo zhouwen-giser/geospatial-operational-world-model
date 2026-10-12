@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "gate": "EFFECTIVE_COMPOSE_DEFAULT_BOOTSTRAP",
+  "scope": "default",
+  "serviceFields": 6,
+  "privateCredentialsPreserved": true,
+  "resetPolicyPreserved": true
+}

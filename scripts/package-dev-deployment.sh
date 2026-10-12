@@ -29,6 +29,7 @@ fi
 
 node "$project_dir/scripts/validate-deployment-env.mjs"
 node "$project_dir/scripts/verify-ugv-bootstrap-package.mjs" "$project_dir"
+(cd "$project_dir" && node scripts/validate-bootstrap-config.mjs .env.example && node scripts/verify-functional-repair-freeze.mjs && node scripts/verify-capability-completion-freeze.mjs && node --import tsx scripts/artifact-consumer-lock.ts)
 if [[ ! -f "$project_dir/artifacts/h3-bindings.mjs" ]]; then
   H3_SOURCE_REPO="${H3_SOURCE_REPO:-$(cd "$project_dir/.." && pwd)/h3-spatial-toolkit}" \
     bash "$project_dir/scripts/dev-deploy.sh" prepare-h3
@@ -173,7 +174,7 @@ for entrypoint in scripts/dev-deploy.sh scripts/opendrive-task-network.sh; do
   [[ -x "$verified_dir/$entrypoint" ]]
   bash -n "$verified_dir/$entrypoint"
 done
-(cd "$verified_dir" && node scripts/validate-deployment-env.mjs && node scripts/verify-ugv-bootstrap-package.mjs && node scripts/history-release-manifest.mjs && bash scripts/opendrive-task-network.sh --help >/dev/null)
+(cd "$verified_dir" && node scripts/validate-deployment-env.mjs && node scripts/verify-ugv-bootstrap-package.mjs && node scripts/history-release-manifest.mjs && node scripts/verify-capability-completion-freeze.mjs && bash scripts/opendrive-task-network.sh --help >/dev/null)
 tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
   -cf - -C "$staging_root/verify" "$package_name" | gzip -n > "$staging_root/reproduced.tar.gz"
 cmp "$archive_path" "$staging_root/reproduced.tar.gz"
@@ -199,10 +200,25 @@ if [[ "$verify_image" == true ]]; then
     fs.accessSync("/app/dist/scripts/business-storage/cli.js", fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/business-storage/device-cli.js", fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/business-storage/accounts.js", fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/business-storage/bootstrap.js", fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/business-storage/runtime-verify.js", fs.constants.R_OK);
+    fs.accessSync("/app/dist/scripts/functional-repair-upgrade.js", fs.constants.R_OK);
+    for(const path of ["scripts/capability-completion-upgrade.js","scripts/ingest-profile.js","scripts/production-check.js","scripts/operations.js",
+      "services/tls-edge/src/server.js","packages/integrations/ugv-mqtt-ingest-core/src/runtime-profile.js",
+      "services/providers/historical-trace-provider/src/artifact-repository.js"])
+      fs.accessSync("/app/dist/"+path,fs.constants.R_OK);
+    fs.accessSync("/app/dist/services/world-api/src/event-stream.js", fs.constants.R_OK);
+    fs.accessSync("/app/dist/runtime-build-identity.json", fs.constants.R_OK);
     fs.accessSync("/app/database/migrations/078_device_shared_business_storage.sql", fs.constants.R_OK);
     fs.accessSync("/app/database/migrations/079_device_context_reader.sql", fs.constants.R_OK);
     fs.accessSync("/app/database/migrations/085_tracklet_dispatch_and_execution.sql", fs.constants.R_OK);
     fs.accessSync("/app/database/migrations/086_historical_request_evaluation.sql", fs.constants.R_OK);
+    fs.accessSync("/app/database/migrations/087_business_runtime_authority.sql", fs.constants.R_OK);
+    fs.accessSync("/app/database/migrations/088_compatibility_trajectory_read.sql", fs.constants.R_OK);
+    fs.accessSync("/app/database/migrations/089_event_delivery_cursor.sql", fs.constants.R_OK);
+    for(const file of ["090_historical_trajectory_artifact.sql","091_scoped_situation_projection.sql","092_ingest_runtime_profiles.sql","093_calibrated_reset_watermarks.sql"])
+      fs.accessSync("/app/database/migrations/"+file,fs.constants.R_OK);
+    fs.accessSync("/app/contracts/consumers/historical-trajectory-artifact-v1.json",fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/history-hot-migrate.js", fs.constants.R_OK);
     fs.accessSync("/app/dist/scripts/history-diagnose.js", fs.constants.R_OK);
     const hosted = JSON.parse(fs.readFileSync("/app/database/shared-business-storage/install-manifest.json", "utf8"));
@@ -216,6 +232,8 @@ if [[ "$verify_image" == true ]]; then
     dist/scripts/business-storage/device-cli.js init-default --help
   docker run --rm --network none --read-only --entrypoint node "$image_tag" \
     dist/scripts/business-storage/accounts.js --help
+  docker run --rm --network none --read-only --entrypoint node "$image_tag" \
+    dist/scripts/ingest-profile.js --help
 fi
 if [[ -e "$final_archive_path" ]]; then
   backup_dir="$(mktemp -d "$output_dir/previous-${package_name}.XXXXXX")"

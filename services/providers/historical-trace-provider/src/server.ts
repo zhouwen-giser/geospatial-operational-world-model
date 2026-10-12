@@ -3,7 +3,7 @@ import { loadHistoricalTraceConfig } from "./config.js";
 import { createHistoricalTraceProvider } from "./provider.js";
 
 const config = loadHistoricalTraceConfig();
-const provider = createHistoricalTraceProvider({ pool: config.pool });
+const provider = createHistoricalTraceProvider({ pool: config.pool,artifactTtlSeconds:config.artifactTtlSeconds });
 const app = buildHistoricalTraceApp(provider, config.transportToken);
 
 try {

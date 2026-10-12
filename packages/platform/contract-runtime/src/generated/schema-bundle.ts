@@ -17811,6 +17811,547 @@ export const contractSchemas: Readonly<Record<string, unknown>> = {
       }
     }
   },
+  "gowm-v0.7.1/trajectory-artifact-manifest.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:trajectory-artifact-manifest",
+    "title": "GowmTrajectoryArtifactManifestV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "type",
+      "schemaVersion",
+      "encoding",
+      "coordinateEncoding",
+      "trajectoryReferenceKey",
+      "trajectoryContentHash",
+      "inputSetHash",
+      "worldVersion",
+      "evaluationId",
+      "analysisId",
+      "fullRequestHash",
+      "snapshotManifestHash",
+      "frozenRequest",
+      "frozenSnapshot",
+      "geometryNodeCount",
+      "evidenceSampleCount",
+      "pageSize",
+      "finalizationState",
+      "temporalCoverageRatio",
+      "prefixComplete",
+      "suffixComplete",
+      "requestedPeriods",
+      "definedPeriods",
+      "segments",
+      "gaps",
+      "excludedPeriods"
+    ],
+    "properties": {
+      "type": {
+        "const": "manifest"
+      },
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "encoding": {
+        "const": "PG_JSONB_NDJSON_V1"
+      },
+      "coordinateEncoding": {
+        "const": "POSTGIS_GEOJSON_15_V1"
+      },
+      "trajectoryReferenceKey": {
+        "$ref": "historical-trajectory-result.schema.json#/$defs/trajectoryReferenceKey"
+      },
+      "trajectoryContentHash": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+      },
+      "inputSetHash": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+      },
+      "worldVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "evaluationId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "analysisId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "fullRequestHash": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+      },
+      "snapshotManifestHash": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+      },
+      "frozenRequest": {
+        "$ref": "../gowm-v0.7/historical-trajectory-query.schema.json"
+      },
+      "frozenSnapshot": {
+        "$ref": "query-snapshot-manifest.schema.json"
+      },
+      "geometryNodeCount": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 250000
+      },
+      "evidenceSampleCount": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "pageSize": {
+        "const": 256
+      },
+      "finalizationState": {
+        "enum": [
+          "PROVISIONAL",
+          "SEALED",
+          "CONFLICTED"
+        ]
+      },
+      "temporalCoverageRatio": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "prefixComplete": {
+        "type": "boolean"
+      },
+      "suffixComplete": {
+        "type": "boolean"
+      },
+      "requestedPeriods": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start",
+            "end",
+            "bounds"
+          ],
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "bounds": {
+              "enum": [
+                "[]",
+                "[)",
+                "(]",
+                "()"
+              ]
+            }
+          }
+        }
+      },
+      "definedPeriods": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start",
+            "end",
+            "bounds"
+          ],
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "bounds": {
+              "enum": [
+                "[]",
+                "[)",
+                "(]",
+                "()"
+              ]
+            }
+          }
+        }
+      },
+      "segments": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "segmentNo",
+            "sourceTrackletVersionId",
+            "sourceSegmentNo",
+            "geometryNodeCount",
+            "evidenceSampleCount",
+            "start",
+            "end",
+            "lowerInclusive",
+            "upperInclusive",
+            "interpolation"
+          ],
+          "properties": {
+            "segmentNo": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sourceTrackletVersionId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "sourceSegmentNo": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "geometryNodeCount": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "evidenceSampleCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lowerInclusive": {
+              "type": "boolean"
+            },
+            "upperInclusive": {
+              "type": "boolean"
+            },
+            "interpolation": {
+              "enum": [
+                "Linear",
+                "Step",
+                "Discrete"
+              ]
+            }
+          }
+        }
+      },
+      "gaps": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "gapNo",
+            "kind",
+            "range",
+            "reasonCodes"
+          ],
+          "properties": {
+            "gapNo": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "kind": {
+              "enum": [
+                "UNKNOWN_INPUT_GAP",
+                "SOURCE_COVERAGE_GAP",
+                "TRACKLET_BOUNDARY_GAP"
+              ]
+            },
+            "range": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "start",
+                "end",
+                "bounds"
+              ],
+              "properties": {
+                "start": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "end": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "bounds": {
+                  "enum": [
+                    "[]",
+                    "[)",
+                    "(]",
+                    "()"
+                  ]
+                }
+              }
+            },
+            "reasonCodes": {
+              "type": "array",
+              "maxItems": 64,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            }
+          }
+        }
+      },
+      "excludedPeriods": {
+        "type": "array",
+        "maxItems": 4096,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "range",
+            "reason"
+          ],
+          "properties": {
+            "range": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "start",
+                "end",
+                "bounds"
+              ],
+              "properties": {
+                "start": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "end": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "bounds": {
+                  "enum": [
+                    "[]",
+                    "[)",
+                    "(]",
+                    "()"
+                  ]
+                }
+              }
+            },
+            "reason": {
+              "const": "EXCLUDED_PAUSED_PHASE"
+            }
+          }
+        }
+      }
+    }
+  },
+  "gowm-v0.7.1/trajectory-artifact-open-query.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:trajectory-artifact-open-query",
+    "title": "GowmTrajectoryArtifactOpenQueryV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "request",
+      "trajectoryReferenceKey"
+    ],
+    "properties": {
+      "request": {
+        "$ref": "../gowm-v0.7/historical-trajectory-query.schema.json"
+      },
+      "trajectoryReferenceKey": {
+        "$ref": "historical-trajectory-result.schema.json#/$defs/trajectoryReferenceKey"
+      }
+    }
+  },
+  "gowm-v0.7.1/trajectory-artifact-open-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:trajectory-artifact-open-result",
+    "title": "GowmTrajectoryArtifactOpenResultV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "status",
+      "reasonCode",
+      "trajectoryReferenceKey"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "status": {
+        "enum": [
+          "READY",
+          "PROJECTION_PENDING",
+          "NO_DATA",
+          "INDETERMINATE"
+        ]
+      },
+      "reasonCode": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{1,127}$"
+      },
+      "trajectoryReferenceKey": {
+        "$ref": "historical-trajectory-result.schema.json#/$defs/trajectoryReferenceKey"
+      },
+      "artifactReference": {
+        "$ref": "trajectory-artifact-reference.schema.json"
+      },
+      "byteLength": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 67108864
+      },
+      "pageCount": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000
+      },
+      "expiresAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "manifest": {
+        "$ref": "trajectory-artifact-manifest.schema.json"
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "status": {
+              "const": "READY"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "artifactReference",
+            "byteLength",
+            "pageCount",
+            "expiresAt",
+            "manifest"
+          ]
+        }
+      }
+    ]
+  },
+  "gowm-v0.7.1/trajectory-artifact-page-query.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:trajectory-artifact-page-query",
+    "title": "GowmTrajectoryArtifactPageQueryV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "artifactReference",
+      "pageNo"
+    ],
+    "properties": {
+      "artifactReference": {
+        "$ref": "trajectory-artifact-reference.schema.json"
+      },
+      "pageNo": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 999
+      }
+    }
+  },
+  "gowm-v0.7.1/trajectory-artifact-page-result.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:trajectory-artifact-page-result",
+    "title": "GowmTrajectoryArtifactPageResultV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schemaVersion",
+      "status",
+      "artifactReference",
+      "pageNo",
+      "pageDigest",
+      "content",
+      "nextPage"
+    ],
+    "properties": {
+      "schemaVersion": {
+        "const": "1.0"
+      },
+      "status": {
+        "const": "READY"
+      },
+      "artifactReference": {
+        "$ref": "trajectory-artifact-reference.schema.json"
+      },
+      "pageNo": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 999
+      },
+      "pageDigest": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+      },
+      "content": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4194304
+      },
+      "nextPage": {
+        "anyOf": [
+          {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    }
+  },
+  "gowm-v0.7.1/trajectory-artifact-reference.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "urn:gowm:v0.7.1:trajectory-artifact-reference",
+    "title": "GowmTrajectoryArtifactReferenceV1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "artifactId",
+      "digest",
+      "mediaType",
+      "snapshotManifestHash",
+      "fullRequestHash"
+    ],
+    "properties": {
+      "artifactId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "digest": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+      },
+      "mediaType": {
+        "const": "application/x-ndjson"
+      },
+      "snapshotManifestHash": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+      },
+      "fullRequestHash": {
+        "$ref": "../platform/common-definitions.schema.json#/$defs/sha256Digest"
+      }
+    }
+  },
   "gowm-v0.7.1/world-query-result-v0.7.1.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "urn:gowm:v0.7.1:world-query-result",

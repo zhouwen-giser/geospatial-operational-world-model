@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/operational-reality-provider.json",
-      "sha256": "22a707851fa34c18059953fae430fd49fcff89f48ebc49d1e9c80ffdebf102e3"
+      "sha256": "0c1d7e4ce98e2bd0aaf246422ecdfc793ddc10bfa9a732e0a427a260111c69bf"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/operational-reality-provider.json",
-      "sha256": "22a707851fa34c18059953fae430fd49fcff89f48ebc49d1e9c80ffdebf102e3"
+      "sha256": "0c1d7e4ce98e2bd0aaf246422ecdfc793ddc10bfa9a732e0a427a260111c69bf"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,18 +44,18 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/operational-reality-provider/src/provider.ts",
-      "sha256": "96aefa2f1839cf136114b0a94ebb70dca2cb981ed03074ab1c5e0b4f5ffa903a",
+      "sha256": "9256988d2998b16097903069e78d2a02fe6517bc4a31033c4b6d602d5d1cf916",
       "symbol": "createOperationalRealityProvider"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/operational-reality-provider/src/repository.ts",
-      "sha256": "e31104063020d0b5efc846348402906ee8e749ae96c1d8503619fc97557709bc"
+      "sha256": "4d5e64c62ca552180bc41135f3d39a995dcf0e231ac37b72bc42d83ee8ea2af4"
     },
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/operational-reality-provider.test.ts",
-      "sha256": "c26106cd9290c6b7aeebb4d8722616abded5ab0896623cc5fc6941a291ef3b44"
+      "sha256": "01eee9029ab9ab693fc602c09684bf887a614b7faab72e0ede57b358aed40d5b"
     }
   ],
   "status": "PROVEN",

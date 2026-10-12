@@ -4,15 +4,15 @@
   "consumerContractPackage": {
     "name": "@gowm/world-gateway-contracts",
     "version": "0.7.1",
-    "integrity": "sha512-1XtXNrTb7CWl5+b3t/sqhetvIm2zcOkArFcs1OUBW1SxT77Jf1s+vRSqUw8TnikBUehu3DUfwkSCJI1ilYMGEg=="
+    "integrity": "sha512-hIsxVRwDZEliDvk/ZUXilg3rJHgfTRmWVWBlInOJr2ZKhG8K1+2Kbl156eOmYj3AQr9nN/DI01+UUU5wOnd4fQ=="
   },
   "scopeModel": "SINGLE_SCOPE_V1",
   "resourceIdEncodingRevision": "SNAPSHOT_RESOURCE_ID_V1_512",
   "canonicalOrderingRevision": "UNICODE_CODE_POINT_BINARY_V1",
   "authorizedDowngradeResourceRetentionRevision": "ACTUAL_PROVIDER_RESOURCES_RETAINED_WITHOUT_PINNING_STRENGTHENING_V1",
   "historicalEventSetSeparationRevision": "CURRENT_AND_INTERVAL_INPUT_EVENT_SETS_DISTINCT_V1",
-  "contractCatalogRevision": "sha256:8a368dd91841589aed86723a86c49a382dd3a1040f1be6e17adc4fcc101806c2",
-  "semanticCatalogHash": "sha256:566b1a90f2d38fd65e78d59ebfc0a54de5c7d598a4e36fbe10c8591814b4be7d",
+  "contractCatalogRevision": "sha256:8e2458cdd2432f670c213ed5b451c21ed2ec70e692020f54ffa62893e9534e95",
+  "semanticCatalogHash": "sha256:6443a9433832cb72c88c325ff28c393edfb5f6110370e624a2bc0cdd5b53dc89",
   "availabilityContractHash": "sha256:66d6cfe2679d6bdd0cf6f22cb7153d1f5f4c934ebc286f6bac33ab6bd7eb4036",
   "snapshotContractHash": "sha256:7a984eef06eec1ed19b21a6649644cc1b8a7e1d653c8b6f9b06490a8d316d185",
   "delegationContractHash": "sha256:a80e51793f46a90b2f627937fce06bc31fa3489a87a509185b9813f82ede1c4a",
@@ -985,6 +985,30 @@
       "inputSchemaHash": "sha256:cbdbe331192d1e78d3b525a47a5db40f4fbaac477bab2fc37bc700ad9f4ed464",
       "outputSchemaHash": "sha256:d51c07904cc18ec3a67c3bbaebf904f781d407378fc42e9e91debbfc04f1b02d",
       "semanticProfileHash": "sha256:e5d7d097098a8c3f57e4c98d58575be25fc4779bf0c365457cebd0e0584b2dc2",
+      "maturity": "PREVIEW",
+      "requiredPermissions": [
+        "data:read"
+      ],
+      "snapshotSupport": "CONSISTENT_AT_START"
+    },
+    {
+      "operationId": "history.open-trajectory-artifact",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:71215c062045fff2c991a0a4883bdc9e98351bc8c410263724940be8fe8611d5",
+      "outputSchemaHash": "sha256:30b8407c5533b3b3a21e0e7d9faaa5e1742e61c9a4efcd63e4e9fee620f1ef2e",
+      "semanticProfileHash": "sha256:c8b5572808fb3015d64ef2a3bd22c429f6c836027c556b321d3bb77da851ade8",
+      "maturity": "PREVIEW",
+      "requiredPermissions": [
+        "data:read"
+      ],
+      "snapshotSupport": "CONSISTENT_AT_START"
+    },
+    {
+      "operationId": "history.read-trajectory-artifact",
+      "operationVersion": "1.0",
+      "inputSchemaHash": "sha256:db41d83dc11098ad683273a6796696b22e10c69037ab62ee54371c525bc928a4",
+      "outputSchemaHash": "sha256:6dc688246f2b4741a101543e8fe371135157ee43c70ffc80bf3456a41868ddb1",
+      "semanticProfileHash": "sha256:90429abd27eb0235e370f086821a78878c374b434863df099177396627f9d2f1",
       "maturity": "PREVIEW",
       "requiredPermissions": [
         "data:read"

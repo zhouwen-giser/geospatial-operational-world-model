@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "checks": [
+    "current_certificate_key_preflight",
+    "authenticated_tls_7_streams_and_reset_ack",
+    "bad_credentials_and_untrusted_tls_rejected",
+    "ingest_and_source_write_acl_isolation",
+    "world_event_bus_file_credentials"
+  ],
+  "credentials": "SYNTHETIC_TEST_ONLY",
+  "remoteDeployment": "NOT_RUN"
+}

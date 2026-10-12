@@ -1,0 +1,36 @@
+{
+  "probe": "current analytics.ts exports, invoked with node --import tsx",
+  "inputSamples": [
+    {
+      "timestamp": "2026-10-11T00:00:00.000Z",
+      "position": [
+        116.4,
+        39.9
+      ]
+    },
+    {
+      "timestamp": "2026-10-11T01:00:00.000Z",
+      "position": [
+        116.4,
+        39.9
+      ]
+    }
+  ],
+  "stopResult": {
+    "durationMs": 3600000,
+    "pointCount": 2
+  },
+  "distanceProbe": {
+    "sameStart": [
+      116.4,
+      39.9
+    ],
+    "end": [
+      117.4,
+      39.9
+    ],
+    "elapsedMs": 3600000,
+    "reportedDistanceTraveledM": 85304.54510595917
+  },
+  "limitation": "No continuous observations or segment membership supplied; current legacy APIs do not pass gap/segment context to these algorithms."
+}

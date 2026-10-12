@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "checks": [
+    "real_worker_evaluation_and_bounded_preview",
+    "public_protocol_full_bytes_pages_digest_gaps",
+    "open_idempotence",
+    "scope_identity_page_and_snapshot_pin_rejection",
+    "reuse_with_new_evaluation_expiry_and_old_hash_preservation",
+    "minimal_privileges"
+  ],
+  "nodeCount": 605,
+  "pageCount": 4,
+  "bytes": 122909,
+  "businessAcceptance": "NOT_RUN",
+  "remoteDeployment": "NOT_RUN"
+}

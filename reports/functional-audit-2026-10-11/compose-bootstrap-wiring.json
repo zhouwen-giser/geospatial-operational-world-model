@@ -1,0 +1,13 @@
+{
+  "command": "docker compose --env-file /dev/null --project-name gowm-functional-audit --file docker-compose.yml --profile * config --no-interpolate --no-consistency --format json",
+  "service": "ugv-device-init",
+  "missingEnvironment": [
+    "SMPP_SERVICE_KEY",
+    "UGV_PROVIDER_ID",
+    "UGV_RESOURCE_ID",
+    "SDAR_SERVICE_KEY",
+    "SDAR_MCP_SERVER_ID",
+    "SDAR_AGENT_PROFILE_ID"
+  ],
+  "nativeBusinessInstallerServices": []
+}

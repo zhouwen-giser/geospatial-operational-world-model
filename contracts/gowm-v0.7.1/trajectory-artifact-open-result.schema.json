@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gowm:v0.7.1:trajectory-artifact-open-result",
+  "title": "GowmTrajectoryArtifactOpenResultV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "status",
+    "reasonCode",
+    "trajectoryReferenceKey"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "status": {
+      "enum": [
+        "READY",
+        "PROJECTION_PENDING",
+        "NO_DATA",
+        "INDETERMINATE"
+      ]
+    },
+    "reasonCode": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{1,127}$"
+    },
+    "trajectoryReferenceKey": {
+      "$ref": "historical-trajectory-result.schema.json#/$defs/trajectoryReferenceKey"
+    },
+    "artifactReference": {
+      "$ref": "trajectory-artifact-reference.schema.json"
+    },
+    "byteLength": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 67108864
+    },
+    "pageCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "manifest": {
+      "$ref": "trajectory-artifact-manifest.schema.json"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "READY"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "artifactReference",
+          "byteLength",
+          "pageCount",
+          "expiresAt",
+          "manifest"
+        ]
+      }
+    }
+  ]
+}

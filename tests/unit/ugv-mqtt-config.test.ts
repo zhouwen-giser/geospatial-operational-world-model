@@ -25,6 +25,13 @@ describe("UGV MQTT ingest configuration",() => {
     await expect(loadUgvIngestConfig()).rejects.toThrow(/absolute path/u);
   });
 
+  it("requires explicit registered-profile mode for physical origin and another analysis CRS",async()=>{
+    vi.stubEnv('UGV_ORIGIN_KIND','PHYSICAL_SENSOR');
+    await expect(loadUgvIngestConfig()).rejects.toThrow('registered runtime profile');
+    vi.stubEnv('UGV_RUNTIME_PROFILE_REQUIRED','true');vi.stubEnv('UGV_ANALYSIS_SRID','32650');vi.stubEnv('UGV_ANALYSIS_SPACE_KEY','registered-physical-space');
+    expect(await loadUgvIngestConfig()).toMatchObject({runtimeProfileRequired:true,originKind:'PHYSICAL_SENSOR',analysisSrid:32650,analysisSpaceKey:'registered-physical-space'});
+  });
+
   it("rejects unstable or contract-breaking values",async () => {
     vi.stubEnv("UGV_MQTT_CLIENT_ID","contains whitespace");
     await expect(loadUgvIngestConfig()).rejects.toThrow(/stable literal/u);

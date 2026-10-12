@@ -74,8 +74,27 @@ jobs:
       - name: Native WORLD_OBJECT catalog fresh and retained-upgrade gate
         run: npm run validate:world-object-catalog
 
+      - name: Functional repair real logins, gap-aware REST/MCP and durable SSE
+        run: |
+          npm run validate:deployment-env
+          node validation/scripts/functional-bootstrap-compose.mjs
+          node --import tsx validation/scripts/functional-repair-ci.ts
+          node --import tsx validation/scripts/capability-completion-ci.ts
+          node --import tsx validation/scripts/capability-mqtt-security-ci.ts
+
       - name: Candidate P1 Gateway scenario qualification
         run: npm run validate:v07-history-gateway
+
+      - name: Retain supplemental capability checks
+        uses: actions/upload-artifact@v4
+        with:
+          name: gowm-capability-checks-candidate-${{ github.sha }}
+          path: |
+            reports/capability-completion-2026-10-12/postgres.json
+            reports/capability-completion-2026-10-12/mqtt-security.json
+            reports/capability-completion-2026-10-12/production-compose.json
+            reports/functional-repair-2026-10-12/postgres.json
+          if-no-files-found: error
 
       - name: Stop isolated candidate database
         if: always()
@@ -172,6 +191,25 @@ jobs:
 
       - name: Main native WORLD_OBJECT catalog fresh and retained-upgrade gate
         run: npm run validate:world-object-catalog
+
+      - name: Functional repair real logins, gap-aware REST/MCP and durable SSE
+        run: |
+          npm run validate:deployment-env
+          node validation/scripts/functional-bootstrap-compose.mjs
+          node --import tsx validation/scripts/functional-repair-ci.ts
+          node --import tsx validation/scripts/capability-completion-ci.ts
+          node --import tsx validation/scripts/capability-mqtt-security-ci.ts
+
+      - name: Retain supplemental capability checks
+        uses: actions/upload-artifact@v4
+        with:
+          name: gowm-capability-checks-main-${{ github.sha }}
+          path: |
+            reports/capability-completion-2026-10-12/postgres.json
+            reports/capability-completion-2026-10-12/mqtt-security.json
+            reports/capability-completion-2026-10-12/production-compose.json
+            reports/functional-repair-2026-10-12/postgres.json
+          if-no-files-found: error
 
       - name: Bind upgrade evidence to the same database execution
         run: >-

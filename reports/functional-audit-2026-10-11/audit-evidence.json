@@ -1,0 +1,37 @@
+{
+  "auditDate": "2026-10-11",
+  "sourceHead": "506315b5a60e5f5fe405f020f61cec24be0be47d",
+  "scope": "GOWM source, local deployment package and task-owned isolated PostgreSQL; no current remote or other-repository qualification",
+  "registry": {
+    "path": "config/world-platform-gateway-registry.json",
+    "providers": 16,
+    "operations": 124,
+    "maturity": {
+      "PREVIEW": 91,
+      "STABLE": 31,
+      "EXPERIMENTAL": 2
+    }
+  },
+  "checks": {
+    "typescriptNoEmit": "PASS",
+    "bootstrapStaticGuard": "PASS",
+    "deploymentEnvStaticGuard": "PASS",
+    "versionConsistency": "PASS",
+    "migrationFreeze001To068": "PASS",
+    "freshMigration001To086": "PASS",
+    "businessRoleAdmission": "REPRODUCED_SQLSTATE_42501",
+    "defaultScopeSituationReadiness": "REPRODUCED_READY_TO_NOT_READY",
+    "legacyStopGap": "REPRODUCED_ONE_HOUR_STOP_FROM_TWO_SAMPLES",
+    "composeServiceBindingForwarding": "MISSING_ALL_SIX_VARIABLES"
+  },
+  "deploymentPackage": {
+    "sha256": "62fd9970d399039df7c7c138e8534f73c294e33836f629f64e56da3a4a91eb81",
+    "historyManifestFilesCompared": 108,
+    "sourceMismatches": []
+  },
+  "cleanup": {
+    "taskOwnedPostgresContainersRemoved": true,
+    "taskOwnedPostgresVolumesRemoved": true
+  },
+  "interpretation": "Static checks pass while cross-component functional gaps remain. Historical performance reports are not a fresh performance or onsite acceptance run."
+}

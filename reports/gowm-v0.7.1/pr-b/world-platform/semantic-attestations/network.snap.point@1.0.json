@@ -55,7 +55,7 @@
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/network-provider.test.ts",
-      "sha256": "43aebea0c8bc9737703a2340fc5d233d4d4b1547116202396bbf642551dd7ab5"
+      "sha256": "0ec04dde15157ffa6abc21a9cccebe3781cae579c19b5c630f210c8b3ee7a9aa"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",

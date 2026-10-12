@@ -6,7 +6,7 @@
     "planning-gateway-registry.json"
   ],
   "providerCount": 16,
-  "operationCount": 124,
+  "operationCount": 126,
   "providers": [
     {
       "providerId": "gowm.crs-normalization.bridge",
@@ -77,8 +77,8 @@
     {
       "providerId": "gowm.historical-trace",
       "manifestPath": "contracts/manifests/providers/historical-trace-provider.json",
-      "manifestHash": "sha256:a3b5978749d4120ac9c84c246f857ca76c2882b2d970daab1db03edc5e9c0634",
-      "operationCount": 1
+      "manifestHash": "sha256:e81190cdc1b45c59cb1454d1b4d91810dcee94cf283b71c9cabad873c68b77fe",
+      "operationCount": 3
     },
     {
       "providerId": "gowm.network",
@@ -107,7 +107,7 @@
   ],
   "maturities": {
     "STABLE": 31,
-    "PREVIEW": 91,
+    "PREVIEW": 93,
     "EXPERIMENTAL": 2,
     "DEPRECATED": 0,
     "RETIRED": 0

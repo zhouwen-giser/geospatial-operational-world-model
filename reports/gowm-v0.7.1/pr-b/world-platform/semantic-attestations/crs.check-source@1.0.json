@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/crs-provider.json",
-      "sha256": "4c0dc2f409c8b1ebd2d82e867ae8b07048613a7b205948f57dbb4b0b83d2f6f9"
+      "sha256": "39a0da18d9559f0f0b076e83e72ad74a521a2ea4bd7fa6c73e8d1cb436c7c223"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/crs-provider.json",
-      "sha256": "4c0dc2f409c8b1ebd2d82e867ae8b07048613a7b205948f57dbb4b0b83d2f6f9"
+      "sha256": "39a0da18d9559f0f0b076e83e72ad74a521a2ea4bd7fa6c73e8d1cb436c7c223"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,18 +44,18 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/crs-provider-bridge/src/provider.ts",
-      "sha256": "a6bd167f5e94ea940ca13501c20367eef8649c2bd4f7782d127d4985f5fba50d",
+      "sha256": "6ace70c6a9f904709d3c3aaa54d4a2a52330f6439d57418b70b0a9ec795a558a",
       "symbol": "createCrsProviderBridge"
     },
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/provider-gateway.test.ts",
-      "sha256": "d2aad2d3604667458697703428ad86c37d3a39f7ccc82f67c31fd75cabf50f43"
+      "sha256": "c79f9e5291d0d9ebbb97b9bf530b482c8f9766736a3fb3dc9bfc0bf81392d62f"
     },
     {
       "kind": "SOURCE_LOCK",
       "path": "contracts/manifests/providers/crs-provider-source-lock.json",
-      "sha256": "004311a4f40b5a6cb44ea82e955ab9ab9eb342586ddf7dcd956f096e046170d3"
+      "sha256": "c1f0bf6895ac1f9fca2ac8c3e1ccb29b6b6a2967acddc705944bd428e3a26b53"
     }
   ],
   "status": "PROVEN",

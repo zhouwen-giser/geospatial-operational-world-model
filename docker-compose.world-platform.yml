@@ -2,7 +2,7 @@
 # upstreams and bridges are part of the default world-platform profile.
 services:
   postgres:
-    image: ${WORLD_PLATFORM_POSTGRES_IMAGE:-gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1}
+    image: ${WORLD_PLATFORM_POSTGRES_IMAGE:-gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1-pgvector-0.8.6}
     ports: !reset []
   mqtt:
     ports: !reset []
@@ -410,6 +410,7 @@ services:
       HISTORICAL_TRACE_DATABASE_URL: postgresql://gowm_history_service:${HISTORICAL_DB_PASSWORD}@postgres:5432/gowm
       HISTORICAL_TRACE_PORT: '8100'
       HISTORICAL_TRACE_POOL_SIZE: ${HISTORICAL_TRACE_POOL_SIZE:-8}
+      HISTORICAL_TRACE_ARTIFACT_TTL_SECONDS: ${HISTORICAL_TRACE_ARTIFACT_TTL_SECONDS:-86400}
   platform-validation-provider:
     image: gowm-world-platform:0.7.1
     build: *id001

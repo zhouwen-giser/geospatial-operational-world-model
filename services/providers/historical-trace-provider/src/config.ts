@@ -6,6 +6,7 @@ export interface HistoricalTraceServerConfig {
   port: number;
   transportToken: string;
   pool: pg.Pool;
+  artifactTtlSeconds: number;
   close(): Promise<void>;
 }
 
@@ -35,6 +36,7 @@ export function loadHistoricalTraceConfig(
     port,
     transportToken,
     pool,
+    artifactTtlSeconds: bounded(env.HISTORICAL_TRACE_ARTIFACT_TTL_SECONDS,86_400,604_800,'HISTORICAL_TRACE_ARTIFACT_TTL_SECONDS'),
     close: () => pool.end()
   };
 }

@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const composePaths = ["docker-compose.yml", "docker-compose.world-platform.yml", "docker-compose.dev.yml"];
+const composePaths = ["docker-compose.yml", "docker-compose.world-platform.yml", "docker-compose.dev.yml", "docker-compose.production.yml"];
 const examplePath = ".env.example";
 const composeVariables = new Set();
 
@@ -29,7 +29,10 @@ const missing = [...composeVariables]
   .sort();
 
 const derivedRuntimeVariables = new Set([
-  "HISTORY_AUTO_DATABASE_URL",
+  "TLS_CERT_FILE", "TLS_KEY_FILE", "TLS_CLIENT_CA_FILE", "TLS_GATEWAY_URL", "TLS_EDGE_PORT",
+  "MQTT_USERNAME", "MQTT_PASSWORD_FILE", "MQTT_CA_FILE", "MQTT_CERT_FILE", "MQTT_KEY_FILE",
+  "UGV_INGEST_ADMIN_TOKEN_FILE",
+  "GOWM_BOOTSTRAP_CREATE_VECTOR", "HISTORY_AUTO_DATABASE_URL", "GOWM_DATABASE_URL", "GOWM_BUSINESS_TEST_DATABASE_URL", "GOWM_BUSINESS_SMOKE_ENABLE",
   "CAPABILITY_GATEWAY_AUTHORIZATION", "CAPABILITY_GATEWAY_URL",
   "COVERAGE_PROVIDER_DATABASE_URL", "COVERAGE_PROVIDER_HOST", "COVERAGE_PROVIDER_PORT",
   "CRS_BRIDGE_ENDPOINT_APPROVAL_STATUS", "CRS_BRIDGE_ENDPOINT_ID", "CRS_BRIDGE_GRID_BUNDLE_VERSION",
@@ -70,10 +73,11 @@ async function sourceFiles(root) {
 }
 
 const runtimeVariables = new Set();
-for (const root of ["services", "packages", "simulator"]) {
+for (const root of ["services", "packages", "simulator", "scripts/business-storage"]) {
   for (const path of await sourceFiles(root)) {
     const source = await readFile(path, "utf8");
     const patterns = [
+      /(?:required|optional)\(["']([A-Z][A-Z0-9_]*)["']/gu,
       /(?:process\.env|env)\.([A-Z][A-Z0-9_]*)/gu,
       /(?:intEnv|integerFromEnv)\(["']([A-Z][A-Z0-9_]*)["']/gu,
       /(?:required|optional|bounded|positive|tcpPort|integerEnv)\(env,\s*["']([A-Z][A-Z0-9_]*)["']/gu

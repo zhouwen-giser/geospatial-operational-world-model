@@ -1,0 +1,863 @@
+{
+  "formatVersion": 1,
+  "releaseVersion": "0.7.1",
+  "migrationHead": "093",
+  "upgrade": {
+    "baseline": "084",
+    "command": "node dist/scripts/history-hot-migrate.js",
+    "checkArgument": "--check",
+    "initializeAccounts": false
+  },
+  "functionalUpgrade": {
+    "baseline": "086",
+    "command": "node dist/scripts/functional-repair-upgrade.js",
+    "checkArgument": "--check",
+    "initializeAccounts": false,
+    "initializeDevices": false,
+    "rotatePasswords": false
+  },
+  "capabilityUpgrade": {
+    "baseline": "089",
+    "command": "node dist/scripts/capability-completion-upgrade.js",
+    "checkArgument": "--check",
+    "applyArgument": "--projection-workers-stopped",
+    "initializeAccounts": false,
+    "initializeDevices": false,
+    "rotatePasswords": false,
+    "activateProfiles": false,
+    "recoverQueues": false
+  },
+  "rollout": {
+    "initialHistoricalConcurrency": 1,
+    "qualifiedHistoricalConcurrency": 2,
+    "workerStopGraceSeconds": 60
+  },
+  "migrations": [
+    {
+      "path": "database/migrations/001_initial_schema.sql",
+      "sha256": "9491075269f48755a83787fa3649d0b12c1ed03eda1e0925ef8a9ce484cf427e"
+    },
+    {
+      "path": "database/migrations/002_views_and_functions.sql",
+      "sha256": "56eb394285aca3d55f67ddd951f91f2c1035abda458edfa22b0ade3836611297"
+    },
+    {
+      "path": "database/migrations/003_situation_observer.sql",
+      "sha256": "a7bfcaa6fd984395f5115ca9b6c43cb2fcdfb18c6497e1c68e2a07a0bb21283d"
+    },
+    {
+      "path": "database/migrations/004_geography_indexes.sql",
+      "sha256": "20e9db17e91a0f73f4d0a14dec1eafa65751bab8532e784226d8d2c123e9d3c9"
+    },
+    {
+      "path": "database/migrations/005_situation_rank_indexes.sql",
+      "sha256": "ccbe4f30f8990f800bc5a32abb8ef56ecf75281abeaa910b3b8a43f4f8769ebc"
+    },
+    {
+      "path": "database/migrations/006_observation_altitude.sql",
+      "sha256": "366421f5f76e117838e8116f99644ffe3a86584a58abf84587c6a8b13b1a8a71"
+    },
+    {
+      "path": "database/migrations/007_active_relation_uniqueness.sql",
+      "sha256": "a607ce9013fa86c842cf645edcd28d8e56d5f484794eba4dfc74afea8b42ae85"
+    },
+    {
+      "path": "database/migrations/008_h3_pg.sql",
+      "sha256": "2887028d9cd389119df2be650dcbb9f4700c34826dd74d27b44f7fe3de0bf914"
+    },
+    {
+      "path": "database/migrations/009_gowm_plus_canonical_evidence_and_mobility.sql",
+      "sha256": "1d428971cad16f7ed602a39594c5835736044744b8a8b46a18e641e6d2d5435c"
+    },
+    {
+      "path": "database/migrations/010_unified_stas_contracts_roles_and_coverage.sql",
+      "sha256": "e61a99392a713b6490aedb5c4ef89420cf056c8fbc278680eec06f5d2ed782b8"
+    },
+    {
+      "path": "database/migrations/011_capability_gateway_persistence.sql",
+      "sha256": "823d66f46e4a405a71d10e76ba95c849283811f65e09514d548f8a915ea8a35f"
+    },
+    {
+      "path": "database/migrations/012_gowm_spatial_v1_read_contract.sql",
+      "sha256": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10"
+    },
+    {
+      "path": "database/migrations/013_world_query_runtime_persistence.sql",
+      "sha256": "16bb9e5f6c294c3d2b7eb6925e61d0d6c592b8dc3ec9a25293c10f4e4f244f95"
+    },
+    {
+      "path": "database/migrations/014_capability_runtime_service_principals.sql",
+      "sha256": "9c66fd567e3755782e8a2db2b4d60e2e4e8790fc9d3729dd0cc74b82fdf8aaf9"
+    },
+    {
+      "path": "database/migrations/015_world_query_claim_runtime_fix.sql",
+      "sha256": "37b5926f0d229828e8c5bbd1d2bfa6adf616e00c35335107aa340d861948c5c0"
+    },
+    {
+      "path": "database/migrations/016_capability_port_path_contract_fix.sql",
+      "sha256": "2471844bac96d08c242844dc892d8f84c8932ad041aa902ef6a00f780c6c268e"
+    },
+    {
+      "path": "database/migrations/017_reference_identity_catalog.sql",
+      "sha256": "111b776a60028b85eac425fcf610b6c58ae6b12b66b01ac6dad70a3ec6ec7d49"
+    },
+    {
+      "path": "database/migrations/018_reference_resolution_candidate_dedup.sql",
+      "sha256": "d610320e4483e4223f13dedb8c1893b2f6241602426f87421141b556ed2464f2"
+    },
+    {
+      "path": "database/migrations/019_dataset_layer_feature_catalog.sql",
+      "sha256": "831cae1fa3b407ea55fbe2a18d14311eff8ecda8d4e5840f4cd7a8e291b241dd"
+    },
+    {
+      "path": "database/migrations/020_grounding_catalog_provider_runtime.sql",
+      "sha256": "035cf9c52b305d4af69075646f87b8408899784e10e3aa33ff6db3c4088b738b"
+    },
+    {
+      "path": "database/migrations/021_reference_resolution_exact_match_precedence.sql",
+      "sha256": "764767608e8f83be21a2c842a8a197ab95335cd0b238ca397ee40b37cbd17100"
+    },
+    {
+      "path": "database/migrations/022_derived_result_registry.sql",
+      "sha256": "ae936cceaa7a3904becdb0d5dd47954715db67a6d5de773f37fe7afd5499cc5c"
+    },
+    {
+      "path": "database/migrations/023_world_evidence_read_contract.sql",
+      "sha256": "600841b9bc0be3f77cbb0b39ffd8bee03059d457297f6fc267dbc8a581d8c197"
+    },
+    {
+      "path": "database/migrations/024_grounding_replay_audit.sql",
+      "sha256": "0e9fff6d6429f399c04d71488b5812b97f45050663a1f0c09f8a8800f036e759"
+    },
+    {
+      "path": "database/migrations/025_external_correlation_claims.sql",
+      "sha256": "643b0b5edcc522addee01362fcb5148321cbbe7efab56eafd41e9376d3b1b415"
+    },
+    {
+      "path": "database/migrations/026_operational_event_store.sql",
+      "sha256": "66588790112e8f050046d7c050f29afed26e5bcb69731b089690ea2f2bd00ab6"
+    },
+    {
+      "path": "database/migrations/027_operational_task_projection.sql",
+      "sha256": "b64eacad52b7f0df81aaeeec98f1d5ab8f00ad6ce73fecf72987e17c03bf4689"
+    },
+    {
+      "path": "database/migrations/028_operational_correlation_resolver.sql",
+      "sha256": "05b1426beae97c43b3dc30029e457f528ea0d0cd2d202b6fa9d00cf765b4938d"
+    },
+    {
+      "path": "database/migrations/029_operational_reality_read_contract.sql",
+      "sha256": "e0d8b74be37a278f2566a8baa4e3483726b45e4e40bd36ad2eb098308601fbef"
+    },
+    {
+      "path": "database/migrations/030_external_predicate_evaluation.sql",
+      "sha256": "4e144bdf8b256a45f7fa4b89d8bdf37091492b5e19dca04f5f8b82b59a47ea9e"
+    },
+    {
+      "path": "database/migrations/031_operational_observability.sql",
+      "sha256": "2f429676ee3ae9eda6d28be8adeb507019a509f890441814d458a2f1d13ad6ac"
+    },
+    {
+      "path": "database/migrations/032_operational_analysis_findings_replay.sql",
+      "sha256": "c4af9f2797ecf2a278dd086bfefca704153591e3f96b240a286e36bd9b84f412"
+    },
+    {
+      "path": "database/migrations/033_network_graph_catalog.sql",
+      "sha256": "b8dcbb56e701691ab82e9913a0ac107d0ff420c2876a2fc5d6f515ec4a37da37"
+    },
+    {
+      "path": "database/migrations/034_network_topology.sql",
+      "sha256": "69431212196940a83aec825f59e2d6961ef2971a4c4848b71afa85769fbc0478"
+    },
+    {
+      "path": "database/migrations/035_network_turns_and_bindings.sql",
+      "sha256": "d4f1affff70ddb2b3d6749a516df299589cc090e80ba084a47cf73779bd2d0b9"
+    },
+    {
+      "path": "database/migrations/036_network_profiles_and_costs.sql",
+      "sha256": "25c7fadc38d48b97b79911e419cf51711c08b6128425a77f7cb631941c7c0c03"
+    },
+    {
+      "path": "database/migrations/037_network_conditions.sql",
+      "sha256": "f2c749a845422650ca6b5dea8078773bd38dd3f7cf2f14ad3433ea0cf47dd186"
+    },
+    {
+      "path": "database/migrations/038_network_build_and_activation.sql",
+      "sha256": "faf42140f701d134fb7a3f54637ee2565513116f515fde5b9c79dd414fd3fc14"
+    },
+    {
+      "path": "database/migrations/039_gowm_network_v1_read_contract.sql",
+      "sha256": "06fc9e64e9ba0909d71ad8e5d0c636bb163d39484a01b350036c13eb0098b0f7"
+    },
+    {
+      "path": "database/migrations/040_network_builder_schema_usage.sql",
+      "sha256": "5f2eef142e58a23d94d02bfcd1dfda72d5ba42a916ec6df801d565d54df1d84a"
+    },
+    {
+      "path": "database/migrations/041_network_builder_catalog_validation_security.sql",
+      "sha256": "666611f8c5f3ef8df40fb49b8d6c72e91b564caa0e2ac88e80209a496953452f"
+    },
+    {
+      "path": "database/migrations/042_network_profile_condition_contract_alignment.sql",
+      "sha256": "52efb401b53f9dc4a1f3524d63438e81d10d18a997072d510f03aaf43ea4b2fd"
+    },
+    {
+      "path": "database/migrations/043_network_atomic_activation_management.sql",
+      "sha256": "5720d93ad16452fde584483cd1f2a1107576ab7423e1ea95b3483ee523826079"
+    },
+    {
+      "path": "database/migrations/044_network_arc_heading_read_contract.sql",
+      "sha256": "c2acdee71ea3f94aa70e85090a7da05d72cb6177b31e5f403da5241199566c09"
+    },
+    {
+      "path": "database/migrations/045_route_runtime.sql",
+      "sha256": "78d928165514f5a3c7de4a2fbb2fca3b2310b70887182dcb44da78ae3ad8ce73"
+    },
+    {
+      "path": "database/migrations/046_route_result_publication.sql",
+      "sha256": "904903c48dede62dc88fc12dd114e0edf5778b8185a3093dbea6962ff8eecec1"
+    },
+    {
+      "path": "database/migrations/047_network_avoid_area_read_contract.sql",
+      "sha256": "3fac38b9a459c5cf5c0fb3d4d5646b29c091557b593d4867b0d22e0f85e71b16"
+    },
+    {
+      "path": "database/migrations/048_coverage_planner_schema.sql",
+      "sha256": "56dd87e2f487cef0560f022f222ba8584c2a15013bf4cb0b6ae799e05a61f8a9"
+    },
+    {
+      "path": "database/migrations/049_coverage_planner_controlled_runtime.sql",
+      "sha256": "0f7e8b76ae1d4960b9d7acd56a15e64f02470ca0c2e554fec073e212743f62d9"
+    },
+    {
+      "path": "database/migrations/050_network_coverage_selection_read_contract.sql",
+      "sha256": "cf630992f3bfd96604ee6bdb6b2261a6a154eb223a729cfefa05d99e8a4e68bb"
+    },
+    {
+      "path": "database/migrations/051_coverage_async_job_lifecycle.sql",
+      "sha256": "92b4ca8532607259e08874410f7d94a2b8c4e5e1dd72aaa3c0399f68ecfb2aa4"
+    },
+    {
+      "path": "database/migrations/052_coverage_gateway_result_integration.sql",
+      "sha256": "a9c74290219ed7fd1846e96cbe22d812060a3c3d207cf346d9ec50a82fcf744a"
+    },
+    {
+      "path": "database/migrations/053_fix_coverage_request_owned_hash_identity.sql",
+      "sha256": "1c17d0abc4c216bedada36bae20ea3932a5759b9967da07208a7686f225a0ea8"
+    },
+    {
+      "path": "database/migrations/054_coverage_attempt_generation_reclaim.sql",
+      "sha256": "b2911875aeed9166323072af587482dab24f32aac4cb12db378eb013703aeb48"
+    },
+    {
+      "path": "database/migrations/055_network_boundary_crossing_read_contract.sql",
+      "sha256": "71573f4e82ede782a2899e84f2c10e8f1fc6c6b179ee1fae088a0bd794a8687d"
+    },
+    {
+      "path": "database/migrations/056_coverage_artifact_and_geojson_read_contract.sql",
+      "sha256": "d508c29565ffb07c9eb858faa50ccbe020e6cc0314f1023f7a0c7540f1ba5705"
+    },
+    {
+      "path": "database/migrations/057_platform_validation_snapshot_contract.sql",
+      "sha256": "1cd00d472a888dcb17571eb0cae388e212dc671839df1e0e1880dda3c0622255"
+    },
+    {
+      "path": "database/migrations/058_platform_validation_authority.sql",
+      "sha256": "00b5057dc641f58b4477aab1ef874d9a1590f4067210feca3b5dff4feceed98e"
+    },
+    {
+      "path": "database/migrations/059_coverage_area_reference_read_contract.sql",
+      "sha256": "eb95dd08ef93cf18e3e85fc4353fc851ace004d1e4689b4194bb9537a7797d15"
+    },
+    {
+      "path": "database/migrations/060_route_runtime_login_transaction_mode.sql",
+      "sha256": "c7e4a2d45324ebcf0e5e5a04c86a825be191a3b99c664730de57f7b9c5a27ccb"
+    },
+    {
+      "path": "database/migrations/061_grounding_identity_and_query_snapshot.sql",
+      "sha256": "8aaf06303a77bd5285d999c65d87f1615d8f3b2efa2c6cfa1a2e7342b1f27281"
+    },
+    {
+      "path": "database/migrations/062_reference_geometry_composability.sql",
+      "sha256": "7b8a606e3258baa2f3e68c88e81abacb289615cf960a1af20c8a9f4c2074539c"
+    },
+    {
+      "path": "database/migrations/063_effective_query_snapshot.sql",
+      "sha256": "9f1b8f3a0d10052849c2d2aff224194c543baecfa7200a6637f41ed8a6e4e204"
+    },
+    {
+      "path": "database/migrations/064_analysis_resource_inputs.sql",
+      "sha256": "7288bbf0b6eeb2c43eac8f28469ac06fe9b4fb7f080d24434614b2bb5d99f224"
+    },
+    {
+      "path": "database/migrations/065_task_execution_intervals.sql",
+      "sha256": "b6f04d6e41ed2e962ee40b3f7b113792b8b82cef2e32eb20f4182c66e0582b1a"
+    },
+    {
+      "path": "database/migrations/066_tracklet_finalization_runtime.sql",
+      "sha256": "c4dfc18608595bdc28fced597009801fcd54ab3a16b3dd0e5a6872381f4a440e"
+    },
+    {
+      "path": "database/migrations/067_historical_trajectory_contract.sql",
+      "sha256": "02c268c947f4b0b181682b46d327cb80cd2de60ab634e00f587c0f0078736256"
+    },
+    {
+      "path": "database/migrations/068_effective_snapshot_consistency_downgrade.sql",
+      "sha256": "9fd38004c246640980ad2c7fa6bb30e72e8f2cab95cb921ca2fb3494116760fd"
+    },
+    {
+      "path": "database/migrations/069_task_execution_event_set_read_contract.sql",
+      "sha256": "604503eb0c7be40742112f88d041441bad97d5880cd39453ed84f021c6e9ce81"
+    },
+    {
+      "path": "database/migrations/070_ugv_mqtt_ingest_runtime.sql",
+      "sha256": "c02aaba3743b6e6db975b8c383b5d02693ec51f36d60a0b307e8e42668e39b55"
+    },
+    {
+      "path": "database/migrations/071_historical_evidence_read_contract.sql",
+      "sha256": "2847173a8abef909e2cd861b3f2b486aae71f4a7e9264b7549fe9f7b16289d81"
+    },
+    {
+      "path": "database/migrations/072_unknown_watermark_bootstrap.sql",
+      "sha256": "1f3fbd6438ee3e6353863ee1646fce276b6af332745ff77b0c61427b9133d38a"
+    },
+    {
+      "path": "database/migrations/073_historical_evidence_projection.sql",
+      "sha256": "8508c8ac425d6c2d32bcf5f529fb76c4aca77514bcf19f9360a176a5894b0cee"
+    },
+    {
+      "path": "database/migrations/074_history_auto_scheduler.sql",
+      "sha256": "7a675fac157d9bc72b2e1197df8c042a7526da5db42251bcaaeacc455524f86a"
+    },
+    {
+      "path": "database/migrations/075_binding_snapshot_lookup.sql",
+      "sha256": "a464bbe785296159f000cc258a0221fe0e179374525b16128e4cc9ddc8b411db"
+    },
+    {
+      "path": "database/migrations/076_operational_provider_read_closure.sql",
+      "sha256": "f63f56dd3b5b6686d6423d7f920d509ee6ab0140b9688ff943e842b96e85e938"
+    },
+    {
+      "path": "database/migrations/077_world_object_catalog_projection.sql",
+      "sha256": "9d08d1ddc5e9e2291e005b8f358bd4ddfb88b9b92523fcd7c2f4532a3c3e21d7"
+    },
+    {
+      "path": "database/migrations/078_device_shared_business_storage.sql",
+      "sha256": "efcc7a866c9777394dc5cd9f256d8a786385881c25e513a3310efb71454f88bc"
+    },
+    {
+      "path": "database/migrations/079_device_context_reader.sql",
+      "sha256": "a8b81bd3e401bf3eae876d50e97d925949a62c748124559339368e468bb47615"
+    },
+    {
+      "path": "database/migrations/080_historical_snapshot_resource_identity.sql",
+      "sha256": "2e6dad5f1aff683a4e43561a50b1bb244df5cbebc78097847ab7e72495f160d4"
+    },
+    {
+      "path": "database/migrations/081_historical_exact_interval_reads.sql",
+      "sha256": "3198cd79c84d2cfc6a2787f61b9e8189c7df54ed311cf5fe02d3ebfb3d26e711"
+    },
+    {
+      "path": "database/migrations/082_historical_projection_lease_renewal.sql",
+      "sha256": "52eede796db49c0b3aea64993ccd65e1ab53568ec40ed5171f9048d929a62902"
+    },
+    {
+      "path": "database/migrations/083_reset_ack_watermarks.sql",
+      "sha256": "c3b6e3f41be4aaf17ec47c27f9ada46918f6ddc40c25eff95530c26c92a0e1d6"
+    },
+    {
+      "path": "database/migrations/084_operational_task_reference_search.sql",
+      "sha256": "fb204e44d9d1182a6951db99426a64049f45bf7573f614c3a5b7c9578be50b5f"
+    },
+    {
+      "path": "database/migrations/085_tracklet_dispatch_and_execution.sql",
+      "sha256": "0b4166eb7cd0256f7937693b04fbd085bee98fddf10b82a0600af690a1287f78"
+    },
+    {
+      "path": "database/migrations/086_historical_request_evaluation.sql",
+      "sha256": "9b6fc748b2d263fb4c78820302d29aac9680f6cfc38337004af331f36966b1f7"
+    },
+    {
+      "path": "database/migrations/087_business_runtime_authority.sql",
+      "sha256": "9b00bbfc4556f79e18a3f7c7db6e7f3e3c38834f6d63993432e519cbaa7cf346"
+    },
+    {
+      "path": "database/migrations/088_compatibility_trajectory_read.sql",
+      "sha256": "3b1f570bf69e308aa03592ced9bd86cff0d319ef055edefe211ff09968859768"
+    },
+    {
+      "path": "database/migrations/089_event_delivery_cursor.sql",
+      "sha256": "7953084a83da417dee9131b57efb4b987d6d0683eafc9fa30d97fc35e820329c"
+    },
+    {
+      "path": "database/migrations/090_historical_trajectory_artifact.sql",
+      "sha256": "36d6d5b3c85965ccee72b52159105f7c4880469f4e4ed7b932d5e98d32b2c925"
+    },
+    {
+      "path": "database/migrations/091_scoped_situation_projection.sql",
+      "sha256": "78f2ba02b0b611943ee67412dc427fe95e55439bc1b8d7c1b37016fd9980592d"
+    },
+    {
+      "path": "database/migrations/092_ingest_runtime_profiles.sql",
+      "sha256": "5d1b7a73c4571bf1f218edf0c5b03928fb0daf7230174ecb3c4b35fcaa06da82"
+    },
+    {
+      "path": "database/migrations/093_calibrated_reset_watermarks.sql",
+      "sha256": "5ba832a8a21ddec5b765affc0cca9e059b3232664e4a5f6788c08718f734de2c"
+    }
+  ],
+  "runtime": [
+    {
+      "source": "packages/historical-trace-runtime/src/database.ts",
+      "sha256": "6c46ef934cf337a7d0d774790feb7a06cc4db1ec01f70f8e9d96b700096b1cd7",
+      "compiled": "dist/packages/historical-trace-runtime/src/database.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/historical-projection-coordinator.ts",
+      "sha256": "1dd81bd2a522077049b2bc69257ea7a2ab592ebf7a4fcd0209cace29858f9997",
+      "compiled": "dist/packages/historical-trace-runtime/src/historical-projection-coordinator.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/historical-trajectory-materializer.ts",
+      "sha256": "fb898fbaaaac1174df86d2ab4b0f6c5f6082d54a1afbb03aca20c4167b4ad37c",
+      "compiled": "dist/packages/historical-trace-runtime/src/historical-trajectory-materializer.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/index.ts",
+      "sha256": "19a7fffbab251d41942123115362e9dfc30305ef6b72a5e9cd6db1d5d2920f7f",
+      "compiled": "dist/packages/historical-trace-runtime/src/index.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/interval-repository.ts",
+      "sha256": "f3f581a87c9f044cd70d97dba389c7b584edc7c5dbc027e6de5a72222bc73d88",
+      "compiled": "dist/packages/historical-trace-runtime/src/interval-repository.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/projection-execution.ts",
+      "sha256": "920b03fce53457e52401e350c9cfebd59257c6eb5b8694b1f83ea91bef981837",
+      "compiled": "dist/packages/historical-trace-runtime/src/projection-execution.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/projection-lease.ts",
+      "sha256": "da415cabc442cac7cb77774f7ad2b910d5b6e48cc4183264eb663041f4372186",
+      "compiled": "dist/packages/historical-trace-runtime/src/projection-lease.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/tracklet-projection-repository.ts",
+      "sha256": "50d204bfefde1ebd0d4ecd0fbdbf25820a0cc19d36efd9b542ff92aacb26295c",
+      "compiled": "dist/packages/historical-trace-runtime/src/tracklet-projection-repository.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/trajectory-projection-repository.ts",
+      "sha256": "2dd5338f11b84b89ee137272a72b2730f9bc0efffdf21312419461c7e08e5c4c",
+      "compiled": "dist/packages/historical-trace-runtime/src/trajectory-projection-repository.js"
+    },
+    {
+      "source": "packages/historical-trace-runtime/src/trajectory-repository.ts",
+      "sha256": "b532e0fdad9952e4a58a8363167d9e7f969aee30d65fc650fb520cae520283c3",
+      "compiled": "dist/packages/historical-trace-runtime/src/trajectory-repository.js"
+    },
+    {
+      "source": "packages/integrations/device-business-storage/src/bootstrap.ts",
+      "sha256": "e13ef1b86cb3afd39d2a61e8c806fec6931e24d24dd2177997c37123ec1e9768",
+      "compiled": "dist/packages/integrations/device-business-storage/src/bootstrap.js"
+    },
+    {
+      "source": "packages/integrations/device-business-storage/src/context.ts",
+      "sha256": "64a7eadc59ec7cd43d22dcf72d8bf9acc5ecc61848b3cfd4030ed14a18133dae",
+      "compiled": "dist/packages/integrations/device-business-storage/src/context.js"
+    },
+    {
+      "source": "packages/integrations/device-business-storage/src/index.ts",
+      "sha256": "7baa6e22ee84bae8383d6d69ed537b9b9f41f9c2576fe8474d4114e539b1af5b",
+      "compiled": "dist/packages/integrations/device-business-storage/src/index.js"
+    },
+    {
+      "source": "packages/integrations/device-business-storage/src/ingest-profile.ts",
+      "sha256": "d4d51531015534ab52d6d2dfaf6c50c9c3b156f58831c51b3e7946f2bac9b2b5",
+      "compiled": "dist/packages/integrations/device-business-storage/src/ingest-profile.js"
+    },
+    {
+      "source": "packages/integrations/device-business-storage/src/native-writer.ts",
+      "sha256": "a75217989f799d3849b0feb0ff296555dc8bb070fe2e28587b54cabcc3503ba4",
+      "compiled": "dist/packages/integrations/device-business-storage/src/native-writer.js"
+    },
+    {
+      "source": "packages/integrations/device-business-storage/src/repository.ts",
+      "sha256": "b02da7295a38d62de6db61de2b9f54c7b75a4c8cb3001d2a41f2b319682cdd21",
+      "compiled": "dist/packages/integrations/device-business-storage/src/repository.js"
+    },
+    {
+      "source": "packages/integrations/device-business-storage/src/routing.ts",
+      "sha256": "333ec5c7ed3493af971f1be8692638a3894b329f38e4f7fb45427a33c6614b66",
+      "compiled": "dist/packages/integrations/device-business-storage/src/routing.js"
+    },
+    {
+      "source": "packages/integrations/ugv-mqtt-ingest-core/src/contracts.ts",
+      "sha256": "b73c5902bea07bf9a78f9b955d9ecdfc70cb477a4959ba100f41633e85d388ca",
+      "compiled": "dist/packages/integrations/ugv-mqtt-ingest-core/src/contracts.js"
+    },
+    {
+      "source": "packages/integrations/ugv-mqtt-ingest-core/src/mapper.ts",
+      "sha256": "d73b84106f55349bb5be324b57a4060ce7c68243304eb5c7a99ee591fdfcfa76",
+      "compiled": "dist/packages/integrations/ugv-mqtt-ingest-core/src/mapper.js"
+    },
+    {
+      "source": "packages/integrations/ugv-mqtt-ingest-core/src/runtime-profile.ts",
+      "sha256": "1aa6bdd894e29b1619e64a90b91cbf19489615200f3ed7c2fe32c977c1f5cb51",
+      "compiled": "dist/packages/integrations/ugv-mqtt-ingest-core/src/runtime-profile.js"
+    },
+    {
+      "source": "packages/integrations/ugv-mqtt-ingest-core/src/sampling.ts",
+      "sha256": "ef69f816dda41a232cc1d259eb3756726377aaf4821b7c5a0abbd5a7bdc69e62",
+      "compiled": "dist/packages/integrations/ugv-mqtt-ingest-core/src/sampling.js"
+    },
+    {
+      "source": "packages/integrations/ugv-mqtt-ingest-core/src/source-schema-registry.ts",
+      "sha256": "c4c5ffbb4954ee682fc47cf9f5b61a1d222bca2d979b8b7d032ee208356dce1f",
+      "compiled": "dist/packages/integrations/ugv-mqtt-ingest-core/src/source-schema-registry.js"
+    },
+    {
+      "source": "packages/platform/provider-sdk/src/idempotency.ts",
+      "sha256": "f2333c245754f27018f9ca1f655e872f69f892a4d10f71cf7372822e0b55b09f",
+      "compiled": "dist/packages/platform/provider-sdk/src/idempotency.js"
+    },
+    {
+      "source": "packages/platform/provider-sdk/src/runtime.ts",
+      "sha256": "1412ac31a2311f0e9c090d5895382f0b4eaadbae53061ef313f462f1460ca845",
+      "compiled": "dist/packages/platform/provider-sdk/src/runtime.js"
+    },
+    {
+      "source": "packages/platform/provider-sdk/src/types.ts",
+      "sha256": "9084d68f080a63fe070537613b97a5e80a3caeb13e6da7b797d19ad9ef67c53c",
+      "compiled": "dist/packages/platform/provider-sdk/src/types.js"
+    },
+    {
+      "source": "packages/runtime/src/bus.ts",
+      "sha256": "597accc450644550d26e1c2523b9586e0cc1897797f8464dace29e4a7ac08157",
+      "compiled": "dist/packages/runtime/src/bus.js"
+    },
+    {
+      "source": "packages/runtime/src/event-repository.ts",
+      "sha256": "6d5c74d3885ae1565d4efdf9d52555d616e7fe03e3ef0cd64d13f41ee6bc0e0d",
+      "compiled": "dist/packages/runtime/src/event-repository.js"
+    },
+    {
+      "source": "packages/runtime/src/mqtt-security.ts",
+      "sha256": "dee38801048b068dbf93e92938fd78d2c41652338493e635a717f998a1544fea",
+      "compiled": "dist/packages/runtime/src/mqtt-security.js"
+    },
+    {
+      "source": "packages/runtime/src/projection.ts",
+      "sha256": "575561677fea017aae51dbbe02d4d17ed971809c1a797aa9fa9e779ba6795adb",
+      "compiled": "dist/packages/runtime/src/projection.js"
+    },
+    {
+      "source": "packages/runtime/src/situation-repository.ts",
+      "sha256": "6498a4ebd10719adf51941cffd1ed5983405375a71fc475df7e528b30f99016b",
+      "compiled": "dist/packages/runtime/src/situation-repository.js"
+    },
+    {
+      "source": "packages/runtime/src/trajectory-repository.ts",
+      "sha256": "5c3d759813eac69015329212161bc31d30abb27b5794c35f4d4dcdd3310b7f51",
+      "compiled": "dist/packages/runtime/src/trajectory-repository.js"
+    },
+    {
+      "source": "packages/trajectory-model/src/analytics.ts",
+      "sha256": "6ce51827f27c4f59b1af48764ee893fbb12dd33c05be46951408ea90df7d63c5",
+      "compiled": "dist/packages/trajectory-model/src/analytics.js"
+    },
+    {
+      "source": "packages/world-model-core/src/schema.ts",
+      "sha256": "e4ac4bdfce67d46fff1c285070b7ba4071d6da33e4c82c44362bc41ba2a6f6c2",
+      "compiled": "dist/packages/world-model-core/src/schema.js"
+    },
+    {
+      "source": "scripts/business-storage/accounts.ts",
+      "sha256": "2784c5b52f633767a1daf3d656c663459be7fc68ad9ca8e3597d2d7a8725e9d1",
+      "compiled": "dist/scripts/business-storage/accounts.js"
+    },
+    {
+      "source": "scripts/business-storage/authority.ts",
+      "sha256": "9974d1aa371bcf5a713be43e6d82c57ba2efd8875afb38bf3b8f83896b7916c6",
+      "compiled": "dist/scripts/business-storage/authority.js"
+    },
+    {
+      "source": "scripts/business-storage/bootstrap-test.ts",
+      "sha256": "481c658c430875b05bf7821651d57611b119c709580b44c8036ac61ea34c1201",
+      "compiled": "dist/scripts/business-storage/bootstrap-test.js"
+    },
+    {
+      "source": "scripts/business-storage/bootstrap.ts",
+      "sha256": "bbf10214bd95ddc2ed96ae98a00cf0a4b00cae4b4eb128d462969aca2fac7653",
+      "compiled": "dist/scripts/business-storage/bootstrap.js"
+    },
+    {
+      "source": "scripts/business-storage/cli.ts",
+      "sha256": "e926438dc94c076a07859cff44608780d951f904907c573d811cfff8c3f663f6",
+      "compiled": "dist/scripts/business-storage/cli.js"
+    },
+    {
+      "source": "scripts/business-storage/device-cli.ts",
+      "sha256": "a4f7b94dceac282f0fe10d49a8a16f2ba5939a67ce82f6daca4c2dfa06285807",
+      "compiled": "dist/scripts/business-storage/device-cli.js"
+    },
+    {
+      "source": "scripts/business-storage/installer.ts",
+      "sha256": "e31d4a9bd4d218e6e890d124b628154c3d4fd3975f82c9c1f467d17215816b6e",
+      "compiled": "dist/scripts/business-storage/installer.js"
+    },
+    {
+      "source": "scripts/business-storage/inventory.ts",
+      "sha256": "125b566a16aa2a8be3f6e7cd61a62b546606f9b845ce98a0e01a20514fe73753",
+      "compiled": "dist/scripts/business-storage/inventory.js"
+    },
+    {
+      "source": "scripts/business-storage/runtime-verify.ts",
+      "sha256": "8247a8740ddf788daaeaa93d9edbbbdddc3307764f8227e339676f064412423e",
+      "compiled": "dist/scripts/business-storage/runtime-verify.js"
+    },
+    {
+      "source": "scripts/business-storage/structure.ts",
+      "sha256": "00f3478a2d9193b20f84d5ad856ca9174fd1f1eea5eb9f0a6021e044a8b90e3d",
+      "compiled": "dist/scripts/business-storage/structure.js"
+    },
+    {
+      "source": "scripts/capability-completion-upgrade.ts",
+      "sha256": "fbecae01d38f027fc6a2536d31f543708e74c960c655436a1016501060c1ff55",
+      "compiled": "dist/scripts/capability-completion-upgrade.js"
+    },
+    {
+      "source": "scripts/functional-repair-upgrade.ts",
+      "sha256": "cb709153dc090051ae39c821145ecb85d0e5c254ec7b8b229933a7333458efb0",
+      "compiled": "dist/scripts/functional-repair-upgrade.js"
+    },
+    {
+      "source": "scripts/history-diagnose.ts",
+      "sha256": "9dd8f8b4d2edf0cb6dd54a71bfa72a8163bd29617a82f6f3a5f63b26e4e3c869",
+      "compiled": "dist/scripts/history-diagnose.js"
+    },
+    {
+      "source": "scripts/history-hot-migrate.ts",
+      "sha256": "8080122c3310c5e59075263640e37fa86bfc3d411588c00f61e833637df71182",
+      "compiled": "dist/scripts/history-hot-migrate.js"
+    },
+    {
+      "source": "scripts/ingest-profile.ts",
+      "sha256": "67ad11c0c8c34124f6e3c6ec931389ef0db73909327c5f2a6d44d8d79b58b920",
+      "compiled": "dist/scripts/ingest-profile.js"
+    },
+    {
+      "source": "scripts/operations.ts",
+      "sha256": "efda6ed478e77433f5d70bdf2402be99dc0cf4c8e35e3d0b31709e4e420df2ea",
+      "compiled": "dist/scripts/operations.js"
+    },
+    {
+      "source": "scripts/production-check.ts",
+      "sha256": "3840b2b63ebe5f6de696e610503a87078b4014db91625d076af0622a1c21236a",
+      "compiled": "dist/scripts/production-check.js"
+    },
+    {
+      "source": "services/projection-worker/src/index.ts",
+      "sha256": "459b79497f3c861ec23a1488f46584f8506e86fa4830f595c3df3a608ec23ad2",
+      "compiled": "dist/services/projection-worker/src/index.js"
+    },
+    {
+      "source": "services/providers/gowm-situation-provider/src/repository-adapter.ts",
+      "sha256": "c01ae1eeae03573afc1d92781e8c7f0568101af42d4fc9351bbd1bcc10d464cd",
+      "compiled": "dist/services/providers/gowm-situation-provider/src/repository-adapter.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/app.ts",
+      "sha256": "c1e63857eb76fd062ca2909ac6d060ce54917732a7b3e369cd2c553352021bd2",
+      "compiled": "dist/services/providers/historical-trace-provider/src/app.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/artifact-operations.ts",
+      "sha256": "ae4d6bf70b82813f09bf65305688cc488ae686a7998b8950217f462a814af9c8",
+      "compiled": "dist/services/providers/historical-trace-provider/src/artifact-operations.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/artifact-repository.ts",
+      "sha256": "50b3da5ab49997283762dc9a546aeebb97928c4b9571f389eb143550de0cd887",
+      "compiled": "dist/services/providers/historical-trace-provider/src/artifact-repository.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/config.ts",
+      "sha256": "5fb8db654ee5d776164e5b7add2dfddcb6833096008befa704661941a2f83199",
+      "compiled": "dist/services/providers/historical-trace-provider/src/config.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/index.ts",
+      "sha256": "8bca213a0816cd28dcd8fc1f448ec1c05cc1e15b9c1a6e14794f9c44887aa1af",
+      "compiled": "dist/services/providers/historical-trace-provider/src/index.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/provider.ts",
+      "sha256": "16d59fd382c16a9e9f08a778e84fcfb094dbd5d5d16e9f44ffdef5eeed8e45a7",
+      "compiled": "dist/services/providers/historical-trace-provider/src/provider.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/repository.ts",
+      "sha256": "6836866f3b769122fd6b451b1544b7dd0e7b625e3082ef8b917ffd4b436defb1",
+      "compiled": "dist/services/providers/historical-trace-provider/src/repository.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/schemas.ts",
+      "sha256": "09f2383ee2fd8b04369cd529eace9b1641863d2138c4acf88a23714cdd89fa02",
+      "compiled": "dist/services/providers/historical-trace-provider/src/schemas.js"
+    },
+    {
+      "source": "services/providers/historical-trace-provider/src/server.ts",
+      "sha256": "9909cccd35724b9137c6b05feda89de4d1d3f3f80de7ff9aab67fa13fd6c2fd7",
+      "compiled": "dist/services/providers/historical-trace-provider/src/server.js"
+    },
+    {
+      "source": "services/tls-edge/src/server.ts",
+      "sha256": "1420ab127e8821868b7f0abb4c0a5ae1757a5d20dc52a0b8a63fd4463585c080",
+      "compiled": "dist/services/tls-edge/src/server.js"
+    },
+    {
+      "source": "services/ugv-mqtt-ingest/src/app.ts",
+      "sha256": "23201af67d8ed9087f618688e505d5ddbb11ca693d2a4ad2ecc24203b0868369",
+      "compiled": "dist/services/ugv-mqtt-ingest/src/app.js"
+    },
+    {
+      "source": "services/ugv-mqtt-ingest/src/config.ts",
+      "sha256": "4adb8f594487c37af702605852da39086cd5eb02ab1fdd1f7616f4970ba9d4b9",
+      "compiled": "dist/services/ugv-mqtt-ingest/src/config.js"
+    },
+    {
+      "source": "services/ugv-mqtt-ingest/src/repository.ts",
+      "sha256": "745a370cc945a809a40db315e4bb68f882f657dd12de719952bbc137c69ca956",
+      "compiled": "dist/services/ugv-mqtt-ingest/src/repository.js"
+    },
+    {
+      "source": "services/world-api/src/app.ts",
+      "sha256": "bc097b002f6ec0e37c083edec935546690bf2054d1ccd1507c615d08f4d11142",
+      "compiled": "dist/services/world-api/src/app.js"
+    },
+    {
+      "source": "services/world-api/src/event-stream.ts",
+      "sha256": "7d0ddb084642773c74606dd836966053eab7d184e8583440832d89559607e88c",
+      "compiled": "dist/services/world-api/src/event-stream.js"
+    },
+    {
+      "source": "services/world-mcp-server/src/server.ts",
+      "sha256": "1a71860a27f6a554465bfd61d0f671e9184e7b1ecdfd38a4a6dd26d454e77151",
+      "compiled": "dist/services/world-mcp-server/src/server.js"
+    }
+  ],
+  "handoff": [
+    {
+      "path": "docs/HISTORY_CONCURRENCY_AND_REUSE.md",
+      "sha256": "4a04ed9b35c77172a09d048903694d8ae1d93614b4dba51a9233294f985fab8b"
+    },
+    {
+      "path": "docs/HISTORY_RESET_WATERMARKS.md",
+      "sha256": "588b8f9253b82780031f051deedb8006af0f932cd09084508b3b019671a479bf"
+    },
+    {
+      "path": "docs/FUNCTIONAL_REPAIR_2026_10.md",
+      "sha256": "525c45f5a9bdc9f5e40aba8610a2f10459f7c8ee8a47fd1eca6ce439f98819e9"
+    },
+    {
+      "path": "docs/DEV_DEPLOYMENT.md",
+      "sha256": "256e3d190cc184698d74487520fd0394297ac6ba4804bdde613b429ae55bbc32"
+    },
+    {
+      "path": "docs/UGV_DEVICE_ACTOR.md",
+      "sha256": "c975014ec66c40c78fe3b385e380c4897f317b2d518bab1b60d8d8e3a2e2ee09"
+    },
+    {
+      "path": "docs/CAPABILITY_COMPLETION_2026_10.md",
+      "sha256": "175537cc8e3e1d533c0288430b5ee209fc310130a86db6a440c90f152b329da2"
+    },
+    {
+      "path": "docs/CAPABILITY_INTEGRATION_HANDOFF.md",
+      "sha256": "3b5f992362c9f68de1b90de15cfa380867e05f2fe9f2e73f5bf40214327dddfe"
+    },
+    {
+      "path": "docs/PRODUCTION_OPERATIONS.md",
+      "sha256": "d831df6ec4f2f05e0af029d6bede5908889a19813bd428f30fde1ca19bd68a0b"
+    },
+    {
+      "path": "docs/shared-business-storage-handoff/smpp-handoff.md",
+      "sha256": "325a6c4b7bf39cd5945ffc547d51265b16c179c24a2a855accbb33cf23dc9978"
+    },
+    {
+      "path": "docs/shared-business-storage-handoff/sdar-handoff.md",
+      "sha256": "5b793e58eb686f9a80a42068f0387085ab769721a9d7a9c33ad52a51449f00a4"
+    }
+  ],
+  "configuration": [
+    {
+      "path": ".env.example",
+      "sha256": "5ceade709eb77574e9c9c7853dfecccfc32a0be0749e62aac5e8b6fe482025df"
+    },
+    {
+      "path": "docker-compose.yml",
+      "sha256": "aa4b2c7a49fecfa97079c88731b69a3628dc6070578d537b8614254efe5ce091"
+    },
+    {
+      "path": "docker-compose.world-platform.yml",
+      "sha256": "2ccd9a6ae7e2d246e34ef97bafc8d13826f1b96f83a4959be0f367acae83073d"
+    },
+    {
+      "path": "docker-compose.production.yml",
+      "sha256": "6e00b751732f1a8586a06273224b315d0577dac174ada85f87572515cb979d01"
+    },
+    {
+      "path": "infrastructure/production/mosquitto.conf",
+      "sha256": "aa2b6c04b7b8507fe2054b399d81597c0d63145a3b9090dd5aba4af47a5275c4"
+    },
+    {
+      "path": "infrastructure/production/mosquitto.acl",
+      "sha256": "6bbc9e871010a2d726f29a7d1184014a362d84066f1d90c0fecbf65e54d9ec11"
+    },
+    {
+      "path": "database/Dockerfile",
+      "sha256": "c306385c5b205f945bf886a231d2e24e5b4bc610326dc56bd2f4575b38865f46"
+    },
+    {
+      "path": "database/sbom/gowm-db.spdx.json",
+      "sha256": "e511362c513cca859d67b2f09b2881ac653c1fbc619f7f3fbe4a7201e6bf984f"
+    },
+    {
+      "path": "database/functional-repair-freeze-lock.json",
+      "sha256": "193e6ec250d5e0fa28ddc2de2155dc9b1c4ccdc6b0dd58b470293045ee439dea"
+    },
+    {
+      "path": "database/capability-completion-freeze-lock.json",
+      "sha256": "f8333963ee1c9375046351e31500a9ab25c2f61434884bbdeb210fda3e4740ca"
+    },
+    {
+      "path": "contracts/consumers/historical-trajectory-artifact-v1.json",
+      "sha256": "5524bcaae40e877d0b2e24a73ac3752fa1ebae406fd5d584d88c18adb75dd745"
+    },
+    {
+      "path": "database/shared-business-storage/install-manifest.json",
+      "sha256": "f2bbc49255f7b581178593cdf1c7049d26291fab8737cc160ec434b6d6185b2e"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/business-api-v2.sql",
+      "sha256": "218219064733445aca34c94353c2cea6cf450007d5d66bd663ff534ab853c65e"
+    },
+    {
+      "path": "database/shared-business-storage/expected-ingest-profile-structure.json",
+      "sha256": "ae861e6188a650843884a119756eb1325b37f6523a20c2031d4bbcfb101d90b9"
+    },
+    {
+      "path": "database/shared-business-storage/expected-reset-clock-structure.json",
+      "sha256": "5374f930f29142f924bf8d1357c5dbb203250fe31110dd932f0543a8bdf8f80a"
+    },
+    {
+      "path": "scripts/validate-bootstrap-config.mjs",
+      "sha256": "0086c17bb2f1d60b7632e3d4c7e0aa4b40f525bd812efaadd55b2d822a24b481"
+    },
+    {
+      "path": "scripts/record-runtime-build.mjs",
+      "sha256": "97a011aae087bada74f0b81e6b70cb6d95d3af6045bfa67b89432d1899660042"
+    }
+  ]
+}

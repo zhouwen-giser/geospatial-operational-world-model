@@ -10,7 +10,7 @@ describe('installation business credentials',()=>{
     const dir=await mkdtemp(join(tmpdir(),'gowm-bootstrap-'));
     try {
       const envFile=join(dir,'.env'),runtime=join(dir,'runtime');
-      const source=(await readFile('.env.example','utf8')).replace('UGV_DATA_SCOPE_KEY=airport-sim-ugv-01','UGV_DATA_SCOPE_KEY=default')
+      const source=(await readFile('.env.example','utf8'))
         .replace('UGV_MQTT_URL=mqtt://replace-with-source-broker:1883','UGV_MQTT_URL=mqtt://existing-broker:1883');
       await writeFile(envFile,source);
       const invoke=()=>promisify(execFile)('bash',['-c','source "$1"; runtime_dir="$2"; init_env','bootstrap',resolve('scripts/dev-deploy.sh'),runtime],{env:{...process.env,GOWM_DEV_ENV_FILE:envFile}});

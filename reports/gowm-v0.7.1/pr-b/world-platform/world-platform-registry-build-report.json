@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0",
   "providerCount": 16,
-  "operationCount": 124,
-  "contractCatalogRevision": "sha256:8a368dd91841589aed86723a86c49a382dd3a1040f1be6e17adc4fcc101806c2",
-  "bindingRevision": "sha256:2ee381d4700ad95a8d5a52615dad7da09b001c908a168bd8a61df5d0b2e42802",
+  "operationCount": 126,
+  "contractCatalogRevision": "sha256:8e2458cdd2432f670c213ed5b451c21ed2ec70e692020f54ffa62893e9534e95",
+  "bindingRevision": "sha256:7696a8eda554ac3f7db0d5d928de4d7cb025573fa0bc470e3d1540c53357bfbb",
   "missingRequiredProviders": [],
   "operationCollisions": [],
   "warnings": [],

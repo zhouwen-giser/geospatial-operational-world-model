@@ -1,0 +1,57 @@
+{
+  "head": "506315b5a60e5f5fe405f020f61cec24be0be47d",
+  "isolatedDatabase": true,
+  "migrationCount": 86,
+  "nativeTablesAfterStandardInitialization": {
+    "smpp": null,
+    "sdar": null
+  },
+  "roles": [
+    {
+      "role": "ugv_smpp_app",
+      "privileges": {
+        "binding_select": true,
+        "binding_update": false,
+        "binding_insert": false,
+        "task_usage": false,
+        "execution_usage": false,
+        "unified_read_usage": false
+      },
+      "firstAdmission": {
+        "sqlState": "42501",
+        "message": "permission denied for table device_service_binding"
+      },
+      "verifyExistingBinding": {
+        "status": "PASS",
+        "deviceId": "ugv:audit-ugv"
+      },
+      "admitExistingBinding": {
+        "sqlState": "42501",
+        "message": "permission denied for table device_service_binding"
+      }
+    },
+    {
+      "role": "ugv_sdar_app",
+      "privileges": {
+        "binding_select": true,
+        "binding_update": false,
+        "binding_insert": false,
+        "task_usage": false,
+        "execution_usage": false,
+        "unified_read_usage": false
+      },
+      "firstAdmission": {
+        "sqlState": "42501",
+        "message": "permission denied for table device_service_binding"
+      },
+      "verifyExistingBinding": {
+        "status": "PASS",
+        "deviceId": "ugv:audit-ugv"
+      },
+      "admitExistingBinding": {
+        "sqlState": "42501",
+        "message": "permission denied for table device_service_binding"
+      }
+    }
+  ]
+}

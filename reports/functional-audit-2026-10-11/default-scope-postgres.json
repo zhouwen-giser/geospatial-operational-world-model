@@ -1,0 +1,19 @@
+{
+  "probe": "default_bootstrap_scope_contract",
+  "scopes": [
+    "airport-sim-ugv-01",
+    "default"
+  ],
+  "gatewayDefaultScope": "default",
+  "ugvDefaultScope": "airport-sim-ugv-01",
+  "situationBeforeDefaultDevice": {
+    "ready": true,
+    "reasons": []
+  },
+  "situationAfterDefaultDevice": {
+    "ready": false,
+    "reasons": [
+      "GOWM Situation provider requires a verifiable single-scope deployment"
+    ]
+  }
+}

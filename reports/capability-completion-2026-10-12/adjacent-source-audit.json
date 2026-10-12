@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-12",
+  "repositories": [
+    {
+      "repository": "sdar-mcp-provider-platform",
+      "head": "c64897a98f8d2f610a2a031e422ba8a5c67d8eb6",
+      "dirtyEntries": 0,
+      "inspection": "READ_ONLY_LOCAL_WORKING_TREE",
+      "files": [
+        {
+          "path": "packages/gowm-shared-storage-adapter/src/device-context.ts",
+          "sha256": "fa9b2ea32a6fac16ba24c35fc1af0a444be2a59108000dea605b46fbad6016d8"
+        },
+        {
+          "path": "packages/gowm-shared-storage-adapter/src/target-links.ts",
+          "sha256": "1ef0e939335ca6221695e57bce683f394eebcd2b2e258f2db23e4301b825475f"
+        },
+        {
+          "path": "packages/gowm-shared-storage-adapter/src/native-missions.ts",
+          "sha256": "232b0b1662faf0bb47f880614686fa404235a2ad84fa59d1ad2ff06461eeb684"
+        },
+        {
+          "path": "packages/gowm-shared-storage-adapter/src/mission-links.ts",
+          "sha256": "6644d60b6389819303c22d634961d4094941e6323f26335be00679efed7423ce"
+        }
+      ]
+    },
+    {
+      "repository": "skill-driven-agent-runtime",
+      "head": "ffc65b6477995fcc3d192f9602d4e2f59b937e94",
+      "dirtyEntries": 0,
+      "inspection": "READ_ONLY_LOCAL_WORKING_TREE",
+      "files": [
+        {
+          "path": "packages/persistence-postgres/src/gowm-storage-contract.ts",
+          "sha256": "5928f6b9fd4f23036d5ce7ffef2268b373b8045847a55356ad65179e85a0c511"
+        },
+        {
+          "path": "packages/persistence-postgres/src/gowm-device-context.ts",
+          "sha256": "8a5e6ced5c6b0588041cf55d3a6d8112935ce1b1327cc6d1b2dcdd7ca69dd336"
+        },
+        {
+          "path": "packages/persistence-postgres/src/gowm-targets.ts",
+          "sha256": "ace478eede89a2d150099667156d06b67fd511b09f2270234ba53ab8c85efc25"
+        }
+      ]
+    },
+    {
+      "repository": "gowm-spatiotemporal-analysis-providers",
+      "head": "53dc6e1a3503dfbf3b07cca7016424fb88231538",
+      "dirtyEntries": 0,
+      "inspection": "READ_ONLY_LOCAL_WORKING_TREE",
+      "files": [
+        {
+          "path": "packages/gowm-read-adapter/src/index.ts",
+          "sha256": "284c27fd18481504dd543991e15688e34dfcd12977b20061fa2b27ad02425517"
+        },
+        {
+          "path": "packages/gowm-read-adapter/src/read-execution.ts",
+          "sha256": "5132862728718ebe97923e4f33d607c97f38b417039537bc331ff47a0373825f"
+        },
+        {
+          "path": "services/map-matching-provider/src/provider.ts",
+          "sha256": "31e73d674012058bedf8e66fe3f2dde0450b0302503c07af2311006ffb5a4673"
+        },
+        {
+          "path": "services/temporal-events-provider/src/provider.ts",
+          "sha256": "abe67d6ca8575766823a501e1c646cb86661fa33c0bdbd6bfe3079774d780683"
+        },
+        {
+          "path": "services/metric-ranking-provider/src/provider.ts",
+          "sha256": "848068d3e370d5191ffffb6f6bc455b02300ee26556def41aef3833414a8fee7"
+        }
+      ]
+    },
+    {
+      "repository": "isr-simulation",
+      "head": "c10620572a7e1f0a881a8bd97198618bcf5d3d5a",
+      "dirtyEntries": 1,
+      "inspection": "READ_ONLY_LOCAL_WORKING_TREE",
+      "files": [
+        {
+          "path": "ros_ws/src/referee/referee/dashboard/combined_dashboard.py",
+          "sha256": "05538e4430d4db6e20f72bc8a2978455800b96d1b765b8e21b57ebf24c317c93"
+        },
+        {
+          "path": "ros_ws/src/ros2_mqtt_bridge/config/bridge_config.yaml",
+          "sha256": "475499558949efaeffdaf8c2889e2780d768b5ede53c5486eaa54aa0e2781860"
+        }
+      ]
+    }
+  ],
+  "externalCodeChanged": false,
+  "remoteVerification": "NOT_RUN",
+  "businessAcceptance": "NOT_RUN"
+}

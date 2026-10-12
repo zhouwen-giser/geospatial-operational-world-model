@@ -6,7 +6,7 @@ export interface UgvIngestConfig {
   databaseUrl: string; mqttUrl: string; clientId: string; username?: string; password?: Buffer;
   ca?: Buffer; cert?: Buffer; key?: Buffer; sessionExpirySeconds: number; keepaliveSeconds: number;
   connectTimeoutMs: number; maxPayloadBytes: number; deviceId: string; dataScopeKey: string;
-  originKind: "SIMULATION"; sourceKey: string; producerPipelineKey: string; scenarioId: string;
+  originKind: "SIMULATION"|"PHYSICAL_SENSOR"; runtimeProfileRequired:boolean; sourceKey: string; producerPipelineKey: string; scenarioId: string;
   worldEpoch: string; trackerSessionKey: string; analysisSpaceKey: string; analysisSrid: number;
   observationApiUrl: string; arrivalUncertaintyMs: number; port: number; codeVersion: string;
   maximumPendingInbox: number; maxTargetsPerFrame: number; httpTimeoutMs: number;
@@ -14,6 +14,7 @@ export interface UgvIngestConfig {
   faultExitAfterInboxCommits?: number;
   speedQos0Compat: boolean;
   samplingPolicy: UgvSamplingPolicy;
+  adminToken?:Buffer;
 }
 
 function required(name: string): string {
@@ -57,14 +58,18 @@ function serviceUrl(name: string,value: string,protocols: string[]): string {
 export async function loadUgvIngestConfig(): Promise<UgvIngestConfig> {
   const speedQos0 = process.env.UGV_MQTT_SPEED_QOS0_COMPAT ?? "false";
   if (speedQos0 !== "true" && speedQos0 !== "false") throw new Error("UGV_MQTT_SPEED_QOS0_COMPAT must be true or false");
+  const profileRequired=process.env.UGV_RUNTIME_PROFILE_REQUIRED??"false";
+  if(!["true","false"].includes(profileRequired))throw Error("UGV_RUNTIME_PROFILE_REQUIRED must be true or false");
   const origin = process.env.UGV_ORIGIN_KIND ?? "SIMULATION";
-  if (origin !== "SIMULATION") throw new Error("UGV_ORIGIN_KIND must be SIMULATION for this adapter");
+  if(!["SIMULATION","PHYSICAL_SENSOR"].includes(origin)||(profileRequired!=="true"&&origin!=="SIMULATION"))throw Error("UGV_ORIGIN_KIND requires a registered runtime profile for physical input");
   const analysisSrid = integer("UGV_ANALYSIS_SRID",32648);
-  if (analysisSrid !== 32648) throw new Error("airport UGV analysis SRID must be EPSG:32648");
+  if (profileRequired!=="true" && analysisSrid !== 32648) throw new Error("airport UGV analysis SRID must be EPSG:32648");
   const password = await optionalFile("UGV_MQTT_PASSWORD_FILE");
   const ca = await optionalFile("UGV_MQTT_CA_FILE");
   const cert = await optionalFile("UGV_MQTT_CERT_FILE");
   const key = await optionalFile("UGV_MQTT_KEY_FILE");
+  const adminToken=await optionalFile('UGV_INGEST_ADMIN_TOKEN_FILE');
+  if(adminToken&&adminToken.toString('utf8').trim().length<32)throw Error('UGV_INGEST_ADMIN_TOKEN_FILE requires at least 32 characters');
   const clientId = process.env.UGV_MQTT_CLIENT_ID ?? "gowm-ugv-ingest-airport-01";
   if (!/^[A-Za-z0-9._:-]{1,128}$/u.test(clientId)) throw new Error("UGV_MQTT_CLIENT_ID must be a stable literal identifier");
   const maxTargetsPerFrame = integer("UGV_MQTT_MAX_TARGETS_PER_FRAME",256);
@@ -91,6 +96,7 @@ export async function loadUgvIngestConfig(): Promise<UgvIngestConfig> {
   };
   return {
     deviceNamespace: process.env.UGV_DEVICE_NAMESPACE ?? "ugv",
+    ...(adminToken?{adminToken}:{}),
     endpointKey: process.env.UGV_MQTT_ENDPOINT_KEY ?? "ugv-default",
     speedQos0Compat: speedQos0 === "true",
     databaseUrl: required("DATABASE_URL"),mqttUrl: serviceUrl("UGV_MQTT_URL",required("UGV_MQTT_URL"),["mqtt:","mqtts:","ws:","wss:"]),
@@ -99,8 +105,8 @@ export async function loadUgvIngestConfig(): Promise<UgvIngestConfig> {
     ...(password ? { password } : {}),...(ca ? { ca } : {}),...(cert ? { cert } : {}),...(key ? { key } : {}),
     sessionExpirySeconds: integer("UGV_MQTT_SESSION_EXPIRY_SECONDS",86400),keepaliveSeconds: integer("UGV_MQTT_KEEPALIVE_SECONDS",30),
     connectTimeoutMs: integer("UGV_MQTT_CONNECT_TIMEOUT_MS",5000),maxPayloadBytes: integer("UGV_MQTT_MAX_PAYLOAD_BYTES",1048576),
-    deviceId: process.env.UGV_DEVICE_ID ?? "ugv",dataScopeKey: process.env.UGV_DATA_SCOPE_KEY ?? "airport-sim-ugv-01",
-    originKind: "SIMULATION",sourceKey: process.env.UGV_SOURCE_KEY ?? "ugv-airport-sim-mqtt",
+    deviceId: process.env.UGV_DEVICE_ID ?? "ugv",dataScopeKey: process.env.UGV_DATA_SCOPE_KEY ?? "default",
+    originKind: origin as "SIMULATION"|"PHYSICAL_SENSOR",runtimeProfileRequired:profileRequired==="true",sourceKey: process.env.UGV_SOURCE_KEY ?? "ugv-airport-sim-mqtt",
     producerPipelineKey: process.env.UGV_PRODUCER_PIPELINE_KEY ?? "ugv-airport-sim-mqtt:canonical-v1",
     scenarioId: process.env.UGV_SCENARIO_ID ?? "airport",worldEpoch: required("UGV_WORLD_EPOCH"),
     trackerSessionKey: required("UGV_TRACKER_SESSION_KEY"),analysisSpaceKey: process.env.UGV_ANALYSIS_SPACE_KEY ?? "airport-utm48n",

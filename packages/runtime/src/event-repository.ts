@@ -37,6 +37,39 @@ export class EventRepository {
     return result.rows.map((row) => mapWorldEvent(row as Record<string, unknown>));
   }
 
+  private lastFeedScope='';
+  async appendFeed(limit=500):Promise<number> {
+    const scopes=await this.pool.query('SELECT scope_key AS data_scope_key FROM public.data_scope s WHERE EXISTS(SELECT 1 FROM public.world_event_feed_pending p WHERE p.data_scope_key=s.scope_key) ORDER BY (scope_key>$1) DESC,scope_key LIMIT 32',[this.lastFeedScope]);
+    let total=0;
+    for(const row of scopes.rows) total+=Number((await this.pool.query('SELECT public.append_world_event_feed($1,$2) AS count',[row.data_scope_key,limit])).rows[0].count);
+    if(scopes.rows.length) this.lastFeedScope=String(scopes.rows.at(-1).data_scope_key);
+    return total;
+  }
+
+  async feedCursor(scope:string,eventId:string):Promise<{position:string;event:WorldEvent}|undefined> {
+    const result=await this.pool.query(`SELECT f.position::text, e.*,
+      CASE WHEN e.geometry IS NULL THEN NULL ELSE public.ST_AsGeoJSON(e.geometry)::jsonb END AS geometry_json
+      FROM public.world_event_feed f JOIN public.world_event e USING(event_id)
+      WHERE f.data_scope_key=$1 AND e.data_scope_key=$1 AND f.event_id=$2::uuid`,[scope,eventId]);
+    const row=result.rows[0];
+    return row?{position:String(row.position),event:mapWorldEvent(row)}:undefined;
+  }
+
+  async feedPage(scope:string,after:string,limit=500):Promise<Array<{position:string;event:WorldEvent}>> {
+    if(!/^\d+$/.test(after)||!Number.isInteger(limit)||limit<1||limit>1000) throw Error('EVENT_FEED_PAGE_INVALID');
+    const result=await this.pool.query(`WITH page AS MATERIALIZED (
+      SELECT f.position,f.event_id,octet_length(to_jsonb(e)::text) AS bytes
+      FROM public.world_event_feed f JOIN public.world_event e USING(event_id)
+      WHERE f.data_scope_key=$1 AND e.data_scope_key=$1 AND f.position>$2::bigint ORDER BY f.position LIMIT $3
+    ), budget AS (
+      SELECT *,sum(bytes) OVER(ORDER BY position) AS used_bytes,row_number() OVER(ORDER BY position) AS ordinal FROM page
+    ) SELECT f.position::text,e.*,
+      CASE WHEN e.geometry IS NULL THEN NULL ELSE public.ST_AsGeoJSON(e.geometry)::jsonb END AS geometry_json
+      FROM budget f JOIN public.world_event e USING(event_id)
+      WHERE used_bytes<=4194304 OR ordinal=1 ORDER BY f.position`,[scope,after,limit]);
+    return result.rows.map(row=>({position:String(row.position),event:mapWorldEvent(row)}));
+  }
+
   async unpublished(limit = 200): Promise<WorldEvent[]> {
     const result = await this.pool.query(
       `${EVENT_SELECT} WHERE published_at IS NULL ORDER BY created_at, event_id LIMIT $1`,

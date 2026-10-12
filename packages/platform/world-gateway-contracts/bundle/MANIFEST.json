@@ -2,8 +2,8 @@
   "schemaVersion": "1.0",
   "packageName": "@gowm/world-gateway-contracts",
   "packageVersion": "0.7.1",
-  "contractCatalogRevision": "sha256:8a368dd91841589aed86723a86c49a382dd3a1040f1be6e17adc4fcc101806c2",
-  "semanticCatalogHash": "sha256:566b1a90f2d38fd65e78d59ebfc0a54de5c7d598a4e36fbe10c8591814b4be7d",
+  "contractCatalogRevision": "sha256:8e2458cdd2432f670c213ed5b451c21ed2ec70e692020f54ffa62893e9534e95",
+  "semanticCatalogHash": "sha256:6443a9433832cb72c88c325ff28c393edfb5f6110370e624a2bc0cdd5b53dc89",
   "files": [
     {
       "path": "compatibility/report.json",
@@ -11,9 +11,14 @@
       "sha256": "9e153a8d7540569021390cf5a7e3ca99e505f7520de08ddc7806741bfdbc6c63"
     },
     {
+      "path": "locks/historical-trajectory-artifact-v1.json",
+      "bytes": 2571,
+      "sha256": "5524bcaae40e877d0b2e24a73ac3752fa1ebae406fd5d584d88c18adb75dd745"
+    },
+    {
       "path": "locks/wsgs-southbound-operation-lock-v2.json",
-      "bytes": 65937,
-      "sha256": "8902be38bb41333989f51238050439c4c7147254d382d954c50d6f6a2fd997bf"
+      "bytes": 67025,
+      "sha256": "18170dd64f22d9b0fbacdc7e05a36c950333ef10598848e403d0964937d93a9a"
     },
     {
       "path": "openapi/world-capability-gateway-v1.yaml",
@@ -28,12 +33,12 @@
     {
       "path": "revisions/contract-catalog.json",
       "bytes": 229,
-      "sha256": "496b051bdfa3dd40691535e89500bc94e5481b12a86e8fba8d7c028dbf3eec5e"
+      "sha256": "4eda3f1395586a29c354a01d00b4911be0585da1941eb28969e1dd8dda22fe93"
     },
     {
       "path": "revisions/semantic-catalog.json",
       "bytes": 233,
-      "sha256": "5f18812f476caa3def62ac71548b2488efa06cb94f21794f04b9df6d3ad604ce"
+      "sha256": "a1ca7c913ce92f96ec9b320aa4a65b5b8ad0def9a198f8ee26381921bc37aafc"
     },
     {
       "path": "schemas/gowm-v0.6.2/capability-descriptor-v1.1.schema.json",
@@ -214,6 +219,36 @@
       "path": "schemas/gowm-v0.7.1/task-execution-interval-result.schema.json",
       "bytes": 2937,
       "sha256": "4c80a458bbecee377665ba3e654693974cb5368f80c3260155231fb1ad7d053b"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/trajectory-artifact-manifest.schema.json",
+      "bytes": 7854,
+      "sha256": "84ca62b1c0cc800f4557205ee047c14648dfe7fbd4dff36e41f3e55e078ec7cb"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/trajectory-artifact-open-query.schema.json",
+      "bytes": 530,
+      "sha256": "5c1700c1e606972b5b36f5958de0696ecaa8a33e252b58ffa3e28c5224f76250"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/trajectory-artifact-open-result.schema.json",
+      "bytes": 1530,
+      "sha256": "74edcbf5b65bb3c4a9edd9f39c6e6b49258524bacfd9511af0f1d93c9eaa4b83"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/trajectory-artifact-page-query.schema.json",
+      "bytes": 486,
+      "sha256": "a6eecb9fe89f1c120ff31271fdf3b5922e6b6879078e3f4f989e3d77199b0541"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/trajectory-artifact-page-result.schema.json",
+      "bytes": 1066,
+      "sha256": "71271f04ae1adcb42ce0dde0a8442b3320230eace500617a46da7fee7a2a7a41"
+    },
+    {
+      "path": "schemas/gowm-v0.7.1/trajectory-artifact-reference.schema.json",
+      "bytes": 832,
+      "sha256": "294ec05d5ea4f25b4a2053df617e2fcb2378d5e108c0f7cce2e7b9ef7b1cf7ce"
     },
     {
       "path": "schemas/gowm-v0.7.1/world-query-result-v0.7.1.schema.json",
@@ -452,8 +487,8 @@
     },
     {
       "path": "types/contracts.ts",
-      "bytes": 151716,
-      "sha256": "a449772c39a33d7fb8d1eec0d77808043322b7ec863d8686b728109439c112d9"
+      "bytes": 154823,
+      "sha256": "eae4bd495a142acd05f6afa9940058011b4ac629dc5bee1d4b6726b9e3388537"
     },
     {
       "path": "vocabularies/normalized-result-status-vocabulary.v1.json",
@@ -476,5 +511,5 @@
       "sha256": "5d21c0213e291939e9cbfce2cb3aa65f739d69a486d270dc4725bffe7f208428"
     }
   ],
-  "packageIntegrity": "sha512-1XtXNrTb7CWl5+b3t/sqhetvIm2zcOkArFcs1OUBW1SxT77Jf1s+vRSqUw8TnikBUehu3DUfwkSCJI1ilYMGEg=="
+  "packageIntegrity": "sha512-hIsxVRwDZEliDvk/ZUXilg3rJHgfTRmWVWBlInOJr2ZKhG8K1+2Kbl156eOmYj3AQr9nN/DI01+UUU5wOnd4fQ=="
 }

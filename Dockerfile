@@ -13,7 +13,7 @@ COPY scripts ./scripts
 COPY validation ./validation
 COPY contracts ./contracts
 COPY config ./config
-RUN npm run build:runtime
+RUN npm run build:runtime && node scripts/record-runtime-build.mjs
 
 FROM ${NODE_BASE_IMAGE} AS runtime
 ENV NODE_ENV=production

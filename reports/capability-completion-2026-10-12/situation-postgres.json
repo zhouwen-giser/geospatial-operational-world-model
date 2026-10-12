@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "checks": [
+    "same_cell_two_scopes_independent_counts",
+    "projection_redelivery_idempotence",
+    "scope_required_transaction_reset_and_minimal_privileges",
+    "multi_scope_provider_ready_ranking_area_candidates_and_authorization"
+  ],
+  "remoteDeployment": "NOT_RUN"
+}

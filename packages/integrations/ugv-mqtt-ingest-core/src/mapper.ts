@@ -12,11 +12,13 @@ import {
 } from "./sampling.js";
 
 import { IngestDeviceContextSchema, resolveIngestStream, type IngestDeviceContext } from "../../device-business-storage/src/context.js";
+import {PROFILED_MAPPER_VERSION,UgvRuntimeProfileSchema,profileTime,type UgvRuntimeProfile} from './runtime-profile.js';
 
 type Json = Record<string, unknown>;
 export const VEHICLE_SPEED_MAPPER_VERSION = "ugv-mqtt-canonical-v2";
 export const DEVICE_ACTOR_MAPPER_VERSION = "ugv-mqtt-canonical-v3";
 export interface MapperConfig {
+  runtimeProfile?: UgvRuntimeProfile;
   deviceContext?: IngestDeviceContext;
   deviceId: string; dataScopeKey: string; sourceKey: string; producerPipelineKey: string;
   scenarioId: string; worldEpoch: string; trackerSessionKey: string; analysisSpaceKey: string;
@@ -50,9 +52,9 @@ const RECON_STATUS_LABELS: Record<number,string> = {
 
 export function mapUgvMessage(input: MapperInput, config: MapperConfig): MappingResult {
   validateMapperDevice(config);
-  if (config.mapperVersion === DEVICE_ACTOR_MAPPER_VERSION) resolveIngestStream(config.deviceContext!, input.topic, input.payload);
+  if ([DEVICE_ACTOR_MAPPER_VERSION,PROFILED_MAPPER_VERSION].includes(config.mapperVersion)) resolveIngestStream(config.deviceContext!, input.topic, input.payload);
   if (input.topic === "/ugv/gnss" && input.retained) return { observations: [],events: [],cursor: input.cursor,ignoredReason: "RETAINED_POSITION_SKIPPED" };
-  switch (input.topic) {
+  const result=(()=>{switch (input.topic) {
     case "/ugv/gnss": return mapGnss(input,config);
     case "/ugv/speed": return mapSpeed(input,config);
     case "status/ugv": return mapPlatform(input,config);
@@ -60,18 +62,27 @@ export function mapUgvMessage(input: MapperInput, config: MapperConfig): Mapping
     case "/ugv/area_recon/status": return mapReconStatus(input,config);
     case "/ugv/area_recon/targets": return mapTargets(input,config);
     case "/ugv/area_recon/exception": return mapException(input,config);
+  }})();
+  if(config.mapperVersion===PROFILED_MAPPER_VERSION)for(const o of result.observations){
+    if(o.timeSolution.correctionMethod==='TWO_ANCHOR_AFFINE_TICKS_V1'){
+      o.qualityFlags=[...(o.qualityFlags??[]).filter(f=>f!=='SOURCE_EVENT_TIME_MISSING'&&f!=='SOURCE_TIME_TICKS_UNRESOLVED'),'SOURCE_CLOCK_CALIBRATED'];
+      for(const m of o.measurements)m.qualityFlags=(m.qualityFlags??[]).filter(f=>f!=='SOURCE_EVENT_TIME_MISSING');
+    }
   }
+  return result;
 }
 
 function baseObservation(input: MapperInput,config: MapperConfig,ordinal: number,subject: { type: string; id: string },
   observer: { type: string; id: string },observationType: string,datastreamKey: string,
-  measurements: CanonicalObservationInput["measurements"],statePatch?: Json,extra: Partial<CanonicalObservationInput> = {}): CanonicalObservationInput {
-  if (config.mapperVersion === DEVICE_ACTOR_MAPPER_VERSION) datastreamKey = resolveIngestStream(config.deviceContext!, input.topic, input.payload);
+  measurements: CanonicalObservationInput["measurements"],statePatch?: Json,extra: Partial<CanonicalObservationInput> = {},clockPayload:unknown=input.payload): CanonicalObservationInput {
+  if ([DEVICE_ACTOR_MAPPER_VERSION,PROFILED_MAPPER_VERSION].includes(config.mapperVersion)) datastreamKey = resolveIngestStream(config.deviceContext!, input.topic, input.payload);
   const sourceRecordKey = `mqtt:${config.deviceId}:${encodeURIComponent(input.topic)}:${input.messageId}:${ordinal}`;
   const withoutId = { sourceKey: config.sourceKey,inboxMessageId: input.messageId,ordinal,mapperVersion: config.mapperVersion,
     subject,observer,observationType,datastreamKey,measurements,statePatch: statePatch ?? null };
   const observationId = `ugvobs_${sha256(canonicalJson(withoutId))}`;
-  const estimate = input.adapterReceivedAt;
+  const calibrated=config.mapperVersion===PROFILED_MAPPER_VERSION;
+  const clock=calibrated?profileTime(clockPayload,input.topic,input.adapterReceivedAt,config.arrivalUncertaintyMs,config.runtimeProfile):undefined;
+  const estimate = clock?.phenomenonTimeEstimate??input.adapterReceivedAt;
   const estimateMs = Date.parse(estimate);
   const start = new Date(estimateMs - config.arrivalUncertaintyMs).toISOString();
   const end = new Date(estimateMs + config.arrivalUncertaintyMs + 1).toISOString();
@@ -81,10 +92,11 @@ function baseObservation(input: MapperInput,config: MapperConfig,ordinal: number
   const timeQualityFlags = rawSourceTime ? ["SOURCE_EVENT_TIME_MISSING","SOURCE_TIME_TICKS_UNRESOLVED"] : ["SOURCE_EVENT_TIME_MISSING"];
   return {
     schemaVersion: "1.2",observationId,dataScopeKey: config.dataScopeKey,sourceRecordKey,sourceRevisionNo: 1,
-    originKind: "SIMULATION",observer,subject,observationType,source: config.sourceKey,datastreamKey,
+    originKind: calibrated?config.runtimeProfile!.originKind:"SIMULATION",observer,subject,observationType,source: config.sourceKey,datastreamKey,
     producerPipelineKey: config.producerPipelineKey,rawReference: `ugv-inbox://${input.messageId}`,
     qualityFlags: timeQualityFlags,metadata: { mqttTopic: input.topic,payloadSha256: input.payloadSha256,
       mapperVersion: config.mapperVersion,scenarioId: config.scenarioId,worldEpoch: config.worldEpoch,
+      ...(calibrated?{runtimeProfileId:config.runtimeProfile!.profileId,runtimeProfileVersion:config.runtimeProfile!.version}:{}),
       ...(input.sourceQos === undefined ? {} : { sourceQos: input.sourceQos,
         sourceQosPolicy: config.sourceQosPolicy ?? "QOS1_REQUIRED_V1",
         deliveryGuarantee: input.sourceQos === 0 ? "BEST_EFFORT_NO_PUBACK" : "ACK_AFTER_COMMIT" }),
@@ -93,7 +105,7 @@ function baseObservation(input: MapperInput,config: MapperConfig,ordinal: number
       phenomenonTimeWindow: { start,end },uncertaintySeconds: config.arrivalUncertaintyMs / 1000,
       correctionMethod: "MQTT_ADAPTER_RECEIVE_TIME_PROXY",clockModelVersion: "mqtt-arrival-proxy-v1",clockDomain: "ADAPTER_WALL_CLOCK",
       ...(rawSourceTime ? { sourceTimeRaw: rawSourceTime } : {}),
-      ...(rawSourceTicks ? { sourceTimeTicks: rawSourceTicks } : {}) },
+      ...(rawSourceTicks ? { sourceTimeTicks: rawSourceTicks } : {}),...clock },
     measurements,assertions: [],entityBindingStatus: "DECLARED",...extra
   };
 }
@@ -154,7 +166,7 @@ function mapSpeed(input: MapperInput,config: MapperConfig): MappingResult {
     resultKind: "NUMERIC" as const,scalarValue: speedMps,valueUnit: "m/s",measurementModel: "SOURCE_KMH_TO_MPS",
     measurementModelVersion: "source-schema-lock",qualityFlags: ["SOURCE_EVENT_TIME_MISSING"],attributes: { rawValue: raw,rawUnit: "km/h" } };
   // Persisted v1 inboxes must still replay with their original identity.
-  const vehicleIdentity = config.mapperVersion === VEHICLE_SPEED_MAPPER_VERSION || config.mapperVersion === DEVICE_ACTOR_MAPPER_VERSION;
+  const vehicleIdentity = config.mapperVersion === VEHICLE_SPEED_MAPPER_VERSION || [DEVICE_ACTOR_MAPPER_VERSION,PROFILED_MAPPER_VERSION].includes(config.mapperVersion);
   const observation = baseObservation(input,config,0,vehicleIdentity
     ? { type: "UGV",id: vehicleId(config) }
     : { type: "Device",id: `device:${config.deviceId}:motion` },
@@ -362,7 +374,7 @@ function mapTargets(input: MapperInput,config: MapperConfig): MappingResult {
       { sourceLocalTargetId: `${config.worldEpoch}:${id}`,trackerSessionId: reconRunIdentity,
         entityBindingStatus: cameraFault ? "CANDIDATE" : "DECLARED",
         qualityFlags: cameraFault ? ["SOURCE_EVENT_TIME_MISSING","SOURCE_TIME_TICKS_UNRESOLVED","CAMERA_FAULT_ACTIVE_AT_INGEST"]
-          : ["SOURCE_EVENT_TIME_MISSING","SOURCE_TIME_TICKS_UNRESOLVED"] });
+          : ["SOURCE_EVENT_TIME_MISSING","SOURCE_TIME_TICKS_UNRESOLVED"] },target);
     observation.assertions = [{ assertionKind: "TARGET_TYPE",label: targetTypes[Number(target.type)] ?? "UNKNOWN",
       basisReference: "MQTT_SOURCE_FIELD:type",inputMeasurementKeys: ["position"] },
     { assertionKind: "TARGET_ROLE",label: String(target.role_name).trim() || "UNKNOWN",basisReference: "MQTT_SOURCE_FIELD:role_name",inputMeasurementKeys: ["position"] },
@@ -388,11 +400,13 @@ function mapException(input: MapperInput,config: MapperConfig): MappingResult {
 function eventFor(input: MapperInput,config: MapperConfig,ordinal: number,taskId: string,type: OperationalEventIngest["eventType"],
   observationId: string,payload: Json): OperationalEventIngest {
   const identity = { sourceKey: config.sourceKey,inboxMessageId: input.messageId,ordinal,mapperVersion: config.mapperVersion,type,taskId,payload };
+  const eventTime=config.mapperVersion===PROFILED_MAPPER_VERSION?profileTime(input.payload,input.topic,input.adapterReceivedAt,config.arrivalUncertaintyMs,config.runtimeProfile).phenomenonTimeEstimate:input.adapterReceivedAt;
   return { dataScopeKey: config.dataScopeKey,sourceAuthority: input.topic,
     sourceEventKey: `mqtt:${config.deviceId}:${encodeURIComponent(input.topic)}:${input.messageId}:${ordinal}`,sourceRevisionNo: 1,
-    eventId: `ugvevt_${sha256(canonicalJson(identity))}`,operationalTaskId: taskId,eventType: type,eventTime: input.adapterReceivedAt,
-    actorReferenceKeys: config.mapperVersion === DEVICE_ACTOR_MAPPER_VERSION ? [config.deviceContext!.actorReferenceKey] : [],targetReferenceKeys: [],payload,provenance: [{ evidenceId: observationId,authority: input.topic,
-      evidenceType: "CANONICAL_OBSERVATION",observedAt: input.adapterReceivedAt }] };
+    eventId: `ugvevt_${sha256(canonicalJson(identity))}`,operationalTaskId: taskId,eventType: type,
+    eventTime,
+    actorReferenceKeys: [DEVICE_ACTOR_MAPPER_VERSION,PROFILED_MAPPER_VERSION].includes(config.mapperVersion) ? [config.deviceContext!.actorReferenceKey] : [],targetReferenceKeys: [],payload,provenance: [{ evidenceId: observationId,authority: input.topic,
+      evidenceType: "CANONICAL_OBSERVATION",observedAt: eventTime }] };
 }
 
 function chassisTransition(prior: number,state: number): OperationalEventIngest["eventType"] | undefined {
@@ -464,13 +478,19 @@ function boundedTargetInfo(targetInfo: Json | undefined): Json {
 
 /** Validate the new version strictly while retaining byte-compatible legacy replay. */
 export function validateMapperDevice(config: MapperConfig): void {
-  if (!["ugv-mqtt-canonical-v1", VEHICLE_SPEED_MAPPER_VERSION, DEVICE_ACTOR_MAPPER_VERSION].includes(config.mapperVersion))
+  if (!["ugv-mqtt-canonical-v1", VEHICLE_SPEED_MAPPER_VERSION, DEVICE_ACTOR_MAPPER_VERSION,PROFILED_MAPPER_VERSION].includes(config.mapperVersion))
     throw Error("UNSUPPORTED_UGV_MAPPER_VERSION");
-  if (config.mapperVersion !== DEVICE_ACTOR_MAPPER_VERSION) return;
+  if (![DEVICE_ACTOR_MAPPER_VERSION,PROFILED_MAPPER_VERSION].includes(config.mapperVersion)) return;
+  if(config.mapperVersion===PROFILED_MAPPER_VERSION){
+    const p=UgvRuntimeProfileSchema.parse(config.runtimeProfile);
+    if(p.dataScopeKey!==config.dataScopeKey||p.sourceKey!==config.sourceKey||p.deviceId!==config.deviceContext?.deviceId||
+      p.worldEpoch!==config.worldEpoch||p.trackerSessionKey!==config.trackerSessionKey||p.analysisSpaceKey!==config.analysisSpaceKey||p.analysisSrid!==config.analysisSrid)
+      throw Error('MAPPER_RUNTIME_PROFILE_CONTEXT_MISMATCH');
+  }
   const context = IngestDeviceContextSchema.parse(config.deviceContext);
   if (context.deviceIdentifier !== config.deviceId || context.dataScopeKey !== config.dataScopeKey)
     throw Error("MAPPER_DEVICE_CONTEXT_MISMATCH");
 }
 function vehicleId(config: MapperConfig): string {
-  return config.mapperVersion === DEVICE_ACTOR_MAPPER_VERSION ? config.deviceContext!.deviceId : `ugv:${config.deviceId}`;
+  return [DEVICE_ACTOR_MAPPER_VERSION,PROFILED_MAPPER_VERSION].includes(config.mapperVersion) ? config.deviceContext!.deviceId : `ugv:${config.deviceId}`;
 }

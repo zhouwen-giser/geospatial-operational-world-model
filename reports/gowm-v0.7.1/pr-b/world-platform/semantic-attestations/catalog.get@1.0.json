@@ -44,18 +44,18 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/provider.ts",
-      "sha256": "4a09ae7ae822e9abb394537a749a8cf66e4f169156f9b29aa69ad6105d12a70f",
+      "sha256": "89ffce52ce36131831cef3f4318e7e2fc24f1fcc5843af033b0ebc46d3a2907c",
       "symbol": "createGroundingCatalogProvider"
     },
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/grounding-catalog-provider/src/repository.ts",
-      "sha256": "04f0f735387adbe448e7bf402171ce144d0bc3982e6c1403dd6d6610e66c4cbf"
+      "sha256": "0bde95080377ef0dec4f36987d17de3bc6489f56b9184c4f735286382257071e"
     },
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/grounding-catalog-provider.test.ts",
-      "sha256": "191fccb726af2759251af310ee94a16e69fd90681a6e730b37b2b7ae2d5f0467"
+      "sha256": "6a8fe26e387b39fb16164a217ca9f1fcd0e9f609105229d282879dc2fca8801f"
     },
     {
       "kind": "SQL_IMPLEMENTATION",

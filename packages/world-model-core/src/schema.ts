@@ -356,6 +356,10 @@ export const EventSubscriptionFilterSchema = z.object({
 });
 
 export const TrackQuerySchema = z.object({
+  source:z.string().min(1).optional(),
+  trackerSessionKey:z.string().min(1).optional(),
+  analysisSpaceKey:z.string().min(1).optional(),
+  profileKey:z.string().min(1).optional(),
   from: TimestampSchema.optional(),
   to: TimestampSchema.optional(),
   limit: z.coerce.number().int().positive().max(100_000).default(10_000)

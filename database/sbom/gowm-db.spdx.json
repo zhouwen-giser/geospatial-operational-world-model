@@ -6,7 +6,10 @@
   "documentNamespace": "https://github.com/zhouwen-giser/geospatial-operational-world-model/sbom/gowm-db-v0.5",
   "creationInfo": {
     "created": "2026-08-24T00:00:00Z",
-    "creators": ["Tool: Codex", "Organization: GOWM+"]
+    "creators": [
+      "Tool: Codex",
+      "Organization: GOWM+"
+    ]
   },
   "packages": [
     {
@@ -17,7 +20,12 @@
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "licenseDeclared": "NOASSERTION",
-      "checksums": [{ "algorithm": "SHA256", "checksumValue": "8409e3897e2b88561bef4374110c3da5f7ff56838a7745315f1c2f111305dd24" }]
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8409e3897e2b88561bef4374110c3da5f7ff56838a7745315f1c2f111305dd24"
+        }
+      ]
     },
     {
       "name": "h3-pg",
@@ -27,7 +35,12 @@
       "filesAnalyzed": false,
       "licenseConcluded": "Apache-2.0",
       "licenseDeclared": "Apache-2.0",
-      "checksums": [{ "algorithm": "SHA256", "checksumValue": "72f48359cd49ffaa38eb22fbaa607d5497e0144a8f94824f826beb0b370c40d8" }]
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "72f48359cd49ffaa38eb22fbaa607d5497e0144a8f94824f826beb0b370c40d8"
+        }
+      ]
     },
     {
       "name": "pgRouting",
@@ -37,12 +50,49 @@
       "filesAnalyzed": false,
       "licenseConcluded": "GPL-2.0-or-later",
       "licenseDeclared": "GPL-2.0-or-later",
-      "checksums": [{ "algorithm": "SHA256", "checksumValue": "21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699" }]
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699"
+        }
+      ]
+    },
+    {
+      "name": "pgvector",
+      "SPDXID": "SPDXRef-Package-Pgvector",
+      "versionInfo": "0.8.6",
+      "downloadLocation": "https://codeload.github.com/pgvector/pgvector/tar.gz/refs/tags/v0.8.6",
+      "filesAnalyzed": false,
+      "licenseConcluded": "PostgreSQL",
+      "licenseDeclared": "PostgreSQL",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "10bf9938906e5d643bbc4a7eea104b6f57ba4898e5b76b20e60484ea1d5a7f8f"
+        }
+      ]
     }
   ],
   "relationships": [
-    { "spdxElementId": "SPDXRef-DOCUMENT", "relationshipType": "DESCRIBES", "relatedSpdxElement": "SPDXRef-Package-MobilityDBBase" },
-    { "spdxElementId": "SPDXRef-DOCUMENT", "relationshipType": "DESCRIBES", "relatedSpdxElement": "SPDXRef-Package-H3PG" },
-    { "spdxElementId": "SPDXRef-DOCUMENT", "relationshipType": "DESCRIBES", "relatedSpdxElement": "SPDXRef-Package-PgRouting" }
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-MobilityDBBase"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-H3PG"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-PgRouting"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-Pgvector"
+    }
   ]
 }

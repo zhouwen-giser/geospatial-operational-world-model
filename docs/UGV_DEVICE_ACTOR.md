@@ -24,7 +24,7 @@ node dist/scripts/business-storage/device-cli.js verify-default
 
 | 环境变量 | 默认值或含义 |
 | --- | --- |
-| `UGV_DATA_SCOPE_KEY` | `airport-sim-ugv-01` |
+| `UGV_DATA_SCOPE_KEY` | `default` |
 | `UGV_DEVICE_NAMESPACE` | `ugv` |
 | `UGV_DEVICE_ID` | 外部设备标识，默认 `ugv`，不是主档 ID |
 | `GOWM_DEVICE_ID` | 初始化时可显式指定已有主档/世界对象 ID；否则复用匹配主档，首次创建使用 `ugv:<外部标识>` |
@@ -109,8 +109,9 @@ Compose 自动顺序：
 
 1. `migrate` 应用正式迁移。
 2. `business-accounts-init` 创建/检查 `ugv_smpp_app`、`ugv_sdar_app` 数据库登录角色。
-3. `ugv-device-init` 依次执行 `init-default` 和 `verify-default`。
-4. 两条命令都成功后，`ugv-mqtt-ingest` 启动并订阅 7 个固定 MQTT 主题；就绪检查要求订阅成功。
+3. 默认 storage 模式先自动安装正式 native 表和 v2 受控 API，再创建账号。
+4. `ugv-device-init` 执行 `init-default`、`verify-default` 及两个实际登录账号的 `runtime-verify`。
+5. 检查全部成功后启动采集，订阅 7 个业务主题及独立 reset_ack 控制主题；就绪检查要求订阅成功。
 
 初始化复用已有主档、世界对象、范围、来源及 pipeline。已有范围的 TEST/SIMULATION
 分类和来源默认分析空间保持不变；只核对来源所属范围以及显式采集分析空间的 SRID。
@@ -125,13 +126,30 @@ Compose 自动顺序：
 替换为实际数据库主机及发布端口。重复安装保留密码，账号已有且密码不一致时明确失败，
 不会自动重置。直接用 Compose 前也必须先执行 `init`，或提供两个合法且不同的密码。
 
-账号仅获得各自固定 schema 的 DML、序列权限及设备配置读取角色，不创建实例库，
-不设置全局默认 device_id。缺失的共享 schema 会创建为空；账号初始化不等于
-SMPP/SDAR 原生表迁移已安装。原生业务表仍由既有 `business-storage/cli.js install`
-管理，SDAR 仍要求管理员提供 public.vector 扩展。未来由同一安装角色创建的表自动
-继承域内授权；若变更迁移管理员，安装完成后重新执行账号初始化以授权既有表。
+账号获得各自固定 schema 的 DML、序列权限、设备配置读取及受控业务 API 执行权限。
+默认 storage 模式由 native 初始化服务安装正式原生表，账号初始化本身不负责表迁移。
+ingest 模式显式跳过 native 安装；ready 模式要求完整服务标识和真实账号验证。
+新数据库镜像提供 public.vector 所需扩展，已有扩展不自动升级或迁移 namespace。
+不创建实例库、不设置全局默认 device_id；保留数据升级使用追加升级命令，不重跑账号初始化。
 真实 service key 未配置时不会生成虚构业务服务绑定；消费者通过统一上下文解析入口
 持久化绑定并显式传入 device_id。
 
 本流程不清空数据、不回填旧事件、不重置 MQTT 持久会话。v2 → v3 的在用持久会话仍须
 按前文先排空旧 inbox/outbox 再切换；该一次性升级操作不能混入每次启动的初始化。
+
+## 2026-10 追加修复交接
+
+核心迁移头现为 089，旧 001–086 与已发布 native/overlay SQL 字节不变。
+新安装默认自动安装正式 `ugv_smpp` / `ugv_sdar` 表和两个独立数据库账号，
+完成主档、七条流及实际账号只读验证后启动采集。缺服务配置为 `NOT_CONFIGURED`，
+`ready` 模式要求完整 SMPP/SDAR 服务身份。
+
+业务接纳和共享关联改用基于 `SESSION_USER` 的受控函数，部署授权由管理员维护；
+运行账号显式携带解析后的 deviceId，`createTarget` 也必须提供 deviceId。
+SDAR canonical MCP 身份校验及 `resolveRemoteTask` 使用新 API，不能用直接读 SMPP 表绕过权限。
+已有范围、密码和绑定不自动改写。其他仓库仍需独立适配，不把本地 fixture 当业务验收。
+
+保留库只执行 `functional-repair-upgrade.js --check` / apply；不运行账号、设备初始化，
+不删除卷、不恢复耗尽请求、不变更关联服务。CORE/TRACKLET/FINALIZATION/HISTORY 和
+30 秒 SQL 预算、真实 gap/PROVISIONAL 以及允许少量丢包与迟到的重置策略保持。
+完整配置、SSE 游标、轨迹状态和回退约束见 [本轮交接](FUNCTIONAL_REPAIR_2026_10.md)。

@@ -1,15 +1,17 @@
 import type pg from "pg";
 import type { MobilityTrajectory, TrajectoryPoint } from "../../world-model-core/src/types.js";
 import { mapTrajectoryPoint } from "./row-mappers.js";
+import type { TrackQuerySchema } from "../../world-model-core/src/schema.js";
+import type { z } from "zod";
 
 export class TrajectoryRepository {
   constructor(private readonly pool: pg.Pool) {}
 
-  async currentPosition(entityId: string): Promise<TrajectoryPoint | undefined> {
+  async currentPosition(entityId: string,dataScopeKey='default'): Promise<TrajectoryPoint | undefined> {
     const result = await this.pool.query(
-      `SELECT * FROM trajectory_point WHERE entity_id = $1
-       ORDER BY observed_at DESC, observation_id DESC LIMIT 1`,
-      [entityId]
+      `SELECT p.* FROM trajectory_point p JOIN world_observation o USING(observation_id) WHERE p.entity_id = $1 AND o.data_scope_key=$2
+       ORDER BY p.observed_at DESC, p.observation_id DESC LIMIT 1`,
+      [entityId,dataScopeKey]
     );
     const row = result.rows[0] as Record<string, unknown> | undefined;
     return row ? mapTrajectoryPoint(row) : undefined;
@@ -35,6 +37,29 @@ export class TrajectoryRepository {
     return result.rows.map((row) => mapTrajectoryPoint(row as Record<string, unknown>));
   }
 
+  async continuousTrack(entityId: string, options: z.infer<typeof TrackQuerySchema>, dataScopeKey: string) {
+    const c=await this.pool.connect();
+    try {
+      await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      await c.query("SELECT set_config('gowm.data_scope_key',$1,true)",[dataScopeKey]);
+      const result=(await c.query('SELECT gowm_history_v1.compatibility_trajectory($1,$2,$3::jsonb) AS result',[dataScopeKey,entityId,JSON.stringify(options)])).rows[0].result;
+      await c.query('COMMIT');
+      const rows=result.points as Record<string,unknown>[];
+      const points=rows.slice(0,options.limit).map(row=>({...mapTrajectoryPoint(row),
+        sequenceKey:`${result.identity?.trackletVersionId}:${row.segment_no}`,
+        measurementId:String(row.measurement_id),timeSolutionId:String(row.time_solution_id)}));
+      const groups=new Map<string,typeof points>();
+      for (const point of points) { const group=groups.get(point.sequenceKey)??[]; group.push(point); groups.set(point.sequenceKey,group); }
+      return { ...result,points,segments:[...groups.values()] };
+    } catch(error) {
+      await c.query('ROLLBACK');
+      const e=error as Error & {statusCode?:number};
+      if (e.message==='TRAJECTORY_SELECTION_AMBIGUOUS') e.statusCode=409;
+      if (e.message==='TRAJECTORY_QUERY_INVALID') e.statusCode=422;
+      throw error;
+    } finally {c.release();}
+  }
+
   async recentTrack(entityId: string, durationMs: number, limit = 10_000): Promise<TrajectoryPoint[]> {
     const result = await this.pool.query(
       `SELECT * FROM trajectory_point
@@ -45,13 +70,13 @@ export class TrajectoryRepository {
     return result.rows.map((row) => mapTrajectoryPoint(row as Record<string, unknown>));
   }
 
-  async mobilityTrajectory(entityId: string, source?: string): Promise<MobilityTrajectory | undefined> {
+  async mobilityTrajectory(entityId: string, source?: string,dataScopeKey='default'): Promise<MobilityTrajectory | undefined> {
     const result = await this.pool.query(
       `SELECT * FROM mobility_trajectory_current
        WHERE (world_object_id=$1 OR source_local_target_id=$1)
-         AND ($2::text IS NULL OR source_key=$2)
+         AND ($2::text IS NULL OR source_key=$2) AND data_scope_key=$3
        ORDER BY end_event_time DESC,tracklet_id LIMIT 1`,
-      [entityId,source ?? null]
+      [entityId,source ?? null,dataScopeKey]
     );
     const row = result.rows[0] as Record<string,unknown> | undefined;
     if (!row) return undefined;

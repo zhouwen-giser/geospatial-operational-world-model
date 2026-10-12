@@ -29,6 +29,7 @@ x-app-environment: &app-environment
   TRACKLET_REBUILD_CONCURRENCY: ${TRACKLET_REBUILD_CONCURRENCY:-1}
   TRACKLET_FINALIZATION_CONCURRENCY: ${TRACKLET_FINALIZATION_CONCURRENCY:-1}
   PROJECTION_POLL_MS: ${PROJECTION_POLL_MS:-250}
+  GOWM_DATA_SCOPE: ${GATEWAY_DATA_SCOPE_CLAIM:-default}
   WORLD_API_COMPATIBILITY_MODE: ${WORLD_API_COMPATIBILITY_MODE:-legacy}
   WORLD_API_COMPATIBILITY_SUNSET: ${WORLD_API_COMPATIBILITY_SUNSET:-}
   WORLD_API_PARITY_ATTESTATIONS_JSON: ${WORLD_API_PARITY_ATTESTATIONS_JSON:-}
@@ -44,7 +45,7 @@ services:
         H3_PG_VERSION: 4.5.0
         PGROUTING_VERSION: 4.0.1
         PGROUTING_SOURCE_SHA256: 21c071983a682e048da28f0f211205a20f27ef3708c0b637b4e6e29994d7d699
-    image: gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1
+    image: gowm-plus-db:18-3.6-mobilitydb-1.3-h3-4.5.0-pgrouting-4.0.1-pgvector-0.8.6
     environment:
       POSTGRES_DB: gowm
       POSTGRES_USER: gowm
@@ -56,7 +57,7 @@ services:
     volumes:
       - gowm-postgres:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "test \"$(head -1 \"$${PGDATA}/postmaster.pid\")\" = 1 && pg_isready -U gowm -d gowm && psql -U gowm -d gowm -Atqc \"SELECT count(*) FROM pg_available_extensions WHERE name IN ('postgis','mobilitydb','h3','h3_postgis','pgrouting')\" | grep -qx 5"]
+      test: ["CMD-SHELL", "test \"$(head -1 \"$${PGDATA}/postmaster.pid\")\" = 1 && pg_isready -U gowm -d gowm && psql -U gowm -d gowm -Atqc \"SELECT count(*) FROM pg_available_extensions WHERE name IN ('postgis','mobilitydb','h3','h3_postgis','pgrouting','vector')\" | grep -qx 6"]
       interval: 3s
       timeout: 3s
       retries: 30
@@ -132,6 +133,20 @@ services:
     security_opt: ["no-new-privileges:true"]
     init: true
 
+  business-storage-init:
+    build: .
+    environment:
+      GOWM_DATABASE_URL: postgresql://gowm:${POSTGRES_PASSWORD:-gowm}@postgres:5432/gowm
+      GOWM_BUSINESS_INSTALL_MODE: ${GOWM_BUSINESS_INSTALL_MODE:-storage}
+      # Explicit fresh-install initializer. Retained upgrades use the narrow upgrade command.
+      GOWM_BOOTSTRAP_CREATE_VECTOR: "true"
+    command: ["node", "dist/scripts/business-storage/bootstrap.js"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+    security_opt: ["no-new-privileges:true"]
+
   business-accounts-init:
     build: .
     environment:
@@ -140,7 +155,7 @@ services:
       SDAR_DB_PASSWORD: ${SDAR_DB_PASSWORD:?run scripts/dev-deploy.sh init first}
     command: ["node", "dist/scripts/business-storage/accounts.js"]
     depends_on:
-      migrate:
+      business-storage-init:
         condition: service_completed_successfully
     restart: "no"
     security_opt: ["no-new-privileges:true"]
@@ -158,12 +173,22 @@ services:
       UGV_MQTT_ENDPOINT_KEY: ${UGV_MQTT_ENDPOINT_KEY:-ugv-default}
       UGV_MQTT_CLIENT_ID_PREFIX: ${UGV_MQTT_CLIENT_ID_PREFIX:-gowm-ugv-ingest}
       UGV_MQTT_CREDENTIAL_REF: ${UGV_MQTT_CREDENTIAL_REF:-}
-      UGV_DATA_SCOPE_KEY: ${UGV_DATA_SCOPE_KEY:-airport-sim-ugv-01}
+      UGV_DATA_SCOPE_KEY: ${UGV_DATA_SCOPE_KEY:-default}
       UGV_SOURCE_KEY: ${UGV_SOURCE_KEY:-ugv-airport-sim-mqtt}
       UGV_PRODUCER_PIPELINE_KEY: ${UGV_PRODUCER_PIPELINE_KEY:-ugv-airport-sim-mqtt:canonical-v1}
       UGV_ANALYSIS_SPACE_KEY: ${UGV_ANALYSIS_SPACE_KEY:-airport-utm48n}
       UGV_ANALYSIS_SRID: ${UGV_ANALYSIS_SRID:-32648}
-    command: ["sh", "-ec", "node dist/scripts/business-storage/device-cli.js init-default && node dist/scripts/business-storage/device-cli.js verify-default"]
+      GATEWAY_DATA_SCOPE_CLAIM: ${GATEWAY_DATA_SCOPE_CLAIM:-default}
+      GOWM_BUSINESS_INSTALL_MODE: ${GOWM_BUSINESS_INSTALL_MODE:-storage}
+      SMPP_SERVICE_KEY: ${SMPP_SERVICE_KEY:-}
+      UGV_PROVIDER_ID: ${UGV_PROVIDER_ID:-}
+      UGV_RESOURCE_ID: ${UGV_RESOURCE_ID:-}
+      SDAR_SERVICE_KEY: ${SDAR_SERVICE_KEY:-}
+      SDAR_MCP_SERVER_ID: ${SDAR_MCP_SERVER_ID:-}
+      SDAR_AGENT_PROFILE_ID: ${SDAR_AGENT_PROFILE_ID:-}
+      SMPP_DB_PASSWORD: ${SMPP_DB_PASSWORD:?run scripts/dev-deploy.sh init first}
+      SDAR_DB_PASSWORD: ${SDAR_DB_PASSWORD:?run scripts/dev-deploy.sh init first}
+    command: ["sh", "-ec", "node dist/scripts/business-storage/device-cli.js init-default && node dist/scripts/business-storage/device-cli.js verify-default && node dist/scripts/business-storage/runtime-verify.js"]
     depends_on:
       business-accounts-init:
         condition: service_completed_successfully
@@ -179,6 +204,7 @@ services:
       SERVICE_REVISION: ${SERVICE_REVISION:-dev}
       UGV_MQTT_URL: ${UGV_MQTT_URL:-}
       UGV_MQTT_CLIENT_ID: ${UGV_MQTT_CLIENT_ID:-gowm-ugv-ingest-airport-01}
+      UGV_INGEST_ADMIN_TOKEN_FILE: ${UGV_INGEST_ADMIN_TOKEN_CONTAINER_FILE:-}
       UGV_MQTT_USERNAME: ${UGV_MQTT_USERNAME:-}
       UGV_MQTT_PASSWORD_FILE: ${UGV_MQTT_PASSWORD_CONTAINER_FILE:-}
       UGV_MQTT_CA_FILE: ${UGV_MQTT_CA_CONTAINER_FILE:-}
@@ -200,7 +226,8 @@ services:
       UGV_DEVICE_ID: ${UGV_DEVICE_ID:-ugv}
       UGV_DEVICE_NAMESPACE: ${UGV_DEVICE_NAMESPACE:-ugv}
       UGV_MQTT_ENDPOINT_KEY: ${UGV_MQTT_ENDPOINT_KEY:-ugv-default}
-      UGV_DATA_SCOPE_KEY: ${UGV_DATA_SCOPE_KEY:-airport-sim-ugv-01}
+      UGV_DATA_SCOPE_KEY: ${UGV_DATA_SCOPE_KEY:-default}
+      UGV_RUNTIME_PROFILE_REQUIRED: ${UGV_RUNTIME_PROFILE_REQUIRED:-false}
       UGV_ORIGIN_KIND: ${UGV_ORIGIN_KIND:-SIMULATION}
       UGV_SOURCE_KEY: ${UGV_SOURCE_KEY:-ugv-airport-sim-mqtt}
       UGV_PRODUCER_PIPELINE_KEY: ${UGV_PRODUCER_PIPELINE_KEY:-ugv-airport-sim-mqtt:canonical-v1}

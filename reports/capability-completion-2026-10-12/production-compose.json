@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "gate": "EFFECTIVE_PRODUCTION_COMPOSE",
+  "publishedPorts": [
+    {
+      "name": "mqtt",
+      "target": 8883,
+      "published": "8883",
+      "host": "127.0.0.1"
+    },
+    {
+      "name": "tls-edge",
+      "target": 8443,
+      "published": "8443",
+      "host": "127.0.0.1"
+    }
+  ],
+  "volumeIdentitiesPreserved": true,
+  "credentialMountIsolation": true,
+  "deviceBrokerEgress": "SEPARATE_NETWORK_NO_PUBLISHED_PORT",
+  "automaticInitialization": "NOT_EXECUTED"
+}

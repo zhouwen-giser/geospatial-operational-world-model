@@ -1,0 +1,1000 @@
+{
+  "lockVersion": "1.0",
+  "baseline": "506315b5a60e5f5fe405f020f61cec24be0be47d",
+  "migrationHead": 86,
+  "packageSha256": "62fd9970d399039df7c7c138e8534f73c294e33836f629f64e56da3a4a91eb81",
+  "migrations": {
+    "001_initial_schema.sql": "9491075269f48755a83787fa3649d0b12c1ed03eda1e0925ef8a9ce484cf427e",
+    "002_views_and_functions.sql": "56eb394285aca3d55f67ddd951f91f2c1035abda458edfa22b0ade3836611297",
+    "003_situation_observer.sql": "a7bfcaa6fd984395f5115ca9b6c43cb2fcdfb18c6497e1c68e2a07a0bb21283d",
+    "004_geography_indexes.sql": "20e9db17e91a0f73f4d0a14dec1eafa65751bab8532e784226d8d2c123e9d3c9",
+    "005_situation_rank_indexes.sql": "ccbe4f30f8990f800bc5a32abb8ef56ecf75281abeaa910b3b8a43f4f8769ebc",
+    "006_observation_altitude.sql": "366421f5f76e117838e8116f99644ffe3a86584a58abf84587c6a8b13b1a8a71",
+    "007_active_relation_uniqueness.sql": "a607ce9013fa86c842cf645edcd28d8e56d5f484794eba4dfc74afea8b42ae85",
+    "008_h3_pg.sql": "2887028d9cd389119df2be650dcbb9f4700c34826dd74d27b44f7fe3de0bf914",
+    "009_gowm_plus_canonical_evidence_and_mobility.sql": "1d428971cad16f7ed602a39594c5835736044744b8a8b46a18e641e6d2d5435c",
+    "010_unified_stas_contracts_roles_and_coverage.sql": "e61a99392a713b6490aedb5c4ef89420cf056c8fbc278680eec06f5d2ed782b8",
+    "011_capability_gateway_persistence.sql": "823d66f46e4a405a71d10e76ba95c849283811f65e09514d548f8a915ea8a35f",
+    "012_gowm_spatial_v1_read_contract.sql": "a04f0c58ce5f5f6c4cdc850e18ef42f7da78f06ed56cb276d21774fba28afe10",
+    "013_world_query_runtime_persistence.sql": "16bb9e5f6c294c3d2b7eb6925e61d0d6c592b8dc3ec9a25293c10f4e4f244f95",
+    "014_capability_runtime_service_principals.sql": "9c66fd567e3755782e8a2db2b4d60e2e4e8790fc9d3729dd0cc74b82fdf8aaf9",
+    "015_world_query_claim_runtime_fix.sql": "37b5926f0d229828e8c5bbd1d2bfa6adf616e00c35335107aa340d861948c5c0",
+    "016_capability_port_path_contract_fix.sql": "2471844bac96d08c242844dc892d8f84c8932ad041aa902ef6a00f780c6c268e",
+    "017_reference_identity_catalog.sql": "111b776a60028b85eac425fcf610b6c58ae6b12b66b01ac6dad70a3ec6ec7d49",
+    "018_reference_resolution_candidate_dedup.sql": "d610320e4483e4223f13dedb8c1893b2f6241602426f87421141b556ed2464f2",
+    "019_dataset_layer_feature_catalog.sql": "831cae1fa3b407ea55fbe2a18d14311eff8ecda8d4e5840f4cd7a8e291b241dd",
+    "020_grounding_catalog_provider_runtime.sql": "035cf9c52b305d4af69075646f87b8408899784e10e3aa33ff6db3c4088b738b",
+    "021_reference_resolution_exact_match_precedence.sql": "764767608e8f83be21a2c842a8a197ab95335cd0b238ca397ee40b37cbd17100",
+    "022_derived_result_registry.sql": "ae936cceaa7a3904becdb0d5dd47954715db67a6d5de773f37fe7afd5499cc5c",
+    "023_world_evidence_read_contract.sql": "600841b9bc0be3f77cbb0b39ffd8bee03059d457297f6fc267dbc8a581d8c197",
+    "024_grounding_replay_audit.sql": "0e9fff6d6429f399c04d71488b5812b97f45050663a1f0c09f8a8800f036e759",
+    "025_external_correlation_claims.sql": "643b0b5edcc522addee01362fcb5148321cbbe7efab56eafd41e9376d3b1b415",
+    "026_operational_event_store.sql": "66588790112e8f050046d7c050f29afed26e5bcb69731b089690ea2f2bd00ab6",
+    "027_operational_task_projection.sql": "b64eacad52b7f0df81aaeeec98f1d5ab8f00ad6ce73fecf72987e17c03bf4689",
+    "028_operational_correlation_resolver.sql": "05b1426beae97c43b3dc30029e457f528ea0d0cd2d202b6fa9d00cf765b4938d",
+    "029_operational_reality_read_contract.sql": "e0d8b74be37a278f2566a8baa4e3483726b45e4e40bd36ad2eb098308601fbef",
+    "030_external_predicate_evaluation.sql": "4e144bdf8b256a45f7fa4b89d8bdf37091492b5e19dca04f5f8b82b59a47ea9e",
+    "031_operational_observability.sql": "2f429676ee3ae9eda6d28be8adeb507019a509f890441814d458a2f1d13ad6ac",
+    "032_operational_analysis_findings_replay.sql": "c4af9f2797ecf2a278dd086bfefca704153591e3f96b240a286e36bd9b84f412",
+    "033_network_graph_catalog.sql": "b8dcbb56e701691ab82e9913a0ac107d0ff420c2876a2fc5d6f515ec4a37da37",
+    "034_network_topology.sql": "69431212196940a83aec825f59e2d6961ef2971a4c4848b71afa85769fbc0478",
+    "035_network_turns_and_bindings.sql": "d4f1affff70ddb2b3d6749a516df299589cc090e80ba084a47cf73779bd2d0b9",
+    "036_network_profiles_and_costs.sql": "25c7fadc38d48b97b79911e419cf51711c08b6128425a77f7cb631941c7c0c03",
+    "037_network_conditions.sql": "f2c749a845422650ca6b5dea8078773bd38dd3f7cf2f14ad3433ea0cf47dd186",
+    "038_network_build_and_activation.sql": "faf42140f701d134fb7a3f54637ee2565513116f515fde5b9c79dd414fd3fc14",
+    "039_gowm_network_v1_read_contract.sql": "06fc9e64e9ba0909d71ad8e5d0c636bb163d39484a01b350036c13eb0098b0f7",
+    "040_network_builder_schema_usage.sql": "5f2eef142e58a23d94d02bfcd1dfda72d5ba42a916ec6df801d565d54df1d84a",
+    "041_network_builder_catalog_validation_security.sql": "666611f8c5f3ef8df40fb49b8d6c72e91b564caa0e2ac88e80209a496953452f",
+    "042_network_profile_condition_contract_alignment.sql": "52efb401b53f9dc4a1f3524d63438e81d10d18a997072d510f03aaf43ea4b2fd",
+    "043_network_atomic_activation_management.sql": "5720d93ad16452fde584483cd1f2a1107576ab7423e1ea95b3483ee523826079",
+    "044_network_arc_heading_read_contract.sql": "c2acdee71ea3f94aa70e85090a7da05d72cb6177b31e5f403da5241199566c09",
+    "045_route_runtime.sql": "78d928165514f5a3c7de4a2fbb2fca3b2310b70887182dcb44da78ae3ad8ce73",
+    "046_route_result_publication.sql": "904903c48dede62dc88fc12dd114e0edf5778b8185a3093dbea6962ff8eecec1",
+    "047_network_avoid_area_read_contract.sql": "3fac38b9a459c5cf5c0fb3d4d5646b29c091557b593d4867b0d22e0f85e71b16",
+    "048_coverage_planner_schema.sql": "56dd87e2f487cef0560f022f222ba8584c2a15013bf4cb0b6ae799e05a61f8a9",
+    "049_coverage_planner_controlled_runtime.sql": "0f7e8b76ae1d4960b9d7acd56a15e64f02470ca0c2e554fec073e212743f62d9",
+    "050_network_coverage_selection_read_contract.sql": "cf630992f3bfd96604ee6bdb6b2261a6a154eb223a729cfefa05d99e8a4e68bb",
+    "051_coverage_async_job_lifecycle.sql": "92b4ca8532607259e08874410f7d94a2b8c4e5e1dd72aaa3c0399f68ecfb2aa4",
+    "052_coverage_gateway_result_integration.sql": "a9c74290219ed7fd1846e96cbe22d812060a3c3d207cf346d9ec50a82fcf744a",
+    "053_fix_coverage_request_owned_hash_identity.sql": "1c17d0abc4c216bedada36bae20ea3932a5759b9967da07208a7686f225a0ea8",
+    "054_coverage_attempt_generation_reclaim.sql": "b2911875aeed9166323072af587482dab24f32aac4cb12db378eb013703aeb48",
+    "055_network_boundary_crossing_read_contract.sql": "71573f4e82ede782a2899e84f2c10e8f1fc6c6b179ee1fae088a0bd794a8687d",
+    "056_coverage_artifact_and_geojson_read_contract.sql": "d508c29565ffb07c9eb858faa50ccbe020e6cc0314f1023f7a0c7540f1ba5705",
+    "057_platform_validation_snapshot_contract.sql": "1cd00d472a888dcb17571eb0cae388e212dc671839df1e0e1880dda3c0622255",
+    "058_platform_validation_authority.sql": "00b5057dc641f58b4477aab1ef874d9a1590f4067210feca3b5dff4feceed98e",
+    "059_coverage_area_reference_read_contract.sql": "eb95dd08ef93cf18e3e85fc4353fc851ace004d1e4689b4194bb9537a7797d15",
+    "060_route_runtime_login_transaction_mode.sql": "c7e4a2d45324ebcf0e5e5a04c86a825be191a3b99c664730de57f7b9c5a27ccb",
+    "061_grounding_identity_and_query_snapshot.sql": "8aaf06303a77bd5285d999c65d87f1615d8f3b2efa2c6cfa1a2e7342b1f27281",
+    "062_reference_geometry_composability.sql": "7b8a606e3258baa2f3e68c88e81abacb289615cf960a1af20c8a9f4c2074539c",
+    "063_effective_query_snapshot.sql": "9f1b8f3a0d10052849c2d2aff224194c543baecfa7200a6637f41ed8a6e4e204",
+    "064_analysis_resource_inputs.sql": "7288bbf0b6eeb2c43eac8f28469ac06fe9b4fb7f080d24434614b2bb5d99f224",
+    "065_task_execution_intervals.sql": "b6f04d6e41ed2e962ee40b3f7b113792b8b82cef2e32eb20f4182c66e0582b1a",
+    "066_tracklet_finalization_runtime.sql": "c4dfc18608595bdc28fced597009801fcd54ab3a16b3dd0e5a6872381f4a440e",
+    "067_historical_trajectory_contract.sql": "02c268c947f4b0b181682b46d327cb80cd2de60ab634e00f587c0f0078736256",
+    "068_effective_snapshot_consistency_downgrade.sql": "9fd38004c246640980ad2c7fa6bb30e72e8f2cab95cb921ca2fb3494116760fd",
+    "069_task_execution_event_set_read_contract.sql": "604503eb0c7be40742112f88d041441bad97d5880cd39453ed84f021c6e9ce81",
+    "070_ugv_mqtt_ingest_runtime.sql": "c02aaba3743b6e6db975b8c383b5d02693ec51f36d60a0b307e8e42668e39b55",
+    "071_historical_evidence_read_contract.sql": "2847173a8abef909e2cd861b3f2b486aae71f4a7e9264b7549fe9f7b16289d81",
+    "072_unknown_watermark_bootstrap.sql": "1f3fbd6438ee3e6353863ee1646fce276b6af332745ff77b0c61427b9133d38a",
+    "073_historical_evidence_projection.sql": "8508c8ac425d6c2d32bcf5f529fb76c4aca77514bcf19f9360a176a5894b0cee",
+    "074_history_auto_scheduler.sql": "7a675fac157d9bc72b2e1197df8c042a7526da5db42251bcaaeacc455524f86a",
+    "075_binding_snapshot_lookup.sql": "a464bbe785296159f000cc258a0221fe0e179374525b16128e4cc9ddc8b411db",
+    "076_operational_provider_read_closure.sql": "f63f56dd3b5b6686d6423d7f920d509ee6ab0140b9688ff943e842b96e85e938",
+    "077_world_object_catalog_projection.sql": "9d08d1ddc5e9e2291e005b8f358bd4ddfb88b9b92523fcd7c2f4532a3c3e21d7",
+    "078_device_shared_business_storage.sql": "efcc7a866c9777394dc5cd9f256d8a786385881c25e513a3310efb71454f88bc",
+    "079_device_context_reader.sql": "a8b81bd3e401bf3eae876d50e97d925949a62c748124559339368e468bb47615",
+    "080_historical_snapshot_resource_identity.sql": "2e6dad5f1aff683a4e43561a50b1bb244df5cbebc78097847ab7e72495f160d4",
+    "081_historical_exact_interval_reads.sql": "3198cd79c84d2cfc6a2787f61b9e8189c7df54ed311cf5fe02d3ebfb3d26e711",
+    "082_historical_projection_lease_renewal.sql": "52eede796db49c0b3aea64993ccd65e1ab53568ec40ed5171f9048d929a62902",
+    "083_reset_ack_watermarks.sql": "c3b6e3f41be4aaf17ec47c27f9ada46918f6ddc40c25eff95530c26c92a0e1d6",
+    "084_operational_task_reference_search.sql": "fb204e44d9d1182a6951db99426a64049f45bf7573f614c3a5b7c9578be50b5f",
+    "085_tracklet_dispatch_and_execution.sql": "0b4166eb7cd0256f7937693b04fbd085bee98fddf10b82a0600af690a1287f78",
+    "086_historical_request_evaluation.sql": "9b6fc748b2d263fb4c78820302d29aac9680f6cfc38337004af331f36966b1f7"
+  },
+  "nativeSql": [
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0001_sdar_v1_2_2_baseline.sql",
+      "sha256": "ee68cc6dc6122feb386871246c06d110bd4316910ada709dcfa4da283b9ac1c7"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0108_v123_cognitive_skeleton.up.sql",
+      "sha256": "f2c4eac257c7fb04f5c042d4234952923fd2deb6fb7b2de1f32d930296f1fdef"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0109_v123_capability_summary.up.sql",
+      "sha256": "9e5f15e3b777088dd5de1957da85d01d33f3a4829123f07968636a1ebe89e332"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0110_v123_capability_card.up.sql",
+      "sha256": "f8a084840b01b08a2b7e03f32f75fb226b1e90e681dfeb17829a6cb85dff0031"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0111_v123_task_understanding.up.sql",
+      "sha256": "6cb1e43cf3a307d874401aacf14fd0352421f68c3a95315eca4f1b2667c4b935"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0112_v123_interactive_goal.up.sql",
+      "sha256": "907590c3f10bb0f43dec591cc14757e697a0c11d041527c5088c234a3c190476"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0113_v123_interactive_planning.up.sql",
+      "sha256": "8f0fc225f323f6b6a588081e9e5475bc4e8ab324fcf8ca8965adfdc1fe6f6477"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0114_v123_planning_corrections.up.sql",
+      "sha256": "beaa2ae88952348650c849814f7fd7a6fe2597748f00e4f2ab356a1afdc9293a"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0115_v123_experience_episode.up.sql",
+      "sha256": "6ec5ccfb8d6e9aa7075448a19527d59c361e4d29a8e9469f371c6cff303fc8d8"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0116_v123_experience_observation.up.sql",
+      "sha256": "5440b1db9b51cacbb9a40c1dca520c6b006750af4a8f803eb060f31d4faccbfa"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0117_v123_experience_reflection.up.sql",
+      "sha256": "eeac8c3bf9a2dce92261e1f9970bd03f1b6637bda01cfeb8c1e702997a6864df"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0118_v123_task_type_induction.up.sql",
+      "sha256": "f388b8063ea69875e74bbe54a9f1be55fe9ef645d9748fdffc98a09f2f2ada3d"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0119_v123_capability_pattern_induction.up.sql",
+      "sha256": "3e143cd04d39763cc8c7624a568a1080cc2296bdd4669be72a0349b1c98b7f05"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0120_v123_knowledge_promotion.up.sql",
+      "sha256": "0aa5af69d5e3cace0b11a0ccf678d9bd8605f3798966430c3a3162bd54b68643"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0121_v123_knowledge_usage.up.sql",
+      "sha256": "066a085833d107e69da12c53b3387e2d0988e30977a06ab50f186059d7463a00"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0122_v123_experience_enriched_planning.up.sql",
+      "sha256": "bf190d20a4ca02d0f70d590af236ea556d11ee26feb06dcb644389b6c5dc1873"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0123_v123_cognitive_management_audit.up.sql",
+      "sha256": "e20aed2d7dc451ca73cc2a0137b31c44fefad2b6b65997fadac9b3cef5f0ad65"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0124_v123_replay_shadow_evidence.up.sql",
+      "sha256": "56f920b1c76dc2f7a17864788d7822b06fd978db1efbf1d8b26f848b477d8fa7"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0125_v13_artifact_authority.up.sql",
+      "sha256": "be4adead9cfbfffa2d192484af2e7b7d6c50c6a5d3200435bfe72c4f49551d2e"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0126_v13_experience_compilation.up.sql",
+      "sha256": "a861a87a6fa9e3f9bb81b616e463eba3fe247c3e1110d179b67a6e0283958239"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0127_v13_artifact_candidate_generation.up.sql",
+      "sha256": "72a04fa29e6be9146a5937a20d885534f7cc4e043895efbeeb506cc23a4c9a22"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0128_v13_candidate_generation_runtime.up.sql",
+      "sha256": "3f0afa552f307b3ced579bcf5f91f0924f6da8d04f08c212ed5444394fc12cda"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0129_v13_artifact_replay_validation.up.sql",
+      "sha256": "988207ee80cb0ca26bca0093d6d424fd097dc8546f071f2d6c114837f02c61dc"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0130_v13_artifact_shadow_governance.up.sql",
+      "sha256": "090ae67ca06546fc3aa88cd20e4f77d17378111d4290929a705b46b43563d628"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0131_v13_artifact_retrieval_audit.up.sql",
+      "sha256": "1d2c504783dfe78b157660f25d7b4bd86ed32c8915096c0dfeebe36d513a6796"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0132_v13_fast_gateway.up.sql",
+      "sha256": "9348ed528e8c0965b18bb4bca7f599bee91dd70e9c8190270e447ea722f47e66"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0133_v13_case_model_runtime.up.sql",
+      "sha256": "668481559734e14374446733b5a54da6388fc195bcff05be246ff4f8d0cd6b66"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0134_v13_artifact_management_projection.up.sql",
+      "sha256": "6acd63cd8e665cf462d58e4d852a3b8281d89801e5603ac343955221e54316a6"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0135_v14_runtime_configuration_lkg.up.sql",
+      "sha256": "474e86e844ee0b1f8983eebac81268ea24746bf4526e5540e43728ca56199e55"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0136_v14_model_control_governance.up.sql",
+      "sha256": "85913a937f7c2b6f638e5fc2eda50c17b3bf77a80b01621dba0377eac54f9803"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0137_v14_capability_readiness.up.sql",
+      "sha256": "ff72efc787092f540df37dca5c72c5f4c564817eff7ad50f406c5e94aeb9ebf6"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0138_v14_runtime_agent_card.up.sql",
+      "sha256": "30a4ca23577d43e33c496018f4eaaa3c7bb608143a0aa8bf72fec1b4d4700ac9"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0139_v14_task_capability_binding.up.sql",
+      "sha256": "e377f887827429579b39bea15636679f76563d619a29597b5cbb06c1e2722fa4"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0140_v14_skill_version_governance.up.sql",
+      "sha256": "1bf12fa6c70a395fdf14ae57ec33ddf299167c4ac25c3a6681c03047061a5ce4"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0141_v14_skill_import_idempotency.up.sql",
+      "sha256": "b1bcf3bc1d4b50fcc2e825deb52928406f43e3e97d250044cc53f0a2cd572f3b"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0142_v14_telemetry_export.up.sql",
+      "sha256": "4b62b9c39cfde3c7b751a78997825dd8bd7779f3e36f9a0df6175c87714ccc4a"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0143_v14_node_event_projection.up.sql",
+      "sha256": "0e022d3c5a27617ed5dc6f56eb7d67831f25b8de96253b238d7962edda2b28dd"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0144_v14_canonical_evidence.up.sql",
+      "sha256": "1d5a42b92df65bdc24c90f4aa9cc68ae1fc864f224ea0d08203c0350764bdce0"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0145_v14_artifact_match_exact_version.up.sql",
+      "sha256": "32c76d7d4ac62684f8f8396503924f3786eb871b37eb4d494194c8914db5326c"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0146_v14_evidence_export_observation_ledger.up.sql",
+      "sha256": "55fee1b16b440e40d13d462584192d4737ee21ebff677bd80dec1687e45bbad7"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0147_v14_evidence_coverage_authority.up.sql",
+      "sha256": "c23d3b95ee147a6c8e332c685f27ddbcea14d6bc7cdac73da1b9c2ebec5669f5"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0148_v14_evidence_operations_recovery.up.sql",
+      "sha256": "ec8c6a159d3bb417cd67600e67d85a02d641e3fa6d9d5d0bb8df24b2eae103e7"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0149_v14_deterministic_capability_execution_action.up.sql",
+      "sha256": "9a87e3f3d001f2482f6540984159d43d965e2daee283e841e660aaffa8d1675c"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0150_v14_cognitive_management_action_lease_recovery.up.sql",
+      "sha256": "97c7750502ce138240bdeb0dfbf0e070dd048935c30b57e887bfa9b0e398c97d"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0151_v14_capability_attempt_evidence_lineage.up.sql",
+      "sha256": "6b2c974639bfa56988f188e62b21a35f1cc5326a37eb70d72e8dba784a735db3"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0152_v14_mcp_execution_semantics_authority_repair.up.sql",
+      "sha256": "b3514d0e2b3ecddd53412d0991105853f7dfa4fbf8ecfdb17485c2dda5ef1e44"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0153_v14_initial_model_prompts.up.sql",
+      "sha256": "3ce918d939890923b291f3c63105e12bcfe6cb9c257fbc71ac98cf21249f3653"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0154_v14_initial_model_prompt_pointer_repair.up.sql",
+      "sha256": "c9fac930b8178f88ebc9a4c22458fdc604432d2be5111d9e1815cbb29b57a10b"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0155_v14_model_operation_routes.up.sql",
+      "sha256": "0b1d8acfcddc288ec4607c440710265a7c547f2f57dbf3e8ee85280577e95d53"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0156_v14_runtime_task_control_actions.up.sql",
+      "sha256": "a932198065ddd71b66d230ac513dbcdfd1269c80ef488ad9420397e35ef67da3"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0157_v14_governed_control_confirmation.up.sql",
+      "sha256": "6941ff1915b89cdca481af47546fbab815e1d0b54046bf74e7014167d3f55750"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0158_v14_governed_control_dispatch_consumption.up.sql",
+      "sha256": "31b732220b24fcbc9361d5ed8bf28613c69dc1d348a64c56b4090e84241ca91b"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0159_v14_remote_task_admission_recovery.up.sql",
+      "sha256": "75bda01e1935347eccbb66f5ca43c8ecff2c9aca1ebfb34ab95c635302a0be73"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0160_v14_remote_task_authority_snapshot.up.sql",
+      "sha256": "9797d5cb13f97c982db6b1ec18626594109c29eb33d86da82baecba8427f23af"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0161_v14_remote_task_cancellation_authority.up.sql",
+      "sha256": "417a56d1b3909fa36d2d90eb195c35e5affb826b72b111b3f11ada3dc78a3edb"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0162_v14_agent_task_revision_authority.up.sql",
+      "sha256": "dd60403b8abde4fe02a037061602d461b0b8009b44a3fd1b4087613738155b57"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0163_v14_initial_model_prompt_seed_repair.up.sql",
+      "sha256": "47a146379fb0730208f4c580b617e59db5dd10bf090cec0bf3b97fe3088b4c07"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0164_v14_governed_control_catalog_lineage.up.sql",
+      "sha256": "126ceda417eef24b51d612c0172ca8ed7de07356dce1f953136161ef73da7463"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0165_v14_remote_task_catalog_lineage.up.sql",
+      "sha256": "4afcd381404ff6190bb1b8a2a77fd078576ce0c25cf49b74c2d867ed17f2973e"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0166_v14_failed_remote_continuation_quarantine.up.sql",
+      "sha256": "cb33ad15f3d73d235954fe10fc65f18ad7dd904f14c6953cec750ffed50d414f"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0167_v14_task_capability_initial_plan_binding.up.sql",
+      "sha256": "4648de9911579914e0573e0f6d78fedd85fdecaa06c57cec35f1b9d8676760de"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0168_v14_failed_terminal_callback_quarantine.up.sql",
+      "sha256": "13d3a6654b303b8ca3880a879717d7983212b45ccb1a29a337bafac772586c64"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0169_v14_postfix_terminal_callback_quarantine.up.sql",
+      "sha256": "614b0753a4e37e2925242048da4e14a524a944c8affdf8b1a1d40db9daec0e6d"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0170_v14_terminal_guard_callback_quarantine.up.sql",
+      "sha256": "863a8815c86f22438d71c13a24f0875dcf86661d42608214200b3b291f1ddd17"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0171_v14_claimed_terminal_guard_quarantine.up.sql",
+      "sha256": "c8f72d9cda6157a6429ed00970f38b81c514e81771f1acbdd5da3786c8bb8430"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0172_v14_initial_task_admission.up.sql",
+      "sha256": "a1aee006b336cb9922d5b23cd0e7b8e1b3c379e67575fd13727d11801fe4d2cb"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0173_remote_task_accepted_substate.up.sql",
+      "sha256": "ea332d99ae33ccca77a7af72d6b2094bc53b3652411157f2ab2c24559da9447a"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0174_v14_evidence_delivery_origin.up.sql",
+      "sha256": "dde0f5552c1a1e04d46a729dfd82b51cfd204bdced949b4754278fbd088d9b75"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0175_v14_mcp_task_consumer_sync.up.sql",
+      "sha256": "a2510a8bd44525128af7bcdbf750edd816ac454e80536e6618b2512769a72953"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0176_v14_control_authority_kind.up.sql",
+      "sha256": "c5f83da17ec21a759cbd6ebd8ee38e45b9b12081d658f9a959705e3d8202ccee"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0177_v14_control_authority_kind_default.up.sql",
+      "sha256": "8806e28da2db96a425e5a3d9848b9e8596cd2e1bca1e81bd457e875d8797e507"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0178_v14_development_isolated_demo.up.sql",
+      "sha256": "fcb4e335b710105e5bdae39d722bd3292eeedfdd5104d671ccfbb0377d0b549d"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0179_v14_workflow_scoped_continuation.up.sql",
+      "sha256": "6fa5010e492a98ebe9a40a1b69e56e1549a7c612ef8a8c441f97490ee5dfb157"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0180_v14_workflow_child_call.up.sql",
+      "sha256": "92c738373295cb550284577271c09162126a7a09b18b6a57b5e0774aa2f10f99"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0181_v14_temporary_skill_terminal.up.sql",
+      "sha256": "c9abca0fb67f34fd5c1b090f6cbd34f4300140cf534a9a731715084d99672a4f"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0182_v14_configured_task_type.up.sql",
+      "sha256": "e4eaf0cc1a404d2443f792adb361284fa9e142a269a5ba1f6276639d51e2454e"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_sdar/SDAR_RUNTIME/0183_v14_capability_admission_receipt.up.sql",
+      "sha256": "cca48496974552a273710d42ed9bc2dcca29a1bb1d825278033863016ccaafb9"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/001_operation_snapshot.sql",
+      "sha256": "e072e7404f9e5cce70e29473c998fa144ffd2ec069ac1c88b1b60acbfdfe9ea3"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/002_task_lifecycle.sql",
+      "sha256": "c5ef4e3f56ba6d40cd7af304235afcc6c7dfb9b6579e8fe047994e37eea483c5"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/003_idempotency.sql",
+      "sha256": "b69cb4500a91c5966d44b5cf932dd1ca8bfacedcada7c2b295a8a603a14d5d86"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/004_durable_timing.sql",
+      "sha256": "bb0f47818f1d1e1360773ce3253526411b0b805d1359583e7cb0449c8a575bce"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/005_task_controls.sql",
+      "sha256": "aa23d46fe7799d7ae8b9519b0659f4530e16a443a964ed71977eabbeaad0c1ea"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/006_recovery_hardening.sql",
+      "sha256": "bbc8941cb6aecdf1c3878a627a365b9101fa668950a4040d6540913269a2edf0"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/007_durable_command_dispatch.sql",
+      "sha256": "ab72a19494f1a93ba7c215e5495d5a590a469a32b0248a6d732fc6bd8ba98256"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/008_start_window_and_schedule_retry.sql",
+      "sha256": "5f9cf03127d757531cb2f2cdec20f3d05591be1de12d21e53b7bd4e128db4e98"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/009_observation_revision_and_outbox_keys.sql",
+      "sha256": "547657afa381bb922e6c3f51450bd47ed596a6d356090b558368b750d213bf8b"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/010_adapter_execution_identity.sql",
+      "sha256": "5038df26dd54fd12c6af76af8e03dea3faed764aa2e442ea23cef8228b571873"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/011_task_handle_retention.sql",
+      "sha256": "d594b28caffe0559127bb335d44023c0e7cd372c752a2c7359438a530b486b8d"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/012_idempotency_claim_lease.sql",
+      "sha256": "31b4618015c7d62253a3056090a15eb235330392c3be4788f03084d7572680fc"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/013_single_claimed_command.sql",
+      "sha256": "31fe5dceff0a6787a24d019734933ff3f77c69e1afa64e65bc30e9caef12ed2d"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/014_observation_pagination.sql",
+      "sha256": "20382831aff618844ed0be13c8cdc9212569d17de4e53138199d2787a67151b4"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/014_start_confirmation_watchdog.sql",
+      "sha256": "8834ea465b26adb348d1fe94e9ed7e6b1ac5054fffd6690ee0c6164e015f6a6a"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/015_recovery_backoff.sql",
+      "sha256": "539d07ef95a69e162248d2b987f437c7c623fd189a57acdf8245cd304d200531"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/016_command_claim_lease_consistency.sql",
+      "sha256": "c55bb9d77a343131bef36f33a302a2df15f3b656b08af3658827f1cd631a5c04"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/017_provider_ops_audit_delivery.sql",
+      "sha256": "17906985de47cfcfb1864d3be9ef8bdf4e38c5a5ba7af2a1d05c69987557730f"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/018_runtime_trace_context.sql",
+      "sha256": "6b1a086de1bcccffb1e52826bd11c46208ee2c296fff4d30dea91eaf0fd97efc"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/019_runtime_revision.sql",
+      "sha256": "f7c98339c82067c8fb43e6a0f8d68729544e6f08d47cf3a045e96556432484b7"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/020_frozen_protocol_mrtr.sql",
+      "sha256": "8b942bbb776395d94d0006b151996d5defa5882f337c794f5fa5d674e8f64bce"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/021_frozen_reservation_ref.sql",
+      "sha256": "7290b4017317b9fbe4ad69ef25e79f9ac3af9aa38e910c376c88a9c4623fc10b"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/022_mrtr_response_inbox.sql",
+      "sha256": "1a2531a461838629cc9758be4b167d518daa5d118ff96ee1cae4a05e483791ba"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/023_business_events_profile_v1.sql",
+      "sha256": "bf548b0cf650670d49fe2fbfc80c2fa18db03b14f72f89011029faccdbcd387f"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/024_accepted_task_substate.sql",
+      "sha256": "7ceebaa9e14490d5b83f97bca5e8cbbfd1ab90aa9d1409b5f9b984b51a8d4de1"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/025_smpp_dispatch_uncertainty.sql",
+      "sha256": "76f329c248688050d840d3602ebc6320d4d8bdb90bd5d1afdf3d721cb12102cd"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/SMPP_RUNTIME/026_smpp_reconciliation_audit.sql",
+      "sha256": "f75be8f0f8a9253abf2e9426aecb57a9b40a7e97e1c1f49e161fda413560cc91"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/UGV_PROVIDER/024_ugv_provider.sql",
+      "sha256": "441b85bea149ce67ebdb9c4660bbe6870b770fabf76fadc5da175f3942dd91c5"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/UGV_PROVIDER/026_ugv_single_active_fire.sql",
+      "sha256": "9d78bc853141950144681d5dfd898789bfdaaf69c52c3f3b0bb9d4149f9e770f"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/UGV_PROVIDER/027_mutation_journal.sql",
+      "sha256": "7a6cbed04084b71ea68e5f825f8f7d432e6672e3797700268233e682461b6c8f"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/UGV_PROVIDER/028_smpp_diagnostic_leases.sql",
+      "sha256": "d8ed2bcff0d9c4cb32aa9b4d2aef41ceac1b7a2e1d73bfe3c4aa38afe3c5a87c"
+    },
+    {
+      "path": "database/shared-business-storage/generated/ugv_smpp/UGV_PROVIDER/029_smpp_diagnostic_exact_argument_selector.sql",
+      "sha256": "906e4b6a0631907da9a5581cc80445cd8bd4224b9275117738db146f3166d755"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/read-model.sql",
+      "sha256": "57ecb4fd1883e5adac488a0a5938d0ffac810f19d91e26ae193c08706cd76a7f"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/sdar-additional.sql",
+      "sha256": "1b294e844f03bda8ae1c37e16e1994ff66760a9744e60dc14111abd9e4685920"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/sdar-derived-ownership.sql",
+      "sha256": "bb590ee330a0af44b87fe93d8150a000039598837b77aa2e524ceca00e2036cd"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/sdar-hardening.sql",
+      "sha256": "1ad3150232a29f5cf04f5623f011afa64454dcd849571d6dbdb5b3de8e4212e5"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/smpp-additional.sql",
+      "sha256": "f283857149d30c8feda408b6f001f54b9138a03f6b802f6bc4e8b85b5c22c4f6"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/smpp-hardening.sql",
+      "sha256": "957e5693aae31946b353edcdbc0759c8dd9237487630b3299d3d281b964dca1e"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/ugv_sdar.sql",
+      "sha256": "cd0468c421de6cf6b0a069d788f7b4937f74bac0d0a3729e85d1213f425294c5"
+    },
+    {
+      "path": "database/shared-business-storage/overlays/ugv_smpp.sql",
+      "sha256": "ec8e5b53bd0d4c5cb0f747c10fb4646807310d78eaf7a25c194f4b037e44812a"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0001_sdar_v1_2_2_baseline.sql",
+      "sha256": "b61980356fdea6cf79dcada4d857a6eccf8d5620b5f10ae18cebcf547535757b"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0108_v123_cognitive_skeleton.up.sql",
+      "sha256": "39f60b1666fffd2d0ffb9f12fdc4ad7caf0b6433b17987a69a1b508d3bbc18f6"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0109_v123_capability_summary.up.sql",
+      "sha256": "25d3b8d70432a24664e8a43a888793280472f320799203eb0264669512afd0f8"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0110_v123_capability_card.up.sql",
+      "sha256": "3f7d50ae0084319c6ee023d98685c7f9af518078139ae1ae19813ea42b76b69c"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0111_v123_task_understanding.up.sql",
+      "sha256": "ef0159870809d22cc7a43ece0fc43285ddb7de5b8d055e7ae5726d063d8770b9"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0112_v123_interactive_goal.up.sql",
+      "sha256": "bd17b165dca0ce4ee900727e8a96072b6a6478f714b3056e8c8feeed0b509a02"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0113_v123_interactive_planning.up.sql",
+      "sha256": "a2a8c43b98841b90bb7b153ddebba72fabf1d595f636f84946fb59df97d07c55"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0114_v123_planning_corrections.up.sql",
+      "sha256": "400d6f370713a2e526f93d4ec8778939df90590307bef2863e4db584945aa98d"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0115_v123_experience_episode.up.sql",
+      "sha256": "5ceb47d045177e8623e0b6ac15dc2bf8c9bdb4073e0458f28f18bcfa5d224820"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0116_v123_experience_observation.up.sql",
+      "sha256": "70ec8d6d287a12cdf624f333774cbab6266a53cdc67a18b7560fd01d3d18aaa3"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0117_v123_experience_reflection.up.sql",
+      "sha256": "d9c3f79c416fd6e499d19cea1523966c6ed029f192d4c9b3e3fbac8d44e12655"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0118_v123_task_type_induction.up.sql",
+      "sha256": "8c119ae4ce08bf3a403c6101e5b5182c4a555b2b938732af7984d03a893c7eec"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0119_v123_capability_pattern_induction.up.sql",
+      "sha256": "44bbcdbafa662b5ea43a220177f01214f877f829700a79de7728ee8910d4a08b"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0120_v123_knowledge_promotion.up.sql",
+      "sha256": "e571dfe013c3c8aca4c8725377e7e598f55001741e20bcb1b0fbd554d78b7a51"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0121_v123_knowledge_usage.up.sql",
+      "sha256": "a95729f756bc969c22b6d48ae0e3b482e8d4b685d0a702ef32802c21f618e55c"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0122_v123_experience_enriched_planning.up.sql",
+      "sha256": "1be7a4d93b955543e65cd15f03a7daf59cd1ae4c6a4199466bfb9be669e610a3"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0123_v123_cognitive_management_audit.up.sql",
+      "sha256": "ba0be21b13515a498a2a38127ca0a8e3face8d26ac764bb7b6314b0ba174651f"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0124_v123_replay_shadow_evidence.up.sql",
+      "sha256": "550f6f510c54b1fc297c4565440c627f627ba0dfb8462f8ed4d2fc39f05642a2"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0125_v13_artifact_authority.up.sql",
+      "sha256": "50cb5041aca0be044010fe69c360fbbe3f6664e61fecf0c68b452ebf94b834f0"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0126_v13_experience_compilation.up.sql",
+      "sha256": "e9745ae06fa6478511b28f39567ef3ec9b596a4df47b254303c50b068fe27bcf"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0127_v13_artifact_candidate_generation.up.sql",
+      "sha256": "421fc69129a7042e26eca0fbb76058028c4c737af6524a6a0473a671e15e360a"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0128_v13_candidate_generation_runtime.up.sql",
+      "sha256": "dddf4c43d0ba766785d782def8ecbac0e4ba1dd81e73857be5e87cf76a6650be"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0129_v13_artifact_replay_validation.up.sql",
+      "sha256": "ef8add2fd264db9e18d81286690bc0629a4c32bc360e1c36705ab741813f8672"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0130_v13_artifact_shadow_governance.up.sql",
+      "sha256": "d84d353e19a4961c61934d8c276265350d6d250c31beab54356b6b672b29d5b2"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0131_v13_artifact_retrieval_audit.up.sql",
+      "sha256": "16923d7899c5f7722c73f312cea6008c0e4bfd8463e8a99489264c490ab96031"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0132_v13_fast_gateway.up.sql",
+      "sha256": "14656b722bd5178db24df6c4e517e41214e5b2192e16ba2fa628587ce6ab32d8"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0133_v13_case_model_runtime.up.sql",
+      "sha256": "9719368d9dcb66786ca7504cf73ca7f48f43c664db6b3d2be69db6d07d40e7ec"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0134_v13_artifact_management_projection.up.sql",
+      "sha256": "2581263fccd401d0f1e27d33b1f7d4c64e05f8c556c4125fd1315e36a9d7fd16"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0135_v14_runtime_configuration_lkg.up.sql",
+      "sha256": "3b20aa79e1662de60c7b6ded4fe6f16a6d45c4ec765a80ca613fd4e73c102f84"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0136_v14_model_control_governance.up.sql",
+      "sha256": "7bf07dcd554956a49fcef8c898c9e3792746450e2d595e0061b6ec52228cf27f"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0137_v14_capability_readiness.up.sql",
+      "sha256": "6d69c45bb5dcfed155a6103f31be1d534b516a39335b9077a1de87a5b121e8c6"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0138_v14_runtime_agent_card.up.sql",
+      "sha256": "953af24e41dfd1b65b97c73bdbcab434677f44e1a77a30ebafc735593eecec0c"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0139_v14_task_capability_binding.up.sql",
+      "sha256": "d1368d7044dbc3522033893b7f184006ac55121a2958f054c4e1eec85d54cbf7"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0140_v14_skill_version_governance.up.sql",
+      "sha256": "2e23d0cda9de61d3bbcac4e6aa5488ca7c66b0bc71fe2d7605fb11a705be9aaa"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0141_v14_skill_import_idempotency.up.sql",
+      "sha256": "b249f770ebeb015985520ad5249c5fb43759839bb915411819b160a9b242132a"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0142_v14_telemetry_export.up.sql",
+      "sha256": "37e945ac16c7340212b2c904659122aac15a7bacac36d4a3e79db43873124985"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0143_v14_node_event_projection.up.sql",
+      "sha256": "d365fa192bf02b09626986e5bcfa675323df74f5906b62e759d73189479eb053"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0144_v14_canonical_evidence.up.sql",
+      "sha256": "e392350bb10f3ce7036b054b13cc99a38ad07028b4caf46d74031cdaefd59148"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0145_v14_artifact_match_exact_version.up.sql",
+      "sha256": "0a2479f28d821d1377ce8d7cff2c088349b4d81f2e09bd8cf5f887f9dcd8b533"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0146_v14_evidence_export_observation_ledger.up.sql",
+      "sha256": "3cf32c81936caca44ec007ebe25c89cf55cbb7f25469046d9df389e3d790626e"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0147_v14_evidence_coverage_authority.up.sql",
+      "sha256": "a68543b8e6825938f6455b691eb738afafb874f5223749b2dd036213a076aa5c"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0148_v14_evidence_operations_recovery.up.sql",
+      "sha256": "153bbea71c4184b0fdee0f1dfa8037dc51559675c137e48e63aa6b2cf5f6ae93"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0149_v14_deterministic_capability_execution_action.up.sql",
+      "sha256": "c6ee18a7c4a574c179e9a69d063bff446465e15381bc848262a8b56bff42d4c0"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0150_v14_cognitive_management_action_lease_recovery.up.sql",
+      "sha256": "0042b630e9354549034ec835839d3d755b7ade523d484ca4bf4747b424223770"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0151_v14_capability_attempt_evidence_lineage.up.sql",
+      "sha256": "d32e7b88ba3ed7a4c1daeb3b66a2777cc2aaeadafd8dbb4839c8b5f289d29e1c"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0152_v14_mcp_execution_semantics_authority_repair.up.sql",
+      "sha256": "32e300aca3629b1d5e32ff36c8c8ac3c65faf384cd71d1f201e4124ce729ddfe"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0153_v14_initial_model_prompts.up.sql",
+      "sha256": "96042b748916d19690f93677c669201a1fe4c397b1e64a9dcf16723ab79645fa"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0154_v14_initial_model_prompt_pointer_repair.up.sql",
+      "sha256": "d16e5cee048418bdc5946e1c393e04aca209d23a28fcdc16edd6cce2dbf97255"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0155_v14_model_operation_routes.up.sql",
+      "sha256": "6575056f911f0a90bb94e65ece0acb0527d71d71310e7b12e9bd5323663779dc"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0156_v14_runtime_task_control_actions.up.sql",
+      "sha256": "5e8847680e93ca257b134e80bf20ca5c6857bde5f8cbf7b37d17beafd8a45700"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0157_v14_governed_control_confirmation.up.sql",
+      "sha256": "22b88f9aea1e3950bf85709ae00fbb821829b55d208508ac9211998fdd691cb2"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0158_v14_governed_control_dispatch_consumption.up.sql",
+      "sha256": "efa979df4688291d02e588543df2299d1ce6b04aa02920ed3d13599561d0acac"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0159_v14_remote_task_admission_recovery.up.sql",
+      "sha256": "cfbf8c8d1c5efc56b904f70d69a28d7580200108ebd7af580a9b61d51d116265"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0160_v14_remote_task_authority_snapshot.up.sql",
+      "sha256": "781ded978b84d7de78abe2e656ebd4e401e96fb37b3705d7d6eceaf376d89aae"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0161_v14_remote_task_cancellation_authority.up.sql",
+      "sha256": "374db492fe1b7da8dafc62f250383ca9676d494311cf8521fea186acd1cd370f"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0162_v14_agent_task_revision_authority.up.sql",
+      "sha256": "7deb27c298220d91a144685d0dbfe9c091fbe2cd36b1fe1b995fe1261f3b87d0"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0163_v14_initial_model_prompt_seed_repair.up.sql",
+      "sha256": "a6f9b32770b10990f63be8e4e79c20c3fccce0c4322f5354827b00576669a088"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0164_v14_governed_control_catalog_lineage.up.sql",
+      "sha256": "d8e2f11e3b79b4b749cae4dd451e09288a7c2c505c467a749d525c1742be8f0d"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0165_v14_remote_task_catalog_lineage.up.sql",
+      "sha256": "6c3a2022bd49e58d8805294dfe92caa00aba960df5736dbacb0f979027e2dfe7"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0166_v14_failed_remote_continuation_quarantine.up.sql",
+      "sha256": "c5790fa3b4d341e03a5f18d72605e5764f06a59dc14578b678378be565be81bd"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0167_v14_task_capability_initial_plan_binding.up.sql",
+      "sha256": "b5e500f8763453f56ef0ddc7f8daeed370b02fa4db2a7046abaed4272bf2c3a9"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0168_v14_failed_terminal_callback_quarantine.up.sql",
+      "sha256": "ffa8428a1a04978bdd954fbba412c8377d71c6c1d0d949ba13bbac14ffa36315"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0169_v14_postfix_terminal_callback_quarantine.up.sql",
+      "sha256": "0440d1bdb1bc6be3784b26b0beaedc7514f038a8c7b0dafa2e9801af947bd2b2"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0170_v14_terminal_guard_callback_quarantine.up.sql",
+      "sha256": "9e3c7211d524778228c5fc2d311516d7813b989bf9bc4f0e75a20349695cb72e"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0171_v14_claimed_terminal_guard_quarantine.up.sql",
+      "sha256": "7ae93d578dff176024b7cbe746736bf71029acd72666d3fc9a3e67b64090ceba"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0172_v14_initial_task_admission.up.sql",
+      "sha256": "83de8269dc2efd70ad831eb9ad0c61ffbb93dfb6a562736f67fe2b5e9c9c88ce"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0173_remote_task_accepted_substate.up.sql",
+      "sha256": "16bf69a669c876ba6c1f5fc80ee5b8d741da706486950674b0b9a6d538b717d5"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0174_v14_evidence_delivery_origin.up.sql",
+      "sha256": "24769cbf3921d4e352a1978a4320f2e8e0d0a750f29394aa634f2257b2ed0ef6"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0175_v14_mcp_task_consumer_sync.up.sql",
+      "sha256": "84c65d107cf042d4165e79a838bf6b268e4445c899c5a58193609724774828af"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0176_v14_control_authority_kind.up.sql",
+      "sha256": "7ebcfe2921468efea766a4e97dea249ebf5e6d942e4cdecf326d6eecca6e1863"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0177_v14_control_authority_kind_default.up.sql",
+      "sha256": "4cad5cb502b608a18305ee696fd6b42ec905035cded4ba6ed993d6e13bd1bb6a"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0178_v14_development_isolated_demo.up.sql",
+      "sha256": "e34f2e9c5ffd5e953d9a64ca70cea5ef6cb31fad5b30fca708bdee72efe6d4f8"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0179_v14_workflow_scoped_continuation.up.sql",
+      "sha256": "a1c239a28ef58b1c56c066a1bf91410bab1fb872cb6177fdc5bb6ac11a6c0853"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0180_v14_workflow_child_call.up.sql",
+      "sha256": "838afa06d37824247c31f2f55329be441f534bf7581be2ae7f6f84602baa412e"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0181_v14_temporary_skill_terminal.up.sql",
+      "sha256": "7867ef7f9f1ec56df9081e3e1c81a1fcdec324cda725f813fa7ccaba20c22db8"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0182_v14_configured_task_type.up.sql",
+      "sha256": "ec9c40e31ff3781ecd111f7eeb089839d66da76f5e8f42f828b6218020483d82"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SDAR_RUNTIME/0183_v14_capability_admission_receipt.up.sql",
+      "sha256": "cb7775a55cf9002b3bb3317b9d88e47d2c8982bf994abeeb5c171fe1f949f35b"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/001_operation_snapshot.sql",
+      "sha256": "fb130bdd77c67e9bcfc37e609a82d4fe67fba17e9058ce709ecb3bfe75a47c28"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/002_task_lifecycle.sql",
+      "sha256": "656c286e7b9c9d3a7bc45de56589738b3e15c6f9237065889f2815d194832e78"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/003_idempotency.sql",
+      "sha256": "91ef8d20caea9fd321fa8aec0eaab17dd2e741732d7181f36d2256f6b663d5ad"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/004_durable_timing.sql",
+      "sha256": "dd5fc0cd4cbfde7c695d6cfe8bef3001076e39a744bb22ab8a251764843782c4"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/005_task_controls.sql",
+      "sha256": "4566c30477428c20e375b200ffa3b144ca88617af122e28e5039173b77389516"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/006_recovery_hardening.sql",
+      "sha256": "9c613b678a99742201c512cfcb0f42b091ff860bfd0bf73f3cc79a2a58370f47"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/007_durable_command_dispatch.sql",
+      "sha256": "d07aa4904c511d7360458520ca3a3ffddb63edef0ec842934260e9d91398267a"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/008_start_window_and_schedule_retry.sql",
+      "sha256": "050f2a50f30b35fc7f302657ae798f7034a71f52aa31d53b315a0801db361c75"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/009_observation_revision_and_outbox_keys.sql",
+      "sha256": "bc63f39b8cc702d4e5b877001b0ca40193fe296d6f07ae38d89a8bc7506101a9"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/010_adapter_execution_identity.sql",
+      "sha256": "be8e0bb022c0d062e64a14194c29d18014a03c087b2dd58731d35e2c56d92bda"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/011_task_handle_retention.sql",
+      "sha256": "cf268f6db9b838479b18701f9155823bd1e93b848ddf689190484315ae7d1da5"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/012_idempotency_claim_lease.sql",
+      "sha256": "bddb59a95bfe349ee69ee449309563850725d9a246d5dc0f9d30ae8d12c53c2e"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/013_single_claimed_command.sql",
+      "sha256": "0462556befd931f932dba3ec71b4587592d61febebfac3eaa0b06a5c0f0c65fc"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/014_observation_pagination.sql",
+      "sha256": "df7d010260a9bf51e78ba7d260927e7f46731191cab9a6f18d7e9b8bfc0cdfef"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/014_start_confirmation_watchdog.sql",
+      "sha256": "11fd1be2cd88a05f812e8ce0ecb861401d085f8af00538af0da73bf9046bb245"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/015_recovery_backoff.sql",
+      "sha256": "9e9bcddd5150730f56c29b0bb4fbd33d689f4a411cf67af6f19da18309e56fda"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/016_command_claim_lease_consistency.sql",
+      "sha256": "f7ce61648299c3fa81e42fe9eaa6833d0e98db3ebcee0e11045eda6ceeacbcbf"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/017_provider_ops_audit_delivery.sql",
+      "sha256": "c19afbc927ceac63c7aa43169f576caba8179132907310629a0e340980423596"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/018_runtime_trace_context.sql",
+      "sha256": "1c03f35743425f94139bd9d7aa6c68bb39cb27d5c15f3b5d89aacbb53513667a"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/019_runtime_revision.sql",
+      "sha256": "8bbce4951ec7c1730de712292a3832fa0438db1742e647c5fba8869bccfc23b1"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/020_frozen_protocol_mrtr.sql",
+      "sha256": "3ebd512a04266ed1ca84f484670ef4156b2485e80fad93e0808bf38a64562eee"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/021_frozen_reservation_ref.sql",
+      "sha256": "bda96734808eee2f73b4da4d44ae7b8292b32bda0706eeb90728087e5764f0f0"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/022_mrtr_response_inbox.sql",
+      "sha256": "16d6da827dbe2c02ac7585b25e3370b47d55cbdb46f8f2ed5c77b271bf0e4343"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/023_business_events_profile_v1.sql",
+      "sha256": "b978e71aacbfcfe6b3d948758e9c32e209180fbb3d283370cdaf41551463bead"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/024_accepted_task_substate.sql",
+      "sha256": "25a0432bd8cdd04cbe4a56762827fd219857c0ca24c260c7911857c75aa78287"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/025_smpp_dispatch_uncertainty.sql",
+      "sha256": "fc52fb5eff0e05d57b9b134d142ea2e313aca2a49f5ba44e0798809e6083188a"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/SMPP_RUNTIME/026_smpp_reconciliation_audit.sql",
+      "sha256": "2daad14ff8ae4102d71e0912ea86c3747cebf8b43ac70662fad9358f6f7dfb0f"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/UGV_PROVIDER/024_ugv_provider.sql",
+      "sha256": "05d6e1ec15187fbc96d96db8a6ee3d8d7edc33ff1840c2dc91fd7f104be805a2"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/UGV_PROVIDER/026_ugv_single_active_fire.sql",
+      "sha256": "cf6c8510803c6bf9c62e79d83de6c113bc0a27b945c99532d07537965d0b3079"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/UGV_PROVIDER/027_mutation_journal.sql",
+      "sha256": "26b642cb142c13fbe6562e99d57e95423892829001d35be0783210a72ae443d5"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/UGV_PROVIDER/028_smpp_diagnostic_leases.sql",
+      "sha256": "995c7c01773c97c4ba09330415d85988e1879bd80ad14203d5d9d95b99664b6a"
+    },
+    {
+      "path": "database/shared-business-storage/upstream/UGV_PROVIDER/029_smpp_diagnostic_exact_argument_selector.sql",
+      "sha256": "713c738a55258954a5807a3f477335ee1e460d22b0ef49a6467ab22097876499"
+    }
+  ]
+}

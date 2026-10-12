@@ -24,12 +24,12 @@
     {
       "kind": "DESCRIPTOR",
       "path": "contracts/manifests/providers/geometry-provider.json",
-      "sha256": "a837d05955691e4d384ad877f80d48bc9eeb71f10c6c4c8b67baeb5ceda7c871"
+      "sha256": "08ffc233f3052a8042aa2a5620deb8e62309870e6cc9ecdb4b6c3bd6afd5330f"
     },
     {
       "kind": "PORTS",
       "path": "contracts/manifests/providers/geometry-provider.json",
-      "sha256": "a837d05955691e4d384ad877f80d48bc9eeb71f10c6c4c8b67baeb5ceda7c871"
+      "sha256": "08ffc233f3052a8042aa2a5620deb8e62309870e6cc9ecdb4b6c3bd6afd5330f"
     },
     {
       "kind": "INPUT_SCHEMA",
@@ -44,18 +44,18 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "services/providers/geometry-provider-bridge/src/provider.ts",
-      "sha256": "ddb5723d36cd641b10b68519cc93d19126dd90397396a0f33c85e2a23396414b",
+      "sha256": "356d50b35a00a5440895b68144c39a9393a79c789b37514f3f12d274ae760edb",
       "symbol": "createGeometryProviderBridge"
     },
     {
       "kind": "UNIT_TEST",
       "path": "tests/platform/geometry-provider-bridge.test.ts",
-      "sha256": "8656a7eb0cb714e9f9e33de4c19cb13197f74492952bf58a0877fd8fb1ec23db"
+      "sha256": "cbb128dc19406bc1bffb7ebaa06b06d7f2e3484279d5005f4b480b4e253d81c4"
     },
     {
       "kind": "SOURCE_LOCK",
       "path": "contracts/manifests/providers/geometry-provider-source-lock.json",
-      "sha256": "74326c611d1a888f74c4d6c62240c3b2f318edbd85f9f732ec5bb83588e2bf8d"
+      "sha256": "fe33a04273bd8721e969bf5ab927efb6365b814e10ffd06d1f7782556931a8a1"
     }
   ],
   "status": "PROVEN",

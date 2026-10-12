@@ -108,6 +108,7 @@ export async function buildConsumerContracts(destination = defaultOutputRoot, op
   await rm(outputRoot, { recursive: true, force: true });
   await mkdir(outputRoot, { recursive: true });
   await copySchemas(outputRoot);
+  await copy(resolve(repositoryRoot,"contracts/consumers/historical-trajectory-artifact-v1.json"),join(outputRoot,"locks/historical-trajectory-artifact-v1.json"));
   await copy(resolve(repositoryRoot, "contracts/platform/openapi/world-capability-gateway-v1.yaml"), join(outputRoot, "openapi/world-capability-gateway-v1.yaml"));
   const extension = (await readFile(resolve(repositoryRoot, "contracts/gowm-v0.6.3/openapi/world-gateway-v0.6.3-extension.yaml"), "utf8"))
     .replaceAll("../operation-availability-list.schema.json", "../schemas/gowm-v0.6.3/operation-availability-list.schema.json")

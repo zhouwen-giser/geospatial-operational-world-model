@@ -60,7 +60,7 @@
     {
       "kind": "TYPESCRIPT_IMPLEMENTATION",
       "path": "packages/road-coverage-verifier-core/src/verification.ts",
-      "sha256": "a65051829e0d044d6d65fc1ddbff24068fefabbc19b0350931b1d010f91540fe",
+      "sha256": "a04ed0e2b7a6372e8ad748cbdb25a31fe9cc9b466b3b41c488351872b7066ff2",
       "symbol": "verifyCoverageRoute"
     }
   ],

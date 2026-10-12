@@ -78,6 +78,23 @@ GOWM_DATABASE_URL='现有管理连接' node dist/scripts/history-diagnose.js '�
 
 ## 部署包交付校验
 
-使用 `bash scripts/package-dev-deployment.sh --force --verify-image` 生成包。脚本在暂存目录生成 `scripts/history-release-manifest.json`，记录连续 001–086 正式迁移、历史运行时源码和接入说明的 SHA-256，以及对应编译入口。清单不含现场配置、密码或测试报告；没有生成时间字段，相同内容可重复打包。解包后可执行 `node scripts/history-release-manifest.mjs` 校验源码清单。镜像校验另外核对全部迁移字节和历史运行时编译产物，并沿用源码与镜像一致性检查。
+使用 `bash scripts/package-dev-deployment.sh --force --verify-image` 生成包。脚本在暂存目录生成 `scripts/history-release-manifest.json`，记录连续 001–089 正式迁移、历史及功能修复运行时源码和接入说明的 SHA-256，以及对应编译入口。清单不含现场配置、密码或测试报告；没有生成时间字段，相同内容可重复打包。解包后可执行 `node scripts/history-release-manifest.mjs` 校验源码清单。镜像校验另外核对全部迁移字节和历史运行时编译产物，并沿用源码与镜像一致性检查。
 
 全部校验成功后才替换输出包，旧包保留在 `output/deployment/previous-*`。生成清单及镜像验证不会连接现场或执行初始化；已有部署仍按上述专用追加迁移和串行更新步骤操作，历史并发先使用 1。
+
+## 2026-10 追加修复交接
+
+核心迁移头现为 089，旧 001–086 与已发布 native/overlay SQL 字节不变。
+新安装默认自动安装正式 `ugv_smpp` / `ugv_sdar` 表和两个独立数据库账号，
+完成主档、七条流及实际账号只读验证后启动采集。缺服务配置为 `NOT_CONFIGURED`，
+`ready` 模式要求完整 SMPP/SDAR 服务身份。
+
+业务接纳和共享关联改用基于 `SESSION_USER` 的受控函数，部署授权由管理员维护；
+运行账号显式携带解析后的 deviceId，`createTarget` 也必须提供 deviceId。
+SDAR canonical MCP 身份校验及 `resolveRemoteTask` 使用新 API，不能用直接读 SMPP 表绕过权限。
+已有范围、密码和绑定不自动改写。其他仓库仍需独立适配，不把本地 fixture 当业务验收。
+
+保留库只执行 `functional-repair-upgrade.js --check` / apply；不运行账号、设备初始化，
+不删除卷、不恢复耗尽请求、不变更关联服务。CORE/TRACKLET/FINALIZATION/HISTORY 和
+30 秒 SQL 预算、真实 gap/PROVISIONAL 以及允许少量丢包与迟到的重置策略保持。
+完整配置、SSE 游标、轨迹状态和回退约束见 [本轮交接](FUNCTIONAL_REPAIR_2026_10.md)。

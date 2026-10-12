@@ -40,5 +40,71 @@
       "When no as-of revision or outcome exists, the Provider only idempotently enqueues the exact frozen request and returns PROJECTION_PENDING; construction remains worker-owned.",
       "The v0.7.1 Provider returns only a bounded preview and does not advertise an artifactReference until a scope-aware artifact registry round trip is qualified."
     ]
+  },
+  "history.open-trajectory-artifact@1.0": {
+    "profileVersion": "1.1",
+    "domain": "ANALYSIS",
+    "acceptedReferenceKinds": [
+      "WORLD_OBJECT",
+      "SPATIAL_OBJECT",
+      "LAYER_FEATURE",
+      "OPERATIONAL_TASK",
+      "DERIVED_REFERENCE",
+      "TASK_EXECUTION_INTERVAL",
+      "HISTORY_METHOD_PROFILE",
+      "HISTORICAL_TRAJECTORY"
+    ],
+    "producedReferenceKinds": [
+      "HISTORICAL_TRAJECTORY",
+      "HISTORY_INPUT_SET"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "HISTORICAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "READY": "COMPLETED",
+        "PROJECTION_PENDING": "INDETERMINATE",
+        "NO_DATA": "NO_DATA",
+        "INDETERMINATE": "INDETERMINATE"
+      }
+    },
+    "notes": [
+      "Artifact availability describes retrieval, not evidence completeness.",
+      "The full frozen request, snapshot, evaluation, immutable revision, gap and segment metadata remain explicit.",
+      "Read replay revalidates scope, byte digest and server-clock expiry."
+    ]
+  },
+  "history.read-trajectory-artifact@1.0": {
+    "profileVersion": "1.1",
+    "domain": "ANALYSIS",
+    "acceptedReferenceKinds": [
+      "HISTORICAL_TRAJECTORY"
+    ],
+    "producedReferenceKinds": [
+      "HISTORICAL_TRAJECTORY",
+      "HISTORY_INPUT_SET"
+    ],
+    "relationSemantics": [],
+    "spatialSemantics": "NONE",
+    "timeSemantics": "HISTORICAL",
+    "resultNature": "DERIVED",
+    "negativeEvidencePolicy": "NO_DATA_IS_UNKNOWN",
+    "freshnessSemantics": "SNAPSHOT_CURRENTNESS",
+    "domainStatus": {
+      "path": "/status",
+      "mapping": {
+        "READY": "COMPLETED"
+      }
+    },
+    "notes": [
+      "Artifact availability describes retrieval, not evidence completeness.",
+      "The full frozen request, snapshot, evaluation, immutable revision, gap and segment metadata remain explicit.",
+      "Read replay revalidates scope, byte digest and server-clock expiry."
+    ]
   }
 }

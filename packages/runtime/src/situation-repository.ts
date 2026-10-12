@@ -12,36 +12,36 @@ const SCORE_COLUMNS: Record<string, string> = {
 };
 
 export class SituationRepository {
-  constructor(private readonly pool: pg.Pool) {}
+  constructor(private readonly pool: pg.Pool,private readonly dataScopeKey?: string) {}
 
-  async getCell(index: string): Promise<SituationCell | undefined> {
-    const result = await this.pool.query("SELECT * FROM situation_cell_scored WHERE h3_index = $1::h3index", [index]);
+  async getCell(index: string,scope=this.dataScopeKey): Promise<SituationCell | undefined> {
+    const result = await this.scopedQuery(scope,"SELECT * FROM gowm_situation.cell_scored WHERE h3_index = $1::h3index", [index]);
     const row = result.rows[0] as Record<string, unknown> | undefined;
     return row ? mapSituationCell(row) : undefined;
   }
 
-  async getCells(indexes: string[]): Promise<SituationCell[]> {
+  async getCells(indexes: string[],scope=this.dataScopeKey): Promise<SituationCell[]> {
     if (!indexes.length) return [];
-    const result = await this.pool.query(
-      "SELECT * FROM situation_cell_scored WHERE h3_index = ANY($1::h3index[]) ORDER BY resolution, h3_index",
+    const result = await this.scopedQuery(scope,
+      "SELECT * FROM gowm_situation.cell_scored WHERE h3_index = ANY($1::h3index[]) ORDER BY resolution, h3_index",
       [indexes]
     );
     return result.rows.map((row) => mapSituationCell(row as Record<string, unknown>));
   }
 
-  async areaCells(area: Geometry, resolution: number): Promise<SituationCell[]> {
+  async areaCells(area: Geometry, resolution: number,scope=this.dataScopeKey): Promise<SituationCell[]> {
     const indexes = await this.areaH3Indexes(area, resolution);
-    const existing = new Map((await this.getCells(indexes)).map((cell) => [cell.h3Index, cell]));
+    const existing = new Map((await this.getCells(indexes,scope)).map((cell) => [cell.h3Index, cell]));
     return indexes.map((index) => existing.get(index) ?? emptyCell(index, resolution));
   }
 
-  async neighbors(index: string, ring = 1): Promise<SituationCell[]> {
+  async neighbors(index: string, ring = 1,scope=this.dataScopeKey): Promise<SituationCell[]> {
     const result = await this.pool.query<{ h3_index: string }>(
       "SELECT cell::text AS h3_index FROM h3_grid_disk($1::h3index, $2) AS cell ORDER BY cell",
       [index, ring]
     );
     const indexes = result.rows.map((row) => row.h3_index);
-    const existing = new Map((await this.getCells(indexes)).map((cell) => [cell.h3Index, cell]));
+    const existing = new Map((await this.getCells(indexes,scope)).map((cell) => [cell.h3Index, cell]));
     return indexes.map((cellIndex) => existing.get(cellIndex) ?? emptyCell(cellIndex, h3Resolution(index)));
   }
 
@@ -72,7 +72,7 @@ export class SituationRepository {
     order: "ASC" | "DESC";
     limit: number;
     parentCell?: string;
-  }): Promise<SituationCell[]> {
+  },scope=this.dataScopeKey): Promise<SituationCell[]> {
     const scoreColumn = SCORE_COLUMNS[options.metric];
     if (!scoreColumn) throw new Error(`unsupported situation metric: ${options.metric}`);
     if (options.parentCell) {
@@ -80,8 +80,8 @@ export class SituationRepository {
       if (options.resolution < parentResolution) throw new Error("ranked target resolution cannot be coarser than parentCell");
       if (options.resolution - parentResolution > 3) throw new Error("ranked drill-down is limited to three H3 resolution levels");
     }
-    const result = await this.pool.query(
-      `SELECT * FROM situation_cell_scored
+    const result = await this.scopedQuery(scope,
+      `SELECT * FROM gowm_situation.cell_scored
        WHERE resolution = $1
          AND ($3::h3index IS NULL
               OR CASE
@@ -93,6 +93,16 @@ export class SituationRepository {
       [options.resolution, options.limit, options.parentCell ?? null]
     );
     return result.rows.map((row) => mapSituationCell(row as Record<string, unknown>));
+  }
+
+  private async scopedQuery(scope:string|undefined,sql:string,values:unknown[]) {
+    if(!scope?.trim())throw new Error('SITUATION_DATA_SCOPE_REQUIRED');
+    const client=await this.pool.connect();
+    try {
+      await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      await client.query("SELECT set_config('gowm.data_scope_key',$1,true),set_config('statement_timeout','15s',true)",[scope]);
+      const result=await client.query(sql,values);await client.query('COMMIT');return result;
+    } catch(error){await client.query('ROLLBACK').catch(()=>{});throw error;}finally{client.release();}
   }
 
   private async areaH3Indexes(area: Geometry, resolution: number): Promise<string[]> {
